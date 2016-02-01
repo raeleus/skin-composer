@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip.TextTooltipStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
@@ -27,15 +28,30 @@ public class StyleData {
     TextButton, TextField, TextTooltip, Touchpad, Tree, Window};
     
     public String name = "";
-    public final OrderedMap<String,StyleProperty> properties = new OrderedMap<String, StyleProperty>();
+    public ClassName className;
+    public OrderedMap<String,StyleProperty> properties;
+    public boolean deletable;
 
     @Override
     public String toString() {
         return name;
     }
     
+    public StyleData(StyleData styleData, String styleName) {
+        name = styleName;
+        className = styleData.className;
+        properties = new OrderedMap<String, StyleProperty>();
+        for (Entry<String, StyleProperty> entry : styleData.properties.entries()) {
+            properties.put(entry.key, new StyleProperty(entry.value));
+        }
+        deletable = true;
+    }
+    
     public StyleData (ClassName className, String styleName) {
         name = styleName;
+        this.className = className;
+        properties = new OrderedMap<String, StyleProperty>();
+        deletable = true;
         switch (className) {
             case Button:
                 newStyleProperties(ButtonStyle.class);

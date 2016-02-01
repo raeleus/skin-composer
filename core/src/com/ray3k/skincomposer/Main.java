@@ -13,12 +13,14 @@ import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class Main extends ApplicationAdapter {
+    public static Main instance;
     private Stage stage;
     private static Skin skin;
     private OrderedMap<StyleData.ClassName, Array<StyleData>> classStyleMap;
     
     @Override
     public void create() {
+        instance = this;
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -102,13 +104,41 @@ public class Main extends ApplicationAdapter {
             classStyleMap.put(item, array);
             if (item == StyleData.ClassName.Slider || item == StyleData.ClassName.ProgressBar || item == StyleData.ClassName.SplitPane) {
                 StyleData data = new StyleData(item, "default-horizontal");
+                data.deletable = false;
                 array.add(data);
                 data = new StyleData(item, "default-vertical");
+                data.deletable = false;
                 array.add(data);
             } else {
                 StyleData data = new StyleData(item, "default");
+                data.deletable = false;
                 array.add(data);
             }
         }
+    }
+    
+    public StyleData newStyle(StyleData.ClassName className, String styleName) {
+        Array<StyleData> styles = classStyleMap.get(className);
+        StyleData data = new StyleData(className, styleName);
+        styles.add(data);
+        
+        return data;
+    }
+    
+    public StyleData copyStyle(StyleData original, String styleName) {
+        Array<StyleData> styles = classStyleMap.get(original.className);
+        StyleData data = new StyleData(original, styleName);
+        styles.add(data);
+        
+        return data;
+    }
+    
+    public void deleteStyle(StyleData styleData) {
+        Array<StyleData> styles = classStyleMap.get(styleData.className);
+        styles.removeValue(styleData, true);
+    }
+
+    public OrderedMap<StyleData.ClassName, Array<StyleData>> getClassStyleMap() {
+        return classStyleMap;
     }
 }
