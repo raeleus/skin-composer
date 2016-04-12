@@ -1,5 +1,6 @@
-package com.ray3k.skincomposer;
+package com.ray3k.skincomposer.panel;
 
+import com.ray3k.skincomposer.data.StyleData;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -15,31 +16,51 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.OrderedMap;
-import com.ray3k.skincomposer.StyleData.ClassName;
+import com.ray3k.skincomposer.IbeamListener;
+import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.data.JsonData;
 
 public class PanelClassBar {    
-    private SelectBox<ClassName> classSelectBox;
+    public SelectBox<String> classSelectBox;
     private SelectBox<StyleData> styleSelectBox;
+    public static PanelClassBar instance;
+    private Table table;
+    private Skin skin;
+    private Stage stage;
     
-    public PanelClassBar(final Table table, final OrderedMap<StyleData.ClassName, Array<StyleData>> classStyleMap, final Skin skin, final Stage stage) {
+    public PanelClassBar(final Table table, final Skin skin, final Stage stage) {
+        instance = this;
+        
+        this.table = table;
+        this.skin = skin;
+        this.stage = stage;
+        populate();
+    }
+    
+    public void populate() {
+        table.clear();
         table.defaults().padTop(5.0f).padBottom(5.0f);
         table.add(new Label("Class:", skin, "white")).padLeft(2.0f).padRight(5.0f);
         table.setBackground("maroon");
         
-        classSelectBox = new SelectBox<ClassName>(skin);
-        classSelectBox.setItems(ClassName.values());
+        classSelectBox = new SelectBox<>(skin, "slim-alt");
+        Array<String> names = new Array<>();
+        for (Class clazz : StyleData.classes) {
+            names.add(clazz.getSimpleName());
+        }
+        classSelectBox.setItems(names);
         table.add(classSelectBox).padRight(30.0f);
         
         table.add(new Label("Style:", skin, "white")).padRight(5.0f);
-        styleSelectBox = new SelectBox<StyleData>(skin);
-        styleSelectBox.setItems(classStyleMap.get(classSelectBox.getSelected()));
+        styleSelectBox = new SelectBox<>(skin, "slim-alt");
+        styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[0]));
         table.add(styleSelectBox).padRight(10.0f).minWidth(200.0f);
         
         classSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                styleSelectBox.setItems(classStyleMap.get(classSelectBox.getSelected()));
+                styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+                PanelPreviewProperties.instance.populate();
             }
         });
         
@@ -71,6 +92,7 @@ public class PanelClassBar {
         style = new ImageButton.ImageButtonStyle(skin.get("menu-right", ImageButton.ImageButtonStyle.class));
         style.imageUp = skin.getDrawable("image-delete");
         style.imageDown = skin.getDrawable("image-delete-down");
+        style.imageDisabled = skin.getDrawable("image-delete-disabled");
         final ImageButton deleteButton = new ImageButton(style);
         deleteButton.addListener(new ChangeListener() {
             @Override
@@ -86,8 +108,9 @@ public class PanelClassBar {
         styleSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                PanelStyleProperties.actor.populate(styleSelectBox.getSelected());
+                PanelStyleProperties.instance.populate(styleSelectBox.getSelected());
                 deleteButton.setDisabled(!styleSelectBox.getSelected().deletable);
+                PanelPreviewProperties.instance.populate();
             }
         });
     }
@@ -102,29 +125,59 @@ public class PanelClassBar {
             @Override
             protected void result(Object object) {
                 if ((Boolean)object) {
-                    StyleData styleData = Main.instance.newStyle(classSelectBox.getSelected(), textField.getText());
-                    styleSelectBox.setItems(Main.instance.getClassStyleMap().get(classSelectBox.getSelected()));
+                    StyleData styleData = Main.instance.newStyle(StyleData.classes[classSelectBox.getSelectedIndex()], textField.getText());
+                    styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
                     styleSelectBox.setSelected(styleData);
                 }
             }
         };
+        dialog.button("OK", true).button("Cancel", false);
+        final TextButton okButton = (TextButton) dialog.getButtonTable().getCells().get(0).getActor();
+        
+        textField.setTextFieldListener(new TextField.TextFieldListener() {
+            @Override
+            public void keyTyped(TextField textField, char c) {
+                if (c == '\n') {
+                    if (!okButton.isDisabled()) {
+                        StyleData styleData = Main.instance.newStyle(StyleData.classes[classSelectBox.getSelectedIndex()], textField.getText());
+                        styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+                        styleSelectBox.setSelected(styleData);
+
+                        dialog.hide();
+                    }
+                    Main.instance.getStage().setKeyboardFocus(textField);
+                }
+            }
+        });
+        
+        textField.addListener(IbeamListener.get());
+        
         dialog.getTitleLabel().setAlignment(Align.center);
         dialog.getContentTable().defaults().padLeft(10.0f).padRight(10.0f);
         dialog.text("What is the name of the new style?");
         dialog.getContentTable().row();
         dialog.getContentTable().add(textField).growX();
-        dialog.button("OK", true).button("Cancel", false);
-        final TextButton okButton = (TextButton) dialog.getButtonTable().getCells().get(0).getActor();
         okButton.setDisabled(true);
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                okButton.setDisabled(textField.getText().length() <= 0);
+                boolean disable = !StyleData.validate(textField.getText());
+                
+                if (!disable) {
+                    for (StyleData data : styleSelectBox.getItems()) {
+                        if (data.name.equals(textField.getText())) {
+                            disable = true;
+                            break;
+                        }
+                    }
+                }
+                
+                okButton.setDisabled(disable);
             }
         });
         
         
-        dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
+        dialog.key(Keys.ESCAPE, false);
         
         dialog.show(stage);
         stage.setKeyboardFocus(textField);
@@ -137,28 +190,59 @@ public class PanelClassBar {
             protected void result(Object object) {
                 if ((Boolean)object) {
                     StyleData styleData = Main.instance.copyStyle(styleSelectBox.getSelected(), textField.getText());
-                    styleSelectBox.setItems(Main.instance.getClassStyleMap().get(classSelectBox.getSelected()));
+                    styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
                     styleSelectBox.setSelected(styleData);
                 }
             }
         };
+        
+        dialog.button("OK", true).button("Cancel", false);
+        final TextButton okButton = (TextButton) dialog.getButtonTable().getCells().get(0).getActor();
+        
+        textField.setTextFieldListener(new TextField.TextFieldListener() {
+            @Override
+            public void keyTyped(TextField textField, char c) {
+                if (c == '\n') {
+                    if (!okButton.isDisabled()) {
+                        StyleData styleData = Main.instance.copyStyle(styleSelectBox.getSelected(), textField.getText());
+                        styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+                        styleSelectBox.setSelected(styleData);
+
+                        dialog.hide();
+                    }
+                    Main.instance.getStage().setKeyboardFocus(textField);
+                }
+            }
+        });
+        
+        textField.addListener(IbeamListener.get());
+        
         dialog.getTitleLabel().setAlignment(Align.center);
         dialog.getContentTable().defaults().padLeft(10.0f).padRight(10.0f);
         dialog.text("What is the name of the new, duplicated style?");
         dialog.getContentTable().row();
         dialog.getContentTable().add(textField).growX();
-        dialog.button("OK", true).button("Cancel", false);
-        final TextButton okButton = (TextButton) dialog.getButtonTable().getCells().get(0).getActor();
         okButton.setDisabled(true);
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                okButton.setDisabled(textField.getText().length() <= 0);
+                boolean disable = !StyleData.validate(textField.getText());
+                
+                if (!disable) {
+                    for (StyleData data : styleSelectBox.getItems()) {
+                        if (data.name.equals(textField.getText())) {
+                            disable = true;
+                            break;
+                        }
+                    }
+                }
+                
+                okButton.setDisabled(disable);
             }
         });
         
         
-        dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
+        dialog.key(Keys.ESCAPE, false);
         
         dialog.show(stage);
         stage.setKeyboardFocus(textField);
@@ -170,7 +254,7 @@ public class PanelClassBar {
             protected void result(Object object) {
                 if ((Boolean)object) {
                     Main.instance.deleteStyle(styleSelectBox.getSelected());
-                    styleSelectBox.setItems(Main.instance.getClassStyleMap().get(classSelectBox.getSelected()));
+                    styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
                 }
             }
         };

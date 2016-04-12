@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
 import java.math.BigDecimal;
 
@@ -48,6 +49,7 @@ public class Spinner extends Table {
                 Spinner parent = (Spinner) actor;
                 parent.value = parent.value.subtract(parent.increment);
                 if (usingMinimum && parent.value.doubleValue() < parent.minimum) parent.value = BigDecimal.valueOf(parent.minimum);
+                if (usingMaximum && parent.value.doubleValue() > parent.maximum) parent.value = BigDecimal.valueOf(parent.maximum);
                 parent.updateText();
             }
         });
@@ -57,6 +59,7 @@ public class Spinner extends Table {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 Spinner parent = (Spinner) actor;
                 parent.value = parent.value.add(parent.increment);
+                if (usingMinimum && parent.value.doubleValue() < parent.minimum) parent.value = BigDecimal.valueOf(parent.minimum);
                 if (usingMaximum && parent.value.doubleValue() > parent.maximum) parent.value = BigDecimal.valueOf(parent.maximum);
                 parent.updateText();
             }
@@ -75,6 +78,23 @@ public class Spinner extends Table {
             }
         });
         
+        textField.addListener(new FocusListener() {
+            @Override
+            public void keyboardFocusChanged(FocusListener.FocusEvent event, Actor actor, boolean focused) {
+                Spinner parent = (Spinner) textField.getParent();
+                if (usingMinimum && parent.value.doubleValue() < parent.minimum) {
+                    parent.value = BigDecimal.valueOf(parent.minimum);
+                }
+                if (usingMaximum && parent.value.doubleValue() > parent.maximum) {
+                    parent.value = BigDecimal.valueOf(parent.maximum);
+                }
+                parent.updateText();
+            }
+            
+        });
+        
+        textField.addListener(IbeamListener.get());
+        
         final Spinner spinner = this;
         addCaptureListener(new ChangeListener() {
             @Override
@@ -84,7 +104,7 @@ public class Spinner extends Table {
         });
     }
     
-    public Double getValue() {
+    public double getValue() {
         return value.doubleValue();
     }
     
@@ -145,5 +165,9 @@ public class Spinner extends Table {
             buttonRightStyle = style.buttonRightStyle;
             textFieldStyle = style.textFieldStyle;
         }
+    }
+
+    public TextField getTextField() {
+        return textField;
     }
 }

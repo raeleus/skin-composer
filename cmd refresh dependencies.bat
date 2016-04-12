@@ -1,0 +1,1 @@
+gradlew --refresh-dependencies --daemon & pause
