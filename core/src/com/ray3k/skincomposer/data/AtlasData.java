@@ -57,7 +57,7 @@ public class AtlasData {
             }
         }
         
-        Main.instance.getTextureWorker().TexturePack(files, targetFile, ProjectData.instance().getMaxTextureWidth(), ProjectData.instance().getMaxTextureHeight());
+        Main.instance.getDesktopWorker().texturePack(files, targetFile, ProjectData.instance().getMaxTextureWidth(), ProjectData.instance().getMaxTextureHeight());
     }
     
     public TextureAtlas getAtlas() {

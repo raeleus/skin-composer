@@ -35,6 +35,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Sort;
+import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.StyleProperty;
@@ -71,6 +72,7 @@ public class DialogDrawables extends Dialog {
     private TextureAtlas atlas;
     private ObjectMap<DrawableData, Drawable> drawablePairs;
     private EventListener listener;
+    private FilesDroppedListener filesDroppedListener;
 
     /**
      * Creates the drawables dialog with a default WindowStyle.
@@ -101,6 +103,15 @@ public class DialogDrawables extends Dialog {
         produceAtlas();
         
         this.skin = skin;
+        
+        filesDroppedListener = new FilesDroppedListener() {
+            @Override
+            public void filesDropped(Array<FileHandle> files) {
+                drawablesSelected(files);
+            }
+        };
+        
+        Main.instance.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
         
         getTitleLabel().setAlignment(Align.center);
         
@@ -488,6 +499,8 @@ public class DialogDrawables extends Dialog {
 
     @Override
     public boolean remove() {
+        Main.instance.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        
         try {
             AtlasData.getInstance().writeAtlas();
         } catch (Exception e) {
@@ -637,14 +650,22 @@ public class DialogDrawables extends Dialog {
      * @param files 
      */
     private void drawablesSelected(List<File> files) {
+        Array<FileHandle> fileHandles = new Array<>();
+        
+        for (File file : files) {
+            fileHandles.add(new FileHandle(file));
+        }
+        
+        drawablesSelected(fileHandles);
+    }
+    
+    private void drawablesSelected(Array<FileHandle> files) {
         Array<DrawableData> backup = new Array<>(drawables);
         Array<FileHandle> unhandledFiles = new Array<>();
         Array<FileHandle> filesToProcess = new Array<>();
         
-        ProjectData.instance().setLastDirectory(files.get(0).getParentFile().getPath());
-        for (File file : files) {
-            FileHandle fileHandle = new FileHandle(file.getPath());
-
+        ProjectData.instance().setLastDirectory(files.get(0).parent().path());
+        for (FileHandle fileHandle : files) {
             if (checkDuplicateDrawables(fileHandle, 0)) {
                 unhandledFiles.add(fileHandle);
             } else {
@@ -657,7 +678,6 @@ public class DialogDrawables extends Dialog {
         } else {
             finalizeDrawables(backup, filesToProcess);
         }
-        
     }
     
     /**

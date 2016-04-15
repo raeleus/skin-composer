@@ -1,30 +1,37 @@
 package com.ray3k.skincomposer.desktop;
 
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.Main;
-import com.ray3k.skincomposer.TextureWorker;
+import com.ray3k.skincomposer.DesktopWorker;
+import com.ray3k.skincomposer.FilesDroppedListener;
 
-public class DesktopLauncher implements TextureWorker {
-
+public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
+    private Array<FilesDroppedListener> filesDroppedListeners;
     public static void main(String[] arg) {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setResizable(true);
         config.useVsync(true);
         config.setWindowedMode(800, 800);
+        DesktopLauncher desktopLauncher = new DesktopLauncher();
+        config.setWindowListener(desktopLauncher);
         config.setTitle("Skin Composer - RAY3K.COM");
         Main main = new Main();
-        main.setTextureWorker(new DesktopLauncher());
-        Lwjgl3Application app = new Lwjgl3Application(main, config);
+        main.setTextureWorker(desktopLauncher);
+        new Lwjgl3Application(main, config);
     }
     
     @Override
-    public void TexturePack(Array<FileHandle> handles, FileHandle targetFile, int maxWidth, int maxHeight) {
+    public void texturePack(Array<FileHandle> handles, FileHandle targetFile, int maxWidth, int maxHeight) {
         Settings settings = new TexturePacker.Settings();
         settings.maxWidth = maxWidth;
         settings.maxHeight = maxHeight;
@@ -41,5 +48,73 @@ public class DesktopLauncher implements TextureWorker {
             p.addImage(handle.file());
         }
         p.pack(targetFile.parent().file(), targetFile.nameWithoutExtension());
+    }
+    
+    @Override
+    public void centerWindow(Graphics graphics) {
+        Lwjgl3Graphics g = (Lwjgl3Graphics) graphics;
+        Graphics.DisplayMode mode = g.getDisplayMode();
+        Lwjgl3Window window = g.getWindow();
+        window.setPosition(mode.width / 2 - g.getWidth() / 2, mode.height / 2 - g.getHeight() / 2);
+    }
+
+    @Override
+    public void sizeWindowToFit(int maxWidth, int maxHeight, int displayBorder, Graphics graphics) {
+        Graphics.DisplayMode mode = graphics.getDisplayMode();
+        
+        int width = Math.min(mode.width - displayBorder * 2, maxWidth);
+        int height = Math.min(mode.height - displayBorder * 2, maxHeight);
+        
+        graphics.setWindowedMode(width, height);
+        
+        centerWindow(graphics);
+    }
+
+    @Override
+    public void iconified() {
+        
+    }
+
+    @Override
+    public void deiconified() {
+        
+    }
+
+    @Override
+    public void focusLost() {
+        
+    }
+
+    @Override
+    public void focusGained() {
+        
+    }
+
+    @Override
+    public boolean closeRequested() {
+        return true;
+    }
+    
+    @Override
+    public void addFilesDroppedListener(FilesDroppedListener filesDroppedListener) {
+        filesDroppedListeners.add(filesDroppedListener);
+    }
+    
+    @Override
+    public void removeFilesDroppedListener(FilesDroppedListener filesDroppedListener) {
+        filesDroppedListeners.removeValue(filesDroppedListener, false);
+    }
+    
+    @Override
+    public void filesDropped(String[] files) {
+        Array<FileHandle> fileHandles = new Array<>();
+        for (String file : files) {
+            FileHandle fileHandle = new FileHandle(file);
+            fileHandles.add(fileHandle);
+        }
+        
+        for (FilesDroppedListener listener : filesDroppedListeners) {
+            listener.filesDropped(fileHandles);
+        }
     }
 }

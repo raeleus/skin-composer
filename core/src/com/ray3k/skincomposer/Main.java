@@ -13,6 +13,7 @@ import com.ray3k.skincomposer.panel.PanelMenuBar;
 import com.ray3k.skincomposer.data.StyleData;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
@@ -47,10 +48,13 @@ public class Main extends ApplicationAdapter {
     public static Main instance;
     private Stage stage;
     private static Skin skin;
-    private TextureWorker textureWorker;
+    private DesktopWorker desktopWorker;
     
     @Override
     public void create() {
+        desktopWorker.sizeWindowToFit(800, 800, 50, Gdx.graphics);
+        desktopWorker.centerWindow(Gdx.graphics);
+        
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
@@ -311,12 +315,12 @@ public class Main extends ApplicationAdapter {
         dialog.show(stage);
     }
 
-    public TextureWorker getTextureWorker() {
-        return textureWorker;
+    public DesktopWorker getDesktopWorker() {
+        return desktopWorker;
     }
 
-    public void setTextureWorker(TextureWorker textureWorker) {
-        this.textureWorker = textureWorker;
+    public void setTextureWorker(DesktopWorker textureWorker) {
+        this.desktopWorker = textureWorker;
     }
 
     public Stage getStage() {
