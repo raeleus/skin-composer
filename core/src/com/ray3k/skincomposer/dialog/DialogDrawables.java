@@ -103,11 +103,20 @@ public class DialogDrawables extends Dialog {
         produceAtlas();
         
         this.skin = skin;
-        
+
         filesDroppedListener = new FilesDroppedListener() {
             @Override
             public void filesDropped(Array<FileHandle> files) {
-                drawablesSelected(files);
+                Iterator<FileHandle> iter = files.iterator();
+                while (iter.hasNext()) {
+                    FileHandle file = iter.next();
+                    if (file.isDirectory() || !(file.name().toLowerCase().endsWith(".png") || file.name().toLowerCase().endsWith(".jpg") || file.name().toLowerCase().endsWith(".jpeg") || file.name().toLowerCase().endsWith(".bmp") || file.name().toLowerCase().endsWith(".gif"))) {
+                        iter.remove();
+                    }
+                }
+                if (files.size > 0) {
+                    drawablesSelected(files);
+                }
             }
         };
         

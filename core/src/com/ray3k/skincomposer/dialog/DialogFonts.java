@@ -30,6 +30,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Sort;
+import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.AtlasData;
@@ -47,6 +48,7 @@ import com.ray3k.skincomposer.utils.SynchronousJFXFileChooser;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import javafx.stage.FileChooser;
 
@@ -61,6 +63,7 @@ public class DialogFonts extends Dialog {
     private ObjectMap<FontData, BitmapFont> fontMap;
     private TextureAtlas atlas;
     private EventListener listener;
+    private FilesDroppedListener filesDroppedListener;
 
     public DialogFonts(Skin skin, StyleProperty styleProperty, EventListener listener) {
         this(skin, "default", styleProperty, listener);
@@ -77,6 +80,25 @@ public class DialogFonts extends Dialog {
 
         fontMap = new ObjectMap<>();
         produceAtlas();
+        
+        filesDroppedListener = new FilesDroppedListener() {
+            @Override
+            public void filesDropped(Array<FileHandle> files) {
+                Iterator<FileHandle> iter = files.iterator();
+                while (iter.hasNext()) {
+                    FileHandle file = iter.next();
+                    if (file.isDirectory() || !file.name().toLowerCase().endsWith(".fnt")) {
+                        iter.remove();
+                    }
+                }
+                
+                if (files.size > 0) {
+                    fontNameDialog(files, 0);
+                }
+            }
+        };
+        
+        Main.instance.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
 
         setFillParent(true);
 
@@ -141,16 +163,6 @@ public class DialogFonts extends Dialog {
     private boolean addFont(String name, FileHandle file) {
         if (FontData.validate(name)) {
             try {
-                BitmapFontData bitmapFontData = new BitmapFontData(file, false);
-                for (String path : bitmapFontData.imagePaths) {
-                    DrawableData drawable = new DrawableData(new FileHandle(path));
-                    drawable.visible = false;
-                    if (!drawables.contains(drawable, false)) {
-                        drawables.add(drawable);
-                    }
-                }
-                produceAtlas();
-                
                 FontData font = new FontData(name, file);
                 
                 //remove any existing FontData that shares the same name.
@@ -165,8 +177,17 @@ public class DialogFonts extends Dialog {
                     
                     fonts.removeValue(font, false);
                 }
-                fonts.add(font);
                 
+                BitmapFontData bitmapFontData = new BitmapFontData(file, false);
+                for (String path : bitmapFontData.imagePaths) {
+                    DrawableData drawable = new DrawableData(new FileHandle(path));
+                    drawable.visible = false;
+                    if (!drawables.contains(drawable, false)) {
+                        drawables.add(drawable);
+                    }
+                }
+                produceAtlas();
+                fonts.add(font);
                 
                 Array<TextureRegion> regions = new Array<>();
                 for (String path : bitmapFontData.imagePaths) {
@@ -385,6 +406,8 @@ public class DialogFonts extends Dialog {
 
     @Override
     public boolean remove() {
+        Main.instance.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        
         produceAtlas();
         
         for (BitmapFont font : fontMap.values()) {
@@ -408,7 +431,10 @@ public class DialogFonts extends Dialog {
                 Array<TextureRegion> regions = new Array<>();
                 for (String path : fontData.imagePaths) {
                     FileHandle file = new FileHandle(path);
-                    regions.add(atlas.findRegion(file.nameWithoutExtension()));
+                    TextureRegion region = atlas.findRegion(file.nameWithoutExtension());
+                    if (region != null) {
+                        regions.add(region);
+                    }
                 }
                 fontMap.put(font, new BitmapFont(fontData, regions, true));
             }
@@ -438,10 +464,18 @@ public class DialogFonts extends Dialog {
     }
     
     private void fontNameDialog(List<File> files, int index) {
-        if (index < files.size()) {
+        Array<FileHandle> handles = new Array<>();
+        for (File file : files) {
+            handles.add(new FileHandle(file));
+        }
+        
+        fontNameDialog(handles, index);
+    }
+    
+    private void fontNameDialog(Array<FileHandle> files, int index) {
+        if (index < files.size) {
             try {
-                File file = files.get(index);
-                final FileHandle fileHandle = new FileHandle(file.getPath());
+                final FileHandle fileHandle = files.get(index);
 
                 final TextField textField = new TextField(FontData.filter(fileHandle.nameWithoutExtension()), skin);
                 final Dialog nameDialog = new Dialog("Enter a name...", skin, "dialog") {

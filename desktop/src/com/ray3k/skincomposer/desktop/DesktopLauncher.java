@@ -29,6 +29,10 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         main.setTextureWorker(desktopLauncher);
         new Lwjgl3Application(main, config);
     }
+
+    public DesktopLauncher() {
+        filesDroppedListeners = new Array<>();
+    }
     
     @Override
     public void texturePack(Array<FileHandle> handles, FileHandle targetFile, int maxWidth, int maxHeight) {
