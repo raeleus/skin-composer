@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.Main;
+import java.io.FileNotFoundException;
 
 public class AtlasData {
     private static AtlasData instance;
@@ -43,6 +44,19 @@ public class AtlasData {
         }
         
         return returnValue;
+    }
+    
+    public void readAtlas(FileHandle fileHandle) throws Exception {
+        if (fileHandle.exists()) {
+            FileHandle targetDirectory = Gdx.files.local("imported/" + ProjectData.instance().getId() + "/");
+            targetDirectory.mkdirs();
+            targetDirectory.emptyDirectory();
+            
+            //to do: copy images from atlas to this folder
+            String text = fileHandle.toString();
+        } else {
+            throw new FileNotFoundException();
+        }
     }
     
     public void writeAtlas() throws Exception {
