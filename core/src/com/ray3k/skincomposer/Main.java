@@ -13,7 +13,6 @@ import com.ray3k.skincomposer.panel.PanelMenuBar;
 import com.ray3k.skincomposer.data.StyleData;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;

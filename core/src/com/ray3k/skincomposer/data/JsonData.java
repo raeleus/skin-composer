@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
@@ -35,51 +36,105 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import com.ray3k.skincomposer.Main;
 import java.io.StringWriter;
 
 public class JsonData implements Json.Serializable {
+
     private static JsonData instance;
     private static Array<Class> styleClasses;
     private Array<ColorData> colors;
     private Array<FontData> fonts;
     private OrderedMap<Class, Array<StyleData>> classStyleMap;
-    
+
     public static JsonData getInstance() {
         if (instance == null) {
             instance = new JsonData();
         }
         return instance;
     }
-    
+
     public static void loadInstance(JsonData instance) {
         JsonData.instance = instance;
     }
-    
+
     private JsonData() {
         instance = this;
-        styleClasses = new Array<Class>(new Class[] {ButtonStyle.class, CheckBoxStyle.class,
+        styleClasses = new Array<Class>(new Class[]{ButtonStyle.class, CheckBoxStyle.class,
             ImageButtonStyle.class, ImageTextButtonStyle.class, LabelStyle.class, ListStyle.class,
             ProgressBarStyle.class, ScrollPaneStyle.class, SelectBoxStyle.class, SliderStyle.class,
             SplitPaneStyle.class, TextButtonStyle.class, TextFieldStyle.class, TextTooltipStyle.class,
             TouchpadStyle.class, TreeStyle.class, WindowStyle.class});
         colors = new Array<ColorData>();
         fonts = new Array<FontData>();
-        
+
         initializeClassStyleMap();
     }
-    
+
     public void clear() {
         colors.clear();
         fonts.clear();
         initializeClassStyleMap();
     }
-    
-    public void readFile(FileHandle fileHandle) {
+
+    public void readFile(FileHandle fileHandle) throws Exception {
+        //read drawables from texture atlas file
+        FileHandle atlasHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".atlas");
+        if (atlasHandle.exists()) {
+            AtlasData.getInstance().readAtlas(atlasHandle);
+        }
+
+        //folder for critical files to be copied to
+        FileHandle targetDirectory = Gdx.files.local("imported/" + ProjectData.instance().getId() + "/");
+
+        //read json file and create styles
         JsonReader reader = new JsonReader();
         JsonValue val = reader.parse(fileHandle);
-        System.out.println(val.toJson(OutputType.minimal));
+
+        for (JsonValue child : val.iterator()) {
+            //fonts
+            if (child.name().equals(BitmapFont.class.getName())) {
+                for (JsonValue font : child.iterator()) {
+                    FileHandle fontFile = fileHandle.sibling(font.getString("file"));
+                    FileHandle fontCopy = targetDirectory.child(font.getString("file"));
+                    fontFile.copyTo(fontCopy);
+                    FontData fontData = new FontData(font.name(), fontCopy);
+                    fonts.add(fontData);
+                }
+            } //colors
+            else if (child.name().equals(Color.class.getName())) {
+                for (JsonValue color : child.iterator()) {
+                    ColorData colorData = new ColorData(color.name, new Color(color.getFloat("r", 0.0f), color.getFloat("g", 0.0f), color.getFloat("b", 0.0f), color.getFloat("a", 0.0f)));
+                    colors.add(colorData);
+                }
+            } //tinted drawables
+            else if (child.name().equals(TintedDrawable.class.getName())) {
+                for (JsonValue tintedDrawable : child.iterator()) {
+                    DrawableData drawableData = new DrawableData(targetDirectory.child(tintedDrawable.getString("name") + ".png"));
+                    drawableData.name = tintedDrawable.name;
+                    drawableData.tint = new Color(tintedDrawable.getFloat("r", 0.0f), tintedDrawable.getFloat("g", 0.0f), tintedDrawable.getFloat("b", 0.0f), tintedDrawable.getFloat("a", 0.0f));
+                }
+            } //styles
+            else {
+                int classIndex = styleClasses.indexOf(ClassReflection.forName(child.name), false);
+                Class clazz = StyleData.classes[classIndex];
+                for (JsonValue style : child.iterator()) {
+                    StyleData data = Main.instance.newStyle(clazz, style.name);
+                    for (JsonValue property : style.iterator()) {
+                        StyleProperty styleProperty = data.properties.get(property.name);
+                        if (styleProperty.type.equals(Float.TYPE)) {
+                            styleProperty.value = property.asFloat();
+                        } else if (styleProperty.type.equals(Color.class)) {
+                            styleProperty.value = "custom color";
+                        } else {
+                            styleProperty.value = property.asString();
+                        }
+                    }
+                }
+            }
+        }
     }
-    
+
     public void writeFile(FileHandle fileHandle) {
         StringWriter stringWriter = new StringWriter();
         JsonWriter jsonWriter = new JsonWriter(stringWriter);
@@ -87,32 +142,32 @@ public class JsonData implements Json.Serializable {
         Json json = new Json();
         json.setWriter(jsonWriter);
         json.writeObjectStart();
-        
+
         //fonts
         if (fonts.size > 0) {
             json.writeObjectStart(BitmapFont.class.getName());
-                for (FontData font : fonts) {
-                    json.writeObjectStart(font.getName());
-                    json.writeValue("file", font.file.name());
-                    json.writeObjectEnd();
-                }
+            for (FontData font : fonts) {
+                json.writeObjectStart(font.getName());
+                json.writeValue("file", font.file.name());
+                json.writeObjectEnd();
+            }
             json.writeObjectEnd();
         }
-        
+
         //colors
         if (colors.size > 0) {
             json.writeObjectStart(Color.class.getName());
-                for (ColorData color : colors) {
-                    json.writeObjectStart(color.getName());
-                    json.writeValue("r", color.color.r);
-                    json.writeValue("g", color.color.g);
-                    json.writeValue("b", color.color.b);
-                    json.writeValue("a", color.color.a);
-                    json.writeObjectEnd();
-                }
+            for (ColorData color : colors) {
+                json.writeObjectStart(color.getName());
+                json.writeValue("r", color.color.r);
+                json.writeValue("g", color.color.g);
+                json.writeValue("b", color.color.b);
+                json.writeValue("a", color.color.a);
+                json.writeObjectEnd();
+            }
             json.writeObjectEnd();
         }
-        
+
         //tinted drawables
         Array<DrawableData> tintedDrawables = new Array<>();
         for (DrawableData drawable : AtlasData.getInstance().getDrawables()) {
@@ -122,26 +177,26 @@ public class JsonData implements Json.Serializable {
         }
         if (tintedDrawables.size > 0) {
             json.writeObjectStart(TintedDrawable.class.getName());
-                for (DrawableData drawable : tintedDrawables) {
-                    json.writeObjectStart(drawable.name);
-                    json.writeValue("name", DrawableData.proper(drawable.file.name()));
-                    json.writeObjectStart("color");
-                    json.writeValue("r", drawable.tint.r);
-                    json.writeValue("g", drawable.tint.g);
-                    json.writeValue("b", drawable.tint.b);
-                    json.writeValue("a", drawable.tint.a);
-                    json.writeObjectEnd();
-                    json.writeObjectEnd();
-                }
+            for (DrawableData drawable : tintedDrawables) {
+                json.writeObjectStart(drawable.name);
+                json.writeValue("name", DrawableData.proper(drawable.file.name()));
+                json.writeObjectStart("color");
+                json.writeValue("r", drawable.tint.r);
+                json.writeValue("g", drawable.tint.g);
+                json.writeValue("b", drawable.tint.b);
+                json.writeValue("a", drawable.tint.a);
+                json.writeObjectEnd();
+                json.writeObjectEnd();
+            }
             json.writeObjectEnd();
         }
-        
+
         //styles
         Array<Array<StyleData>> valuesArray = classStyleMap.values().toArray();
         for (int i = 0; i < styleClasses.size; i++) {
             Class clazz = styleClasses.get(i);
             Array<StyleData> styles = valuesArray.get(i);
-            
+
             //check if any style has the mandatory fields necessary to write
             boolean hasMandatoryStyles = true;
             for (StyleData style : styles) {
@@ -150,7 +205,7 @@ public class JsonData implements Json.Serializable {
                     break;
                 }
             }
-            
+
             if (hasMandatoryStyles) {
                 json.writeObjectStart(clazz.getName());
                 for (StyleData style : styles) {
@@ -161,8 +216,9 @@ public class JsonData implements Json.Serializable {
                             //if not optional, null, or zero
                             if (!property.optional || property.value != null
                                     && !(property.value instanceof Number
-                                    && MathUtils.isZero((float) (double) property.value)))
-                            json.writeValue(property.name, property.value);
+                                    && MathUtils.isZero((float) (double) property.value))) {
+                                json.writeValue(property.name, property.value);
+                            }
                         }
                         json.writeObjectEnd();
                     }
@@ -170,7 +226,7 @@ public class JsonData implements Json.Serializable {
                 json.writeObjectEnd();
             }
         }
-        
+
         json.writeObjectEnd();
         fileHandle.writeString(json.prettyPrint(stringWriter.toString()), false);
     }
@@ -186,7 +242,7 @@ public class JsonData implements Json.Serializable {
     public OrderedMap<Class, Array<StyleData>> getClassStyleMap() {
         return classStyleMap;
     }
-    
+
     private void initializeClassStyleMap() {
         classStyleMap = new OrderedMap();
         for (Class clazz : StyleData.classes) {

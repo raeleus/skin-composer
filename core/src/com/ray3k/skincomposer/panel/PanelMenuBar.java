@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.MenuList;
+import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.SynchronousJFXFileChooser;
@@ -378,7 +379,15 @@ public class PanelMenuBar {
         if (file != null) {
             FileHandle fileHandle = new FileHandle(file);
             ProjectData.instance().setLastDirectory(fileHandle.parent().path());
-            JsonData.getInstance().readFile(fileHandle);
+            try {
+                JsonData.getInstance().readFile(fileHandle);
+                PanelClassBar.instance.populate();
+                PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+                PanelPreviewProperties.instance.produceAtlas();
+                PanelPreviewProperties.instance.populate();
+            } catch (Exception e) {
+                Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
+            }
         }
     }
     
