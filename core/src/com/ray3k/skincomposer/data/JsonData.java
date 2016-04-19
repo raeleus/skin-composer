@@ -85,7 +85,8 @@ public class JsonData implements Json.Serializable {
         }
 
         //folder for critical files to be copied to
-        FileHandle targetDirectory = Gdx.files.local("imported/" + ProjectData.instance().getId() + "/");
+        FileHandle saveFile = ProjectData.instance().getSaveFile();
+        FileHandle targetDirectory = saveFile.sibling(saveFile.nameWithoutExtension() + "_data");
 
         //read json file and create styles
         JsonReader reader = new JsonReader();

@@ -54,7 +54,8 @@ public class AtlasData {
     
     public void readAtlas(FileHandle fileHandle) throws Exception {
         if (fileHandle.exists()) {
-            FileHandle targetDirectory = Gdx.files.local("imported/" + ProjectData.instance().getId() + "/");
+            FileHandle saveFile = ProjectData.instance().getSaveFile();
+            FileHandle targetDirectory = saveFile.sibling(saveFile.nameWithoutExtension() + "_data");
             targetDirectory.mkdirs();
             targetDirectory.emptyDirectory();
             

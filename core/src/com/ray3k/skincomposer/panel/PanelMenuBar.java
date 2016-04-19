@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -17,7 +18,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.MenuList;
-import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.SynchronousJFXFileChooser;
@@ -282,24 +282,59 @@ public class PanelMenuBar {
     }
     
     public void newDialog() {
-        Dialog dialog = new Dialog("Save Changes?", skin) {
+        if (!ProjectData.instance().areChangesSaved()) {
+            yesNoCancelDialog("Save Changes?",
+                    "Do you want to save changes to the existing project?"
+                            + "\nAll unsaved changes will be lost.",
+                    (int selection) -> {
+                        if (selection == 0) {
+                            save(() -> {
+                                ProjectData.instance().clear();
+                            });
+                        } else if (selection == 1) {
+                            ProjectData.instance().clear();
+                        }
+                    });
+        } else {
+            ProjectData.instance().clear();
+        }
+    }
+    
+    private void yesNoCancelDialog(String title, String text, confirmationListener listener) {
+        Dialog dialog = new Dialog(title, skin, "dialog") {
             @Override
             protected void result(Object object) {
-                if ((int) object == 1) {
-                    save(() -> {
-                        ProjectData.instance().clear();
-                    });
-                } else if ((int) object == 2) {
-                    ProjectData.instance().clear();
-                }
+                listener.selected((int) object);
             }
         };
-        dialog.text("Do you want to save changes to the existing project?\nAll unsaved changes will be lost.");
-        dialog.button("Yes", 1);
-        dialog.button("No", 2);
-        dialog.button("Cancel", 3);
-        dialog.key(Keys.ESCAPE, 3);
+        Label label = new Label(text, skin);
+        label.setAlignment(Align.center);
+        dialog.text(label);
+        dialog.button("Yes", 0);
+        dialog.button("No", 1);
+        dialog.button("Cancel", 2);
+        dialog.key(Keys.ESCAPE, 2);
         dialog.show(stage);
+    }
+    
+    private void yesNoDialog(String title, String text, confirmationListener listener) {
+        Dialog dialog = new Dialog(title, skin, "dialog") {
+            @Override
+            protected void result(Object object) {
+                listener.selected((int) object);
+            }
+        };
+        Label label = new Label(text, skin);
+        label.setAlignment(Align.center);
+        dialog.text(label);
+        dialog.button("Yes", 0);
+        dialog.button("No", 1);
+        dialog.key(Keys.ESCAPE, 1);
+        dialog.show(stage);
+    }
+    
+    private interface confirmationListener {
+        public void selected(int selection);
     }
     
     public void openDialog() {
@@ -319,22 +354,20 @@ public class PanelMenuBar {
             }
         };
         
-        Dialog dialog = new Dialog("Save Changes?", skin) {
-            @Override
-            protected void result(Object object) {
-                if ((int) object == 1) {
-                    save(runnable);
-                } else if ((int) object == 2) {
-                    runnable.run();
-                }
-            }
-        };
-        dialog.text("Do you want to save changes to the existing project?\nAll unsaved changes will be lost.");
-        dialog.button("Yes", 1);
-        dialog.button("No", 2);
-        dialog.button("Cancel", 3);
-        dialog.key(Keys.ESCAPE, 3);
-        dialog.show(stage);
+        if (!ProjectData.instance().areChangesSaved()) {
+            yesNoCancelDialog("Save Changes?",
+                    "Do you want to save changes to the existing project?"
+                    + "\nAll unsaved changes will be lost.",
+                    (int selection) -> {
+                        if (selection == 0) {
+                            save(runnable);
+                        } else if (selection == 1) {
+                            runnable.run();
+                        }
+                    });
+        } else {
+            runnable.run();
+        }
     }
     
     public void save(Runnable runnable) {
@@ -365,29 +398,44 @@ public class PanelMenuBar {
     }
     
     public void importDialog() {
-        SynchronousJFXFileChooser chooser = new SynchronousJFXFileChooser(() -> {
-            FileChooser ch = new FileChooser();
-            FileChooser.ExtensionFilter ex = new FileChooser.ExtensionFilter("Json files", "*.json");
-            ch.getExtensionFilters().add(ex);
-            ch.setTitle("Import skin...");
-            if (ProjectData.instance().getLastDirectory() != null) {
-                ch.setInitialDirectory(new File(ProjectData.instance().getLastDirectory()));
+        Runnable runnable = () -> {
+            SynchronousJFXFileChooser chooser = new SynchronousJFXFileChooser(() -> {
+                FileChooser ch = new FileChooser();
+                FileChooser.ExtensionFilter ex = new FileChooser.ExtensionFilter("Json files", "*.json");
+                ch.getExtensionFilters().add(ex);
+                ch.setTitle("Import skin...");
+                if (ProjectData.instance().getLastDirectory() != null) {
+                    ch.setInitialDirectory(new File(ProjectData.instance().getLastDirectory()));
+                }
+                return ch;
+            });
+            File file = chooser.showOpenDialog();
+            if (file != null) {
+                FileHandle fileHandle = new FileHandle(file);
+                ProjectData.instance().setLastDirectory(fileHandle.parent().path());
+                try {
+                    JsonData.getInstance().readFile(fileHandle);
+                    PanelClassBar.instance.populate();
+                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+                    PanelPreviewProperties.instance.produceAtlas();
+                    PanelPreviewProperties.instance.populate();
+                } catch (Exception e) {
+                    Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
+                }
             }
-            return ch;
-        });
-        File file = chooser.showOpenDialog();
-        if (file != null) {
-            FileHandle fileHandle = new FileHandle(file);
-            ProjectData.instance().setLastDirectory(fileHandle.parent().path());
-            try {
-                JsonData.getInstance().readFile(fileHandle);
-                PanelClassBar.instance.populate();
-                PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-                PanelPreviewProperties.instance.produceAtlas();
-                PanelPreviewProperties.instance.populate();
-            } catch (Exception e) {
-                Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
-            }
+        };
+        
+        if (!ProjectData.instance().areChangesSaved()) {
+            yesNoDialog("Save Changes?",
+                    "The project must be saved before import."
+                    + "\nDo you want to save?",
+                    (int selection) -> {
+                        if (selection == 0) {
+                            runnable.run();
+                        }
+                    });
+        } else {
+            runnable.run();
         }
     }
     

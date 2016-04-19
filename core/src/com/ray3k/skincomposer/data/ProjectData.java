@@ -19,6 +19,7 @@ public class ProjectData implements Json.Serializable{
     private JsonData jsonData;
     private AtlasData atlasData;
     private FileHandle saveFile;
+    private boolean changesSaved;
     
     public static ProjectData instance() {
         if (instance == null) {
@@ -28,6 +29,7 @@ public class ProjectData implements Json.Serializable{
     }
     
     private ProjectData() {
+        changesSaved = false;
         preferences = new ObjectMap<>();
         generalPref = Gdx.app.getPreferences("com.ray3k.skincomposer");
         jsonData = JsonData.getInstance();
@@ -91,6 +93,14 @@ public class ProjectData implements Json.Serializable{
             return getLastDirectory();
         }
     }
+
+    public boolean areChangesSaved() {
+        return changesSaved;
+    }
+
+    public void setChangesSaved(boolean changesSaved) {
+        this.changesSaved = changesSaved;
+    }
     
     public void save(FileHandle file) {
         saveFile = file;
@@ -99,6 +109,7 @@ public class ProjectData implements Json.Serializable{
         Json json = new Json(JsonWriter.OutputType.minimal);
         json.setUsePrototypes(false);
         file.writeString(json.prettyPrint(this), false);
+        changesSaved = true;
     }
     
     public void save() {
@@ -123,6 +134,11 @@ public class ProjectData implements Json.Serializable{
     
     public void clear() {
         preferences.clear();
+        
+        setName("New Project");
+        randomizeId();
+        setMaxTextureDimensions(1024, 1024);
+        
         jsonData.clear();
         atlasData.clear();
         saveFile = null;

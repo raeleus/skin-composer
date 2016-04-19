@@ -233,7 +233,11 @@ public class DialogFonts extends Dialog {
                 bg.setBackground("white");
                 BitmapFontData bf = new BitmapFontData(font.file, false);
                 if (bf.imagePaths.length > 0) {
-                    if (Utils.brightness(Utils.averageEdgeColor(new FileHandle(bf.imagePaths[0]))) < .5f) {
+                    FileHandle file = new FileHandle(bf.imagePaths[0]);
+                    if (!file.exists()) {
+                        file = bf.fontFile.sibling(bf.fontFile.nameWithoutExtension() + ".png");
+                    }
+                    if (Utils.brightness(Utils.averageEdgeColor(file)) < .5f) {
                         bg.setColor(Color.WHITE);
                     } else {
                         bg.setColor(Color.BLACK);
@@ -431,6 +435,9 @@ public class DialogFonts extends Dialog {
                 Array<TextureRegion> regions = new Array<>();
                 for (String path : fontData.imagePaths) {
                     FileHandle file = new FileHandle(path);
+                    if (!file.exists()) {
+                        file = fontData.fontFile.sibling(fontData.fontFile.nameWithoutExtension() + ".png");
+                    }
                     TextureRegion region = atlas.findRegion(file.nameWithoutExtension());
                     if (region != null) {
                         regions.add(region);
