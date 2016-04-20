@@ -36,14 +36,6 @@ public class ProjectData implements Json.Serializable{
         atlasData = AtlasData.getInstance();
     }
     
-    public String getName() {
-        return (String) preferences.get("name");
-    }
-    
-    public void setName(String name) {
-        preferences.put("name", name);
-    }
-    
     public int getId() {
         return (int) preferences.get("id");
     }
@@ -134,8 +126,7 @@ public class ProjectData implements Json.Serializable{
     
     public void clear() {
         preferences.clear();
-        
-        setName("New Project");
+
         randomizeId();
         setMaxTextureDimensions(1024, 1024);
         

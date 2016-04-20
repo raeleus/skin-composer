@@ -3,6 +3,9 @@ package com.ray3k.skincomposer.utils;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 
 public class Utils {
     public static Color averageColor(FileHandle file) {
@@ -136,5 +139,15 @@ public class Utils {
     
     public static float brightness(Color color) {
         return (float) (Math.sqrt(0.299f * Math.pow(color.r, 2) + 0.587 * Math.pow(color.g, 2) + 0.114 * Math.pow(color.b, 2)));
+    }
+    
+    public static void openFileExplorer(FileHandle startDirectory) throws IOException {
+        if (startDirectory.exists()) {
+            File file = startDirectory.file();
+            Desktop desktop = Desktop.getDesktop();
+            desktop.open(file);
+        } else {
+            throw new IOException("Directory doesn't exist: " + startDirectory.path());
+        }
     }
 }

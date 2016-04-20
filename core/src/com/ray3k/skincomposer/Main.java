@@ -69,7 +69,6 @@ public class Main extends ApplicationAdapter {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         
-        ProjectData.instance().setName("New Project");
         ProjectData.instance().randomizeId();
         ProjectData.instance().setMaxTextureDimensions(1024, 1024);
         
