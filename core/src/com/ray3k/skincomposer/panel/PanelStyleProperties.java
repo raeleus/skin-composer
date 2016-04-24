@@ -3,6 +3,7 @@ package com.ray3k.skincomposer.panel;
 import com.ray3k.skincomposer.data.StyleData;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -29,8 +30,10 @@ import com.ray3k.skincomposer.BrowseField.BrowseFieldStyle;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.Spinner.SpinnerStyle;
+import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.StyleProperty;
+import com.ray3k.skincomposer.undo.Undoable;
 
 public class PanelStyleProperties {
     public static PanelStyleProperties instance;
@@ -86,8 +89,7 @@ public class PanelStyleProperties {
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        property.value = spinner.getValue();
-                        PanelPreviewProperties.instance.render();
+                        Main.instance.addUndoable(new FloatUndoable(spinner, property), true);
                     }
                 });
                 table.add(spinner).growX();
@@ -100,11 +102,11 @@ public class PanelStyleProperties {
                 browseField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        Object oldValue = property.value;
                         Main.instance.showDialogDrawables(property, new EventListener() {
                             @Override
                             public boolean handle(Event event) {
-                                PanelPreviewProperties.instance.produceAtlas();
-                                PanelPreviewProperties.instance.render();
+                                Main.instance.addUndoable(new DrawableUndoable(property, oldValue, property.value, styleData), true);
                                 return false;
                             }
                         });
@@ -256,5 +258,81 @@ public class PanelStyleProperties {
             table.row();
         }
         table.getCells().peek().padBottom(20.0f);
+    }
+    
+    private static class FloatUndoable implements Undoable {
+        private Spinner spinner;
+        private StyleProperty property;
+        private double oldValue, newValue;
+
+        public FloatUndoable(Spinner spinner, StyleProperty property) {
+            this.spinner = spinner;
+            this.property = property;
+            oldValue = (Double) property.value;
+            newValue = spinner.getValue();
+            System.out.println(oldValue + " " + newValue);
+        }
+        
+        @Override
+        public void undo() {
+            property.value = newValue;
+            if (!MathUtils.isEqual((float)spinner.getValue(), (float)oldValue)) {
+                spinner.setValue(oldValue);
+            }
+            PanelPreviewProperties.instance.render();
+        }
+
+        @Override
+        public void redo() {
+            property.value = newValue;
+            if (!MathUtils.isEqual((float)spinner.getValue(), (float)newValue)) {
+                spinner.setValue(newValue);
+            }
+            PanelPreviewProperties.instance.render();
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Change Style Property " + property.name;
+        }
+    }
+    
+    private static class DrawableUndoable implements Undoable {
+        private StyleProperty property;
+        private Object oldValue, newValue;
+        private StyleData styleData;
+
+        public DrawableUndoable(StyleProperty property, Object oldValue, Object newValue, StyleData styleData) {
+            this.property = property;
+            this.oldValue = oldValue;
+            this.newValue = newValue;
+            this.styleData = styleData;
+        }
+
+        @Override
+        public void undo() {
+            PanelPreviewProperties.instance.produceAtlas();
+            if (oldValue == null || AtlasData.getInstance().getDrawable((String) oldValue) != null) {
+                property.value = oldValue;
+            }
+            PanelPreviewProperties.instance.render();
+            PanelStyleProperties.instance.populate(styleData);
+        }
+
+        @Override
+        public void redo() {
+            PanelPreviewProperties.instance.produceAtlas();
+            if (newValue == null || AtlasData.getInstance().getDrawable((String) newValue) != null) {
+                property.value = newValue;
+            }
+            PanelPreviewProperties.instance.render();
+            PanelStyleProperties.instance.populate(styleData);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Change Style Property " + property.name;
+        }
+        
     }
 }

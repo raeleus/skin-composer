@@ -38,6 +38,7 @@ import com.ray3k.skincomposer.dialog.DialogColorPicker;
 import com.ray3k.skincomposer.dialog.DialogColorPicker.ColorListener;
 import com.ray3k.skincomposer.dialog.DialogFonts;
 import com.ray3k.skincomposer.dialog.DialogSettings;
+import com.ray3k.skincomposer.undo.Undoable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -48,9 +49,13 @@ public class Main extends ApplicationAdapter {
     private Stage stage;
     private static Skin skin;
     private DesktopWorker desktopWorker;
+    private Array<Undoable> undoables;
+    private int undoIndex;
     
     @Override
     public void create() {
+        undoables = new Array<>();
+        undoIndex = -1;
         desktopWorker.sizeWindowToFit(800, 800, 50, Gdx.graphics);
         desktopWorker.centerWindow(Gdx.graphics);
         
@@ -204,10 +209,29 @@ public class Main extends ApplicationAdapter {
         Platform.exit();
     }
     
+    /**
+     * Creates a new StyleData object if one with the same name currently does not exist. If it does exist
+     * it is returned and the properties are wiped. ClassName and deletable flag is retained.
+     * @param className
+     * @param styleName
+     * @return 
+     */
     public StyleData newStyle(Class className, String styleName) {
         Array<StyleData> styles = JsonData.getInstance().getClassStyleMap().get(className);
-        StyleData data = new StyleData(className, styleName);
-        styles.add(data);
+        
+        StyleData data = null;
+        
+        for (StyleData tempStyle : styles) {
+            if (tempStyle.name.equals(styleName)) {
+                data = tempStyle;
+                data.resetProperties();
+            }
+        }
+        
+        if (data == null) {
+            data = new StyleData(className, styleName);
+            styles.add(data);
+        }
         
         return data;
     }
@@ -325,4 +349,61 @@ public class Main extends ApplicationAdapter {
         return stage;
     }
 
+    public void clearUndoables() {
+        undoables.clear();
+    }
+    
+    public void undo() {
+        Undoable undoable = undoables.get(undoIndex);
+        undoable.undo();
+        undoIndex--;
+        
+        if (undoIndex < 0) {
+            PanelMenuBar.instance().getUndoButton().setDisabled(true);
+            PanelMenuBar.instance().getUndoButton().setText("Undo");
+        } else {
+            PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
+        }
+        
+        PanelMenuBar.instance().getRedoButton().setDisabled(false);
+        PanelMenuBar.instance().getRedoButton().setText("Redo " + undoable.getUndoText());
+    }
+    
+    public void redo() {
+        if (undoIndex < undoables.size - 1) {
+            undoIndex++;
+            undoables.get(undoIndex).redo();
+        }
+        
+        if (undoIndex >= undoables.size - 1) {
+            PanelMenuBar.instance().getRedoButton().setDisabled(true);
+            PanelMenuBar.instance().getRedoButton().setText("Redo");
+        } else {
+            PanelMenuBar.instance().getRedoButton().setText("Redo " + undoables.get(undoIndex + 1).getUndoText());
+        }
+        
+        PanelMenuBar.instance().getUndoButton().setDisabled(false);
+        PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
+    }
+    
+    public void addUndoable(Undoable undoable, boolean redoImmediately) {
+        undoIndex++;
+        if (undoIndex <= undoables.size - 1) {
+            undoables.removeRange(undoIndex, undoables.size - 1);
+        }
+        undoables.add(undoable);
+        
+        if (redoImmediately) {
+            undoable.redo();
+        }
+        
+        PanelMenuBar.instance().getRedoButton().setDisabled(true);
+        PanelMenuBar.instance().getRedoButton().setText("Redo");
+        PanelMenuBar.instance().getUndoButton().setDisabled(false);
+        PanelMenuBar.instance().getUndoButton().setText("Undo " + undoable.getUndoText());
+    }
+    
+    public void addUndoable(Undoable undoable) {
+        addUndoable(undoable, false);
+    }
 }

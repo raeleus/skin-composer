@@ -27,7 +27,12 @@ import javafx.stage.FileChooser;
 public class PanelMenuBar {
     private Skin skin;
     private Stage stage;
+    private TextButton undoButton, redoButton;
+    private static PanelMenuBar instance;
+    
     public PanelMenuBar(final Table table, final Skin skin, final Stage stage) {
+        instance = this;
+        
         this.skin = skin;
         this.stage = stage;
         final Array<TextButton> menuButtons = new Array<TextButton>();
@@ -132,28 +137,28 @@ public class PanelMenuBar {
         textButton = new TextButton("Edit", skin, "menu");
         menuItemTable = new Table();
         menuItemTable.defaults().growX();
-        menuItemTextButton = new TextButton("Undo", skin, "menu-item");
-        menuItemTextButton.getLabel().setAlignment(Align.left);
-        menuItemTextButton.setDisabled(true);
-        menuItemTextButton.addListener(new ChangeListener() {
+        undoButton = new TextButton("Undo", skin, "menu-item");
+        undoButton.getLabel().setAlignment(Align.left);
+        undoButton.setDisabled(true);
+        undoButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                
+                Main.instance.undo();
             }
         });
-        menuItemTable.add(menuItemTextButton);
+        menuItemTable.add(undoButton);
         
         menuItemTable.row();
-        menuItemTextButton = new TextButton("Redo", skin, "menu-item");
-        menuItemTextButton.getLabel().setAlignment(Align.left);
-        menuItemTextButton.setDisabled(true);
-        menuItemTextButton.addListener(new ChangeListener() {
+        redoButton = new TextButton("Redo", skin, "menu-item");
+        redoButton.getLabel().setAlignment(Align.left);
+        redoButton.setDisabled(true);
+        redoButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                
+                Main.instance.redo();
             }
         });
-        menuItemTable.add(menuItemTextButton);
+        menuItemTable.add(redoButton);
         
         final MenuList menuList2 = new MenuList(textButton, menuItemTable);
         textButton.addListener(new ChangeListener() {
@@ -279,6 +284,18 @@ public class PanelMenuBar {
                 return false;
             }
         });
+    }
+
+    public static PanelMenuBar instance() {
+        return instance;
+    }
+
+    public TextButton getUndoButton() {
+        return undoButton;
+    }
+
+    public TextButton getRedoButton() {
+        return redoButton;
     }
     
     public void newDialog() {
@@ -431,7 +448,7 @@ public class PanelMenuBar {
                     + "\nDo you want to save?",
                     (int selection) -> {
                         if (selection == 0) {
-                            runnable.run();
+                            save(runnable);
                         }
                     });
         } else {

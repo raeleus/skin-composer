@@ -13,9 +13,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
+import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.Spinner.SpinnerStyle;
 import com.ray3k.skincomposer.data.ProjectData;
+import com.ray3k.skincomposer.panel.PanelStatusBar;
+import com.ray3k.skincomposer.undo.Undoable;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class DialogSettings extends Dialog {
@@ -41,7 +44,9 @@ public class DialogSettings extends Dialog {
         super.result(object);
         
         if ((boolean) object) {
-            ProjectData.instance().setMaxTextureDimensions(textureWidth, textureHeight);
+            ProjectSettingsUndoable undoable = new ProjectSettingsUndoable(ProjectData.instance().getMaxTextureWidth(), ProjectData.instance().getMaxTextureHeight(), textureWidth, textureHeight);
+            undoable.redo();
+            Main.instance.addUndoable(undoable);
         }
     }
 
@@ -139,5 +144,34 @@ public class DialogSettings extends Dialog {
         button("OK", true);
         button ("Cancel", false);
         key(Keys.ESCAPE, false);
+    }
+
+    private static class ProjectSettingsUndoable implements Undoable {
+
+        private int oldTextureWidth, oldTextureHeight, textureWidth, textureHeight;
+
+        public ProjectSettingsUndoable(int oldTextureWidth, int oldTextureHeight, int textureWidth, int textureHeight) {
+            this.oldTextureWidth = oldTextureWidth;
+            this.oldTextureHeight = oldTextureHeight;
+            this.textureWidth = textureWidth;
+            this.textureHeight = textureHeight;
+        }
+
+        @Override
+        public void undo() {
+            ProjectData.instance().setMaxTextureDimensions(oldTextureWidth, oldTextureHeight);
+            PanelStatusBar.instance.message("Changed max texture settings: " + oldTextureWidth + " " + oldTextureHeight);
+        }
+
+        @Override
+        public void redo() {
+            ProjectData.instance().setMaxTextureDimensions(textureWidth, textureHeight);
+            PanelStatusBar.instance.message("Changed max texture settings: " + textureWidth + " " + textureHeight);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Modify Settings";
+        }
     }
 }

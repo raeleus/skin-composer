@@ -60,6 +60,11 @@ public class StyleData implements Json.Serializable {
     public String toString() {
         return name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof StyleData && ((StyleData) o).name.equals(name);
+    }
     
     public StyleData(StyleData styleData, String styleName) {
         name = styleName;
@@ -78,65 +83,8 @@ public class StyleData implements Json.Serializable {
         this.clazz = clazz;
         properties = new OrderedMap<String, StyleProperty>();
         deletable = true;
-        if (clazz.equals(Button.class)) {
-            newStyleProperties(ButtonStyle.class);
-        } else if (clazz.equals(CheckBox.class)) {
-            newStyleProperties(CheckBoxStyle.class);
-            properties.get("checkboxOn").optional = false;
-            properties.get("checkboxOff").optional = false;
-            properties.get("font").optional = false;
-        } else if (clazz.equals(ImageButton.class)) {
-            newStyleProperties(ImageButtonStyle.class);
-        } else if (clazz.equals(ImageTextButton.class)) {
-            newStyleProperties(ImageTextButtonStyle.class);
-            properties.get("font").optional = false;
-        } else if (clazz.equals(Label.class)) {
-            newStyleProperties(LabelStyle.class);
-            properties.get("font").optional = false;
-        } else if (clazz.equals(List.class)) {
-            newStyleProperties(ListStyle.class);
-            properties.get("font").optional = false;
-            properties.get("fontColorSelected").optional = false;
-            properties.get("fontColorUnselected").optional = false;
-            properties.get("selection").optional = false;
-        } else if (clazz.equals(ProgressBar.class)) {
-            newStyleProperties(ProgressBarStyle.class);
-        } else if (clazz.equals(ScrollPane.class)) {
-            newStyleProperties(ScrollPaneStyle.class);
-        } else if (clazz.equals(SelectBox.class)) {
-            newStyleProperties(SelectBoxStyle.class);
-            properties.get("font").optional = false;
-            properties.get("fontColor").optional = false;
-            properties.get("scrollStyle").optional = false;
-            properties.get("scrollStyle").value = "default";
-            properties.get("listStyle").optional = false;
-            properties.get("listStyle").value = "default";
-        } else if (clazz.equals(Slider.class)) {
-            newStyleProperties(SliderStyle.class);
-        } else if (clazz.equals(SplitPane.class)) {
-            newStyleProperties(SplitPaneStyle.class);
-            properties.get("handle").optional = false;
-        } else if (clazz.equals(TextButton.class)) {
-            newStyleProperties(TextButtonStyle.class);
-            properties.get("font").optional = false;
-        } else if (clazz.equals(TextField.class)) {
-            newStyleProperties(TextFieldStyle.class);
-            properties.get("font").optional = false;
-            properties.get("fontColor").optional = false;
-        } else if (clazz.equals(TextTooltip.class)) {
-            newStyleProperties(TextTooltipStyle.class);
-            properties.get("label").optional = false;
-            properties.get("label").value = "default";
-        } else if (clazz.equals(Touchpad.class)) {
-            newStyleProperties(TouchpadStyle.class);
-        } else if (clazz.equals(Tree.class)) {
-            newStyleProperties(TreeStyle.class);
-            properties.get("plus").optional = false;
-            properties.get("minus").optional = false;
-        } else if (clazz.equals(Window.class)) {
-            newStyleProperties(WindowStyle.class);
-            properties.get("titleFont").optional = false;
-        }
+        
+        resetProperties();
     }
     
     public StyleData() {
@@ -268,6 +216,70 @@ public class StyleData implements Json.Serializable {
             clazz = ClassReflection.forName(jsonData.getString("clazz"));
         } catch (ReflectionException ex) {
             Gdx.app.error(getClass().toString(), "Error reading from serialized object" , ex);
+        }
+    }
+
+    public void resetProperties() {
+        properties.clear();
+        
+        if (clazz.equals(Button.class)) {
+            newStyleProperties(ButtonStyle.class);
+        } else if (clazz.equals(CheckBox.class)) {
+            newStyleProperties(CheckBoxStyle.class);
+            properties.get("checkboxOn").optional = false;
+            properties.get("checkboxOff").optional = false;
+            properties.get("font").optional = false;
+        } else if (clazz.equals(ImageButton.class)) {
+            newStyleProperties(ImageButtonStyle.class);
+        } else if (clazz.equals(ImageTextButton.class)) {
+            newStyleProperties(ImageTextButtonStyle.class);
+            properties.get("font").optional = false;
+        } else if (clazz.equals(Label.class)) {
+            newStyleProperties(LabelStyle.class);
+            properties.get("font").optional = false;
+        } else if (clazz.equals(List.class)) {
+            newStyleProperties(ListStyle.class);
+            properties.get("font").optional = false;
+            properties.get("fontColorSelected").optional = false;
+            properties.get("fontColorUnselected").optional = false;
+            properties.get("selection").optional = false;
+        } else if (clazz.equals(ProgressBar.class)) {
+            newStyleProperties(ProgressBarStyle.class);
+        } else if (clazz.equals(ScrollPane.class)) {
+            newStyleProperties(ScrollPaneStyle.class);
+        } else if (clazz.equals(SelectBox.class)) {
+            newStyleProperties(SelectBoxStyle.class);
+            properties.get("font").optional = false;
+            properties.get("fontColor").optional = false;
+            properties.get("scrollStyle").optional = false;
+            properties.get("scrollStyle").value = "default";
+            properties.get("listStyle").optional = false;
+            properties.get("listStyle").value = "default";
+        } else if (clazz.equals(Slider.class)) {
+            newStyleProperties(SliderStyle.class);
+        } else if (clazz.equals(SplitPane.class)) {
+            newStyleProperties(SplitPaneStyle.class);
+            properties.get("handle").optional = false;
+        } else if (clazz.equals(TextButton.class)) {
+            newStyleProperties(TextButtonStyle.class);
+            properties.get("font").optional = false;
+        } else if (clazz.equals(TextField.class)) {
+            newStyleProperties(TextFieldStyle.class);
+            properties.get("font").optional = false;
+            properties.get("fontColor").optional = false;
+        } else if (clazz.equals(TextTooltip.class)) {
+            newStyleProperties(TextTooltipStyle.class);
+            properties.get("label").optional = false;
+            properties.get("label").value = "default";
+        } else if (clazz.equals(Touchpad.class)) {
+            newStyleProperties(TouchpadStyle.class);
+        } else if (clazz.equals(Tree.class)) {
+            newStyleProperties(TreeStyle.class);
+            properties.get("plus").optional = false;
+            properties.get("minus").optional = false;
+        } else if (clazz.equals(Window.class)) {
+            newStyleProperties(WindowStyle.class);
+            properties.get("titleFont").optional = false;
         }
     }
 }

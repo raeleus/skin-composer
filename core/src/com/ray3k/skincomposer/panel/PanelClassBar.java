@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.JsonData;
+import com.ray3k.skincomposer.undo.Undoable;
 
 public class PanelClassBar {    
     public SelectBox<String> classSelectBox;
@@ -125,9 +126,7 @@ public class PanelClassBar {
             @Override
             protected void result(Object object) {
                 if ((Boolean)object) {
-                    StyleData styleData = Main.instance.newStyle(StyleData.classes[classSelectBox.getSelectedIndex()], textField.getText());
-                    styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
-                    styleSelectBox.setSelected(styleData);
+                    Main.instance.addUndoable(new NewStyleUndoable(classSelectBox, styleSelectBox, textField), true);
                 }
             }
         };
@@ -139,9 +138,7 @@ public class PanelClassBar {
             public void keyTyped(TextField textField, char c) {
                 if (c == '\n') {
                     if (!okButton.isDisabled()) {
-                        StyleData styleData = Main.instance.newStyle(StyleData.classes[classSelectBox.getSelectedIndex()], textField.getText());
-                        styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
-                        styleSelectBox.setSelected(styleData);
+                        Main.instance.addUndoable(new NewStyleUndoable(classSelectBox, styleSelectBox, textField), true);
 
                         dialog.hide();
                     }
@@ -189,9 +186,7 @@ public class PanelClassBar {
             @Override
             protected void result(Object object) {
                 if ((Boolean)object) {
-                    StyleData styleData = Main.instance.copyStyle(styleSelectBox.getSelected(), textField.getText());
-                    styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
-                    styleSelectBox.setSelected(styleData);
+                    Main.instance.addUndoable(new DuplicateStyleUndoable(styleSelectBox, classSelectBox, textField), true);
                 }
             }
         };
@@ -204,9 +199,7 @@ public class PanelClassBar {
             public void keyTyped(TextField textField, char c) {
                 if (c == '\n') {
                     if (!okButton.isDisabled()) {
-                        StyleData styleData = Main.instance.copyStyle(styleSelectBox.getSelected(), textField.getText());
-                        styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
-                        styleSelectBox.setSelected(styleData);
+                        Main.instance.addUndoable(new DuplicateStyleUndoable(styleSelectBox, classSelectBox, textField), true);
 
                         dialog.hide();
                     }
@@ -253,8 +246,7 @@ public class PanelClassBar {
             @Override
             protected void result(Object object) {
                 if ((Boolean)object) {
-                    Main.instance.deleteStyle(styleSelectBox.getSelected());
-                    styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+                    Main.instance.addUndoable(new DeleteStyleUndoable(styleSelectBox, classSelectBox), true);
                 }
             }
         };
@@ -266,5 +258,102 @@ public class PanelClassBar {
         dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
         
         dialog.show(stage);
+    }
+    
+    private static class NewStyleUndoable implements Undoable {
+        private SelectBox classSelectBox, styleSelectBox;
+        private TextField textField;
+        private StyleData styleData;
+        private int previousIndex;
+
+        public NewStyleUndoable(SelectBox classSelectBox, SelectBox styleSelectBox, TextField textField) {
+            this.classSelectBox = classSelectBox;
+            this.styleSelectBox = styleSelectBox;
+            this.textField = textField;
+            previousIndex = styleSelectBox.getSelectedIndex();
+        }
+        
+        @Override
+        public void undo() {
+            Main.instance.deleteStyle(styleData);
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+            styleSelectBox.setSelectedIndex(previousIndex);
+        }
+
+        @Override
+        public void redo() {
+            styleData = Main.instance.newStyle(StyleData.classes[classSelectBox.getSelectedIndex()], textField.getText());
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+            styleSelectBox.setSelected(styleData);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Create Style \"" + styleData.name + "\"";
+        }
+    }
+    
+    private static class DuplicateStyleUndoable implements Undoable {
+        private SelectBox<StyleData> styleSelectBox;
+        private SelectBox classSelectBox;
+        private TextField textField;
+        private StyleData styleData; 
+        private int previousIndex;
+
+        public DuplicateStyleUndoable(SelectBox<StyleData> styleSelectBox, SelectBox classSelectBox, TextField textField) {
+            this.styleSelectBox = styleSelectBox;
+            this.classSelectBox = classSelectBox;
+            this.textField = textField;
+            previousIndex = styleSelectBox.getSelectedIndex();
+        }
+        
+        @Override
+        public void undo() {
+            Main.instance.deleteStyle(styleData);
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+            styleSelectBox.setSelectedIndex(previousIndex);
+        }
+
+        @Override
+        public void redo() {
+            styleData = Main.instance.copyStyle(styleSelectBox.getSelected(), textField.getText());
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+            styleSelectBox.setSelected(styleData);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Duplicate Style \"" + styleData.name + "\"";
+        }
+    }
+    
+    private static class DeleteStyleUndoable implements Undoable {
+        SelectBox<StyleData> styleSelectBox;
+        SelectBox classSelectBox;
+        StyleData styleData;
+
+        public DeleteStyleUndoable(SelectBox<StyleData> styleSelectBox, SelectBox classSelectBox) {
+            this.styleSelectBox = styleSelectBox;
+            this.classSelectBox = classSelectBox;
+            styleData = styleSelectBox.getSelected();
+        }
+
+        @Override
+        public void undo() {
+            Main.instance.copyStyle(styleData, styleData.name);
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+            styleSelectBox.setSelected(styleData);
+        }
+
+        @Override
+        public void redo() {
+            Main.instance.deleteStyle(styleSelectBox.getSelected());
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Delete Style \"" + styleData.name + "\"";
+        }
     }
 }
