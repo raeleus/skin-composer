@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.JsonData;
-import com.ray3k.skincomposer.undo.Undoable;
+import com.ray3k.skincomposer.Undoable;
 
 public class PanelClassBar {    
     public SelectBox<String> classSelectBox;
@@ -61,6 +61,7 @@ public class PanelClassBar {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+                styleSelectBox.setSelected(styleSelectBox.getItems().first());
                 PanelPreviewProperties.instance.populate();
             }
         });

@@ -38,7 +38,6 @@ import com.ray3k.skincomposer.dialog.DialogColorPicker;
 import com.ray3k.skincomposer.dialog.DialogColorPicker.ColorListener;
 import com.ray3k.skincomposer.dialog.DialogFonts;
 import com.ray3k.skincomposer.dialog.DialogSettings;
-import com.ray3k.skincomposer.undo.Undoable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;

@@ -33,7 +33,9 @@ import com.ray3k.skincomposer.Spinner.SpinnerStyle;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.skincomposer.undo.Undoable;
+import com.ray3k.skincomposer.Undoable;
+import com.ray3k.skincomposer.data.ColorData;
+import com.ray3k.skincomposer.data.FontData;
 
 public class PanelStyleProperties {
     public static PanelStyleProperties instance;
@@ -106,7 +108,7 @@ public class PanelStyleProperties {
                         Main.instance.showDialogDrawables(property, new EventListener() {
                             @Override
                             public boolean handle(Event event) {
-                                Main.instance.addUndoable(new DrawableUndoable(property, oldValue, property.value, styleData), true);
+                                Main.instance.addUndoable(new DrawableUndoable(property, oldValue, property.value), true);
                                 return false;
                             }
                         });
@@ -122,10 +124,11 @@ public class PanelStyleProperties {
                 browseField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        Object oldValue = property.value;
                         Main.instance.showDialogColors(property, new EventListener() {
                             @Override
                             public boolean handle(Event event) {
-                                PanelPreviewProperties.instance.render();
+                                Main.instance.addUndoable(new ColorUndoable(property, oldValue, property.value), true);
                                 return false;
                             }
                         });
@@ -141,10 +144,11 @@ public class PanelStyleProperties {
                 browseField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        Object oldValue = property.value;
                         Main.instance.showDialogFonts(property, new EventListener() {
                             @Override
                             public boolean handle(Event event) {
-                                PanelPreviewProperties.instance.render();
+                                Main.instance.addUndoable(new FontUndoable(property, oldValue, property.value), true);
                                 return false;
                             }
                         });
@@ -175,8 +179,7 @@ public class PanelStyleProperties {
                 selectBox.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        property.value = selectBox.getSelected().name;
-                        PanelPreviewProperties.instance.render();
+                        Main.instance.addUndoable(new SelectBoxUndoable(property, selectBox), true);
                     }
                 });
                 
@@ -209,8 +212,7 @@ public class PanelStyleProperties {
                 selectBox.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        property.value = selectBox.getSelected().name;
-                        PanelPreviewProperties.instance.render();
+                        Main.instance.addUndoable(new SelectBoxUndoable(property, selectBox), true);
                     }
                 });
                 
@@ -243,8 +245,7 @@ public class PanelStyleProperties {
                 selectBox.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        property.value = selectBox.getSelected().name;
-                        PanelPreviewProperties.instance.render();
+                        Main.instance.addUndoable(new SelectBoxUndoable(property, selectBox), true);
                     }
                 });
                 
@@ -270,7 +271,6 @@ public class PanelStyleProperties {
             this.property = property;
             oldValue = (Double) property.value;
             newValue = spinner.getValue();
-            System.out.println(oldValue + " " + newValue);
         }
         
         @Override
@@ -300,13 +300,11 @@ public class PanelStyleProperties {
     private static class DrawableUndoable implements Undoable {
         private StyleProperty property;
         private Object oldValue, newValue;
-        private StyleData styleData;
 
-        public DrawableUndoable(StyleProperty property, Object oldValue, Object newValue, StyleData styleData) {
+        public DrawableUndoable(StyleProperty property, Object oldValue, Object newValue) {
             this.property = property;
             this.oldValue = oldValue;
             this.newValue = newValue;
-            this.styleData = styleData;
         }
 
         @Override
@@ -316,7 +314,7 @@ public class PanelStyleProperties {
                 property.value = oldValue;
             }
             PanelPreviewProperties.instance.render();
-            PanelStyleProperties.instance.populate(styleData);
+            PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         }
 
         @Override
@@ -326,7 +324,7 @@ public class PanelStyleProperties {
                 property.value = newValue;
             }
             PanelPreviewProperties.instance.render();
-            PanelStyleProperties.instance.populate(styleData);
+            PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         }
 
         @Override
@@ -334,5 +332,136 @@ public class PanelStyleProperties {
             return "Change Style Property " + property.name;
         }
         
+    }
+    
+    private static class ColorUndoable implements Undoable {
+        private StyleProperty property;
+        private Object oldValue, newValue;
+
+        public ColorUndoable(StyleProperty property, Object oldValue, Object newValue) {
+            this.property = property;
+            this.oldValue = oldValue;
+            this.newValue = newValue;
+        }
+        
+        @Override
+        public void undo() {
+            if (oldValue == null) {
+                property.value = oldValue;
+            } else {
+                for (ColorData color : JsonData.getInstance().getColors()) {
+                    if (color.getName().equals((String) oldValue)) {
+                        property.value = oldValue;
+                        break;
+                    }
+                }
+            }
+            PanelPreviewProperties.instance.render();
+            PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+        }
+
+        @Override
+        public void redo() {
+            if (newValue == null) {
+                property.value = newValue;
+            } else {
+                for (ColorData color : JsonData.getInstance().getColors()) {
+                    if (color.getName().equals((String) newValue)) {
+                        property.value = newValue;
+                        break;
+                    }
+                }
+            }
+            PanelPreviewProperties.instance.render();
+            PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Change Style Property " + property.name;
+        }
+    }
+    
+    private static class FontUndoable implements Undoable {
+        private StyleProperty property;
+        private Object oldValue, newValue;
+
+        public FontUndoable(StyleProperty property, Object oldValue, Object newValue) {
+            this.property = property;
+            this.oldValue = oldValue;
+            this.newValue = newValue;
+        }
+        
+        @Override
+        public void undo() {
+            if (oldValue == null) {
+                property.value = oldValue;
+            } else {
+                for (FontData font : JsonData.getInstance().getFonts()) {
+                    if (font.getName().equals((String) oldValue)) {
+                        property.value = oldValue;
+                        break;
+                    }
+                }
+            }
+            
+            PanelPreviewProperties.instance.render();
+            PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+        }
+
+        @Override
+        public void redo() {
+            if (newValue == null) {
+                property.value = newValue;
+            } else {
+                for (FontData font : JsonData.getInstance().getFonts()) {
+                    if (font.getName().equals((String) newValue)) {
+                        property.value = newValue;
+                        break;
+                    }
+                }
+            }
+            PanelPreviewProperties.instance.render();
+            PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Change Style Property " + property.name;
+        }
+    }
+    
+    private static class SelectBoxUndoable implements Undoable {
+        private StyleProperty property;
+        private SelectBox<StyleData> selectBox;
+        private String oldValue, newValue;
+        
+
+        public SelectBoxUndoable(StyleProperty property, SelectBox<StyleData> selectBox) {
+            this.property = property;
+            this.selectBox = selectBox;
+            
+            oldValue = (String) property.value;
+            newValue = selectBox.getSelected().name;
+        }
+
+        @Override
+        public void undo() {
+            property.value = oldValue;
+            PanelPreviewProperties.instance.render();
+            PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+        }
+
+        @Override
+        public void redo() {
+            property.value = newValue;
+            PanelPreviewProperties.instance.render();
+            PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Change Style Property " + property.name;
+        }
     }
 }

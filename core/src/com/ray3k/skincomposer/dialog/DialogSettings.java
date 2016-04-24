@@ -18,7 +18,7 @@ import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.Spinner.SpinnerStyle;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.panel.PanelStatusBar;
-import com.ray3k.skincomposer.undo.Undoable;
+import com.ray3k.skincomposer.Undoable;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class DialogSettings extends Dialog {

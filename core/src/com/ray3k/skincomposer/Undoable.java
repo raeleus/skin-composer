@@ -1,4 +1,4 @@
-package com.ray3k.skincomposer.undo;
+package com.ray3k.skincomposer;
 
 public interface Undoable {
     public void undo();
