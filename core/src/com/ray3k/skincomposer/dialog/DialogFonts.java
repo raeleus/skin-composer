@@ -268,6 +268,8 @@ public class DialogFonts extends Dialog {
                             }
                         }
                         
+                        Main.instance.clearUndoables();
+                        
                         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                         PanelPreviewProperties.instance.render();
                         

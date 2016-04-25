@@ -26,6 +26,7 @@ public class DialogSettings extends Dialog {
     private SpinnerStyle spinnerStyle;
     private Integer textureWidth;
     private Integer textureHeight;
+    private Integer maxUndos;
 
     public DialogSettings(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
@@ -35,6 +36,7 @@ public class DialogSettings extends Dialog {
         
         textureWidth = ProjectData.instance().getMaxTextureWidth();
         textureHeight = ProjectData.instance().getMaxTextureHeight();
+        maxUndos = ProjectData.instance().getMaxUndos();
         
         populate();
     }
@@ -44,9 +46,10 @@ public class DialogSettings extends Dialog {
         super.result(object);
         
         if ((boolean) object) {
-            ProjectSettingsUndoable undoable = new ProjectSettingsUndoable(ProjectData.instance().getMaxTextureWidth(), ProjectData.instance().getMaxTextureHeight(), textureWidth, textureHeight);
-            undoable.redo();
-            Main.instance.addUndoable(undoable);
+            ProjectData.instance().setMaxTextureDimensions(textureWidth, textureHeight);
+            ProjectData.instance().setMaxUndos(maxUndos);
+            PanelStatusBar.instance.message("Changed max texture settings: " + textureWidth + " " + textureHeight);
+            Main.instance.clearUndoables();
         }
     }
 
@@ -141,37 +144,29 @@ public class DialogSettings extends Dialog {
         });
         t.add(spinner2).growX();
         
+        t.row();
+        label = new Label("Max Number of Undos: ", skin);
+        t.add(label).right();
+        Spinner spinner3 = new Spinner(ProjectData.instance().getMaxUndos(), 1.0, true, spinnerStyle);
+        spinner3.setMinimum(1.0);
+        spinner3.setMaximum(100.0);
+        spinner3.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                maxUndos = (int) spinner3.getValue();
+            }
+        });
+        spinner3.addListener(new FocusListener() {
+            @Override
+            public void keyboardFocusChanged(FocusListener.FocusEvent event, Actor actor, boolean focused) {
+                maxUndos = (int) spinner3.getValue();
+            }
+            
+        });
+        t.add(spinner3).growX();
+        
         button("OK", true);
         button ("Cancel", false);
         key(Keys.ESCAPE, false);
-    }
-
-    private static class ProjectSettingsUndoable implements Undoable {
-
-        private int oldTextureWidth, oldTextureHeight, textureWidth, textureHeight;
-
-        public ProjectSettingsUndoable(int oldTextureWidth, int oldTextureHeight, int textureWidth, int textureHeight) {
-            this.oldTextureWidth = oldTextureWidth;
-            this.oldTextureHeight = oldTextureHeight;
-            this.textureWidth = textureWidth;
-            this.textureHeight = textureHeight;
-        }
-
-        @Override
-        public void undo() {
-            ProjectData.instance().setMaxTextureDimensions(oldTextureWidth, oldTextureHeight);
-            PanelStatusBar.instance.message("Changed max texture settings: " + oldTextureWidth + " " + oldTextureHeight);
-        }
-
-        @Override
-        public void redo() {
-            ProjectData.instance().setMaxTextureDimensions(textureWidth, textureHeight);
-            PanelStatusBar.instance.message("Changed max texture settings: " + textureWidth + " " + textureHeight);
-        }
-
-        @Override
-        public String getUndoText() {
-            return "Modify Settings";
-        }
     }
 }

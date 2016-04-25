@@ -405,7 +405,7 @@ public class DialogDrawables extends Dialog {
                                 PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                                 PanelPreviewProperties.instance.render();
                                 
-                                
+                                Main.instance.clearUndoables();
                                 
                                 initializeDrawables();
                                 populate();

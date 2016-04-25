@@ -72,6 +72,14 @@ public class ProjectData implements Json.Serializable{
         return (int) preferences.get("texture-max-height", 1024);
     }
     
+    public void setMaxUndos(int maxUndos) {
+        preferences.put("maxUndos", maxUndos);
+    }
+    
+    public int getMaxUndos() {
+        return (int) preferences.get("maxUndos", 30);
+    }
+    
     public FileHandle getSaveFile() {
         return saveFile;
     }
@@ -129,6 +137,7 @@ public class ProjectData implements Json.Serializable{
 
         randomizeId();
         setMaxTextureDimensions(1024, 1024);
+        setMaxUndos(30);
         
         jsonData.clear();
         atlasData.clear();

@@ -16,6 +16,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -75,6 +76,7 @@ public class Main extends ApplicationAdapter {
         
         ProjectData.instance().randomizeId();
         ProjectData.instance().setMaxTextureDimensions(1024, 1024);
+        ProjectData.instance().setMaxUndos(30);
         
         AtlasData.getInstance().clearTempData();
         
@@ -350,6 +352,13 @@ public class Main extends ApplicationAdapter {
 
     public void clearUndoables() {
         undoables.clear();
+        undoIndex = -1;
+        
+        PanelMenuBar.instance().getUndoButton().setDisabled(true);
+        PanelMenuBar.instance().getUndoButton().setText("Undo");
+        
+        PanelMenuBar.instance().getRedoButton().setDisabled(true);
+        PanelMenuBar.instance().getRedoButton().setText("Redo");
     }
     
     public void undo() {
@@ -400,6 +409,14 @@ public class Main extends ApplicationAdapter {
         PanelMenuBar.instance().getRedoButton().setText("Redo");
         PanelMenuBar.instance().getUndoButton().setDisabled(false);
         PanelMenuBar.instance().getUndoButton().setText("Undo " + undoable.getUndoText());
+        
+        if (undoables.size > ProjectData.instance().getMaxUndos()) {
+            int offset = undoables.size - ProjectData.instance().getMaxUndos();
+            
+            undoIndex -= offset;
+            undoIndex = MathUtils.clamp(undoIndex, -1, undoables.size - 1);
+            undoables.removeRange(0, offset - 1);
+        }
     }
     
     public void addUndoable(Undoable undoable) {
