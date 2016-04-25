@@ -92,6 +92,8 @@ public class DialogDrawables extends Dialog {
     public DialogDrawables(Skin skin, String windowStyleName, StyleProperty property, EventListener listener) {
         super("", skin, windowStyleName);
         
+        Main.instance.setListeningForKeys(false);
+        
         this.listener = listener;
         
         drawablePairs = new ObjectMap<>();
@@ -508,6 +510,8 @@ public class DialogDrawables extends Dialog {
 
     @Override
     public boolean remove() {
+        Main.instance.setListeningForKeys(true);
+        
         Main.instance.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
         
         try {

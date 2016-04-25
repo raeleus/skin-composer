@@ -11,10 +11,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.HandListener;
+import com.ray3k.skincomposer.Main;
 
 public class DialogAbout extends Dialog {
     public DialogAbout(Skin skin, String windowStyleName) {
         super("About", skin, windowStyleName);
+        
+        Main.instance.setListeningForKeys(false);
+        
         key(Keys.ENTER, true);
         key(Keys.ESCAPE, false);
         getTitleLabel().setAlignment(Align.center);
@@ -35,5 +39,11 @@ public class DialogAbout extends Dialog {
         table.add(button).padTop(0);
         button("Close");
         table.setWidth(200);
+    }
+
+    @Override
+    public boolean remove() {
+        Main.instance.setListeningForKeys(true);
+        return super.remove();
     }
 }

@@ -108,7 +108,10 @@ public class PanelStyleProperties {
                         Main.instance.showDialogDrawables(property, new EventListener() {
                             @Override
                             public boolean handle(Event event) {
-                                Main.instance.addUndoable(new DrawableUndoable(property, oldValue, property.value), true);
+                                Object newValue = property.value;
+                                if (oldValue != newValue) {
+                                    Main.instance.addUndoable(new DrawableUndoable(property, oldValue, newValue), true);
+                                }
                                 return false;
                             }
                         });
@@ -128,7 +131,10 @@ public class PanelStyleProperties {
                         Main.instance.showDialogColors(property, new EventListener() {
                             @Override
                             public boolean handle(Event event) {
-                                Main.instance.addUndoable(new ColorUndoable(property, oldValue, property.value), true);
+                                Object newValue = property.value;
+                                if (oldValue != newValue) {
+                                    Main.instance.addUndoable(new ColorUndoable(property, oldValue, newValue), true);
+                                }
                                 return false;
                             }
                         });
@@ -148,7 +154,10 @@ public class PanelStyleProperties {
                         Main.instance.showDialogFonts(property, new EventListener() {
                             @Override
                             public boolean handle(Event event) {
-                                Main.instance.addUndoable(new FontUndoable(property, oldValue, property.value), true);
+                                Object newValue = property.value;
+                                if (oldValue != newValue) {
+                                    Main.instance.addUndoable(new FontUndoable(property, oldValue, newValue), true);
+                                }
                                 return false;
                             }
                         });

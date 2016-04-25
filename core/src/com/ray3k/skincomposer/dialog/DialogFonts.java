@@ -72,6 +72,8 @@ public class DialogFonts extends Dialog {
     public DialogFonts(final Skin skin, String styleName, StyleProperty styleProperty, EventListener listener) {
         super("", skin, styleName);
 
+        Main.instance.setListeningForKeys(false);
+        
         this.listener = listener;
         this.skin = skin;
         this.styleProperty = styleProperty;
@@ -412,6 +414,8 @@ public class DialogFonts extends Dialog {
 
     @Override
     public boolean remove() {
+        Main.instance.setListeningForKeys(true);
+        
         Main.instance.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
         
         produceAtlas();

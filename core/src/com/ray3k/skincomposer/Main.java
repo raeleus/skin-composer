@@ -13,6 +13,7 @@ import com.ray3k.skincomposer.panel.PanelMenuBar;
 import com.ray3k.skincomposer.data.StyleData;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
@@ -51,9 +53,11 @@ public class Main extends ApplicationAdapter {
     private DesktopWorker desktopWorker;
     private Array<Undoable> undoables;
     private int undoIndex;
+    private boolean listeningForKeys;
     
     @Override
     public void create() {
+        listeningForKeys = true;
         undoables = new Array<>();
         undoIndex = -1;
         desktopWorker.sizeWindowToFit(800, 800, 50, Gdx.graphics);
@@ -73,6 +77,19 @@ public class Main extends ApplicationAdapter {
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (listeningForKeys && (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))) {
+                    if (keycode == Keys.Z) {
+                        undo();
+                    } else if (keycode == Keys.Y) {
+                        redo();
+                    }
+                }
+                return false;
+            }
+        });
         
         ProjectData.instance().randomizeId();
         ProjectData.instance().setMaxTextureDimensions(1024, 1024);
@@ -362,36 +379,40 @@ public class Main extends ApplicationAdapter {
     }
     
     public void undo() {
-        Undoable undoable = undoables.get(undoIndex);
-        undoable.undo();
-        undoIndex--;
-        
-        if (undoIndex < 0) {
-            PanelMenuBar.instance().getUndoButton().setDisabled(true);
-            PanelMenuBar.instance().getUndoButton().setText("Undo");
-        } else {
-            PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
+        if (undoIndex >= 0 && undoIndex < undoables.size) {
+            Undoable undoable = undoables.get(undoIndex);
+            undoable.undo();
+            undoIndex--;
+
+            if (undoIndex < 0) {
+                PanelMenuBar.instance().getUndoButton().setDisabled(true);
+                PanelMenuBar.instance().getUndoButton().setText("Undo");
+            } else {
+                PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
+            }
+
+            PanelMenuBar.instance().getRedoButton().setDisabled(false);
+            PanelMenuBar.instance().getRedoButton().setText("Redo " + undoable.getUndoText());
         }
-        
-        PanelMenuBar.instance().getRedoButton().setDisabled(false);
-        PanelMenuBar.instance().getRedoButton().setText("Redo " + undoable.getUndoText());
     }
     
     public void redo() {
-        if (undoIndex < undoables.size - 1) {
-            undoIndex++;
-            undoables.get(undoIndex).redo();
+        if (undoIndex >= -1 && undoIndex < undoables.size) {
+            if (undoIndex < undoables.size - 1) {
+                undoIndex++;
+                undoables.get(undoIndex).redo();
+            }
+
+            if (undoIndex >= undoables.size - 1) {
+                PanelMenuBar.instance().getRedoButton().setDisabled(true);
+                PanelMenuBar.instance().getRedoButton().setText("Redo");
+            } else {
+                PanelMenuBar.instance().getRedoButton().setText("Redo " + undoables.get(undoIndex + 1).getUndoText());
+            }
+
+            PanelMenuBar.instance().getUndoButton().setDisabled(false);
+            PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
         }
-        
-        if (undoIndex >= undoables.size - 1) {
-            PanelMenuBar.instance().getRedoButton().setDisabled(true);
-            PanelMenuBar.instance().getRedoButton().setText("Redo");
-        } else {
-            PanelMenuBar.instance().getRedoButton().setText("Redo " + undoables.get(undoIndex + 1).getUndoText());
-        }
-        
-        PanelMenuBar.instance().getUndoButton().setDisabled(false);
-        PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
     }
     
     public void addUndoable(Undoable undoable, boolean redoImmediately) {
@@ -421,5 +442,13 @@ public class Main extends ApplicationAdapter {
     
     public void addUndoable(Undoable undoable) {
         addUndoable(undoable, false);
+    }
+
+    public boolean isListeningForKeys() {
+        return listeningForKeys;
+    }
+
+    public void setListeningForKeys(boolean listeningForKeys) {
+        this.listeningForKeys = listeningForKeys;
     }
 }

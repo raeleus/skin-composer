@@ -51,6 +51,8 @@ public class DialogColors extends Dialog {
     public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, EventListener listener) {
         super("", skin, styleName);
         
+        Main.instance.setListeningForKeys(false);
+        
         this.listener = listener;
         this.skin = skin;
         this.styleProperty = styleProperty;
@@ -117,6 +119,12 @@ public class DialogColors extends Dialog {
             button("Close", false);
         }
         key(Keys.ESCAPE, false);
+    }
+
+    @Override
+    public boolean remove() {
+        Main.instance.setListeningForKeys(true);
+        return super.remove();
     }
     
     private void showColorPicker() {

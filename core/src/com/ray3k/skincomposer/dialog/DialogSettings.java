@@ -30,6 +30,9 @@ public class DialogSettings extends Dialog {
 
     public DialogSettings(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
+        
+        Main.instance.setListeningForKeys(false);
+        
         this.skin = skin;
         
         spinnerStyle = new Spinner.SpinnerStyle(skin.get("spinner-minus", Button.ButtonStyle.class), skin.get("spinner-plus", Button.ButtonStyle.class), skin.get("spinner", TextField.TextFieldStyle.class));
@@ -51,6 +54,12 @@ public class DialogSettings extends Dialog {
             PanelStatusBar.instance.message("Changed max texture settings: " + textureWidth + " " + textureHeight);
             Main.instance.clearUndoables();
         }
+    }
+
+    @Override
+    public boolean remove() {
+        Main.instance.setListeningForKeys(true);
+        return super.remove();
     }
 
     public void populate() {
