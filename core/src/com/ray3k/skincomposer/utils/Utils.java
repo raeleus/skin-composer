@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Utils {
+    public static String os;
     public static Color averageColor(FileHandle file) {
         Pixmap pixmap = new Pixmap(file);
         Color returnValue = averageColor(pixmap);
@@ -149,5 +150,27 @@ public class Utils {
         } else {
             throw new IOException("Directory doesn't exist: " + startDirectory.path());
         }
+    }
+    
+    public static boolean isWindows() {
+        if (os == null) {
+            os = System.getProperty("os.name");
+        }
+        
+        return os.startsWith("Windows");
+    }
+    
+    public static boolean isLinux() {
+        if (os == null) {
+            os = System.getProperty("os.name");
+        }
+        return os.startsWith("Linux");
+    }
+    
+    public static boolean isMac() {
+        if (os == null) {
+            os = System.getProperty("os.name");
+        }
+        return os.startsWith("Mac");
     }
 }
