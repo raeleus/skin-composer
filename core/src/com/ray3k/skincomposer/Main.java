@@ -85,6 +85,16 @@ public class Main extends ApplicationAdapter {
                         undo();
                     } else if (keycode == Keys.Y) {
                         redo();
+                    } else if (keycode == Keys.N) {
+                        PanelMenuBar.instance().newDialog();
+                    } else if (keycode == Keys.O) {
+                        PanelMenuBar.instance().openDialog();
+                    } else if (keycode == Keys.S) {
+                        if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
+                            PanelMenuBar.instance().saveAsDialog(null);
+                        } else {
+                            PanelMenuBar.instance().save(null);
+                        }
                     }
                 }
                 return false;

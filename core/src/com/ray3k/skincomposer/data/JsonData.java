@@ -124,11 +124,19 @@ public class JsonData implements Json.Serializable {
                     for (JsonValue property : style.iterator()) {
                         StyleProperty styleProperty = data.properties.get(property.name);
                         if (styleProperty.type.equals(Float.TYPE)) {
-                            styleProperty.value = property.asFloat();
+                            styleProperty.value = (double) property.asFloat();
                         } else if (styleProperty.type.equals(Color.class)) {
-                            styleProperty.value = "custom color";
+                            if (property.isString()) {
+                                styleProperty.value = property.asString();
+                            } else {
+                                Gdx.app.error(getClass().getName(), "Can't import JSON files that do not use predefined colors.");
+                            }
                         } else {
-                            styleProperty.value = property.asString();
+                            if (property.isString()) {
+                                styleProperty.value = property.asString();
+                            } else {
+                                Gdx.app.error(getClass().getName(), "Can't import JSON files that do not use String names for field values.");
+                            }
                         }
                     }
                 }

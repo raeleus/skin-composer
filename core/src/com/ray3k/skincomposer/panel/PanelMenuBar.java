@@ -16,11 +16,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.MenuList;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.SynchronousJFXFileChooser;
+import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
 import javafx.stage.FileChooser;
 
@@ -46,6 +48,7 @@ public class PanelMenuBar {
         
         TextButton menuItemTextButton = new TextButton("New", skin, "menu-item");
         menuItemTextButton.getLabel().setAlignment(Align.left);
+        menuItemTextButton.add(new Label(getShortcutNames().get("new"), skin)).padLeft(5.0f);
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -57,6 +60,7 @@ public class PanelMenuBar {
         menuItemTable.row();
         menuItemTextButton = new TextButton("Open...", skin, "menu-item");
         menuItemTextButton.getLabel().setAlignment(Align.left);
+        menuItemTextButton.add(new Label(getShortcutNames().get("open"), skin)).padLeft(5.0f);
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -68,6 +72,7 @@ public class PanelMenuBar {
         menuItemTable.row();
         menuItemTextButton = new TextButton("Save", skin, "menu-item");
         menuItemTextButton.getLabel().setAlignment(Align.left);
+        menuItemTextButton.add(new Label(getShortcutNames().get("save"), skin)).padLeft(5.0f);
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -79,6 +84,7 @@ public class PanelMenuBar {
         menuItemTable.row();
         menuItemTextButton = new TextButton("Save As...", skin, "menu-item");
         menuItemTextButton.getLabel().setAlignment(Align.left);
+        menuItemTextButton.add(new Label(getShortcutNames().get("save as"), skin)).padLeft(5.0f);
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -139,6 +145,7 @@ public class PanelMenuBar {
         menuItemTable.defaults().growX();
         undoButton = new TextButton("Undo", skin, "menu-item");
         undoButton.getLabel().setAlignment(Align.left);
+        undoButton.add(new Label(getShortcutNames().get("undo"), skin)).padLeft(5.0f);
         undoButton.setDisabled(true);
         undoButton.addListener(new ChangeListener() {
             @Override
@@ -151,6 +158,7 @@ public class PanelMenuBar {
         menuItemTable.row();
         redoButton = new TextButton("Redo", skin, "menu-item");
         redoButton.getLabel().setAlignment(Align.left);
+        redoButton.add(new Label(getShortcutNames().get("redo"), skin)).padLeft(5.0f);
         redoButton.setDisabled(true);
         redoButton.addListener(new ChangeListener() {
             @Override
@@ -474,5 +482,31 @@ public class PanelMenuBar {
             ProjectData.instance().setLastDirectory(fileHandle.parent().path());
             JsonData.getInstance().writeFile(fileHandle);
         }
+    }
+    
+    private static ObjectMap<String, String> shortcutNames;
+    
+    private static ObjectMap<String, String> getShortcutNames() {
+        if (shortcutNames == null) {
+            shortcutNames = new ObjectMap();
+            
+            if (Utils.isMac()) {
+                shortcutNames.put("new", "⌘+N");
+                shortcutNames.put("open", "⌘+O");
+                shortcutNames.put("save", "⌘+S");
+                shortcutNames.put("save as", "Shift+⌘+S");
+                shortcutNames.put("undo", "⌘+Z");
+                shortcutNames.put("redo", "⌘+Y");
+            } else {
+                shortcutNames.put("new", "Ctrl+N");
+                shortcutNames.put("open", "Ctrl+O");
+                shortcutNames.put("save", "Ctrl+S");
+                shortcutNames.put("save as", "Shift+Ctrl+S");
+                shortcutNames.put("undo", "Ctrl+Z");
+                shortcutNames.put("redo", "Ctrl+Y");
+            }
+        }
+        
+        return shortcutNames;
     }
 }

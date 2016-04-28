@@ -63,3 +63,4 @@ build/
 ## OS Specific
 .DS_Store
 /.nb-gradle/
+core/assets/temp/
