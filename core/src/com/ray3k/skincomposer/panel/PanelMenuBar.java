@@ -19,11 +19,14 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.MenuList;
+import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.SynchronousJFXFileChooser;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.stage.FileChooser;
 
 public class PanelMenuBar {
@@ -481,6 +484,11 @@ public class PanelMenuBar {
             FileHandle fileHandle = new FileHandle(file);
             ProjectData.instance().setLastDirectory(fileHandle.parent().path());
             JsonData.getInstance().writeFile(fileHandle);
+            try {
+                AtlasData.getInstance().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
+            } catch (Exception ex) {
+                Logger.getLogger(PanelMenuBar.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     

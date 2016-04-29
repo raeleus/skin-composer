@@ -67,13 +67,14 @@ public class AtlasData {
                 if (!texture.getTextureData().isPrepared()) {
                     texture.getTextureData().prepare();
                 }
+                Pixmap.setBlending(Pixmap.Blending.None);
                 Pixmap pixmap = texture.getTextureData().consumePixmap();
                 Pixmap savePixmap;
                 String name;
                 
                 if (region.splits == null && region.pads == null) {
                     name = region.name + ".png";
-                    savePixmap = new Pixmap(region.getRegionWidth(), region.getRegionHeight(), pixmap.getFormat());
+                    savePixmap = new Pixmap(region.getRegionWidth(), region.getRegionHeight(), Pixmap.Format.RGBA8888);
                     for (int x = 0; x < region.getRegionWidth(); x++) {
                         for (int y = 0; y < region.getRegionHeight(); y++) {
                             int colorInt = pixmap.getPixel(region.getRegionX() + x, region.getRegionY() + y);
@@ -134,6 +135,20 @@ public class AtlasData {
     
     public void writeAtlas() throws Exception {
         FileHandle targetFile = Gdx.files.local("temp/" + ProjectData.instance().getId() + ".atlas");
+        targetFile.parent().mkdirs();
+        targetFile.parent().emptyDirectory();
+        
+        Array<FileHandle> files = new Array<FileHandle>();
+        for (DrawableData drawable : drawables) {
+            if (!files.contains(drawable.file, false)) {
+                files.add(drawable.file);
+            }
+        }
+        
+        Main.instance.getDesktopWorker().texturePack(files, targetFile, ProjectData.instance().getMaxTextureWidth(), ProjectData.instance().getMaxTextureHeight());
+    }
+    
+    public void writeAtlas(FileHandle targetFile) throws Exception {
         targetFile.parent().mkdirs();
         targetFile.parent().emptyDirectory();
         
