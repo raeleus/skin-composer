@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.Sort;
 import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.JsonData;
+import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.panel.PanelClassBar;
@@ -317,6 +318,7 @@ public class DialogColors extends Dialog {
     private boolean newColor(String name, Color color) {
         if (ColorData.validate(name)) {
             try {
+                ProjectData.instance().setChangesSaved(false);
                 colors.add(new ColorData(name, color));
                 sortBySelectedMode();
                 populate();
@@ -334,6 +336,7 @@ public class DialogColors extends Dialog {
     protected void result(Object object) {
         if (styleProperty != null) {
             if (object instanceof ColorData) {
+                ProjectData.instance().setChangesSaved(false);
                 ColorData color = (ColorData) object;
                 PanelStatusBar.instance.message("Selected Color: " + color.getName());
                 styleProperty.value = color.getName();

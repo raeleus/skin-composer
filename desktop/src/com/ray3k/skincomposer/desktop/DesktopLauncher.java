@@ -24,7 +24,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         config.setWindowedMode(800, 800);
         DesktopLauncher desktopLauncher = new DesktopLauncher();
         config.setWindowListener(desktopLauncher);
-        config.setTitle("Skin Composer - RAY3K.COM");
+        config.setTitle("Skin Composer - New Project*");
         Main main = new Main();
         main.setTextureWorker(desktopLauncher);
         new Lwjgl3Application(main, config);

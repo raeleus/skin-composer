@@ -49,6 +49,7 @@ public class DialogSettings extends Dialog {
         super.result(object);
         
         if ((boolean) object) {
+            ProjectData.instance().setChangesSaved(false);
             ProjectData.instance().setMaxTextureDimensions(textureWidth, textureHeight);
             ProjectData.instance().setMaxUndos(maxUndos);
             PanelStatusBar.instance.message("Changed max texture settings: " + textureWidth + " " + textureHeight);

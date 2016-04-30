@@ -165,6 +165,7 @@ public class DialogFonts extends Dialog {
     private boolean addFont(String name, FileHandle file) {
         if (FontData.validate(name)) {
             try {
+                ProjectData.instance().setChangesSaved(false);
                 FontData font = new FontData(name, file);
                 
                 //remove any existing FontData that shares the same name.
@@ -312,6 +313,7 @@ public class DialogFonts extends Dialog {
     protected void result(Object object) {
         if (styleProperty != null) {
             if (object instanceof FontData) {
+                ProjectData.instance().setChangesSaved(false);
                 FontData font = (FontData) object;
                 PanelStatusBar.instance.message("Selected Font: " + font.getName());
                 styleProperty.value = font.getName();

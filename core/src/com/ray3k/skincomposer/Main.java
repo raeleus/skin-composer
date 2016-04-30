@@ -390,6 +390,7 @@ public class Main extends ApplicationAdapter {
     
     public void undo() {
         if (undoIndex >= 0 && undoIndex < undoables.size) {
+            ProjectData.instance().setChangesSaved(false);
             Undoable undoable = undoables.get(undoIndex);
             undoable.undo();
             undoIndex--;
@@ -408,6 +409,7 @@ public class Main extends ApplicationAdapter {
     
     public void redo() {
         if (undoIndex >= -1 && undoIndex < undoables.size) {
+            ProjectData.instance().setChangesSaved(false);
             if (undoIndex < undoables.size - 1) {
                 undoIndex++;
                 undoables.get(undoIndex).redo();
@@ -426,6 +428,7 @@ public class Main extends ApplicationAdapter {
     }
     
     public void addUndoable(Undoable undoable, boolean redoImmediately) {
+        ProjectData.instance().setChangesSaved(false);
         undoIndex++;
         if (undoIndex <= undoables.size - 1) {
             undoables.removeRange(undoIndex, undoables.size - 1);

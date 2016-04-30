@@ -296,6 +296,7 @@ public class DialogDrawables extends Dialog {
         instance = null;
         if (object != null) {
             if (object instanceof DrawableData) {
+                ProjectData.instance().setChangesSaved(false);
                 PanelStatusBar.instance.message("Drawable selected: " + object.toString());
                 if (object instanceof DrawableData) {
                     DrawableData drawable = (DrawableData) object;
@@ -304,6 +305,7 @@ public class DialogDrawables extends Dialog {
                 }
             } else if (object instanceof Boolean && property != null) {
                 if ((boolean) object) {
+                    ProjectData.instance().setChangesSaved(false);
                     property.value = null;
                     PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                 } else {
@@ -749,6 +751,8 @@ public class DialogDrawables extends Dialog {
             } else {
                 Gdx.app.error(getClass().getName(), "Critical failure, could not roll back changes to drawables");
             }
+        } else {
+            ProjectData.instance().setChangesSaved(false);
         }
 
         sortBySelectedMode();

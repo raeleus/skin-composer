@@ -20,6 +20,7 @@ public class ProjectData implements Json.Serializable{
     private AtlasData atlasData;
     private FileHandle saveFile;
     private boolean changesSaved;
+    private boolean newProject;
     
     public static ProjectData instance() {
         if (instance == null) {
@@ -30,6 +31,7 @@ public class ProjectData implements Json.Serializable{
     
     private ProjectData() {
         changesSaved = false;
+        newProject = true;
         preferences = new ObjectMap<>();
         generalPref = Gdx.app.getPreferences("com.ray3k.skincomposer");
         jsonData = JsonData.getInstance();
@@ -100,6 +102,21 @@ public class ProjectData implements Json.Serializable{
 
     public void setChangesSaved(boolean changesSaved) {
         this.changesSaved = changesSaved;
+        newProject = false;
+        String title = "Skin Composer";
+        if (saveFile != null && saveFile.exists()) {
+            title += " - " + saveFile.nameWithoutExtension();
+            if (!changesSaved) {
+                title += "*";
+            }
+        } else {
+            title += " - New Project*";
+        }
+        Gdx.graphics.setTitle(title);
+    }
+
+    public boolean isNewProject() {
+        return newProject;
     }
     
     public void save(FileHandle file) {
@@ -109,7 +126,7 @@ public class ProjectData implements Json.Serializable{
         Json json = new Json(JsonWriter.OutputType.minimal);
         json.setUsePrototypes(false);
         file.writeString(json.prettyPrint(this), false);
-        changesSaved = true;
+        setChangesSaved(true);
     }
     
     public void save() {
@@ -126,6 +143,7 @@ public class ProjectData implements Json.Serializable{
         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         PanelPreviewProperties.instance.produceAtlas();
         PanelPreviewProperties.instance.render();
+        instance.setChangesSaved(true);
     }
     
     public void load() {
@@ -146,6 +164,8 @@ public class ProjectData implements Json.Serializable{
         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         PanelPreviewProperties.instance.produceAtlas();
         PanelPreviewProperties.instance.render();
+        setChangesSaved(false);
+        newProject = true;
     }
 
     @Override

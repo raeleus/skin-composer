@@ -57,7 +57,6 @@ public class AtlasData {
             FileHandle saveFile = ProjectData.instance().getSaveFile();
             FileHandle targetDirectory = saveFile.sibling(saveFile.nameWithoutExtension() + "_data");
             targetDirectory.mkdirs();
-            targetDirectory.emptyDirectory();
             
             TextureAtlas atlas = new TextureAtlas(fileHandle);
             Array<AtlasRegion> regions = atlas.getRegions();
@@ -150,7 +149,6 @@ public class AtlasData {
     
     public void writeAtlas(FileHandle targetFile) throws Exception {
         targetFile.parent().mkdirs();
-        targetFile.parent().emptyDirectory();
         
         Array<FileHandle> files = new Array<FileHandle>();
         for (DrawableData drawable : drawables) {

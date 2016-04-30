@@ -78,6 +78,8 @@ public class JsonData implements Json.Serializable {
     }
 
     public void readFile(FileHandle fileHandle) throws Exception {
+        ProjectData.instance().setChangesSaved(false);
+        
         //read drawables from texture atlas file
         FileHandle atlasHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".atlas");
         if (atlasHandle.exists()) {

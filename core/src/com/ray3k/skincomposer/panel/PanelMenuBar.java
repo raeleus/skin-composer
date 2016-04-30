@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.MenuList;
 import com.ray3k.skincomposer.data.AtlasData;
+import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.SynchronousJFXFileChooser;
@@ -310,7 +311,7 @@ public class PanelMenuBar {
     }
     
     public void newDialog() {
-        if (!ProjectData.instance().areChangesSaved()) {
+        if (!ProjectData.instance().areChangesSaved() && !ProjectData.instance().isNewProject()) {
             yesNoCancelDialog("Save Changes?",
                     "Do you want to save changes to the existing project?"
                             + "\nAll unsaved changes will be lost.",
@@ -382,7 +383,7 @@ public class PanelMenuBar {
             }
         };
         
-        if (!ProjectData.instance().areChangesSaved()) {
+        if (!ProjectData.instance().areChangesSaved() && !ProjectData.instance().isNewProject()) {
             yesNoCancelDialog("Save Changes?",
                     "Do you want to save changes to the existing project?"
                     + "\nAll unsaved changes will be lost.",
@@ -401,6 +402,9 @@ public class PanelMenuBar {
     public void save(Runnable runnable) {
         if (ProjectData.instance().getSaveFile() != null) {
             ProjectData.instance().save();
+            if (runnable != null) {
+                runnable.run();
+            }
         } else {
             saveAsDialog(runnable);
         }
@@ -453,7 +457,7 @@ public class PanelMenuBar {
             }
         };
         
-        if (!ProjectData.instance().areChangesSaved()) {
+        if (!ProjectData.instance().areChangesSaved() && !ProjectData.instance().isNewProject()) {
             yesNoDialog("Save Changes?",
                     "The project must be saved before import."
                     + "\nDo you want to save?",
@@ -488,6 +492,9 @@ public class PanelMenuBar {
                 AtlasData.getInstance().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
             } catch (Exception ex) {
                 Logger.getLogger(PanelMenuBar.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            for (FontData font : JsonData.getInstance().getFonts()) {
+                font.file.copyTo(fileHandle.parent());
             }
         }
     }
