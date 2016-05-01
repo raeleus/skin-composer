@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -64,6 +65,7 @@ public class DialogFonts extends Dialog {
     private TextureAtlas atlas;
     private EventListener listener;
     private FilesDroppedListener filesDroppedListener;
+    private ScrollPane scrollPane;
 
     public DialogFonts(Skin skin, StyleProperty styleProperty, EventListener listener) {
         this(skin, "default", styleProperty, listener);
@@ -157,9 +159,16 @@ public class DialogFonts extends Dialog {
 
         table = new Table();
         table.add(fontsTable).pad(5.0f);
-        ScrollPane scrollPane = new ScrollPane(table, skin, "no-bg");
+        scrollPane = new ScrollPane(table, skin, "no-bg");
         scrollPane.setFadeScrollBars(false);
         getContentTable().add(scrollPane).grow();
+    }
+
+    @Override
+    public Dialog show(Stage stage) {
+        Dialog dialog = super.show(stage);
+        stage.setScrollFocus(scrollPane);
+        return dialog;
     }
 
     private boolean addFont(String name, FileHandle file) {

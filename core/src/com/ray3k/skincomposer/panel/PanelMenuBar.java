@@ -457,7 +457,7 @@ public class PanelMenuBar {
             }
         };
         
-        if (!ProjectData.instance().areChangesSaved() && !ProjectData.instance().isNewProject()) {
+        if (!ProjectData.instance().areChangesSaved()) {
             yesNoDialog("Save Changes?",
                     "The project must be saved before import."
                     + "\nDo you want to save?",

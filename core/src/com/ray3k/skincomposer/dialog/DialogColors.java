@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -44,6 +45,7 @@ public class DialogColors extends Dialog {
     private StyleProperty styleProperty;
     private SelectBox<String> selectBox;
     private EventListener listener;
+    private ScrollPane scrollPane;
     
     public DialogColors(Skin skin, StyleProperty styleProperty, EventListener listener) {
         this(skin, "default", styleProperty, listener);
@@ -109,7 +111,7 @@ public class DialogColors extends Dialog {
         
         table = new Table();
         table.add(colorTable).pad(5.0f);
-        ScrollPane scrollPane = new ScrollPane(table, skin, "no-bg");
+        scrollPane = new ScrollPane(table, skin, "no-bg");
         scrollPane.setFadeScrollBars(false);
         getContentTable().add(scrollPane).grow();
         
@@ -120,6 +122,13 @@ public class DialogColors extends Dialog {
             button("Close", false);
         }
         key(Keys.ESCAPE, false);
+    }
+    
+    @Override
+    public Dialog show(Stage stage) {
+        Dialog dialog = super.show(stage);
+        stage.setScrollFocus(scrollPane);
+        return dialog;
     }
 
     @Override
