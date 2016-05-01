@@ -9,4 +9,5 @@ public interface DesktopWorker {
     public void centerWindow(Graphics graphics);
     public void addFilesDroppedListener(FilesDroppedListener filesDroppedListener);
     public void removeFilesDroppedListener(FilesDroppedListener filesDroppedListener);
+    public void setCloseListener(CloseListener closeListener);
 }
