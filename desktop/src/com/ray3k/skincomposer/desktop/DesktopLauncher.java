@@ -43,14 +43,14 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
             
             FileWriter fw = null;
             try {
-                fw = new FileWriter(Gdx.files.local("temp/test").file(), true);
+                fw = new FileWriter(Gdx.files.local("temp/test.txt").file(), true);
                 PrintWriter pw = new PrintWriter(fw);
                 e.printStackTrace(pw);
                 pw.close();
                 fw.close();
                 int choice = JOptionPane.showConfirmDialog(null, "Exception occurred. See error log?", "Skin Composer Exception!", JOptionPane.YES_NO_OPTION);
                 if (choice == 0) {
-                    Utils.openFileExplorer(Gdx.files.local("temp/test"));
+                    Utils.openFileExplorer(Gdx.files.local("temp/test.txt"));
                 }
             } catch (Exception ex) {
 
