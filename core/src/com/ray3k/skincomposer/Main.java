@@ -373,20 +373,31 @@ public class Main extends ApplicationAdapter {
     }
     
     public void showCloseDialog() {
-        if (!showingCloseDialog) {
-            showingCloseDialog = true;
-            Dialog dialog = new Dialog("Do you want to save your changes\n before you quit?", skin) {
-                @Override
-                protected void result(Object object) {
-                    if ((int) object == 0) {
+        if (ProjectData.instance().areChangesSaved() || ProjectData.instance().isNewProject()) {
+            Gdx.app.exit();
+        } else {
+            if (!showingCloseDialog) {
+                showingCloseDialog = true;
+                Dialog dialog = new Dialog("Save Changes?", skin, "dialog") {
+                    @Override
+                    protected void result(Object object) {
+                        if ((int) object == 0) {
+                            PanelMenuBar.instance().save(() -> {
+                                if (ProjectData.instance().areChangesSaved()) {
+                                    Gdx.app.exit();
+                                }
+                            });
+                        } else if ((int) object == 1) {
+                            Gdx.app.exit();
+                        }
                         
-                    } else if ((int) object == 1) {
-                        Gdx.app.exit();
+                        showingCloseDialog = false;
                     }
-                }
-            };
-            dialog.button("Yes", 0).button("No", 1).button("Cancel", 2);
-            dialog.show(stage);
+                };
+                dialog.text("Do you want to save your changes\n before you quit");
+                dialog.button("Yes", 0).button("No", 1).button("Cancel", 2);
+                dialog.show(stage);
+            }
         }
     }
 
