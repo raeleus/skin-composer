@@ -1,5 +1,6 @@
 package com.ray3k.skincomposer.dialog;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
@@ -86,6 +87,19 @@ public class DialogColorPicker extends Dialog {
         root.row();
         content = new Table(skin);
         root.add(content);
+        
+        addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Keys.ESCAPE) {
+                    if (listener != null) {
+                        listener.handle(new ColorListener.ColorEvent(null));
+                    }
+                    hide();
+                }
+                return false;
+            }
+        });
         
         populate();
     }
