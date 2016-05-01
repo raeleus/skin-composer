@@ -1,5 +1,6 @@
 package com.ray3k.skincomposer.desktop;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
@@ -15,6 +16,10 @@ import com.ray3k.skincomposer.CloseListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.DesktopWorker;
 import com.ray3k.skincomposer.FilesDroppedListener;
+import com.ray3k.skincomposer.utils.Utils;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import javax.swing.JOptionPane;
 
 public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     private Array<FilesDroppedListener> filesDroppedListeners;
@@ -30,7 +35,27 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         config.setTitle("Skin Composer - New Project*");
         Main main = new Main();
         main.setTextureWorker(desktopLauncher);
-        new Lwjgl3Application(main, config);
+        
+        try {
+            new Lwjgl3Application(main, config);
+        } catch (Exception e) {
+            e.printStackTrace();
+            
+            FileWriter fw = null;
+            try {
+                fw = new FileWriter(Gdx.files.local("temp/test").file(), true);
+                PrintWriter pw = new PrintWriter(fw);
+                e.printStackTrace(pw);
+                pw.close();
+                fw.close();
+                int choice = JOptionPane.showConfirmDialog(null, "Exception occurred. See error log?", "Skin Composer Exception!", JOptionPane.YES_NO_OPTION);
+                if (choice == 0) {
+                    Utils.openFileExplorer(Gdx.files.local("temp/test"));
+                }
+            } catch (Exception ex) {
+
+            }
+        }
     }
 
     public DesktopLauncher() {
