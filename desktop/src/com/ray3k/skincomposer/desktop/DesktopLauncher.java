@@ -11,12 +11,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
+import com.ray3k.skincomposer.CloseListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.DesktopWorker;
 import com.ray3k.skincomposer.FilesDroppedListener;
 
 public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     private Array<FilesDroppedListener> filesDroppedListeners;
+    private CloseListener closeListener;
+    
     public static void main(String[] arg) {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setResizable(true);
@@ -96,7 +99,11 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
 
     @Override
     public boolean closeRequested() {
-        return true;
+        if (closeListener != null) {
+            return closeListener.closed();
+        } else {
+            return true;
+        }
     }
     
     @Override
@@ -120,5 +127,10 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         for (FilesDroppedListener listener : filesDroppedListeners) {
             listener.filesDropped(fileHandles);
         }
+    }
+
+    @Override
+    public void setCloseListener(CloseListener closeListener) {
+        this.closeListener = closeListener;
     }
 }

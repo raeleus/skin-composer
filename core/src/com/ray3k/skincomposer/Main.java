@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -54,14 +55,20 @@ public class Main extends ApplicationAdapter {
     private Array<Undoable> undoables;
     private int undoIndex;
     private boolean listeningForKeys;
+    private boolean showingCloseDialog;
     
     @Override
     public void create() {
+        showingCloseDialog = false;
         listeningForKeys = true;
         undoables = new Array<>();
         undoIndex = -1;
         desktopWorker.sizeWindowToFit(800, 800, 50, Gdx.graphics);
         desktopWorker.centerWindow(Gdx.graphics);
+        desktopWorker.setCloseListener(() -> {
+            showCloseDialog();
+            return false;
+        });
         
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -363,6 +370,24 @@ public class Main extends ApplicationAdapter {
     public void showDialogSettings() {
         DialogSettings dialog = new DialogSettings("", skin, "dialog-panel");
         dialog.show(stage);
+    }
+    
+    public void showCloseDialog() {
+        if (!showingCloseDialog) {
+            showingCloseDialog = true;
+            Dialog dialog = new Dialog("Do you want to save your changes\n before you quit?", skin) {
+                @Override
+                protected void result(Object object) {
+                    if ((int) object == 0) {
+                        
+                    } else if ((int) object == 1) {
+                        Gdx.app.exit();
+                    }
+                }
+            };
+            dialog.button("Yes", 0).button("No", 1).button("Cancel", 2);
+            dialog.show(stage);
+        }
     }
 
     public DesktopWorker getDesktopWorker() {
