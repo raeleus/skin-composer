@@ -52,7 +52,7 @@ public class PanelMenuBar {
         
         TextButton menuItemTextButton = new TextButton("New", skin, "menu-item");
         menuItemTextButton.getLabel().setAlignment(Align.left);
-        menuItemTextButton.add(new Label(getShortcutNames().get("new"), skin)).padLeft(5.0f);
+        menuItemTextButton.add(new Label(getShortcutNames().get("new"), skin, "shortcut")).padLeft(5.0f);
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -64,7 +64,7 @@ public class PanelMenuBar {
         menuItemTable.row();
         menuItemTextButton = new TextButton("Open...", skin, "menu-item");
         menuItemTextButton.getLabel().setAlignment(Align.left);
-        menuItemTextButton.add(new Label(getShortcutNames().get("open"), skin)).padLeft(5.0f);
+        menuItemTextButton.add(new Label(getShortcutNames().get("open"), skin, "shortcut")).padLeft(5.0f);
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -76,7 +76,7 @@ public class PanelMenuBar {
         menuItemTable.row();
         menuItemTextButton = new TextButton("Save", skin, "menu-item");
         menuItemTextButton.getLabel().setAlignment(Align.left);
-        menuItemTextButton.add(new Label(getShortcutNames().get("save"), skin)).padLeft(5.0f);
+        menuItemTextButton.add(new Label(getShortcutNames().get("save"), skin, "shortcut")).padLeft(5.0f);
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -88,7 +88,7 @@ public class PanelMenuBar {
         menuItemTable.row();
         menuItemTextButton = new TextButton("Save As...", skin, "menu-item");
         menuItemTextButton.getLabel().setAlignment(Align.left);
-        menuItemTextButton.add(new Label(getShortcutNames().get("save as"), skin)).padLeft(5.0f);
+        menuItemTextButton.add(new Label(getShortcutNames().get("save as"), skin, "shortcut")).padLeft(5.0f);
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -149,7 +149,7 @@ public class PanelMenuBar {
         menuItemTable.defaults().growX();
         undoButton = new TextButton("Undo", skin, "menu-item");
         undoButton.getLabel().setAlignment(Align.left);
-        undoButton.add(new Label(getShortcutNames().get("undo"), skin)).padLeft(5.0f);
+        undoButton.add(new Label(getShortcutNames().get("undo"), skin, "shortcut")).padLeft(5.0f);
         undoButton.setDisabled(true);
         undoButton.addListener(new ChangeListener() {
             @Override
@@ -162,7 +162,7 @@ public class PanelMenuBar {
         menuItemTable.row();
         redoButton = new TextButton("Redo", skin, "menu-item");
         redoButton.getLabel().setAlignment(Align.left);
-        redoButton.add(new Label(getShortcutNames().get("redo"), skin)).padLeft(5.0f);
+        redoButton.add(new Label(getShortcutNames().get("redo"), skin, "shortcut")).padLeft(5.0f);
         redoButton.setDisabled(true);
         redoButton.addListener(new ChangeListener() {
             @Override
