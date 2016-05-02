@@ -215,11 +215,15 @@ public class DialogColors extends Dialog {
                 Button button = new Button(skin);
                 Label label = new Label(color.toString(), skin, "white");
                 label.setTouchable(Touchable.disabled);
+                
                 float brightness = Utils.brightness(color.color);
+                Color borderColor;
                 if (brightness > .35f) {
-                    label.setColor(Color.BLACK);
+                    borderColor = Color.BLACK;
+                    label.setColor(borderColor);
                 } else {
-                    label.setColor(Color.WHITE);
+                    borderColor = Color.WHITE;
+                    label.setColor(borderColor);
                 }
                 
                 Color bgColor = color.color;
@@ -243,7 +247,12 @@ public class DialogColors extends Dialog {
                         }
                     });
                 }
-                button.add(table).growX();
+                Table borderTable = new Table(skin);
+                borderTable.setBackground("white");
+                borderTable.setColor(borderColor);
+                borderTable.add(table).growX().pad(1.0f);
+                
+                button.add(borderTable).growX();
                 
                 label = new Label("(" + ((int)(color.color.r * 255)) + ", " + ((int)(color.color.g * 255)) + ", " + ((int)(color.color.b * 255)) + ", " + ((int)(color.color.a * 255)) + ")", skin, "white");
                 label.setTouchable(Touchable.disabled);

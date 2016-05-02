@@ -399,8 +399,9 @@ public class Main extends ApplicationAdapter {
                         showingCloseDialog = false;
                     }
                 };
-                dialog.text("Do you want to save your changes\n before you quit");
+                dialog.text("Do you want to save\nyour changes before you quit?");
                 dialog.button("Yes", 0).button("No", 1).button("Cancel", 2);
+                java.awt.Toolkit.getDefaultToolkit().beep();
                 dialog.show(stage);
             }
         }

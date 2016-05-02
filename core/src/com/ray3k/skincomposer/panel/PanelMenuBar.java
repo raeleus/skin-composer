@@ -125,7 +125,7 @@ public class PanelMenuBar {
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Gdx.app.exit();
+                Main.instance.showCloseDialog();
             }
         });
         menuItemTable.add(menuItemTextButton);

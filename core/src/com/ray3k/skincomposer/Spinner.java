@@ -35,7 +35,22 @@ public class Spinner extends Table {
         textField.setTextFieldFilter(new TextField.TextFieldFilter() {
             @Override
             public boolean acceptChar(TextField textField, char c) {
-                 return c >= 48 && c <= 57 || c == 45 || c == 46;
+                boolean returnValue = false;
+                if ((c >= 48 && c <= 57) || c == 45 || (!rounding && c == 46)) {
+                    String text = textField.getText();
+                    if (textField.getCursorPosition() <= text.length()) {
+                        text = text.substring(0, textField.getCursorPosition());
+                        text += c + textField.getText().substring(textField.getCursorPosition());
+                    }
+                    if (text.matches("-?\\d*\\.?\\d*")) {
+                        System.out.println(text + " true");
+                        returnValue = true;
+                    } else {
+                        System.out.println(text + " false");
+                    }
+                }
+                
+                return returnValue;
             }
         });
         updateText();
@@ -70,8 +85,10 @@ public class Spinner extends Table {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 Spinner parent = (Spinner) actor;
                 String text = textField.getText();
-                if (text.matches(".*\\d.*")) {
-                    parent.value = BigDecimal.valueOf(Double.parseDouble(text));
+                
+                if (text.matches("-?\\d+\\.?\\d*")) {
+                    double value = Double.parseDouble(text);
+                    parent.value = BigDecimal.valueOf(value);
                 } else {
                     parent.value = BigDecimal.valueOf(0);
                 }
