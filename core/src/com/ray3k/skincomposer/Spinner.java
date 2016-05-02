@@ -43,10 +43,7 @@ public class Spinner extends Table {
                         text += c + textField.getText().substring(textField.getCursorPosition());
                     }
                     if (text.matches("-?\\d*\\.?\\d*")) {
-                        System.out.println(text + " true");
                         returnValue = true;
-                    } else {
-                        System.out.println(text + " false");
                     }
                 }
                 
