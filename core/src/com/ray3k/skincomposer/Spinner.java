@@ -1,7 +1,10 @@
 package com.ray3k.skincomposer;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -32,6 +35,21 @@ public class Spinner extends Table {
         Button buttonRight = new Button(style.buttonRightStyle);
         textField = new TextField("", style.textFieldStyle);
         textField.setAlignment(Align.center);
+        
+        textField.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Keys.UP) {
+                    addValue();
+                    fire(new ChangeListener.ChangeEvent());
+                } else if (keycode == Keys.DOWN) {
+                    subtractValue();
+                    fire(new ChangeListener.ChangeEvent());
+                }
+                return false;
+            }
+        });
+        
         textField.setTextFieldFilter(new TextField.TextFieldFilter() {
             @Override
             public boolean acceptChar(TextField textField, char c) {
@@ -58,22 +76,14 @@ public class Spinner extends Table {
         buttonLeft.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Spinner parent = (Spinner) actor;
-                parent.value = parent.value.subtract(parent.increment);
-                if (usingMinimum && parent.value.doubleValue() < parent.minimum) parent.value = BigDecimal.valueOf(parent.minimum);
-                if (usingMaximum && parent.value.doubleValue() > parent.maximum) parent.value = BigDecimal.valueOf(parent.maximum);
-                parent.updateText();
+                subtractValue();
             }
         });
         
         buttonRight.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Spinner parent = (Spinner) actor;
-                parent.value = parent.value.add(parent.increment);
-                if (usingMinimum && parent.value.doubleValue() < parent.minimum) parent.value = BigDecimal.valueOf(parent.minimum);
-                if (usingMaximum && parent.value.doubleValue() > parent.maximum) parent.value = BigDecimal.valueOf(parent.maximum);
-                parent.updateText();
+                addValue();
             }
         });
         
@@ -118,6 +128,28 @@ public class Spinner extends Table {
         });
     }
     
+    private void subtractValue() {
+        value = value.subtract(increment);
+        if (usingMinimum && value.doubleValue() < minimum) {
+            value = BigDecimal.valueOf(minimum);
+        }
+        if (usingMaximum && value.doubleValue() > maximum) {
+            value = BigDecimal.valueOf(maximum);
+        }
+        updateText();
+    }
+    
+    private void addValue() {
+        value = value.add(increment);
+        if (usingMinimum && value.doubleValue() < minimum) {
+            value = BigDecimal.valueOf(minimum);
+        }
+        if (usingMaximum && value.doubleValue() > maximum) {
+            value = BigDecimal.valueOf(maximum);
+        }
+        updateText();
+    }
+    
     public double getValue() {
         return value.doubleValue();
     }
@@ -157,11 +189,17 @@ public class Spinner extends Table {
     }
     
     private void updateText() {
+        int pos = textField.getCursorPosition();
+        int startLength = textField.getText().length();
         if (rounding) {
             textField.setText(Integer.toString((int)MathUtils.round(value.floatValue())));
         } else {
             textField.setText(value.toString());
         }
+        int length = textField.getText().length();
+        
+        pos += length - startLength;
+        textField.setCursorPosition(Math.min(pos, length));
     }
     
     static public class SpinnerStyle {

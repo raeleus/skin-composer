@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.Main;
-import com.ray3k.skincomposer.utils.Utils;
 import java.io.FileNotFoundException;
 
 public class AtlasData {
@@ -150,7 +149,7 @@ public class AtlasData {
     public void writeAtlas(FileHandle targetFile) throws Exception {
         targetFile.parent().mkdirs();
         
-        Array<FileHandle> files = new Array<FileHandle>();
+        Array<FileHandle> files = new Array<>();
         for (DrawableData drawable : drawables) {
             if (!files.contains(drawable.file, false)) {
                 files.add(drawable.file);
