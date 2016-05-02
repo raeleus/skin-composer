@@ -151,6 +151,7 @@ public class DialogDrawables extends Dialog {
         imageButtonStyle.imageDown = skin.getDrawable("image-plus-down");
         imageButtonStyle.up = skin.getDrawable("button-orange");
         imageButtonStyle.down = skin.getDrawable("button-orange-down");
+        imageButtonStyle.over = skin.getDrawable("button-orange-over");
         imageButtonStyle.font = skin.getFont("font");
         imageButtonStyle.fontColor = skin.getColor("white");
         imageButtonStyle.downFontColor = skin.getColor("maroon");
