@@ -63,7 +63,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     }
     
     @Override
-    public void texturePack(Array<FileHandle> handles, FileHandle targetFile, int maxWidth, int maxHeight) {
+    public void texturePack(Array<FileHandle> handles, FileHandle localFile, FileHandle targetFile, int maxWidth, int maxHeight) {
         Settings settings = new TexturePacker.Settings();
         settings.maxWidth = maxWidth;
         settings.maxHeight = maxHeight;
@@ -77,7 +77,20 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         settings.flattenPaths = true;
         TexturePacker p = new TexturePacker(settings);
         for (FileHandle handle : handles) {
-            p.addImage(handle.file());
+            if (handle.exists()) {
+                p.addImage(handle.file());
+            } else {
+                if (localFile != null) {
+                    FileHandle localHandle = localFile.sibling(localFile.nameWithoutExtension() + "_data/" + handle.name());
+                    if (localHandle.exists()) {
+                        p.addImage(localHandle.file());
+                    } else {
+                        Gdx.app.error(getClass().getName(), "File does not exist error while creating texture atlas: " + handle.path());
+                    }
+                } else {
+                    Gdx.app.error(getClass().getName(), "File does not exist error while creating texture atlas: " + handle.path());
+                }
+            }
         }
         p.pack(targetFile.parent().file(), targetFile.nameWithoutExtension());
     }
