@@ -288,7 +288,6 @@ public class PanelPreviewProperties {
                 t.add(new Label("Value: ", skin)).right();
                 Spinner valueSpinner = new Spinner(0.0f, 1.0f, false, spinnerStyle);
                 valueSpinner.getTextField().setFocusTraversal(false);
-                valueSpinner.setMinimum(1);
                 valueSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -303,7 +302,6 @@ public class PanelPreviewProperties {
                 t.add(new Label("Minimum: ", skin)).right();
                 Spinner minimumSpinner = new Spinner(0.0f, 1.0f, false, spinnerStyle);
                 minimumSpinner.getTextField().setFocusTraversal(false);
-                minimumSpinner.setMinimum(1);
                 minimumSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -318,7 +316,6 @@ public class PanelPreviewProperties {
                 t.add(new Label("Maximum: ", skin)).right();
                 Spinner maximumSpinner = new Spinner(100.0f, 1.0f, false, spinnerStyle);
                 maximumSpinner.getTextField().setFocusTraversal(false);
-                maximumSpinner.setMinimum(1);
                 maximumSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -637,7 +634,6 @@ public class PanelPreviewProperties {
                 t.add(new Label("Minimum: ", skin)).right();
                 Spinner minimumSpinner = new Spinner(0.0f, 1.0f, false, spinnerStyle);
                 minimumSpinner.getTextField().setFocusTraversal(false);
-                minimumSpinner.setMinimum(1);
                 minimumSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -652,7 +648,6 @@ public class PanelPreviewProperties {
                 t.add(new Label("Maximum: ", skin)).right();
                 Spinner maximumSpinner = new Spinner(100.0f, 1.0f, false, spinnerStyle);
                 maximumSpinner.getTextField().setFocusTraversal(false);
-                maximumSpinner.setMinimum(1);
                 maximumSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
