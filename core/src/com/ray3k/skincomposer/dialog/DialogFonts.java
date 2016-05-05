@@ -477,7 +477,10 @@ public class DialogFonts extends Dialog {
             ch.getExtensionFilters().add(ex);
             ch.setTitle("Choose font file(s)...");
             if (ProjectData.instance().getLastDirectory() != null) {
-                ch.setInitialDirectory(new File(ProjectData.instance().getLastDirectory()));
+                File file = new File(ProjectData.instance().getLastDirectory());
+                if (file.exists()) {
+                    ch.setInitialDirectory(file);
+                }
             }
             return ch;
         });

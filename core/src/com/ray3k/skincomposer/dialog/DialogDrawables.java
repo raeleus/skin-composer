@@ -650,7 +650,10 @@ public class DialogDrawables extends Dialog {
             ch.getExtensionFilters().add(ex);
             ch.setTitle("Choose drawable file(s)...");
             if (ProjectData.instance().getLastDirectory() != null) {
-                ch.setInitialDirectory(new File(ProjectData.instance().getLastDirectory()));
+                File file = new File(ProjectData.instance().getLastDirectory());
+                if (file.exists()) {
+                    ch.setInitialDirectory(file);
+                }
             }
             return ch;
         });
@@ -741,22 +744,24 @@ public class DialogDrawables extends Dialog {
         
         initializeDrawables();
 
-        if (!produceAtlas()) {
-            showDrawableError();
-            Gdx.app.log(getClass().getName(), "Attempting to reload drawables backup...");
-            AtlasData.getInstance().getDrawables().clear();
-            AtlasData.getInstance().getDrawables().addAll(backup);
-            initializeDrawables();
-            if (produceAtlas()) {
-                Gdx.app.log(getClass().getName(), "Successfully rolled back changes to drawables");
+        Main.instance.showDialogLoading(() -> {
+            if (!produceAtlas()) {
+                showDrawableError();
+                Gdx.app.log(getClass().getName(), "Attempting to reload drawables backup...");
+                AtlasData.getInstance().getDrawables().clear();
+                AtlasData.getInstance().getDrawables().addAll(backup);
+                initializeDrawables();
+                if (produceAtlas()) {
+                    Gdx.app.log(getClass().getName(), "Successfully rolled back changes to drawables");
+                } else {
+                    Gdx.app.error(getClass().getName(), "Critical failure, could not roll back changes to drawables");
+                }
             } else {
-                Gdx.app.error(getClass().getName(), "Critical failure, could not roll back changes to drawables");
+                ProjectData.instance().setChangesSaved(false);
             }
-        } else {
-            ProjectData.instance().setChangesSaved(false);
-        }
 
-        sortBySelectedMode();
+            sortBySelectedMode();
+        });
     }
     
     /**

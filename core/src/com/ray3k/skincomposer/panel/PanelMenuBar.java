@@ -373,7 +373,10 @@ public class PanelMenuBar {
                 FileChooser.ExtensionFilter ex = new FileChooser.ExtensionFilter("Skin Composer files", "*.scmp");
                 ch.getExtensionFilters().add(ex);
                 ch.setTitle("Open skin file...");
-                ch.setInitialDirectory(new File(ProjectData.instance().getBestSaveDirectory()));
+                File file = new File(ProjectData.instance().getBestSaveDirectory());
+                if (file.exists()) {
+                    ch.setInitialDirectory(file);
+                }
                 return ch;
             });
             File file = chooser.showOpenDialog();
@@ -391,20 +394,23 @@ public class PanelMenuBar {
                         if (selection == 0) {
                             save(runnable);
                         } else if (selection == 1) {
-                            runnable.run();
+                            Main.instance.showDialogLoading(runnable);
                         }
                     });
         } else {
-            runnable.run();
+            Main.instance.showDialogLoading(runnable);
         }
     }
     
     public void save(Runnable runnable) {
         if (ProjectData.instance().getSaveFile() != null) {
-            ProjectData.instance().save();
-            if (runnable != null) {
-                runnable.run();
-            }
+            
+            Main.instance.showDialogLoading(() -> {
+                ProjectData.instance().save();
+                if (runnable != null) {
+                    runnable.run();
+                }
+            });
         } else {
             saveAsDialog(runnable);
         }
@@ -416,17 +422,23 @@ public class PanelMenuBar {
             FileChooser.ExtensionFilter ex = new FileChooser.ExtensionFilter("Skin Composer files", "*.scmp");
             ch.getExtensionFilters().add(ex);
             ch.setTitle("Save skin file as...");
-            ch.setInitialDirectory(new File(ProjectData.instance().getBestSaveDirectory()));
+            File file = new File(ProjectData.instance().getBestSaveDirectory());
+            if (file.exists()) {
+                ch.setInitialDirectory(file);
+            }
             return ch;
         });
-        File file = chooser.showSaveDialog();
-        if (file != null) {
-            FileHandle fileHandle = new FileHandle(file);
-            ProjectData.instance().save(fileHandle);
-            if (runnable != null) {
-                runnable.run();
+        
+        Main.instance.showDialogLoading(() -> {
+            File file = chooser.showSaveDialog();
+            if (file != null) {
+                FileHandle fileHandle = new FileHandle(file);
+                ProjectData.instance().save(fileHandle);
+                if (runnable != null) {
+                    runnable.run();
+                }
             }
-        }
+        });
     }
     
     public void importDialog() {
@@ -437,7 +449,10 @@ public class PanelMenuBar {
                 ch.getExtensionFilters().add(ex);
                 ch.setTitle("Import skin...");
                 if (ProjectData.instance().getLastDirectory() != null) {
-                    ch.setInitialDirectory(new File(ProjectData.instance().getLastDirectory()));
+                    File file = new File(ProjectData.instance().getLastDirectory());
+                    if (file.exists()) {
+                        ch.setInitialDirectory(file);
+                    }
                 }
                 return ch;
             });
@@ -467,7 +482,7 @@ public class PanelMenuBar {
                         }
                     });
         } else {
-            runnable.run();
+            Main.instance.showDialogLoading(runnable);
         }
     }
     
@@ -479,24 +494,30 @@ public class PanelMenuBar {
             ch.setTitle("Export skin...");
             
             if (ProjectData.instance().getLastDirectory() != null) {
-                ch.setInitialDirectory(new File(ProjectData.instance().getLastDirectory()));
+                File file = new File(ProjectData.instance().getLastDirectory());
+                if (file.exists()) {
+                    ch.setInitialDirectory(file);
+                }
             }
             return ch;
         });
-        File file = chooser.showSaveDialog();
-        if (file != null) {
-            FileHandle fileHandle = new FileHandle(file);
-            ProjectData.instance().setLastDirectory(fileHandle.parent().path());
-            JsonData.getInstance().writeFile(fileHandle);
-            try {
-                AtlasData.getInstance().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
-            } catch (Exception ex) {
-                Logger.getLogger(PanelMenuBar.class.getName()).log(Level.SEVERE, null, ex);
+        
+        Main.instance.showDialogLoading(() -> {
+            File file = chooser.showSaveDialog();
+            if (file != null) {
+                FileHandle fileHandle = new FileHandle(file);
+                ProjectData.instance().setLastDirectory(fileHandle.parent().path());
+                JsonData.getInstance().writeFile(fileHandle);
+                try {
+                    AtlasData.getInstance().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
+                } catch (Exception ex) {
+                    Logger.getLogger(PanelMenuBar.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                for (FontData font : JsonData.getInstance().getFonts()) {
+                    font.file.copyTo(fileHandle.parent());
+                }
             }
-            for (FontData font : JsonData.getInstance().getFonts()) {
-                font.file.copyTo(fileHandle.parent());
-            }
-        }
+        });
     }
     
     private static ObjectMap<String, String> shortcutNames;

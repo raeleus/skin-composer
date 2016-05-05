@@ -42,6 +42,7 @@ import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
 import com.ray3k.skincomposer.dialog.DialogColorPicker.ColorListener;
 import com.ray3k.skincomposer.dialog.DialogFonts;
+import com.ray3k.skincomposer.dialog.DialogLoading;
 import com.ray3k.skincomposer.dialog.DialogSettings;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,6 +58,7 @@ public class Main extends ApplicationAdapter {
     private int undoIndex;
     private boolean listeningForKeys;
     private boolean showingCloseDialog;
+    private AnimatedDrawable loadingAnimation;
     
     @Override
     public void create() {
@@ -108,6 +110,16 @@ public class Main extends ApplicationAdapter {
                 return false;
             }
         });
+        
+        loadingAnimation = new AnimatedDrawable(.05f);
+        loadingAnimation.addDrawable(skin.getDrawable("loading_0"));
+        loadingAnimation.addDrawable(skin.getDrawable("loading_1"));
+        loadingAnimation.addDrawable(skin.getDrawable("loading_2"));
+        loadingAnimation.addDrawable(skin.getDrawable("loading_3"));
+        loadingAnimation.addDrawable(skin.getDrawable("loading_4"));
+        loadingAnimation.addDrawable(skin.getDrawable("loading_5"));
+        loadingAnimation.addDrawable(skin.getDrawable("loading_6"));
+        loadingAnimation.addDrawable(skin.getDrawable("loading_7"));
         
         ProjectData.instance().randomizeId();
         ProjectData.instance().setMaxTextureDimensions(1024, 1024);
@@ -230,6 +242,7 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        loadingAnimation.update(Gdx.graphics.getDeltaTime());
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }
@@ -406,6 +419,11 @@ public class Main extends ApplicationAdapter {
             }
         }
     }
+    
+    public void showDialogLoading(Runnable runnable) {
+        DialogLoading dialog = new DialogLoading("", skin, runnable);
+        dialog.show(stage);
+    }
 
     public DesktopWorker getDesktopWorker() {
         return desktopWorker;
@@ -506,4 +524,9 @@ public class Main extends ApplicationAdapter {
     public void setListeningForKeys(boolean listeningForKeys) {
         this.listeningForKeys = listeningForKeys;
     }
+
+    public AnimatedDrawable getLoadingAnimation() {
+        return loadingAnimation;
+    }
+
 }
