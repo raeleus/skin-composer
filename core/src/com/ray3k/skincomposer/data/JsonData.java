@@ -1,3 +1,26 @@
+/*******************************************************************************
+ * MIT License
+ * 
+ * Copyright (c) 2016 Raymond Buckley
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ ******************************************************************************/
 package com.ray3k.skincomposer.data;
 
 import com.badlogic.gdx.Gdx;
@@ -5,7 +28,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
@@ -60,13 +82,13 @@ public class JsonData implements Json.Serializable {
 
     private JsonData() {
         instance = this;
-        styleClasses = new Array<Class>(new Class[]{ButtonStyle.class, CheckBoxStyle.class,
+        styleClasses = new Array<>(new Class[]{ButtonStyle.class, CheckBoxStyle.class,
             ImageButtonStyle.class, ImageTextButtonStyle.class, LabelStyle.class, ListStyle.class,
             ProgressBarStyle.class, ScrollPaneStyle.class, SelectBoxStyle.class, SliderStyle.class,
             SplitPaneStyle.class, TextButtonStyle.class, TextFieldStyle.class, TextTooltipStyle.class,
             TouchpadStyle.class, TreeStyle.class, WindowStyle.class});
-        colors = new Array<ColorData>();
-        fonts = new Array<FontData>();
+        colors = new Array<>();
+        fonts = new Array<>();
 
         initializeClassStyleMap();
     }
@@ -257,7 +279,7 @@ public class JsonData implements Json.Serializable {
     private void initializeClassStyleMap() {
         classStyleMap = new OrderedMap();
         for (Class clazz : StyleData.classes) {
-            Array<StyleData> array = new Array<StyleData>();
+            Array<StyleData> array = new Array<>();
             classStyleMap.put(clazz, array);
             if (clazz.equals(Slider.class) || clazz.equals(ProgressBar.class) || clazz.equals(SplitPane.class)) {
                 StyleData data = new StyleData(clazz, "default-horizontal");

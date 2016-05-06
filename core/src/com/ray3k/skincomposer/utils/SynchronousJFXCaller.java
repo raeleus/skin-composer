@@ -16,6 +16,7 @@ import javax.swing.WindowConstants;
  * on the JavaFX event thread.
  * 
  * @param <T> the return type of the callable
+ * @author Sergey A. Tachenov
  */
 public class SynchronousJFXCaller<T> {
     private final Callable<T> callable;
@@ -64,7 +65,7 @@ public class SynchronousJFXCaller<T> {
         modalBlocker.setOpacity(0.0f);
         modalBlocker.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         final CountDownLatch modalityLatch = new CountDownLatch(1);
-        final FutureTask<T> task = new FutureTask<T>(() -> {
+        final FutureTask<T> task = new FutureTask<>(() -> {
             synchronized (taskStarted) {
                 if (taskCancelled.get()) {
                     return null;

@@ -1,3 +1,26 @@
+/*******************************************************************************
+ * MIT License
+ * 
+ * Copyright (c) 2016 Raymond Buckley
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ ******************************************************************************/
 package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Gdx;
@@ -48,7 +71,6 @@ import com.ray3k.skincomposer.panel.PanelStyleProperties;
 import com.ray3k.skincomposer.utils.SynchronousJFXFileChooser;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import javafx.stage.FileChooser;
@@ -85,20 +107,17 @@ public class DialogFonts extends Dialog {
         fontMap = new ObjectMap<>();
         produceAtlas();
         
-        filesDroppedListener = new FilesDroppedListener() {
-            @Override
-            public void filesDropped(Array<FileHandle> files) {
-                Iterator<FileHandle> iter = files.iterator();
-                while (iter.hasNext()) {
-                    FileHandle file = iter.next();
-                    if (file.isDirectory() || !file.name().toLowerCase().endsWith(".fnt")) {
-                        iter.remove();
-                    }
+        filesDroppedListener = (Array<FileHandle> files) -> {
+            Iterator<FileHandle> iter = files.iterator();
+            while (iter.hasNext()) {
+                FileHandle file = iter.next();
+                if (file.isDirectory() || !file.name().toLowerCase().endsWith(".fnt")) {
+                    iter.remove();
                 }
-                
-                if (files.size > 0) {
-                    fontNameDialog(files, 0);
-                }
+            }
+            
+            if (files.size > 0) {
+                fontNameDialog(files, 0);
             }
         };
         
@@ -372,36 +391,23 @@ public class DialogFonts extends Dialog {
     }
 
     private void sortFontsAZ() {
-        Sort.instance().sort(fonts, new Comparator<FontData>() {
-            @Override
-            public int compare(FontData o1, FontData o2) {
-                return o1.toString().compareToIgnoreCase(o2.toString());
-            }
-        });
+        Sort.instance().sort(fonts, (FontData o1, FontData o2) -> o1.toString().compareToIgnoreCase(o2.toString()));
         populate();
     }
 
     private void sortFontsZA() {
-        Sort.instance().sort(fonts, new Comparator<FontData>() {
-            @Override
-            public int compare(FontData o1, FontData o2) {
-                return o1.toString().compareToIgnoreCase(o2.toString()) * -1;
-            }
-        });
+        Sort.instance().sort(fonts, (FontData o1, FontData o2) -> o1.toString().compareToIgnoreCase(o2.toString()) * -1);
         populate();
     }
 
     private void sortFontsOldest() {
-        Sort.instance().sort(fonts, new Comparator<FontData>() {
-            @Override
-            public int compare(FontData o1, FontData o2) {
-                if (o1.file.lastModified() < o2.file.lastModified()) {
-                    return -1;
-                } else if (o1.file.lastModified() > o2.file.lastModified()) {
-                    return 1;
-                } else {
-                    return 0;
-                }
+        Sort.instance().sort(fonts, (FontData o1, FontData o2) -> {
+            if (o1.file.lastModified() < o2.file.lastModified()) {
+                return -1;
+            } else if (o1.file.lastModified() > o2.file.lastModified()) {
+                return 1;
+            } else {
+                return 0;
             }
         });
 
@@ -409,16 +415,13 @@ public class DialogFonts extends Dialog {
     }
 
     private void sortFontsNewest() {
-        Sort.instance().sort(fonts, new Comparator<FontData>() {
-            @Override
-            public int compare(FontData o1, FontData o2) {
-                if (o1.file.lastModified() < o2.file.lastModified()) {
-                    return 1;
-                } else if (o1.file.lastModified() > o2.file.lastModified()) {
-                    return -1;
-                } else {
-                    return 0;
-                }
+        Sort.instance().sort(fonts, (FontData o1, FontData o2) -> {
+            if (o1.file.lastModified() < o2.file.lastModified()) {
+                return 1;
+            } else if (o1.file.lastModified() > o2.file.lastModified()) {
+                return -1;
+            } else {
+                return 0;
             }
         });
         populate();
@@ -527,18 +530,15 @@ public class DialogFonts extends Dialog {
                 nameDialog.button("Cancel", false);
                 final TextButton button = (TextButton) nameDialog.getButtonTable().getCells().first().getActor();
                 
-                textField.setTextFieldListener(new TextField.TextFieldListener() {
-                    @Override
-                    public void keyTyped(TextField textField, char c) {
-                        if (c == '\n') {
-                            if (!button.isDisabled()) {
-                                String name = textField.getText();
-                                if (addFont(name, fileHandle)) {
-                                    nameDialog.hide();
-                                }
+                textField.setTextFieldListener((TextField textField1, char c) -> {
+                    if (c == '\n') {
+                        if (!button.isDisabled()) {
+                            String name1 = textField1.getText();
+                            if (addFont(name1, fileHandle)) {
+                                nameDialog.hide();
                             }
-                            Main.instance.getStage().setKeyboardFocus(textField);
                         }
+                        Main.instance.getStage().setKeyboardFocus(textField1);
                     }
                 });
                 

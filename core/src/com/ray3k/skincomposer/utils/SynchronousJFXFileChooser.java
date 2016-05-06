@@ -6,7 +6,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import javafx.application.Platform;
 import javafx.stage.FileChooser;
 
 /**
@@ -17,6 +16,8 @@ import javafx.stage.FileChooser;
  * to ensure that JavaFX platform keeps running. Don't forget to call
  * Platform.exit() when shutting down the application, to ensure that
  * the JavaFX threads don't prevent JVM exit.
+ * 
+ * @author Sergey A. Tachenov
  */
 public class SynchronousJFXFileChooser {
     private final Supplier<FileChooser> fileChooserFactory;

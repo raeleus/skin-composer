@@ -1,3 +1,26 @@
+/*******************************************************************************
+ * MIT License
+ * 
+ * Copyright (c) 2016 Raymond Buckley
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ ******************************************************************************/
 package com.ray3k.skincomposer.panel;
 
 import com.ray3k.skincomposer.data.StyleData;
@@ -6,7 +29,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
@@ -105,15 +127,12 @@ public class PanelStyleProperties {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         Object oldValue = property.value;
-                        Main.instance.showDialogDrawables(property, new EventListener() {
-                            @Override
-                            public boolean handle(Event event) {
-                                Object newValue = property.value;
-                                if (oldValue != newValue) {
-                                    Main.instance.addUndoable(new DrawableUndoable(property, oldValue, newValue), true);
-                                }
-                                return false;
+                        Main.instance.showDialogDrawables(property, (Event event1) -> {
+                            Object newValue = property.value;
+                            if (oldValue != newValue) {
+                                Main.instance.addUndoable(new DrawableUndoable(property, oldValue, newValue), true);
                             }
+                            return false;
                         });
                     }
                 });
@@ -128,15 +147,12 @@ public class PanelStyleProperties {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         Object oldValue = property.value;
-                        Main.instance.showDialogColors(property, new EventListener() {
-                            @Override
-                            public boolean handle(Event event) {
-                                Object newValue = property.value;
-                                if (oldValue != newValue) {
-                                    Main.instance.addUndoable(new ColorUndoable(property, oldValue, newValue), true);
-                                }
-                                return false;
+                        Main.instance.showDialogColors(property, (Event event1) -> {
+                            Object newValue = property.value;
+                            if (oldValue != newValue) {
+                                Main.instance.addUndoable(new ColorUndoable(property, oldValue, newValue), true);
                             }
+                            return false;
                         });
                     }
                 });
@@ -151,15 +167,12 @@ public class PanelStyleProperties {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         Object oldValue = property.value;
-                        Main.instance.showDialogFonts(property, new EventListener() {
-                            @Override
-                            public boolean handle(Event event) {
-                                Object newValue = property.value;
-                                if (oldValue != newValue) {
-                                    Main.instance.addUndoable(new FontUndoable(property, oldValue, newValue), true);
-                                }
-                                return false;
+                        Main.instance.showDialogFonts(property, (Event event1) -> {
+                            Object newValue = property.value;
+                            if (oldValue != newValue) {
+                                Main.instance.addUndoable(new FontUndoable(property, oldValue, newValue), true);
                             }
+                            return false;
                         });
                     }
                 });

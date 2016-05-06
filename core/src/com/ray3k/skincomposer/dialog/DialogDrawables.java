@@ -1,3 +1,26 @@
+/*******************************************************************************
+ * MIT License
+ * 
+ * Copyright (c) 2016 Raymond Buckley
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ ******************************************************************************/
 package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Gdx;
@@ -48,7 +71,6 @@ import com.ray3k.skincomposer.panel.PanelPreviewProperties;
 import com.ray3k.skincomposer.panel.PanelStyleProperties;
 import com.ray3k.skincomposer.utils.SynchronousJFXFileChooser;
 import java.io.File;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import javafx.stage.FileChooser;
@@ -78,6 +100,7 @@ public class DialogDrawables extends Dialog {
      * Creates the drawables dialog with a default WindowStyle.
      * @param skin
      * @param property If null, the dialog will disable selection mode.
+     * @param listener
      */
     public DialogDrawables(Skin skin, StyleProperty property, EventListener listener) {
         this(skin, "default", property, listener);
@@ -88,6 +111,7 @@ public class DialogDrawables extends Dialog {
      * @param skin
      * @param windowStyleName
      * @param property If null, the dialog will disable selection mode.
+     * @param listener
      */
     public DialogDrawables(Skin skin, String windowStyleName, StyleProperty property, EventListener listener) {
         super("", skin, windowStyleName);
@@ -106,19 +130,16 @@ public class DialogDrawables extends Dialog {
         
         this.skin = skin;
 
-        filesDroppedListener = new FilesDroppedListener() {
-            @Override
-            public void filesDropped(Array<FileHandle> files) {
-                Iterator<FileHandle> iter = files.iterator();
-                while (iter.hasNext()) {
-                    FileHandle file = iter.next();
-                    if (file.isDirectory() || !(file.name().toLowerCase().endsWith(".png") || file.name().toLowerCase().endsWith(".jpg") || file.name().toLowerCase().endsWith(".jpeg") || file.name().toLowerCase().endsWith(".bmp") || file.name().toLowerCase().endsWith(".gif"))) {
-                        iter.remove();
-                    }
+        filesDroppedListener = (Array<FileHandle> files) -> {
+            Iterator<FileHandle> iter = files.iterator();
+            while (iter.hasNext()) {
+                FileHandle file = iter.next();
+                if (file.isDirectory() || !(file.name().toLowerCase().endsWith(".png") || file.name().toLowerCase().endsWith(".jpg") || file.name().toLowerCase().endsWith(".jpeg") || file.name().toLowerCase().endsWith(".bmp") || file.name().toLowerCase().endsWith(".gif"))) {
+                    iter.remove();
                 }
-                if (files.size > 0) {
-                    drawablesSelected(files);
-                }
+            }
+            if (files.size > 0) {
+                drawablesSelected(files);
             }
         };
         
@@ -232,12 +253,7 @@ public class DialogDrawables extends Dialog {
      * Sorts alphabetically from A to Z.
      */
     private void sortDrawablesAZ() {
-        Sort.instance().sort(drawables, new Comparator<DrawableData>() {
-            @Override
-            public int compare(DrawableData o1, DrawableData o2) {
-                return o1.toString().compareToIgnoreCase(o2.toString());
-            }
-        });
+        Sort.instance().sort(drawables, (DrawableData o1, DrawableData o2) -> o1.toString().compareToIgnoreCase(o2.toString()));
         populate();
     }
     
@@ -245,12 +261,7 @@ public class DialogDrawables extends Dialog {
      * Sorts alphabetically from Z to A.
      */
     private void sortDrawablesZA() {
-        Sort.instance().sort(drawables, new Comparator<DrawableData>() {
-            @Override
-            public int compare(DrawableData o1, DrawableData o2) {
-                return o1.toString().compareToIgnoreCase(o2.toString()) * -1;
-            }
-        });
+        Sort.instance().sort(drawables, (DrawableData o1, DrawableData o2) -> o1.toString().compareToIgnoreCase(o2.toString()) * -1);
         populate();
     }
     
@@ -258,16 +269,13 @@ public class DialogDrawables extends Dialog {
      * Sorts by modified date with oldest first.
      */
     private void sortDrawablesOldest() {
-        Sort.instance().sort(drawables, new Comparator<DrawableData>() {
-            @Override
-            public int compare(DrawableData o1, DrawableData o2) {
-                if (o1.file.lastModified() < o2.file.lastModified()) {
-                    return -1;
-                } else if (o1.file.lastModified() > o2.file.lastModified()) {
-                    return 1;
-                } else {
-                    return 0;
-                }
+        Sort.instance().sort(drawables, (DrawableData o1, DrawableData o2) -> {
+            if (o1.file.lastModified() < o2.file.lastModified()) {
+                return -1;
+            } else if (o1.file.lastModified() > o2.file.lastModified()) {
+                return 1;
+            } else {
+                return 0;
             }
         });
         populate();
@@ -277,16 +285,13 @@ public class DialogDrawables extends Dialog {
      * Sorts by modified date with newest first.
      */
     private void sortDrawablesNewest() {
-        Sort.instance().sort(drawables, new Comparator<DrawableData>() {
-            @Override
-            public int compare(DrawableData o1, DrawableData o2) {
-                if (o1.file.lastModified() < o2.file.lastModified()) {
-                    return 1;
-                } else if (o1.file.lastModified() > o2.file.lastModified()) {
-                    return -1;
-                } else {
-                    return 0;
-                }
+        Sort.instance().sort(drawables, (DrawableData o1, DrawableData o2) -> {
+            if (o1.file.lastModified() < o2.file.lastModified()) {
+                return 1;
+            } else if (o1.file.lastModified() > o2.file.lastModified()) {
+                return -1;
+            } else {
+                return 0;
             }
         });
         populate();
@@ -606,9 +611,9 @@ public class DialogDrawables extends Dialog {
                 
                 for (Array<StyleData> datas : JsonData.getInstance().getClassStyleMap().values()) {
                     for (StyleData tempData : datas) {
-                        for (StyleProperty property : tempData.properties.values()) {
-                            if (property != null && property.type.equals(Drawable.class) && property.value != null && property.value.equals(data.toString())) {
-                                property.value = null;
+                        for (StyleProperty prop : tempData.properties.values()) {
+                            if (prop != null && prop.type.equals(Drawable.class) && prop.value != null && prop.value.equals(data.toString())) {
+                                prop.value = null;
                             }
                         }
                     }
@@ -809,6 +814,7 @@ public class DialogDrawables extends Dialog {
                         }
                     };
                     dialog.addCaptureListener(new InputListener() {
+                        @Override
                         public boolean keyDown(InputEvent event, int keycode2) {
                             if (keycode2 == Keys.ENTER) {
                                 if (!button.isDisabled()) {
