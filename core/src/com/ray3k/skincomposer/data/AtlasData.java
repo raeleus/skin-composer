@@ -37,6 +37,7 @@ import java.io.FileNotFoundException;
 
 public class AtlasData {
     private static AtlasData instance;
+    public boolean atlasCurrent = false;
     private Array<DrawableData> drawables;
     
     private AtlasData() {
@@ -52,6 +53,7 @@ public class AtlasData {
     
     public void clear() {
         drawables.clear();
+        atlasCurrent = false;
     }
     
     public static void loadInstance(AtlasData instance) {

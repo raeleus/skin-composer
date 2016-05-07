@@ -523,7 +523,10 @@ public class DialogDrawables extends Dialog {
         Main.instance.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
         
         try {
-            AtlasData.getInstance().writeAtlas();
+            if (!AtlasData.getInstance().atlasCurrent) {
+                AtlasData.getInstance().writeAtlas();
+                AtlasData.getInstance().atlasCurrent = true;
+            }
         } catch (Exception e) {
             Gdx.app.error(getClass().getName(), "Error creating atlas upon drawable dialog exit", e);
         }
@@ -546,7 +549,10 @@ public class DialogDrawables extends Dialog {
                 atlas.dispose();
                 atlas = null;
             }
-            AtlasData.getInstance().writeAtlas();
+            if (!AtlasData.getInstance().atlasCurrent) {
+                AtlasData.getInstance().writeAtlas();
+                AtlasData.getInstance().atlasCurrent = true;
+            }
             atlas = AtlasData.getInstance().getAtlas();
 
             for (DrawableData data : AtlasData.getInstance().getDrawables()) {
@@ -684,6 +690,7 @@ public class DialogDrawables extends Dialog {
     }
     
     private void drawablesSelected(Array<FileHandle> files) {
+        AtlasData.getInstance().atlasCurrent = false;
         Array<DrawableData> backup = new Array<>(drawables);
         Array<FileHandle> unhandledFiles = new Array<>();
         Array<FileHandle> filesToProcess = new Array<>();

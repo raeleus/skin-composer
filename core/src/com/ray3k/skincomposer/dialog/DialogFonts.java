@@ -215,6 +215,7 @@ public class DialogFonts extends Dialog {
                     DrawableData drawable = new DrawableData(new FileHandle(path));
                     drawable.visible = false;
                     if (!drawables.contains(drawable, false)) {
+                        AtlasData.getInstance().atlasCurrent = false;
                         drawables.add(drawable);
                     }
                 }
@@ -448,7 +449,11 @@ public class DialogFonts extends Dialog {
                 atlas.dispose();
                 atlas = null;
             }
-            AtlasData.getInstance().writeAtlas();
+            
+            if (!AtlasData.getInstance().atlasCurrent) {
+                AtlasData.getInstance().writeAtlas();
+                AtlasData.getInstance().atlasCurrent = true;
+            }
             atlas = AtlasData.getInstance().getAtlas();
 
             for (FontData font : fonts) {

@@ -1262,7 +1262,10 @@ public class PanelPreviewProperties {
                 atlas = null;
             }
             
-            AtlasData.getInstance().writeAtlas();
+            if (!AtlasData.getInstance().atlasCurrent) {
+                AtlasData.getInstance().writeAtlas();
+                AtlasData.getInstance().atlasCurrent = true;
+            }
             atlas = AtlasData.getInstance().getAtlas();
 
             for (DrawableData data : AtlasData.getInstance().getDrawables()) {
