@@ -303,7 +303,7 @@ public class DialogDrawables extends Dialog {
         if (object != null) {
             if (object instanceof DrawableData) {
                 ProjectData.instance().setChangesSaved(false);
-                PanelStatusBar.instance.message("Drawable selected: " + object.toString() + " for " + property.name);
+                PanelStatusBar.instance.message("Drawable selected: " + object.toString() + " for \"" + property.name + "\"");
                 if (object instanceof DrawableData) {
                     DrawableData drawable = (DrawableData) object;
                     property.value = drawable.name;
@@ -313,7 +313,7 @@ public class DialogDrawables extends Dialog {
                 if ((boolean) object) {
                     ProjectData.instance().setChangesSaved(false);
                     property.value = null;
-                    PanelStatusBar.instance.message("Drawable emptied for " + property.name);
+                    PanelStatusBar.instance.message("Drawable emptied for \"" + property.name + "\"");
                     PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                 } else {
                     boolean hasDrawable = false;
@@ -326,7 +326,7 @@ public class DialogDrawables extends Dialog {
                     
                     if (!hasDrawable) {
                         property.value = null;
-                        PanelStatusBar.instance.message("Drawable deleted for " + property.name);
+                        PanelStatusBar.instance.message("Drawable deleted for \"" + property.name + "\"");
                         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                     }
                 }
