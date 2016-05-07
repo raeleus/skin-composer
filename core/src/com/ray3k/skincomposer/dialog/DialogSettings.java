@@ -39,6 +39,7 @@ import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.Spinner.SpinnerStyle;
+import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.panel.PanelStatusBar;
 import com.ray3k.skincomposer.utils.Utils;
@@ -135,6 +136,24 @@ public class DialogSettings extends Dialog {
             });
             t.add(textButton).colspan(2);
         }
+        
+        t.row();
+        textButton = new TextButton("Repack Texture Atlas", skin, "orange-small");
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                Main.instance.showDialogLoading(() -> {
+                    try {
+                        AtlasData.getInstance().writeAtlas();
+                        AtlasData.getInstance().atlasCurrent = true;
+                    } catch (Exception e) {
+                        Main.instance.showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
+                        Gdx.app.error(getClass().getName(), "Unable to write texture atlas to temporary storage!", e);
+                    }
+                });
+            }
+        });
+        t.add(textButton).colspan(2);
         
         t.row();
         label = new Label("Max Texture Width: ", skin);

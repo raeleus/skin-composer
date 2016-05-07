@@ -447,6 +447,23 @@ public class Main extends ApplicationAdapter {
         DialogLoading dialog = new DialogLoading("", skin, runnable);
         dialog.show(stage);
     }
+    
+    public void showDialogError(String title, String message, Runnable runnable) {
+        Dialog dialog = new Dialog(title, skin, "dialog") {
+            @Override
+            public boolean remove() {
+                if (runnable != null) {
+                    runnable.run();
+                }
+                return super.remove();
+            }
+            
+        };
+        
+        dialog.text(message);
+        dialog.button("OK");
+        dialog.show(stage);
+    }
 
     public DesktopWorker getDesktopWorker() {
         return desktopWorker;
