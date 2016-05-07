@@ -380,12 +380,14 @@ public class DialogColors extends Dialog {
             if (object instanceof ColorData) {
                 ProjectData.instance().setChangesSaved(false);
                 ColorData color = (ColorData) object;
-                PanelStatusBar.instance.message("Selected Color: " + color.getName());
+                PanelStatusBar.instance.message("Selected Color " + color.getName() + " for " + styleProperty.name);
                 styleProperty.value = color.getName();
                 PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
+                    ProjectData.instance().setChangesSaved(false);
                     styleProperty.value = null;
+                    PanelStatusBar.instance.message("Emptied Color for " + styleProperty.name);
                     PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                 } else {
                     boolean hasColor = false;
@@ -397,7 +399,9 @@ public class DialogColors extends Dialog {
                     }
 
                     if (!hasColor) {
+                        ProjectData.instance().setChangesSaved(false);
                         styleProperty.value = null;
+                        PanelStatusBar.instance.message("Deleted Color for " + styleProperty.name);
                         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                     }
                 }

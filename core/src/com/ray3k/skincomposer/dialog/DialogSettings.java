@@ -75,7 +75,6 @@ public class DialogSettings extends Dialog {
             ProjectData.instance().setChangesSaved(false);
             ProjectData.instance().setMaxTextureDimensions(textureWidth, textureHeight);
             ProjectData.instance().setMaxUndos(maxUndos);
-            PanelStatusBar.instance.message("Changed max texture settings: " + textureWidth + " " + textureHeight);
             Main.instance.clearUndoables();
         }
     }
@@ -83,6 +82,7 @@ public class DialogSettings extends Dialog {
     @Override
     public boolean remove() {
         Main.instance.setListeningForKeys(true);
+        PanelStatusBar.instance.message("Settings Updated");
         return super.remove();
     }
 
