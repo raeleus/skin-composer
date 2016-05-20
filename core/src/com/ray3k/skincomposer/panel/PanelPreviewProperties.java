@@ -110,6 +110,7 @@ public class PanelPreviewProperties {
     private Array<BitmapFont> fonts = new Array<>();
     private SelectBox<String> sizeSelectBox;
     private final String[] defaultSizes = {"small", "default", "large", "growX", "growY", "grow", "custom"};
+    private static Color bgColor;
     
     public PanelPreviewProperties(Table table, Skin skin, Stage stage) {
         instance = this;
@@ -155,6 +156,7 @@ public class PanelPreviewProperties {
                         if (color != null) {
                             browseField.getTextField().setText((int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
                             properties.put("bgcolor", color);
+                            bgColor = color;
                             render();
                         }
                     }
@@ -162,8 +164,11 @@ public class PanelPreviewProperties {
             }
         });
         t.add(browseField).growX();
-        properties.put("bgcolor", Color.WHITE);
-        browseField.getTextField().setText("255,255,255,255");
+        if (bgColor == null) {
+            bgColor = Color.WHITE;
+        }
+        properties.put("bgcolor", bgColor);
+        browseField.getTextField().setText((int) (bgColor.r * 255) + "," + (int) (bgColor.g * 255) + "," + (int) (bgColor.b * 255) + "," + (int) (bgColor.a * 255));
         
         t.row();
         t.add(new Label("Size: ", skin)).right();
