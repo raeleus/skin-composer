@@ -63,6 +63,7 @@ public class DialogSettings extends Dialog {
         textureWidth = ProjectData.instance().getMaxTextureWidth();
         textureHeight = ProjectData.instance().getMaxTextureHeight();
         maxUndos = ProjectData.instance().getMaxUndos();
+        setFillParent(true);
         
         populate();
     }
@@ -173,7 +174,7 @@ public class DialogSettings extends Dialog {
             }
             
         });
-        t.add(spinner).growX();
+        t.add(spinner).minWidth(150.0f).left();
         
         t.row();
         label = new Label("Max Texture Height: ", skin);
@@ -193,7 +194,7 @@ public class DialogSettings extends Dialog {
             }
             
         });
-        t.add(spinner2).growX();
+        t.add(spinner2).minWidth(150.0f).left();
         
         t.row();
         label = new Label("Max Number of Undos: ", skin);
@@ -214,7 +215,7 @@ public class DialogSettings extends Dialog {
             }
             
         });
-        t.add(spinner3).growX();
+        t.add(spinner3).minWidth(150.0f).left();
         
         button("OK", true);
         button ("Cancel", false);
