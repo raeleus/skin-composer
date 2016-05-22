@@ -373,6 +373,12 @@ public class PanelPreviewProperties {
                 t.add(new Label("Orientation: ", skin)).right();
                 SelectBox<String> selectBox = new SelectBox<>(skin, "slim");
                 selectBox.setItems(new String[] {"Horizontal", "Vertical"});
+                if (PanelClassBar.instance.getStyleSelectBox().getSelected().name.contains("vert")) {
+                    properties.put("orientation", true);
+                    selectBox.setSelectedIndex(1);
+                } else {
+                    properties.put("orientation", false);
+                }
                 selectBox.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -384,7 +390,6 @@ public class PanelPreviewProperties {
                         render();
                     }
                 });
-                properties.put("orientation", false);
                 t.add(selectBox).growX();
                 
             } else if (clazz.equals(ScrollPane.class)) {
@@ -704,6 +709,12 @@ public class PanelPreviewProperties {
                 t.add(new Label("Orientation: ", skin)).right();
                 SelectBox<String> selectBox = new SelectBox<>(skin, "slim");
                 selectBox.setItems(new String[] {"Horizontal", "Vertical"});
+                if (PanelClassBar.instance.getStyleSelectBox().getSelected().name.contains("vert")) {
+                    properties.put("orientation", true);
+                    selectBox.setSelectedIndex(1);
+                } else {
+                    properties.put("orientation", false);
+                }
                 selectBox.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -716,13 +727,17 @@ public class PanelPreviewProperties {
                     }
                 });
                 t.add(selectBox).growX();
-                properties.put("orientation", false);
-                
             } else if (clazz.equals(SplitPane.class)) {
                 t.row();
                 t.add(new Label("Orientation: ", skin)).right();
                 SelectBox<String> selectBox = new SelectBox<>(skin, "slim");
                 selectBox.setItems(new String[] {"Horizontal", "Vertical"});
+                if (PanelClassBar.instance.getStyleSelectBox().getSelected().name.contains("vert")) {
+                    properties.put("orientation", true);
+                    selectBox.setSelectedIndex(1);
+                } else {
+                    properties.put("orientation", false);
+                }
                 selectBox.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -735,7 +750,6 @@ public class PanelPreviewProperties {
                     }
                 });
                 t.add(selectBox).growX();
-                properties.put("orientation", false);
                 
                 t.row();
                 t.add(new Label("Sample Text: ", skin)).right();
