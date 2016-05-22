@@ -487,6 +487,7 @@ public class PanelMenuBar {
                     JsonData.getInstance().readFile(fileHandle);
                     PanelClassBar.instance.populate();
                     PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+                    AtlasData.getInstance().atlasCurrent = false;
                     PanelPreviewProperties.instance.produceAtlas();
                     PanelPreviewProperties.instance.populate();
                 } catch (Exception e) {

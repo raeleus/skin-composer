@@ -135,9 +135,10 @@ public class JsonData implements Json.Serializable {
             } //tinted drawables
             else if (child.name().equals(TintedDrawable.class.getName())) {
                 for (JsonValue tintedDrawable : child.iterator()) {
-                    DrawableData drawableData = new DrawableData(targetDirectory.child(tintedDrawable.getString("name") + ".png"));
+                    DrawableData drawableData = new DrawableData(AtlasData.getInstance().getDrawable(tintedDrawable.getString("name")).file);
                     drawableData.name = tintedDrawable.name;
-                    drawableData.tint = new Color(tintedDrawable.getFloat("r", 0.0f), tintedDrawable.getFloat("g", 0.0f), tintedDrawable.getFloat("b", 0.0f), tintedDrawable.getFloat("a", 0.0f));
+                    drawableData.tint = new Color(tintedDrawable.get("color").getFloat("r", 0.0f), tintedDrawable.get("color").getFloat("g", 0.0f), tintedDrawable.get("color").getFloat("b", 0.0f), tintedDrawable.get("color").getFloat("a", 0.0f));
+                    AtlasData.getInstance().getDrawables().add(drawableData);
                 }
             } //styles
             else {
