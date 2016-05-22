@@ -268,6 +268,9 @@ public class StyleData implements Json.Serializable {
             properties.get("selection").optional = false;
         } else if (clazz.equals(ProgressBar.class)) {
             newStyleProperties(ProgressBarStyle.class);
+            
+            //Though specified as optional in the doc, there are bugs without "background" being mandatory
+            properties.get("background").optional = false;
         } else if (clazz.equals(ScrollPane.class)) {
             newStyleProperties(ScrollPaneStyle.class);
         } else if (clazz.equals(SelectBox.class)) {
@@ -280,6 +283,9 @@ public class StyleData implements Json.Serializable {
             properties.get("listStyle").value = "default";
         } else if (clazz.equals(Slider.class)) {
             newStyleProperties(SliderStyle.class);
+            
+            //Though specified as optional in the doc, there are bugs without "background" being mandatory
+            properties.get("background").optional = false;
         } else if (clazz.equals(SplitPane.class)) {
             newStyleProperties(SplitPaneStyle.class);
             properties.get("handle").optional = false;

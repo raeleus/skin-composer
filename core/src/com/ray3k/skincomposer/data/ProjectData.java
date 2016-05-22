@@ -166,7 +166,7 @@ public class ProjectData implements Json.Serializable{
         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         AtlasData.getInstance().atlasCurrent = false;
         PanelPreviewProperties.instance.produceAtlas();
-        PanelPreviewProperties.instance.render();
+        PanelPreviewProperties.instance.populate();
         instance.setChangesSaved(true);
     }
     
