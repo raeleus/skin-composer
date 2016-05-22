@@ -181,7 +181,7 @@ public class AtlasData {
             }
         }
         
-        Main.instance.getDesktopWorker().texturePack(files, targetFile, ProjectData.instance().getSaveFile(), ProjectData.instance().getMaxTextureWidth(), ProjectData.instance().getMaxTextureHeight());
+        Main.instance.getDesktopWorker().texturePack(files, ProjectData.instance().getSaveFile(), targetFile, ProjectData.instance().getMaxTextureWidth(), ProjectData.instance().getMaxTextureHeight());
     }
     
     public TextureAtlas getAtlas() {
