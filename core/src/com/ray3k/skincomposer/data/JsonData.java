@@ -125,6 +125,12 @@ public class JsonData implements Json.Serializable {
                     fontFile.copyTo(fontCopy);
                     FontData fontData = new FontData(font.name(), fontCopy);
                     fonts.add(fontData);
+
+                    BitmapFont.BitmapFontData bitmapFontData = new BitmapFont.BitmapFontData(fontCopy, false);
+                    for (String path : bitmapFontData.imagePaths) {
+                        FileHandle file = new FileHandle(path);
+                        AtlasData.getInstance().getDrawable(file.nameWithoutExtension()).visible = false;
+                    }
                 }
             } //colors
             else if (child.name().equals(Color.class.getName())) {
