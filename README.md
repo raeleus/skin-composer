@@ -13,7 +13,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * http://ray3k.wordpress.com
 * raymond.ray3k (at) gmail.com
 
-### Licensce ###
+### License ###
 MIT License
 
 Copyright (c) 2016 Raymond Buckley
