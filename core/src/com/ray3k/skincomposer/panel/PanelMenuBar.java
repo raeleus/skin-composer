@@ -40,6 +40,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.kotcrab.vis.ui.widget.file.FileChooser.DefaultFileIconProvider;
+import com.kotcrab.vis.ui.widget.file.FileChooser.FileIconProvider;
+import com.kotcrab.vis.ui.widget.file.FileChooser.Mode;
+import com.kotcrab.vis.ui.widget.file.FileChooser.ViewMode;
+import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.MenuList;
 import com.ray3k.skincomposer.data.AtlasData;
@@ -58,9 +63,16 @@ public class PanelMenuBar {
     private Stage stage;
     private TextButton undoButton, redoButton;
     private static PanelMenuBar instance;
+    private com.kotcrab.vis.ui.widget.file.FileChooser fileChooser;
+    private FileIconProvider fileIconProvider;
     
     public PanelMenuBar(final Table table, final Skin skin, final Stage stage) {
         instance = this;
+        
+        if (!Utils.isWindows()) {
+           fileChooser = new com.kotcrab.vis.ui.widget.file.FileChooser(Mode.OPEN);
+           fileIconProvider = new DefaultFileIconProvider(fileChooser);
+        }
         
         this.skin = skin;
         this.stage = stage;
@@ -390,6 +402,14 @@ public class PanelMenuBar {
     }
     
     public void openDialog() {
+        if (Utils.isWindows()) {
+            openDialogWindows();
+        } else {
+            openDialogVisUI();
+        }
+    }
+    
+    public void openDialogWindows() {
         Runnable runnable = () -> {
             SynchronousJFXFileChooser chooser = new SynchronousJFXFileChooser(() -> {
                 FileChooser ch = new FileChooser();
@@ -423,6 +443,18 @@ public class PanelMenuBar {
         } else {
             Main.instance.showDialogLoading(runnable);
         }
+    }
+    
+    public void openDialogVisUI() {
+        fileChooser.setMode(Mode.OPEN);
+        fileChooser.setMultiSelectionEnabled(true);
+        fileChooser.setDirectory(ProjectData.instance().getBestSaveDirectory());
+        FileTypeFilter typeFilter = new FileTypeFilter(false);
+        typeFilter.addRule("Skin Composer files (*.scmp)", "scmp");
+        fileChooser.setFileTypeFilter(typeFilter);
+        fileChooser.setIconProvider(fileIconProvider);
+        fileChooser.setViewMode(ViewMode.MEDIUM_ICONS);
+        fileChooser.setViewModeButtonVisible(true);
     }
     
     public void save(Runnable runnable) {

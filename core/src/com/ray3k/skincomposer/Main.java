@@ -60,6 +60,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.VisUI;
+import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
@@ -68,6 +69,7 @@ import com.ray3k.skincomposer.dialog.DialogColorPicker.ColorListener;
 import com.ray3k.skincomposer.dialog.DialogFonts;
 import com.ray3k.skincomposer.dialog.DialogLoading;
 import com.ray3k.skincomposer.dialog.DialogSettings;
+import com.sun.javafx.util.Utils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -86,7 +88,11 @@ public class Main extends ApplicationAdapter {
     
     @Override
     public void create() {
-        VisUI.load();
+        if (!Utils.isWindows()) {
+            VisUI.load();
+            FileChooser.setDefaultPrefsName("com.ray3k.skincomposer VisUI");
+        }
+        
         showingCloseDialog = false;
         listeningForKeys = true;
         undoables = new Array<>();
