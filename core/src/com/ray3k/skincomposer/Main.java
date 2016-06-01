@@ -59,6 +59,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.kotcrab.vis.ui.VisUI;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
@@ -85,6 +86,7 @@ public class Main extends ApplicationAdapter {
     
     @Override
     public void create() {
+        VisUI.load();
         showingCloseDialog = false;
         listeningForKeys = true;
         undoables = new Array<>();
@@ -280,6 +282,7 @@ public class Main extends ApplicationAdapter {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+        VisUI.dispose();
         
         //javaFX
         Platform.exit();
