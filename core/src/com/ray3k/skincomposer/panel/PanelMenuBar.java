@@ -448,7 +448,14 @@ public class PanelMenuBar {
         Runnable runnable = () -> {
             fileChooser.setMode(Mode.OPEN);
             fileChooser.setMultiSelectionEnabled(false);
-            fileChooser.setDirectory(ProjectData.instance().getBestSaveDirectory());
+            FileHandle defaultFile = new FileHandle(ProjectData.instance().getBestSaveDirectory());
+            if (defaultFile.exists()) {
+                if (defaultFile.isDirectory()) {
+                    fileChooser.setDirectory(defaultFile);
+                } else {
+                    fileChooser.setDirectory(defaultFile.parent());
+                }
+            }
             FileTypeFilter typeFilter = new FileTypeFilter(false);
             typeFilter.addRule("Skin Composer files (*.scmp)", "scmp");
             fileChooser.setFileTypeFilter(typeFilter);
@@ -529,9 +536,17 @@ public class PanelMenuBar {
     public void saveAsDialogVisUI(Runnable runnable) {
         fileChooser.setMode(Mode.SAVE);
         fileChooser.setMultiSelectionEnabled(false);
-        fileChooser.setDirectory(ProjectData.instance().getBestSaveDirectory());
+        FileHandle defaultFile = new FileHandle(ProjectData.instance().getBestSaveDirectory());
+        if (defaultFile.exists()) {
+            if (defaultFile.isDirectory()) {
+                fileChooser.setDirectory(defaultFile);
+            } else {
+                fileChooser.setDirectory(defaultFile.parent());
+            }
+        }
         FileTypeFilter typeFilter = new FileTypeFilter(false);
         typeFilter.addRule("Skin Composer files (*.scmp)", "scmp");
+        typeFilter.setAllTypesAllowed(false);
         fileChooser.setFileTypeFilter(typeFilter);
         fileChooser.setViewMode(ViewMode.DETAILS);
         fileChooser.setViewModeButtonVisible(true);
@@ -558,6 +573,10 @@ public class PanelMenuBar {
     }
     
     public void importDialog() {
+        importDialogVisUI();
+    }
+    
+    public void importDialogWindows() {
         Runnable runnable = () -> {
             SynchronousJFXFileChooser chooser = new SynchronousJFXFileChooser(() -> {
                 FileChooser ch = new FileChooser();
@@ -603,7 +622,65 @@ public class PanelMenuBar {
         }
     }
     
+    public void importDialogVisUI() {
+        Runnable runnable = () -> {
+            fileChooser.setMode(Mode.OPEN);
+            fileChooser.setMultiSelectionEnabled(false);
+            FileHandle defaultFile = new FileHandle(ProjectData.instance().getLastDirectory());
+            if (defaultFile.exists()) {
+                if (defaultFile.isDirectory()) {
+                    fileChooser.setDirectory(defaultFile);
+                } else {
+                    fileChooser.setDirectory(defaultFile.parent());
+                }
+            }
+            FileTypeFilter typeFilter = new FileTypeFilter(false);
+            typeFilter.addRule("Json files (*.json)", "json");
+            fileChooser.setFileTypeFilter(typeFilter);
+            fileChooser.setViewMode(ViewMode.DETAILS);
+            fileChooser.setViewModeButtonVisible(true);
+            fileChooser.setWatchingFilesEnabled(true);
+            fileChooser.getTitleLabel().setText("Import skin...");
+            fileChooser.setListener(new FileChooserAdapter() {
+                @Override
+                public void selected(Array<FileHandle> files) {
+                    if (files.size > 0) {
+                        ProjectData.instance().setLastDirectory(files.first().toString());
+                        try {
+                            JsonData.getInstance().readFile(files.first());
+                            PanelClassBar.instance.populate();
+                            PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+                            AtlasData.getInstance().atlasCurrent = false;
+                            PanelPreviewProperties.instance.produceAtlas();
+                            PanelPreviewProperties.instance.populate();
+                        } catch (Exception e) {
+                            Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
+                        }
+                    }
+                }
+            });
+            stage.addActor(fileChooser.fadeIn());
+        };
+        
+        if (!ProjectData.instance().areChangesSaved()) {
+            yesNoDialog("Save Changes?",
+                    "The project must be saved before import."
+                    + "\nDo you want to save?",
+                    (int selection) -> {
+                        if (selection == 0) {
+                            save(runnable);
+                        }
+                    });
+        } else {
+            runnable.run();
+        }
+    }
+    
     public void exportDialog() {
+        exportDialogVisUI();
+    }
+    
+    public void exportDialogWindows() {
         SynchronousJFXFileChooser chooser = new SynchronousJFXFileChooser(() -> {
             FileChooser ch = new FileChooser();
             FileChooser.ExtensionFilter ex = new FileChooser.ExtensionFilter("Json files", "*.json");
@@ -635,6 +712,52 @@ public class PanelMenuBar {
                 }
             }
         });
+    }
+    
+    public void exportDialogVisUI() {
+        fileChooser.setMode(Mode.SAVE);
+        fileChooser.setMultiSelectionEnabled(false);
+        FileHandle defaultFile = new FileHandle(ProjectData.instance().getBestSaveDirectory());
+        if (defaultFile.exists()) {
+            if (defaultFile.isDirectory()) {
+                fileChooser.setDirectory(defaultFile);
+            } else {
+                fileChooser.setDirectory(defaultFile.parent());
+            }
+        }
+        FileTypeFilter typeFilter = new FileTypeFilter(false);
+        typeFilter.addRule("Json files (*.json)", "json");
+        typeFilter.setAllTypesAllowed(false);
+        fileChooser.setFileTypeFilter(typeFilter);
+        fileChooser.setViewMode(ViewMode.DETAILS);
+        fileChooser.setViewModeButtonVisible(true);
+        fileChooser.setWatchingFilesEnabled(true);
+        fileChooser.getTitleLabel().setText("Export skin...");
+        fileChooser.setListener(new FileChooserAdapter() {
+            @Override
+            public void selected(Array<FileHandle> files) {
+                if (files.size > 0) {
+                    if (!files.first().extension().equalsIgnoreCase("json")) {
+                        files.set(0, files.first().sibling(files.first().name() + ".json"));
+                    }
+                    
+                    Main.instance.showDialogLoading(() -> {
+                        FileHandle fileHandle = files.first();
+                        ProjectData.instance().setLastDirectory(fileHandle.parent().path());
+                        JsonData.getInstance().writeFile(fileHandle);
+                        try {
+                            AtlasData.getInstance().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
+                        } catch (Exception ex) {
+                            Logger.getLogger(PanelMenuBar.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        for (FontData font : JsonData.getInstance().getFonts()) {
+                            font.file.copyTo(fileHandle.parent());
+                        }
+                    });
+                }
+            }
+        });
+        stage.addActor(fileChooser.fadeIn());
     }
     
     private static ObjectMap<String, String> shortcutNames;
