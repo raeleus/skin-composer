@@ -88,10 +88,10 @@ public class Main extends ApplicationAdapter {
     
     @Override
     public void create() {
-        if (!Utils.isWindows()) {
+//        if (!Utils.isWindows()) {
             VisUI.load();
             FileChooser.setDefaultPrefsName("com.ray3k.skincomposer VisUI");
-        }
+//        }
         
         showingCloseDialog = false;
         listeningForKeys = true;

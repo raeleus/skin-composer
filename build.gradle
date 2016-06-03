@@ -15,7 +15,7 @@ allprojects {
     version = '1.0'
     ext {
         appName = "SkinComposer"
-        gdxVersion = '1.9.4-SNAPSHOT'
+        gdxVersion = '1.9.3'
         roboVMVersion = '2.1.0'
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
@@ -49,6 +49,8 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.kotcrab.vis:vis-ui:$visuiVersion"
+        compile "com.kotcrab.vis:vis-ui-contrib:1.1.2-SNAPSHOT"
+        compile "org.imgscalr:imgscalr-lib:4.2"
     }
 }
 

@@ -40,10 +40,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.kotcrab.vis.ui.widget.file.FileChooser.DefaultFileIconProvider;
-import com.kotcrab.vis.ui.widget.file.FileChooser.FileIconProvider;
+import com.kotcrab.vis.ui.contrib.widget.file.ImgScalrFileChooserIconProvider;
 import com.kotcrab.vis.ui.widget.file.FileChooser.Mode;
 import com.kotcrab.vis.ui.widget.file.FileChooser.ViewMode;
+import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
 import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.MenuList;
@@ -64,15 +64,14 @@ public class PanelMenuBar {
     private TextButton undoButton, redoButton;
     private static PanelMenuBar instance;
     private com.kotcrab.vis.ui.widget.file.FileChooser fileChooser;
-    private FileIconProvider fileIconProvider;
     
     public PanelMenuBar(final Table table, final Skin skin, final Stage stage) {
         instance = this;
         
-        if (!Utils.isWindows()) {
+//        if (!Utils.isWindows()) {
            fileChooser = new com.kotcrab.vis.ui.widget.file.FileChooser(Mode.OPEN);
-           fileIconProvider = new DefaultFileIconProvider(fileChooser);
-        }
+           fileChooser.setIconProvider(new ImgScalrFileChooserIconProvider(fileChooser));
+//        }
         
         this.skin = skin;
         this.stage = stage;
@@ -402,11 +401,11 @@ public class PanelMenuBar {
     }
     
     public void openDialog() {
-        if (Utils.isWindows()) {
-            openDialogWindows();
-        } else {
+//        if (Utils.isWindows()) {
+//            openDialogWindows();
+//        } else {
             openDialogVisUI();
-        }
+//        }
     }
     
     public void openDialogWindows() {
@@ -446,15 +445,42 @@ public class PanelMenuBar {
     }
     
     public void openDialogVisUI() {
-        fileChooser.setMode(Mode.OPEN);
-        fileChooser.setMultiSelectionEnabled(true);
-        fileChooser.setDirectory(ProjectData.instance().getBestSaveDirectory());
-        FileTypeFilter typeFilter = new FileTypeFilter(false);
-        typeFilter.addRule("Skin Composer files (*.scmp)", "scmp");
-        fileChooser.setFileTypeFilter(typeFilter);
-        fileChooser.setIconProvider(fileIconProvider);
-        fileChooser.setViewMode(ViewMode.MEDIUM_ICONS);
-        fileChooser.setViewModeButtonVisible(true);
+        Runnable runnable = () -> {
+            fileChooser.setMode(Mode.OPEN);
+            fileChooser.setMultiSelectionEnabled(false);
+            fileChooser.setDirectory(ProjectData.instance().getBestSaveDirectory());
+            FileTypeFilter typeFilter = new FileTypeFilter(false);
+            typeFilter.addRule("Skin Composer files (*.scmp)", "scmp");
+            fileChooser.setFileTypeFilter(typeFilter);
+            fileChooser.setViewMode(ViewMode.DETAILS);
+            fileChooser.setViewModeButtonVisible(true);
+            fileChooser.setWatchingFilesEnabled(true);
+            fileChooser.getTitleLabel().setText("Open skin file...");
+            fileChooser.setListener(new FileChooserAdapter() {
+                @Override
+                public void selected(Array<FileHandle> files) {
+                    if (files.size > 0) {
+                        ProjectData.instance().load(files.first());
+                    }
+                }
+            });
+            stage.addActor(fileChooser.fadeIn());
+        };
+        
+        if (!ProjectData.instance().areChangesSaved() && !ProjectData.instance().isNewProject()) {
+            yesNoCancelDialog("Save Changes?",
+                    "Do you want to save changes to the existing project?"
+                    + "\nAll unsaved changes will be lost.",
+                    (int selection) -> {
+                        if (selection == 0) {
+                            save(runnable);
+                        } else if (selection == 1) {
+                            runnable.run();
+                        }
+                    });
+        } else {
+            runnable.run();
+        }
     }
     
     public void save(Runnable runnable) {
@@ -472,6 +498,10 @@ public class PanelMenuBar {
     }
     
     public void saveAsDialog(Runnable runnable) {
+        saveAsDialogVisUI(runnable);
+    }
+    
+    public void saveAsDialogWindows(Runnable runnable) {
         SynchronousJFXFileChooser chooser = new SynchronousJFXFileChooser(() -> {
             FileChooser ch = new FileChooser();
             FileChooser.ExtensionFilter ex = new FileChooser.ExtensionFilter("Skin Composer files", "*.scmp");
@@ -494,6 +524,37 @@ public class PanelMenuBar {
                 }
             }
         });
+    }
+    
+    public void saveAsDialogVisUI(Runnable runnable) {
+        fileChooser.setMode(Mode.SAVE);
+        fileChooser.setMultiSelectionEnabled(false);
+        fileChooser.setDirectory(ProjectData.instance().getBestSaveDirectory());
+        FileTypeFilter typeFilter = new FileTypeFilter(false);
+        typeFilter.addRule("Skin Composer files (*.scmp)", "scmp");
+        fileChooser.setFileTypeFilter(typeFilter);
+        fileChooser.setViewMode(ViewMode.DETAILS);
+        fileChooser.setViewModeButtonVisible(true);
+        fileChooser.setWatchingFilesEnabled(true);
+        fileChooser.getTitleLabel().setText("Save skin file as...");
+        fileChooser.setListener(new FileChooserAdapter() {
+            @Override
+            public void selected(Array<FileHandle> files) {
+                if (files.size > 0) {
+                    if (!files.first().extension().equalsIgnoreCase("scmp")) {
+                        files.set(0, files.first().sibling(files.first().name() + ".scmp"));
+                    }
+                    
+                    Main.instance.showDialogLoading(() -> {
+                        ProjectData.instance().save(files.first());
+                        if (runnable != null) {
+                            runnable.run();
+                        }
+                    });
+                }
+            }
+        });
+        stage.addActor(fileChooser.fadeIn());
     }
     
     public void importDialog() {
