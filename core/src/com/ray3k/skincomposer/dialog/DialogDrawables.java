@@ -58,6 +58,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Sort;
+import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
+import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
@@ -67,6 +69,7 @@ import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.panel.PanelClassBar;
+import com.ray3k.skincomposer.panel.PanelMenuBar;
 import com.ray3k.skincomposer.panel.PanelPreviewProperties;
 import com.ray3k.skincomposer.panel.PanelStyleProperties;
 import com.ray3k.skincomposer.utils.SynchronousJFXFileChooser;
@@ -657,6 +660,10 @@ public class DialogDrawables extends Dialog {
      * multiple files at once.
      */
     private void newDrawableDialog() {
+        newDrawableDialogVisUI();
+    }
+    
+    private void newDrawableDialogWindows() {
         SynchronousJFXFileChooser chooser = new SynchronousJFXFileChooser(() -> {
             FileChooser ch = new FileChooser();
             FileChooser.ExtensionFilter ex = new FileChooser.ExtensionFilter("Image files", "*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif");
@@ -674,6 +681,36 @@ public class DialogDrawables extends Dialog {
         if (files != null && files.size() > 0) {
             drawablesSelected(files);
         }
+    }
+    
+    private void newDrawableDialogVisUI() {
+        com.kotcrab.vis.ui.widget.file.FileChooser fileChooser = PanelMenuBar.instance().getFileChooser();
+        fileChooser.setMode(com.kotcrab.vis.ui.widget.file.FileChooser.Mode.OPEN);
+        fileChooser.setMultiSelectionEnabled(true);
+        FileHandle defaultFile = new FileHandle(ProjectData.instance().getLastDirectory());
+        if (defaultFile.exists()) {
+            if (defaultFile.isDirectory()) {
+                fileChooser.setDirectory(defaultFile);
+            } else {
+                fileChooser.setDirectory(defaultFile.parent());
+            }
+        }
+        FileTypeFilter typeFilter = new FileTypeFilter(false);
+        typeFilter.addRule("Image files (*.png, *.jpg, *.jpeg, *.bmp, *.gif)", "png", "jpg", "jpeg", "bmp", "gif");
+        fileChooser.setFileTypeFilter(typeFilter);
+        fileChooser.setViewMode(com.kotcrab.vis.ui.widget.file.FileChooser.ViewMode.BIG_ICONS);
+        fileChooser.setViewModeButtonVisible(true);
+        fileChooser.setWatchingFilesEnabled(true);
+        fileChooser.getTitleLabel().setText("Choose drawable file(s)...");
+        fileChooser.setListener(new FileChooserAdapter() {
+            @Override
+            public void selected(Array<FileHandle> files) {
+                if (files.size > 0) {
+                    drawablesSelected(files);
+                }
+            }
+        });
+        getStage().addActor(fileChooser.fadeIn());
     }
 
     /**

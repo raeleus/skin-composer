@@ -785,4 +785,8 @@ public class PanelMenuBar {
         
         return shortcutNames;
     }
+
+    public com.kotcrab.vis.ui.widget.file.FileChooser getFileChooser() {
+        return fileChooser;
+    }
 }
