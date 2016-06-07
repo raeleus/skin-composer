@@ -373,6 +373,7 @@ public class PanelMenuBar {
         Label label = new Label(text, skin);
         label.setAlignment(Align.center);
         dialog.text(label);
+        dialog.getContentTable().getCells().first().pad(10.0f);
         dialog.button("Yes", 0);
         dialog.button("No", 1);
         dialog.button("Cancel", 2);
@@ -390,6 +391,7 @@ public class PanelMenuBar {
         Label label = new Label(text, skin);
         label.setAlignment(Align.center);
         dialog.text(label);
+        dialog.getContentTable().getCells().first().pad(10.0f);
         dialog.button("Yes", 0);
         dialog.button("No", 1);
         dialog.key(Keys.ESCAPE, 1);

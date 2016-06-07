@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -51,6 +52,7 @@ public class DialogSettings extends Dialog {
     private Integer textureWidth;
     private Integer textureHeight;
     private Integer maxUndos;
+    private int selectedSkin;
 
     public DialogSettings(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
@@ -77,6 +79,10 @@ public class DialogSettings extends Dialog {
             ProjectData.instance().setChangesSaved(false);
             ProjectData.instance().setMaxTextureDimensions(textureWidth, textureHeight);
             ProjectData.instance().setMaxUndos(maxUndos);
+            if (ProjectData.instance().getSelectedSkin() != selectedSkin) {
+                showRestartAppDialog();
+            }
+            ProjectData.instance().setSelectedSkin(selectedSkin);
             Main.instance.clearUndoables();
         }
     }
@@ -220,8 +226,32 @@ public class DialogSettings extends Dialog {
         });
         t.add(spinner3).minWidth(150.0f).left();
         
+        t.row();
+        label = new Label("Editor Skin: ", skin);
+        t.add(label).right();
+        SelectBox selectBox = new SelectBox(skin, "slim");
+        selectBox.setItems("Orange Peel UI", "Dark Peel UI");
+        selectBox.setSelectedIndex(ProjectData.instance().getSelectedSkin());
+        selectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                selectedSkin = selectBox.getSelectedIndex();
+            }
+        });
+        t.add(selectBox).minWidth(150.0f).left();
+        
         button("OK", true);
         button ("Cancel", false);
         key(Keys.ESCAPE, false);
+    }
+
+    private void showRestartAppDialog() {
+        Dialog dialog = new Dialog("Restart App", skin, "dialog");
+        Label label = new Label("Please restart the application\nto apply changes to the user interface.", skin);
+        label.setAlignment(Align.center);
+        dialog.text(label);
+        dialog.getContentTable().getCells().first().pad(10.0f);
+        dialog.button("OK");
+        dialog.show(getStage());
     }
 }

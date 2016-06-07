@@ -115,7 +115,13 @@ public class Main extends ApplicationAdapter {
         Platform.setImplicitExit(false);
         
         instance = this;
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        
+        if (ProjectData.instance().getSelectedSkin() == 0) {
+            skin = new Skin(Gdx.files.internal("uiskin.json"));
+        } else {
+            skin = new Skin(Gdx.files.internal("uiskin.json"));
+        }
+        
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         stage.addListener(new InputListener() {
@@ -444,7 +450,10 @@ public class Main extends ApplicationAdapter {
                         showingCloseDialog = false;
                     }
                 };
-                dialog.text("Do you want to save\nyour changes before you quit?");
+                Label label = new Label("Do you want to save\nyour changes before you quit?", skin);
+                label.setAlignment(Align.center);
+                dialog.text(label);
+                dialog.getContentTable().getCells().first().pad(10.0f);
                 dialog.button("Yes", 0).button("No", 1).button("Cancel", 2);
                 java.awt.Toolkit.getDefaultToolkit().beep();
                 dialog.show(stage);
@@ -578,4 +587,7 @@ public class Main extends ApplicationAdapter {
         return loadingAnimation;
     }
 
+    public Skin getSkin() {
+        return skin;
+    }
 }

@@ -215,4 +215,13 @@ public class ProjectData implements Json.Serializable{
             saveFile = new FileHandle(jsonData.getString("saveFile"));
         }
     }
+
+    public void setSelectedSkin(int selectedSkin) {
+        generalPref.putInteger("selectedSkin", selectedSkin);
+        generalPref.flush();
+    }
+    
+    public int getSelectedSkin() {
+        return (int) generalPref.getInteger("selectedSkin", 0);
+    }
 }
