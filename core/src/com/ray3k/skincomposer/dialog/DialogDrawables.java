@@ -73,7 +73,7 @@ import com.ray3k.skincomposer.panel.PanelMenuBar;
 import com.ray3k.skincomposer.panel.PanelPreviewProperties;
 import com.ray3k.skincomposer.panel.PanelStyleProperties;
 import com.ray3k.skincomposer.utils.SynchronousJFXFileChooser;
-import com.sun.javafx.util.Utils;
+import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
