@@ -66,6 +66,7 @@ public class DialogSettings extends Dialog {
         textureWidth = ProjectData.instance().getMaxTextureWidth();
         textureHeight = ProjectData.instance().getMaxTextureHeight();
         maxUndos = ProjectData.instance().getMaxUndos();
+        selectedSkin = ProjectData.instance().getSelectedSkin();
         setFillParent(true);
         
         populate();
@@ -231,7 +232,7 @@ public class DialogSettings extends Dialog {
         t.add(label).right();
         SelectBox selectBox = new SelectBox(skin, "slim");
         selectBox.setItems("Orange Peel UI", "Dark Peel UI");
-        selectBox.setSelectedIndex(ProjectData.instance().getSelectedSkin());
+        selectBox.setSelectedIndex(selectedSkin);
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {

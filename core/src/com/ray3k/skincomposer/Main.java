@@ -69,7 +69,7 @@ import com.ray3k.skincomposer.dialog.DialogColorPicker.ColorListener;
 import com.ray3k.skincomposer.dialog.DialogFonts;
 import com.ray3k.skincomposer.dialog.DialogLoading;
 import com.ray3k.skincomposer.dialog.DialogSettings;
-import com.sun.javafx.util.Utils;
+import com.ray3k.skincomposer.utils.Utils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -88,10 +88,12 @@ public class Main extends ApplicationAdapter {
     
     @Override
     public void create() {
-//        if (!Utils.isWindows()) {
+        if (Utils.isMac()) System.setProperty("java.awt.headless", "true");
+        
+        if (!Utils.isWindows()) {
             VisUI.load();
             FileChooser.setDefaultPrefsName("com.ray3k.skincomposer VisUI");
-//        }
+        }
         
         showingCloseDialog = false;
         listeningForKeys = true;
@@ -110,16 +112,18 @@ public class Main extends ApplicationAdapter {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        //JavaFX settings
-        new javafx.embed.swing.JFXPanel();
-        Platform.setImplicitExit(false);
+        if (Utils.isWindows()) {
+            //JavaFX settings
+            new javafx.embed.swing.JFXPanel();
+            Platform.setImplicitExit(false);
+        }
         
         instance = this;
         
         if (ProjectData.instance().getSelectedSkin() == 0) {
-            skin = new Skin(Gdx.files.internal("uiskin.json"));
+            skin = new Skin(Gdx.files.internal("orange-peel-ui/uiskin.json"));
         } else {
-            skin = new Skin(Gdx.files.internal("uiskin.json"));
+            skin = new Skin(Gdx.files.internal("dark-peel-ui/dark-peel-ui.json"));
         }
         
         stage = new Stage(new ScreenViewport());
@@ -296,8 +300,10 @@ public class Main extends ApplicationAdapter {
         skin.dispose();
         VisUI.dispose();
         
-        //javaFX
-        Platform.exit();
+        if (Utils.isWindows()) {
+            //javaFX
+            Platform.exit();
+        }
     }
     
     /**
