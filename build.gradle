@@ -49,7 +49,7 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.kotcrab.vis:vis-ui:$visuiVersion"
-        compile "com.kotcrab.vis:vis-ui-contrib:1.1.2-SNAPSHOT"
+        compile "com.kotcrab.vis:vis-ui-contrib:$visuiVersion"
         compile "org.imgscalr:imgscalr-lib:4.2"
     }
 }
