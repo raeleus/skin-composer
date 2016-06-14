@@ -486,7 +486,11 @@ public class DialogFonts extends Dialog {
     }
     
     private void newFontDialog() {
-        newFontDialogVisUI();
+        if (Utils.isWindows()) {
+            newFontDialogWindows();
+        } else {
+            newFontDialogVisUI();
+        }
     }
     
     private void newFontDialogWindows() {

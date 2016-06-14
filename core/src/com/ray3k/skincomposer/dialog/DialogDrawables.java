@@ -73,6 +73,7 @@ import com.ray3k.skincomposer.panel.PanelMenuBar;
 import com.ray3k.skincomposer.panel.PanelPreviewProperties;
 import com.ray3k.skincomposer.panel.PanelStyleProperties;
 import com.ray3k.skincomposer.utils.SynchronousJFXFileChooser;
+import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
@@ -660,7 +661,11 @@ public class DialogDrawables extends Dialog {
      * multiple files at once.
      */
     private void newDrawableDialog() {
-        newDrawableDialogVisUI();
+        if (Utils.isWindows()) {
+            newDrawableDialogWindows();
+        } else {
+            newDrawableDialogVisUI();
+        }
     }
     
     private void newDrawableDialogWindows() {

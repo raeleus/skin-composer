@@ -173,6 +173,8 @@ public class AtlasData {
     
     public void writeAtlas(FileHandle targetFile) throws Exception {
         targetFile.parent().mkdirs();
+        targetFile.sibling(targetFile.nameWithoutExtension() + ".png").delete();
+        targetFile.sibling(targetFile.nameWithoutExtension() + ".atlas").delete();
         
         Array<FileHandle> files = new Array<>();
         for (DrawableData drawable : drawables) {

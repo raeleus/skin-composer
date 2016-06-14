@@ -81,7 +81,7 @@ public class ProjectData implements Json.Serializable{
     }
     
     public String getLastDirectory() {
-        return (String) preferences.get("last-directory", generalPref.getString("last-directory", null));
+        return (String) preferences.get("last-directory", generalPref.getString("last-directory", Gdx.files.getLocalStoragePath()));
     }
     
     public void setMaxTextureDimensions(int width, int height) {

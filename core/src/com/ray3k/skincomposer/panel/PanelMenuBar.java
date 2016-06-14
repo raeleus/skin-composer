@@ -68,10 +68,10 @@ public class PanelMenuBar {
     public PanelMenuBar(final Table table, final Skin skin, final Stage stage) {
         instance = this;
         
-//        if (!Utils.isWindows()) {
+        if (!Utils.isWindows()) {
            fileChooser = new com.kotcrab.vis.ui.widget.file.FileChooser(Mode.OPEN);
            fileChooser.setIconProvider(new ImgScalrFileChooserIconProvider(fileChooser));
-//        }
+        }
         
         this.skin = skin;
         this.stage = stage;
@@ -403,11 +403,11 @@ public class PanelMenuBar {
     }
     
     public void openDialog() {
-//        if (Utils.isWindows()) {
-//            openDialogWindows();
-//        } else {
+        if (Utils.isWindows()) {
+            openDialogWindows();
+        } else {
             openDialogVisUI();
-//        }
+        }
     }
     
     public void openDialogWindows() {
@@ -507,7 +507,11 @@ public class PanelMenuBar {
     }
     
     public void saveAsDialog(Runnable runnable) {
-        saveAsDialogVisUI(runnable);
+        if (Utils.isWindows()) {
+            saveAsDialogWindows(runnable);
+        } else {
+            saveAsDialogVisUI(runnable);
+        }
     }
     
     public void saveAsDialogWindows(Runnable runnable) {
@@ -575,7 +579,11 @@ public class PanelMenuBar {
     }
     
     public void importDialog() {
-        importDialogVisUI();
+        if (Utils.isWindows()) {
+            importDialogWindows();
+        } else {
+            importDialogVisUI();
+        }
     }
     
     public void importDialogWindows() {
@@ -679,7 +687,11 @@ public class PanelMenuBar {
     }
     
     public void exportDialog() {
-        exportDialogVisUI();
+        if (Utils.isWindows()) {
+            exportDialogWindows();
+        } else {
+            exportDialogVisUI();
+        }
     }
     
     public void exportDialogWindows() {
