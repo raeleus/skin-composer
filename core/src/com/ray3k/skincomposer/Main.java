@@ -93,6 +93,16 @@ public class Main extends ApplicationAdapter {
         if (!Utils.isWindows()) {
             VisUI.load();
             FileChooser.setDefaultPrefsName("com.ray3k.skincomposer VisUI");
+        } else {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            //JavaFX settings
+            new javafx.embed.swing.JFXPanel();
+            Platform.setImplicitExit(false);
         }
         
         showingCloseDialog = false;
@@ -105,18 +115,6 @@ public class Main extends ApplicationAdapter {
             showCloseDialog();
             return false;
         });
-        
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        if (Utils.isWindows()) {
-            //JavaFX settings
-            new javafx.embed.swing.JFXPanel();
-            Platform.setImplicitExit(false);
-        }
         
         instance = this;
         
@@ -298,11 +296,12 @@ public class Main extends ApplicationAdapter {
     public void dispose() {
         stage.dispose();
         skin.dispose();
-        VisUI.dispose();
         
         if (Utils.isWindows()) {
             //javaFX
             Platform.exit();
+        } else {
+            VisUI.dispose();
         }
     }
     
@@ -493,7 +492,7 @@ public class Main extends ApplicationAdapter {
         return desktopWorker;
     }
 
-    public void setTextureWorker(DesktopWorker textureWorker) {
+    public void setDesktopWorker(DesktopWorker textureWorker) {
         this.desktopWorker = textureWorker;
     }
 

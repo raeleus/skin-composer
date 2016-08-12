@@ -363,7 +363,7 @@ public class PanelMenuBar {
         }
     }
     
-    private void yesNoCancelDialog(String title, String text, confirmationListener listener) {
+    private void yesNoCancelDialog(String title, String text, ConfirmationListener listener) {
         Dialog dialog = new Dialog(title, skin, "dialog") {
             @Override
             protected void result(Object object) {
@@ -381,7 +381,7 @@ public class PanelMenuBar {
         dialog.show(stage);
     }
     
-    private void yesNoDialog(String title, String text, confirmationListener listener) {
+    private void yesNoDialog(String title, String text, ConfirmationListener listener) {
         Dialog dialog = new Dialog(title, skin, "dialog") {
             @Override
             protected void result(Object object) {
@@ -398,7 +398,7 @@ public class PanelMenuBar {
         dialog.show(stage);
     }
     
-    private interface confirmationListener {
+    private interface ConfirmationListener {
         public void selected(int selection);
     }
     
