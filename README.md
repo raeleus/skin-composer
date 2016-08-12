@@ -5,13 +5,23 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 2
+* Version 3
 
 ### Contact ###
 
 * This project is maintained by Raymond "Raeleus" Buckley
 * http://ray3k.wordpress.com
 * raymond.ray3k (at) gmail.com
+
+### Notes ###
+
+Contributer RaimundWege has shared the following information for anyone who is working from source in Android Studio on Mac.
+
+* You have to go to 'File/Project Structure...' and set the project language level to '8 - Lambdas, type annotations etc.'
+* The line: 'config.setWindowSizeLimits(675, 400, -1, -1);' in DesktopLauncher throws NoSuchMethodError (no idea why). So this line needs to be commented out.
+* You have to start the project with the vm option: -XstartOnFirstThread
+
+These will remain as issues until I can get my hands a proper Mac to do testing. AFAIK, the compiled version should work fine on Mac systems.
 
 ### License ###
 MIT License

@@ -54,7 +54,7 @@ public class PanelStatusBar {
             
         };
         table.add(container).expand().left();
-        Label label = new Label("ver. 2    RAY3K.WORDPRESS.COM 2016", skin, "white");
+        Label label = new Label("ver. 3    RAY3K.WORDPRESS.COM 2016", skin, "white");
         table.add(label).right().padRight(20.0f);
     }
     
