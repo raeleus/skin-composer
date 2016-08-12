@@ -23,6 +23,7 @@
  ******************************************************************************/
 package com.ray3k.skincomposer.data;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Json;
@@ -72,7 +73,7 @@ public class DrawableData implements Json.Serializable{
         if (obj instanceof DrawableData) {
             DrawableData dd = (DrawableData) obj;
             
-            if (dd.file.equals(file) && ((tint == null && dd.tint == null) || tint.equals(dd.tint))) {
+            if (dd.file.equals(file) && ((tint == null && dd.tint == null) || (tint != null && tint.equals(dd.tint)))) {
                 returnValue = true;
             }
         }
