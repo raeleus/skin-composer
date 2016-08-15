@@ -196,4 +196,13 @@ public class Utils {
         }
         return os.startsWith("Mac");
     }
+    
+    public static float floorPot(float value) {
+        float returnValue = 0.0f;
+        for (float newValue = 2.0f; newValue < value; newValue *= 2.0f) {
+            returnValue = newValue;
+        }
+        
+        return returnValue;
+    }
 }

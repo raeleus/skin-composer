@@ -25,6 +25,7 @@ package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -78,7 +79,7 @@ public class DialogSettings extends Dialog {
         
         if ((boolean) object) {
             ProjectData.instance().setChangesSaved(false);
-            ProjectData.instance().setMaxTextureDimensions(textureWidth, textureHeight);
+            ProjectData.instance().setMaxTextureDimensions(MathUtils.nextPowerOfTwo(textureWidth), MathUtils.nextPowerOfTwo(textureHeight));
             ProjectData.instance().setMaxUndos(maxUndos);
             if (ProjectData.instance().getSelectedSkin() != selectedSkin) {
                 showRestartAppDialog();
@@ -167,6 +168,10 @@ public class DialogSettings extends Dialog {
         t.add(textButton).colspan(2);
         
         t.row();
+        label = new Label("Textures are rounded up to the next power of 2.", skin);
+        t.add(label).colspan(2).padTop(5.0f);
+        
+        t.row();
         label = new Label("Max Texture Width: ", skin);
         t.add(label).right();
         Spinner spinner = new Spinner(ProjectData.instance().getMaxTextureWidth(), 1.0, true, spinnerStyle);
@@ -208,7 +213,7 @@ public class DialogSettings extends Dialog {
         
         t.row();
         label = new Label("Max Number of Undos: ", skin);
-        t.add(label).right();
+        t.add(label).right().padTop(5.0f);
         Spinner spinner3 = new Spinner(ProjectData.instance().getMaxUndos(), 1.0, true, spinnerStyle);
         spinner3.setMinimum(1.0);
         spinner3.setMaximum(100.0);
@@ -225,11 +230,11 @@ public class DialogSettings extends Dialog {
             }
             
         });
-        t.add(spinner3).minWidth(150.0f).left();
+        t.add(spinner3).minWidth(150.0f).left().padTop(5.0f);
         
         t.row();
         label = new Label("Editor Skin: ", skin);
-        t.add(label).right();
+        t.add(label).right().padTop(5.0f);
         SelectBox selectBox = new SelectBox(skin, "slim");
         selectBox.setItems("Orange Peel UI", "Dark Peel UI");
         selectBox.setSelectedIndex(selectedSkin);
@@ -239,7 +244,7 @@ public class DialogSettings extends Dialog {
                 selectedSkin = selectBox.getSelectedIndex();
             }
         });
-        t.add(selectBox).minWidth(150.0f).left();
+        t.add(selectBox).minWidth(150.0f).left().padTop(5.0f);
         
         button("OK", true);
         button ("Cancel", false);
