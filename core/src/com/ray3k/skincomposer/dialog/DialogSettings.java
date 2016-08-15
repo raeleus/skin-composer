@@ -194,13 +194,13 @@ public class DialogSettings extends Dialog {
         spinner2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                textureWidth = (int) spinner2.getValue();
+                textureHeight = (int) spinner2.getValue();
             }
         });
         spinner2.addListener(new FocusListener() {
             @Override
             public void keyboardFocusChanged(FocusListener.FocusEvent event, Actor actor, boolean focused) {
-                textureWidth = (int) spinner2.getValue();
+                textureHeight = (int) spinner2.getValue();
             }
             
         });
