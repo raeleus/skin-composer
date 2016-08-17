@@ -33,7 +33,9 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.Main;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 
 public class AtlasData {
     private static AtlasData instance;
@@ -173,7 +175,15 @@ public class AtlasData {
     
     public void writeAtlas(FileHandle targetFile) throws Exception {
         targetFile.parent().mkdirs();
-        targetFile.sibling(targetFile.nameWithoutExtension() + ".png").delete();
+        FileHandle[] oldFiles = targetFile.parent().list(new FilenameFilter() {
+            @Override
+            public boolean accept(File file, String string) {
+                return string.matches(targetFile.nameWithoutExtension() + "\\d*\\.(?i)png");
+            }
+        });
+        for (FileHandle fileHandle : oldFiles) {
+            fileHandle.delete();
+        }
         targetFile.sibling(targetFile.nameWithoutExtension() + ".atlas").delete();
         
         Array<FileHandle> files = new Array<>();
