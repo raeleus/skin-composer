@@ -23,12 +23,19 @@
  ******************************************************************************/
 package com.ray3k.skincomposer.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.stream.ImageInputStream;
 
 public class Utils {
     public static String os;
@@ -204,5 +211,28 @@ public class Utils {
         }
         
         return returnValue;
+    }
+    
+    public static boolean doesImageFitBox(FileHandle fileHandle, float width, float height) {
+        boolean result = false;
+        String suffix = fileHandle.extension();
+        Iterator<ImageReader> iter = ImageIO.getImageReadersBySuffix(suffix);
+        if (iter.hasNext()) {
+            ImageReader reader = iter.next();
+            try {
+                ImageInputStream stream = new FileImageInputStream(fileHandle.file());
+                reader.setInput(stream);
+                int imageWidth = reader.getWidth(reader.getMinIndex());
+                int imageHeight = reader.getHeight(reader.getMinIndex());
+                result = imageWidth < width && imageHeight < height;
+            } catch (IOException e) {
+                Gdx.app.error(Utils.class.getName(), "error checking image dimensions", e);
+            } finally {
+                reader.dispose();
+            }
+        } else {
+            Gdx.app.error(Utils.class.getName(), "No reader available to check image dimensions");
+        }
+        return result;
     }
 }

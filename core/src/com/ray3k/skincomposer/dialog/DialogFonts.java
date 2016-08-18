@@ -635,9 +635,14 @@ public class DialogFonts extends Dialog {
                     }
                 });
                 nameDialog.setColor(1.0f, 1.0f, 1.0f, 0.0f);
-                nameDialog.show(getStage());
-                getStage().setKeyboardFocus(textField);
-                textField.selectAll();
+                
+                if (!Utils.doesImageFitBox(new FileHandle(bitmapFontData.imagePaths[0]), ProjectData.instance().getMaxTextureWidth(), ProjectData.instance().getMaxTextureHeight())) {
+                    showAddFontSizeError(fileHandle.nameWithoutExtension());
+                } else {
+                    nameDialog.show(getStage());
+                    getStage().setKeyboardFocus(textField);
+                    textField.selectAll();
+                }
             } catch (Exception e) {
                 Gdx.app.error(getClass().getName(), "Error creating preview font from file", e);
                 showAddFontErrorMessage();
@@ -648,6 +653,16 @@ public class DialogFonts extends Dialog {
     private void showAddFontErrorMessage() {
         Dialog dialog = new Dialog("Error adding font...", skin, "dialog");
         dialog.text("Unable to add font. Check file paths.");
+        dialog.button("Ok");
+        dialog.show(getStage());
+    }
+    
+    private void showAddFontSizeError(String name) {
+        Dialog dialog = new Dialog("Error adding font...", skin, "dialog");
+        dialog.text("Unable to add font \"" + name +
+                "\". Ensure image dimensions\nare less than max texture dimensions (" +
+                ProjectData.instance().getMaxTextureWidth() + "x" + 
+                ProjectData.instance().getMaxTextureHeight() + ").\nSee project settings.");
         dialog.button("Ok");
         dialog.show(getStage());
     }
