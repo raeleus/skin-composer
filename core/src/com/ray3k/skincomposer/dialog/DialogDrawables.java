@@ -836,6 +836,16 @@ public class DialogDrawables extends Dialog {
                 if (color != null) {
                     final DrawableData tintedDrawable = new DrawableData(drawableData.file);
                     tintedDrawable.tint = color;
+                    
+                    //Fix background color for new, tinted drawable
+                    Color temp = Utils.averageEdgeColor(tintedDrawable.file, tintedDrawable.tint);
+                    
+                    if (Utils.brightness(temp) > .5f) {
+                        tintedDrawable.bgColor = Color.BLACK;
+                    } else {
+                        tintedDrawable.bgColor = Color.WHITE;
+                    }
+                    
                     final TextField textField = new TextField(drawableData.name, skin);
                     final TextButton button = new TextButton("OK", skin);
                     button.setDisabled(!DrawableData.validate(textField.getText()) || checkIfNameExists(textField.getText()));

@@ -83,6 +83,35 @@ public class Utils {
         return returnValue;
     }
     
+    public static Color averageEdgeColor(FileHandle file, Color color) {
+        Pixmap pixmap = new Pixmap(file);
+        pixmap = tintPixmap(pixmap, color);
+        Color returnValue = averageEdgeColor(pixmap, file.name().matches("(?i).*\\.9\\.png$"));
+        pixmap.dispose();
+        return returnValue;
+    }
+    
+    /**
+     * Does not dispose pixmap
+     * @param pixmap
+     * @return 
+     */
+    public static Pixmap tintPixmap(Pixmap pixmap, Color color) {
+        Color tempColor = new Color();
+        for (int y = 0; y < pixmap.getHeight(); y++) {
+            for (int x = 0; x < pixmap.getWidth(); x++) {
+                tempColor.set(pixmap.getPixel(x, y));
+                float a = tempColor.a;
+                tempColor.mul(color);
+                tempColor.a = a;
+                pixmap.setColor(tempColor);
+                pixmap.drawPixel(x, y);
+                tempColor.set(pixmap.getPixel(x, y));
+            }
+        }
+        return pixmap;
+    }
+    
     /**
      * Does not dispose pixmap.
      * @param pixmap
