@@ -735,7 +735,7 @@ public class DialogDrawables extends Dialog {
     
     private void drawablesSelected(Array<FileHandle> files) {
         AtlasData.getInstance().atlasCurrent = false;
-        Array<DrawableData> backup = new Array<>(drawables);
+        Array<DrawableData> backup = new Array<>(AtlasData.getInstance().getDrawables());
         Array<FileHandle> unhandledFiles = new Array<>();
         Array<FileHandle> filesToProcess = new Array<>();
         
