@@ -31,7 +31,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -274,7 +273,7 @@ public class DialogDrawables extends Dialog {
             table.add(button);
 
             //swatches
-            button = new Button(getSkin(), "color");
+            button = new Button(getSkin(), "swatches");
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -284,8 +283,8 @@ public class DialogDrawables extends Dialog {
             table.add(button);
             
             //rename (ONLY FOR TINTS)
-            if (drawable.tint != null) {
-                button = new Button(getSkin(), "color");
+            if (drawable.tint != null || drawable.tintName != null) {
+                button = new Button(getSkin(), "name");
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {

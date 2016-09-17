@@ -120,6 +120,16 @@ com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 		down: spinner-minus-down
 		over: spinner-minus-over
 	}
+	swatches: {
+		up: swatches
+		down: swatches-down
+		over: swatches-hover
+	}
+	name: {
+		up: name
+		down: name-pressed
+		over: name-over
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
 	default: {
