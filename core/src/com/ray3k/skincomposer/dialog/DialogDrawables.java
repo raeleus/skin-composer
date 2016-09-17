@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -262,14 +263,24 @@ public class DialogDrawables extends Dialog {
             Table table = new Table();
             drawableButton.add(table).width(sizes[MathUtils.floor(zoomSlider.getValue())]).height(sizes[MathUtils.floor(zoomSlider.getValue())]);
 
+            ClickListener fixDuplicateTouchListener = new ClickListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    event.setBubbles(false);
+                    return super.touchDown(event, x, y, pointer, button);
+                }
+            };
+            
             //color wheel
             Button button = new Button(getSkin(), "color");
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                     newTintedDrawable(drawable);
+                    event.setBubbles(false);
                 }
             });
+            button.addListener(fixDuplicateTouchListener);
             table.add(button);
 
             //swatches
@@ -278,8 +289,10 @@ public class DialogDrawables extends Dialog {
                 @Override
                 public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                     colorSwatchesDialog(drawable);
+                    event.setBubbles(false);
                 }
             });
+            button.addListener(fixDuplicateTouchListener);
             table.add(button);
             
             //rename (ONLY FOR TINTS)
@@ -289,23 +302,25 @@ public class DialogDrawables extends Dialog {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         renameDrawableDialog(drawable);
+                        event.setBubbles(false);
                     }
                 });
+                button.addListener(fixDuplicateTouchListener);
                 table.add(button);
             } else {
                 table.add();
             }
 
-            //todo: fix button being pressed with inner buttons
             //delete
             button = new Button(getSkin(), "close");
-            button.addCaptureListener(new ChangeListener() {
+            button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                    event.setBubbles(false);
                     deleteDrawable(drawable);
+                    event.setBubbles(false);
                 }
             });
+            button.addListener(fixDuplicateTouchListener);
             table.add(button).expandX().right();
 
             //preview

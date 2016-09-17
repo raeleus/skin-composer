@@ -270,7 +270,6 @@ public class DialogColors extends Dialog {
                 table.setColor(bgColor);
                 table.add(label).pad(3.0f);
                 
-                //todo: is this necessary?
                 if (styleProperty == null && !selectingForTintedDrawable) {
                     table.addCaptureListener(new ChangeListener() {
                         @Override
@@ -298,7 +297,6 @@ public class DialogColors extends Dialog {
                 label.setTouchable(Touchable.disabled);
                 label.setAlignment(Align.center);
                 
-                //todo: is this necessary?
                 if (styleProperty == null && !selectingForTintedDrawable) {
                     label.addCaptureListener(new ChangeListener() {
                         @Override
