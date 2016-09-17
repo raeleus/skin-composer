@@ -143,7 +143,12 @@ public class JsonData implements Json.Serializable {
                 for (JsonValue tintedDrawable : child.iterator()) {
                     DrawableData drawableData = new DrawableData(AtlasData.getInstance().getDrawable(tintedDrawable.getString("name")).file);
                     drawableData.name = tintedDrawable.name;
-                    drawableData.tint = new Color(tintedDrawable.get("color").getFloat("r", 0.0f), tintedDrawable.get("color").getFloat("g", 0.0f), tintedDrawable.get("color").getFloat("b", 0.0f), tintedDrawable.get("color").getFloat("a", 0.0f));
+                    
+                    if (!tintedDrawable.get("color").isString()) {
+                        drawableData.tint = new Color(tintedDrawable.get("color").getFloat("r", 0.0f), tintedDrawable.get("color").getFloat("g", 0.0f), tintedDrawable.get("color").getFloat("b", 0.0f), tintedDrawable.get("color").getFloat("a", 0.0f));
+                    } else {
+                        drawableData.tintName = tintedDrawable.getString("color");
+                    }
                     AtlasData.getInstance().getDrawables().add(drawableData);
                 }
             } //styles
@@ -207,11 +212,11 @@ public class JsonData implements Json.Serializable {
             }
             json.writeObjectEnd();
         }
-
+        
         //tinted drawables
         Array<DrawableData> tintedDrawables = new Array<>();
         for (DrawableData drawable : AtlasData.getInstance().getDrawables()) {
-            if (drawable.tint != null) {
+            if (drawable.tint != null || drawable.tintName != null) {
                 tintedDrawables.add(drawable);
             }
         }
@@ -220,12 +225,16 @@ public class JsonData implements Json.Serializable {
             for (DrawableData drawable : tintedDrawables) {
                 json.writeObjectStart(drawable.name);
                 json.writeValue("name", DrawableData.proper(drawable.file.name()));
-                json.writeObjectStart("color");
-                json.writeValue("r", drawable.tint.r);
-                json.writeValue("g", drawable.tint.g);
-                json.writeValue("b", drawable.tint.b);
-                json.writeValue("a", drawable.tint.a);
-                json.writeObjectEnd();
+                if (drawable.tint != null) {
+                    json.writeObjectStart("color");
+                    json.writeValue("r", drawable.tint.r);
+                    json.writeValue("g", drawable.tint.g);
+                    json.writeValue("b", drawable.tint.b);
+                    json.writeValue("a", drawable.tint.a);
+                    json.writeObjectEnd();
+                } else if (drawable.tintName != null) {
+                    json.writeValue("color", drawable.tintName);
+                }
                 json.writeObjectEnd();
             }
             json.writeObjectEnd();
@@ -273,6 +282,19 @@ public class JsonData implements Json.Serializable {
 
     public Array<ColorData> getColors() {
         return colors;
+    }
+    
+    public ColorData getColorByName(String tintName) {
+        ColorData returnValue = null;
+        
+        for (ColorData color : colors) {
+            if (color.getName().equals(tintName)) {
+                returnValue = color;
+                break;
+            }
+        }
+        
+        return returnValue;
     }
 
     public Array<FontData> getFonts() {

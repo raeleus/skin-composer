@@ -29,7 +29,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -66,15 +65,16 @@ public class DialogColors extends Dialog {
     private Table colorTable;
     private Skin skin;
     private StyleProperty styleProperty;
+    private boolean selectingForTintedDrawable;
     private SelectBox<String> selectBox;
-    private EventListener listener;
+    private DialogColorsListener listener;
     private ScrollPane scrollPane;
     
-    public DialogColors(Skin skin, StyleProperty styleProperty, EventListener listener) {
+    public DialogColors(Skin skin, StyleProperty styleProperty, DialogColorsListener listener) {
         this(skin, "default", styleProperty, listener);
     }
     
-    public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, EventListener listener) {
+    public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, boolean selectingForTintedDrawable, DialogColorsListener listener) {
         super("", skin, styleName);
         
         Main.instance.setListeningForKeys(false);
@@ -82,10 +82,16 @@ public class DialogColors extends Dialog {
         this.listener = listener;
         this.skin = skin;
         this.styleProperty = styleProperty;
+        this.selectingForTintedDrawable = selectingForTintedDrawable;
         colors = JsonData.getInstance().getColors();
         getContentTable().defaults().expandX();
         if (styleProperty != null) {
             Label label = new Label("Select a color...", skin, "title");
+            label.setAlignment(Align.center);
+            getContentTable().add(label);
+            getContentTable().row();
+        } else if (selectingForTintedDrawable) {
+            Label label = new Label("Select a color for tinted drawable...", skin, "title");
             label.setAlignment(Align.center);
             getContentTable().add(label);
             getContentTable().row();
@@ -142,10 +148,16 @@ public class DialogColors extends Dialog {
         if (styleProperty != null) {
             button("Clear Color", true);
             button("Cancel", false);
+        } else if (selectingForTintedDrawable) {
+            button("Cancel", false);
         } else {
             button("Close", false);
         }
         key(Keys.ESCAPE, false);
+    }
+    
+    public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, DialogColorsListener listener) {
+        this(skin, styleName, styleProperty, false, listener);
     }
     
     @Override
@@ -157,7 +169,9 @@ public class DialogColors extends Dialog {
 
     @Override
     public boolean remove() {
-        Main.instance.setListeningForKeys(true);
+        if (!selectingForTintedDrawable) {
+            Main.instance.setListeningForKeys(true);
+        }
         return super.remove();
     }
     
@@ -255,7 +269,9 @@ public class DialogColors extends Dialog {
                 table.setBackground("white");
                 table.setColor(bgColor);
                 table.add(label).pad(3.0f);
-                if (styleProperty == null) {
+                
+                //todo: is this necessary?
+                if (styleProperty == null && !selectingForTintedDrawable) {
                     table.addCaptureListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -281,7 +297,9 @@ public class DialogColors extends Dialog {
                 label = new Label("(" + ((int)(color.color.r * 255)) + ", " + ((int)(color.color.g * 255)) + ", " + ((int)(color.color.b * 255)) + ", " + ((int)(color.color.a * 255)) + ")", skin, "white");
                 label.setTouchable(Touchable.disabled);
                 label.setAlignment(Align.center);
-                if (styleProperty == null) {
+                
+                //todo: is this necessary?
+                if (styleProperty == null && !selectingForTintedDrawable) {
                     label.addCaptureListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -336,7 +354,7 @@ public class DialogColors extends Dialog {
                 });
                 
                 button.add(closeButton).padLeft(5.0f);
-                if (styleProperty == null) {
+                if (styleProperty == null && !selectingForTintedDrawable) {
                     button.setTouchable(Touchable.childrenOnly);
                 } else {
                     setObject(button, color);
@@ -409,7 +427,11 @@ public class DialogColors extends Dialog {
         }
         
         if (listener != null) {
-            listener.handle(null);
+            if (object instanceof ColorData) {
+                listener.handle((ColorData) object);
+            } else {
+                listener.handle(null);
+            }
         }
     }
     
@@ -442,5 +464,9 @@ public class DialogColors extends Dialog {
             }
         });
         populate();
+    }
+    
+    public static interface DialogColorsListener {
+        public void handle(ColorData colorData);
     }
 }

@@ -66,6 +66,7 @@ import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
 import com.ray3k.skincomposer.dialog.DialogColorPicker.ColorListener;
+import com.ray3k.skincomposer.dialog.DialogColors.DialogColorsListener;
 import com.ray3k.skincomposer.dialog.DialogFonts;
 import com.ray3k.skincomposer.dialog.DialogLoading;
 import com.ray3k.skincomposer.dialog.DialogSettings;
@@ -289,7 +290,6 @@ public class Main extends ApplicationAdapter {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
-        if (DialogDrawables.instance != null) DialogDrawables.instance.resized();
     }
 
     @Override
@@ -373,7 +373,6 @@ public class Main extends ApplicationAdapter {
         DialogDrawables dialog = new DialogDrawables(skin, "dialog-panel", property, listener);
         dialog.setFillParent(true);
         dialog.show(stage);
-        dialog.resized();
     }
     
     public void showDialogDrawables(StyleProperty property) {
@@ -384,7 +383,7 @@ public class Main extends ApplicationAdapter {
         showDialogDrawables(null);
     }
     
-    public void showDialogColors(StyleProperty styleProperty, EventListener listener) {
+    public void showDialogColors(StyleProperty styleProperty, DialogColorsListener listener) {
         DialogColors dialog = new DialogColors(skin, "dialog-panel", styleProperty, listener);
         dialog.setFillParent(true);
         dialog.show(stage);

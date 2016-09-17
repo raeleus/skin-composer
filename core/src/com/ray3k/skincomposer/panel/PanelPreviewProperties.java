@@ -1296,11 +1296,15 @@ public class PanelPreviewProperties {
                     drawable = new NinePatchDrawable(atlas.createPatch(name));
                     if (data.tint != null) {
                         drawable = ((NinePatchDrawable) drawable).tint(data.tint);
+                    } else if (data.tintName != null) {
+                        drawable = ((NinePatchDrawable) drawable).tint(JsonData.getInstance().getColorByName(data.tintName).color);
                     }
                 } else {
                     drawable = new TextureRegionDrawable(atlas.findRegion(name));
                     if (data.tint != null) {
                         drawable = ((TextureRegionDrawable) drawable).tint(data.tint);
+                    } else if (data.tintName != null) {
+                        drawable = ((TextureRegionDrawable) drawable).tint(JsonData.getInstance().getColorByName(data.tintName).color);
                     }
                 }
                 

@@ -58,6 +58,7 @@ import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.Undoable;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.FontData;
+import com.ray3k.skincomposer.dialog.DialogColors;
 
 public class PanelStyleProperties {
     public static PanelStyleProperties instance;
@@ -147,12 +148,11 @@ public class PanelStyleProperties {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         Object oldValue = property.value;
-                        Main.instance.showDialogColors(property, (Event event1) -> {
+                        Main.instance.showDialogColors(property, (ColorData colorData) -> {
                             Object newValue = property.value;
                             if (oldValue != newValue) {
                                 Main.instance.addUndoable(new ColorUndoable(property, oldValue, newValue), true);
                             }
-                            return false;
                         });
                     }
                 });

@@ -44,6 +44,7 @@ public class DrawableData implements Json.Serializable{
     public Color bgColor;
     public boolean visible;
     public Color tint;
+    public String tintName;
     public String name;
 
     public DrawableData(FileHandle file) {
@@ -72,8 +73,8 @@ public class DrawableData implements Json.Serializable{
         boolean returnValue = false;
         if (obj instanceof DrawableData) {
             DrawableData dd = (DrawableData) obj;
-            
-            if (dd.file.equals(file) && ((tint == null && dd.tint == null) || (tint != null && tint.equals(dd.tint)))) {
+
+            if (dd.file.equals(file) && ((tint == null && dd.tint == null) || (tint != null && tint.equals(dd.tint))) && ((tintName == null && dd.tintName == null) || (tintName != null && tintName.equals(dd.tintName)))) {
                 returnValue = true;
             }
         }
@@ -90,6 +91,7 @@ public class DrawableData implements Json.Serializable{
         json.writeValue("bgColor", bgColor);
         json.writeValue("visible", visible);
         json.writeValue("tint", tint);
+        json.writeValue("tintName", tintName);
         json.writeValue("name", name);
     }
 
@@ -101,6 +103,7 @@ public class DrawableData implements Json.Serializable{
         bgColor = json.readValue("bgColor", Color.class, jsonData);
         visible = json.readValue("visible", Boolean.TYPE, jsonData);
         tint = json.readValue("tint", Color.class, jsonData);
+        tintName = json.readValue("tintName", String.class, jsonData);
         name = json.readValue("name", String.class, jsonData);
     }
 }

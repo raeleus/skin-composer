@@ -64,7 +64,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     }
     
     @Override
-    public void texturePack(Array<FileHandle> handles, FileHandle localFile, FileHandle targetFile, int maxWidth, int maxHeight) {
+    public void texturePack(Array<FileHandle> handles, FileHandle localFile, FileHandle targetFile, int maxWidth, int maxHeight, boolean useStripWhitespace) {
         Settings settings = new TexturePacker.Settings();
         settings.maxWidth = maxWidth;
         settings.maxHeight = maxHeight;
@@ -76,6 +76,8 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         settings.useIndexes = false;
         settings.silent = true;
         settings.flattenPaths = true;
+        settings.stripWhitespaceX = useStripWhitespace;
+        settings.stripWhitespaceY = useStripWhitespace;
         TexturePacker p = new TexturePacker(settings);
         for (FileHandle handle : handles) {
             if (handle.exists()) {

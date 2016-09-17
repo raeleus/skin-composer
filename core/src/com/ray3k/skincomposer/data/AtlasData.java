@@ -170,7 +170,7 @@ public class AtlasData {
             }
         }
         
-        Main.instance.getDesktopWorker().texturePack(files, ProjectData.instance().getSaveFile(), targetFile, ProjectData.instance().getMaxTextureWidth(), ProjectData.instance().getMaxTextureHeight());
+        Main.instance.getDesktopWorker().texturePack(files, ProjectData.instance().getSaveFile(), targetFile, ProjectData.instance().getMaxTextureWidth(), ProjectData.instance().getMaxTextureHeight(), ProjectData.instance().getStripWhitespace());
     }
     
     public void writeAtlas(FileHandle targetFile) throws Exception {
@@ -193,7 +193,7 @@ public class AtlasData {
             }
         }
         
-        Main.instance.getDesktopWorker().texturePack(files, ProjectData.instance().getSaveFile(), targetFile, ProjectData.instance().getMaxTextureWidth(), ProjectData.instance().getMaxTextureHeight());
+        Main.instance.getDesktopWorker().texturePack(files, ProjectData.instance().getSaveFile(), targetFile, ProjectData.instance().getMaxTextureWidth(), ProjectData.instance().getMaxTextureHeight(), ProjectData.instance().getStripWhitespace());
     }
     
     public TextureAtlas getAtlas() {

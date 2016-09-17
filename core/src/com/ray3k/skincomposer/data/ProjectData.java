@@ -224,4 +224,13 @@ public class ProjectData implements Json.Serializable{
     public int getSelectedSkin() {
         return (int) generalPref.getInteger("selectedSkin", 0);
     }
+
+    public boolean getStripWhitespace() {
+        return generalPref.getBoolean("useStripWhitespace", false);
+    }
+
+    public void setStripWhitespace(boolean useStripWhitespace) {
+        generalPref.putBoolean("useStripWhitespace", useStripWhitespace);
+        generalPref.flush();
+    }
 }

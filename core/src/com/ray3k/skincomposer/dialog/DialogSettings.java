@@ -28,6 +28,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
@@ -54,6 +55,7 @@ public class DialogSettings extends Dialog {
     private Integer textureHeight;
     private Integer maxUndos;
     private int selectedSkin;
+    private boolean useStripWhitespace;
 
     public DialogSettings(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
@@ -68,6 +70,7 @@ public class DialogSettings extends Dialog {
         textureHeight = ProjectData.instance().getMaxTextureHeight();
         maxUndos = ProjectData.instance().getMaxUndos();
         selectedSkin = ProjectData.instance().getSelectedSkin();
+        useStripWhitespace = ProjectData.instance().getStripWhitespace();
         setFillParent(true);
         
         populate();
@@ -85,6 +88,7 @@ public class DialogSettings extends Dialog {
                 showRestartAppDialog();
             }
             ProjectData.instance().setSelectedSkin(selectedSkin);
+            ProjectData.instance().setStripWhitespace(useStripWhitespace);
             Main.instance.clearUndoables();
         }
     }
@@ -210,6 +214,17 @@ public class DialogSettings extends Dialog {
             
         });
         t.add(spinner2).minWidth(150.0f).left();
+        
+        t.row();
+        CheckBox checkBox = new CheckBox(" Strip whitespace on texture export", skin);
+        checkBox.setChecked(useStripWhitespace);
+        checkBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                useStripWhitespace = checkBox.isChecked();
+            }
+        });
+        t.add(checkBox).colspan(2);
         
         t.row();
         label = new Label("Max Number of Undos: ", skin);
