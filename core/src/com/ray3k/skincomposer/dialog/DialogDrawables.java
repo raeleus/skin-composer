@@ -154,12 +154,11 @@ public class DialogDrawables extends Dialog {
                         drawable = ((NinePatchDrawable) drawable).tint(JsonData.getInstance().getColorByName(data.tintName).color);
                     }
                 } else {
-//                    drawable = new TextureRegionDrawable(atlas.findRegion(name));
                     drawable = new SpriteDrawable(atlas.createSprite(name));
                     if (data.tint != null) {
-                        drawable = ((TextureRegionDrawable) drawable).tint(data.tint);
+                        drawable = ((SpriteDrawable) drawable).tint(data.tint);
                     } else if (data.tintName != null) {
-                        drawable = ((TextureRegionDrawable) drawable).tint(JsonData.getInstance().getColorByName(data.tintName).color);
+                        drawable = ((SpriteDrawable) drawable).tint(JsonData.getInstance().getColorByName(data.tintName).color);
                     }
                 }
                 
@@ -180,7 +179,6 @@ public class DialogDrawables extends Dialog {
         } else {
             getContentTable().add(new Label("Select a Drawables", getSkin(), "title"));
         }
-        
         
         getContentTable().row();
         Table table = new Table(getSkin());
@@ -403,8 +401,8 @@ public class DialogDrawables extends Dialog {
 
                     Drawable drawable = drawablePairs.get(drawableData);
                     Drawable preview = null;
-                    if (drawable instanceof TextureRegionDrawable) {
-                        preview = ((TextureRegionDrawable) drawable).tint(colorData.color);
+                    if (drawable instanceof SpriteDrawable) {
+                        preview = ((SpriteDrawable) drawable).tint(colorData.color);
                     } else if (drawable instanceof NinePatchDrawable) {
                         preview = ((NinePatchDrawable) drawable).tint(colorData.color);
                     }
@@ -916,8 +914,8 @@ public class DialogDrawables extends Dialog {
 
                     Drawable drawable = drawablePairs.get(drawableData);
                     Drawable preview = null;
-                    if (drawable instanceof TextureRegionDrawable) {
-                        preview = ((TextureRegionDrawable) drawable).tint(color);
+                    if (drawable instanceof SpriteDrawable) {
+                        preview = ((SpriteDrawable) drawable).tint(color);
                     } else if (drawable instanceof NinePatchDrawable) {
                         preview = ((NinePatchDrawable) drawable).tint(color);
                     }

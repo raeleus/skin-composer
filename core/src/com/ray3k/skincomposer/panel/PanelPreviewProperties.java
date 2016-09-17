@@ -73,6 +73,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -1300,11 +1301,11 @@ public class PanelPreviewProperties {
                         drawable = ((NinePatchDrawable) drawable).tint(JsonData.getInstance().getColorByName(data.tintName).color);
                     }
                 } else {
-                    drawable = new TextureRegionDrawable(atlas.findRegion(name));
+                    drawable = new SpriteDrawable(atlas.createSprite(name));
                     if (data.tint != null) {
-                        drawable = ((TextureRegionDrawable) drawable).tint(data.tint);
+                        drawable = ((SpriteDrawable) drawable).tint(data.tint);
                     } else if (data.tintName != null) {
-                        drawable = ((TextureRegionDrawable) drawable).tint(JsonData.getInstance().getColorByName(data.tintName).color);
+                        drawable = ((SpriteDrawable) drawable).tint(JsonData.getInstance().getColorByName(data.tintName).color);
                     }
                 }
                 
