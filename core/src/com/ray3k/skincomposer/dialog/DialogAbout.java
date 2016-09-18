@@ -47,7 +47,7 @@ public class DialogAbout extends Dialog {
         getTitleLabel().setAlignment(Align.center);
         Table table = getContentTable();
         table.defaults().pad(10.0f);
-        Label label = new Label("Skin Composer is developed by Raeleus for the LibGDX community\nVersion 3\nCopyright © Raymond \"Raeleus\" Buckley 2016", skin);
+        Label label = new Label("Skin Composer is developed by Raeleus for the LibGDX community\nVersion " + Main.VERSION + "\nCopyright © Raymond \"Raeleus\" Buckley 2016", skin);
         label.setAlignment(Align.center);
         table.add(label).padBottom(0);
         table.row();

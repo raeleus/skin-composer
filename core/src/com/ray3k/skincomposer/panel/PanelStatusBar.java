@@ -34,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.ray3k.skincomposer.Main;
 
 public class PanelStatusBar {
     public static PanelStatusBar instance;
@@ -54,7 +55,7 @@ public class PanelStatusBar {
             
         };
         table.add(container).expand().left();
-        Label label = new Label("ver. 3    RAY3K.WORDPRESS.COM 2016", skin, "white");
+        Label label = new Label("ver. " + Main.VERSION + "    RAY3K.WORDPRESS.COM 2016", skin, "white");
         table.add(label).right().padRight(20.0f);
     }
     
