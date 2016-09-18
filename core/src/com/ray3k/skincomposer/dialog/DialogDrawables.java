@@ -27,6 +27,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
+import com.badlogic.gdx.scenes.scene2d.ui.TooltipManager;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -244,10 +246,19 @@ public class DialogDrawables extends Dialog {
     private void refreshDrawableDisplay() {
         contentGroup.clear();
         
+        TooltipManager manager = new TooltipManager();
+        manager.animations = false;
+        manager.initialTime = .4f;
+        manager.resetTime = 0.0f;
+        manager.subsequentTime = 0.0f;
+        manager.hideAll();
+        manager.instant();
+        
         for (DrawableData drawable : drawables) {
-            Button drawableButton = new Button(getSkin());
+            Button drawableButton;
             
             if (property != null) {
+                drawableButton = new Button(getSkin());
                 drawableButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -256,7 +267,7 @@ public class DialogDrawables extends Dialog {
                     }
                 });
             } else {
-                drawableButton.setTouchable(Touchable.childrenOnly);
+                drawableButton = new Button(getSkin(), "static");
             }
             contentGroup.addActor(drawableButton);
             
@@ -337,9 +348,6 @@ public class DialogDrawables extends Dialog {
                 bg.fill();
             }
             bg.setActor(image);
-            if (property == null) {
-                bg.setTouchable(Touchable.disabled);
-            }
             table.add(bg).colspan(4).grow();
 
             //name
@@ -348,10 +356,11 @@ public class DialogDrawables extends Dialog {
             label.setEllipsis("...");
             label.setEllipsis(true);
             label.setAlignment(Align.center);
-            if (property == null) {
-                label.setTouchable(Touchable.disabled);
-            }
             table.add(label).colspan(4).growX().width(sizes[MathUtils.floor(zoomSlider.getValue())]);
+            
+            //Tooltip
+            TextTooltip toolTip = new TextTooltip(drawable.name, manager, getSkin());
+            label.addListener(toolTip);
         }
     }
     

@@ -130,6 +130,10 @@ com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 		down: name-pressed
 		over: name-over
 	}
+	static: {
+		up: button-orange
+		disabled: button-gray
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
 	default: {
@@ -650,7 +654,7 @@ com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
 	default: {
 		label: default
 		background: round-dark-gray
-		wrapWidth: 150
+		wrapWidth: 300
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.Touchpad$TouchpadStyle: {
