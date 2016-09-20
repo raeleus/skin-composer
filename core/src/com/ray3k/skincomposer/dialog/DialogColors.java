@@ -59,6 +59,8 @@ import com.ray3k.skincomposer.panel.PanelPreviewProperties;
 import com.ray3k.skincomposer.panel.PanelStyleProperties;
 import com.ray3k.skincomposer.utils.Utils;
 import java.util.Comparator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DialogColors extends Dialog {
     private Array<ColorData> colors;
@@ -293,6 +295,26 @@ public class DialogColors extends Dialog {
                 
                 button.add(borderTable).growX();
                 
+                //rename button
+                Button renameButton = new Button(skin, "name");
+                renameButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        renameDialog(color);
+                        
+                        event.setBubbles(false);
+                    }
+                });
+                renameButton.addListener(new InputListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        event.setBubbles(false);
+                        return true;
+                    }
+                    
+                });
+                button.add(renameButton);
+                
                 label = new Label("(" + ((int)(color.color.r * 255)) + ", " + ((int)(color.color.g * 255)) + ", " + ((int)(color.color.b * 255)) + ", " + ((int)(color.color.a * 255)) + ")", skin, "white");
                 label.setTouchable(Touchable.disabled);
                 label.setAlignment(Align.center);
@@ -316,6 +338,7 @@ public class DialogColors extends Dialog {
                 }
                 button.add(label).padLeft(5.0f).minWidth(160.0f);
                 
+                //delete color button
                 Button closeButton = new Button(skin, "close");
                 final ColorData deleteColor = color;
                 closeButton.addListener(new ChangeListener() {
@@ -371,6 +394,112 @@ public class DialogColors extends Dialog {
         } else {
             colorTable.add(new Label("No colors have been set!", skin, "error"));
         }
+    }
+    
+    private void renameDialog(ColorData color) {
+        TextField textField = new TextField("", skin);
+        TextButton okButton;
+        
+        Dialog dialog = new Dialog("Rename Color?", skin) {
+            @Override
+            protected void result(Object object) {
+                if ((boolean) object) {
+                    renameColor(color, textField.getText());
+                }
+            }
+
+            @Override
+            public Dialog show(Stage stage) {
+                Dialog dialog = super.show(stage);
+                Main.instance.getStage().setKeyboardFocus(textField);
+                return dialog;
+            }
+        };
+        
+        float brightness = Utils.brightness(color.color);
+        Color borderColor;
+        if (brightness > .35f) {
+            borderColor = Color.BLACK;
+        } else {
+            borderColor = Color.WHITE;
+        }
+        
+        Table bg = new  Table(skin);
+        bg.setBackground("white");
+        bg.setColor(borderColor);
+        dialog.getContentTable().add(bg);
+        
+        Label label = new Label(color.getName(), skin, "white");
+        label.setColor(color.color);
+        bg.add(label).pad(10);
+        
+        dialog.getContentTable().row();
+        label = new Label("What do you want to rename the color to?", skin);
+        dialog.getContentTable().add(label);
+        
+        dialog.getContentTable().row();
+        textField.setText(color.getName());
+        textField.selectAll();
+        dialog.getContentTable().add(textField);
+        
+        dialog.button("OK", true);
+        dialog.button("Cancel", false).key(Keys.ESCAPE, false);
+        okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
+        okButton.setDisabled(true);
+        
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                boolean disable = !ColorData.validate(textField.getText());
+                if (!disable) {
+                    for (ColorData data : JsonData.getInstance().getColors()) {
+                        if (data.getName().equals(textField.getText())) {
+                            disable = true;
+                            break;
+                        }
+                    }
+                }
+                okButton.setDisabled(disable);
+            }
+        });
+        textField.setTextFieldListener(new TextField.TextFieldListener() {
+            @Override
+            public void keyTyped(TextField textField, char c) {
+                if (c == '\n') {
+                    if (!okButton.isDisabled()) {
+                        renameColor(color, textField.getText());
+                        dialog.hide();
+                    }
+                }
+            }
+        });
+        
+        dialog.show(getStage());
+    }
+    
+    private void renameColor(ColorData color, String newName) {
+        for (Array<StyleData> datas : JsonData.getInstance().getClassStyleMap().values()) {
+            for (StyleData data : datas) {
+                for (StyleProperty property : data.properties.values()) {
+                    if (property != null && property.type.equals(Color.class) && property.value != null && property.value.equals(color.getName())) {
+                        property.value = newName;
+                    }
+                }
+            }
+        }
+        
+        try {
+            color.setName(newName);
+        } catch (ColorData.NameFormatException ex) {
+            Gdx.app.error(getClass().getName(), "Error trying to rename a color.", ex);
+        }
+
+        Main.instance.clearUndoables();
+
+        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+        PanelPreviewProperties.instance.render();
+        
+        populate();
     }
     
     private boolean newColor(String name, Color color) {

@@ -493,16 +493,44 @@ public class DialogDrawables extends Dialog {
                 stage.setKeyboardFocus(textField);
                 return dialog;
             }
-            
-            
         };
         
         dialog.getContentTable().add(new Label("Please enter a new name for the drawable: ", getSkin()));
-        dialog.getContentTable().row();
-        dialog.getContentTable().add(textField);
         
-        dialog.button("OK", true).key(Keys.ENTER, true);
+        dialog.button("OK", true);
         dialog.button("Cancel", false).key(Keys.ESCAPE, false);
+        TextButton okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
+        okButton.setDisabled(true);
+        
+        dialog.getContentTable().row();
+        textField.setText(drawable.name);
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                boolean disable = !DrawableData.validate(textField.getText());
+                if (!disable) {
+                    for (DrawableData data : AtlasData.getInstance().getDrawables()) {
+                        if (data.name.equals(textField.getText())) {
+                            disable = true;
+                            break;
+                        }
+                    }
+                }
+                okButton.setDisabled(disable);
+            }
+        });
+        textField.setTextFieldListener(new TextField.TextFieldListener() {
+            @Override
+            public void keyTyped(TextField textField, char c) {
+                if (c == '\n') {
+                    if (!okButton.isDisabled()) {
+                        renameDrawable(drawable, textField.getText());
+                        dialog.hide();
+                    }
+                }
+            }
+        });
+        dialog.getContentTable().add(textField);
         
         dialog.show(getStage());
     }
