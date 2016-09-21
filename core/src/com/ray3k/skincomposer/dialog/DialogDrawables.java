@@ -419,6 +419,7 @@ public class DialogDrawables extends Dialog {
                             if (object instanceof Boolean && (boolean) object) {
                                 tintedDrawable.name = textField.getText();
                                 AtlasData.getInstance().getDrawables().add(tintedDrawable);
+                                ProjectData.instance().setChangesSaved(false);
                             }
                         }
 
@@ -437,6 +438,7 @@ public class DialogDrawables extends Dialog {
                                 if (!button.isDisabled()) {
                                     tintedDrawable.name = textField.getText();
                                     AtlasData.getInstance().getDrawables().add(tintedDrawable);
+                                    ProjectData.instance().setChangesSaved(false);
                                     approveDialog.hide();
                                 }
                             }
@@ -546,6 +548,8 @@ public class DialogDrawables extends Dialog {
         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         PanelPreviewProperties.instance.produceAtlas();
         PanelPreviewProperties.instance.render();
+        
+        ProjectData.instance().setChangesSaved(false);
         
         sortBySelectedMode();
     }
@@ -961,6 +965,7 @@ public class DialogDrawables extends Dialog {
                             if (object instanceof Boolean && (boolean) object) {
                                 tintedDrawable.name = textField.getText();
                                 AtlasData.getInstance().getDrawables().add(tintedDrawable);
+                                ProjectData.instance().setChangesSaved(false);
                             }
                         }
 
@@ -979,6 +984,7 @@ public class DialogDrawables extends Dialog {
                                 if (!button.isDisabled()) {
                                     tintedDrawable.name = textField.getText();
                                     AtlasData.getInstance().getDrawables().add(tintedDrawable);
+                                    ProjectData.instance().setChangesSaved(false);
                                     dialog.hide();
                                 }
                             }
