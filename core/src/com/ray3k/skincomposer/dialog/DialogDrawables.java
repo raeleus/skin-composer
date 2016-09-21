@@ -504,6 +504,7 @@ public class DialogDrawables extends Dialog {
         
         dialog.getContentTable().row();
         textField.setText(drawable.name);
+        textField.selectAll();
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {

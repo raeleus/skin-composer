@@ -74,7 +74,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -86,7 +85,6 @@ import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.Spinner.SpinnerStyle;
-import com.ray3k.skincomposer.TextAreaEnterListener;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
@@ -288,7 +286,6 @@ public class PanelPreviewProperties {
                 listItemsTextArea.setFocusTraversal(false);
                 listItemsTextArea.setPrefRows(3);
                 listItemsTextArea.addListener(IbeamListener.get());
-                listItemsTextArea.setTextFieldListener(TextAreaEnterListener.get());
                 listItemsTextArea.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -600,7 +597,6 @@ public class PanelPreviewProperties {
                 previewTextArea.setFocusTraversal(false);
                 previewTextArea.setPrefRows(5);
                 previewTextArea.addListener(IbeamListener.get());
-                previewTextArea.setTextFieldListener(TextAreaEnterListener.get());
                 previewTextArea.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -639,7 +635,6 @@ public class PanelPreviewProperties {
                 listItemsTextArea.setFocusTraversal(false);
                 listItemsTextArea.setPrefRows(3);
                 listItemsTextArea.addListener(IbeamListener.get());
-                listItemsTextArea.setTextFieldListener(TextAreaEnterListener.get());
                 listItemsTextArea.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -758,7 +753,6 @@ public class PanelPreviewProperties {
                 textArea.setFocusTraversal(false);
                 textArea.setPrefRows(5);
                 textArea.addListener(IbeamListener.get());
-                textArea.setTextFieldListener(TextAreaEnterListener.get());
                 textArea.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -954,7 +948,6 @@ public class PanelPreviewProperties {
                 textArea.setFocusTraversal(false);
                 textArea.setPrefRows(5);
                 textArea.addListener(IbeamListener.get());
-                textArea.setTextFieldListener(TextAreaEnterListener.get());
                 textArea.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
