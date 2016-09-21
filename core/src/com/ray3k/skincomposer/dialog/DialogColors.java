@@ -59,8 +59,6 @@ import com.ray3k.skincomposer.panel.PanelPreviewProperties;
 import com.ray3k.skincomposer.panel.PanelStyleProperties;
 import com.ray3k.skincomposer.utils.Utils;
 import java.util.Comparator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class DialogColors extends Dialog {
     private Array<ColorData> colors;
@@ -498,6 +496,8 @@ public class DialogColors extends Dialog {
 
         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         PanelPreviewProperties.instance.render();
+        
+        ProjectData.instance().setChangesSaved(false);
         
         populate();
     }
