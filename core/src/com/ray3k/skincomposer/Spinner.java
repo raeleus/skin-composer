@@ -46,6 +46,7 @@ public class Spinner extends Table {
     private BigDecimal increment;
     private boolean rounding;
     private TextField textField;
+    private Actor transversalNext, transversalPrevious;
 
     public Spinner(double value, double increment, boolean round, SpinnerStyle style) {
         this.value = BigDecimal.valueOf(value);
@@ -56,7 +57,32 @@ public class Spinner extends Table {
         
         Button buttonLeft = new Button(style.buttonLeftStyle);
         Button buttonRight = new Button(style.buttonRightStyle);
-        textField = new TextField("", style.textFieldStyle);
+        textField = new TextField("", style.textFieldStyle) {
+            @Override
+            public void next(boolean up) {
+                if (up) {
+                    if (transversalPrevious != null) {
+                        getStage().setKeyboardFocus(transversalPrevious);
+                        if (transversalPrevious instanceof TextField) {
+                            ((TextField) transversalPrevious).selectAll();
+                        }
+                    } else {
+                        super.next(up);
+                    }
+                } else {
+                    if (transversalNext != null) {
+                        getStage().setKeyboardFocus(transversalNext);
+                        if (transversalNext instanceof TextField) {
+                            ((TextField) transversalNext).selectAll();
+                        }
+                    } else {
+                        super.next(up);
+                    }
+                }
+            }
+            
+        };
+
         textField.setAlignment(Align.center);
         
         textField.addListener(new InputListener() {
@@ -240,5 +266,21 @@ public class Spinner extends Table {
 
     public TextField getTextField() {
         return textField;
+    }
+
+    public Actor getTransversalNext() {
+        return transversalNext;
+    }
+
+    public void setTransversalNext(Actor transversalNext) {
+        this.transversalNext = transversalNext;
+    }
+
+    public Actor getTransversalPrevious() {
+        return transversalPrevious;
+    }
+
+    public void setTransversalPrevious(Actor transversalPrevious) {
+        this.transversalPrevious = transversalPrevious;
     }
 }

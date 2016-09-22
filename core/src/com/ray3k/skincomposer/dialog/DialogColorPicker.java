@@ -32,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
@@ -67,6 +68,7 @@ public class DialogColorPicker extends Dialog {
     private StackedDrawable alphaStack;
     private static final float SIZE = 300.0f;
     private Color previousColor, selectedColor;
+    private Spinner redSpinner;
     
     public DialogColorPicker(Skin skin, String style, ColorListener listener, Color previousColor) {
         super("", skin, style);
@@ -126,22 +128,32 @@ public class DialogColorPicker extends Dialog {
         
         populate();
     }
+
+    @Override
+    public Dialog show(Stage stage) {
+        Dialog dialog = super.show(stage);
+        
+        stage.setKeyboardFocus(redSpinner.getTextField());
+        redSpinner.getTextField().selectAll();
+        
+        return dialog;
+    }
     
-    private static Vector3 temp;
+    private static Vector3 tempVector;
     
     public static Vector3 rgbToHsb(float r, float g, float b) {
-        if (temp == null) {
-            temp = new Vector3();
+        if (tempVector == null) {
+            tempVector = new Vector3();
         }
         float[] hsb = new float[3];
         java.awt.Color.RGBtoHSB((int) (255.0f * r), (int) (255.0f * g), (int) (255.0f * b), hsb);
-        temp.x = hsb[0];
-        if (MathUtils.isEqual(temp.x, 1.0f)) {
-            temp.x = 0;
+        tempVector.x = hsb[0];
+        if (MathUtils.isEqual(tempVector.x, 1.0f)) {
+            tempVector.x = 0;
         }
-        temp.y = hsb[1];
-        temp.z = hsb[2];
-        return temp;
+        tempVector.y = hsb[1];
+        tempVector.z = hsb[2];
+        return tempVector;
     }
     
     public static Color hsbToRgb(float h, float s, float b) {
@@ -221,33 +233,43 @@ public class DialogColorPicker extends Dialog {
         
         Vector3 v = rgbToHsb(selectedColor.r, selectedColor.g, selectedColor.b);
         
-        Spinner hueSpinner = new Spinner(v.x * 359.0f, 1.0, true, spinnerStyle);
+        Spinner greenSpinner, blueSpinner, alphaSpinner, hueSpinner, saturationSpinner, brightnessSpinner;
+        
+        hueSpinner = new Spinner(v.x * 359.0f, 1.0, true, spinnerStyle);
         hueSpinner.setMinimum(0.0);
         hueSpinner.setMaximum(359.0);
         
-        Spinner saturationSpinner = new Spinner(v.y * 100.0f, 1.0, true, spinnerStyle);
+        saturationSpinner = new Spinner(v.y * 100.0f, 1.0, true, spinnerStyle);
         saturationSpinner.setMinimum(0.0);
         saturationSpinner.setMaximum(100.0);
         
-        Spinner brightnessSpinner = new Spinner(v.z * 100.0f, 1.0, true, spinnerStyle);
+        brightnessSpinner = new Spinner(v.z * 100.0f, 1.0, true, spinnerStyle);
         brightnessSpinner.setMinimum(0.0);
         brightnessSpinner.setMaximum(100.0);
         
-        Spinner redSpinner = new Spinner(selectedColor.r * 255.0f, 1.0, true, spinnerStyle);
+        redSpinner = new Spinner(selectedColor.r * 255.0f, 1.0, true, spinnerStyle);
         redSpinner.setMinimum(0.0);
         redSpinner.setMaximum(255.0);
         
-        Spinner greenSpinner = new Spinner(selectedColor.g * 255.0f, 1.0, true, spinnerStyle);
+        greenSpinner = new Spinner(selectedColor.g * 255.0f, 1.0, true, spinnerStyle);
         greenSpinner.setMinimum(0.0);
         greenSpinner.setMaximum(255.0);
         
-        Spinner blueSpinner = new Spinner(selectedColor.b * 255.0f, 1.0, true, spinnerStyle);
+        blueSpinner = new Spinner(selectedColor.b * 255.0f, 1.0, true, spinnerStyle);
         blueSpinner.setMinimum(0.0);
         blueSpinner.setMaximum(255.0);
         
-        Spinner alphaSpinner = new Spinner(selectedColor.a * 255.0f, 1.0, true, spinnerStyle);
+        alphaSpinner = new Spinner(selectedColor.a * 255.0f, 1.0, true, spinnerStyle);
         alphaSpinner.setMinimum(0.0);
         alphaSpinner.setMaximum(255.0);
+        
+        redSpinner.setTransversalNext(greenSpinner.getTextField());
+        greenSpinner.setTransversalNext(blueSpinner.getTextField());
+        blueSpinner.setTransversalNext(alphaSpinner.getTextField());
+        alphaSpinner.setTransversalNext(hueSpinner.getTextField());
+        hueSpinner.setTransversalNext(saturationSpinner.getTextField());
+        saturationSpinner.setTransversalNext(brightnessSpinner.getTextField());
+        brightnessSpinner.setTransversalNext(redSpinner.getTextField());
         
         ChangeListener rgbListener = new ChangeListener() {
             @Override
