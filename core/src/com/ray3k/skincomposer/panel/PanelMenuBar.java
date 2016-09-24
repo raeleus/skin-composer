@@ -586,6 +586,7 @@ public class PanelMenuBar {
         }
     }
     
+    //todo: adjust it so that import doesn't require the project to be saved first.
     public void importDialogWindows() {
         Runnable runnable = () -> {
             SynchronousJFXFileChooser chooser = new SynchronousJFXFileChooser(() -> {
@@ -618,18 +619,19 @@ public class PanelMenuBar {
             }
         };
         
-        if (!ProjectData.instance().areChangesSaved()) {
-            yesNoDialog("Save Changes?",
-                    "The project must be saved before import."
-                    + "\nDo you want to save?",
-                    (int selection) -> {
-                        if (selection == 0) {
-                            save(runnable);
-                        }
-                    });
-        } else {
-            Main.instance.showDialogLoading(runnable);
-        }
+//        if (!ProjectData.instance().areChangesSaved()) {
+//            yesNoDialog("Save Changes?",
+//                    "The project must be saved before import."
+//                    + "\nDo you want to save?",
+//                    (int selection) -> {
+//                        if (selection == 0) {
+//                            save(runnable);
+//                        }
+//                    });
+//        } else {
+//            Main.instance.showDialogLoading(runnable);
+//        }
+        Main.instance.showDialogLoading(runnable);
     }
     
     public void importDialogVisUI() {

@@ -110,6 +110,10 @@ public class JsonData implements Json.Serializable {
 
         //folder for critical files to be copied to
         FileHandle saveFile = ProjectData.instance().getSaveFile();
+        //todo: finish this
+        if (saveFile == null) {
+            
+        }
         FileHandle targetDirectory = saveFile.sibling(saveFile.nameWithoutExtension() + "_data");
 
         //read json file and create styles
