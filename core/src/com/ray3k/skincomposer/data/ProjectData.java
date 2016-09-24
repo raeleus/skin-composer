@@ -142,7 +142,51 @@ public class ProjectData implements Json.Serializable{
         return newProject;
     }
     
+    private void moveImportedFiles(FileHandle oldSave, FileHandle newSave) {
+        FileHandle tempImportFolder = Gdx.files.local("temp/" + ProjectData.instance().getId() + "_data/");
+        FileHandle localImportFolder;
+        if (oldSave != null) {
+            localImportFolder = oldSave.sibling(oldSave.nameWithoutExtension() + "_data/");
+        } else {
+            localImportFolder = null;
+        }
+        FileHandle targetFolder = newSave.sibling(newSave.nameWithoutExtension() + "_data/");
+        targetFolder.mkdirs();
+        
+        for (DrawableData drawableData : AtlasData.getInstance().getDrawables()) {
+            if (drawableData.file.exists()) {
+                //drawable files in the temp folder
+                if (drawableData.file.parent().equals(tempImportFolder)) {
+                    drawableData.file.moveTo(targetFolder);
+                    drawableData.file = targetFolder.child(drawableData.file.name());
+                }
+                //drawable files in the folder next to the old save
+                else if (localImportFolder != null && !localImportFolder.equals(targetFolder) && drawableData.file.parent().equals(localImportFolder)) {
+                    drawableData.file.copyTo(targetFolder);
+                    drawableData.file = targetFolder.child(drawableData.file.name());
+                }
+            }
+        }
+        
+        for (FontData fontData : JsonData.getInstance().getFonts()) {
+            if (fontData.file.exists()) {
+                //font files in the temp folder
+                if (fontData.file.parent().equals(tempImportFolder)) {
+                    fontData.file.moveTo(targetFolder);
+                    fontData.file = targetFolder.child(fontData.file.name());
+                }
+                //font files in the data folder next to the old save
+                else if (localImportFolder != null && !localImportFolder.equals(targetFolder) && fontData.file.parent().equals(localImportFolder)) {
+                    fontData.file.copyTo(targetFolder);
+                    fontData.file = targetFolder.child(fontData.file.name());
+                }
+            }
+        }
+    }
+    
     public void save(FileHandle file) {
+        moveImportedFiles(saveFile, file);
+        
         saveFile = file;
         generalPref.putString("last-save-directory", file.parent().path());
         generalPref.flush();

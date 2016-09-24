@@ -81,7 +81,13 @@ public class AtlasData {
     public void readAtlas(FileHandle fileHandle) throws Exception {
         if (fileHandle.exists()) {
             FileHandle saveFile = ProjectData.instance().getSaveFile();
-            FileHandle targetDirectory = saveFile.sibling(saveFile.nameWithoutExtension() + "_data");
+            FileHandle targetDirectory;
+            if (saveFile != null) {
+                targetDirectory = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
+            } else {
+                targetDirectory = Gdx.files.local("temp/" + ProjectData.instance().getId() + "_data/");
+            }
+            
             targetDirectory.mkdirs();
             
             TextureAtlas atlas = new TextureAtlas(fileHandle);
@@ -161,7 +167,16 @@ public class AtlasData {
     public void writeAtlas() throws Exception {
         FileHandle targetFile = Gdx.files.local("temp/" + ProjectData.instance().getId() + ".atlas");
         targetFile.parent().mkdirs();
-        targetFile.parent().emptyDirectory();
+        FileHandle[] oldFiles = targetFile.parent().list(new FilenameFilter() {
+            @Override
+            public boolean accept(File file, String string) {
+                return string.matches(targetFile.nameWithoutExtension() + "\\d*\\.(?i)png");
+            }
+        });
+        for (FileHandle fileHandle : oldFiles) {
+            fileHandle.delete();
+        }
+        targetFile.sibling(targetFile.nameWithoutExtension() + ".atlas").delete();
         
         Array<FileHandle> files = new Array<>();
         for (DrawableData drawable : drawables) {
