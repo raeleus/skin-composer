@@ -77,7 +77,7 @@ import javafx.application.Platform;
 import javax.swing.UIManager;
 
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "4";
+    public final static String VERSION = "5";
     public static Main instance;
     private Stage stage;
     private static Skin skin;
