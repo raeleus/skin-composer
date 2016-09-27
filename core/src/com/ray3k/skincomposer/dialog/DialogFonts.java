@@ -60,6 +60,7 @@ import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.AtlasData;
+import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.JsonData;
@@ -255,10 +256,28 @@ public class DialogFonts extends Dialog {
         } else {
             for (FontData font : fonts) {
                 Button button = new Button(skin);
-                Label label = new Label(font.getName() + ":", skin, "white");
+                Label label = new Label(font.getName(), skin, "white");
                 label.setTouchable(Touchable.disabled);
                 button.add(label).left();
-
+                
+                Button renameButton = new Button(skin, "name");
+                renameButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        renameDialog(font);
+                        
+                        event.setBubbles(false);
+                    }
+                });
+                renameButton.addListener(new InputListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        event.setBubbles(false);
+                        return true;
+                    }
+                    
+                });
+                button.add(renameButton).padLeft(15.0f);
                 LabelStyle style = new LabelStyle();
                 style.font = fontMap.get(font);
                 style.fontColor = Color.WHITE;
@@ -340,6 +359,106 @@ public class DialogFonts extends Dialog {
                 fontsTable.row();
             }
         }
+    }
+    
+    private void renameDialog(FontData font) {
+        TextField textField = new TextField("", skin);
+        TextButton okButton;
+        
+        Dialog dialog = new Dialog("Rename Font?", skin) {
+            @Override
+            protected void result(Object object) {
+                if ((boolean) object) {
+                    renameFont(font, textField.getText());
+                }
+            }
+
+            @Override
+            public Dialog show(Stage stage) {
+                Dialog dialog = super.show(stage);
+                Main.instance.getStage().setKeyboardFocus(textField);
+                return dialog;
+            }
+        };
+        
+        Table bg = new  Table(skin);
+        bg.setBackground("white");
+        bg.setColor(Color.WHITE);
+        dialog.getContentTable().add(bg);
+        
+        Label label = new Label(font.getName(), skin, "white");
+        label.setColor(Color.BLACK);
+        bg.add(label).pad(10);
+        
+        dialog.getContentTable().row();
+        label = new Label("What do you want to rename the font to?", skin);
+        dialog.getContentTable().add(label);
+        
+        dialog.getContentTable().row();
+        textField.setText(font.getName());
+        textField.selectAll();
+        dialog.getContentTable().add(textField);
+        
+        dialog.button("OK", true);
+        dialog.button("Cancel", false).key(Keys.ESCAPE, false);
+        okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
+        okButton.setDisabled(true);
+        
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                boolean disable = !FontData.validate(textField.getText());
+                if (!disable) {
+                    for (ColorData data : JsonData.getInstance().getColors()) {
+                        if (data.getName().equals(textField.getText())) {
+                            disable = true;
+                            break;
+                        }
+                    }
+                }
+                okButton.setDisabled(disable);
+            }
+        });
+        textField.setTextFieldListener(new TextField.TextFieldListener() {
+            @Override
+            public void keyTyped(TextField textField, char c) {
+                if (c == '\n') {
+                    if (!okButton.isDisabled()) {
+                        renameFont(font, textField.getText());
+                        dialog.hide();
+                    }
+                }
+            }
+        });
+        
+        dialog.show(getStage());
+    }
+    
+    private void renameFont(FontData font, String newName) {
+        for (Array<StyleData> datas : JsonData.getInstance().getClassStyleMap().values()) {
+            for (StyleData data : datas) {
+                for (StyleProperty property : data.properties.values()) {
+                    if (property != null && property.type.equals(BitmapFont.class) && property.value != null && property.value.equals(font.getName())) {
+                        property.value = newName;
+                    }
+                }
+            }
+        }
+        
+        try {
+            font.setName(newName);
+        } catch (FontData.NameFormatException ex) {
+            Gdx.app.error(getClass().getName(), "Error trying to rename a font.", ex);
+        }
+
+        Main.instance.clearUndoables();
+
+        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+        PanelPreviewProperties.instance.render();
+        
+        ProjectData.instance().setChangesSaved(false);
+        
+        populate();
     }
 
     @Override
