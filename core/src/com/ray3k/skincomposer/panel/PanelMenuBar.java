@@ -705,13 +705,17 @@ public class PanelMenuBar {
                 FileHandle fileHandle = new FileHandle(file);
                 ProjectData.instance().setLastDirectory(fileHandle.parent().path());
                 JsonData.getInstance().writeFile(fileHandle);
+                
                 try {
                     AtlasData.getInstance().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
                 } catch (Exception ex) {
                     Logger.getLogger(PanelMenuBar.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                
                 for (FontData font : JsonData.getInstance().getFonts()) {
-                    font.file.copyTo(fileHandle.parent());
+                    if (!font.file.parent().equals(fileHandle.parent())) {
+                        font.file.copyTo(fileHandle.parent());
+                    }
                 }
             }
         });

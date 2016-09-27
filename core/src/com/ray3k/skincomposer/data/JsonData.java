@@ -127,7 +127,9 @@ public class JsonData implements Json.Serializable {
                 for (JsonValue font : child.iterator()) {
                     FileHandle fontFile = fileHandle.sibling(font.getString("file"));
                     FileHandle fontCopy = targetDirectory.child(font.getString("file"));
-                    fontFile.copyTo(fontCopy);
+                    if (!fontCopy.parent().equals(fontFile.parent())) {
+                        fontFile.copyTo(fontCopy);
+                    }
                     FontData fontData = new FontData(font.name(), fontCopy);
                     fonts.add(fontData);
 
