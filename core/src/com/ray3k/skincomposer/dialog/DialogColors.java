@@ -313,6 +313,26 @@ public class DialogColors extends Dialog {
                 });
                 button.add(renameButton);
                 
+                //recolor button
+                Button recolorButton = new Button(skin, "color");
+                recolorButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        recolorDialog(color);
+                        
+                        event.setBubbles(false);
+                    }
+                });
+                recolorButton.addListener(new InputListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        event.setBubbles(false);
+                        return true;
+                    }
+                    
+                });
+                button.add(recolorButton);
+                
                 label = new Label("(" + ((int)(color.color.r * 255)) + ", " + ((int)(color.color.g * 255)) + ", " + ((int)(color.color.b * 255)) + ", " + ((int)(color.color.a * 255)) + ")", skin, "white");
                 label.setTouchable(Touchable.disabled);
                 label.setAlignment(Align.center);
@@ -392,6 +412,30 @@ public class DialogColors extends Dialog {
         } else {
             colorTable.add(new Label("No colors have been set!", skin, "error"));
         }
+    }
+    
+    private void recolorDialog(ColorData colorData) {
+        Main.instance.showDialogColorPicker(new DialogColorPicker.ColorListener() {
+            @Override
+            public void selected(Color color) {
+                if (color != null) {
+                    recolorColor(colorData, color);
+                }
+            }
+        });
+    }
+    
+    private void recolorColor(ColorData colorData, Color color) {
+        colorData.color = color;
+
+        Main.instance.clearUndoables();
+
+        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+        PanelPreviewProperties.instance.render();
+        
+        ProjectData.instance().setChangesSaved(false);
+        
+        populate();
     }
     
     private void renameDialog(ColorData color) {
