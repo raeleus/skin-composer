@@ -570,7 +570,7 @@ public class DialogDrawables extends Dialog {
     }
     
     private void deleteDrawable(DrawableData drawable) {
-        if (drawable.tint == null && checkDuplicateDrawables(drawable.file, 1)) {
+        if (drawable.tint == null && drawable.tintName == null && checkDuplicateDrawables(drawable.file, 1)) {
             showConfirmDeleteDialog(drawable);
         } else {
             AtlasData.getInstance().getDrawables().removeValue(drawable, true);

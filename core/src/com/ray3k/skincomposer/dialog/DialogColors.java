@@ -50,6 +50,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Sort;
 import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.data.AtlasData;
+import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
@@ -520,6 +522,7 @@ public class DialogColors extends Dialog {
     }
     
     private void renameColor(ColorData color, String newName) {
+        //style properties
         for (Array<StyleData> datas : JsonData.getInstance().getClassStyleMap().values()) {
             for (StyleData data : datas) {
                 for (StyleProperty property : data.properties.values()) {
@@ -530,10 +533,18 @@ public class DialogColors extends Dialog {
             }
         }
         
+        //tinted drawables
+        for (DrawableData drawableData : AtlasData.getInstance().getDrawables()) {
+            if (drawableData.tintName != null && drawableData.tintName.equals(color.getName())) {
+                drawableData.tintName = newName;
+            }
+        }
+        
         try {
             color.setName(newName);
         } catch (ColorData.NameFormatException ex) {
             Gdx.app.error(getClass().getName(), "Error trying to rename a color.", ex);
+            showNameErrorDialog();
         }
 
         Main.instance.clearUndoables();
@@ -546,6 +557,20 @@ public class DialogColors extends Dialog {
         populate();
     }
     
+    private void showNameErrorDialog() {
+        Dialog dialog = new Dialog("Name Error...", Main.instance.getSkin());
+        dialog.text("Error while naming a color.\nPlease ensure name is formatted appropriately:\nNo spaces, don't start with a number, - and _ acceptable.");
+        dialog.button("OK");
+        dialog.show(Main.instance.getStage());
+    }
+    
+    private void showNewColorErrorDialog() {
+        Dialog dialog = new Dialog("Error creating color...", Main.instance.getSkin());
+        dialog.text("Error while attempting to create color.");
+        dialog.button("OK");
+        dialog.show(Main.instance.getStage());
+    }
+    
     private boolean newColor(String name, Color color) {
         if (ColorData.validate(name)) {
             try {
@@ -556,6 +581,7 @@ public class DialogColors extends Dialog {
                 return true;
             } catch (Exception e) {
                 Gdx.app.log(getClass().getName(), "Error trying to add color.", e);
+                showNewColorErrorDialog();
                 return false;
             }
         } else {

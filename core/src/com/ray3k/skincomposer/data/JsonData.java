@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -350,6 +351,14 @@ public class JsonData implements Json.Serializable {
             }
         } catch (ReflectionException e) {
             Gdx.app.log(getClass().getName(), "Error parsing json data during file read", e);
+            showReadErrorDialog();
         }
+    }
+    
+    private void showReadErrorDialog() {
+        Dialog dialog = new Dialog("Error while reading file...", Main.instance.getSkin());
+        dialog.text("Error while attempting to read save file.\nPlease ensure that file is not corrupted.");
+        dialog.button("OK");
+        dialog.show(Main.instance.getStage());
     }
 }

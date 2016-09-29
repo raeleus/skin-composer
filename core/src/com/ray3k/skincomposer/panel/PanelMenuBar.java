@@ -614,11 +614,19 @@ public class PanelMenuBar {
                     PanelPreviewProperties.instance.populate();
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
+                    showImportError();
                 }
             }
         };
 
         Main.instance.showDialogLoading(runnable);
+    }
+    
+    private void showImportError() {
+        Dialog dialog = new Dialog("Error while importing...", skin);
+        dialog.text("Error while attempting to import a skin.\nPlease check that all files exist.");
+        dialog.button("OK");
+        dialog.show(stage);
     }
     
     public void importDialogVisUI() {
