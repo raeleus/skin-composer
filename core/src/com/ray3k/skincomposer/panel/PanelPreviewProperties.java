@@ -92,6 +92,7 @@ import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
+import com.ray3k.skincomposer.dialog.DialogError;
 
 public class PanelPreviewProperties {
     private Skin skin;
@@ -1307,6 +1308,7 @@ public class PanelPreviewProperties {
             return true;
         } catch (Exception e) {
             Gdx.app.error(getClass().getName(), "Error while attempting to generate drawables.", e);
+            DialogError.showError("Atlas Error...", "Error while attempting to generate drawables.\n\nOpen log?");
             return false;
         }
     }

@@ -51,6 +51,7 @@ import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
+import com.ray3k.skincomposer.dialog.DialogError;
 import com.ray3k.skincomposer.utils.SynchronousJFXFileChooser;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
@@ -614,19 +615,12 @@ public class PanelMenuBar {
                     PanelPreviewProperties.instance.populate();
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
-                    showImportError();
+                    DialogError.showError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
                 }
             }
         };
 
         Main.instance.showDialogLoading(runnable);
-    }
-    
-    private void showImportError() {
-        Dialog dialog = new Dialog("Error while importing...", skin);
-        dialog.text("Error while attempting to import a skin.\nPlease check that all files exist.");
-        dialog.button("OK");
-        dialog.show(stage);
     }
     
     public void importDialogVisUI() {
@@ -662,6 +656,7 @@ public class PanelMenuBar {
                             PanelPreviewProperties.instance.populate();
                         } catch (Exception e) {
                             Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
+                            DialogError.showError("Import Error", "Error attempting to import JSON.\n\nOpen log?");
                         }
                     }
                 }
@@ -717,7 +712,8 @@ public class PanelMenuBar {
                 try {
                     AtlasData.getInstance().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
                 } catch (Exception ex) {
-                    Logger.getLogger(PanelMenuBar.class.getName()).log(Level.SEVERE, null, ex);
+                    Gdx.app.error(PanelMenuBar.class.getName(), "Error while writing texture atlas", ex);
+                    DialogError.showError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
                 }
                 
                 for (FontData font : JsonData.getInstance().getFonts()) {
@@ -763,7 +759,8 @@ public class PanelMenuBar {
                         try {
                             AtlasData.getInstance().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
                         } catch (Exception ex) {
-                            Logger.getLogger(PanelMenuBar.class.getName()).log(Level.SEVERE, null, ex);
+                            Gdx.app.error(PanelMenuBar.class.getName(), "Error while writing texture atlas", ex);
+                            DialogError.showError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
                         }
                         for (FontData font : JsonData.getInstance().getFonts()) {
                             font.file.copyTo(fileHandle.parent());

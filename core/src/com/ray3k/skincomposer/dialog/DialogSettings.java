@@ -116,6 +116,7 @@ public class DialogSettings extends Dialog {
                     Utils.openFileExplorer(Gdx.files.local("temp/"));
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error opening temp folder", e);
+                    DialogError.showError("Folder Error...", "Error opening temp folder.\n\nOpen log?");
                 }
             }
         });
@@ -129,7 +130,8 @@ public class DialogSettings extends Dialog {
                 try {
                     Utils.openFileExplorer(Gdx.files.external(".prefs/"));
                 } catch (Exception e) {
-                    Gdx.app.error(getClass().getName(), "Error opening temp folder", e);
+                    Gdx.app.error(getClass().getName(), "Error opening preferences folder", e);
+                    DialogError.showError("Folder Error...", "Error opening preferences folder.\n\nOpen log?");
                 }
             }
         });
@@ -144,7 +146,8 @@ public class DialogSettings extends Dialog {
                     try {
                         Utils.openFileExplorer(ProjectData.instance().getSaveFile().sibling(ProjectData.instance().getSaveFile().nameWithoutExtension() + "_data"));
                     } catch (Exception e) {
-                        Gdx.app.error(getClass().getName(), "Error opening temp folder", e);
+                        Gdx.app.error(getClass().getName(), "Error opening project folder", e);
+                        DialogError.showError("Folder Error...", "Error opening project folder\n\nOpen log?");
                     }
                 }
             });
@@ -165,6 +168,7 @@ public class DialogSettings extends Dialog {
                     } catch (Exception e) {
                         Main.instance.showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
                         Gdx.app.error(getClass().getName(), "Unable to write texture atlas to temporary storage!", e);
+                        DialogError.showError("Atlas Error...", "Unable to write texture atlas to temporary storage.\n\nOpen log?");
                     }
                 });
             }

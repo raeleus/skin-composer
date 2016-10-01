@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import com.ray3k.skincomposer.dialog.DialogError;
 
 public class StyleProperty implements Json.Serializable{
     public Class type;
@@ -84,6 +85,7 @@ public class StyleProperty implements Json.Serializable{
             }
         } catch (ReflectionException ex) {
             Gdx.app.error(getClass().toString(), "Error reading from serialized object" , ex);
+            DialogError.showError("Read Error...","Error reading from serialized object.\n\nOpen log?");
         }
     }
 }

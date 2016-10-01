@@ -544,7 +544,7 @@ public class DialogColors extends Dialog {
             color.setName(newName);
         } catch (ColorData.NameFormatException ex) {
             Gdx.app.error(getClass().getName(), "Error trying to rename a color.", ex);
-            showNameErrorDialog();
+            DialogError.showError("Name Error...","Error while naming a color.\\nPlease ensure name is formatted appropriately:\\nNo spaces, don't start with a number, - and _ acceptable.\n\nOpen log?");
         }
 
         Main.instance.clearUndoables();
@@ -557,20 +557,6 @@ public class DialogColors extends Dialog {
         populate();
     }
     
-    private void showNameErrorDialog() {
-        Dialog dialog = new Dialog("Name Error...", Main.instance.getSkin());
-        dialog.text("Error while naming a color.\nPlease ensure name is formatted appropriately:\nNo spaces, don't start with a number, - and _ acceptable.");
-        dialog.button("OK");
-        dialog.show(Main.instance.getStage());
-    }
-    
-    private void showNewColorErrorDialog() {
-        Dialog dialog = new Dialog("Error creating color...", Main.instance.getSkin());
-        dialog.text("Error while attempting to create color.");
-        dialog.button("OK");
-        dialog.show(Main.instance.getStage());
-    }
-    
     private boolean newColor(String name, Color color) {
         if (ColorData.validate(name)) {
             try {
@@ -581,7 +567,7 @@ public class DialogColors extends Dialog {
                 return true;
             } catch (Exception e) {
                 Gdx.app.log(getClass().getName(), "Error trying to add color.", e);
-                showNewColorErrorDialog();
+                DialogError.showError("Error creating color...", "Error while attempting to create color.\n\nOpen log?");
                 return false;
             }
         } else {

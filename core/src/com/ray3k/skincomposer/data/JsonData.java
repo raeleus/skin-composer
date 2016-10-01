@@ -60,6 +60,7 @@ import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.dialog.DialogError;
 import java.io.StringWriter;
 
 public class JsonData implements Json.Serializable {
@@ -351,14 +352,7 @@ public class JsonData implements Json.Serializable {
             }
         } catch (ReflectionException e) {
             Gdx.app.log(getClass().getName(), "Error parsing json data during file read", e);
-            showReadErrorDialog();
+            DialogError.showError("Error while reading file...", "Error while attempting to read save file.\nPlease ensure that file is not corrupted.\n\nOpen error log?");
         }
-    }
-    
-    private void showReadErrorDialog() {
-        Dialog dialog = new Dialog("Error while reading file...", Main.instance.getSkin());
-        dialog.text("Error while attempting to read save file.\nPlease ensure that file is not corrupted.");
-        dialog.button("OK");
-        dialog.show(Main.instance.getStage());
     }
 }

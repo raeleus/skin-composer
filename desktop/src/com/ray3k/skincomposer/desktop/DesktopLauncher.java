@@ -5,6 +5,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationLogger;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
 import com.badlogic.gdx.files.FileHandle;
@@ -16,6 +17,7 @@ import com.ray3k.skincomposer.CloseListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.DesktopWorker;
 import com.ray3k.skincomposer.FilesDroppedListener;
+import com.ray3k.skincomposer.TextFileApplicationLogger;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -38,20 +40,21 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         main.setDesktopWorker(desktopLauncher);
         
         try {
-            new Lwjgl3Application(main, config);
+            Lwjgl3Application app = new Lwjgl3Application(main, config);
+            app.setApplicationLogger(new TextFileApplicationLogger());
         } catch (Exception e) {
             e.printStackTrace();
             
             FileWriter fw = null;
             try {
-                fw = new FileWriter(Gdx.files.local("temp/test.txt").file(), true);
+                fw = new FileWriter(Gdx.files.local("temp/java-stacktrace.txt").file(), true);
                 PrintWriter pw = new PrintWriter(fw);
                 e.printStackTrace(pw);
                 pw.close();
                 fw.close();
                 int choice = JOptionPane.showConfirmDialog(null, "Exception occurred. See error log?", "Skin Composer Exception!", JOptionPane.YES_NO_OPTION);
                 if (choice == 0) {
-                    Utils.openFileExplorer(Gdx.files.local("temp/test.txt"));
+                    Utils.openFileExplorer(Gdx.files.local("temp/java-stacktrace.txt"));
                 }
             } catch (Exception ex) {
 

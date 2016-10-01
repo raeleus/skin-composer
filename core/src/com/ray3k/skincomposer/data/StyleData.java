@@ -67,6 +67,7 @@ import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import com.ray3k.skincomposer.dialog.DialogError;
 
 public class StyleData implements Json.Serializable {
     public String name = "";
@@ -239,6 +240,7 @@ public class StyleData implements Json.Serializable {
             clazz = ClassReflection.forName(jsonData.getString("clazz"));
         } catch (ReflectionException ex) {
             Gdx.app.error(getClass().toString(), "Error reading from serialized object" , ex);
+            DialogError.showError("Read Error...","Error reading from serialized object.\n\nOpen log?");
         }
     }
 

@@ -192,6 +192,7 @@ public class DialogDrawables extends Dialog {
             return true;
         } catch (Exception e) {
             Gdx.app.error(getClass().getName(), "Error while attempting to generate drawables.", e);
+            DialogError.showError("Atlas Error...","Error while attempting to generate drawables.\n\nOpen log?");
             return false;
         }
     }
@@ -1052,6 +1053,7 @@ public class DialogDrawables extends Dialog {
             }
         } catch (Exception e) {
             Gdx.app.error(getClass().getName(), "Error creating atlas upon drawable dialog exit", e);
+            DialogError.showError("Atlas Error...", "Error creating atlas upon drawable dialog exit.\n\nOpen log?");
         }
         
         if (atlas != null) {

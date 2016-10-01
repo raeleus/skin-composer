@@ -239,7 +239,7 @@ public class DialogFonts extends Dialog {
                 populate();
             } catch (Exception e) {
                 Gdx.app.error(getClass().getName(), "Error creating font from file", e);
-                showAddFontErrorMessage();
+                DialogError.showError("Font Error...", "Error creating font from file. Check file paths.\n\nOpen log?");
             }
             return true;
         } else {
@@ -449,6 +449,7 @@ public class DialogFonts extends Dialog {
             font.setName(newName);
         } catch (FontData.NameFormatException ex) {
             Gdx.app.error(getClass().getName(), "Error trying to rename a font.", ex);
+            DialogError.showError("Rename Font Error...", "Error trying to rename a font.\n\nOpen log?");
         }
 
         Main.instance.clearUndoables();
@@ -600,6 +601,7 @@ public class DialogFonts extends Dialog {
             return true;
         } catch (Exception e) {
             Gdx.app.error(getClass().getName(), "Error while attempting to generate drawables.", e);
+            DialogError.showError("Drawables Error...", "Error while attempting to generate drawables. Open log?");
             return false;
         }
     }
@@ -764,16 +766,9 @@ public class DialogFonts extends Dialog {
                 }
             } catch (Exception e) {
                 Gdx.app.error(getClass().getName(), "Error creating preview font from file", e);
-                showAddFontErrorMessage();
+                DialogError.showError("Preview Error...", "Error creating preview font from file. Check file paths.\n\nOpen log?");
             }
         }
-    }
-    
-    private void showAddFontErrorMessage() {
-        Dialog dialog = new Dialog("Error adding font...", skin, "dialog");
-        dialog.text("Unable to add font. Check file paths.");
-        dialog.button("Ok");
-        dialog.show(getStage());
     }
     
     private void showAddFontSizeError(String name) {
