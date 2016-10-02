@@ -593,7 +593,7 @@ public class DialogDrawables extends Dialog {
             Main.instance.clearUndoables();
 
             gatherDrawables();
-            refreshDrawableDisplay();
+            sortBySelectedMode();
         }
     }
 
