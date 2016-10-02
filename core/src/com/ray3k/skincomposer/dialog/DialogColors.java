@@ -433,6 +433,7 @@ public class DialogColors extends Dialog {
         Main.instance.clearUndoables();
 
         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+        PanelPreviewProperties.instance.produceAtlas();
         PanelPreviewProperties.instance.render();
         
         ProjectData.instance().setChangesSaved(false);
