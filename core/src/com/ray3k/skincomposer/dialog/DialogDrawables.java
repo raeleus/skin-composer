@@ -361,6 +361,7 @@ public class DialogDrawables extends Dialog {
             //preview
             table.row();
             Container bg = new Container();
+            bg.setClip(true);
             bg.setBackground(getSkin().getDrawable("white"));
             bg.setColor(drawable.bgColor);
             Image image = new Image(drawablePairs.get(drawable));
