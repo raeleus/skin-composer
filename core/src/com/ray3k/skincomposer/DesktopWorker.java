@@ -34,4 +34,5 @@ public interface DesktopWorker {
     public void addFilesDroppedListener(FilesDroppedListener filesDroppedListener);
     public void removeFilesDroppedListener(FilesDroppedListener filesDroppedListener);
     public void setCloseListener(CloseListener closeListener);
+    public void attachLogListener();
 }

@@ -5,7 +5,6 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationLogger;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
 import com.badlogic.gdx.files.FileHandle;
@@ -41,7 +40,6 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         
         try {
             Lwjgl3Application app = new Lwjgl3Application(main, config);
-            app.setApplicationLogger(new TextFileApplicationLogger());
         } catch (Exception e) {
             e.printStackTrace();
             
@@ -176,5 +174,10 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     @Override
     public void setCloseListener(CloseListener closeListener) {
         this.closeListener = closeListener;
+    }
+
+    @Override
+    public void attachLogListener() {
+        ((Lwjgl3Application) Gdx.app).setApplicationLogger(new TextFileApplicationLogger());
     }
 }

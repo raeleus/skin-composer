@@ -27,6 +27,7 @@ package com.ray3k.skincomposer;
 import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import java.io.PrintStream;
 
 public class TextFileApplicationLogger implements ApplicationLogger {
     private final FileHandle log;
@@ -44,8 +45,8 @@ public class TextFileApplicationLogger implements ApplicationLogger {
 
     @Override
     public void log(String tag, String message, Throwable exception) {
-        log.writeString(tag + ": " + message, true);
-        log.writeString(exception.toString(), true);
+        log.writeString(tag + ": " + message + "\n", true);
+        printException(exception);
         
         System.out.println(tag + ": " + message);
         exception.printStackTrace(System.out);
@@ -60,8 +61,8 @@ public class TextFileApplicationLogger implements ApplicationLogger {
 
     @Override
     public void error(String tag, String message, Throwable exception) {
-        log.writeString(tag + ": " + message, true);
-        log.writeString(exception.toString(), true);
+        log.writeString(tag + ": " + message + "\n", true);
+        printException(exception);
         
         System.err.println(tag + ": " + message);
         exception.printStackTrace(System.err);
@@ -76,10 +77,16 @@ public class TextFileApplicationLogger implements ApplicationLogger {
 
     @Override
     public void debug(String tag, String message, Throwable exception) {
-        log.writeString(tag + ": " + message, true);
-        log.writeString(exception.toString(), true);
+        log.writeString(tag + ": " + message + "\n", true);
+        printException(exception);
         
         System.out.println(tag + ": " + message);
         exception.printStackTrace(System.out);
+    }
+    
+    private void printException(Throwable exception) {
+        PrintStream printStream = new PrintStream(log.write(true));
+        exception.printStackTrace(printStream);
+        printStream.close();
     }
 }

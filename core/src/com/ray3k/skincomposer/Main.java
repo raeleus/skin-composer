@@ -67,7 +67,6 @@ import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
 import com.ray3k.skincomposer.dialog.DialogColorPicker.ColorListener;
 import com.ray3k.skincomposer.dialog.DialogColors.DialogColorsListener;
-import com.ray3k.skincomposer.dialog.DialogError;
 import com.ray3k.skincomposer.dialog.DialogFonts;
 import com.ray3k.skincomposer.dialog.DialogLoading;
 import com.ray3k.skincomposer.dialog.DialogSettings;
@@ -112,6 +111,7 @@ public class Main extends ApplicationAdapter {
         listeningForKeys = true;
         undoables = new Array<>();
         undoIndex = -1;
+        desktopWorker.attachLogListener();
         desktopWorker.sizeWindowToFit(800, 800, 50, Gdx.graphics);
         desktopWorker.centerWindow(Gdx.graphics);
         desktopWorker.setCloseListener(() -> {
