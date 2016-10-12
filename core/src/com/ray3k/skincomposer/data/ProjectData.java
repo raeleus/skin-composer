@@ -298,7 +298,6 @@ public class ProjectData implements Json.Serializable{
         this.atlasData = AtlasData.getInstance();
         if (!jsonData.get("saveFile").isNull()) {
             saveFile = new FileHandle(jsonData.getString("saveFile"));
-            putRecentFile(saveFile.path());
         }
     }
 
