@@ -38,14 +38,14 @@ public class TextFileApplicationLogger implements ApplicationLogger {
     
     @Override
     public void log(String tag, String message) {
-        log.writeString(tag + ": " + message, true);
+        log.writeString("\n" + tag + ": " + message + "\n", true);
         
         System.out.println(tag + ": " + message);
     }
 
     @Override
     public void log(String tag, String message, Throwable exception) {
-        log.writeString(tag + ": " + message + "\n", true);
+        log.writeString("\n" + tag + ": " + message + "\n", true);
         printException(exception);
         
         System.out.println(tag + ": " + message);
@@ -54,14 +54,14 @@ public class TextFileApplicationLogger implements ApplicationLogger {
 
     @Override
     public void error(String tag, String message) {
-        log.writeString(tag + ": " + message, true);
+        log.writeString("\n" + tag + ": " + message + "\n", true);
         
         System.err.println(tag + ": " + message);
     }
 
     @Override
     public void error(String tag, String message, Throwable exception) {
-        log.writeString(tag + ": " + message + "\n", true);
+        log.writeString("\n" + tag + ": " + message + "\n", true);
         printException(exception);
         
         System.err.println(tag + ": " + message);
@@ -70,14 +70,14 @@ public class TextFileApplicationLogger implements ApplicationLogger {
 
     @Override
     public void debug(String tag, String message) {
-        log.writeString(tag + ": " + message, true);
+        log.writeString("\n" + tag + ": " + message + "\n", true);
         
         System.out.println(tag + ": " + message);
     }
 
     @Override
     public void debug(String tag, String message, Throwable exception) {
-        log.writeString(tag + ": " + message + "\n", true);
+        log.writeString("\n" + tag + ": " + message + "\n", true);
         printException(exception);
         
         System.out.println(tag + ": " + message);
