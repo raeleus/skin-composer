@@ -27,6 +27,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
@@ -44,6 +45,7 @@ public class ProjectData implements Json.Serializable{
     private FileHandle saveFile;
     private boolean changesSaved;
     private boolean newProject;
+    private static final int MAX_RECENT_FILES = 5;
     
     public static ProjectData instance() {
         if (instance == null) {
@@ -82,6 +84,43 @@ public class ProjectData implements Json.Serializable{
     
     public String getLastDirectory() {
         return (String) preferences.get("last-directory", generalPref.getString("last-directory", Gdx.files.getLocalStoragePath()));
+    }
+    
+    public Array<String> getRecentFiles() {
+        Array<String> returnValue = new Array<>();
+        int maxIndex = Math.min(MAX_RECENT_FILES, generalPref.getInteger("recentFilesCount", 0));
+        for (int i = 0; i < maxIndex; i++) {
+            returnValue.add(generalPref.getString("recentFile" + i));
+        }
+        
+        return returnValue;
+    }
+    
+    public void putRecentFile(String filePath) {
+        boolean exists = false;
+        for (String path : getRecentFiles()) {
+            if (path.equals(filePath)) {
+                exists = true;
+                break;
+            }
+        }
+        
+        if (!exists) {
+            int index = generalPref.getInteger("recentFilesCount", 0);
+
+            if (index >= MAX_RECENT_FILES) {
+                for (int i = 1; i < MAX_RECENT_FILES; i++) {
+                    String value = generalPref.getString("recentFile" + i);
+                    generalPref.putString("recentFile" + (i - 1), value);
+                }
+                generalPref.remove("recentFile" + (MAX_RECENT_FILES - 1));
+
+                index = MAX_RECENT_FILES - 1;
+            }
+            generalPref.putString("recentFile" + index, filePath);
+            generalPref.putInteger("recentFilesCount", index + 1);
+            generalPref.flush();
+        }
     }
     
     public void setMaxTextureDimensions(int width, int height) {
@@ -188,6 +227,7 @@ public class ProjectData implements Json.Serializable{
         moveImportedFiles(saveFile, file);
         
         saveFile = file;
+        putRecentFile(file.path());
         generalPref.putString("last-save-directory", file.parent().path());
         generalPref.flush();
         Json json = new Json(JsonWriter.OutputType.minimal);
@@ -204,6 +244,7 @@ public class ProjectData implements Json.Serializable{
         Json json = new Json(JsonWriter.OutputType.minimal);
         instance = json.fromJson(ProjectData.class, file);
         instance.saveFile = file;
+        putRecentFile(file.path());
         generalPref.putString("last-save-directory", file.parent().path());
         generalPref.flush();
         PanelClassBar.instance.populate();
@@ -257,6 +298,7 @@ public class ProjectData implements Json.Serializable{
         this.atlasData = AtlasData.getInstance();
         if (!jsonData.get("saveFile").isNull()) {
             saveFile = new FileHandle(jsonData.getString("saveFile"));
+            putRecentFile(saveFile.path());
         }
     }
 

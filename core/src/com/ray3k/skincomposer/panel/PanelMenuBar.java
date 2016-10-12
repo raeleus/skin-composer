@@ -33,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -55,8 +56,6 @@ import com.ray3k.skincomposer.dialog.DialogError;
 import com.ray3k.skincomposer.utils.SynchronousJFXFileChooser;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.stage.FileChooser;
 
 public class PanelMenuBar {
@@ -106,6 +105,21 @@ public class PanelMenuBar {
                 openDialog();
             }
         });
+        menuItemTable.add(menuItemTextButton);
+        
+        menuItemTable.row();
+        menuItemTextButton = new TextButton("Recent Files...", skin, "menu-item");
+        menuItemTextButton.getLabel().setAlignment(Align.left);
+        menuItemTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                recentFilesDialog();
+            }
+        });
+        //todo: ensure that recent files is enabled when an item is added to the list.
+        if (ProjectData.instance().getRecentFiles().size == 0) {
+            menuItemTextButton.setDisabled(true);
+        }
         menuItemTable.add(menuItemTextButton);
         
         menuItemTable.row();
@@ -491,6 +505,33 @@ public class PanelMenuBar {
         } else {
             runnable.run();
         }
+    }
+    
+    private void recentFilesDialog() {
+        SelectBox<String> selectBox = new SelectBox(skin);
+        Dialog dialog = new Dialog("Recent Files...", skin) {
+            @Override
+            protected void result(Object object) {
+                super.result(object);
+                if ((boolean) object) {
+                    if (selectBox.getSelected() != null) {
+                        FileHandle file = new FileHandle(selectBox.getSelected());
+                        if (file.exists()) {
+                            ProjectData.instance().load(file);
+                        }
+                    }
+                }
+            }
+        };
+        
+        selectBox.setItems(ProjectData.instance().getRecentFiles());
+        
+        dialog.text("Select a file to open");
+        dialog.getContentTable().row();
+        dialog.getContentTable().add(selectBox);
+        dialog.button("OK", true).key(Keys.ENTER, true);
+        dialog.button("Cancel", false).key(Keys.ESCAPE, false);
+        dialog.show(stage);
     }
     
     public void save(Runnable runnable) {
