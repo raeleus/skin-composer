@@ -61,7 +61,7 @@ import javafx.stage.FileChooser;
 public class PanelMenuBar {
     private Skin skin;
     private Stage stage;
-    private TextButton undoButton, redoButton;
+    private TextButton undoButton, redoButton, recentFilesButton;
     private static PanelMenuBar instance;
     private com.kotcrab.vis.ui.widget.file.FileChooser fileChooser;
     
@@ -108,19 +108,18 @@ public class PanelMenuBar {
         menuItemTable.add(menuItemTextButton);
         
         menuItemTable.row();
-        menuItemTextButton = new TextButton("Recent Files...", skin, "menu-item");
-        menuItemTextButton.getLabel().setAlignment(Align.left);
-        menuItemTextButton.addListener(new ChangeListener() {
+        recentFilesButton = new TextButton("Recent Files...", skin, "menu-item");
+        recentFilesButton.getLabel().setAlignment(Align.left);
+        recentFilesButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 recentFilesDialog();
             }
         });
-        //todo: ensure that recent files is enabled when an item is added to the list.
         if (ProjectData.instance().getRecentFiles().size == 0) {
-            menuItemTextButton.setDisabled(true);
+            recentFilesButton.setDisabled(true);
         }
-        menuItemTable.add(menuItemTextButton);
+        menuItemTable.add(recentFilesButton);
         
         menuItemTable.row();
         menuItemTextButton = new TextButton("Save", skin, "menu-item");
@@ -357,6 +356,10 @@ public class PanelMenuBar {
 
     public TextButton getRedoButton() {
         return redoButton;
+    }
+
+    public TextButton getRecentFilesButton() {
+        return recentFilesButton;
     }
     
     public void newDialog() {

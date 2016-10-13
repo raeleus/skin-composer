@@ -33,6 +33,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.panel.PanelClassBar;
+import com.ray3k.skincomposer.panel.PanelMenuBar;
 import com.ray3k.skincomposer.panel.PanelPreviewProperties;
 import com.ray3k.skincomposer.panel.PanelStyleProperties;
 
@@ -121,6 +122,8 @@ public class ProjectData implements Json.Serializable{
             generalPref.putInteger("recentFilesCount", index + 1);
             generalPref.flush();
         }
+        
+        PanelMenuBar.instance().getRecentFilesButton().setDisabled(false);
     }
     
     public void setMaxTextureDimensions(int width, int height) {
