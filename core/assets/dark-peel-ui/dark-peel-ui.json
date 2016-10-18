@@ -691,7 +691,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 		background: panel-peach
 		titleFont: font
 		titleFontColor: dark_gray
-		stageBackground: bleached-peach
+		stageBackground: bleached-peach-trans
 	}
 	panel: {
 		background: panel-orange
@@ -702,7 +702,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 		background: window-orange
 		titleFont: font
 		titleFontColor: white
-		stageBackground: bleached-peach
+		stageBackground: bleached-peach-trans
 	}
 	maroon: {
 		background: window-maroon
@@ -718,7 +718,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 		background: window-large
 		titleFont: font
 		titleFontColor: white
-		stageBackground: bleached-peach
+		stageBackground: bleached-peach-trans
 	}
 	panel-maroon: {
 		background: panel-maroon
@@ -739,13 +739,13 @@ com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 		background: panel-maroon
 		titleFont: font
 		titleFontColor: dark_gray
-		stageBackground: bleached-peach
+		stageBackground: bleached-peach-trans
 	}
 	dialog-panel: {
 		background: panel-orange
 		titleFont: font
 		titleFontColor: dark_gray
-		stageBackground: bleached-peach
+		stageBackground: bleached-peach-trans
 	}
 }
 }
