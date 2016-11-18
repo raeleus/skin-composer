@@ -70,15 +70,48 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.ray3k.skincomposer.dialog.DialogError;
 
 public class StyleData implements Json.Serializable {
-    public String name = "";
-    public Class clazz;
-    public OrderedMap<String,StyleProperty> properties;
-    public boolean deletable;
-    public final static Class[] classes = {Button.class, CheckBox.class,
+    private String name = "";
+    private Class clazz;
+    private OrderedMap<String,StyleProperty> properties;
+    private boolean deletable;
+    private boolean thirdParty;
+    public final static Class[] CLASSES = {Button.class, CheckBox.class,
             ImageButton.class, ImageTextButton.class, Label.class, List.class,
             ProgressBar.class, ScrollPane.class, SelectBox.class, Slider.class,
             SplitPane.class, TextButton.class, TextField.class, TextTooltip.class,
             Touchpad.class, Tree.class, Window.class};
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isDeletable() {
+        return deletable;
+    }
+
+    public void setDeletable(boolean deletable) {
+        this.deletable = deletable;
+    }
+
+    public Class getClazz() {
+        return clazz;
+    }
+
+    public void setClazz(Class clazz) {
+        this.clazz = clazz;
+    }
+
+    public OrderedMap<String, StyleProperty> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(OrderedMap<String, StyleProperty> properties) {
+        this.properties = properties;
+    }
 
     @Override
     public String toString() {
@@ -86,8 +119,8 @@ public class StyleData implements Json.Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        return o instanceof StyleData && ((StyleData) o).name.equals(name);
+    public boolean equals(Object obj) {
+        return obj instanceof StyleData && ((StyleData) obj).name.equals(name);
     }
     
     public StyleData(StyleData styleData, String styleName) {
@@ -99,6 +132,7 @@ public class StyleData implements Json.Serializable {
             properties.put(entry.key, new StyleProperty(entry.value));
         }
         deletable = true;
+        thirdParty = false;
     }
     
     public StyleData (Class clazz, String styleName) {
@@ -107,12 +141,30 @@ public class StyleData implements Json.Serializable {
         this.clazz = clazz;
         properties = new OrderedMap<>();
         deletable = true;
+        thirdParty = false;
         
+        resetProperties();
+    }
+    
+    public StyleData (ThirdPartyClassData classData, String styleName) {
+        name = styleName;
+        
+        properties = new OrderedMap<>();
+        deletable = true;
+        thirdParty = false;
         resetProperties();
     }
     
     public StyleData() {
         
+    }
+
+    public boolean isThirdParty() {
+        return thirdParty;
+    }
+
+    public void setThirdParty(boolean thirdParty) {
+        this.thirdParty = thirdParty;
     }
     
     private void newStyleProperties(Class clazz) {
@@ -229,6 +281,7 @@ public class StyleData implements Json.Serializable {
         json.writeValue("clazz", clazz.getName());
         json.writeValue("properties", properties);
         json.writeValue("deletable", deletable);
+        json.writeValue("thirdParty", thirdParty);
     }
 
     @Override
@@ -236,6 +289,7 @@ public class StyleData implements Json.Serializable {
         name = jsonData.getString("name");
         properties = json.readValue("properties", OrderedMap.class, jsonData);
         deletable = jsonData.getBoolean("deletable");
+        thirdParty = jsonData.getBoolean("thirdParty", false);
         try {
             clazz = ClassReflection.forName(jsonData.getString("clazz"));
         } catch (ReflectionException ex) {
@@ -247,7 +301,9 @@ public class StyleData implements Json.Serializable {
     public void resetProperties() {
         properties.clear();
         
-        if (clazz.equals(Button.class)) {
+        if (clazz == null) {
+            //todo: handle third party style properties.
+        } else if (clazz.equals(Button.class)) {
             newStyleProperties(ButtonStyle.class);
         } else if (clazz.equals(CheckBox.class)) {
             newStyleProperties(CheckBoxStyle.class);

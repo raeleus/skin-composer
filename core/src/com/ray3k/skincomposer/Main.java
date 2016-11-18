@@ -64,6 +64,7 @@ import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
+import com.ray3k.skincomposer.data.ThirdPartyClassData;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
 import com.ray3k.skincomposer.dialog.DialogColorPicker.ColorListener;
 import com.ray3k.skincomposer.dialog.DialogColors.DialogColorsListener;
@@ -320,7 +321,7 @@ public class Main extends ApplicationAdapter {
         StyleData data = null;
         
         for (StyleData tempStyle : styles) {
-            if (tempStyle.name.equals(styleName)) {
+            if (tempStyle.getName().equals(styleName)) {
                 data = tempStyle;
                 data.resetProperties();
             }
@@ -334,8 +335,40 @@ public class Main extends ApplicationAdapter {
         return data;
     }
     
+    public StyleData newThirdPartyStyle(ThirdPartyClassData classData, String styleName) {
+        Array<StyleData> styles = JsonData.getInstance().getThirdPartyClassStyleMap().get(classData);
+        StyleData data = null;
+        
+        for (StyleData tempStyle : styles) {
+            if (tempStyle.getName().equals(styleName)) {
+                data = tempStyle;
+                data.resetProperties();
+            }
+        }
+        
+        if (data == null) {
+            data = new StyleData(classData, styleName);
+            styles.add(data);
+        }
+        
+        return data;
+    }
+    
+    public StyleProperty newThirdPartyStyleProperty(Class clazz, String name) {
+        StyleProperty styleProperty = new StyleProperty(clazz, name, true);
+        return styleProperty;
+    }
+    
     public StyleData copyStyle(StyleData original, String styleName) {
-        Array<StyleData> styles = JsonData.getInstance().getClassStyleMap().get(original.clazz);
+        Array<StyleData> styles = JsonData.getInstance().getClassStyleMap().get(original.getClazz());
+        StyleData data = new StyleData(original, styleName);
+        styles.add(data);
+        
+        return data;
+    }
+    
+    public StyleData copyThirdPartyStyle(StyleData original, ThirdPartyClassData classData, String styleName) {
+        Array<StyleData> styles = JsonData.getInstance().getThirdPartyClassStyleMap().get(classData);
         StyleData data = new StyleData(original, styleName);
         styles.add(data);
         
@@ -343,28 +376,28 @@ public class Main extends ApplicationAdapter {
     }
     
     public void deleteStyle(StyleData styleData) {
-        Array<StyleData> styles = JsonData.getInstance().getClassStyleMap().get(styleData.clazz);
+        Array<StyleData> styles = JsonData.getInstance().getClassStyleMap().get(styleData.getClazz());
         styles.removeValue(styleData, true);
         
         //reset any properties pointing to this style to the default style
-        if (styleData.clazz.equals(Label.class)) {
+        if (styleData.getClazz().equals(Label.class)) {
             for (StyleData data : JsonData.getInstance().getClassStyleMap().get(TextTooltip.class)) {
-                StyleProperty property = data.properties.get("label");
-                if (property != null && property.value.equals(styleData.name)) {
+                StyleProperty property = data.getProperties().get("label");
+                if (property != null && property.value.equals(styleData.getName())) {
                     property.value = "default";
                 }
             }
-        } else if (styleData.clazz.equals(List.class)) {
+        } else if (styleData.getClazz().equals(List.class)) {
             for (StyleData data : JsonData.getInstance().getClassStyleMap().get(SelectBox.class)) {
-                StyleProperty property = data.properties.get("listStyle");
-                if (property != null && property.value.equals(styleData.name)) {
+                StyleProperty property = data.getProperties().get("listStyle");
+                if (property != null && property.value.equals(styleData.getName())) {
                     property.value = "default";
                 }
             }
-        } else if (styleData.clazz.equals(ScrollPane.class)) {
+        } else if (styleData.getClazz().equals(ScrollPane.class)) {
             for (StyleData data : JsonData.getInstance().getClassStyleMap().get(SelectBox.class)) {
-                StyleProperty property = data.properties.get("scrollStyle");
-                if (property != null && property.value.equals(styleData.name)) {
+                StyleProperty property = data.getProperties().get("scrollStyle");
+                if (property != null && property.value.equals(styleData.getName())) {
                     property.value = "default";
                 }
             }
