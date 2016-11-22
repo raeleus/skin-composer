@@ -120,12 +120,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     }
 
     @Override
-    public void iconified() {
-        
-    }
-
-    @Override
-    public void deiconified() {
+    public void iconified(boolean isIconified) {
         
     }
 
