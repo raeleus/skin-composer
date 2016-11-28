@@ -39,7 +39,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         main.setDesktopWorker(desktopLauncher);
         
         try {
-            Lwjgl3Application app = new Lwjgl3Application(main, config);
+            new Lwjgl3Application(main, config);
         } catch (Exception e) {
             e.printStackTrace();
             
@@ -120,12 +120,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     }
 
     @Override
-    public void iconified() {
-        
-    }
-
-    @Override
-    public void deiconified() {
+    public void iconified(boolean isIconified) {
         
     }
 
@@ -179,5 +174,13 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     @Override
     public void attachLogListener() {
         ((Lwjgl3Application) Gdx.app).setApplicationLogger(new TextFileApplicationLogger());
+    }
+
+    @Override
+    public void maximized(boolean arg0) {
+    }
+
+    @Override
+    public void refreshRequested() {
     }
 }

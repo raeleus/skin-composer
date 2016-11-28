@@ -244,7 +244,7 @@ public class DialogDrawables extends Dialog {
         
         getContentTable().row();
         contentGroup = new HorizontalGroup();
-        contentGroup.center().wrap(true).space(5.0f).wrapSpace(5.0f).rowLeft();
+        contentGroup.center().wrap(true).space(5.0f).wrapSpace(5.0f).rowAlign(Align.left);
         sortBySelectedMode();
         scrollPane = new ScrollPane(contentGroup, getSkin(), "no-bg");
         scrollPane.setFadeScrollBars(false);
