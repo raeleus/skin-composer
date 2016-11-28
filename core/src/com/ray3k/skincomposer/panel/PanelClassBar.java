@@ -27,7 +27,6 @@ import com.ray3k.skincomposer.data.StyleData;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
@@ -44,9 +43,6 @@ import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.Undoable;
-import com.ray3k.skincomposer.data.ThirdPartyClassData;
-import com.ray3k.skincomposer.dialog.DialogNewClass;
-import com.ray3k.skincomposer.dialog.DialogNewClass.NewClassListener;
 
 public class PanelClassBar {    
     public SelectBox<String> classSelectBox;
@@ -73,60 +69,22 @@ public class PanelClassBar {
         
         classSelectBox = new SelectBox<>(skin, "slim-alt");
         Array<String> names = new Array<>();
-        for (Class clazz : StyleData.CLASSES) {
+        for (Class clazz : StyleData.classes) {
             names.add(clazz.getSimpleName());
         }
-        
-        //third party classes
-        for (ThirdPartyClassData data : JsonData.getInstance().getThirdPartyClassStyleMap().keys()) {
-            names.add(data.getDisplayName());
-        }
-        
         classSelectBox.setItems(names);
         table.add(classSelectBox).padRight(30.0f);
         
-        //add new third party class button
-        Button button = new Button(skin);
-        button.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                DialogNewClass dialog = new DialogNewClass(skin, "dialog");
-                dialog.addNewClassListener(new NewClassListener() {
-                    @Override
-                    public void approved(String className, String displayName) {
-                        ThirdPartyClassData classData = new ThirdPartyClassData(className, displayName);
-                        JsonData.getInstance().getThirdPartyClassStyleMap().put(classData, new Array<>());
-                        Main.instance.newThirdPartyStyle(classData, "default");
-                        populate();
-                        classSelectBox.setSelectedIndex(classSelectBox.getItems().size - 1);
-                    }
-
-                    @Override
-                    public void cancelled() {
-                        
-                    }
-                });
-                dialog.show(stage);
-            }
-        });
-        table.add(button);
-        
         table.add(new Label("Style:", skin, "white")).padRight(5.0f);
         styleSelectBox = new SelectBox<>(skin, "slim-alt");
-        styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.CLASSES[0]));
+        styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[0]));
         table.add(styleSelectBox).padRight(10.0f).minWidth(200.0f);
         
         classSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                if (classSelectBox.getSelectedIndex() < StyleData.CLASSES.length) {
-                    styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.CLASSES[classSelectBox.getSelectedIndex()]));
-                    styleSelectBox.setSelected(styleSelectBox.getItems().first());
-                } else {
-                    //todo: update style select box with thirdparty styles
-                    styleSelectBox.setItems(JsonData.getInstance().getThirdPartyClassStyleMap().get(JsonData.getInstance().getThirdPartyClassByName(classSelectBox.getSelected())));
-                    styleSelectBox.setSelectedIndex(0);
-                }
+                styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+                styleSelectBox.setSelected(styleSelectBox.getItems().first());
                 PanelPreviewProperties.instance.populate();
             }
         });
@@ -167,8 +125,7 @@ public class PanelClassBar {
                 showDeleteStyleDialog(skin, stage);
             }
         });
-        boolean disableDelete = styleSelectBox.getItems().size <= 1 || !styleSelectBox.getSelected().isDeletable();
-        deleteButton.setDisabled(disableDelete);
+        deleteButton.setDisabled(!styleSelectBox.getSelected().deletable);
         table.add(deleteButton);
         
         table.add().growX();
@@ -177,8 +134,7 @@ public class PanelClassBar {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 PanelStyleProperties.instance.populate(styleSelectBox.getSelected());
-                boolean disableDelete = styleSelectBox.getItems().size <= 1 || !styleSelectBox.getSelected().isDeletable();
-                deleteButton.setDisabled(disableDelete);
+                deleteButton.setDisabled(!styleSelectBox.getSelected().deletable);
                 PanelPreviewProperties.instance.populate();
             }
         });
@@ -194,11 +150,7 @@ public class PanelClassBar {
             @Override
             protected void result(Object object) {
                 if ((Boolean)object) {
-                    if (classSelectBox.getSelectedIndex() < StyleData.CLASSES.length) {
-                        Main.instance.addUndoable(new NewStyleUndoable(classSelectBox, styleSelectBox, textField), true);
-                    } else {
-                        Main.instance.addUndoable(new NewStyleThirdPartyUndoable(classSelectBox, styleSelectBox, textField), true);
-                    }
+                    Main.instance.addUndoable(new NewStyleUndoable(classSelectBox, styleSelectBox, textField), true);
                 }
             }
         };
@@ -208,11 +160,7 @@ public class PanelClassBar {
         textField.setTextFieldListener((TextField textField1, char c) -> {
             if (c == '\n') {
                 if (!okButton.isDisabled()) {
-                    if (classSelectBox.getSelectedIndex() < StyleData.CLASSES.length) {
-                        Main.instance.addUndoable(new NewStyleUndoable(classSelectBox, styleSelectBox, textField), true);
-                    } else {
-                        Main.instance.addUndoable(new NewStyleThirdPartyUndoable(classSelectBox, styleSelectBox, textField), true);
-                    }
+                    Main.instance.addUndoable(new NewStyleUndoable(classSelectBox, styleSelectBox, textField1), true);
                     dialog.hide();
                 }
                 Main.instance.getStage().setKeyboardFocus(textField1);
@@ -234,7 +182,7 @@ public class PanelClassBar {
                 
                 if (!disable) {
                     for (StyleData data : styleSelectBox.getItems()) {
-                        if (data.getName().equals(textField.getText())) {
+                        if (data.name.equals(textField.getText())) {
                             disable = true;
                             break;
                         }
@@ -291,7 +239,7 @@ public class PanelClassBar {
                 
                 if (!disable) {
                     for (StyleData data : styleSelectBox.getItems()) {
-                        if (data.getName().equals(textField.getText())) {
+                        if (data.name.equals(textField.getText())) {
                             disable = true;
                             break;
                         }
@@ -320,7 +268,7 @@ public class PanelClassBar {
         };
         dialog.getTitleLabel().setAlignment(Align.center);
         dialog.getContentTable().defaults().padLeft(10.0f).padRight(10.0f);
-        dialog.text("Are you sure you want to delete style " + styleSelectBox.getSelected().getName() + "?");
+        dialog.text("Are you sure you want to delete style " + styleSelectBox.getSelected().name + "?");
         dialog.button("Yes, delete the style", true).button("No", false);
         
         dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
@@ -344,57 +292,20 @@ public class PanelClassBar {
         @Override
         public void undo() {
             Main.instance.deleteStyle(styleData);
-            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.CLASSES[classSelectBox.getSelectedIndex()]));
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
             styleSelectBox.setSelectedIndex(previousIndex);
         }
 
         @Override
         public void redo() {
-            styleData = Main.instance.newStyle(StyleData.CLASSES[classSelectBox.getSelectedIndex()], textField.getText());
-            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.CLASSES[classSelectBox.getSelectedIndex()]));
+            styleData = Main.instance.newStyle(StyleData.classes[classSelectBox.getSelectedIndex()], textField.getText());
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
             styleSelectBox.setSelected(styleData);
         }
 
         @Override
         public String getUndoText() {
-            return "Create Style \"" + styleData.getName() + "\"";
-        }
-    }
-    
-    private static class NewStyleThirdPartyUndoable implements Undoable {
-        private SelectBox classSelectBox, styleSelectBox;
-        private TextField textField;
-        private StyleData styleData;
-        private int previousIndex;
-        private ThirdPartyClassData classData;
-        private Array<StyleData> previousStyleData;
-
-        public NewStyleThirdPartyUndoable(SelectBox classSelectBox, SelectBox styleSelectBox, TextField textField) {
-            this.classSelectBox = classSelectBox;
-            this.styleSelectBox = styleSelectBox;
-            this.textField = textField;
-            previousIndex = styleSelectBox.getSelectedIndex();
-            previousStyleData = styleSelectBox.getItems();
-            classData = JsonData.getInstance().getThirdPartyClassByName(classSelectBox.getSelected().toString());
-        }
-        
-        @Override
-        public void undo() {
-            Main.instance.deleteStyle(styleData);
-            styleSelectBox.setItems(previousStyleData);
-            styleSelectBox.setSelectedIndex(previousIndex);
-        }
-
-        @Override
-        public void redo() {
-            styleData = Main.instance.newThirdPartyStyle(classData, textField.getText());
-            styleSelectBox.setItems(JsonData.getInstance().getThirdPartyClassStyleMap().get(classData));
-            styleSelectBox.setSelected(styleData);
-        }
-
-        @Override
-        public String getUndoText() {
-            return "Create Style \"" + styleData.getName() + "\"";
+            return "Create Style \"" + styleData.name + "\"";
         }
     }
     
@@ -415,55 +326,20 @@ public class PanelClassBar {
         @Override
         public void undo() {
             Main.instance.deleteStyle(styleData);
-            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.CLASSES[classSelectBox.getSelectedIndex()]));
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
             styleSelectBox.setSelectedIndex(previousIndex);
         }
 
         @Override
         public void redo() {
             styleData = Main.instance.copyStyle(styleSelectBox.getSelected(), textField.getText());
-            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.CLASSES[classSelectBox.getSelectedIndex()]));
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
             styleSelectBox.setSelected(styleData);
         }
 
         @Override
         public String getUndoText() {
-            return "Duplicate Style \"" + styleData.getName() + "\"";
-        }
-    }
-    
-    private static class DuplicateThirdPartyStyleUndoable implements Undoable {
-        //todo: finish me
-        private SelectBox<StyleData> styleSelectBox;
-        private SelectBox classSelectBox;
-        private TextField textField;
-        private StyleData styleData; 
-        private int previousIndex;
-
-        public DuplicateThirdPartyStyleUndoable(SelectBox<StyleData> styleSelectBox, SelectBox classSelectBox, TextField textField) {
-            this.styleSelectBox = styleSelectBox;
-            this.classSelectBox = classSelectBox;
-            this.textField = textField;
-            previousIndex = styleSelectBox.getSelectedIndex();
-        }
-        
-        @Override
-        public void undo() {
-            Main.instance.deleteStyle(styleData);
-            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.CLASSES[classSelectBox.getSelectedIndex()]));
-            styleSelectBox.setSelectedIndex(previousIndex);
-        }
-
-        @Override
-        public void redo() {
-            styleData = Main.instance.copyThirdPartyStyle(styleSelectBox.getSelected(), JsonData.getInstance().getThirdPartyClassByName(classSelectBox.getSelected().toString()), textField.getText());
-            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.CLASSES[classSelectBox.getSelectedIndex()]));
-            styleSelectBox.setSelected(styleData);
-        }
-
-        @Override
-        public String getUndoText() {
-            return "Duplicate Style \"" + styleData.getName() + "\"";
+            return "Duplicate Style \"" + styleData.name + "\"";
         }
     }
     
@@ -480,20 +356,20 @@ public class PanelClassBar {
 
         @Override
         public void undo() {
-            Main.instance.copyStyle(styleData, styleData.getName());
-            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.CLASSES[classSelectBox.getSelectedIndex()]));
+            Main.instance.copyStyle(styleData, styleData.name);
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
             styleSelectBox.setSelected(styleData);
         }
 
         @Override
         public void redo() {
             Main.instance.deleteStyle(styleSelectBox.getSelected());
-            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.CLASSES[classSelectBox.getSelectedIndex()]));
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
         }
 
         @Override
         public String getUndoText() {
-            return "Delete Style \"" + styleData.getName() + "\"";
+            return "Delete Style \"" + styleData.name + "\"";
         }
     }
 }

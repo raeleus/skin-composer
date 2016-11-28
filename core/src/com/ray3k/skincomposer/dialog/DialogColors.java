@@ -368,7 +368,7 @@ public class DialogColors extends Dialog {
                         
                         for (Array<StyleData> datas : JsonData.getInstance().getClassStyleMap().values()) {
                             for (StyleData data : datas) {
-                                for (StyleProperty property : data.getProperties().values()) {
+                                for (StyleProperty property : data.properties.values()) {
                                     if (property != null && property.type.equals(Color.class) && property.value != null && property.value.equals(deleteColor.getName())) {
                                         property.value = null;
                                     }
@@ -526,7 +526,7 @@ public class DialogColors extends Dialog {
         //style properties
         for (Array<StyleData> datas : JsonData.getInstance().getClassStyleMap().values()) {
             for (StyleData data : datas) {
-                for (StyleProperty property : data.getProperties().values()) {
+                for (StyleProperty property : data.properties.values()) {
                     if (property != null && property.type.equals(Color.class) && property.value != null && property.value.equals(color.getName())) {
                         property.value = newName;
                     }

@@ -560,7 +560,7 @@ public class DialogDrawables extends Dialog {
         Values<Array<StyleData>> values = JsonData.getInstance().getClassStyleMap().values();
         for (Array<StyleData> styles : values) {
             for (StyleData style : styles) {
-                for (StyleProperty styleProperty : style.getProperties().values()) {
+                for (StyleProperty styleProperty : style.properties.values()) {
                     if (Drawable.class.isAssignableFrom(styleProperty.type)) {
                         if (styleProperty.value != null && styleProperty.value.equals(oldName)) {
                             styleProperty.value = newName;
@@ -579,7 +579,7 @@ public class DialogDrawables extends Dialog {
 
             for (Array<StyleData> datas : JsonData.getInstance().getClassStyleMap().values()) {
                 for (StyleData data : datas) {
-                    for (StyleProperty styleProperty : data.getProperties().values()) {
+                    for (StyleProperty styleProperty : data.properties.values()) {
                         if (styleProperty != null && styleProperty.type.equals(Drawable.class) && styleProperty.value != null && styleProperty.value.equals(drawable.toString())) {
                             styleProperty.value = null;
                         }
@@ -727,7 +727,7 @@ public class DialogDrawables extends Dialog {
                 
                 for (Array<StyleData> datas : JsonData.getInstance().getClassStyleMap().values()) {
                     for (StyleData tempData : datas) {
-                        for (StyleProperty prop : tempData.getProperties().values()) {
+                        for (StyleProperty prop : tempData.properties.values()) {
                             if (prop != null && prop.type.equals(Drawable.class) && prop.value != null && prop.value.equals(data.toString())) {
                                 prop.value = null;
                             }

@@ -30,7 +30,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -43,11 +42,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.ObjectMap.Entries;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.OrderedMap;
 import com.ray3k.skincomposer.BrowseField;
@@ -61,7 +58,7 @@ import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.Undoable;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.FontData;
-import com.ray3k.skincomposer.dialog.DialogNewProperty;
+import com.ray3k.skincomposer.dialog.DialogColors;
 
 public class PanelStyleProperties {
     public static PanelStyleProperties instance;
@@ -93,71 +90,10 @@ public class PanelStyleProperties {
     }
     
     public void populate(StyleData styleData) {
-        if (styleData.isThirdParty()) {
-            populateThirdPartyProperties(styleData);
-        } else {
-            populateProperties(styleData);
-        }
-    }
-    
-    public void populateThirdPartyProperties (StyleData styleData) {
         table.clear();
         table.defaults().padLeft(10.0f).padRight(10.0f).padTop(0.0f).padBottom(0.0f);
         
-        Entries<String, StyleProperty> iter = styleData.getProperties().entries();
-        while (iter.hasNext) {
-            Entry<String, StyleProperty> entry = iter.next();
-            String name = entry.key;
-            final StyleProperty property = entry.value;
-            
-            if (property.type.equals(String.class)) {
-                if (property.optional) {
-                    table.add(new Label(name, skin)).padTop(10.0f);
-                } else {
-                    table.add(new Label(name, skin, "error")).padTop(10.0f);
-                }
-                
-                table.row();
-                
-                TextField textField = new TextField("", skin);
-                textField.setFocusTraversal(false);
-                textField.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        Main.instance.addUndoable(new StringUndoable(textField, property), true);
-                    }
-                });
-            }
-            
-            table.row();
-            
-            Button button = new Button(skin);
-            button.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                    DialogNewProperty dialog = new DialogNewProperty(skin);
-                    dialog.addNewPropertyListener(new DialogNewProperty.NewPropertyListener() {
-                        @Override
-                        public void approved(String propertyName, Class propertyType) {
-                            Main.instance.newThirdPartyStyleProperty(propertyType, propertyName);
-                        }
-
-                        @Override
-                        public void cancelled() {
-                        }
-                    });
-                    dialog.show(Main.instance.getStage());
-                }
-            });
-            table.add(button);
-        }
-    }
-    
-    public void populateProperties(StyleData styleData) {
-        table.clear();
-        table.defaults().padLeft(10.0f).padRight(10.0f).padTop(0.0f).padBottom(0.0f);
-        
-        OrderedMap.Entries<String, StyleProperty> iter = styleData.getProperties().entries();
+        OrderedMap.Entries<String, StyleProperty> iter = styleData.properties.entries();
         while (iter.hasNext) {
             Entry<String, StyleProperty> entry = iter.next();
             String name = entry.key;
@@ -255,7 +191,7 @@ public class PanelStyleProperties {
                 
                 boolean found = false;
                 for (StyleData data : selectBox.getItems()) {
-                    if (property.value.equals(data.getName())) {
+                    if (property.value.equals(data.name)) {
                         selectBox.setSelected(data);
                         found = true;
                         break;
@@ -288,7 +224,7 @@ public class PanelStyleProperties {
                 
                 boolean found = false;
                 for (StyleData data : selectBox.getItems()) {
-                    if (property.value.equals(data.getName())) {
+                    if (property.value.equals(data.name)) {
                         selectBox.setSelected(data);
                         found = true;
                         break;
@@ -321,7 +257,7 @@ public class PanelStyleProperties {
                 
                 boolean found = false;
                 for (StyleData data : selectBox.getItems()) {
-                    if (property.value.equals(data.getName())) {
+                    if (property.value.equals(data.name)) {
                         selectBox.setSelected(data);
                         found = true;
                         break;
@@ -344,41 +280,7 @@ public class PanelStyleProperties {
             
             table.row();
         }
-        if (table.getCells().size > 0) {
-            table.getCells().peek().padBottom(20.0f);
-        }
-    }
-    
-    private static class StringUndoable implements Undoable {
-        private TextField textField;
-        private StyleProperty property;
-        private String oldValue, newValue;
-
-        public StringUndoable(TextField textField, StyleProperty property) {
-            this.textField = textField;
-            this.property = property;
-            oldValue = (String) property.value;
-            newValue = textField.getText();
-        }
-        
-        @Override
-        public void undo() {
-            property.value = oldValue;
-            textField.setText(oldValue);
-            PanelPreviewProperties.instance.render();
-        }
-
-        @Override
-        public void redo() {
-            property.value = newValue;
-            textField.setText(newValue);
-            PanelPreviewProperties.instance.render();
-        }
-
-        @Override
-        public String getUndoText() {
-            return "Change Style Property " + property.name;
-        }
+        table.getCells().peek().padBottom(20.0f);
     }
     
     private static class FloatUndoable implements Undoable {
@@ -395,7 +297,7 @@ public class PanelStyleProperties {
         
         @Override
         public void undo() {
-            property.value = oldValue;
+            property.value = newValue;
             if (!MathUtils.isEqual((float)spinner.getValue(), (float)oldValue)) {
                 spinner.setValue(oldValue);
             }
@@ -562,7 +464,7 @@ public class PanelStyleProperties {
             this.selectBox = selectBox;
             
             oldValue = (String) property.value;
-            newValue = selectBox.getSelected().getName();
+            newValue = selectBox.getSelected().name;
         }
 
         @Override

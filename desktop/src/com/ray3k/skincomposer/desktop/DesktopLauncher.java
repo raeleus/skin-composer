@@ -180,13 +180,4 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     public void attachLogListener() {
         ((Lwjgl3Application) Gdx.app).setApplicationLogger(new TextFileApplicationLogger());
     }
-
-    @Override
-    public void refreshRequested() {
-        
-    }
-
-    @Override
-    public void maximized(boolean arg0) {
-    }
 }

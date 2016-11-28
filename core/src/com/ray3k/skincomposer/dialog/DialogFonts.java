@@ -315,7 +315,7 @@ public class DialogFonts extends Dialog {
                         
                         for (Array<StyleData> datas : JsonData.getInstance().getClassStyleMap().values()) {
                             for (StyleData data : datas) {
-                                for (StyleProperty property : data.getProperties().values()) {
+                                for (StyleProperty property : data.properties.values()) {
                                     if (property != null && property.type.equals(BitmapFont.class) && property.value != null && property.value.equals(deleteFont.getName())) {
                                         property.value = null;
                                     }
@@ -437,7 +437,7 @@ public class DialogFonts extends Dialog {
     private void renameFont(FontData font, String newName) {
         for (Array<StyleData> datas : JsonData.getInstance().getClassStyleMap().values()) {
             for (StyleData data : datas) {
-                for (StyleProperty property : data.getProperties().values()) {
+                for (StyleProperty property : data.properties.values()) {
                     if (property != null && property.type.equals(BitmapFont.class) && property.value != null && property.value.equals(font.getName())) {
                         property.value = newName;
                     }

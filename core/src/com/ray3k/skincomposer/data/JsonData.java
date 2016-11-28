@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -69,7 +70,6 @@ public class JsonData implements Json.Serializable {
     private Array<ColorData> colors;
     private Array<FontData> fonts;
     private OrderedMap<Class, Array<StyleData>> classStyleMap;
-    private OrderedMap<ThirdPartyClassData, Array<StyleData>> thirdPartyClassStyleMap;
 
     public static JsonData getInstance() {
         if (instance == null) {
@@ -93,7 +93,6 @@ public class JsonData implements Json.Serializable {
         fonts = new Array<>();
 
         initializeClassStyleMap();
-        thirdPartyClassStyleMap = new OrderedMap();
     }
 
     public void clear() {
@@ -164,11 +163,11 @@ public class JsonData implements Json.Serializable {
             } //styles
             else {
                 int classIndex = styleClasses.indexOf(ClassReflection.forName(child.name), false);
-                Class clazz = StyleData.CLASSES[classIndex];
+                Class clazz = StyleData.classes[classIndex];
                 for (JsonValue style : child.iterator()) {
                     StyleData data = Main.instance.newStyle(clazz, style.name);
                     for (JsonValue property : style.iterator()) {
-                        StyleProperty styleProperty = data.getProperties().get(property.name);
+                        StyleProperty styleProperty = data.properties.get(property.name);
                         if (styleProperty.type.equals(Float.TYPE)) {
                             styleProperty.value = (double) property.asFloat();
                         } else if (styleProperty.type.equals(Color.class)) {
@@ -269,8 +268,8 @@ public class JsonData implements Json.Serializable {
                 json.writeObjectStart(clazz.getName());
                 for (StyleData style : styles) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
-                        json.writeObjectStart(style.getName());
-                        for (StyleProperty property : style.getProperties().values()) {
+                        json.writeObjectStart(style.name);
+                        for (StyleProperty property : style.properties.values()) {
 
                             //if not optional, null, or zero
                             if (!property.optional || property.value != null
@@ -284,22 +283,6 @@ public class JsonData implements Json.Serializable {
                 }
                 json.writeObjectEnd();
             }
-        }
-        
-        //Third party CLASSES and styles
-        Array<ThirdPartyClassData> keysArray3rd = thirdPartyClassStyleMap.keys().toArray();
-        for (ThirdPartyClassData classData : keysArray3rd) {
-            Array<StyleData> styles = thirdPartyClassStyleMap.get(classData);
-            json.writeObjectStart(classData.getClassName());
-            for(StyleData style : styles) {
-                json.writeObjectStart(style.getName());
-                for (StyleProperty property : style.getProperties().values()) {
-                    json.writeValue(property.name, property.value);
-                }
-                json.writeObjectEnd();
-            }
-            json.writeObjectEnd();
-            
         }
 
         json.writeObjectEnd();
@@ -331,49 +314,31 @@ public class JsonData implements Json.Serializable {
         return classStyleMap;
     }
 
-    public OrderedMap<ThirdPartyClassData, Array<StyleData>> getThirdPartyClassStyleMap() {
-        return thirdPartyClassStyleMap;
-    }
-    
-    public ThirdPartyClassData getThirdPartyClassByName(String name) {
-        ThirdPartyClassData returnValue = null;
-        
-        for (ThirdPartyClassData data : thirdPartyClassStyleMap.keys()) {
-            if (data.getDisplayName().equals(name)) {
-                returnValue = data;
-            }
-        }
-        
-        return returnValue;
-    }
-
     private void initializeClassStyleMap() {
         classStyleMap = new OrderedMap();
-        for (Class clazz : StyleData.CLASSES) {
+        for (Class clazz : StyleData.classes) {
             Array<StyleData> array = new Array<>();
             classStyleMap.put(clazz, array);
             if (clazz.equals(Slider.class) || clazz.equals(ProgressBar.class) || clazz.equals(SplitPane.class)) {
                 StyleData data = new StyleData(clazz, "default-horizontal");
-                data.setDeletable(false);
+                data.deletable = false;
                 array.add(data);
                 data = new StyleData(clazz, "default-vertical");
-                data.setDeletable(false);
+                data.deletable = false;
                 array.add(data);
             } else {
                 StyleData data = new StyleData(clazz, "default");
-                data.setDeletable(false);
+                data.deletable = false;
                 array.add(data);
             }
         }
     }
-    
 
     @Override
     public void write(Json json) {
         json.writeValue("colors", colors);
         json.writeValue("fonts", fonts);
         json.writeValue("classStyleMap", classStyleMap);
-        json.writeValue("thirdPartyClassStyleMap", thirdPartyClassStyleMap);
     }
 
     @Override
@@ -385,13 +350,6 @@ public class JsonData implements Json.Serializable {
             for (JsonValue data : jsonData.get("classStyleMap").iterator()) {
                 classStyleMap.put(ClassReflection.forName(data.name), json.readValue(Array.class, data));
             }
-            //todo: does this work?
-            thirdPartyClassStyleMap = json.readValue("thirdPartyClassStyleMap", OrderedMap.class, jsonData);
-//            thirdPartyClassStyleMap = new OrderedMap<>();
-//            for (JsonValue data : jsonData.get("thirdPartyClassStyleMap").iterator()) {
-//                classStyleMap.put(ClassReflection.forName(data.name), json.readValue(Array.class, data));
-//            }
-            
         } catch (ReflectionException e) {
             Gdx.app.log(getClass().getName(), "Error parsing json data during file read", e);
             DialogError.showError("Error while reading file...", "Error while attempting to read save file.\nPlease ensure that file is not corrupted.\n\nOpen error log?");
