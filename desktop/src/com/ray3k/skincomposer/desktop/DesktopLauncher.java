@@ -39,7 +39,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         main.setDesktopWorker(desktopLauncher);
         
         try {
-            Lwjgl3Application app = new Lwjgl3Application(main, config);
+            new Lwjgl3Application(main, config);
         } catch (Exception e) {
             e.printStackTrace();
             
