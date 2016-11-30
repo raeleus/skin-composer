@@ -109,7 +109,7 @@ public class PanelStyleProperties {
                 
                 table.row();
                 
-                final Spinner spinner = new Spinner((Double)property.value, 1.0, false, spinnerStyle);
+                final Spinner spinner = new Spinner((Double)property.value, 1.0, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                 spinner.getTextField().setFocusTraversal(false);
                 spinner.addListener(new ChangeListener() {
                     @Override

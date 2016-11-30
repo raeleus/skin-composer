@@ -33,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
@@ -47,16 +48,27 @@ public class Spinner extends Table {
     private boolean rounding;
     private TextField textField;
     private Actor transversalNext, transversalPrevious;
+    public static enum Orientation {
+        HORIZONTAL, HORIZONTAL_FLIPPED, VERTICAL, VERTICAL_FLIPPED, RIGHT_STACK, LEFT_STACK
+    }
+    private Orientation orientation;
+    private SpinnerStyle style;
 
-    public Spinner(double value, double increment, boolean round, SpinnerStyle style) {
+    public Spinner(double value, double increment, boolean round, Orientation orientation, SpinnerStyle style) {
         this.value = BigDecimal.valueOf(value);
         rounding = round;
+        this.orientation = orientation;
         usingMinimum = false;
         usingMaximum = false;
         this.increment = BigDecimal.valueOf(increment);
+        this.style = style;
         
-        Button buttonLeft = new Button(style.buttonLeftStyle);
-        Button buttonRight = new Button(style.buttonRightStyle);
+        addWidgets();
+    }
+    
+    private void addWidgets() {
+        Button buttonMinus = new Button(style.buttonMinusStyle);
+        Button buttonPlus = new Button(style.buttonPlusStyle);
         textField = new TextField("", style.textFieldStyle) {
             @Override
             public void next(boolean up) {
@@ -114,18 +126,66 @@ public class Spinner extends Table {
             return returnValue;
         });
         updateText();
-        add(buttonLeft);
-        add(textField).prefWidth(35.0f).minWidth(35.0f).growX();
-        add(buttonRight);
         
-        buttonLeft.addListener(new ChangeListener() {
+        if (null != orientation) switch (orientation) {
+            case HORIZONTAL:
+                add(buttonMinus);
+                add(textField).prefWidth(35.0f).minWidth(35.0f).growX();
+                add(buttonPlus);
+                break;
+            case HORIZONTAL_FLIPPED:
+                add(buttonPlus);
+                add(textField).prefWidth(35.0f).minWidth(35.0f).growX();
+                add(buttonMinus);
+                break;
+            case VERTICAL:
+                add(buttonPlus);
+                row();
+                add(textField).prefWidth(35.0f).minWidth(35.0f).growX();
+                row();
+                add(buttonMinus);
+                break;
+            case VERTICAL_FLIPPED:
+                add(buttonMinus);
+                row();
+                add(textField).prefWidth(35.0f).minWidth(35.0f).growX();
+                row();
+                add(buttonPlus);
+                break;
+            case RIGHT_STACK:
+            {
+                add(textField).prefWidth(35.0f).minWidth(35.0f).growX();
+                
+                VerticalGroup group = new VerticalGroup();
+                add(group);
+                
+                group.addActor(buttonPlus);
+                group.addActor(buttonMinus);
+                break;
+            }
+            case LEFT_STACK:
+            {
+                VerticalGroup group = new VerticalGroup();
+                add(group);
+                
+                group.addActor(buttonPlus);
+                group.addActor(buttonMinus);
+                
+                add(textField).prefWidth(35.0f).minWidth(35.0f).growX();
+                break;
+            }
+            default:
+                break;
+        }
+        
+        buttonMinus.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 subtractValue();
             }
         });
         
-        buttonRight.addListener(new ChangeListener() {
+        buttonPlus.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 addValue();
@@ -248,18 +308,18 @@ public class Spinner extends Table {
     }
     
     static public class SpinnerStyle {
-        public ButtonStyle buttonLeftStyle, buttonRightStyle;
+        public ButtonStyle buttonMinusStyle, buttonPlusStyle;
         public TextFieldStyle textFieldStyle;
 
-        public SpinnerStyle(ButtonStyle buttonLeftStyle, ButtonStyle buttonRightStyle, TextFieldStyle textFieldStyle) {
-            this.buttonLeftStyle = buttonLeftStyle;
-            this.buttonRightStyle = buttonRightStyle;
+        public SpinnerStyle(ButtonStyle buttonMinusStyle, ButtonStyle buttonPlusStyle, TextFieldStyle textFieldStyle) {
+            this.buttonMinusStyle = buttonMinusStyle;
+            this.buttonPlusStyle = buttonPlusStyle;
             this.textFieldStyle = textFieldStyle;
         }
 
         public SpinnerStyle(SpinnerStyle style) {
-            buttonLeftStyle = style.buttonLeftStyle;
-            buttonRightStyle = style.buttonRightStyle;
+            buttonMinusStyle = style.buttonMinusStyle;
+            buttonPlusStyle = style.buttonPlusStyle;
             textFieldStyle = style.textFieldStyle;
         }
     }
@@ -282,5 +342,27 @@ public class Spinner extends Table {
 
     public void setTransversalPrevious(Actor transversalPrevious) {
         this.transversalPrevious = transversalPrevious;
+    }
+
+    public Orientation getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(Orientation orientation) {
+        this.orientation = orientation;
+        
+        clear();
+        addWidgets();
+    }
+
+    public SpinnerStyle getStyle() {
+        return style;
+    }
+
+    public void setStyle(SpinnerStyle style) {
+        this.style = style;
+        
+        clear();
+        addWidgets();
     }
 }

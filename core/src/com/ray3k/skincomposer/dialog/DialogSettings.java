@@ -41,6 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
+import com.ray3k.skincomposer.Spinner.Orientation;
 import com.ray3k.skincomposer.Spinner.SpinnerStyle;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.ProjectData;
@@ -182,7 +183,7 @@ public class DialogSettings extends Dialog {
         t.row();
         label = new Label("Max Texture Width: ", skin);
         t.add(label).right();
-        Spinner spinner = new Spinner(ProjectData.instance().getMaxTextureWidth(), 1.0, true, spinnerStyle);
+        Spinner spinner = new Spinner(ProjectData.instance().getMaxTextureWidth(), 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         spinner.setMinimum(256.0);
         spinner.addListener(new ChangeListener() {
             @Override
@@ -202,7 +203,7 @@ public class DialogSettings extends Dialog {
         t.row();
         label = new Label("Max Texture Height: ", skin);
         t.add(label).right();
-        Spinner spinner2 = new Spinner(ProjectData.instance().getMaxTextureHeight(), 1.0, true, spinnerStyle);
+        Spinner spinner2 = new Spinner(ProjectData.instance().getMaxTextureHeight(), 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         spinner2.setMinimum(256.0);
         spinner2.addListener(new ChangeListener() {
             @Override
@@ -233,7 +234,7 @@ public class DialogSettings extends Dialog {
         t.row();
         label = new Label("Max Number of Undos: ", skin);
         t.add(label).right().padTop(5.0f);
-        Spinner spinner3 = new Spinner(ProjectData.instance().getMaxUndos(), 1.0, true, spinnerStyle);
+        Spinner spinner3 = new Spinner(ProjectData.instance().getMaxUndos(), 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         spinner3.setMinimum(1.0);
         spinner3.setMaximum(100.0);
         spinner3.addListener(new ChangeListener() {

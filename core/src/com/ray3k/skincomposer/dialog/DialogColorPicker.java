@@ -53,6 +53,7 @@ import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.CheckerDrawable;
 import com.ray3k.skincomposer.GradientDrawable;
 import com.ray3k.skincomposer.Spinner;
+import com.ray3k.skincomposer.Spinner.Orientation;
 import com.ray3k.skincomposer.Spinner.SpinnerStyle;
 import com.ray3k.skincomposer.StackedDrawable;
 
@@ -235,31 +236,31 @@ public class DialogColorPicker extends Dialog {
         
         Spinner greenSpinner, blueSpinner, alphaSpinner, hueSpinner, saturationSpinner, brightnessSpinner;
         
-        hueSpinner = new Spinner(v.x * 359.0f, 1.0, true, spinnerStyle);
+        hueSpinner = new Spinner(v.x * 359.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         hueSpinner.setMinimum(0.0);
         hueSpinner.setMaximum(359.0);
         
-        saturationSpinner = new Spinner(v.y * 100.0f, 1.0, true, spinnerStyle);
+        saturationSpinner = new Spinner(v.y * 100.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         saturationSpinner.setMinimum(0.0);
         saturationSpinner.setMaximum(100.0);
         
-        brightnessSpinner = new Spinner(v.z * 100.0f, 1.0, true, spinnerStyle);
+        brightnessSpinner = new Spinner(v.z * 100.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         brightnessSpinner.setMinimum(0.0);
         brightnessSpinner.setMaximum(100.0);
         
-        redSpinner = new Spinner(selectedColor.r * 255.0f, 1.0, true, spinnerStyle);
+        redSpinner = new Spinner(selectedColor.r * 255.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         redSpinner.setMinimum(0.0);
         redSpinner.setMaximum(255.0);
         
-        greenSpinner = new Spinner(selectedColor.g * 255.0f, 1.0, true, spinnerStyle);
+        greenSpinner = new Spinner(selectedColor.g * 255.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         greenSpinner.setMinimum(0.0);
         greenSpinner.setMaximum(255.0);
         
-        blueSpinner = new Spinner(selectedColor.b * 255.0f, 1.0, true, spinnerStyle);
+        blueSpinner = new Spinner(selectedColor.b * 255.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         blueSpinner.setMinimum(0.0);
         blueSpinner.setMaximum(255.0);
         
-        alphaSpinner = new Spinner(selectedColor.a * 255.0f, 1.0, true, spinnerStyle);
+        alphaSpinner = new Spinner(selectedColor.a * 255.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         alphaSpinner.setMinimum(0.0);
         alphaSpinner.setMaximum(255.0);
         

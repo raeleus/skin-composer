@@ -313,7 +313,7 @@ public class PanelPreviewProperties {
                 
                 t.row();
                 t.add(new Label("Value: ", skin)).right();
-                Spinner valueSpinner = new Spinner(0.0f, 1.0f, false, spinnerStyle);
+                Spinner valueSpinner = new Spinner(0.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL,spinnerStyle);
                 valueSpinner.getTextField().setFocusTraversal(false);
                 valueSpinner.addListener(new ChangeListener() {
                     @Override
@@ -327,7 +327,7 @@ public class PanelPreviewProperties {
                 
                 t.row();
                 t.add(new Label("Minimum: ", skin)).right();
-                Spinner minimumSpinner = new Spinner(0.0f, 1.0f, false, spinnerStyle);
+                Spinner minimumSpinner = new Spinner(0.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                 minimumSpinner.getTextField().setFocusTraversal(false);
                 minimumSpinner.addListener(new ChangeListener() {
                     @Override
@@ -341,7 +341,7 @@ public class PanelPreviewProperties {
                 
                 t.row();
                 t.add(new Label("Maximum: ", skin)).right();
-                Spinner maximumSpinner = new Spinner(100.0f, 1.0f, false, spinnerStyle);
+                Spinner maximumSpinner = new Spinner(100.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                 maximumSpinner.getTextField().setFocusTraversal(false);
                 maximumSpinner.addListener(new ChangeListener() {
                     @Override
@@ -355,7 +355,7 @@ public class PanelPreviewProperties {
                 
                 t.row();
                 t.add(new Label("Increment: ", skin)).right();
-                Spinner incrementSpinner = new Spinner(1.0f, 1.0f, false, spinnerStyle);
+                Spinner incrementSpinner = new Spinner(1.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                 incrementSpinner.getTextField().setFocusTraversal(false);
                 incrementSpinner.setMinimum(1);
                 incrementSpinner.addListener(new ChangeListener() {
@@ -625,7 +625,7 @@ public class PanelPreviewProperties {
                 
                 t.row();
                 t.add(new Label("Max List Count: ", skin)).right();
-                Spinner spinner = new Spinner(3, 1, true, spinnerStyle);
+                Spinner spinner = new Spinner(3, 1, true, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                 spinner.getTextField().setFocusTraversal(false);
                 spinner.setMinimum(1);
                 t.add(spinner).growX();
@@ -662,7 +662,7 @@ public class PanelPreviewProperties {
                 
                 t.row();
                 t.add(new Label("Minimum: ", skin)).right();
-                Spinner minimumSpinner = new Spinner(0.0f, 1.0f, false, spinnerStyle);
+                Spinner minimumSpinner = new Spinner(0.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                 minimumSpinner.getTextField().setFocusTraversal(false);
                 minimumSpinner.addListener(new ChangeListener() {
                     @Override
@@ -676,7 +676,7 @@ public class PanelPreviewProperties {
                 
                 t.row();
                 t.add(new Label("Maximum: ", skin)).right();
-                Spinner maximumSpinner = new Spinner(100.0f, 1.0f, false, spinnerStyle);
+                Spinner maximumSpinner = new Spinner(100.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                 maximumSpinner.getTextField().setFocusTraversal(false);
                 maximumSpinner.addListener(new ChangeListener() {
                     @Override
@@ -690,7 +690,7 @@ public class PanelPreviewProperties {
                 
                 t.row();
                 t.add(new Label("Increment: ", skin)).right();
-                Spinner incrementSpinner = new Spinner(1.0f, 1.0f, false, spinnerStyle);
+                Spinner incrementSpinner = new Spinner(1.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                 incrementSpinner.getTextField().setFocusTraversal(false);
                 incrementSpinner.addListener(new ChangeListener() {
                     @Override
@@ -910,14 +910,14 @@ public class PanelPreviewProperties {
             } else if (clazz.equals(Tree.class)) {
                 t.row();
                 t.add(new Label("Icon Spacing: ", skin)).right();
-                Spinner spinner = new Spinner(0.0, 1.0, false, spinnerStyle);
+                Spinner spinner = new Spinner(0.0, 1.0, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                 spinner.getTextField().setFocusTraversal(false);
                 spinner.setMinimum(1);
                 t.add(spinner).growX();
                 
                 t.row();
                 t.add(new Label("Y Spacing: ", skin)).right();
-                spinner = new Spinner(0.0, 1.0, false, spinnerStyle);
+                spinner = new Spinner(0.0, 1.0, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                 spinner.getTextField().setFocusTraversal(false);
                 spinner.setMinimum(1);
                 t.add(spinner).growX();
