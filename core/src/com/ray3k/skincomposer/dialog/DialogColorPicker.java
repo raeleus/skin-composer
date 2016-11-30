@@ -484,7 +484,6 @@ public class DialogColorPicker extends Dialog {
         }
         
         table = new Table();
-//        TextButton textButton = new TextButton("OK", skin, "orange-small");
         TextButton textButton = new TextButton("OK", skin);
         textButton.addListener(new ChangeListener() {
             @Override
@@ -497,7 +496,6 @@ public class DialogColorPicker extends Dialog {
         });
         table.add(textButton).growX();
         table.row();
-//        textButton = new TextButton("Cancel", skin, "orange-small");
         textButton = new TextButton("Cancel", skin);
         textButton.addListener(new ChangeListener() {
             @Override
@@ -513,14 +511,12 @@ public class DialogColorPicker extends Dialog {
         
         t.row();
         table = new Table();
-//        label = new Label("R", skin, "error");
         label = new Label("R", skin, "required");
         table.add(label);
         table.add(redSpinner).padLeft(10.0f).minWidth(90.0f);
         t.add(table);
         
         table = new Table();
-//        label = new Label("H", skin, "error");
         label = new Label("H", skin, "required");
         table.add(label);
         table.add(hueSpinner).padLeft(10.0f).minWidth(90.0f);
@@ -528,14 +524,12 @@ public class DialogColorPicker extends Dialog {
         
         t.row();
         table = new Table();
-//        label = new Label("G", skin, "error");
         label = new Label("G", skin, "required");
         table.add(label);
         table.add(greenSpinner).padLeft(10.0f).minWidth(90.0f);
         t.add(table);
         
         table = new Table();
-//        label = new Label("S", skin, "error");
         label = new Label("S", skin, "required");
         table.add(label);
         table.add(saturationSpinner).padLeft(10.0f).minWidth(90.0f);
@@ -543,14 +537,12 @@ public class DialogColorPicker extends Dialog {
         
         t.row();
         table = new Table();
-//        label = new Label("B", skin, "error");
         label = new Label("B", skin, "required");
         table.add(label);
         table.add(blueSpinner).padLeft(10.0f).minWidth(90.0f);
         t.add(table);
         
         table = new Table();
-//        label = new Label("B", skin, "error");
         label = new Label("B", skin, "required");
         table.add(label);
         table.add(brightnessSpinner).padLeft(10.0f).minWidth(90.0f);
@@ -558,7 +550,6 @@ public class DialogColorPicker extends Dialog {
         
         t.row();
         table = new Table();
-//        label = new Label("A", skin, "error");
         label = new Label("A", skin, "required");
         table.add(label);
         t.add(table);
