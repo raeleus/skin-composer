@@ -84,7 +84,8 @@ public class DialogColorPicker extends Dialog {
         this.skin = skin;
         this.listener = listener;
         
-        spinnerStyle = new Spinner.SpinnerStyle(skin.get("spinner-minus", Button.ButtonStyle.class), skin.get("spinner-plus", Button.ButtonStyle.class), skin.get("spinner", TextField.TextFieldStyle.class));
+//        spinnerStyle = new Spinner.SpinnerStyle(skin.get("spinner-minus", Button.ButtonStyle.class), skin.get("spinner-plus", Button.ButtonStyle.class), skin.get("spinner", TextField.TextFieldStyle.class));
+        spinnerStyle = new Spinner.SpinnerStyle(skin.get("spinner-minus-h", Button.ButtonStyle.class), skin.get("spinner-plus-h", Button.ButtonStyle.class), skin.get("default", TextField.TextFieldStyle.class));
         
         gradientAlpha = new GradientDrawable(new Color(1.0f, 0, 0, 0), new Color(1.0f, 0, 0, 0), Color.RED, Color.RED);
         Vector3 v = rgbToHsb(selectedColor.r, selectedColor.g, selectedColor.b);
@@ -483,7 +484,8 @@ public class DialogColorPicker extends Dialog {
         }
         
         table = new Table();
-        TextButton textButton = new TextButton("OK", skin, "orange-small");
+//        TextButton textButton = new TextButton("OK", skin, "orange-small");
+        TextButton textButton = new TextButton("OK", skin);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -495,7 +497,8 @@ public class DialogColorPicker extends Dialog {
         });
         table.add(textButton).growX();
         table.row();
-        textButton = new TextButton("Cancel", skin, "orange-small");
+//        textButton = new TextButton("Cancel", skin, "orange-small");
+        textButton = new TextButton("Cancel", skin);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -510,46 +513,53 @@ public class DialogColorPicker extends Dialog {
         
         t.row();
         table = new Table();
-        label = new Label("R", skin, "error");
+//        label = new Label("R", skin, "error");
+        label = new Label("R", skin, "required");
         table.add(label);
         table.add(redSpinner).padLeft(10.0f).minWidth(90.0f);
         t.add(table);
         
         table = new Table();
-        label = new Label("H", skin, "error");
+//        label = new Label("H", skin, "error");
+        label = new Label("H", skin, "required");
         table.add(label);
         table.add(hueSpinner).padLeft(10.0f).minWidth(90.0f);
         t.add(table);
         
         t.row();
         table = new Table();
-        label = new Label("G", skin, "error");
+//        label = new Label("G", skin, "error");
+        label = new Label("G", skin, "required");
         table.add(label);
         table.add(greenSpinner).padLeft(10.0f).minWidth(90.0f);
         t.add(table);
         
         table = new Table();
-        label = new Label("S", skin, "error");
+//        label = new Label("S", skin, "error");
+        label = new Label("S", skin, "required");
         table.add(label);
         table.add(saturationSpinner).padLeft(10.0f).minWidth(90.0f);
         t.add(table);
         
         t.row();
         table = new Table();
-        label = new Label("B", skin, "error");
+//        label = new Label("B", skin, "error");
+        label = new Label("B", skin, "required");
         table.add(label);
         table.add(blueSpinner).padLeft(10.0f).minWidth(90.0f);
         t.add(table);
         
         table = new Table();
-        label = new Label("B", skin, "error");
+//        label = new Label("B", skin, "error");
+        label = new Label("B", skin, "required");
         table.add(label);
         table.add(brightnessSpinner).padLeft(10.0f).minWidth(90.0f);
         t.add(table);
         
         t.row();
         table = new Table();
-        label = new Label("A", skin, "error");
+//        label = new Label("A", skin, "error");
+        label = new Label("A", skin, "required");
         table.add(label);
         t.add(table);
         table.add(alphaSpinner).padLeft(10.0f).minWidth(90.0f);

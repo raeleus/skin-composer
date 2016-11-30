@@ -81,6 +81,7 @@ public class Main extends ApplicationAdapter {
     public static Main instance;
     private Stage stage;
     private static Skin skin;
+    private static Skin newSkin;
     private DesktopWorker desktopWorker;
     private Array<Undoable> undoables;
     private int undoIndex;
@@ -126,6 +127,8 @@ public class Main extends ApplicationAdapter {
         } else {
             skin = new Skin(Gdx.files.internal("dark-peel-ui/dark-peel-ui.json"));
         }
+        
+        newSkin = new Skin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
         
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -425,7 +428,8 @@ public class Main extends ApplicationAdapter {
     }
     
     public void showDialogColorPicker(Color previousColor, ColorListener listener) {
-        DialogColorPicker dialog = new DialogColorPicker(skin, "dialog-panel", listener, previousColor);
+//        DialogColorPicker dialog = new DialogColorPicker(newSkin, "dialog-panel", listener, previousColor);
+        DialogColorPicker dialog = new DialogColorPicker(newSkin, "dialog", listener, previousColor);
         dialog.show(stage);
     }
     
