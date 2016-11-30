@@ -26,6 +26,12 @@ com.badlogic.gdx.graphics.Color: {
 		b: 0.21960784
 		a: 1
 	}
+	stage-background: {
+		r: 0.38486663
+		g: 0.83666664
+		b: 0.71576
+		a: 0.40333334
+	}
 	white: {
 		r: 1
 		g: 1
@@ -45,6 +51,10 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 	button-color: {
 		name: white
 		color: button
+	}
+	stage-background: {
+		name: white
+		color: stage-background
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
@@ -327,6 +337,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 		background: window2
 		titleFont: font
 		titleFontColor: white
+		stageBackground: stage-background
 	}
 	main: {
 		background: window-main
