@@ -404,7 +404,7 @@ public class Main extends ApplicationAdapter {
     }
     
     public void showDialogAbout() {
-        DialogAbout dialog = new DialogAbout(skin, "dialog");
+        DialogAbout dialog = new DialogAbout(newSkin, "dialog");
         dialog.show(stage);
     }
     
@@ -428,7 +428,6 @@ public class Main extends ApplicationAdapter {
     }
     
     public void showDialogColorPicker(Color previousColor, ColorListener listener) {
-//        DialogColorPicker dialog = new DialogColorPicker(newSkin, "dialog-panel", listener, previousColor);
         DialogColorPicker dialog = new DialogColorPicker(newSkin, "dialog", listener, previousColor);
         dialog.show(stage);
     }

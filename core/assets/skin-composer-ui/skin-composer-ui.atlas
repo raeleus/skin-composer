@@ -33,6 +33,24 @@ color-scale-flipped
   orig: 16, 13
   offset: 0, 0
   index: -1
+link
+  rotate: false
+  xy: 130, 229
+  size: 2, 6
+  split: 0, 0, 0, 1
+  pad: 0, 0, 0, 2
+  orig: 2, 6
+  offset: 0, 0
+  index: -1
+link-empty
+  rotate: false
+  xy: 130, 221
+  size: 2, 6
+  split: 0, 0, 0, 1
+  pad: 0, 0, 0, 2
+  orig: 2, 6
+  offset: 0, 0
+  index: -1
 button
   rotate: false
   xy: 219, 251

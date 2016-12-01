@@ -38,16 +38,20 @@ import com.ray3k.skincomposer.Main;
 
 public class DialogAbout extends Dialog {
     public DialogAbout(Skin skin, String windowStyleName) {
-        super("About", skin, windowStyleName);
+        super("", skin, windowStyleName);
         
         Main.instance.setListeningForKeys(false);
         
         key(Keys.ENTER, true);
         key(Keys.ESCAPE, false);
-        getTitleLabel().setAlignment(Align.center);
         Table table = getContentTable();
         table.defaults().pad(10.0f);
-        Label label = new Label("Skin Composer is developed by Raeleus for the LibGDX community\nVersion " + Main.VERSION + "\nCopyright © Raymond \"Raeleus\" Buckley 2016", skin);
+        
+        Label label = new Label("About", skin, "title");
+        table.add(label);
+        
+        table.row();
+        label = new Label("Skin Composer is developed by Raeleus for the LibGDX community.\nVersion " + Main.VERSION + "\nCopyright © Raymond \"Raeleus\" Buckley 2016", skin);
         label.setAlignment(Align.center);
         table.add(label).padBottom(0);
         table.row();
@@ -60,7 +64,10 @@ public class DialogAbout extends Dialog {
             }
         });
         table.add(button).padTop(0);
+        
         button("Close");
+        getCell(getButtonTable()).padBottom(20.0f);
+        
         table.setWidth(200);
     }
 

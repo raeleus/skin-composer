@@ -84,7 +84,6 @@ public class DialogColorPicker extends Dialog {
         this.skin = skin;
         this.listener = listener;
         
-//        spinnerStyle = new Spinner.SpinnerStyle(skin.get("spinner-minus", Button.ButtonStyle.class), skin.get("spinner-plus", Button.ButtonStyle.class), skin.get("spinner", TextField.TextFieldStyle.class));
         spinnerStyle = new Spinner.SpinnerStyle(skin.get("spinner-minus-h", Button.ButtonStyle.class), skin.get("spinner-plus-h", Button.ButtonStyle.class), skin.get("default", TextField.TextFieldStyle.class));
         
         gradientAlpha = new GradientDrawable(new Color(1.0f, 0, 0, 0), new Color(1.0f, 0, 0, 0), Color.RED, Color.RED);
