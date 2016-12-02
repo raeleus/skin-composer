@@ -39,6 +39,10 @@ project(":desktop") {
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        compile "org.lwjgl:lwjgl-tinyfd:3.1.0"
+        compile "org.lwjgl:lwjgl-tinyfd:3.1.0:natives-windows"
+        compile "org.lwjgl:lwjgl-tinyfd:3.1.0:natives-linux"
+        compile "org.lwjgl:lwjgl-tinyfd:3.1.0:natives-macos"
     }
 }
 

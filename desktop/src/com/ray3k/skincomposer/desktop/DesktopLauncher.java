@@ -21,6 +21,9 @@ import com.ray3k.skincomposer.utils.Utils;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import javax.swing.JOptionPane;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.system.MemoryStack;
+import static org.lwjgl.system.MemoryStack.stackPush;
 
 public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     private Array<FilesDroppedListener> filesDroppedListeners;
@@ -182,5 +185,41 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
 
     @Override
     public void refreshRequested() {
+    }
+
+    @Override
+    public void openDialog(String title, String defaultPath,
+            Array<String> filterPatterns, String filterDescription, boolean multipleSelections) {
+        PointerBuffer pointerBuffer = null;
+        if (filterPatterns != null && filterPatterns.size > 0) {
+            try (MemoryStack stack = stackPush()) {
+                pointerBuffer = stack.mallocPointer(filterPatterns.size);
+
+                for (String filterPattern : filterPatterns) {
+                    pointerBuffer.put(stack.UTF8(filterPattern));
+                }
+                
+                pointerBuffer.flip();
+            }
+        }
+        org.lwjgl.util.tinyfd.TinyFileDialogs.tinyfd_openFileDialog(title, defaultPath, pointerBuffer, filterDescription, multipleSelections);
+    }
+    
+    @Override
+    public void saveDialog(String title, String defaultPath,
+            Array<String> filterPatterns, String filterDescription) {
+        PointerBuffer pointerBuffer = null;
+        if (filterPatterns != null && filterPatterns.size > 0) {
+            try (MemoryStack stack = stackPush()) {
+                pointerBuffer = stack.mallocPointer(filterPatterns.size);
+
+                for (String filterPattern : filterPatterns) {
+                    pointerBuffer.put(stack.UTF8(filterPattern));
+                }
+                
+                pointerBuffer.flip();
+            }
+        }
+        org.lwjgl.util.tinyfd.TinyFileDialogs.tinyfd_saveFileDialog(title, defaultPath, pointerBuffer, filterDescription);
     }
 }

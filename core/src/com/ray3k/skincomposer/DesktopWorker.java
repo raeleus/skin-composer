@@ -35,4 +35,6 @@ public interface DesktopWorker {
     public void removeFilesDroppedListener(FilesDroppedListener filesDroppedListener);
     public void setCloseListener(CloseListener closeListener);
     public void attachLogListener();
+    public void openDialog(String title, String defaultPath, Array<String> filterPatterns, String filterDescription, boolean multipleSelections);
+    public void saveDialog(String title, String defaultPath, Array<String> filterPatterns, String filterDescription);
 }
