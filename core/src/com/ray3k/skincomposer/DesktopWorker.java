@@ -26,6 +26,8 @@ package com.ray3k.skincomposer;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+import java.io.File;
+import java.util.List;
 
 public interface DesktopWorker {
     public void texturePack(Array<FileHandle> handles, FileHandle localFile, FileHandle targetFile, int MaxWidth, int MaxHeight, boolean useStripWhitespace);
@@ -35,4 +37,7 @@ public interface DesktopWorker {
     public void removeFilesDroppedListener(FilesDroppedListener filesDroppedListener);
     public void setCloseListener(CloseListener closeListener);
     public void attachLogListener();
+    public List<File> openMultipleDialog(String title, String defaultPath, String[] filterPatterns, String filterDescription);
+    public File openDialog(String title, String defaultPath, String[] filterPatterns, String filterDescription);
+    public File saveDialog(String title, String defaultPath, String[] filterPatterns, String filterDescription);
 }

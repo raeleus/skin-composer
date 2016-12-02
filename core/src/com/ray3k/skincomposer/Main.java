@@ -59,8 +59,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.kotcrab.vis.ui.VisUI;
-import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
@@ -92,21 +90,6 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         if (Utils.isMac()) System.setProperty("java.awt.headless", "true");
-        
-        if (!Utils.isWindows()) {
-            VisUI.load();
-            FileChooser.setDefaultPrefsName("com.ray3k.skincomposer VisUI");
-        } else {
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            //JavaFX settings
-            new javafx.embed.swing.JFXPanel();
-            Platform.setImplicitExit(false);
-        }
         
         showingCloseDialog = false;
         listeningForKeys = true;
@@ -301,13 +284,6 @@ public class Main extends ApplicationAdapter {
     public void dispose() {
         stage.dispose();
         skin.dispose();
-        
-        if (Utils.isWindows()) {
-            //javaFX
-            Platform.exit();
-        } else {
-            VisUI.dispose();
-        }
     }
     
     /**
