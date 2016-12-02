@@ -389,7 +389,7 @@ public class Main extends ApplicationAdapter {
     }
     
     public void showDialogColors(StyleProperty styleProperty, DialogColorsListener listener) {
-        DialogColors dialog = new DialogColors(skin, "dialog-panel", styleProperty, listener);
+        DialogColors dialog = new DialogColors(newSkin, "dialog", styleProperty, listener);
         dialog.setFillParent(true);
         dialog.show(stage);
         dialog.populate();

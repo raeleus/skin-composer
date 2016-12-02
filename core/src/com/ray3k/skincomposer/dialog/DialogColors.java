@@ -119,16 +119,7 @@ public class DialogColors extends Dialog {
         });
         table.add(selectBox);
         
-        ImageTextButtonStyle imageButtonStyle = new ImageTextButtonStyle();
-        imageButtonStyle.imageUp = skin.getDrawable("image-plus");
-        imageButtonStyle.imageDown = skin.getDrawable("image-plus-down");
-        imageButtonStyle.up = skin.getDrawable("button-orange");
-        imageButtonStyle.down = skin.getDrawable("button-orange-down");
-        imageButtonStyle.over = skin.getDrawable("button-orange-over");
-        imageButtonStyle.font = skin.getFont("font");
-        imageButtonStyle.fontColor = skin.getColor("white");
-        imageButtonStyle.downFontColor = skin.getColor("maroon");
-        ImageTextButton imageButton = new ImageTextButton(" New Color", imageButtonStyle);
+        TextButton imageButton = new TextButton("New Color", skin, "new");
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -143,7 +134,7 @@ public class DialogColors extends Dialog {
         
         table = new Table();
         table.add(colorTable).pad(5.0f);
-        scrollPane = new ScrollPane(table, skin, "no-bg");
+        scrollPane = new ScrollPane(table, skin);
         scrollPane.setFadeScrollBars(false);
         getContentTable().add(scrollPane).grow();
         
@@ -183,7 +174,7 @@ public class DialogColors extends Dialog {
             public void selected(Color color) {
                 if (color != null) {
                     final TextField field = new TextField("RGBA_" + (int) (color.r * 255) + "_" + (int) (color.g * 255) + "_" + (int) (color.b * 255) + "_" + (int) (color.a * 255), skin);
-                    final Dialog dialog = new Dialog("Color name...", skin, "dialog") {
+                    final Dialog dialog = new Dialog("", skin, "dialog") {
                         @Override
                         protected void result(Object object) {
                             if ((Boolean) object == true) {
@@ -212,6 +203,9 @@ public class DialogColors extends Dialog {
                     field.addListener(IbeamListener.get());
 
                     dialog.getContentTable().padLeft(10.0f).padRight(10.0f);
+                    Label label = new Label("Color name...", skin, "title");
+                    dialog.text(label);
+                    dialog.getContentTable().row();
                     dialog.text("Please enter a name for the new color: ");
                     dialog.getContentTable().row();
                     dialog.getContentTable().add(field).growX();
@@ -252,7 +246,7 @@ public class DialogColors extends Dialog {
         if (colors.size > 0) {
             colorTable.defaults().padTop(5.0f);
             for (ColorData color : colors) {
-                Button button = new Button(skin);
+                Button button = new Button(skin, "color-base");
                 Label label = new Label(color.toString(), skin, "white");
                 label.setTouchable(Touchable.disabled);
                 
@@ -296,7 +290,7 @@ public class DialogColors extends Dialog {
                 button.add(borderTable).growX();
                 
                 //rename button
-                Button renameButton = new Button(skin, "name");
+                Button renameButton = new Button(skin, "settings-small");
                 renameButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -316,7 +310,7 @@ public class DialogColors extends Dialog {
                 button.add(renameButton);
                 
                 //recolor button
-                Button recolorButton = new Button(skin, "color");
+                Button recolorButton = new Button(skin, "colorwheel");
                 recolorButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -335,7 +329,7 @@ public class DialogColors extends Dialog {
                 });
                 button.add(recolorButton);
                 
-                label = new Label("(" + ((int)(color.color.r * 255)) + ", " + ((int)(color.color.g * 255)) + ", " + ((int)(color.color.b * 255)) + ", " + ((int)(color.color.a * 255)) + ")", skin, "white");
+                label = new Label("(" + ((int)(color.color.r * 255)) + ", " + ((int)(color.color.g * 255)) + ", " + ((int)(color.color.b * 255)) + ", " + ((int)(color.color.a * 255)) + ")", skin);
                 label.setTouchable(Touchable.disabled);
                 label.setAlignment(Align.center);
                 
@@ -359,7 +353,7 @@ public class DialogColors extends Dialog {
                 button.add(label).padLeft(5.0f).minWidth(160.0f);
                 
                 //delete color button
-                Button closeButton = new Button(skin, "close");
+                Button closeButton = new Button(skin, "delete-small");
                 final ColorData deleteColor = color;
                 closeButton.addListener(new ChangeListener() {
                     @Override
@@ -412,7 +406,7 @@ public class DialogColors extends Dialog {
                 colorTable.row();
             }
         } else {
-            colorTable.add(new Label("No colors have been set!", skin, "error"));
+            colorTable.add(new Label("No colors have been set!", skin, "required"));
         }
     }
     
@@ -445,7 +439,7 @@ public class DialogColors extends Dialog {
         TextField textField = new TextField("", skin);
         TextButton okButton;
         
-        Dialog dialog = new Dialog("Rename Color?", skin) {
+        Dialog dialog = new Dialog("", skin) {
             @Override
             protected void result(Object object) {
                 if ((boolean) object) {
@@ -469,12 +463,16 @@ public class DialogColors extends Dialog {
             borderColor = Color.WHITE;
         }
         
+        Label label = new Label("Rename Color?", skin, "title");
+        dialog.getContentTable().add(label);
+        
+        dialog.getContentTable().row();
         Table bg = new  Table(skin);
         bg.setBackground("white");
         bg.setColor(borderColor);
         dialog.getContentTable().add(bg);
         
-        Label label = new Label(color.getName(), skin, "white");
+        label = new Label(color.getName(), skin, "white");
         label.setColor(color.color);
         bg.add(label).pad(10);
         
@@ -491,6 +489,7 @@ public class DialogColors extends Dialog {
         dialog.button("Cancel", false).key(Keys.ESCAPE, false);
         okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
         okButton.setDisabled(true);
+        getCell(getButtonTable()).padBottom(15.0f);
         
         textField.addListener(new ChangeListener() {
             @Override

@@ -4,9 +4,57 @@ size: 512,512
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+button-color-base
+  rotate: false
+  xy: 261, 419
+  size: 27, 27
+  split: 5, 5, 5, 5
+  pad: 3, 3, 3, 3
+  orig: 27, 27
+  offset: 0, 0
+  index: -1
+button-color-base-over
+  rotate: false
+  xy: 261, 390
+  size: 27, 27
+  split: 5, 5, 5, 5
+  pad: 3, 3, 3, 3
+  orig: 27, 27
+  offset: 0, 0
+  index: -1
+button-color-base-pressed
+  rotate: false
+  xy: 261, 448
+  size: 27, 27
+  split: 5, 5, 5, 5
+  pad: 3, 3, 3, 3
+  orig: 27, 27
+  offset: 0, 0
+  index: -1
+button-delete-small
+  rotate: false
+  xy: 290, 423
+  size: 25, 25
+  orig: 25, 25
+  offset: 0, 0
+  index: -1
+button-delete-small-over
+  rotate: false
+  xy: 290, 396
+  size: 25, 25
+  orig: 25, 25
+  offset: 0, 0
+  index: -1
+button-delete-small-pressed
+  rotate: false
+  xy: 290, 450
+  size: 25, 25
+  orig: 25, 25
+  offset: 0, 0
+  index: -1
 color-box
   rotate: false
-  xy: 357, 395
+  xy: 132, 200
   size: 12, 12
   split: 2, 2, 2, 2
   orig: 12, 12
@@ -14,7 +62,7 @@ color-box
   index: -1
 color-picker
   rotate: false
-  xy: 134, 219
+  xy: 317, 435
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
@@ -28,14 +76,14 @@ color-scale
   index: -1
 color-scale-flipped
   rotate: false
-  xy: 311, 396
+  xy: 248, 260
   size: 16, 13
   orig: 16, 13
   offset: 0, 0
   index: -1
 link
   rotate: false
-  xy: 130, 229
+  xy: 286, 382
   size: 2, 6
   split: 0, 0, 0, 1
   pad: 0, 0, 0, 2
@@ -44,7 +92,7 @@ link
   index: -1
 link-empty
   rotate: false
-  xy: 130, 221
+  xy: 130, 229
   size: 2, 6
   split: 0, 0, 0, 1
   pad: 0, 0, 0, 2
@@ -90,14 +138,14 @@ button-colorwheel
   index: -1
 button-colorwheel-over
   rotate: false
-  xy: 336, 410
+  xy: 260, 339
   size: 22, 24
   orig: 22, 24
   offset: 0, 0
   index: -1
 button-colorwheel-pressed
   rotate: false
-  xy: 361, 435
+  xy: 260, 313
   size: 22, 24
   orig: 22, 24
   offset: 0, 0
@@ -337,42 +385,42 @@ button-settings-pressed
   index: -1
 button-settings-small
   rotate: false
-  xy: 385, 435
+  xy: 187, 239
   size: 22, 24
   orig: 22, 24
   offset: 0, 0
   index: -1
 button-settings-small-over
   rotate: false
-  xy: 409, 435
+  xy: 163, 222
   size: 22, 24
   orig: 22, 24
   offset: 0, 0
   index: -1
 button-settings-small-pressed
   rotate: false
-  xy: 433, 435
+  xy: 187, 213
   size: 22, 24
   orig: 22, 24
   offset: 0, 0
   index: -1
 button-spinner-minus-h
   rotate: false
-  xy: 132, 190
+  xy: 317, 406
   size: 23, 27
   orig: 23, 27
   offset: 0, 0
   index: -1
 button-spinner-minus-h-over
   rotate: false
-  xy: 132, 161
+  xy: 343, 432
   size: 23, 27
   orig: 23, 27
   offset: 0, 0
   index: -1
 button-spinner-minus-h-pressed
   rotate: false
-  xy: 132, 132
+  xy: 368, 432
   size: 23, 27
   orig: 23, 27
   offset: 0, 0
@@ -400,21 +448,21 @@ button-spinner-minus-v-pressed
   index: -1
 button-spinner-plus-h
   rotate: false
-  xy: 132, 103
+  xy: 393, 432
   size: 23, 27
   orig: 23, 27
   offset: 0, 0
   index: -1
 button-spinner-plus-h-over
   rotate: false
-  xy: 261, 448
+  xy: 418, 432
   size: 23, 27
   orig: 23, 27
   offset: 0, 0
   index: -1
 button-spinner-plus-h-pressed
   rotate: false
-  xy: 261, 419
+  xy: 443, 432
   size: 23, 27
   orig: 23, 27
   offset: 0, 0
@@ -442,21 +490,21 @@ button-spinner-plus-v-pressed
   index: -1
 button-swatches
   rotate: false
-  xy: 457, 435
+  xy: 211, 225
   size: 22, 24
   orig: 22, 24
   offset: 0, 0
   index: -1
 button-swatches-over
   rotate: false
-  xy: 360, 409
+  xy: 235, 225
   size: 22, 24
   orig: 22, 24
   offset: 0, 0
   index: -1
 button-swatches-pressed
   rotate: false
-  xy: 384, 409
+  xy: 211, 199
   size: 22, 24
   orig: 22, 24
   offset: 0, 0
@@ -470,35 +518,35 @@ checkbox-off
   index: -1
 checkbox-off-over
   rotate: false
-  xy: 492, 456
+  xy: 261, 479
   size: 19, 15
   orig: 19, 15
   offset: 0, 0
   index: -1
 checkbox-off-pressed
   rotate: false
-  xy: 261, 479
+  xy: 235, 194
   size: 19, 15
   orig: 19, 15
   offset: 0, 0
   index: -1
 checkbox-on
   rotate: false
-  xy: 187, 248
+  xy: 317, 389
   size: 19, 15
   orig: 19, 15
   offset: 0, 0
   index: -1
 checkbox-on-over
   rotate: false
-  xy: 408, 418
+  xy: 260, 296
   size: 19, 15
   orig: 19, 15
   offset: 0, 0
   index: -1
 checkbox-on-pressed
   rotate: false
-  xy: 429, 418
+  xy: 134, 228
   size: 19, 15
   orig: 19, 15
   offset: 0, 0
@@ -528,49 +576,49 @@ font-title-export
   index: -1
 icon-colorwheel
   rotate: false
-  xy: 286, 452
+  xy: 342, 407
   size: 23, 23
   orig: 23, 23
   offset: 0, 0
   index: -1
 icon-colorwheel-over
   rotate: false
-  xy: 261, 394
+  xy: 367, 407
   size: 23, 23
   orig: 23, 23
   offset: 0, 0
   index: -1
 icon-portrait
   rotate: false
-  xy: 286, 427
+  xy: 392, 407
   size: 23, 23
   orig: 23, 23
   offset: 0, 0
   index: -1
 icon-portrait-over
   rotate: false
-  xy: 286, 402
+  xy: 417, 407
   size: 23, 23
   orig: 23, 23
   offset: 0, 0
   index: -1
 icon-text
   rotate: false
-  xy: 311, 436
+  xy: 442, 407
   size: 23, 23
   orig: 23, 23
   offset: 0, 0
   index: -1
 icon-text-over
   rotate: false
-  xy: 311, 411
+  xy: 468, 436
   size: 23, 23
   orig: 23, 23
   offset: 0, 0
   index: -1
 list
   rotate: false
-  xy: 471, 419
+  xy: 272, 280
   size: 14, 14
   split: 2, 2, 2, 2
   pad: 3, 3, 3, 3
@@ -579,14 +627,14 @@ list
   index: -1
 scrollpane
   rotate: false
-  xy: 251, 287
+  xy: 290, 380
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 scrollpane-knob
   rotate: false
-  xy: 408, 402
+  xy: 286, 364
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
@@ -620,7 +668,7 @@ selectbox-pressed
   index: -1
 slider-horizontal
   rotate: false
-  xy: 261, 380
+  xy: 235, 211
   size: 20, 12
   split: 2, 2, 4, 4
   pad: 0, 0, 0, 0
@@ -629,28 +677,28 @@ slider-horizontal
   index: -1
 slider-knob
   rotate: false
-  xy: 424, 404
+  xy: 130, 214
   size: 12, 12
   orig: 12, 12
   offset: 0, 0
   index: -1
 slider-knob-over
   rotate: false
-  xy: 286, 388
+  xy: 284, 350
   size: 12, 12
   orig: 12, 12
   offset: 0, 0
   index: -1
 slider-knob-pressed
   rotate: false
-  xy: 329, 396
+  xy: 284, 336
   size: 12, 12
   orig: 12, 12
   offset: 0, 0
   index: -1
 slider-vertical
   rotate: false
-  xy: 343, 388
+  xy: 284, 314
   size: 12, 20
   split: 4, 4, 2, 2
   pad: 0, 0, 0, 0
@@ -668,7 +716,7 @@ splitpane
   index: -1
 status-bar
   rotate: false
-  xy: 450, 414
+  xy: 251, 275
   size: 19, 19
   orig: 19, 19
   offset: 0, 0
@@ -793,7 +841,7 @@ window-main
   index: -1
 window2
   rotate: false
-  xy: 336, 436
+  xy: 261, 365
   size: 23, 23
   split: 6, 6, 6, 6
   pad: 2, 2, 2, 2
