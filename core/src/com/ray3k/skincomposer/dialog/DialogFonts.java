@@ -54,8 +54,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Sort;
-import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
-import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
@@ -72,7 +70,6 @@ import com.ray3k.skincomposer.panel.PanelMenuBar;
 import com.ray3k.skincomposer.panel.PanelPreviewProperties;
 import com.ray3k.skincomposer.panel.PanelStatusBar;
 import com.ray3k.skincomposer.panel.PanelStyleProperties;
-import com.ray3k.skincomposer.utils.SynchronousJFXFileChooser;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
 import java.util.Iterator;
@@ -607,64 +604,22 @@ public class DialogFonts extends Dialog {
     }
     
     private void newFontDialog() {
-        if (Utils.isWindows()) {
-            newFontDialogWindows();
-        } else {
-            newFontDialogVisUI();
-        }
-    }
-    
-    private void newFontDialogWindows() {
-        SynchronousJFXFileChooser chooser = new SynchronousJFXFileChooser(() -> {
-            FileChooser ch = new FileChooser();
-            FileChooser.ExtensionFilter ex = new FileChooser.ExtensionFilter("Font files (*.fnt)", "*.fnt");
-            ch.getExtensionFilters().add(ex);
-            ch.setTitle("Choose font file(s)...");
-            if (ProjectData.instance().getLastDirectory() != null) {
-                File file = new File(ProjectData.instance().getLastDirectory());
-                if (file.exists()) {
-                    ch.setInitialDirectory(file);
-                }
+        String defaultPath = "";
+        
+        if (ProjectData.instance().getLastDirectory() != null) {
+            FileHandle fileHandle = new FileHandle(defaultPath);
+            if (fileHandle.exists()) {
+                defaultPath = ProjectData.instance().getLastDirectory();
             }
-            return ch;
-        });
-        List<File> files = chooser.showOpenMultipleDialog();
+        }
+        
+        String[] filterPatterns = {"*.fnt"};
+        
+        List<File> files = Main.instance.getDesktopWorker().openMultipleDialog("Choose font file(s)...", defaultPath, filterPatterns, "Font files (*.fnt)");
         if (files != null && files.size() > 0) {
             ProjectData.instance().setLastDirectory(files.get(0).getParentFile().getPath());
             fontNameDialog(files, 0);
         }
-    }
-    
-    private void newFontDialogVisUI() {
-        com.kotcrab.vis.ui.widget.file.FileChooser fileChooser = PanelMenuBar.instance().getFileChooser();
-        fileChooser.setMode(com.kotcrab.vis.ui.widget.file.FileChooser.Mode.OPEN);
-        fileChooser.setMultiSelectionEnabled(true);
-        FileHandle defaultFile = new FileHandle(ProjectData.instance().getLastDirectory());
-        if (defaultFile.exists()) {
-            if (defaultFile.isDirectory()) {
-                fileChooser.setDirectory(defaultFile);
-            } else {
-                fileChooser.setDirectory(defaultFile.parent());
-            }
-        }
-        FileTypeFilter typeFilter = new FileTypeFilter(false);
-        typeFilter.addRule("Font files (*.fnt)", "fnt");
-        typeFilter.setAllTypesAllowed(false);
-        fileChooser.setFileTypeFilter(typeFilter);
-        fileChooser.setViewMode(com.kotcrab.vis.ui.widget.file.FileChooser.ViewMode.DETAILS);
-        fileChooser.setViewModeButtonVisible(true);
-        fileChooser.setWatchingFilesEnabled(true);
-        fileChooser.getTitleLabel().setText("Choose font file(s)...");
-        fileChooser.setListener(new FileChooserAdapter() {
-            @Override
-            public void selected(Array<FileHandle> files) {
-                if (files.size > 0) {
-                    ProjectData.instance().setLastDirectory(files.get(0).parent().path());
-                    fontNameDialog(files, 0);
-                }
-            }
-        });
-        getStage().addActor(fileChooser.fadeIn());
     }
     
     private void fontNameDialog(List<File> files, int index) {

@@ -41,11 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.kotcrab.vis.ui.contrib.widget.file.ImgScalrFileChooserIconProvider;
-import com.kotcrab.vis.ui.widget.file.FileChooser.Mode;
-import com.kotcrab.vis.ui.widget.file.FileChooser.ViewMode;
-import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
-import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.MenuList;
 import com.ray3k.skincomposer.data.AtlasData;
@@ -53,9 +48,9 @@ import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.dialog.DialogError;
-import com.ray3k.skincomposer.utils.SynchronousJFXFileChooser;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
+import java.util.List;
 import javafx.stage.FileChooser;
 
 public class PanelMenuBar {
@@ -63,15 +58,9 @@ public class PanelMenuBar {
     private Stage stage;
     private TextButton undoButton, redoButton, recentFilesButton;
     private static PanelMenuBar instance;
-    private com.kotcrab.vis.ui.widget.file.FileChooser fileChooser;
     
     public PanelMenuBar(final Table table, final Skin skin, final Stage stage) {
         instance = this;
-        
-        if (!Utils.isWindows()) {
-           fileChooser = new com.kotcrab.vis.ui.widget.file.FileChooser(Mode.OPEN);
-           fileChooser.setIconProvider(new ImgScalrFileChooserIconProvider(fileChooser));
-        }
         
         this.skin = skin;
         this.stage = stage;
@@ -421,27 +410,19 @@ public class PanelMenuBar {
     }
     
     public void openDialog() {
-        if (Utils.isWindows()) {
-            openDialogWindows();
-        } else {
-            openDialogVisUI();
-        }
-    }
-    
-    public void openDialogWindows() {
         Runnable runnable = () -> {
-            SynchronousJFXFileChooser chooser = new SynchronousJFXFileChooser(() -> {
-                FileChooser ch = new FileChooser();
-                FileChooser.ExtensionFilter ex = new FileChooser.ExtensionFilter("Skin Composer files", "*.scmp");
-                ch.getExtensionFilters().add(ex);
-                ch.setTitle("Open skin file...");
-                File file = new File(ProjectData.instance().getBestSaveDirectory());
-                if (file.exists()) {
-                    ch.setInitialDirectory(file);
+            String defaultPath = "";
+
+            if (ProjectData.instance().getLastDirectory() != null) {
+                FileHandle fileHandle = new FileHandle(defaultPath);
+                if (fileHandle.exists()) {
+                    defaultPath = ProjectData.instance().getLastDirectory();
                 }
-                return ch;
-            });
-            File file = chooser.showOpenDialog();
+            }
+
+            String[] filterPatterns = {"*.scmp"};
+
+            File file = Main.instance.getDesktopWorker().openDialog("Open skin file...", defaultPath, filterPatterns, "Skin Composer files");
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
                 ProjectData.instance().load(fileHandle);
@@ -461,52 +442,6 @@ public class PanelMenuBar {
                     });
         } else {
             Main.instance.showDialogLoading(runnable);
-        }
-    }
-    
-    public void openDialogVisUI() {
-        Runnable runnable = () -> {
-            fileChooser.setMode(Mode.OPEN);
-            fileChooser.setMultiSelectionEnabled(false);
-            FileHandle defaultFile = new FileHandle(ProjectData.instance().getBestSaveDirectory());
-            if (defaultFile.exists()) {
-                if (defaultFile.isDirectory()) {
-                    fileChooser.setDirectory(defaultFile);
-                } else {
-                    fileChooser.setDirectory(defaultFile.parent());
-                }
-            }
-            FileTypeFilter typeFilter = new FileTypeFilter(false);
-            typeFilter.addRule("Skin Composer files (*.scmp)", "scmp");
-            fileChooser.setFileTypeFilter(typeFilter);
-            fileChooser.setViewMode(ViewMode.DETAILS);
-            fileChooser.setViewModeButtonVisible(true);
-            fileChooser.setWatchingFilesEnabled(true);
-            fileChooser.getTitleLabel().setText("Open skin file...");
-            fileChooser.setListener(new FileChooserAdapter() {
-                @Override
-                public void selected(Array<FileHandle> files) {
-                    if (files.size > 0) {
-                        ProjectData.instance().load(files.first());
-                    }
-                }
-            });
-            stage.addActor(fileChooser.fadeIn());
-        };
-        
-        if (!ProjectData.instance().areChangesSaved() && !ProjectData.instance().isNewProject()) {
-            yesNoCancelDialog("Save Changes?",
-                    "Do you want to save changes to the existing project?"
-                    + "\nAll unsaved changes will be lost.",
-                    (int selection) -> {
-                        if (selection == 0) {
-                            save(runnable);
-                        } else if (selection == 1) {
-                            runnable.run();
-                        }
-                    });
-        } else {
-            runnable.run();
         }
     }
     
@@ -552,11 +487,7 @@ public class PanelMenuBar {
     }
     
     public void saveAsDialog(Runnable runnable) {
-        if (Utils.isWindows()) {
-            saveAsDialogWindows(runnable);
-        } else {
-            saveAsDialogVisUI(runnable);
-        }
+        //todo: finish me
     }
     
     public void saveAsDialogWindows(Runnable runnable) {
@@ -584,51 +515,8 @@ public class PanelMenuBar {
         });
     }
     
-    public void saveAsDialogVisUI(Runnable runnable) {
-        fileChooser.setMode(Mode.SAVE);
-        fileChooser.setMultiSelectionEnabled(false);
-        FileHandle defaultFile = new FileHandle(ProjectData.instance().getBestSaveDirectory());
-        if (defaultFile.exists()) {
-            if (defaultFile.isDirectory()) {
-                fileChooser.setDirectory(defaultFile);
-            } else {
-                fileChooser.setDirectory(defaultFile.parent());
-            }
-        }
-        FileTypeFilter typeFilter = new FileTypeFilter(false);
-        typeFilter.addRule("Skin Composer files (*.scmp)", "scmp");
-        typeFilter.setAllTypesAllowed(false);
-        fileChooser.setFileTypeFilter(typeFilter);
-        fileChooser.setViewMode(ViewMode.DETAILS);
-        fileChooser.setViewModeButtonVisible(true);
-        fileChooser.setWatchingFilesEnabled(true);
-        fileChooser.getTitleLabel().setText("Save skin file as...");
-        fileChooser.setListener(new FileChooserAdapter() {
-            @Override
-            public void selected(Array<FileHandle> files) {
-                if (files.size > 0) {
-                    if (!files.first().extension().equalsIgnoreCase("scmp")) {
-                        files.set(0, files.first().sibling(files.first().name() + ".scmp"));
-                    }
-                    
-                    Main.instance.showDialogLoading(() -> {
-                        ProjectData.instance().save(files.first());
-                        if (runnable != null) {
-                            runnable.run();
-                        }
-                    });
-                }
-            }
-        });
-        stage.addActor(fileChooser.fadeIn());
-    }
-    
     public void importDialog() {
-        if (Utils.isWindows()) {
-            importDialogWindows();
-        } else {
-            importDialogVisUI();
-        }
+        //todo: finish me
     }
     
     public void importDialogWindows() {
@@ -667,67 +555,8 @@ public class PanelMenuBar {
         Main.instance.showDialogLoading(runnable);
     }
     
-    public void importDialogVisUI() {
-        Runnable runnable = () -> {
-            fileChooser.setMode(Mode.OPEN);
-            fileChooser.setMultiSelectionEnabled(false);
-            FileHandle defaultFile = new FileHandle(ProjectData.instance().getLastDirectory());
-            if (defaultFile.exists()) {
-                if (defaultFile.isDirectory()) {
-                    fileChooser.setDirectory(defaultFile);
-                } else {
-                    fileChooser.setDirectory(defaultFile.parent());
-                }
-            }
-            FileTypeFilter typeFilter = new FileTypeFilter(false);
-            typeFilter.addRule("Json files (*.json)", "json");
-            fileChooser.setFileTypeFilter(typeFilter);
-            fileChooser.setViewMode(ViewMode.DETAILS);
-            fileChooser.setViewModeButtonVisible(true);
-            fileChooser.setWatchingFilesEnabled(true);
-            fileChooser.getTitleLabel().setText("Import skin...");
-            fileChooser.setListener(new FileChooserAdapter() {
-                @Override
-                public void selected(Array<FileHandle> files) {
-                    if (files.size > 0) {
-                        ProjectData.instance().setLastDirectory(files.first().toString());
-                        try {
-                            JsonData.getInstance().readFile(files.first());
-                            PanelClassBar.instance.populate();
-                            PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-                            AtlasData.getInstance().atlasCurrent = false;
-                            PanelPreviewProperties.instance.produceAtlas();
-                            PanelPreviewProperties.instance.populate();
-                        } catch (Exception e) {
-                            Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
-                            DialogError.showError("Import Error", "Error attempting to import JSON.\n\nOpen log?");
-                        }
-                    }
-                }
-            });
-            stage.addActor(fileChooser.fadeIn());
-        };
-        
-        if (!ProjectData.instance().areChangesSaved()) {
-            yesNoDialog("Save Changes?",
-                    "The project must be saved before import."
-                    + "\nDo you want to save?",
-                    (int selection) -> {
-                        if (selection == 0) {
-                            save(runnable);
-                        }
-                    });
-        } else {
-            runnable.run();
-        }
-    }
-    
     public void exportDialog() {
-        if (Utils.isWindows()) {
-            exportDialogWindows();
-        } else {
-            exportDialogVisUI();
-        }
+        //todo: finish me
     }
     
     public void exportDialogWindows() {
@@ -769,53 +598,6 @@ public class PanelMenuBar {
         });
     }
     
-    public void exportDialogVisUI() {
-        fileChooser.setMode(Mode.SAVE);
-        fileChooser.setMultiSelectionEnabled(false);
-        FileHandle defaultFile = new FileHandle(ProjectData.instance().getBestSaveDirectory());
-        if (defaultFile.exists()) {
-            if (defaultFile.isDirectory()) {
-                fileChooser.setDirectory(defaultFile);
-            } else {
-                fileChooser.setDirectory(defaultFile.parent());
-            }
-        }
-        FileTypeFilter typeFilter = new FileTypeFilter(false);
-        typeFilter.addRule("Json files (*.json)", "json");
-        typeFilter.setAllTypesAllowed(false);
-        fileChooser.setFileTypeFilter(typeFilter);
-        fileChooser.setViewMode(ViewMode.DETAILS);
-        fileChooser.setViewModeButtonVisible(true);
-        fileChooser.setWatchingFilesEnabled(true);
-        fileChooser.getTitleLabel().setText("Export skin...");
-        fileChooser.setListener(new FileChooserAdapter() {
-            @Override
-            public void selected(Array<FileHandle> files) {
-                if (files.size > 0) {
-                    if (!files.first().extension().equalsIgnoreCase("json")) {
-                        files.set(0, files.first().sibling(files.first().name() + ".json"));
-                    }
-                    
-                    Main.instance.showDialogLoading(() -> {
-                        FileHandle fileHandle = files.first();
-                        ProjectData.instance().setLastDirectory(fileHandle.parent().path());
-                        JsonData.getInstance().writeFile(fileHandle);
-                        try {
-                            AtlasData.getInstance().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
-                        } catch (Exception ex) {
-                            Gdx.app.error(PanelMenuBar.class.getName(), "Error while writing texture atlas", ex);
-                            DialogError.showError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
-                        }
-                        for (FontData font : JsonData.getInstance().getFonts()) {
-                            font.file.copyTo(fileHandle.parent());
-                        }
-                    });
-                }
-            }
-        });
-        stage.addActor(fileChooser.fadeIn());
-    }
-    
     private static ObjectMap<String, String> shortcutNames;
     
     private static ObjectMap<String, String> getShortcutNames() {
@@ -840,9 +622,5 @@ public class PanelMenuBar {
         }
         
         return shortcutNames;
-    }
-
-    public com.kotcrab.vis.ui.widget.file.FileChooser getFileChooser() {
-        return fileChooser;
     }
 }
