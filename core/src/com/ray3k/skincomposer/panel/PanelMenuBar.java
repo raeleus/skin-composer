@@ -487,24 +487,19 @@ public class PanelMenuBar {
     }
     
     public void saveAsDialog(Runnable runnable) {
-        //todo: finish me
-    }
-    
-    public void saveAsDialogWindows(Runnable runnable) {
-        SynchronousJFXFileChooser chooser = new SynchronousJFXFileChooser(() -> {
-            FileChooser ch = new FileChooser();
-            FileChooser.ExtensionFilter ex = new FileChooser.ExtensionFilter("Skin Composer files", "*.scmp");
-            ch.getExtensionFilters().add(ex);
-            ch.setTitle("Save skin file as...");
-            File file = new File(ProjectData.instance().getBestSaveDirectory());
-            if (file.exists()) {
-                ch.setInitialDirectory(file);
-            }
-            return ch;
-        });
-        
         Main.instance.showDialogLoading(() -> {
-            File file = chooser.showSaveDialog();
+            String defaultPath = "";
+
+            if (ProjectData.instance().getLastDirectory() != null) {
+                FileHandle fileHandle = new FileHandle(defaultPath);
+                if (fileHandle.exists()) {
+                    defaultPath = ProjectData.instance().getLastDirectory();
+                }
+            }
+
+            String[] filterPatterns = {"*.scmp"};
+
+            File file = Main.instance.getDesktopWorker().saveDialog("Save skin file as...", defaultPath, filterPatterns, "Skin Composer files");
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
                 ProjectData.instance().save(fileHandle);
@@ -516,25 +511,19 @@ public class PanelMenuBar {
     }
     
     public void importDialog() {
-        //todo: finish me
-    }
-    
-    public void importDialogWindows() {
-        Runnable runnable = () -> {
-            SynchronousJFXFileChooser chooser = new SynchronousJFXFileChooser(() -> {
-                FileChooser ch = new FileChooser();
-                FileChooser.ExtensionFilter ex = new FileChooser.ExtensionFilter("Json files", "*.json");
-                ch.getExtensionFilters().add(ex);
-                ch.setTitle("Import skin...");
-                if (ProjectData.instance().getLastDirectory() != null) {
-                    File file = new File(ProjectData.instance().getLastDirectory());
-                    if (file.exists()) {
-                        ch.setInitialDirectory(file);
-                    }
+        Main.instance.showDialogLoading(() -> {
+            String defaultPath = "";
+
+            if (ProjectData.instance().getLastDirectory() != null) {
+                FileHandle fileHandle = new FileHandle(defaultPath);
+                if (fileHandle.exists()) {
+                    defaultPath = ProjectData.instance().getLastDirectory();
                 }
-                return ch;
-            });
-            File file = chooser.showOpenDialog();
+            }
+
+            String[] filterPatterns = {"*.json"};
+
+            File file = Main.instance.getDesktopWorker().openDialog("Import skin...", defaultPath, filterPatterns, "Json files");
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
                 ProjectData.instance().setLastDirectory(fileHandle.parent().path());
@@ -550,33 +539,23 @@ public class PanelMenuBar {
                     DialogError.showError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
                 }
             }
-        };
-
-        Main.instance.showDialogLoading(runnable);
+        });
     }
     
     public void exportDialog() {
-        //todo: finish me
-    }
-    
-    public void exportDialogWindows() {
-        SynchronousJFXFileChooser chooser = new SynchronousJFXFileChooser(() -> {
-            FileChooser ch = new FileChooser();
-            FileChooser.ExtensionFilter ex = new FileChooser.ExtensionFilter("Json files", "*.json");
-            ch.getExtensionFilters().add(ex);
-            ch.setTitle("Export skin...");
-            
+        Main.instance.showDialogLoading(() -> {
+            String defaultPath = "";
+
             if (ProjectData.instance().getLastDirectory() != null) {
-                File file = new File(ProjectData.instance().getLastDirectory());
-                if (file.exists()) {
-                    ch.setInitialDirectory(file);
+                FileHandle fileHandle = new FileHandle(defaultPath);
+                if (fileHandle.exists()) {
+                    defaultPath = ProjectData.instance().getLastDirectory();
                 }
             }
-            return ch;
-        });
-        
-        Main.instance.showDialogLoading(() -> {
-            File file = chooser.showSaveDialog();
+
+            String[] filterPatterns = {"*.json"};
+
+            File file = Main.instance.getDesktopWorker().saveDialog("Export skin...", defaultPath, filterPatterns, "Json files");
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
                 ProjectData.instance().setLastDirectory(fileHandle.parent().path());
