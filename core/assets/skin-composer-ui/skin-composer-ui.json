@@ -20,6 +20,12 @@ com.badlogic.gdx.graphics.Color: {
 		b: 0.49411765
 		a: 1
 	}
+	disabled: {
+		r: 0.2627451
+		g: 0.69803923
+		b: 0.60784316
+		a: 1
+	}
 	link: {
 		r: 0
 		g: 0
@@ -324,9 +330,11 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 	default: {
 		font: font
 		fontColor: white
+		disabledFontColor: disabled
 		up: button
 		down: button-pressed
 		over: button-over
+		disabled: button
 	}
 	new: {
 		font: font

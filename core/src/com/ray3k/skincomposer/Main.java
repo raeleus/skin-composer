@@ -69,10 +69,6 @@ import com.ray3k.skincomposer.dialog.DialogFonts;
 import com.ray3k.skincomposer.dialog.DialogLoading;
 import com.ray3k.skincomposer.dialog.DialogSettings;
 import com.ray3k.skincomposer.utils.Utils;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Platform;
-import javax.swing.UIManager;
 
 public class Main extends ApplicationAdapter {
     public final static String VERSION = "6";

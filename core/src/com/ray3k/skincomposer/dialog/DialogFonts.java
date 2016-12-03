@@ -66,7 +66,6 @@ import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.panel.PanelClassBar;
-import com.ray3k.skincomposer.panel.PanelMenuBar;
 import com.ray3k.skincomposer.panel.PanelPreviewProperties;
 import com.ray3k.skincomposer.panel.PanelStatusBar;
 import com.ray3k.skincomposer.panel.PanelStyleProperties;
@@ -74,7 +73,6 @@ import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
-import javafx.stage.FileChooser;
 
 public class DialogFonts extends Dialog {
 
