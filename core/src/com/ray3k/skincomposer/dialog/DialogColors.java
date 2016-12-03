@@ -35,8 +35,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
@@ -146,6 +144,7 @@ public class DialogColors extends Dialog {
         } else {
             button("Close", false);
         }
+        getCell(getButtonTable()).padBottom(15.0f);
         key(Keys.ESCAPE, false);
     }
     
@@ -184,6 +183,7 @@ public class DialogColors extends Dialog {
                     };
                     dialog.button("Ok", true).button("Cancel", false).key(Keys.ESCAPE, false);
                     final TextButton button = (TextButton) dialog.getButtonTable().getCells().first().getActor();
+                    dialog.getCell(dialog.getButtonTable()).pad(15.0f);
 
                     field.setTextFieldListener(new TextField.TextFieldListener() {
                         @Override
@@ -307,7 +307,7 @@ public class DialogColors extends Dialog {
                     }
                     
                 });
-                button.add(renameButton);
+                button.add(renameButton).padLeft(10.0f);
                 
                 //recolor button
                 Button recolorButton = new Button(skin, "colorwheel");
@@ -484,12 +484,13 @@ public class DialogColors extends Dialog {
         textField.setText(color.getName());
         textField.selectAll();
         dialog.getContentTable().add(textField);
+        dialog.getCell(dialog.getContentTable()).pad(15.0f);
         
         dialog.button("OK", true);
         dialog.button("Cancel", false).key(Keys.ESCAPE, false);
         okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
         okButton.setDisabled(true);
-        getCell(getButtonTable()).padBottom(15.0f);
+        dialog.getCell(dialog.getButtonTable()).padBottom(15.0f);
         
         textField.addListener(new ChangeListener() {
             @Override
