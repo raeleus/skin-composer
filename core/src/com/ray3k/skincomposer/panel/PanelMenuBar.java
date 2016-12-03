@@ -502,6 +502,9 @@ public class PanelMenuBar {
             File file = Main.instance.getDesktopWorker().saveDialog("Save skin file as...", defaultPath, filterPatterns, "Skin Composer files");
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
+                if (fileHandle.extension() == null || !fileHandle.extension().equals(".scmp")) {
+                    fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".scmp");
+                }
                 ProjectData.instance().save(fileHandle);
                 if (runnable != null) {
                     runnable.run();
@@ -558,6 +561,9 @@ public class PanelMenuBar {
             File file = Main.instance.getDesktopWorker().saveDialog("Export skin...", defaultPath, filterPatterns, "Json files");
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
+                if (fileHandle.extension() == null || !fileHandle.extension().equals(".json")) {
+                    fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".json");
+                }
                 ProjectData.instance().setLastDirectory(fileHandle.parent().path());
                 JsonData.getInstance().writeFile(fileHandle);
                 

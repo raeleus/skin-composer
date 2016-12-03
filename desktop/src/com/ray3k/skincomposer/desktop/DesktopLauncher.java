@@ -193,87 +193,107 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     @Override
     public List<File> openMultipleDialog(String title, String defaultPath,
             String[] filterPatterns, String filterDescription) {
+        String result = null;
+        
+        //fix file path characters
         if (Utils.isWindows()) {
             defaultPath = defaultPath.replace("/", "\\");
         } else {
             defaultPath = defaultPath.replace("\\", "/");
         }
-//        PointerBuffer pointerBuffer = null;
-//        if (filterPatterns != null && filterPatterns.length > 0) {
-//            try (MemoryStack stack = stackPush()) {
-//                pointerBuffer = stack.mallocPointer(filterPatterns.length);
-//
-//                for (String filterPattern : filterPatterns) {
-//                    pointerBuffer.put(stack.UTF8(filterPattern));
-//                }
-//                
-//                pointerBuffer.flip();
-//            }
-//        }
-//        String result = org.lwjgl.util.tinyfd.TinyFileDialogs.tinyfd_openFileDialog(title, defaultPath, pointerBuffer, filterDescription, true);
-//        String[] paths = result.split("\\|");
-//        ArrayList<File> returnValue = new ArrayList<>();
-//        for (String path : paths) {
-//            returnValue.add(new File(path));
-//        }
-//        return returnValue;
-        return null;
+        if (filterPatterns != null && filterPatterns.length > 0) {
+            try (MemoryStack stack = stackPush()) {
+                PointerBuffer pointerBuffer = stack.mallocPointer(filterPatterns.length);
+
+                for (String filterPattern : filterPatterns) {
+                    pointerBuffer.put(stack.UTF8(filterPattern));
+                }
+                
+                pointerBuffer.flip();
+                result = org.lwjgl.util.tinyfd.TinyFileDialogs.tinyfd_openFileDialog(title, defaultPath, pointerBuffer, filterDescription, true);
+            }
+        } else {
+            result = org.lwjgl.util.tinyfd.TinyFileDialogs.tinyfd_openFileDialog(title, defaultPath, null, filterDescription, true);
+        }
+        
+        if (result != null) {
+            String[] paths = result.split("\\|");
+            ArrayList<File> returnValue = new ArrayList<>();
+            for (String path : paths) {
+                returnValue.add(new File(path));
+            }
+            return returnValue;
+        } else {
+            return null;
+        }
     }
     
     @Override
     public File openDialog(String title, String defaultPath,
             String[] filterPatterns, String filterDescription) {
+        String result = null;
+        
+        //fix file path characters
         if (Utils.isWindows()) {
             defaultPath = defaultPath.replace("/", "\\");
         } else {
             defaultPath = defaultPath.replace("\\", "/");
         }
-        PointerBuffer pointerBuffer = null;
-//        if (filterPatterns != null && filterPatterns.length > 0) {
-//            try (MemoryStack stack = stackPush()) {
-//                pointerBuffer = stack.mallocPointer(filterPatterns.length);
-//
-//                for (String filterPattern : filterPatterns) {
-//                    pointerBuffer.put(stack.UTF8(filterPattern));
-//                }
-//                
-//                pointerBuffer.flip();
-//            }
-//        }
-//        return new File(result);
-        try (MemoryStack stack = stackPush()) {
-            pointerBuffer = stack.mallocPointer(2);
-            pointerBuffer.put(stack.UTF8("*.png"));
-            pointerBuffer.put(stack.UTF8("*.jpg"));
-            pointerBuffer.flip();
+        
+        if (filterPatterns != null && filterPatterns.length > 0) {
+            try (MemoryStack stack = stackPush()) {
+                PointerBuffer pointerBuffer = stack.mallocPointer(filterPatterns.length);
+
+                for (String filterPattern : filterPatterns) {
+                    pointerBuffer.put(stack.UTF8(filterPattern));
+                }
+                
+                pointerBuffer.flip();
+                result = org.lwjgl.util.tinyfd.TinyFileDialogs.tinyfd_openFileDialog(title, defaultPath, pointerBuffer, filterDescription, false);
+            }
+        } else {
+            result = org.lwjgl.util.tinyfd.TinyFileDialogs.tinyfd_openFileDialog(title, defaultPath, null, filterDescription, false);
         }
-        String result = org.lwjgl.util.tinyfd.TinyFileDialogs.tinyfd_openFileDialog(title, defaultPath, pointerBuffer, filterDescription, false);
-        System.out.println(result);
-        return null;
+        
+        if (result != null) {
+            return new File(result);
+        } else {
+            return null;
+        }
     }
     
     @Override
     public File saveDialog(String title, String defaultPath,
             String[] filterPatterns, String filterDescription) {
+        String result = null;
+        
+        //fix file path characters
         if (Utils.isWindows()) {
             defaultPath = defaultPath.replace("/", "\\");
         } else {
             defaultPath = defaultPath.replace("\\", "/");
         }
-//        PointerBuffer pointerBuffer = null;
-//        if (filterPatterns != null && filterPatterns.length > 0) {
-//            try (MemoryStack stack = stackPush()) {
-//                pointerBuffer = stack.mallocPointer(filterPatterns.length);
-//
-//                for (String filterPattern : filterPatterns) {
-//                    pointerBuffer.put(stack.UTF8(filterPattern));
-//                }
-//                
-//                pointerBuffer.flip();
-//            }
-//        }
-//        String result = org.lwjgl.util.tinyfd.TinyFileDialogs.tinyfd_saveFileDialog(title, defaultPath, pointerBuffer, filterDescription);
-//        return new File(result);
-        return null;
+        
+        if (filterPatterns != null && filterPatterns.length > 0) {
+            try (MemoryStack stack = stackPush()) {
+                PointerBuffer pointerBuffer = null;
+                pointerBuffer = stack.mallocPointer(filterPatterns.length);
+
+                for (String filterPattern : filterPatterns) {
+                    pointerBuffer.put(stack.UTF8(filterPattern));
+                }
+                
+                pointerBuffer.flip();
+                result = org.lwjgl.util.tinyfd.TinyFileDialogs.tinyfd_saveFileDialog(title, defaultPath, pointerBuffer, filterDescription);
+            }
+        } else {
+            result = org.lwjgl.util.tinyfd.TinyFileDialogs.tinyfd_saveFileDialog(title, defaultPath, null, filterDescription);
+        }
+        
+        if (result != null) {
+            return new File(result);
+        } else {
+            return null;
+        }
     }
 }
