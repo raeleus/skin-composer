@@ -246,6 +246,7 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
 		imageChecked: checkbox-on
 		imageCheckedOver: checkbox-on-over
 		font: font
+		fontColor: button
 	}
 	switch: {
 		imageUp: toggle-off
@@ -254,7 +255,7 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
 		imageChecked: toggle-on
 		imageCheckedOver: toggle-on-over
 		font: font
-		fontColor: white
+		fontColor: button
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {

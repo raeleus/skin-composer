@@ -304,15 +304,6 @@ public class ProjectData implements Json.Serializable{
         }
     }
 
-    public void setSelectedSkin(int selectedSkin) {
-        generalPref.putInteger("selectedSkin", selectedSkin);
-        generalPref.flush();
-    }
-    
-    public int getSelectedSkin() {
-        return (int) generalPref.getInteger("selectedSkin", 0);
-    }
-
     public boolean getStripWhitespace() {
         return generalPref.getBoolean("useStripWhitespace", false);
     }

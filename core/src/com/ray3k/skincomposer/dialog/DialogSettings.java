@@ -28,17 +28,15 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
-import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.Spinner.Orientation;
@@ -55,7 +53,6 @@ public class DialogSettings extends Dialog {
     private Integer textureWidth;
     private Integer textureHeight;
     private Integer maxUndos;
-    private int selectedSkin;
     private boolean useStripWhitespace;
 
     public DialogSettings(String title, Skin skin, String windowStyleName) {
@@ -70,7 +67,6 @@ public class DialogSettings extends Dialog {
         textureWidth = ProjectData.instance().getMaxTextureWidth();
         textureHeight = ProjectData.instance().getMaxTextureHeight();
         maxUndos = ProjectData.instance().getMaxUndos();
-        selectedSkin = ProjectData.instance().getSelectedSkin();
         useStripWhitespace = ProjectData.instance().getStripWhitespace();
         setFillParent(true);
         
@@ -85,10 +81,6 @@ public class DialogSettings extends Dialog {
             ProjectData.instance().setChangesSaved(false);
             ProjectData.instance().setMaxTextureDimensions(MathUtils.nextPowerOfTwo(textureWidth), MathUtils.nextPowerOfTwo(textureHeight));
             ProjectData.instance().setMaxUndos(maxUndos);
-            if (ProjectData.instance().getSelectedSkin() != selectedSkin) {
-                showRestartAppDialog();
-            }
-            ProjectData.instance().setSelectedSkin(selectedSkin);
             ProjectData.instance().setStripWhitespace(useStripWhitespace);
             Main.instance.clearUndoables();
         }
@@ -179,7 +171,7 @@ public class DialogSettings extends Dialog {
         
         t.row();
         label = new Label("Textures are rounded up to the next power of 2.", skin);
-        t.add(label).colspan(2).padTop(5.0f);
+        t.add(label).colspan(2).padTop(10.0f);
         
         t.row();
         label = new Label("Max Texture Width: ", skin);
@@ -222,7 +214,7 @@ public class DialogSettings extends Dialog {
         t.add(spinner2).minWidth(150.0f).left();
         
         t.row();
-        CheckBox checkBox = new CheckBox(" Strip whitespace on texture export", skin);
+        ImageTextButton checkBox = new ImageTextButton("Strip whitespace on texture export", skin, "checkbox");
         checkBox.setChecked(useStripWhitespace);
         checkBox.addListener(new ChangeListener() {
             @Override
@@ -230,11 +222,11 @@ public class DialogSettings extends Dialog {
                 useStripWhitespace = checkBox.isChecked();
             }
         });
-        t.add(checkBox).colspan(2);
+        t.add(checkBox).colspan(2).padTop(10.0f);
         
         t.row();
         label = new Label("Max Number of Undos: ", skin);
-        t.add(label).right().padTop(5.0f);
+        t.add(label).right().padTop(10.0f);
         Spinner spinner3 = new Spinner(ProjectData.instance().getMaxUndos(), 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         spinner3.setMinimum(1.0);
         spinner3.setMaximum(100.0);
@@ -251,39 +243,10 @@ public class DialogSettings extends Dialog {
             }
             
         });
-        t.add(spinner3).minWidth(150.0f).left().padTop(5.0f);
-        
-        t.row();
-        label = new Label("Editor Skin: ", skin);
-        t.add(label).right().padTop(5.0f);
-        SelectBox selectBox = new SelectBox(skin);
-        selectBox.setItems("Orange Peel UI", "Dark Peel UI");
-        selectBox.setSelectedIndex(selectedSkin);
-        selectBox.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                selectedSkin = selectBox.getSelectedIndex();
-            }
-        });
-        t.add(selectBox).minWidth(150.0f).left().padTop(5.0f);
+        t.add(spinner3).minWidth(150.0f).left().padTop(10.0f);
         
         button("OK", true);
         button ("Cancel", false);
         key(Keys.ESCAPE, false);
-    }
-
-    private void showRestartAppDialog() {
-        Dialog dialog = new Dialog("Restart App", skin);
-        
-        dialog.getTitleTable().padLeft(5.0f);
-        dialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
-        dialog.getButtonTable().padBottom(15.0f);
-        
-        Label label = new Label("Please restart the application\nto apply changes to the user interface.", skin);
-        label.setAlignment(Align.center);
-        dialog.text(label);
-        dialog.getContentTable().getCells().first().pad(10.0f);
-        dialog.button("OK");
-        dialog.show(getStage());
     }
 }

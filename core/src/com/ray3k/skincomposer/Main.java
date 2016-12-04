@@ -101,11 +101,7 @@ public class Main extends ApplicationAdapter {
         
         instance = this;
         
-        if (ProjectData.instance().getSelectedSkin() == 0) {
-            skin = new Skin(Gdx.files.internal("orange-peel-ui/uiskin.json"));
-        } else {
-            skin = new Skin(Gdx.files.internal("dark-peel-ui/dark-peel-ui.json"));
-        }
+        skin = new Skin(Gdx.files.internal("orange-peel-ui/uiskin.json"));
         
         newSkin = new Skin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
         
