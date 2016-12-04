@@ -114,7 +114,7 @@ public class PanelStyleProperties {
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        Main.instance.addUndoable(new FloatUndoable(spinner, property), true);
+                        Main.instance().addUndoable(new FloatUndoable(spinner, property), true);
                     }
                 });
                 table.add(spinner).growX();
@@ -128,10 +128,10 @@ public class PanelStyleProperties {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         Object oldValue = property.value;
-                        Main.instance.showDialogDrawables(property, (Event event1) -> {
+                        Main.instance().showDialogDrawables(property, (Event event1) -> {
                             Object newValue = property.value;
                             if (oldValue != newValue) {
-                                Main.instance.addUndoable(new DrawableUndoable(property, oldValue, newValue), true);
+                                Main.instance().addUndoable(new DrawableUndoable(property, oldValue, newValue), true);
                             }
                             return false;
                         });
@@ -148,10 +148,10 @@ public class PanelStyleProperties {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         Object oldValue = property.value;
-                        Main.instance.showDialogColors(property, (ColorData colorData) -> {
+                        Main.instance().showDialogColors(property, (ColorData colorData) -> {
                             Object newValue = property.value;
                             if (oldValue != newValue) {
-                                Main.instance.addUndoable(new ColorUndoable(property, oldValue, newValue), true);
+                                Main.instance().addUndoable(new ColorUndoable(property, oldValue, newValue), true);
                             }
                         });
                     }
@@ -167,10 +167,10 @@ public class PanelStyleProperties {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         Object oldValue = property.value;
-                        Main.instance.showDialogFonts(property, (Event event1) -> {
+                        Main.instance().showDialogFonts(property, (Event event1) -> {
                             Object newValue = property.value;
                             if (oldValue != newValue) {
-                                Main.instance.addUndoable(new FontUndoable(property, oldValue, newValue), true);
+                                Main.instance().addUndoable(new FontUndoable(property, oldValue, newValue), true);
                             }
                             return false;
                         });
@@ -201,7 +201,7 @@ public class PanelStyleProperties {
                 selectBox.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        Main.instance.addUndoable(new SelectBoxUndoable(property, selectBox), true);
+                        Main.instance().addUndoable(new SelectBoxUndoable(property, selectBox), true);
                     }
                 });
                 
@@ -234,7 +234,7 @@ public class PanelStyleProperties {
                 selectBox.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        Main.instance.addUndoable(new SelectBoxUndoable(property, selectBox), true);
+                        Main.instance().addUndoable(new SelectBoxUndoable(property, selectBox), true);
                     }
                 });
                 
@@ -267,7 +267,7 @@ public class PanelStyleProperties {
                 selectBox.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        Main.instance.addUndoable(new SelectBoxUndoable(property, selectBox), true);
+                        Main.instance().addUndoable(new SelectBoxUndoable(property, selectBox), true);
                     }
                 });
                 
