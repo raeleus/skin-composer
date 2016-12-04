@@ -347,7 +347,7 @@ public class Main extends ApplicationAdapter {
     }
     
     public void showDialogDrawables(StyleProperty property, EventListener listener) {
-        DialogDrawables dialog = new DialogDrawables(skin, "dialog-panel", property, listener);
+        DialogDrawables dialog = new DialogDrawables(newSkin, "dialog", property, listener);
         dialog.setFillParent(true);
         dialog.show(stage);
     }

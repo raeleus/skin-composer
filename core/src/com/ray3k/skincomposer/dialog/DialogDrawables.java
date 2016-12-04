@@ -194,6 +194,8 @@ public class DialogDrawables extends Dialog {
     public void populate() {
         getContentTable().clear();
         
+        getButtonTable().padBottom(15.0f);
+        
         if (property == null) {
             getContentTable().add(new Label("Drawables", getSkin(), "title"));
         } else {
@@ -240,7 +242,7 @@ public class DialogDrawables extends Dialog {
         contentGroup = new HorizontalGroup();
         contentGroup.center().wrap(true).space(5.0f).wrapSpace(5.0f).rowAlign(Align.left);
         sortBySelectedMode();
-        scrollPane = new ScrollPane(contentGroup, getSkin(), "no-bg");
+        scrollPane = new ScrollPane(contentGroup, getSkin());
         scrollPane.setFadeScrollBars(false);
         scrollPane.setFlickScroll(false);
         getContentTable().add(scrollPane).grow();
@@ -276,7 +278,7 @@ public class DialogDrawables extends Dialog {
             Button drawableButton;
             
             if (property != null) {
-                drawableButton = new Button(getSkin());
+                drawableButton = new Button(getSkin(), "color-base");
                 drawableButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -285,7 +287,7 @@ public class DialogDrawables extends Dialog {
                     }
                 });
             } else {
-                drawableButton = new Button(getSkin(), "static");
+                drawableButton = new Button(getSkin(), "color-base-static");
             }
             contentGroup.addActor(drawableButton);
             
@@ -301,7 +303,7 @@ public class DialogDrawables extends Dialog {
             };
             
             //color wheel
-            Button button = new Button(getSkin(), "color");
+            Button button = new Button(getSkin(), "colorwheel");
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -326,7 +328,7 @@ public class DialogDrawables extends Dialog {
             
             //rename (ONLY FOR TINTS)
             if (drawable.tint != null || drawable.tintName != null) {
-                button = new Button(getSkin(), "name");
+                button = new Button(getSkin(), "settings-small");
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -341,7 +343,7 @@ public class DialogDrawables extends Dialog {
             }
 
             //delete
-            button = new Button(getSkin(), "close");
+            button = new Button(getSkin(), "delete-small");
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -371,7 +373,7 @@ public class DialogDrawables extends Dialog {
 
             //name
             table.row();
-            Label label = new Label(drawable.name, getSkin(), "white");
+            Label label = new Label(drawable.name, getSkin());
             label.setEllipsis("...");
             label.setEllipsis(true);
             label.setAlignment(Align.center);
@@ -384,7 +386,7 @@ public class DialogDrawables extends Dialog {
     }
     
     private void colorSwatchesDialog(DrawableData drawableData) {
-        DialogColors dialog = new DialogColors(getSkin(), "dialog-panel", null, true, (ColorData colorData) -> {
+        DialogColors dialog = new DialogColors(getSkin(), "dialog", null, true, (ColorData colorData) -> {
             if (colorData != null) {
                 final DrawableData tintedDrawable = new DrawableData(drawableData.file);
                     tintedDrawable.tintName = colorData.getName();
@@ -441,6 +443,11 @@ public class DialogDrawables extends Dialog {
                             return false;
                         }
                     });
+
+                    approveDialog.getTitleTable().padLeft(5.0f);
+                    approveDialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
+                    approveDialog.getButtonTable().padBottom(15.0f);
+                    
                     approveDialog.text("What is the name of the new tinted drawable?");
 
                     Drawable drawable = drawablePairs.get(drawableData);
@@ -492,6 +499,10 @@ public class DialogDrawables extends Dialog {
                 return dialog;
             }
         };
+        
+        dialog.getTitleTable().padLeft(5.0f);
+        dialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
+        dialog.getButtonTable().padBottom(15.0f);
         
         dialog.getContentTable().add(new Label("Please enter a new name for the drawable: ", getSkin()));
         
@@ -598,7 +609,7 @@ public class DialogDrawables extends Dialog {
      * @param drawable 
      */
     private void showConfirmDeleteDialog(DrawableData drawable) {
-        Dialog dialog = new Dialog("Delete duplicates?", getSkin(), "dialog"){
+        Dialog dialog = new Dialog("Delete duplicates?", getSkin()){
             @Override
             protected void result(Object object) {
                 if ((boolean) object) {
@@ -608,6 +619,11 @@ public class DialogDrawables extends Dialog {
                 }
             }
         };
+        
+        dialog.getTitleTable().padLeft(5.0f);
+        dialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
+        dialog.getButtonTable().padBottom(15.0f);
+        
         dialog.text("Deleting this drawable will also delete one or more tinted drawables.\n"
                 + "Delete duplicates?");
         dialog.button("OK", true);
@@ -747,6 +763,11 @@ public class DialogDrawables extends Dialog {
      */
     private void showDrawableError() {
         Dialog dialog = new Dialog("Error...", getSkin());
+        
+        dialog.getTitleTable().padLeft(5.0f);
+        dialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
+        dialog.getButtonTable().padBottom(15.0f);
+        
         Label label = new Label("Error while adding new drawables.\nEnsure that image dimensions are\nless than maximums specified in project.\nRolling back changes...", getSkin());
         label.setAlignment(Align.center);
         dialog.text(label);
@@ -821,7 +842,7 @@ public class DialogDrawables extends Dialog {
      * @param filesToProcess 
      */
     private void showRemoveDuplicatesDialog(Array<FileHandle> unhandledFiles, Array<DrawableData> backup, Array<FileHandle> filesToProcess) {
-        Dialog dialog = new Dialog("Delete duplicates?", getSkin(), "dialog"){
+        Dialog dialog = new Dialog("Delete duplicates?", getSkin()){
             @Override
             protected void result(Object object) {
                 if ((boolean) object) {
@@ -833,6 +854,11 @@ public class DialogDrawables extends Dialog {
                 finalizeDrawables(backup, filesToProcess);
             }
         };
+        
+        dialog.getTitleTable().padLeft(5.0f);
+        dialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
+        dialog.getButtonTable().padBottom(15.0f);
+        
         dialog.text("Adding this drawable will overwrite one or more drawables\n"
                 + "Delete duplicates?");
         dialog.button("OK", true);

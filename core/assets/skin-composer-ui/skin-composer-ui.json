@@ -183,6 +183,9 @@ com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 		down: button-delete-small-pressed
 		over: button-delete-small-over
 	}
+	color-base-static: {
+		up: button-color-base
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
 	default: {
