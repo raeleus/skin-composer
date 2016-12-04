@@ -165,7 +165,7 @@ public class DialogFonts extends Dialog {
             button("Close", false);
         }
         
-        getCell(getButtonTable()).padBottom(15.0f);
+        getButtonTable().padBottom(15.0f);
 
         fontsTable = new Table();
 
@@ -369,7 +369,7 @@ public class DialogFonts extends Dialog {
             }
         };
         
-        dialog.getTitleTable().getCell(dialog.getTitleLabel()).padLeft(5.0f);
+        dialog.getTitleTable().padLeft(5.0f);
         
         Table bg = new  Table(skin);
         bg.setBackground("white");
@@ -394,7 +394,7 @@ public class DialogFonts extends Dialog {
         okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
         okButton.setDisabled(true);
         
-        dialog.getCell(dialog.getButtonTable()).padBottom(15.0f);
+        dialog.getButtonTable().padBottom(15.0f);
         
         textField.addListener(new ChangeListener() {
             @Override
@@ -650,13 +650,13 @@ public class DialogFonts extends Dialog {
                     }
                 };
                 
-                nameDialog.getTitleTable().getCell(nameDialog.getTitleLabel()).padLeft(5.0f);
+                nameDialog.getTitleTable().padLeft(5.0f);
                 
                 nameDialog.button("OK", true);
                 nameDialog.button("Cancel", false);
                 final TextButton button = (TextButton) nameDialog.getButtonTable().getCells().first().getActor();
                 
-                nameDialog.getCell(nameDialog.getButtonTable()).padBottom(15.0f);
+                nameDialog.getButtonTable().padBottom(15.0f);
                 
                 textField.setTextFieldListener((TextField textField1, char c) -> {
                     if (c == '\n') {

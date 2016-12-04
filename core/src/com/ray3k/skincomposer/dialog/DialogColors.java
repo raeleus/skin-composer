@@ -144,7 +144,7 @@ public class DialogColors extends Dialog {
         } else {
             button("Close", false);
         }
-        getCell(getButtonTable()).padBottom(15.0f);
+        getButtonTable().padBottom(15.0f);
         key(Keys.ESCAPE, false);
     }
     
@@ -173,7 +173,7 @@ public class DialogColors extends Dialog {
             public void selected(Color color) {
                 if (color != null) {
                     final TextField field = new TextField("RGBA_" + (int) (color.r * 255) + "_" + (int) (color.g * 255) + "_" + (int) (color.b * 255) + "_" + (int) (color.a * 255), skin);
-                    final Dialog dialog = new Dialog("", skin, "dialog") {
+                    final Dialog dialog = new Dialog("Color name...", skin, "bg") {
                         @Override
                         protected void result(Object object) {
                             if ((Boolean) object == true) {
@@ -181,9 +181,12 @@ public class DialogColors extends Dialog {
                             }
                         }
                     };
+                    
+                    dialog.getTitleTable().padLeft(5.0f);
+                    
                     dialog.button("Ok", true).button("Cancel", false).key(Keys.ESCAPE, false);
                     final TextButton button = (TextButton) dialog.getButtonTable().getCells().first().getActor();
-                    dialog.getCell(dialog.getButtonTable()).pad(15.0f);
+                    dialog.getButtonTable().pad(15.0f);
 
                     field.setTextFieldListener(new TextField.TextFieldListener() {
                         @Override
@@ -202,10 +205,7 @@ public class DialogColors extends Dialog {
                     
                     field.addListener(IbeamListener.get());
 
-                    dialog.getContentTable().padLeft(10.0f).padRight(10.0f);
-                    Label label = new Label("Color name...", skin, "title");
-                    dialog.text(label);
-                    dialog.getContentTable().row();
+                    dialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
                     dialog.text("Please enter a name for the new color: ");
                     dialog.getContentTable().row();
                     dialog.getContentTable().add(field).growX();
@@ -439,7 +439,7 @@ public class DialogColors extends Dialog {
         TextField textField = new TextField("", skin);
         TextButton okButton;
         
-        Dialog dialog = new Dialog("", skin) {
+        Dialog dialog = new Dialog("Rename Color?", skin, "bg") {
             @Override
             protected void result(Object object) {
                 if ((boolean) object) {
@@ -455,6 +455,8 @@ public class DialogColors extends Dialog {
             }
         };
         
+        dialog.getTitleTable().padLeft(5.0f);
+        
         float brightness = Utils.brightness(color.color);
         Color borderColor;
         if (brightness > .35f) {
@@ -463,16 +465,12 @@ public class DialogColors extends Dialog {
             borderColor = Color.WHITE;
         }
         
-        Label label = new Label("Rename Color?", skin, "title");
-        dialog.getContentTable().add(label);
-        
-        dialog.getContentTable().row();
         Table bg = new  Table(skin);
         bg.setBackground("white");
         bg.setColor(borderColor);
         dialog.getContentTable().add(bg);
         
-        label = new Label(color.getName(), skin, "white");
+        Label label = new Label(color.getName(), skin, "white");
         label.setColor(color.color);
         bg.add(label).pad(10);
         
@@ -490,7 +488,7 @@ public class DialogColors extends Dialog {
         dialog.button("Cancel", false).key(Keys.ESCAPE, false);
         okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
         okButton.setDisabled(true);
-        dialog.getCell(dialog.getButtonTable()).padBottom(15.0f);
+        dialog.getButtonTable().padBottom(15.0f);
         
         textField.addListener(new ChangeListener() {
             @Override
