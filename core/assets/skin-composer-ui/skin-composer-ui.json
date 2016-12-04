@@ -193,13 +193,14 @@ com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
 		checkboxOff: checkbox-off
 		checkboxOver: checkbox-off-over
 		font: font
-		fontColor: white
+		fontColor: button
 	}
 	switch: {
 		checkboxOn: toggle-on
 		checkboxOff: toggle-off
 		checkboxOver: toggle-off-over
 		font: font
+		fontColor: button
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {

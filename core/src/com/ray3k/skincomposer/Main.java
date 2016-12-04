@@ -405,7 +405,7 @@ public class Main extends ApplicationAdapter {
     }
     
     public void showDialogSettings() {
-        DialogSettings dialog = new DialogSettings("", skin, "dialog-panel");
+        DialogSettings dialog = new DialogSettings("", newSkin, "dialog");
         dialog.show(stage);
     }
     

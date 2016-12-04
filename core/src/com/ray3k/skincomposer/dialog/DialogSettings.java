@@ -65,7 +65,7 @@ public class DialogSettings extends Dialog {
         
         this.skin = skin;
         
-        spinnerStyle = new Spinner.SpinnerStyle(skin.get("spinner-minus", Button.ButtonStyle.class), skin.get("spinner-plus", Button.ButtonStyle.class), skin.get("spinner", TextField.TextFieldStyle.class));
+        spinnerStyle = new Spinner.SpinnerStyle(skin.get("spinner-minus-h", Button.ButtonStyle.class), skin.get("spinner-plus-h", Button.ButtonStyle.class), skin.get("default", TextField.TextFieldStyle.class));
         
         textureWidth = ProjectData.instance().getMaxTextureWidth();
         textureHeight = ProjectData.instance().getMaxTextureHeight();
@@ -104,12 +104,13 @@ public class DialogSettings extends Dialog {
     public void populate() {
         Table t = getContentTable();
         
+        getButtonTable().padBottom(15.0f);
+        
         Label label = new Label("Settings", skin, "title");
-        label.setAlignment(Align.center);
-        t.add(label).growX().colspan(2);
+        t.add(label).colspan(2);
         
         t.row();
-        TextButton textButton = new TextButton("Open temp/log directory", skin, "orange-small");
+        TextButton textButton = new TextButton("Open temp/log directory", skin);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -121,10 +122,10 @@ public class DialogSettings extends Dialog {
                 }
             }
         });
-        t.add(textButton).colspan(2);
+        t.add(textButton).colspan(2).padTop(15.0f);
         
         t.row();
-        textButton = new TextButton("Open preferences directory", skin, "orange-small");
+        textButton = new TextButton("Open preferences directory", skin);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -140,7 +141,7 @@ public class DialogSettings extends Dialog {
         
         if (ProjectData.instance().areChangesSaved() && ProjectData.instance().getSaveFile().exists()) {
             t.row();
-            textButton = new TextButton("Open project/import directory", skin, "orange-small");
+            textButton = new TextButton("Open project/import directory", skin);
             textButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -156,7 +157,7 @@ public class DialogSettings extends Dialog {
         }
         
         t.row();
-        textButton = new TextButton("Repack Texture Atlas", skin, "orange-small");
+        textButton = new TextButton("Repack Texture Atlas", skin);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -255,7 +256,7 @@ public class DialogSettings extends Dialog {
         t.row();
         label = new Label("Editor Skin: ", skin);
         t.add(label).right().padTop(5.0f);
-        SelectBox selectBox = new SelectBox(skin, "slim");
+        SelectBox selectBox = new SelectBox(skin);
         selectBox.setItems("Orange Peel UI", "Dark Peel UI");
         selectBox.setSelectedIndex(selectedSkin);
         selectBox.addListener(new ChangeListener() {
@@ -272,7 +273,12 @@ public class DialogSettings extends Dialog {
     }
 
     private void showRestartAppDialog() {
-        Dialog dialog = new Dialog("Restart App", skin, "dialog");
+        Dialog dialog = new Dialog("Restart App", skin);
+        
+        dialog.getTitleTable().padLeft(5.0f);
+        dialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
+        dialog.getButtonTable().padBottom(15.0f);
+        
         Label label = new Label("Please restart the application\nto apply changes to the user interface.", skin);
         label.setAlignment(Align.center);
         dialog.text(label);
