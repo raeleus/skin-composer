@@ -39,8 +39,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -368,6 +366,7 @@ public class DialogFonts extends Dialog {
                 return dialog;
             }
         };
+        dialog.getContentTable().padLeft(10.0f).padRight(10.0f);
         
         dialog.getTitleTable().padLeft(5.0f);
         
@@ -672,7 +671,7 @@ public class DialogFonts extends Dialog {
                 
                 textField.addListener(IbeamListener.get());
                 
-                nameDialog.getContentTable().defaults().padLeft(10.0f).padRight(10.0f);
+                nameDialog.getContentTable().defaults().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
                 nameDialog.text("Please enter a name for the new font: ");
                 nameDialog.getContentTable().row();
                 nameDialog.getContentTable().add(textField).growX();
