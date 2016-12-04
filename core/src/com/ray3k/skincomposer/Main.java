@@ -381,7 +381,7 @@ public class Main extends ApplicationAdapter {
     }
     
     public void showDialogFonts(StyleProperty styleProperty, EventListener listener) {
-        DialogFonts dialog = new DialogFonts(skin, "dialog-panel", styleProperty, listener);
+        DialogFonts dialog = new DialogFonts(newSkin, "dialog", styleProperty, listener);
         dialog.setFillParent(true);
         dialog.show(stage);
         dialog.populate();

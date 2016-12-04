@@ -146,16 +146,7 @@ public class DialogFonts extends Dialog {
         });
         table.add(selectBox);
 
-        ImageTextButtonStyle imageButtonStyle = new ImageTextButtonStyle();
-        imageButtonStyle.imageUp = skin.getDrawable("image-plus");
-        imageButtonStyle.imageDown = skin.getDrawable("image-plus-down");
-        imageButtonStyle.up = skin.getDrawable("button-orange");
-        imageButtonStyle.down = skin.getDrawable("button-orange-down");
-        imageButtonStyle.over = skin.getDrawable("button-orange-over");
-        imageButtonStyle.font = skin.getFont("font");
-        imageButtonStyle.fontColor = skin.getColor("white");
-        imageButtonStyle.downFontColor = skin.getColor("maroon");
-        ImageTextButton imageButton = new ImageTextButton(" New Font", imageButtonStyle);
+        TextButton imageButton = new TextButton("New Font", skin, "new");
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -173,12 +164,14 @@ public class DialogFonts extends Dialog {
         } else {
             button("Close", false);
         }
+        
+        getCell(getButtonTable()).padBottom(15.0f);
 
         fontsTable = new Table();
 
         table = new Table();
         table.add(fontsTable).pad(5.0f);
-        scrollPane = new ScrollPane(table, skin, "no-bg");
+        scrollPane = new ScrollPane(table, skin);
         scrollPane.setFadeScrollBars(false);
         getContentTable().add(scrollPane).grow();
     }
@@ -250,12 +243,12 @@ public class DialogFonts extends Dialog {
             fontsTable.add(new Label("No fonts have been set!", skin));
         } else {
             for (FontData font : fonts) {
-                Button button = new Button(skin);
-                Label label = new Label(font.getName(), skin, "white");
+                Button button = new Button(skin, "color-base");
+                Label label = new Label(font.getName(), skin);
                 label.setTouchable(Touchable.disabled);
                 button.add(label).left();
                 
-                Button renameButton = new Button(skin, "name");
+                Button renameButton = new Button(skin, "settings-small");
                 renameButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -296,7 +289,7 @@ public class DialogFonts extends Dialog {
                 bg.add(label).pad(5.0f).grow();
                 button.add(bg).padLeft(15).growX();
 
-                Button closeButton = new Button(skin, "close");
+                Button closeButton = new Button(skin, "delete-small");
                 final FontData deleteFont = font;
                 closeButton.addListener(new ChangeListener() {
                     @Override
@@ -360,7 +353,7 @@ public class DialogFonts extends Dialog {
         TextField textField = new TextField("", skin);
         TextButton okButton;
         
-        Dialog dialog = new Dialog("Rename Font?", skin) {
+        Dialog dialog = new Dialog("Rename Font?", skin, "bg") {
             @Override
             protected void result(Object object) {
                 if ((boolean) object) {
@@ -375,6 +368,8 @@ public class DialogFonts extends Dialog {
                 return dialog;
             }
         };
+        
+        dialog.getTitleTable().getCell(dialog.getTitleLabel()).padLeft(5.0f);
         
         Table bg = new  Table(skin);
         bg.setBackground("white");
@@ -398,6 +393,8 @@ public class DialogFonts extends Dialog {
         dialog.button("Cancel", false).key(Keys.ESCAPE, false);
         okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
         okButton.setDisabled(true);
+        
+        dialog.getCell(dialog.getButtonTable()).padBottom(15.0f);
         
         textField.addListener(new ChangeListener() {
             @Override
@@ -635,7 +632,7 @@ public class DialogFonts extends Dialog {
                 final FileHandle fileHandle = files.get(index);
 
                 final TextField textField = new TextField(FontData.filter(fileHandle.nameWithoutExtension()), skin);
-                final Dialog nameDialog = new Dialog("Enter a name...", skin, "dialog") {
+                final Dialog nameDialog = new Dialog("Enter a name...", skin, "bg") {
                     @Override
                     protected void result(Object object) {
                         if ((Boolean) object) {
@@ -652,9 +649,14 @@ public class DialogFonts extends Dialog {
                         return super.remove();
                     }
                 };
+                
+                nameDialog.getTitleTable().getCell(nameDialog.getTitleLabel()).padLeft(5.0f);
+                
                 nameDialog.button("OK", true);
                 nameDialog.button("Cancel", false);
                 final TextButton button = (TextButton) nameDialog.getButtonTable().getCells().first().getActor();
+                
+                nameDialog.getCell(nameDialog.getButtonTable()).padBottom(15.0f);
                 
                 textField.setTextFieldListener((TextField textField1, char c) -> {
                     if (c == '\n') {
@@ -725,7 +727,12 @@ public class DialogFonts extends Dialog {
     }
     
     private void showAddFontSizeError(String name) {
-        Dialog dialog = new Dialog("Error adding font...", skin, "dialog");
+        Dialog dialog = new Dialog("", skin, "dialog");
+        
+        Label label = new Label("Error adding font...", skin, "title");
+        dialog.getContentTable().add(label);
+        
+        dialog.getContentTable().row();
         dialog.text("Unable to add font \"" + name +
                 "\". Ensure image dimensions\nare less than max texture dimensions (" +
                 ProjectData.instance().getMaxTextureWidth() + "x" + 
