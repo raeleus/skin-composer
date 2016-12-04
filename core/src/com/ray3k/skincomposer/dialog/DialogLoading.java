@@ -70,7 +70,7 @@ public class DialogLoading extends Dialog {
         t.add(label).growX();
         t.row();
         Table table = new Table(skin);
-        table.setBackground(Main.instance.getLoadingAnimation());
+        table.setBackground(Main.instance().getLoadingAnimation());
         t.add(table);
     }
 }

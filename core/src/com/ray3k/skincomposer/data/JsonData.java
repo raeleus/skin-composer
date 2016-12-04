@@ -165,7 +165,7 @@ public class JsonData implements Json.Serializable {
                 int classIndex = styleClasses.indexOf(ClassReflection.forName(child.name), false);
                 Class clazz = StyleData.classes[classIndex];
                 for (JsonValue style : child.iterator()) {
-                    StyleData data = Main.instance.newStyle(clazz, style.name);
+                    StyleData data = Main.instance().newStyle(clazz, style.name);
                     for (JsonValue property : style.iterator()) {
                         StyleProperty styleProperty = data.properties.get(property.name);
                         if (styleProperty.type.equals(Float.TYPE)) {

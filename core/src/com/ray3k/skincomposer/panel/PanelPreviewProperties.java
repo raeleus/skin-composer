@@ -150,7 +150,7 @@ public class PanelPreviewProperties {
         browseField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance.showDialogColorPicker((Color) properties.get("bgcolor"), new DialogColorPicker.ColorListener() {
+                Main.instance().showDialogColorPicker((Color) properties.get("bgcolor"), new DialogColorPicker.ColorListener() {
                     @Override
                     public void selected(Color color) {
                         if (color != null) {

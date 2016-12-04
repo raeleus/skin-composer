@@ -119,7 +119,7 @@ public class DialogDrawables extends Dialog {
             }
         };
         
-        Main.instance.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+        Main.instance().getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
         
         this.property = property;
         drawablePairs = new ObjectMap<>();
@@ -549,7 +549,7 @@ public class DialogDrawables extends Dialog {
         String oldName = drawable.name;
         drawable.name = name;
 
-        Main.instance.clearUndoables();
+        Main.instance().clearUndoables();
         updateStyleValuesForRename(oldName, name);
         
         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
@@ -595,7 +595,7 @@ public class DialogDrawables extends Dialog {
             PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
             PanelPreviewProperties.instance.render();
 
-            Main.instance.clearUndoables();
+            Main.instance().clearUndoables();
 
             gatherDrawables();
             sortBySelectedMode();
@@ -791,7 +791,7 @@ public class DialogDrawables extends Dialog {
         
         String[] filterPatterns = {"*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif"};
         
-        List<File> files = Main.instance.getDesktopWorker().openMultipleDialog("Choose drawable file(s)...", defaultPath, filterPatterns, "Image files");
+        List<File> files = Main.instance().getDesktopWorker().openMultipleDialog("Choose drawable file(s)...", defaultPath, filterPatterns, "Image files");
         if (files != null && files.size() > 0) {
             drawablesSelected(files);
         }
@@ -884,7 +884,7 @@ public class DialogDrawables extends Dialog {
         
         gatherDrawables();
 
-        Main.instance.showDialogLoading(() -> {
+        Main.instance().showDialogLoading(() -> {
             if (!produceAtlas()) {
                 showDrawableError();
                 Gdx.app.log(getClass().getName(), "Attempting to reload drawables backup...");
@@ -914,7 +914,7 @@ public class DialogDrawables extends Dialog {
         if (drawableData.tint != null) {
             previousColor = drawableData.tint;
         }
-        Main.instance.showDialogColorPicker(previousColor, new DialogColorPicker.ColorListener() {
+        Main.instance().showDialogColorPicker(previousColor, new DialogColorPicker.ColorListener() {
             @Override
             public void selected(Color color) {
                 if (color != null) {
@@ -1023,9 +1023,9 @@ public class DialogDrawables extends Dialog {
     
     @Override
     public boolean remove() {
-        Main.instance.setListeningForKeys(true);
+        Main.instance().setListeningForKeys(true);
         
-        Main.instance.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        Main.instance().getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
         
         try {
             if (!AtlasData.getInstance().atlasCurrent) {

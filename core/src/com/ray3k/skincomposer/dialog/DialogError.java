@@ -10,8 +10,8 @@ import java.io.IOException;
 
 public class DialogError extends Dialog {
     public static void showError(String title, String message) {
-        DialogError dialog = new DialogError(title, message, Main.instance.getSkin());
-        dialog.show(Main.instance.getStage());
+        DialogError dialog = new DialogError(title, message, Main.instance().getSkin());
+        dialog.show(Main.instance().getStage());
     }
     
     public DialogError(String title, String message, Skin skin) {

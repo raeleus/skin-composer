@@ -58,7 +58,7 @@ public class DialogSettings extends Dialog {
     public DialogSettings(String title, Skin skin, String windowStyleName) {
         super(title, skin, windowStyleName);
         
-        Main.instance.setListeningForKeys(false);
+        Main.instance().setListeningForKeys(false);
         
         this.skin = skin;
         
@@ -82,13 +82,13 @@ public class DialogSettings extends Dialog {
             ProjectData.instance().setMaxTextureDimensions(MathUtils.nextPowerOfTwo(textureWidth), MathUtils.nextPowerOfTwo(textureHeight));
             ProjectData.instance().setMaxUndos(maxUndos);
             ProjectData.instance().setStripWhitespace(useStripWhitespace);
-            Main.instance.clearUndoables();
+            Main.instance().clearUndoables();
         }
     }
 
     @Override
     public boolean remove() {
-        Main.instance.setListeningForKeys(true);
+        Main.instance().setListeningForKeys(true);
         PanelStatusBar.instance.message("Settings Updated");
         return super.remove();
     }
@@ -153,14 +153,14 @@ public class DialogSettings extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance.showDialogLoading(() -> {
+                Main.instance().showDialogLoading(() -> {
                     try {
                         AtlasData.getInstance().writeAtlas();
                         AtlasData.getInstance().atlasCurrent = true;
                         PanelPreviewProperties.instance.produceAtlas();
                         PanelPreviewProperties.instance.render();
                     } catch (Exception e) {
-                        Main.instance.showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
+                        Main.instance().showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
                         Gdx.app.error(getClass().getName(), "Unable to write texture atlas to temporary storage!", e);
                         DialogError.showError("Atlas Error...", "Unable to write texture atlas to temporary storage.\n\nOpen log?");
                     }

@@ -77,7 +77,7 @@ public class DialogColors extends Dialog {
     public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, boolean selectingForTintedDrawable, DialogColorsListener listener) {
         super("", skin, styleName);
         
-        Main.instance.setListeningForKeys(false);
+        Main.instance().setListeningForKeys(false);
         
         this.listener = listener;
         this.skin = skin;
@@ -162,13 +162,13 @@ public class DialogColors extends Dialog {
     @Override
     public boolean remove() {
         if (!selectingForTintedDrawable) {
-            Main.instance.setListeningForKeys(true);
+            Main.instance().setListeningForKeys(true);
         }
         return super.remove();
     }
     
     private void showColorPicker() {
-        Main.instance.showDialogColorPicker(new DialogColorPicker.ColorListener() {
+        Main.instance().showDialogColorPicker(new DialogColorPicker.ColorListener() {
             @Override
             public void selected(Color color) {
                 if (color != null) {
@@ -198,7 +198,7 @@ public class DialogColors extends Dialog {
                                         dialog.hide();
                                     }
                                 }
-                                Main.instance.getStage().setKeyboardFocus(textField);
+                                Main.instance().getStage().setKeyboardFocus(textField);
                             }
                         }
                     });
@@ -370,7 +370,7 @@ public class DialogColors extends Dialog {
                             }
                         }
                         
-                        Main.instance.clearUndoables();
+                        Main.instance().clearUndoables();
                         
                         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                         PanelPreviewProperties.instance.render();
@@ -411,7 +411,7 @@ public class DialogColors extends Dialog {
     }
     
     private void recolorDialog(ColorData colorData) {
-        Main.instance.showDialogColorPicker(new DialogColorPicker.ColorListener() {
+        Main.instance().showDialogColorPicker(new DialogColorPicker.ColorListener() {
             @Override
             public void selected(Color color) {
                 if (color != null) {
@@ -424,7 +424,7 @@ public class DialogColors extends Dialog {
     private void recolorColor(ColorData colorData, Color color) {
         colorData.color = color;
 
-        Main.instance.clearUndoables();
+        Main.instance().clearUndoables();
 
         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         PanelPreviewProperties.instance.produceAtlas();
@@ -450,7 +450,7 @@ public class DialogColors extends Dialog {
             @Override
             public Dialog show(Stage stage) {
                 Dialog dialog = super.show(stage);
-                Main.instance.getStage().setKeyboardFocus(textField);
+                Main.instance().getStage().setKeyboardFocus(textField);
                 return dialog;
             }
         };
@@ -546,7 +546,7 @@ public class DialogColors extends Dialog {
             DialogError.showError("Name Error...","Error while naming a color.\\nPlease ensure name is formatted appropriately:\\nNo spaces, don't start with a number, - and _ acceptable.\n\nOpen log?");
         }
 
-        Main.instance.clearUndoables();
+        Main.instance().clearUndoables();
 
         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         PanelPreviewProperties.instance.render();

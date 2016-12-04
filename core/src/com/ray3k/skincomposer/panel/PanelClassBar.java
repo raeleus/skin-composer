@@ -150,7 +150,7 @@ public class PanelClassBar {
             @Override
             protected void result(Object object) {
                 if ((Boolean)object) {
-                    Main.instance.addUndoable(new NewStyleUndoable(classSelectBox, styleSelectBox, textField), true);
+                    Main.instance().addUndoable(new NewStyleUndoable(classSelectBox, styleSelectBox, textField), true);
                 }
             }
         };
@@ -160,10 +160,10 @@ public class PanelClassBar {
         textField.setTextFieldListener((TextField textField1, char c) -> {
             if (c == '\n') {
                 if (!okButton.isDisabled()) {
-                    Main.instance.addUndoable(new NewStyleUndoable(classSelectBox, styleSelectBox, textField1), true);
+                    Main.instance().addUndoable(new NewStyleUndoable(classSelectBox, styleSelectBox, textField1), true);
                     dialog.hide();
                 }
-                Main.instance.getStage().setKeyboardFocus(textField1);
+                Main.instance().getStage().setKeyboardFocus(textField1);
             }
         });
         
@@ -206,7 +206,7 @@ public class PanelClassBar {
             @Override
             protected void result(Object object) {
                 if ((Boolean)object) {
-                    Main.instance.addUndoable(new DuplicateStyleUndoable(styleSelectBox, classSelectBox, textField), true);
+                    Main.instance().addUndoable(new DuplicateStyleUndoable(styleSelectBox, classSelectBox, textField), true);
                 }
             }
         };
@@ -217,10 +217,10 @@ public class PanelClassBar {
         textField.setTextFieldListener((TextField textField1, char c) -> {
             if (c == '\n') {
                 if (!okButton.isDisabled()) {
-                    Main.instance.addUndoable(new DuplicateStyleUndoable(styleSelectBox, classSelectBox, textField1), true);
+                    Main.instance().addUndoable(new DuplicateStyleUndoable(styleSelectBox, classSelectBox, textField1), true);
                     dialog.hide();
                 }
-                Main.instance.getStage().setKeyboardFocus(textField1);
+                Main.instance().getStage().setKeyboardFocus(textField1);
             }
         });
         
@@ -262,7 +262,7 @@ public class PanelClassBar {
             @Override
             protected void result(Object object) {
                 if ((Boolean)object) {
-                    Main.instance.addUndoable(new DeleteStyleUndoable(styleSelectBox, classSelectBox), true);
+                    Main.instance().addUndoable(new DeleteStyleUndoable(styleSelectBox, classSelectBox), true);
                 }
             }
         };
@@ -291,14 +291,14 @@ public class PanelClassBar {
         
         @Override
         public void undo() {
-            Main.instance.deleteStyle(styleData);
+            Main.instance().deleteStyle(styleData);
             styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
             styleSelectBox.setSelectedIndex(previousIndex);
         }
 
         @Override
         public void redo() {
-            styleData = Main.instance.newStyle(StyleData.classes[classSelectBox.getSelectedIndex()], textField.getText());
+            styleData = Main.instance().newStyle(StyleData.classes[classSelectBox.getSelectedIndex()], textField.getText());
             styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
             styleSelectBox.setSelected(styleData);
         }
@@ -325,14 +325,14 @@ public class PanelClassBar {
         
         @Override
         public void undo() {
-            Main.instance.deleteStyle(styleData);
+            Main.instance().deleteStyle(styleData);
             styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
             styleSelectBox.setSelectedIndex(previousIndex);
         }
 
         @Override
         public void redo() {
-            styleData = Main.instance.copyStyle(styleSelectBox.getSelected(), textField.getText());
+            styleData = Main.instance().copyStyle(styleSelectBox.getSelected(), textField.getText());
             styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
             styleSelectBox.setSelected(styleData);
         }
@@ -356,14 +356,14 @@ public class PanelClassBar {
 
         @Override
         public void undo() {
-            Main.instance.copyStyle(styleData, styleData.name);
+            Main.instance().copyStyle(styleData, styleData.name);
             styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
             styleSelectBox.setSelected(styleData);
         }
 
         @Override
         public void redo() {
-            Main.instance.deleteStyle(styleSelectBox.getSelected());
+            Main.instance().deleteStyle(styleSelectBox.getSelected());
             styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
         }
 

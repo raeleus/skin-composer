@@ -162,7 +162,7 @@ public class PanelMenuBar {
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance.showCloseDialog();
+                Main.instance().showCloseDialog();
             }
         });
         menuItemTable.add(menuItemTextButton);
@@ -191,7 +191,7 @@ public class PanelMenuBar {
         undoButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance.undo();
+                Main.instance().undo();
             }
         });
         menuItemTable.add(undoButton);
@@ -204,7 +204,7 @@ public class PanelMenuBar {
         redoButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance.redo();
+                Main.instance().redo();
             }
         });
         menuItemTable.add(redoButton);
@@ -232,7 +232,7 @@ public class PanelMenuBar {
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance.showDialogSettings();
+                Main.instance().showDialogSettings();
             }
         });
         menuItemTable.add(menuItemTextButton);
@@ -244,7 +244,7 @@ public class PanelMenuBar {
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance.showDialogColors();
+                Main.instance().showDialogColors();
             }
         });
         menuItemTable.add(menuItemTextButton);
@@ -255,7 +255,7 @@ public class PanelMenuBar {
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance.showDialogFonts();
+                Main.instance().showDialogFonts();
             }
         });
         menuItemTable.add(menuItemTextButton);
@@ -266,7 +266,7 @@ public class PanelMenuBar {
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance.showDialogDrawables();
+                Main.instance().showDialogDrawables();
             }
         });
         menuItemTable.add(menuItemTextButton);
@@ -292,7 +292,7 @@ public class PanelMenuBar {
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance.showDialogAbout();
+                Main.instance().showDialogAbout();
             }
         });
         menuItemTable.add(menuItemTextButton);
@@ -422,7 +422,7 @@ public class PanelMenuBar {
 
             String[] filterPatterns = {"*.scmp"};
 
-            File file = Main.instance.getDesktopWorker().openDialog("Open skin file...", defaultPath, filterPatterns, "Skin Composer files");
+            File file = Main.instance().getDesktopWorker().openDialog("Open skin file...", defaultPath, filterPatterns, "Skin Composer files");
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
                 ProjectData.instance().load(fileHandle);
@@ -437,11 +437,11 @@ public class PanelMenuBar {
                         if (selection == 0) {
                             save(runnable);
                         } else if (selection == 1) {
-                            Main.instance.showDialogLoading(runnable);
+                            Main.instance().showDialogLoading(runnable);
                         }
                     });
         } else {
-            Main.instance.showDialogLoading(runnable);
+            Main.instance().showDialogLoading(runnable);
         }
     }
     
@@ -475,7 +475,7 @@ public class PanelMenuBar {
     public void save(Runnable runnable) {
         if (ProjectData.instance().getSaveFile() != null) {
             
-            Main.instance.showDialogLoading(() -> {
+            Main.instance().showDialogLoading(() -> {
                 ProjectData.instance().save();
                 if (runnable != null) {
                     runnable.run();
@@ -487,7 +487,7 @@ public class PanelMenuBar {
     }
     
     public void saveAsDialog(Runnable runnable) {
-        Main.instance.showDialogLoading(() -> {
+        Main.instance().showDialogLoading(() -> {
             String defaultPath = "";
 
             if (ProjectData.instance().getLastDirectory() != null) {
@@ -499,7 +499,7 @@ public class PanelMenuBar {
 
             String[] filterPatterns = {"*.scmp"};
 
-            File file = Main.instance.getDesktopWorker().saveDialog("Save skin file as...", defaultPath, filterPatterns, "Skin Composer files");
+            File file = Main.instance().getDesktopWorker().saveDialog("Save skin file as...", defaultPath, filterPatterns, "Skin Composer files");
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
                 if (fileHandle.extension() == null || !fileHandle.extension().equals(".scmp")) {
@@ -514,7 +514,7 @@ public class PanelMenuBar {
     }
     
     public void importDialog() {
-        Main.instance.showDialogLoading(() -> {
+        Main.instance().showDialogLoading(() -> {
             String defaultPath = "";
 
             if (ProjectData.instance().getLastDirectory() != null) {
@@ -526,7 +526,7 @@ public class PanelMenuBar {
 
             String[] filterPatterns = {"*.json"};
 
-            File file = Main.instance.getDesktopWorker().openDialog("Import skin...", defaultPath, filterPatterns, "Json files");
+            File file = Main.instance().getDesktopWorker().openDialog("Import skin...", defaultPath, filterPatterns, "Json files");
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
                 ProjectData.instance().setLastDirectory(fileHandle.parent().path());
@@ -546,7 +546,7 @@ public class PanelMenuBar {
     }
     
     public void exportDialog() {
-        Main.instance.showDialogLoading(() -> {
+        Main.instance().showDialogLoading(() -> {
             String defaultPath = "";
 
             if (ProjectData.instance().getLastDirectory() != null) {
@@ -558,7 +558,7 @@ public class PanelMenuBar {
 
             String[] filterPatterns = {"*.json"};
 
-            File file = Main.instance.getDesktopWorker().saveDialog("Export skin...", defaultPath, filterPatterns, "Json files");
+            File file = Main.instance().getDesktopWorker().saveDialog("Export skin...", defaultPath, filterPatterns, "Json files");
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
                 if (fileHandle.extension() == null || !fileHandle.extension().equals(".json")) {

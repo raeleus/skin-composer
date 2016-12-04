@@ -93,7 +93,7 @@ public class DialogFonts extends Dialog {
     public DialogFonts(final Skin skin, String styleName, StyleProperty styleProperty, EventListener listener) {
         super("", skin, styleName);
 
-        Main.instance.setListeningForKeys(false);
+        Main.instance().setListeningForKeys(false);
         
         this.listener = listener;
         this.skin = skin;
@@ -118,7 +118,7 @@ public class DialogFonts extends Dialog {
             }
         };
         
-        Main.instance.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+        Main.instance().getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
 
         setFillParent(true);
 
@@ -309,7 +309,7 @@ public class DialogFonts extends Dialog {
                             }
                         }
                         
-                        Main.instance.clearUndoables();
+                        Main.instance().clearUndoables();
                         
                         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                         PanelPreviewProperties.instance.render();
@@ -362,7 +362,7 @@ public class DialogFonts extends Dialog {
             @Override
             public Dialog show(Stage stage) {
                 Dialog dialog = super.show(stage);
-                Main.instance.getStage().setKeyboardFocus(textField);
+                Main.instance().getStage().setKeyboardFocus(textField);
                 return dialog;
             }
         };
@@ -443,7 +443,7 @@ public class DialogFonts extends Dialog {
             DialogError.showError("Rename Font Error...", "Error trying to rename a font.\n\nOpen log?");
         }
 
-        Main.instance.clearUndoables();
+        Main.instance().clearUndoables();
 
         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         PanelPreviewProperties.instance.render();
@@ -548,9 +548,9 @@ public class DialogFonts extends Dialog {
 
     @Override
     public boolean remove() {
-        Main.instance.setListeningForKeys(true);
+        Main.instance().setListeningForKeys(true);
         
-        Main.instance.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        Main.instance().getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
         
         produceAtlas();
         
@@ -609,7 +609,7 @@ public class DialogFonts extends Dialog {
         
         String[] filterPatterns = {"*.fnt"};
         
-        List<File> files = Main.instance.getDesktopWorker().openMultipleDialog("Choose font file(s)...", defaultPath, filterPatterns, "Font files (*.fnt)");
+        List<File> files = Main.instance().getDesktopWorker().openMultipleDialog("Choose font file(s)...", defaultPath, filterPatterns, "Font files (*.fnt)");
         if (files != null && files.size() > 0) {
             ProjectData.instance().setLastDirectory(files.get(0).getParentFile().getPath());
             fontNameDialog(files, 0);
@@ -665,7 +665,7 @@ public class DialogFonts extends Dialog {
                                 nameDialog.hide();
                             }
                         }
-                        Main.instance.getStage().setKeyboardFocus(textField1);
+                        Main.instance().getStage().setKeyboardFocus(textField1);
                     }
                 });
                 

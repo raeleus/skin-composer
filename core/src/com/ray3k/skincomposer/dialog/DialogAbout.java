@@ -40,7 +40,7 @@ public class DialogAbout extends Dialog {
     public DialogAbout(Skin skin, String windowStyleName) {
         super("", skin, windowStyleName);
         
-        Main.instance.setListeningForKeys(false);
+        Main.instance().setListeningForKeys(false);
         
         key(Keys.ENTER, true);
         key(Keys.ESCAPE, false);
@@ -73,7 +73,7 @@ public class DialogAbout extends Dialog {
 
     @Override
     public boolean remove() {
-        Main.instance.setListeningForKeys(true);
+        Main.instance().setListeningForKeys(true);
         return super.remove();
     }
 }

@@ -72,7 +72,7 @@ import com.ray3k.skincomposer.utils.Utils;
 
 public class Main extends ApplicationAdapter {
     public final static String VERSION = "6";
-    public static Main instance;
+    private static Main instance;
     private Stage stage;
     private static Skin skin;
     private static Skin newSkin;
@@ -82,6 +82,10 @@ public class Main extends ApplicationAdapter {
     private boolean listeningForKeys;
     private boolean showingCloseDialog;
     private AnimatedDrawable loadingAnimation;
+    
+    public static Main instance() {
+        return instance;
+    }
     
     @Override
     public void create() {
