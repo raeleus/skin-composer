@@ -70,9 +70,9 @@ import com.ray3k.skincomposer.dialog.DialogLoading;
 import com.ray3k.skincomposer.dialog.DialogSettings;
 import com.ray3k.skincomposer.utils.Utils;
 
-public class Main extends ApplicationAdapter {
+public class MainOld extends ApplicationAdapter {
     public final static String VERSION = "6";
-    private static Main instance;
+    private static MainOld instance;
     private Stage stage;
     private static Skin skin;
     private static Skin newSkin;
@@ -83,7 +83,7 @@ public class Main extends ApplicationAdapter {
     private boolean showingCloseDialog;
     private AnimatedDrawable loadingAnimation;
     
-    public static Main instance() {
+    public static MainOld instance() {
         return instance;
     }
     

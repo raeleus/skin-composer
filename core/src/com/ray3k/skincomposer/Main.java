@@ -75,7 +75,6 @@ public class Main extends ApplicationAdapter {
     private static Main instance;
     private Stage stage;
     private static Skin skin;
-    private static Skin newSkin;
     private DesktopWorker desktopWorker;
     private Array<Undoable> undoables;
     private int undoIndex;
@@ -89,12 +88,24 @@ public class Main extends ApplicationAdapter {
     
     @Override
     public void create() {
+        skin = new Skin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
+        stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
+        
+        initDefaults();
+        
+        populate();
+    }
+    
+    private void initDefaults() {
         if (Utils.isMac()) System.setProperty("java.awt.headless", "true");
         
         showingCloseDialog = false;
         listeningForKeys = true;
+        
         undoables = new Array<>();
         undoIndex = -1;
+        
         desktopWorker.attachLogListener();
         desktopWorker.sizeWindowToFit(800, 800, 50, Gdx.graphics);
         desktopWorker.centerWindow(Gdx.graphics);
@@ -104,36 +115,6 @@ public class Main extends ApplicationAdapter {
         });
         
         instance = this;
-        
-        skin = new Skin(Gdx.files.internal("orange-peel-ui/uiskin.json"));
-        
-        newSkin = new Skin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
-        
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
-        stage.addListener(new InputListener() {
-            @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                if (listeningForKeys && (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))) {
-                    if (keycode == Keys.Z) {
-                        undo();
-                    } else if (keycode == Keys.Y) {
-                        redo();
-                    } else if (keycode == Keys.N) {
-                        PanelMenuBar.instance().newDialog();
-                    } else if (keycode == Keys.O) {
-                        PanelMenuBar.instance().openDialog();
-                    } else if (keycode == Keys.S) {
-                        if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
-                            PanelMenuBar.instance().saveAsDialog(null);
-                        } else {
-                            PanelMenuBar.instance().save(null);
-                        }
-                    }
-                }
-                return false;
-            }
-        });
         
         loadingAnimation = new AnimatedDrawable(.05f);
         loadingAnimation.addDrawable(skin.getDrawable("loading_0"));
@@ -150,120 +131,19 @@ public class Main extends ApplicationAdapter {
         ProjectData.instance().setMaxUndos(30);
         
         AtlasData.getInstance().clearTempData();
-        
-        Table rootTable = new Table(skin);
-        rootTable.setFillParent(true);
-        stage.addActor(rootTable);
-        
-        Table table = new Table(skin);
-        new PanelMenuBar(table, skin, stage);
-        rootTable.add(table).growX();        
-        rootTable.row();
-        table = new Table(skin);
-        table.setBackground("dim-orange");
-        rootTable.add(table).height(2.0f).growX();
-        
-        rootTable.row();
-        table = new Table(skin);
-        rootTable.add(table).growX();
-        PanelClassBar panelClassBar = new PanelClassBar(table, skin, stage);
-        rootTable.row();
-        table = new Table(skin);
-        table.setBackground("dim-orange");
-        rootTable.add(table).height(2.0f).growX();
-        
-        rootTable.row();
-        
-        ClickListener scrollPaneHoverListener = new ClickListener() {
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                stage.setScrollFocus(event.getTarget());
-            }
-        };
-        
-        table = new Table(skin);
-        PanelStyleProperties panelStyleProperties = new PanelStyleProperties(table, skin, stage);
-        Table previewContentTable = new Table(skin);
-        new PanelPreview(previewContentTable, skin, stage);
-        ScrollPane scrollPaneTop = new ScrollPane(previewContentTable, skin, "no-bg");
-        scrollPaneTop.setFadeScrollBars(false);
-        scrollPaneTop.setFlickScroll(false);
-        Table previewTable = new Table();
-        Label label = new Label("Preview", skin, "title");
-        label.setAlignment(Align.center);
-        previewTable.add(label).growX();
-        previewTable.row();
-        previewTable.add(scrollPaneTop).grow();
-        previewTable.addListener(scrollPaneHoverListener);
-        Table previewPropertiesContentTable = new Table(skin);
-        new PanelPreviewProperties(previewPropertiesContentTable, skin, stage);
-        ScrollPane scrollPaneBottom = new ScrollPane(previewPropertiesContentTable, skin, "no-bg");
-        scrollPaneBottom.setFadeScrollBars(false);
-        scrollPaneBottom.setFlickScroll(false);
-        Table previewPropertiesTable = new Table();
-        label = new Label("Preview Properties", skin, "title");
-        label.setAlignment(Align.center);
-        previewPropertiesTable.add(label).growX();
-        previewPropertiesTable.row();
-        previewPropertiesTable.add(scrollPaneBottom).grow();
-        previewPropertiesTable.addListener(scrollPaneHoverListener);
-        ScrollPane scrollPaneLeft = new ScrollPane(table, skin, "no-bg");
-        scrollPaneLeft.setFadeScrollBars(false);
-        scrollPaneLeft.setFlickScroll(false);
-        scrollPaneLeft.addListener(scrollPaneHoverListener);
-        SplitPane splitPaneRight = new SplitPane(previewTable, previewPropertiesTable, true, skin);
-        splitPaneRight.setSplitAmount(.75f);
-        splitPaneRight.setMinSplitAmount(.1f);
-        splitPaneRight.setMaxSplitAmount(.9f);
-        splitPaneRight.addListener(new ClickListener() {
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                if (event.getListenerActor().equals(event.getTarget())) {
-                    Gdx.graphics.setSystemCursor(SystemCursor.Arrow);
-                }
-            }
-
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                if (event.getListenerActor().equals(event.getTarget())) {
-                    Gdx.graphics.setSystemCursor(SystemCursor.VerticalResize);
-                }
-            }
-            
-        });
-        SplitPane splitPane = new SplitPane(scrollPaneLeft, splitPaneRight, false, skin);
-        splitPane.setSplitAmount(.35f);
-        splitPane.setMinSplitAmount(.1f);
-        splitPane.setMaxSplitAmount(.9f);
-        splitPane.addListener(new ClickListener() {
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                if (event.getListenerActor().equals(event.getTarget())) {
-                    Gdx.graphics.setSystemCursor(SystemCursor.Arrow);
-                }
-            }
-
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                if (event.getListenerActor().equals(event.getTarget())) {
-                    Gdx.graphics.setSystemCursor(SystemCursor.HorizontalResize);
-                }
-            }
-        });
-        rootTable.add(splitPane).grow();
-        
-        rootTable.row();
-        table = new Table(skin);
-        new PanelStatusBar(table, skin, stage);
-        rootTable.add(table).growX();
-        
-        panelStyleProperties.populate(panelClassBar.getStyleSelectBox().getSelected());
-        stage.setScrollFocus(scrollPaneLeft);
     }
 
+    private void populate() {
+        stage.clear();
+        
+        RootTable root = new RootTable(stage, skin, desktopWorker);
+        root.setFillParent(true);
+        stage.addActor(root);
+    }
+    
     @Override
     public void render() {
-        Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1);
+        Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         loadingAnimation.update(Gdx.graphics.getDeltaTime());
@@ -347,7 +227,7 @@ public class Main extends ApplicationAdapter {
     }
     
     public void showDialogDrawables(StyleProperty property, EventListener listener) {
-        DialogDrawables dialog = new DialogDrawables(newSkin, "dialog", property, listener);
+        DialogDrawables dialog = new DialogDrawables(skin, "dialog", property, listener);
         dialog.setFillParent(true);
         dialog.show(stage);
     }
@@ -361,7 +241,7 @@ public class Main extends ApplicationAdapter {
     }
     
     public void showDialogColors(StyleProperty styleProperty, DialogColorsListener listener) {
-        DialogColors dialog = new DialogColors(newSkin, "dialog", styleProperty, listener);
+        DialogColors dialog = new DialogColors(skin, "dialog", styleProperty, listener);
         dialog.setFillParent(true);
         dialog.show(stage);
         dialog.populate();
@@ -376,12 +256,12 @@ public class Main extends ApplicationAdapter {
     }
     
     public void showDialogAbout() {
-        DialogAbout dialog = new DialogAbout(newSkin, "dialog");
+        DialogAbout dialog = new DialogAbout(skin, "dialog");
         dialog.show(stage);
     }
     
     public void showDialogFonts(StyleProperty styleProperty, EventListener listener) {
-        DialogFonts dialog = new DialogFonts(newSkin, "dialog", styleProperty, listener);
+        DialogFonts dialog = new DialogFonts(skin, "dialog", styleProperty, listener);
         dialog.setFillParent(true);
         dialog.show(stage);
         dialog.populate();
@@ -400,12 +280,12 @@ public class Main extends ApplicationAdapter {
     }
     
     public void showDialogColorPicker(Color previousColor, ColorListener listener) {
-        DialogColorPicker dialog = new DialogColorPicker(newSkin, "dialog", listener, previousColor);
+        DialogColorPicker dialog = new DialogColorPicker(skin, "dialog", listener, previousColor);
         dialog.show(stage);
     }
     
     public void showDialogSettings() {
-        DialogSettings dialog = new DialogSettings("", newSkin, "dialog");
+        DialogSettings dialog = new DialogSettings("", skin, "dialog");
         dialog.show(stage);
     }
     

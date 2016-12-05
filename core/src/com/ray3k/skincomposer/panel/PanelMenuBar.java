@@ -42,7 +42,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.Main;
-import com.ray3k.skincomposer.MenuList;
+import com.ray3k.skincomposer.MenuListOld;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.JsonData;
@@ -167,7 +167,7 @@ public class PanelMenuBar {
         });
         menuItemTable.add(menuItemTextButton);
         
-        final MenuList menuList1 = new MenuList(textButton, menuItemTable);
+        final MenuListOld menuList1 = new MenuListOld(textButton, menuItemTable);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -209,7 +209,7 @@ public class PanelMenuBar {
         });
         menuItemTable.add(redoButton);
         
-        final MenuList menuList2 = new MenuList(textButton, menuItemTable);
+        final MenuListOld menuList2 = new MenuListOld(textButton, menuItemTable);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -270,7 +270,7 @@ public class PanelMenuBar {
             }
         });
         menuItemTable.add(menuItemTextButton);
-        final MenuList menuList3 = new MenuList(textButton, menuItemTable);
+        final MenuListOld menuList3 = new MenuListOld(textButton, menuItemTable);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -296,7 +296,7 @@ public class PanelMenuBar {
             }
         });
         menuItemTable.add(menuItemTextButton);
-        final MenuList menuList4 = new MenuList(textButton, menuItemTable);
+        final MenuListOld menuList4 = new MenuListOld(textButton, menuItemTable);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {

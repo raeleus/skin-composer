@@ -44,14 +44,14 @@ import com.badlogic.gdx.utils.Align;
  * Custom widget for menu bar lists
  *
  */
-public class MenuList extends Table {
+public class MenuListOld extends Table {
     private static final Vector2 temp = new Vector2();
     private final TextButton widget;
     private final Vector2 screenPosition = new Vector2();
     private InputListener hideListener;
     final Table table;
 
-    public MenuList(TextButton widget, Table table) {
+    public MenuListOld(TextButton widget, Table table) {
         this.widget = widget;
 
         this.table = table;
