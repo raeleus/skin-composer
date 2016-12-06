@@ -68,16 +68,22 @@ public class RootTable extends Table {
         table.defaults().padRight(2.0f);
         add(table).expandX().left().padTop(2.0f);
         
+        MenuButtonGroup menuButtonGroup = new MenuButtonGroup();
+        
         MenuButton menuButton = new MenuButton("File", getSkin());
+        menuButtonGroup.add(menuButton);
         table.add(menuButton).padLeft(2.0f);
 
         menuButton = new MenuButton("Edit", getSkin());
+        menuButtonGroup.add(menuButton);
         table.add(menuButton);
         
         menuButton = new MenuButton("Project", getSkin());
+        menuButtonGroup.add(menuButton);
         table.add(menuButton);
         
         menuButton = new MenuButton("Help", getSkin());
+        menuButtonGroup.add(menuButton);
         table.add(menuButton);
     }
     

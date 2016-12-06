@@ -9,13 +9,16 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.MenuList.MenuListStyle;
 
-public class MenuButton extends TextButton {
-    private MenuList menuList;
+public class MenuButton<T> extends TextButton {
+    private MenuList<T> menuList;
     private MenuButtonStyle style;
     private Vector2 menuListPosition;
-    private HideListener hideListener;
+    private StageHideListener hideListener;
+    private MenuButtonGroup menuButtonGroup;
+    
 
     public MenuButton(String text, Skin skin) {
         this(text, skin, "default");
@@ -33,6 +36,8 @@ public class MenuButton extends TextButton {
         menuList = new MenuList(style.menuListStyle);
         menuListPosition = new Vector2();
         
+        addListener(new MbGroupInputListener(this));
+        
         addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -40,10 +45,15 @@ public class MenuButton extends TextButton {
                     localToStageCoordinates(menuListPosition.set(0.0f, 0.0f));
                     menuList.show(menuListPosition, getStage());
                     
-                    hideListener = new HideListener((MenuButton) actor, getStage());
+                    if (menuButtonGroup != null) {
+                        menuButtonGroup.check((MenuButton) actor);
+                    }
+
+                    hideListener = new StageHideListener((MenuButton) actor, getStage());
                     getStage().addListener(hideListener);
                 } else {
                     menuList.hide();
+                    menuButtonGroup.uncheckAll();
                 }
             }
         });
@@ -51,6 +61,27 @@ public class MenuButton extends TextButton {
 
     public MenuList getMenuList() {
         return menuList;
+    }
+
+    public MenuButtonGroup getMenuButtonGroup() {
+        return menuButtonGroup;
+    }
+
+    public void setMenuButtonGroup(MenuButtonGroup menuButtonGroup) {
+        this.menuButtonGroup = menuButtonGroup;
+    }
+
+    public Array<T> getItems() {
+        return menuList.getItems();
+    }
+
+    public void setItems(Array<T> items) {
+        menuList.setItems(items);
+    }
+    
+    public void setItems(T... newItems) {
+        if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
+        
     }
     
     @Override
@@ -68,6 +99,7 @@ public class MenuButton extends TextButton {
         }
     }
 
+    @Override
     public MenuButtonStyle getStyle() {
         return style;
     }
@@ -76,11 +108,28 @@ public class MenuButton extends TextButton {
         public MenuListStyle menuListStyle;
     }
     
-    private static class HideListener extends InputListener {
-        private final MenuButton menuButton;
-        private Stage stage;
+    private static class MbGroupInputListener extends InputListener {
+        final private MenuButton menuButton;
 
-        public HideListener(MenuButton menuButton, Stage stage) {
+        public MbGroupInputListener(MenuButton menuButton) {
+            this.menuButton = menuButton;
+        }
+        
+        @Override
+        public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+            if (menuButton.menuButtonGroup != null 
+                    && menuButton.menuButtonGroup.getSelected() != null) {
+                menuButton.menuButtonGroup.check(menuButton);
+            }
+        }
+        
+    }
+    
+    private static class StageHideListener extends InputListener {
+        private final MenuButton menuButton;
+        private final Stage stage;
+
+        public StageHideListener(MenuButton menuButton, Stage stage) {
             this.menuButton = menuButton;
             this.stage = stage;
         }

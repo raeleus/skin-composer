@@ -12,9 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Array;
 
-public class MenuList extends Table {
+public class MenuList<T> extends Table {
     private MenuListStyle style;
+    private Array<T> items;
 
     public MenuList(Skin skin) {
         this(skin, "default");
@@ -64,6 +66,23 @@ public class MenuList extends Table {
             throw new IllegalArgumentException("style must be a MenuListStyle.");
         }
         this.style = style;
+    }
+    
+    public Array<T> getItems() {
+        return items;
+    }
+
+    public void setItems(Array<T> items) {
+        this.items = items;
+    }
+    
+    public void setItems(T... newItems) {
+        items.clear();
+        items.addAll(newItems);
+    }
+    
+    public void clearItems() {
+        items.clear();
     }
     
     public MenuListStyle getStyle() {
