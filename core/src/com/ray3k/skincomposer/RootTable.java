@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import com.ray3k.skincomposer.MenuButton.MenuButtonListener;
 import com.ray3k.skincomposer.MenuButton.MenuButtonStyle;
 import com.ray3k.skincomposer.MenuList.MenuListStyle;
 
@@ -73,18 +74,33 @@ public class RootTable extends Table {
         MenuButton menuButton = new MenuButton("File", getSkin());
         menuButtonGroup.add(menuButton);
         table.add(menuButton).padLeft(2.0f);
+        
+        menuButton.setItems("Banana", "Pajama", "Stairs", "Down");
 
         menuButton = new MenuButton("Edit", getSkin());
         menuButtonGroup.add(menuButton);
         table.add(menuButton);
         
-        menuButton = new MenuButton("Project", getSkin());
-        menuButtonGroup.add(menuButton);
-        table.add(menuButton);
+        menuButton.setItems("Banana", "Pajama", "Stairs", "Down");
+        
+        MenuButton testButton = new MenuButton("Project", getSkin());
+        menuButtonGroup.add(testButton);
+        table.add(testButton);
+        
+        testButton.setItems("Banana", "Pajama", "Stairs", "Down", "B", "S");
+        MenuButtonListener listener = new MenuButtonListener() {
+            @Override
+            public void menuClicked() {
+                System.out.println(testButton.getMenuList().getSelectedItem());
+            }
+        };
+        testButton.addListener(listener);
         
         menuButton = new MenuButton("Help", getSkin());
         menuButtonGroup.add(menuButton);
         table.add(menuButton);
+        
+        menuButton.setItems("Banana", "Pajama", "Stairs", "Down");
     }
     
     private void addClassBar() {

@@ -3,6 +3,8 @@ package com.ray3k.skincomposer;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -34,6 +36,15 @@ public class MenuButton<T> extends TextButton {
         setStyle(style);
         
         menuList = new MenuList(style.menuListStyle);
+        
+        menuList.addCaptureListener(new MenuList.MenuListListener() {
+            @Override
+            public void menuClicked() {
+                fire(new MenuButtonEvent());
+                setChecked(false);
+            }
+        });
+        
         menuListPosition = new Vector2();
         
         addListener(new MbGroupInputListener(this));
@@ -75,13 +86,18 @@ public class MenuButton<T> extends TextButton {
         return menuList.getItems();
     }
 
-    public void setItems(Array<T> items) {
-        menuList.setItems(items);
+    public void setItems(Array<T> newItems) {
+        if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
+        menuList.setItems(newItems);
     }
     
     public void setItems(T... newItems) {
         if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
-        
+        menuList.setItems(newItems);
+    }
+    
+    public void clearItems() {
+        menuList.clearItems();
     }
     
     @Override
@@ -155,5 +171,23 @@ public class MenuButton<T> extends TextButton {
                 return false;
             }
         }
+    }
+    
+    public static class MenuButtonEvent extends Event {
+    }
+    
+    public static abstract class MenuButtonListener implements EventListener {
+
+        @Override
+        public boolean handle(Event event) {
+            if (event instanceof MenuButtonEvent) {
+                menuClicked();
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        public abstract void menuClicked();
     }
 }
