@@ -1,3 +1,26 @@
+/*******************************************************************************
+ * MIT License
+ * 
+ * Copyright (c) 2016 Raymond Buckley
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ ******************************************************************************/
 package com.ray3k.skincomposer;
 
 import com.badlogic.gdx.math.Interpolation;
@@ -12,6 +35,8 @@ import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RemoveActorAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -24,8 +49,10 @@ import com.badlogic.gdx.utils.Array;
 public class MenuList<T> extends Table {
     private MenuListStyle style;
     private Array<T> items;
+    private Array<String> shortcuts;
     private T selectedItem;
     private int selectedIndex;
+    private Array<TextButton> buttons;
 
     public MenuList(Skin skin) {
         this(skin, "default");
@@ -39,6 +66,8 @@ public class MenuList<T> extends Table {
     public MenuList(MenuListStyle style) {
         this.style = style;
         items = new Array<>();
+        shortcuts = new Array<>();
+        buttons = new Array<>();
         
         setBackground(style.background);
         setTouchable(Touchable.enabled);
@@ -110,8 +139,36 @@ public class MenuList<T> extends Table {
         updateContents();
     }
     
+    public Array<String> getShortcuts() {
+        return shortcuts;
+    }
+    
+    public void setShortcuts(Array<String> shortcuts) {
+        if (shortcuts == null) throw new IllegalArgumentException("shortcuts cannot be null.");
+        this.shortcuts.clear();
+        this.shortcuts.addAll(shortcuts);
+        
+        updateContents();
+    }
+    
+    public void setShortcuts(String... shortcuts) {
+        if (shortcuts == null) throw new IllegalArgumentException("shortcuts cannot be null.");
+        this.shortcuts.clear();
+        this.shortcuts.addAll(shortcuts);
+        
+        updateContents();
+    }
+    
+    public void clearShortcuts() {
+        shortcuts.clear();
+        
+        updateContents();
+    }
+    
     private void updateContents() {
+        setSize(0.0f, 0.0f);
         clearChildren();
+        buttons.clear();
         
         int index = 0;
         
@@ -123,6 +180,11 @@ public class MenuList<T> extends Table {
             }
             add(textButton);
             
+            if (index < shortcuts.size && shortcuts.get(index) != null && style.labelStyle != null) {
+                Label label = new Label(shortcuts.get(index), style.labelStyle);
+                textButton.add(label).padLeft(5.0f);
+            }
+            
             int i = index++;
             textButton.addListener(new ChangeListener() {
                 @Override
@@ -132,6 +194,8 @@ public class MenuList<T> extends Table {
                     fire(new MenuListEvent());
                 }
             });
+            
+            buttons.add(textButton);
         }
         
         validate();
@@ -170,6 +234,10 @@ public class MenuList<T> extends Table {
     public void setSelectedIndex(int selectedIndex) {
         this.selectedIndex = selectedIndex;
     }
+
+    public Array<TextButton> getButtons() {
+        return buttons;
+    }
     
     public MenuListStyle getStyle() {
         return style;
@@ -178,6 +246,11 @@ public class MenuList<T> extends Table {
     public static class MenuListStyle {
         public Drawable background;
         public TextButtonStyle textButtonStyle;
+        
+        /**
+         * OPTIONAL
+         */
+        public LabelStyle labelStyle;
     }
     
     public static class MenuListEvent extends Event {
@@ -189,10 +262,8 @@ public class MenuList<T> extends Table {
         public boolean handle(Event event) {
             if (event instanceof MenuListEvent) {
                 menuClicked();
-                return true;
-            } else {
-                return false;
             }
+            return false;
         }
         
         public abstract void menuClicked();

@@ -363,6 +363,12 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 		down: link-p
 		over: link-c
 	}
+	menu-button: {
+		font: font
+		up: button-menu
+		down: button-menu-pressed
+		over: button-menu-over
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 	default: {

@@ -27,24 +27,14 @@ import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogDrawables;
 import com.ray3k.skincomposer.dialog.DialogColors;
 import com.ray3k.skincomposer.dialog.DialogAbout;
-import com.ray3k.skincomposer.panel.PanelPreview;
-import com.ray3k.skincomposer.panel.PanelStyleProperties;
-import com.ray3k.skincomposer.panel.PanelStatusBar;
-import com.ray3k.skincomposer.panel.PanelClassBar;
-import com.ray3k.skincomposer.panel.PanelPreviewProperties;
 import com.ray3k.skincomposer.panel.PanelMenuBar;
 import com.ray3k.skincomposer.data.StyleData;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -52,10 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -138,6 +125,7 @@ public class Main extends ApplicationAdapter {
         
         RootTable root = new RootTable(stage, skin, desktopWorker);
         root.setFillParent(true);
+        root.addListener(new MainListener(root));
         stage.addActor(root);
     }
     

@@ -1,29 +1,59 @@
+/*******************************************************************************
+ * MIT License
+ * 
+ * Copyright (c) 2016 Raymond Buckley
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ ******************************************************************************/
 package com.ray3k.skincomposer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.ray3k.skincomposer.MenuButton.MenuButtonListener;
 import com.ray3k.skincomposer.MenuButton.MenuButtonStyle;
 import com.ray3k.skincomposer.MenuList.MenuListStyle;
+import com.ray3k.skincomposer.utils.Utils;
 
 public class RootTable extends Table {
     private Stage stage;
     private boolean draggingCursor;
     private DesktopWorker desktopWorker;
+    private SelectBox classSelectBox;
+    private SelectBox styleSelectBox;
     
     public RootTable(Stage stage, Skin skin, DesktopWorker desktopWorker) {
         super(skin);
@@ -41,7 +71,8 @@ public class RootTable extends Table {
         
         MenuListStyle menuListStyle = new MenuListStyle();
         menuListStyle.background = skin.getDrawable("list");
-        menuListStyle.textButtonStyle = skin.get("default", TextButtonStyle.class);
+        menuListStyle.textButtonStyle = skin.get("menu-button", TextButtonStyle.class);
+        menuListStyle.labelStyle = skin.get("white", LabelStyle.class);
         
         menuButtonStyle.menuListStyle = menuListStyle;
         
@@ -71,36 +102,55 @@ public class RootTable extends Table {
         
         MenuButtonGroup menuButtonGroup = new MenuButtonGroup();
         
-        MenuButton menuButton = new MenuButton("File", getSkin());
+        MenuButton<MenuItem> menuButton = new MenuButton("File", getSkin());
         menuButtonGroup.add(menuButton);
         table.add(menuButton).padLeft(2.0f);
         
-        menuButton.setItems("Banana", "Pajama", "Stairs", "Down");
+        menuButton.setItems(new MenuItem("New", RootTableEnum.NEW),
+                new MenuItem("Open...", RootTableEnum.OPEN),
+                new MenuItem("Recent Files...", RootTableEnum.RECENT_FILES),
+                new MenuItem("Save", RootTableEnum.SAVE),
+                new MenuItem("Save As...", RootTableEnum.SAVE_AS),
+                new MenuItem("Import...", RootTableEnum.IMPORT),
+                new MenuItem("Export...", RootTableEnum.EXPORT),
+                new MenuItem("Exit", RootTableEnum.EXIT));
+        if (Utils.isMac()) {
+            menuButton.setShortcuts("⌘+N", "⌘+O", "⌘+S", "Shift+⌘+S");
+        } else {
+            menuButton.setShortcuts("Ctrl+N", "Ctrl+O", "Ctrl+S", "Shift+Ctrl+S");
+        }
+        menuButton.addListener(new MenuBarListener(menuButton));
 
         menuButton = new MenuButton("Edit", getSkin());
         menuButtonGroup.add(menuButton);
         table.add(menuButton);
         
-        menuButton.setItems("Banana", "Pajama", "Stairs", "Down");
+        menuButton.setItems(new MenuItem("Undo", RootTableEnum.UNDO),
+                new MenuItem("Redo", RootTableEnum.REDO));
+        if (Utils.isMac()) {
+            menuButton.setShortcuts("⌘+Z", "⌘+Y");
+        } else {
+            menuButton.setShortcuts("Ctrl+Z", "Ctrl+Y");
+        }
+        menuButton.addListener(new MenuBarListener(menuButton));
         
-        MenuButton testButton = new MenuButton("Project", getSkin());
-        menuButtonGroup.add(testButton);
-        table.add(testButton);
+        menuButton = new MenuButton("Project", getSkin());
+        menuButtonGroup.add(menuButton);
+        table.add(menuButton);
         
-        testButton.setItems("Banana", "Pajama", "Stairs", "Down", "B", "S");
-        MenuButtonListener listener = new MenuButtonListener() {
-            @Override
-            public void menuClicked() {
-                System.out.println(testButton.getMenuList().getSelectedItem());
-            }
-        };
-        testButton.addListener(listener);
+        menuButton.setItems(new MenuItem("Settings...", RootTableEnum.SETTINGS),
+                new MenuItem("Colors...", RootTableEnum.COLORS),
+                new MenuItem("Fonts...", RootTableEnum.FONTS),
+                new MenuItem("Drawables...", RootTableEnum.DRAWABLES));
+
+        menuButton.addListener(new MenuBarListener(menuButton));
         
         menuButton = new MenuButton("Help", getSkin());
         menuButtonGroup.add(menuButton);
         table.add(menuButton);
         
-        menuButton.setItems("Banana", "Pajama", "Stairs", "Down");
+        menuButton.setItems(new MenuItem("About...", RootTableEnum.ABOUT));
+        menuButton.addListener(new MenuBarListener(menuButton));
     }
     
     private void addClassBar() {
@@ -111,29 +161,88 @@ public class RootTable extends Table {
         Label label = new Label("Class:", getSkin());
         table.add(label).padRight(10.0f).padLeft(10.0f);
         
-        SelectBox selectBox = new SelectBox(getSkin());
-        table.add(selectBox).padRight(5.0f).minWidth(150.0f);
+        classSelectBox = new SelectBox(getSkin());
+        table.add(classSelectBox).padRight(5.0f).minWidth(150.0f);
+        
+        classSelectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                fire(new RootTableEvent(RootTableEnum.CLASS_SELECTED));
+            }
+        });
         
         Button button = new Button(getSkin(), "new");
+        table.add(button);
+        
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                fire(new RootTableEvent(RootTableEnum.NEW_CLASS));
+            }
+        });
+        
+        button = new Button(getSkin(), "delete");
         table.add(button).padRight(30.0f);
+        
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                fire(new RootTableEvent(RootTableEnum.DELETE_CLASS));
+            }
+        });
         
         label = new Label("Style:", getSkin());
         table.add(label).padRight(10.0f);
         
-        selectBox = new SelectBox(getSkin());
-        table.add(selectBox).padRight(5.0f).minWidth(150.0f);
+        styleSelectBox = new SelectBox(getSkin());
+        table.add(styleSelectBox).padRight(5.0f).minWidth(150.0f);
+        
+        styleSelectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                fire(new RootTableEvent(RootTableEnum.STYLE_SELECTED));
+            }
+        });
         
         button = new Button(getSkin(), "new");
         table.add(button);
         
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                fire(new RootTableEvent(RootTableEnum.NEW_STYLE));
+            }
+        });
+        
         button = new Button(getSkin(), "duplicate");
         table.add(button);
+        
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                fire(new RootTableEvent(RootTableEnum.DUPLICATE_STYLE));
+            }
+        });
         
         button = new Button(getSkin(), "delete");
         table.add(button);
         
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                fire(new RootTableEvent(RootTableEnum.DELETE_STYLE));
+            }
+        });
+        
         button = new Button(getSkin(), "settings");
         table.add(button).expandX().left();
+        
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                fire(new RootTableEvent(RootTableEnum.RENAME_STYLE));
+            }
+        });
     }
     
     private void addStyleAndPreviewSplit(InputListener scrollPaneListener, InputListener iBeamListener) {
@@ -297,6 +406,14 @@ public class RootTable extends Table {
         table.add(label).expandX().right().padRight(25.0f);
     }
 
+    public SelectBox getClassSelectBox() {
+        return classSelectBox;
+    }
+
+    public SelectBox getStyleSelectBox() {
+        return styleSelectBox;
+    }
+
     private class ScrollPaneListener extends InputListener {
         @Override
         public void enter(InputEvent event, float x, float y, int pointer,
@@ -325,5 +442,59 @@ public class RootTable extends Table {
             Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Ibeam);
         }
         
+    }
+
+    private class MenuBarListener extends MenuButtonListener {
+        private final MenuButton<MenuItem> menuButton;
+        
+        public MenuBarListener(MenuButton<MenuItem> menuButton) {
+            this.menuButton = menuButton;
+        }
+        
+        @Override
+        public void menuClicked() {
+            fire(new RootTableEvent(menuButton.getSelectedItem().event));
+        }
+    }
+    
+    private static class MenuItem {
+        String text;
+        RootTableEnum event;
+        
+        public MenuItem(String text, RootTableEnum enumeration) {
+            this.text = text;
+            this.event = enumeration;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+    
+    public static enum RootTableEnum {
+        NEW, OPEN, RECENT_FILES, SAVE, SAVE_AS, IMPORT, EXPORT, EXIT, UNDO,
+        REDO, SETTINGS, COLORS, FONTS, DRAWABLES, ABOUT, CLASS_SELECTED,
+        NEW_CLASS, DELETE_CLASS, STYLE_SELECTED, NEW_STYLE, DUPLICATE_STYLE,
+        DELETE_STYLE, RENAME_STYLE, STYLE_PROPERTY, PREVIEW_PROPERTY
+    }
+    
+    public static class RootTableEvent extends Event {
+        public RootTableEnum rootTableEnum;
+        public RootTableEvent(RootTableEnum rootTableEnum) {
+            this.rootTableEnum = rootTableEnum;
+        }
+    }
+    
+    public static abstract class RootTableListener implements EventListener {
+        @Override
+        public boolean handle(Event event) {
+            if (event instanceof RootTableEvent) {
+                rootEvent(((RootTableEvent) event).rootTableEnum);
+            }
+            return false;
+        }
+        
+        public abstract void rootEvent(RootTableEnum rootTableEnum);
     }
 }
