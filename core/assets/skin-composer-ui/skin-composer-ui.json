@@ -375,13 +375,23 @@ com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 		font: font
 		fontColor: pressed
 		background: textfield
+		focusedBackground: textfield-pressed
+		cursor: black
+		selection: button-color
+	}
+	spinner: {
+		font: font
+		fontColor: pressed
+		background: textfield-spinner
+		focusedBackground: textfield-spinner-pressed
 		cursor: black
 		selection: button-color
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
 	default: {
-		label: default
+		label: white
+		background: button-file-pressed
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {

@@ -37,6 +37,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
+import com.ray3k.skincomposer.DialogFactory;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.Spinner.Orientation;
@@ -54,9 +55,12 @@ public class DialogSettings extends Dialog {
     private Integer textureHeight;
     private Integer maxUndos;
     private boolean useStripWhitespace;
+    private DialogFactory dialogFactory;
 
-    public DialogSettings(String title, Skin skin, String windowStyleName) {
+    public DialogSettings(String title, Skin skin, String windowStyleName, DialogFactory dialogFactory) {
         super(title, skin, windowStyleName);
+        
+        this.dialogFactory = dialogFactory;
         
         Main.instance().setListeningForKeys(false);
         
@@ -153,7 +157,7 @@ public class DialogSettings extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance().showDialogLoading(() -> {
+                dialogFactory.showDialogLoading(() -> {
                     try {
                         AtlasData.getInstance().writeAtlas();
                         AtlasData.getInstance().atlasCurrent = true;

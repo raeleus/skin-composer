@@ -162,7 +162,7 @@ public class PanelMenuBar {
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance().showCloseDialog();
+//                Main.instance().showCloseDialog();
             }
         });
         menuItemTable.add(menuItemTextButton);
@@ -232,7 +232,7 @@ public class PanelMenuBar {
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance().showDialogSettings();
+//                Main.instance().showDialogSettings();
             }
         });
         menuItemTable.add(menuItemTextButton);
@@ -244,7 +244,7 @@ public class PanelMenuBar {
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance().showDialogColors();
+//                Main.instance().showDialogColors();
             }
         });
         menuItemTable.add(menuItemTextButton);
@@ -255,7 +255,7 @@ public class PanelMenuBar {
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance().showDialogFonts();
+//                Main.instance().showDialogFonts();
             }
         });
         menuItemTable.add(menuItemTextButton);
@@ -266,7 +266,7 @@ public class PanelMenuBar {
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance().showDialogDrawables();
+//                Main.instance().showDialogDrawables();
             }
         });
         menuItemTable.add(menuItemTextButton);
@@ -292,7 +292,7 @@ public class PanelMenuBar {
         menuItemTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance().showDialogAbout();
+//                Main.instance().showDialogAbout();
             }
         });
         menuItemTable.add(menuItemTextButton);
@@ -437,11 +437,11 @@ public class PanelMenuBar {
                         if (selection == 0) {
                             save(runnable);
                         } else if (selection == 1) {
-                            Main.instance().showDialogLoading(runnable);
+//                            Main.instance().showDialogLoading(runnable);
                         }
                     });
         } else {
-            Main.instance().showDialogLoading(runnable);
+//            Main.instance().showDialogLoading(runnable);
         }
     }
     
@@ -475,112 +475,112 @@ public class PanelMenuBar {
     public void save(Runnable runnable) {
         if (ProjectData.instance().getSaveFile() != null) {
             
-            Main.instance().showDialogLoading(() -> {
-                ProjectData.instance().save();
-                if (runnable != null) {
-                    runnable.run();
-                }
-            });
+//            Main.instance().showDialogLoading(() -> {
+//                ProjectData.instance().save();
+//                if (runnable != null) {
+//                    runnable.run();
+//                }
+//            });
         } else {
             saveAsDialog(runnable);
         }
     }
     
     public void saveAsDialog(Runnable runnable) {
-        Main.instance().showDialogLoading(() -> {
-            String defaultPath = "";
-
-            if (ProjectData.instance().getLastDirectory() != null) {
-                FileHandle fileHandle = new FileHandle(defaultPath);
-                if (fileHandle.exists()) {
-                    defaultPath = ProjectData.instance().getLastDirectory();
-                }
-            }
-
-            String[] filterPatterns = {"*.scmp"};
-
-            File file = Main.instance().getDesktopWorker().saveDialog("Save skin file as...", defaultPath, filterPatterns, "Skin Composer files");
-            if (file != null) {
-                FileHandle fileHandle = new FileHandle(file);
-                if (fileHandle.extension() == null || !fileHandle.extension().equals(".scmp")) {
-                    fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".scmp");
-                }
-                ProjectData.instance().save(fileHandle);
-                if (runnable != null) {
-                    runnable.run();
-                }
-            }
-        });
+//        Main.instance().showDialogLoading(() -> {
+//            String defaultPath = "";
+//
+//            if (ProjectData.instance().getLastDirectory() != null) {
+//                FileHandle fileHandle = new FileHandle(defaultPath);
+//                if (fileHandle.exists()) {
+//                    defaultPath = ProjectData.instance().getLastDirectory();
+//                }
+//            }
+//
+//            String[] filterPatterns = {"*.scmp"};
+//
+//            File file = Main.instance().getDesktopWorker().saveDialog("Save skin file as...", defaultPath, filterPatterns, "Skin Composer files");
+//            if (file != null) {
+//                FileHandle fileHandle = new FileHandle(file);
+//                if (fileHandle.extension() == null || !fileHandle.extension().equals(".scmp")) {
+//                    fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".scmp");
+//                }
+//                ProjectData.instance().save(fileHandle);
+//                if (runnable != null) {
+//                    runnable.run();
+//                }
+//            }
+//        });
     }
     
     public void importDialog() {
-        Main.instance().showDialogLoading(() -> {
-            String defaultPath = "";
-
-            if (ProjectData.instance().getLastDirectory() != null) {
-                FileHandle fileHandle = new FileHandle(defaultPath);
-                if (fileHandle.exists()) {
-                    defaultPath = ProjectData.instance().getLastDirectory();
-                }
-            }
-
-            String[] filterPatterns = {"*.json"};
-
-            File file = Main.instance().getDesktopWorker().openDialog("Import skin...", defaultPath, filterPatterns, "Json files");
-            if (file != null) {
-                FileHandle fileHandle = new FileHandle(file);
-                ProjectData.instance().setLastDirectory(fileHandle.parent().path());
-                try {
-                    JsonData.getInstance().readFile(fileHandle);
-                    PanelClassBar.instance.populate();
-                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-                    AtlasData.getInstance().atlasCurrent = false;
-                    PanelPreviewProperties.instance.produceAtlas();
-                    PanelPreviewProperties.instance.populate();
-                } catch (Exception e) {
-                    Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
-                    DialogError.showError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
-                }
-            }
-        });
+//        Main.instance().showDialogLoading(() -> {
+//            String defaultPath = "";
+//
+//            if (ProjectData.instance().getLastDirectory() != null) {
+//                FileHandle fileHandle = new FileHandle(defaultPath);
+//                if (fileHandle.exists()) {
+//                    defaultPath = ProjectData.instance().getLastDirectory();
+//                }
+//            }
+//
+//            String[] filterPatterns = {"*.json"};
+//
+//            File file = Main.instance().getDesktopWorker().openDialog("Import skin...", defaultPath, filterPatterns, "Json files");
+//            if (file != null) {
+//                FileHandle fileHandle = new FileHandle(file);
+//                ProjectData.instance().setLastDirectory(fileHandle.parent().path());
+//                try {
+//                    JsonData.getInstance().readFile(fileHandle);
+//                    PanelClassBar.instance.populate();
+//                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//                    AtlasData.getInstance().atlasCurrent = false;
+//                    PanelPreviewProperties.instance.produceAtlas();
+//                    PanelPreviewProperties.instance.populate();
+//                } catch (Exception e) {
+//                    Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
+//                    DialogError.showError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
+//                }
+//            }
+//        });
     }
     
     public void exportDialog() {
-        Main.instance().showDialogLoading(() -> {
-            String defaultPath = "";
-
-            if (ProjectData.instance().getLastDirectory() != null) {
-                FileHandle fileHandle = new FileHandle(defaultPath);
-                if (fileHandle.exists()) {
-                    defaultPath = ProjectData.instance().getLastDirectory();
-                }
-            }
-
-            String[] filterPatterns = {"*.json"};
-
-            File file = Main.instance().getDesktopWorker().saveDialog("Export skin...", defaultPath, filterPatterns, "Json files");
-            if (file != null) {
-                FileHandle fileHandle = new FileHandle(file);
-                if (fileHandle.extension() == null || !fileHandle.extension().equals(".json")) {
-                    fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".json");
-                }
-                ProjectData.instance().setLastDirectory(fileHandle.parent().path());
-                JsonData.getInstance().writeFile(fileHandle);
-                
-                try {
-                    AtlasData.getInstance().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
-                } catch (Exception ex) {
-                    Gdx.app.error(PanelMenuBar.class.getName(), "Error while writing texture atlas", ex);
-                    DialogError.showError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
-                }
-                
-                for (FontData font : JsonData.getInstance().getFonts()) {
-                    if (!font.file.parent().equals(fileHandle.parent())) {
-                        font.file.copyTo(fileHandle.parent());
-                    }
-                }
-            }
-        });
+//        Main.instance().showDialogLoading(() -> {
+//            String defaultPath = "";
+//
+//            if (ProjectData.instance().getLastDirectory() != null) {
+//                FileHandle fileHandle = new FileHandle(defaultPath);
+//                if (fileHandle.exists()) {
+//                    defaultPath = ProjectData.instance().getLastDirectory();
+//                }
+//            }
+//
+//            String[] filterPatterns = {"*.json"};
+//
+//            File file = Main.instance().getDesktopWorker().saveDialog("Export skin...", defaultPath, filterPatterns, "Json files");
+//            if (file != null) {
+//                FileHandle fileHandle = new FileHandle(file);
+//                if (fileHandle.extension() == null || !fileHandle.extension().equals(".json")) {
+//                    fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".json");
+//                }
+//                ProjectData.instance().setLastDirectory(fileHandle.parent().path());
+//                JsonData.getInstance().writeFile(fileHandle);
+//                
+//                try {
+//                    AtlasData.getInstance().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
+//                } catch (Exception ex) {
+//                    Gdx.app.error(PanelMenuBar.class.getName(), "Error while writing texture atlas", ex);
+//                    DialogError.showError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
+//                }
+//                
+//                for (FontData font : JsonData.getInstance().getFonts()) {
+//                    if (!font.file.parent().equals(fileHandle.parent())) {
+//                        font.file.copyTo(fileHandle.parent());
+//                    }
+//                }
+//            }
+//        });
     }
     
     private static ObjectMap<String, String> shortcutNames;

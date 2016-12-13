@@ -37,7 +37,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 
 public class BrowseField extends Table {
@@ -74,10 +73,6 @@ public class BrowseField extends Table {
         }
         
         add(button).padLeft(5.0f).bottom();
-    }
-    
-    public BrowseField(BrowseFieldStyle style, Drawable drawable) {
-        
     }
 
     public TextField getTextField() {

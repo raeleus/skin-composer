@@ -62,6 +62,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Values;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.Sort;
+import com.ray3k.skincomposer.DialogFactory;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
@@ -94,13 +95,16 @@ public class DialogDrawables extends Dialog {
     private HorizontalGroup contentGroup;
     private FilesDroppedListener filesDroppedListener;
     private EventListener listener;
+    private DialogFactory dialogFactory;
     
-    public DialogDrawables(Skin skin, StyleProperty property, EventListener listener) {
-        this(skin, "default", property, listener);
+    public DialogDrawables(Skin skin, StyleProperty property, DialogFactory dialogFactory, EventListener listener) {
+        this(skin, "default", property, dialogFactory, listener);
     }
     
-    public DialogDrawables(Skin skin, String windowStyleName, StyleProperty property, EventListener listener) {
+    public DialogDrawables(Skin skin, String windowStyleName, StyleProperty property, DialogFactory dialogFactory, EventListener listener) {
         super("", skin, windowStyleName);
+        
+        this.dialogFactory = dialogFactory;
         
         instance = this;
         
@@ -386,7 +390,7 @@ public class DialogDrawables extends Dialog {
     }
     
     private void colorSwatchesDialog(DrawableData drawableData) {
-        DialogColors dialog = new DialogColors(getSkin(), "dialog", null, true, (ColorData colorData) -> {
+        DialogColors dialog = new DialogColors(getSkin(), "dialog", null, true, dialogFactory, (ColorData colorData) -> {
             if (colorData != null) {
                 final DrawableData tintedDrawable = new DrawableData(drawableData.file);
                     tintedDrawable.tintName = colorData.getName();
@@ -884,7 +888,7 @@ public class DialogDrawables extends Dialog {
         
         gatherDrawables();
 
-        Main.instance().showDialogLoading(() -> {
+        dialogFactory.showDialogLoading(() -> {
             if (!produceAtlas()) {
                 showDrawableError();
                 Gdx.app.log(getClass().getName(), "Attempting to reload drawables backup...");
@@ -914,7 +918,7 @@ public class DialogDrawables extends Dialog {
         if (drawableData.tint != null) {
             previousColor = drawableData.tint;
         }
-        Main.instance().showDialogColorPicker(previousColor, new DialogColorPicker.ColorListener() {
+        dialogFactory.showDialogColorPicker(previousColor, new DialogColorPicker.ColorListener() {
             @Override
             public void selected(Color color) {
                 if (color != null) {

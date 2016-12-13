@@ -24,7 +24,9 @@
 package com.ray3k.skincomposer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -35,30 +37,49 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Array;
+import com.ray3k.skincomposer.BrowseField.BrowseFieldStyle;
 import com.ray3k.skincomposer.MenuButton.MenuButtonListener;
 import com.ray3k.skincomposer.MenuButton.MenuButtonStyle;
 import com.ray3k.skincomposer.MenuList.MenuListStyle;
+import com.ray3k.skincomposer.Spinner.SpinnerStyle;
+import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class RootTable extends Table {
-    private Stage stage;
+    private final Stage stage;
     private boolean draggingCursor;
-    private DesktopWorker desktopWorker;
     private SelectBox classSelectBox;
     private SelectBox styleSelectBox;
+    private Array<StyleProperty> styleProperties;
+    private BrowseFieldStyle bfColorStyle;
+    private BrowseFieldStyle bfDrawableStyle;
+    private BrowseFieldStyle bfFontStyle;
+    private final SpinnerStyle spinnerStyle;
+    private Array<ScrollPaneStyle> scrollPaneStyles;
+    private Array<ListStyle> listStyles;
+    private Array<LabelStyle> labelStyles;
     
-    public RootTable(Stage stage, Skin skin, DesktopWorker desktopWorker) {
+    public RootTable(Stage stage, Skin skin) {
         super(skin);
         this.stage = stage;
-        this.desktopWorker = desktopWorker;
+        
+        spinnerStyle = new Spinner.SpinnerStyle(
+                skin.get("spinner-minus-h", Button.ButtonStyle.class),
+                skin.get("spinner-plus-h", Button.ButtonStyle.class),
+                skin.get("spinner", TextField.TextFieldStyle.class));
         
         TextButtonStyle textButtonStyle = skin.get("file", TextButtonStyle.class);
         
@@ -311,7 +332,70 @@ public class RootTable extends Table {
         stage.setScrollFocus(scrollPane);
         left.add(scrollPane).grow().padTop(10.0f).padBottom(10.0f);
         
+        if (styleProperties != null) {
+            for (StyleProperty styleProperty : styleProperties) {
+                label = new Label(styleProperty.name, getSkin());
+                table.add(label);
+                
+                table.row();
+                if (styleProperty.type == Color.class) {
+                    BrowseField browseField = new BrowseField((String) styleProperty.value, bfColorStyle);
+                    table.add(browseField);
+                    
+                    browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
+                } else if (styleProperty.type == BitmapFont.class) {
+                    BrowseField browseField = new BrowseField(styleProperty.name, bfFontStyle);
+                    table.add(browseField);
+                    
+                    browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
+                } else if (styleProperty.type == Drawable.class) {
+                    BrowseField browseField = new BrowseField(styleProperty.name, bfDrawableStyle);
+                    table.add(browseField);
+                    
+                    browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
+                } else if (styleProperty.type == Float.TYPE) {
+                    Spinner spinner = new Spinner((Double)styleProperty.value, 1.0, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
+                    table.add(spinner);
+                    
+                    spinner.addListener(new StylePropertyChangeListener(styleProperty, spinner));
+                } else if (styleProperty.type == ScrollPaneStyle.class) {
+                    SelectBox selectBox = new SelectBox(getSkin());
+                    table.add(selectBox);
+                    
+                    selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
+                } else if (styleProperty.type == ListStyle.class) {
+                    SelectBox selectBox = new SelectBox(getSkin());
+                    table.add(selectBox);
+                    
+                    selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
+                } else if (styleProperty.type == LabelStyle.class) {
+                    SelectBox selectBox = new SelectBox(getSkin());
+                    table.add(selectBox);
+                    
+                    selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
+                }
+                else if (styleProperty.type == CustomStyle.class) {
+                    //todo: implement custom styles...
+                }
+                
+                table.row();
+            }
+        }
+    }
+
+    private class StylePropertyChangeListener extends ChangeListener {
+        private StyleProperty styleProp;
+        private Actor styleActor;
+
+        public StylePropertyChangeListener(StyleProperty styleProp, Actor styleActor) {
+            this.styleProp = styleProp;
+            this.styleActor = styleActor;
+        }
         
+        @Override
+        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+            fire(new RootTableEvent(RootTableEnum.STYLE_PROPERTY, styleProp, styleActor));
+        }
     }
     
     private void addPreviewPreviewPropertiesSplit(final Table right, InputListener scrollPaneListener, InputListener iBeamListener) {
@@ -414,6 +498,14 @@ public class RootTable extends Table {
         return styleSelectBox;
     }
 
+    public Array<StyleProperty> getStyleProperties() {
+        return styleProperties;
+    }
+
+    public void setStyleProperties(Array<StyleProperty> styleProperties) {
+        this.styleProperties = styleProperties;
+    }
+
     private class ScrollPaneListener extends InputListener {
         @Override
         public void enter(InputEvent event, float x, float y, int pointer,
@@ -481,8 +573,17 @@ public class RootTable extends Table {
     
     public static class RootTableEvent extends Event {
         public RootTableEnum rootTableEnum;
+        public StyleProperty styleProperty;
+        public Actor styleActor;
+        
         public RootTableEvent(RootTableEnum rootTableEnum) {
             this.rootTableEnum = rootTableEnum;
+        }
+        
+        public RootTableEvent(RootTableEnum rootTableEnum, StyleProperty styleProperty, Actor styleActor) {
+            this.rootTableEnum = rootTableEnum;
+            this.styleProperty = styleProperty;
+            this.styleActor = styleActor;
         }
     }
     
@@ -490,11 +591,11 @@ public class RootTable extends Table {
         @Override
         public boolean handle(Event event) {
             if (event instanceof RootTableEvent) {
-                rootEvent(((RootTableEvent) event).rootTableEnum);
+                rootEvent((RootTableEvent) event);
             }
             return false;
         }
         
-        public abstract void rootEvent(RootTableEnum rootTableEnum);
+        public abstract void rootEvent(RootTableEvent event);
     }
 }

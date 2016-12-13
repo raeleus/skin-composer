@@ -150,17 +150,17 @@ public class PanelPreviewProperties {
         browseField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance().showDialogColorPicker((Color) properties.get("bgcolor"), new DialogColorPicker.ColorListener() {
-                    @Override
-                    public void selected(Color color) {
-                        if (color != null) {
-                            browseField.getTextField().setText((int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
-                            properties.put("bgcolor", color);
-                            bgColor = color;
-                            render();
-                        }
-                    }
-                });
+//                Main.instance().showDialogColorPicker((Color) properties.get("bgcolor"), new DialogColorPicker.ColorListener() {
+//                    @Override
+//                    public void selected(Color color) {
+//                        if (color != null) {
+//                            browseField.getTextField().setText((int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
+//                            properties.put("bgcolor", color);
+//                            bgColor = color;
+//                            render();
+//                        }
+//                    }
+//                });
             }
         });
         t.add(browseField).growX();

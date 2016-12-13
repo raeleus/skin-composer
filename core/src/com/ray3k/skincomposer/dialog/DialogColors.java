@@ -46,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Sort;
+import com.ray3k.skincomposer.DialogFactory;
 import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.AtlasData;
@@ -69,13 +70,16 @@ public class DialogColors extends Dialog {
     private SelectBox<String> selectBox;
     private DialogColorsListener listener;
     private ScrollPane scrollPane;
+    private DialogFactory dialogFactory;
     
-    public DialogColors(Skin skin, StyleProperty styleProperty, DialogColorsListener listener) {
-        this(skin, "default", styleProperty, listener);
+    public DialogColors(Skin skin, StyleProperty styleProperty, DialogFactory dialogFactory, DialogColorsListener listener) {
+        this(skin, "default", styleProperty, dialogFactory, listener);
     }
     
-    public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, boolean selectingForTintedDrawable, DialogColorsListener listener) {
+    public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, boolean selectingForTintedDrawable, DialogFactory dialogFactory, DialogColorsListener listener) {
         super("", skin, styleName);
+        
+        this.dialogFactory = dialogFactory;
         
         Main.instance().setListeningForKeys(false);
         
@@ -148,8 +152,8 @@ public class DialogColors extends Dialog {
         key(Keys.ESCAPE, false);
     }
     
-    public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, DialogColorsListener listener) {
-        this(skin, styleName, styleProperty, false, listener);
+    public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, DialogFactory dialogFactory, DialogColorsListener listener) {
+        this(skin, styleName, styleProperty, false, dialogFactory, listener);
     }
     
     @Override
@@ -168,7 +172,7 @@ public class DialogColors extends Dialog {
     }
     
     private void showColorPicker() {
-        Main.instance().showDialogColorPicker(new DialogColorPicker.ColorListener() {
+        dialogFactory.showDialogColorPicker(new DialogColorPicker.ColorListener() {
             @Override
             public void selected(Color color) {
                 if (color != null) {
@@ -411,7 +415,7 @@ public class DialogColors extends Dialog {
     }
     
     private void recolorDialog(ColorData colorData) {
-        Main.instance().showDialogColorPicker(new DialogColorPicker.ColorListener() {
+        dialogFactory.showDialogColorPicker(new DialogColorPicker.ColorListener() {
             @Override
             public void selected(Color color) {
                 if (color != null) {

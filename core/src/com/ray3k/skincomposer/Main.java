@@ -62,11 +62,11 @@ public class Main extends ApplicationAdapter {
     private static Main instance;
     private Stage stage;
     private static Skin skin;
+    private DialogFactory dialogFactory;
     private DesktopWorker desktopWorker;
     private Array<Undoable> undoables;
     private int undoIndex;
     private boolean listeningForKeys;
-    private boolean showingCloseDialog;
     private AnimatedDrawable loadingAnimation;
     
     public static Main instance() {
@@ -86,18 +86,18 @@ public class Main extends ApplicationAdapter {
     
     private void initDefaults() {
         if (Utils.isMac()) System.setProperty("java.awt.headless", "true");
-        
-        showingCloseDialog = false;
         listeningForKeys = true;
         
         undoables = new Array<>();
         undoIndex = -1;
         
+        dialogFactory = new DialogFactory(skin, stage);
+        
         desktopWorker.attachLogListener();
         desktopWorker.sizeWindowToFit(800, 800, 50, Gdx.graphics);
         desktopWorker.centerWindow(Gdx.graphics);
         desktopWorker.setCloseListener(() -> {
-            showCloseDialog();
+            dialogFactory.showCloseDialog();
             return false;
         });
         
@@ -123,9 +123,9 @@ public class Main extends ApplicationAdapter {
     private void populate() {
         stage.clear();
         
-        RootTable root = new RootTable(stage, skin, desktopWorker);
+        RootTable root = new RootTable(stage, skin);
         root.setFillParent(true);
-        root.addListener(new MainListener(root));
+        root.addListener(new MainListener(root, dialogFactory));
         stage.addActor(root);
     }
     
@@ -212,107 +212,6 @@ public class Main extends ApplicationAdapter {
                 }
             }
         }
-    }
-    
-    public void showDialogDrawables(StyleProperty property, EventListener listener) {
-        DialogDrawables dialog = new DialogDrawables(skin, "dialog", property, listener);
-        dialog.setFillParent(true);
-        dialog.show(stage);
-    }
-    
-    public void showDialogDrawables(StyleProperty property) {
-        showDialogDrawables(property, null);
-    }
-    
-    public void showDialogDrawables() {
-        showDialogDrawables(null);
-    }
-    
-    public void showDialogColors(StyleProperty styleProperty, DialogColorsListener listener) {
-        DialogColors dialog = new DialogColors(skin, "dialog", styleProperty, listener);
-        dialog.setFillParent(true);
-        dialog.show(stage);
-        dialog.populate();
-    }
-    
-    public void showDialogColors(StyleProperty styleProperty) {
-        showDialogColors(styleProperty, null);
-    }
-    
-    public void showDialogColors() {
-        showDialogColors(null);
-    }
-    
-    public void showDialogAbout() {
-        DialogAbout dialog = new DialogAbout(skin, "dialog");
-        dialog.show(stage);
-    }
-    
-    public void showDialogFonts(StyleProperty styleProperty, EventListener listener) {
-        DialogFonts dialog = new DialogFonts(skin, "dialog", styleProperty, listener);
-        dialog.setFillParent(true);
-        dialog.show(stage);
-        dialog.populate();
-    }
-    
-    public void showDialogFonts(StyleProperty styleProperty) {
-        showDialogFonts(styleProperty, null);
-    }
-    
-    public void showDialogFonts() {
-        showDialogFonts(null);
-    }
-    
-    public void showDialogColorPicker(ColorListener listener) {
-        showDialogColorPicker(null, listener);
-    }
-    
-    public void showDialogColorPicker(Color previousColor, ColorListener listener) {
-        DialogColorPicker dialog = new DialogColorPicker(skin, "dialog", listener, previousColor);
-        dialog.show(stage);
-    }
-    
-    public void showDialogSettings() {
-        DialogSettings dialog = new DialogSettings("", skin, "dialog");
-        dialog.show(stage);
-    }
-    
-    public void showCloseDialog() {
-        if (ProjectData.instance().areChangesSaved() || ProjectData.instance().isNewProject()) {
-            Gdx.app.exit();
-        } else {
-            if (!showingCloseDialog) {
-                showingCloseDialog = true;
-                Dialog dialog = new Dialog("Save Changes?", skin, "dialog") {
-                    @Override
-                    protected void result(Object object) {
-                        if ((int) object == 0) {
-                            PanelMenuBar.instance().save(() -> {
-                                if (ProjectData.instance().areChangesSaved()) {
-                                    Gdx.app.exit();
-                                }
-                            });
-                        } else if ((int) object == 1) {
-                            Gdx.app.exit();
-                        }
-                        
-                        showingCloseDialog = false;
-                    }
-                };
-                Label label = new Label("Do you want to save\nyour changes before you quit?", skin);
-                label.setAlignment(Align.center);
-                dialog.text(label);
-                dialog.getContentTable().getCells().first().pad(10.0f);
-                dialog.button("Yes", 0).button("No", 1).button("Cancel", 2);
-                java.awt.Toolkit.getDefaultToolkit().beep();
-                dialog.show(stage);
-            }
-        }
-    }
-    
-    public void showDialogLoading(Runnable runnable) {
-        DialogLoading dialog = new DialogLoading("", skin, runnable);
-        dialog.show(stage);
     }
     
     public void showDialogError(String title, String message, Runnable runnable) {

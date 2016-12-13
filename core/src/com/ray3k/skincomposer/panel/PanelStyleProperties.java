@@ -128,13 +128,13 @@ public class PanelStyleProperties {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         Object oldValue = property.value;
-                        Main.instance().showDialogDrawables(property, (Event event1) -> {
-                            Object newValue = property.value;
-                            if (oldValue != newValue) {
-                                Main.instance().addUndoable(new DrawableUndoable(property, oldValue, newValue), true);
-                            }
-                            return false;
-                        });
+//                        Main.instance().showDialogDrawables(property, (Event event1) -> {
+//                            Object newValue = property.value;
+//                            if (oldValue != newValue) {
+//                                Main.instance().addUndoable(new DrawableUndoable(property, oldValue, newValue), true);
+//                            }
+//                            return false;
+//                        });
                     }
                 });
                 table.add(browseField).growX().padTop(10.0f);
@@ -148,12 +148,12 @@ public class PanelStyleProperties {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         Object oldValue = property.value;
-                        Main.instance().showDialogColors(property, (ColorData colorData) -> {
-                            Object newValue = property.value;
-                            if (oldValue != newValue) {
-                                Main.instance().addUndoable(new ColorUndoable(property, oldValue, newValue), true);
-                            }
-                        });
+//                        Main.instance().showDialogColors(property, (ColorData colorData) -> {
+//                            Object newValue = property.value;
+//                            if (oldValue != newValue) {
+//                                Main.instance().addUndoable(new ColorUndoable(property, oldValue, newValue), true);
+//                            }
+//                        });
                     }
                 });
                 table.add(browseField).growX().padTop(10.0f);
@@ -167,13 +167,13 @@ public class PanelStyleProperties {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         Object oldValue = property.value;
-                        Main.instance().showDialogFonts(property, (Event event1) -> {
-                            Object newValue = property.value;
-                            if (oldValue != newValue) {
-                                Main.instance().addUndoable(new FontUndoable(property, oldValue, newValue), true);
-                            }
-                            return false;
-                        });
+//                        Main.instance().showDialogFonts(property, (Event event1) -> {
+//                            Object newValue = property.value;
+//                            if (oldValue != newValue) {
+//                                Main.instance().addUndoable(new FontUndoable(property, oldValue, newValue), true);
+//                            }
+//                            return false;
+//                        });
                     }
                 });
                 table.add(browseField).growX().padTop(10.0f);
