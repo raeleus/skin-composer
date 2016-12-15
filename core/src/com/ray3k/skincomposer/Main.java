@@ -23,28 +23,39 @@
  ******************************************************************************/
 package com.ray3k.skincomposer;
 
-import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.skincomposer.data.StyleData;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.scenes.scene2d.ui.Tree;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.ray3k.skincomposer.data.AtlasData;
-import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class Main extends ApplicationAdapter {
     public final static String VERSION = "6";
     private static Main instance;
+    public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class, ImageButton.class, ImageTextButton.class, Label.class, List.class, ProgressBar.class, ScrollPane.class, SelectBox.class, Slider.class, SplitPane.class, TextButton.class, TextField.class, TextTooltip.class, Touchpad.class, Tree.class, Window.class};
+    public static Array<Class> styleClasses;
     private Stage stage;
     private static Skin skin;
     private DialogFactory dialogFactory;
@@ -61,6 +72,12 @@ public class Main extends ApplicationAdapter {
         skin = new Skin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
+        
+        styleClasses = new Array<>(new Class[]{Button.ButtonStyle.class, CheckBox.CheckBoxStyle.class,
+            ImageButton.ImageButtonStyle.class, ImageTextButton.ImageTextButtonStyle.class, Label.LabelStyle.class, List.ListStyle.class,
+            ProgressBar.ProgressBarStyle.class, ScrollPane.ScrollPaneStyle.class, SelectBox.SelectBoxStyle.class, Slider.SliderStyle.class,
+            SplitPane.SplitPaneStyle.class, TextButton.TextButtonStyle.class, TextField.TextFieldStyle.class, TextTooltip.TextTooltipStyle.class,
+            Touchpad.TouchpadStyle.class, Tree.TreeStyle.class, Window.WindowStyle.class});
         
         initDefaults();
         

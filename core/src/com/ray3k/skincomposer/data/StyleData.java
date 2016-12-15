@@ -74,11 +74,6 @@ public class StyleData implements Json.Serializable {
     public Class clazz;
     public OrderedMap<String,StyleProperty> properties;
     public boolean deletable;
-    public final static Class[] classes = {Button.class, CheckBox.class,
-            ImageButton.class, ImageTextButton.class, Label.class, List.class,
-            ProgressBar.class, ScrollPane.class, SelectBox.class, Slider.class,
-            SplitPane.class, TextButton.class, TextField.class, TextTooltip.class,
-            Touchpad.class, Tree.class, Window.class};
 
     @Override
     public String toString() {

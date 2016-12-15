@@ -30,7 +30,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -71,7 +70,6 @@ import java.io.StringWriter;
 public class JsonData implements Json.Serializable {
 
     private static JsonData instance;
-    private static Array<Class> styleClasses;
     private Array<ColorData> colors;
     private Array<FontData> fonts;
     private OrderedMap<Class, Array<StyleData>> classStyleMap;
@@ -89,11 +87,6 @@ public class JsonData implements Json.Serializable {
 
     private JsonData() {
         instance = this;
-        styleClasses = new Array<>(new Class[]{ButtonStyle.class, CheckBoxStyle.class,
-            ImageButtonStyle.class, ImageTextButtonStyle.class, LabelStyle.class, ListStyle.class,
-            ProgressBarStyle.class, ScrollPaneStyle.class, SelectBoxStyle.class, SliderStyle.class,
-            SplitPaneStyle.class, TextButtonStyle.class, TextFieldStyle.class, TextTooltipStyle.class,
-            TouchpadStyle.class, TreeStyle.class, WindowStyle.class});
         colors = new Array<>();
         fonts = new Array<>();
 
@@ -167,8 +160,8 @@ public class JsonData implements Json.Serializable {
                 }
             } //styles
             else {
-                int classIndex = styleClasses.indexOf(ClassReflection.forName(child.name), false);
-                Class clazz = StyleData.classes[classIndex];
+                int classIndex = Main.styleClasses.indexOf(ClassReflection.forName(child.name), false);
+                Class clazz = Main.BASIC_CLASSES[classIndex];
                 for (JsonValue style : child.iterator()) {
                     StyleData data = newStyle(clazz, style.name);
                     for (JsonValue property : style.iterator()) {
@@ -256,8 +249,8 @@ public class JsonData implements Json.Serializable {
 
         //styles
         Array<Array<StyleData>> valuesArray = classStyleMap.values().toArray();
-        for (int i = 0; i < styleClasses.size; i++) {
-            Class clazz = styleClasses.get(i);
+        for (int i = 0; i < Main.styleClasses.size; i++) {
+            Class clazz = Main.styleClasses.get(i);
             Array<StyleData> styles = valuesArray.get(i);
 
             //check if any style has the mandatory fields necessary to write
@@ -321,7 +314,7 @@ public class JsonData implements Json.Serializable {
 
     private void initializeClassStyleMap() {
         classStyleMap = new OrderedMap();
-        for (Class clazz : StyleData.classes) {
+        for (Class clazz : Main.BASIC_CLASSES) {
             Array<StyleData> array = new Array<>();
             classStyleMap.put(clazz, array);
             if (clazz.equals(Slider.class) || clazz.equals(ProgressBar.class) || clazz.equals(SplitPane.class)) {

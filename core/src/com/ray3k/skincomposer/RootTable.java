@@ -185,6 +185,13 @@ public class RootTable extends Table {
         classSelectBox = new SelectBox(getSkin());
         table.add(classSelectBox).padRight(5.0f).minWidth(150.0f);
         
+        Array<String> names = new Array<>();
+        for (Class clazz : Main.BASIC_CLASSES) {
+            names.add(clazz.getSimpleName());
+        }
+        
+        classSelectBox.setItems(names);
+        
         classSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {

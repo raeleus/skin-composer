@@ -179,7 +179,7 @@ public class PanelPreviewProperties {
         t.add(sizeSelectBox).growX().minWidth(200.0f);
         
         if (PanelClassBar.instance.classSelectBox.getSelectedIndex() >= 0) {
-            Class clazz = StyleData.classes[PanelClassBar.instance.classSelectBox.getSelectedIndex()];
+            Class clazz = Main.BASIC_CLASSES[PanelClassBar.instance.classSelectBox.getSelectedIndex()];
             if (clazz.equals(Button.class)) {
                 t.row();
                 t.add(new Label("Disabled: ", skin)).right();
@@ -1051,7 +1051,7 @@ public class PanelPreviewProperties {
         
         if (PanelClassBar.instance.classSelectBox.getSelectedIndex() >= 0) {
             StyleData styleData = PanelClassBar.instance.getStyleSelectBox().getSelected();
-            Class clazz = StyleData.classes[PanelClassBar.instance.classSelectBox.getSelectedIndex()];
+            Class clazz = Main.BASIC_CLASSES[PanelClassBar.instance.classSelectBox.getSelectedIndex()];
             
             if (!styleData.hasMandatoryFields()) {
                 Label label;

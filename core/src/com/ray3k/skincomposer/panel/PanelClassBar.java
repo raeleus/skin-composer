@@ -69,7 +69,7 @@ public class PanelClassBar {
         
         classSelectBox = new SelectBox<>(skin, "slim-alt");
         Array<String> names = new Array<>();
-        for (Class clazz : StyleData.classes) {
+        for (Class clazz : Main.BASIC_CLASSES) {
             names.add(clazz.getSimpleName());
         }
         classSelectBox.setItems(names);
@@ -77,13 +77,13 @@ public class PanelClassBar {
         
         table.add(new Label("Style:", skin, "white")).padRight(5.0f);
         styleSelectBox = new SelectBox<>(skin, "slim-alt");
-        styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[0]));
+        styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(Main.BASIC_CLASSES[0]));
         table.add(styleSelectBox).padRight(10.0f).minWidth(200.0f);
         
         classSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+                styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()]));
                 styleSelectBox.setSelected(styleSelectBox.getItems().first());
                 PanelPreviewProperties.instance.populate();
             }
@@ -292,14 +292,14 @@ public class PanelClassBar {
         @Override
         public void undo() {
             JsonData.getInstance().deleteStyle(styleData);
-            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()]));
             styleSelectBox.setSelectedIndex(previousIndex);
         }
 
         @Override
         public void redo() {
-            styleData = JsonData.getInstance().newStyle(StyleData.classes[classSelectBox.getSelectedIndex()], textField.getText());
-            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+            styleData = JsonData.getInstance().newStyle(Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()], textField.getText());
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()]));
             styleSelectBox.setSelected(styleData);
         }
 
@@ -326,14 +326,14 @@ public class PanelClassBar {
         @Override
         public void undo() {
             JsonData.getInstance().deleteStyle(styleData);
-            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()]));
             styleSelectBox.setSelectedIndex(previousIndex);
         }
 
         @Override
         public void redo() {
             styleData = JsonData.getInstance().copyStyle(styleSelectBox.getSelected(), textField.getText());
-            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()]));
             styleSelectBox.setSelected(styleData);
         }
 
@@ -357,14 +357,14 @@ public class PanelClassBar {
         @Override
         public void undo() {
             JsonData.getInstance().copyStyle(styleData, styleData.name);
-            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()]));
             styleSelectBox.setSelected(styleData);
         }
 
         @Override
         public void redo() {
             JsonData.getInstance().deleteStyle(styleSelectBox.getSelected());
-            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(StyleData.classes[classSelectBox.getSelectedIndex()]));
+            styleSelectBox.setItems(JsonData.getInstance().getClassStyleMap().get(Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()]));
         }
 
         @Override
