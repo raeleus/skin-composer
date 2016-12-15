@@ -33,11 +33,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin.TintedDrawable;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
@@ -46,6 +50,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane.SplitPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip.TextTooltipStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
@@ -165,7 +170,7 @@ public class JsonData implements Json.Serializable {
                 int classIndex = styleClasses.indexOf(ClassReflection.forName(child.name), false);
                 Class clazz = StyleData.classes[classIndex];
                 for (JsonValue style : child.iterator()) {
-                    StyleData data = Main.instance().newStyle(clazz, style.name);
+                    StyleData data = newStyle(clazz, style.name);
                     for (JsonValue property : style.iterator()) {
                         StyleProperty styleProperty = data.properties.get(property.name);
                         if (styleProperty.type.equals(Float.TYPE)) {
@@ -353,6 +358,70 @@ public class JsonData implements Json.Serializable {
         } catch (ReflectionException e) {
             Gdx.app.log(getClass().getName(), "Error parsing json data during file read", e);
             DialogError.showError("Error while reading file...", "Error while attempting to read save file.\nPlease ensure that file is not corrupted.\n\nOpen error log?");
+        }
+    }
+
+    /**
+     * Creates a new StyleData object if one with the same name currently does not exist. If it does exist
+     * it is returned and the properties are wiped. ClassName and deletable flag is retained.
+     * @param className
+     * @param styleName
+     * @return 
+     */
+    public StyleData newStyle(Class className, String styleName) {
+        Array<StyleData> styles = getClassStyleMap().get(className);
+        
+        StyleData data = null;
+        
+        for (StyleData tempStyle : styles) {
+            if (tempStyle.name.equals(styleName)) {
+                data = tempStyle;
+                data.resetProperties();
+            }
+        }
+        
+        if (data == null) {
+            data = new StyleData(className, styleName);
+            styles.add(data);
+        }
+        
+        return data;
+    }
+    
+    public StyleData copyStyle(StyleData original, String styleName) {
+        Array<StyleData> styles = getClassStyleMap().get(original.clazz);
+        StyleData data = new StyleData(original, styleName);
+        styles.add(data);
+        
+        return data;
+    }
+    
+    public void deleteStyle(StyleData styleData) {
+        Array<StyleData> styles = getClassStyleMap().get(styleData.clazz);
+        styles.removeValue(styleData, true);
+        
+        //reset any properties pointing to this style to the default style
+        if (styleData.clazz.equals(Label.class)) {
+            for (StyleData data : getClassStyleMap().get(TextTooltip.class)) {
+                StyleProperty property = data.properties.get("label");
+                if (property != null && property.value.equals(styleData.name)) {
+                    property.value = "default";
+                }
+            }
+        } else if (styleData.clazz.equals(List.class)) {
+            for (StyleData data : getClassStyleMap().get(SelectBox.class)) {
+                StyleProperty property = data.properties.get("listStyle");
+                if (property != null && property.value.equals(styleData.name)) {
+                    property.value = "default";
+                }
+            }
+        } else if (styleData.clazz.equals(ScrollPane.class)) {
+            for (StyleData data : getClassStyleMap().get(SelectBox.class)) {
+                StyleProperty property = data.properties.get("scrollStyle");
+                if (property != null && property.value.equals(styleData.name)) {
+                    property.value = "default";
+                }
+            }
         }
     }
 }

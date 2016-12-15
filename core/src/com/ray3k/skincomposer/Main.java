@@ -29,7 +29,6 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -129,70 +128,6 @@ public class Main extends ApplicationAdapter {
     public void dispose() {
         stage.dispose();
         skin.dispose();
-    }
-    
-    /**
-     * Creates a new StyleData object if one with the same name currently does not exist. If it does exist
-     * it is returned and the properties are wiped. ClassName and deletable flag is retained.
-     * @param className
-     * @param styleName
-     * @return 
-     */
-    public StyleData newStyle(Class className, String styleName) {
-        Array<StyleData> styles = JsonData.getInstance().getClassStyleMap().get(className);
-        
-        StyleData data = null;
-        
-        for (StyleData tempStyle : styles) {
-            if (tempStyle.name.equals(styleName)) {
-                data = tempStyle;
-                data.resetProperties();
-            }
-        }
-        
-        if (data == null) {
-            data = new StyleData(className, styleName);
-            styles.add(data);
-        }
-        
-        return data;
-    }
-    
-    public StyleData copyStyle(StyleData original, String styleName) {
-        Array<StyleData> styles = JsonData.getInstance().getClassStyleMap().get(original.clazz);
-        StyleData data = new StyleData(original, styleName);
-        styles.add(data);
-        
-        return data;
-    }
-    
-    public void deleteStyle(StyleData styleData) {
-        Array<StyleData> styles = JsonData.getInstance().getClassStyleMap().get(styleData.clazz);
-        styles.removeValue(styleData, true);
-        
-        //reset any properties pointing to this style to the default style
-        if (styleData.clazz.equals(Label.class)) {
-            for (StyleData data : JsonData.getInstance().getClassStyleMap().get(TextTooltip.class)) {
-                StyleProperty property = data.properties.get("label");
-                if (property != null && property.value.equals(styleData.name)) {
-                    property.value = "default";
-                }
-            }
-        } else if (styleData.clazz.equals(List.class)) {
-            for (StyleData data : JsonData.getInstance().getClassStyleMap().get(SelectBox.class)) {
-                StyleProperty property = data.properties.get("listStyle");
-                if (property != null && property.value.equals(styleData.name)) {
-                    property.value = "default";
-                }
-            }
-        } else if (styleData.clazz.equals(ScrollPane.class)) {
-            for (StyleData data : JsonData.getInstance().getClassStyleMap().get(SelectBox.class)) {
-                StyleProperty property = data.properties.get("scrollStyle");
-                if (property != null && property.value.equals(styleData.name)) {
-                    property.value = "default";
-                }
-            }
-        }
     }
 
     public DesktopWorker getDesktopWorker() {
