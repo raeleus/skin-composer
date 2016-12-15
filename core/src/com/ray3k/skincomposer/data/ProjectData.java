@@ -272,10 +272,11 @@ public class ProjectData implements Json.Serializable{
         jsonData.clear();
         atlasData.clear();
         saveFile = null;
-        PanelClassBar.instance.populate();
-        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-        PanelPreviewProperties.instance.produceAtlas();
-        PanelPreviewProperties.instance.populate();
+//        PanelClassBar.instance.populate();
+//        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//        PanelPreviewProperties.instance.produceAtlas();
+//        PanelPreviewProperties.instance.populate();
+//todo: replace with roottable.refresh();
         setChangesSaved(false);
         newProject = true;
     }

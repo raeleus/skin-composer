@@ -165,7 +165,7 @@ public class DialogSettings extends Dialog {
                         PanelPreviewProperties.instance.produceAtlas();
                         PanelPreviewProperties.instance.render();
                     } catch (Exception e) {
-                        Main.instance().showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
+                        dialogFactory.showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
                         Gdx.app.error(getClass().getName(), "Unable to write texture atlas to temporary storage!", e);
                         DialogError.showError("Atlas Error...", "Unable to write texture atlas to temporary storage.\n\nOpen log?");
                     }

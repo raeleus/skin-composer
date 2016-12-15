@@ -23,6 +23,7 @@
  ******************************************************************************/
 package com.ray3k.skincomposer;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -30,32 +31,43 @@ import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.ray3k.skincomposer.RootTable.RootTableListener;
+import com.ray3k.skincomposer.data.ProjectData;
+import java.io.File;
 
 public class MainListener extends RootTableListener {
     private RootTable root;
     private DialogFactory dialogFactory;
+    private DesktopWorker desktopWorker;
     
-    public MainListener(RootTable root, DialogFactory dialogFactory) {
+    public MainListener(RootTable root, DialogFactory dialogFactory, DesktopWorker desktopWorker) {
         this.root = root;
         this.dialogFactory = dialogFactory;
+        this.desktopWorker = desktopWorker;
     }
     
     @Override
     public void rootEvent(RootTable.RootTableEvent event) {
         switch (event.rootTableEnum) {
             case NEW:
+                newFile();
                 break;
             case OPEN:
+                openFile();
                 break;
             case RECENT_FILES:
+                dialogFactory.recentFiles();
                 break;
             case SAVE:
+                saveFile(null);
                 break;
             case SAVE_AS:
+                saveAsFile(null);
                 break;
             case IMPORT:
+                importFile();
                 break;
             case EXPORT:
+                exportFile();
                 break;
             case EXIT:
                 dialogFactory.showCloseDialog();
@@ -123,5 +135,171 @@ public class MainListener extends RootTableListener {
             case PREVIEW_PROPERTY:
                 break;
         }
+    }
+    
+    public void newFile() {
+        if (!ProjectData.instance().areChangesSaved() && !ProjectData.instance().isNewProject()) {
+            dialogFactory.yesNoCancelDialog("Save Changes?",
+                    "Do you want to save changes to the existing project?"
+                            + "\nAll unsaved changes will be lost.",
+                    (int selection) -> {
+                        if (selection == 0) {
+                            saveFile(() -> {
+                                ProjectData.instance().clear();
+                            });
+                        } else if (selection == 1) {
+                            ProjectData.instance().clear();
+                        }
+                    });
+        } else {
+            ProjectData.instance().clear();
+        }
+    }
+    
+    public void openFile() {
+        Runnable runnable = () -> {
+            String defaultPath = "";
+
+            if (ProjectData.instance().getLastDirectory() != null) {
+                FileHandle fileHandle = new FileHandle(defaultPath);
+                if (fileHandle.exists()) {
+                    defaultPath = ProjectData.instance().getLastDirectory();
+                }
+            }
+
+            String[] filterPatterns = {"*.scmp"};
+
+            File file = desktopWorker.openDialog("Open skin file...", defaultPath, filterPatterns, "Skin Composer files");
+            if (file != null) {
+                FileHandle fileHandle = new FileHandle(file);
+                ProjectData.instance().load(fileHandle);
+            }
+        };
+        
+        if (!ProjectData.instance().areChangesSaved() && !ProjectData.instance().isNewProject()) {
+            dialogFactory.yesNoCancelDialog("Save Changes?",
+                    "Do you want to save changes to the existing project?"
+                    + "\nAll unsaved changes will be lost.",
+                    (int selection) -> {
+                        if (selection == 0) {
+                            saveFile(runnable);
+                        } else if (selection == 1) {
+//                            Main.instance().showDialogLoading(runnable);
+                        }
+                    });
+        } else {
+//            Main.instance().showDialogLoading(runnable);
+        }
+    }
+    
+    public void saveFile(Runnable runnable) {
+        if (ProjectData.instance().getSaveFile() != null) {
+            
+//            Main.instance().showDialogLoading(() -> {
+//                ProjectData.instance().saveFile();
+//                if (runnable != null) {
+//                    runnable.run();
+//                }
+//            });
+        } else {
+            saveAsFile(runnable);
+        }
+    }
+    
+    public void saveAsFile(Runnable runnable) {
+//        Main.instance().showDialogLoading(() -> {
+//            String defaultPath = "";
+//
+//            if (ProjectData.instance().getLastDirectory() != null) {
+//                FileHandle fileHandle = new FileHandle(defaultPath);
+//                if (fileHandle.exists()) {
+//                    defaultPath = ProjectData.instance().getLastDirectory();
+//                }
+//            }
+//
+//            String[] filterPatterns = {"*.scmp"};
+//
+//            File file = desktopWorker.saveDialog("Save skin file as...", defaultPath, filterPatterns, "Skin Composer files");
+//            if (file != null) {
+//                FileHandle fileHandle = new FileHandle(file);
+//                if (fileHandle.extension() == null || !fileHandle.extension().equals(".scmp")) {
+//                    fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".scmp");
+//                }
+//                ProjectData.instance().saveFile(fileHandle);
+//                if (runnable != null) {
+//                    runnable.run();
+//                }
+//            }
+//        });
+    }
+    
+    public void importFile() {
+//        Main.instance().showDialogLoading(() -> {
+//            String defaultPath = "";
+//
+//            if (ProjectData.instance().getLastDirectory() != null) {
+//                FileHandle fileHandle = new FileHandle(defaultPath);
+//                if (fileHandle.exists()) {
+//                    defaultPath = ProjectData.instance().getLastDirectory();
+//                }
+//            }
+//
+//            String[] filterPatterns = {"*.json"};
+//
+//            File file = desktopWorker.openDialog("Import skin...", defaultPath, filterPatterns, "Json files");
+//            if (file != null) {
+//                FileHandle fileHandle = new FileHandle(file);
+//                ProjectData.instance().setLastDirectory(fileHandle.parent().path());
+//                try {
+//                    JsonData.getInstance().readFile(fileHandle);
+//                    PanelClassBar.instance.populate();
+//                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//                    AtlasData.getInstance().atlasCurrent = false;
+//                    PanelPreviewProperties.instance.produceAtlas();
+//                    PanelPreviewProperties.instance.populate();
+//                } catch (Exception e) {
+//                    Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
+//                    DialogError.showError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
+//                }
+//            }
+//        });
+    }
+    
+    public void exportFile() {
+//        Main.instance().showDialogLoading(() -> {
+//            String defaultPath = "";
+//
+//            if (ProjectData.instance().getLastDirectory() != null) {
+//                FileHandle fileHandle = new FileHandle(defaultPath);
+//                if (fileHandle.exists()) {
+//                    defaultPath = ProjectData.instance().getLastDirectory();
+//                }
+//            }
+//
+//            String[] filterPatterns = {"*.json"};
+//
+//            File file = desktopWorker.saveDialog("Export skin...", defaultPath, filterPatterns, "Json files");
+//            if (file != null) {
+//                FileHandle fileHandle = new FileHandle(file);
+//                if (fileHandle.extension() == null || !fileHandle.extension().equals(".json")) {
+//                    fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".json");
+//                }
+//                ProjectData.instance().setLastDirectory(fileHandle.parent().path());
+//                JsonData.getInstance().writeFile(fileHandle);
+//                
+//                try {
+//                    AtlasData.getInstance().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
+//                } catch (Exception ex) {
+//                    Gdx.app.error(PanelMenuBar.class.getName(), "Error while writing texture atlas", ex);
+//                    DialogError.showError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
+//                }
+//                
+//                for (FontData font : JsonData.getInstance().getFonts()) {
+//                    if (!font.file.parent().equals(fileHandle.parent())) {
+//                        font.file.copyTo(fileHandle.parent());
+//                    }
+//                }
+//            }
+//        });
     }
 }

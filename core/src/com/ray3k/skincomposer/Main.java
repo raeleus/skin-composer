@@ -108,7 +108,7 @@ public class Main extends ApplicationAdapter {
         
         RootTable root = new RootTable(stage, skin);
         root.setFillParent(true);
-        root.addListener(new MainListener(root, dialogFactory));
+        root.addListener(new MainListener(root, dialogFactory, desktopWorker));
         stage.addActor(root);
     }
     
@@ -196,34 +196,9 @@ public class Main extends ApplicationAdapter {
             }
         }
     }
-    
-    public void showDialogError(String title, String message, Runnable runnable) {
-        Dialog dialog = new Dialog(title, skin, "dialog") {
-            @Override
-            public boolean remove() {
-                if (runnable != null) {
-                    runnable.run();
-                }
-                return super.remove();
-            }
-            
-        };
-        
-        dialog.text(message);
-        dialog.button("OK");
-        dialog.show(stage);
-    }
 
     public DesktopWorker getDesktopWorker() {
         return desktopWorker;
-    }
-
-    public void setDesktopWorker(DesktopWorker textureWorker) {
-        this.desktopWorker = textureWorker;
-    }
-
-    public Stage getStage() {
-        return stage;
     }
 
     public boolean isListeningForKeys() {
@@ -232,6 +207,14 @@ public class Main extends ApplicationAdapter {
 
     public void setListeningForKeys(boolean listeningForKeys) {
         this.listeningForKeys = listeningForKeys;
+    }
+    
+    public void setDesktopWorker(DesktopWorker textureWorker) {
+        this.desktopWorker = textureWorker;
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 
     public AnimatedDrawable getLoadingAnimation() {
