@@ -1026,9 +1026,7 @@ public class DialogDrawables extends Dialog {
     }
     
     @Override
-    public boolean remove() {
-        Main.instance().setListeningForKeys(true);
-        
+    public boolean remove() {        
         Main.instance().getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
         
         try {

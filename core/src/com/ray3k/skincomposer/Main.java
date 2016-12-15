@@ -50,7 +50,6 @@ public class Main extends ApplicationAdapter {
     private static Skin skin;
     private DialogFactory dialogFactory;
     private DesktopWorker desktopWorker;
-    private boolean listeningForKeys;
     private AnimatedDrawable loadingAnimation;
     private UndoableManager undoableManager;
     
@@ -71,7 +70,6 @@ public class Main extends ApplicationAdapter {
     
     private void initDefaults() {
         if (Utils.isMac()) System.setProperty("java.awt.headless", "true");
-        listeningForKeys = true;
         
         dialogFactory = new DialogFactory(skin, stage);
         undoableManager = new UndoableManager();
@@ -199,14 +197,6 @@ public class Main extends ApplicationAdapter {
 
     public DesktopWorker getDesktopWorker() {
         return desktopWorker;
-    }
-
-    public boolean isListeningForKeys() {
-        return listeningForKeys;
-    }
-
-    public void setListeningForKeys(boolean listeningForKeys) {
-        this.listeningForKeys = listeningForKeys;
     }
     
     public void setDesktopWorker(DesktopWorker textureWorker) {

@@ -81,8 +81,6 @@ public class DialogColors extends Dialog {
         
         this.dialogFactory = dialogFactory;
         
-        Main.instance().setListeningForKeys(false);
-        
         this.listener = listener;
         this.skin = skin;
         this.styleProperty = styleProperty;
@@ -161,14 +159,6 @@ public class DialogColors extends Dialog {
         Dialog dialog = super.show(stage);
         stage.setScrollFocus(scrollPane);
         return dialog;
-    }
-
-    @Override
-    public boolean remove() {
-        if (!selectingForTintedDrawable) {
-            Main.instance().setListeningForKeys(true);
-        }
-        return super.remove();
     }
     
     private void showColorPicker() {

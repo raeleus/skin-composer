@@ -62,8 +62,6 @@ public class DialogSettings extends Dialog {
         
         this.dialogFactory = dialogFactory;
         
-        Main.instance().setListeningForKeys(false);
-        
         this.skin = skin;
         
         spinnerStyle = new Spinner.SpinnerStyle(skin.get("spinner-minus-h", Button.ButtonStyle.class), skin.get("spinner-plus-h", Button.ButtonStyle.class), skin.get("default", TextField.TextFieldStyle.class));
@@ -92,7 +90,6 @@ public class DialogSettings extends Dialog {
 
     @Override
     public boolean remove() {
-        Main.instance().setListeningForKeys(true);
         //todo: fix this
 //        PanelStatusBar.instance.message("Settings Updated");
         return super.remove();
