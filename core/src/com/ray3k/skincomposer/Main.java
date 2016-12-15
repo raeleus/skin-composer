@@ -24,17 +24,10 @@
 package com.ray3k.skincomposer;
 
 import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.skincomposer.dialog.DialogDrawables;
-import com.ray3k.skincomposer.dialog.DialogColors;
-import com.ray3k.skincomposer.dialog.DialogAbout;
-import com.ray3k.skincomposer.panel.PanelMenuBar;
 import com.ray3k.skincomposer.data.StyleData;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -43,18 +36,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
-import com.ray3k.skincomposer.dialog.DialogColorPicker;
-import com.ray3k.skincomposer.dialog.DialogColorPicker.ColorListener;
-import com.ray3k.skincomposer.dialog.DialogColors.DialogColorsListener;
-import com.ray3k.skincomposer.dialog.DialogFonts;
-import com.ray3k.skincomposer.dialog.DialogLoading;
-import com.ray3k.skincomposer.dialog.DialogSettings;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class Main extends ApplicationAdapter {
@@ -64,10 +50,9 @@ public class Main extends ApplicationAdapter {
     private static Skin skin;
     private DialogFactory dialogFactory;
     private DesktopWorker desktopWorker;
-    private Array<Undoable> undoables;
-    private int undoIndex;
     private boolean listeningForKeys;
     private AnimatedDrawable loadingAnimation;
+    private UndoableManager undoableManager;
     
     public static Main instance() {
         return instance;
@@ -88,10 +73,8 @@ public class Main extends ApplicationAdapter {
         if (Utils.isMac()) System.setProperty("java.awt.headless", "true");
         listeningForKeys = true;
         
-        undoables = new Array<>();
-        undoIndex = -1;
-        
         dialogFactory = new DialogFactory(skin, stage);
+        undoableManager = new UndoableManager();
         
         desktopWorker.attachLogListener();
         desktopWorker.sizeWindowToFit(800, 800, 50, Gdx.graphics);
@@ -243,86 +226,6 @@ public class Main extends ApplicationAdapter {
         return stage;
     }
 
-    public void clearUndoables() {
-        undoables.clear();
-        undoIndex = -1;
-        
-        PanelMenuBar.instance().getUndoButton().setDisabled(true);
-        PanelMenuBar.instance().getUndoButton().setText("Undo");
-        
-        PanelMenuBar.instance().getRedoButton().setDisabled(true);
-        PanelMenuBar.instance().getRedoButton().setText("Redo");
-    }
-    
-    public void undo() {
-        if (undoIndex >= 0 && undoIndex < undoables.size) {
-            ProjectData.instance().setChangesSaved(false);
-            Undoable undoable = undoables.get(undoIndex);
-            undoable.undo();
-            undoIndex--;
-
-            if (undoIndex < 0) {
-                PanelMenuBar.instance().getUndoButton().setDisabled(true);
-                PanelMenuBar.instance().getUndoButton().setText("Undo");
-            } else {
-                PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
-            }
-
-            PanelMenuBar.instance().getRedoButton().setDisabled(false);
-            PanelMenuBar.instance().getRedoButton().setText("Redo " + undoable.getUndoText());
-        }
-    }
-    
-    public void redo() {
-        if (undoIndex >= -1 && undoIndex < undoables.size) {
-            ProjectData.instance().setChangesSaved(false);
-            if (undoIndex < undoables.size - 1) {
-                undoIndex++;
-                undoables.get(undoIndex).redo();
-            }
-
-            if (undoIndex >= undoables.size - 1) {
-                PanelMenuBar.instance().getRedoButton().setDisabled(true);
-                PanelMenuBar.instance().getRedoButton().setText("Redo");
-            } else {
-                PanelMenuBar.instance().getRedoButton().setText("Redo " + undoables.get(undoIndex + 1).getUndoText());
-            }
-
-            PanelMenuBar.instance().getUndoButton().setDisabled(false);
-            PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
-        }
-    }
-    
-    public void addUndoable(Undoable undoable, boolean redoImmediately) {
-        ProjectData.instance().setChangesSaved(false);
-        undoIndex++;
-        if (undoIndex <= undoables.size - 1) {
-            undoables.removeRange(undoIndex, undoables.size - 1);
-        }
-        undoables.add(undoable);
-        
-        if (redoImmediately) {
-            undoable.redo();
-        }
-        
-        PanelMenuBar.instance().getRedoButton().setDisabled(true);
-        PanelMenuBar.instance().getRedoButton().setText("Redo");
-        PanelMenuBar.instance().getUndoButton().setDisabled(false);
-        PanelMenuBar.instance().getUndoButton().setText("Undo " + undoable.getUndoText());
-        
-        if (undoables.size > ProjectData.instance().getMaxUndos()) {
-            int offset = undoables.size - ProjectData.instance().getMaxUndos();
-            
-            undoIndex -= offset;
-            undoIndex = MathUtils.clamp(undoIndex, -1, undoables.size - 1);
-            undoables.removeRange(0, offset - 1);
-        }
-    }
-    
-    public void addUndoable(Undoable undoable) {
-        addUndoable(undoable, false);
-    }
-
     public boolean isListeningForKeys() {
         return listeningForKeys;
     }
@@ -337,5 +240,13 @@ public class Main extends ApplicationAdapter {
 
     public Skin getSkin() {
         return skin;
+    }
+
+    public UndoableManager getUndoableManager() {
+        return undoableManager;
+    }
+
+    public void setUndoableManager(UndoableManager undoableManager) {
+        this.undoableManager = undoableManager;
     }
 }

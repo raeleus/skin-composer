@@ -86,14 +86,15 @@ public class DialogSettings extends Dialog {
             ProjectData.instance().setMaxTextureDimensions(MathUtils.nextPowerOfTwo(textureWidth), MathUtils.nextPowerOfTwo(textureHeight));
             ProjectData.instance().setMaxUndos(maxUndos);
             ProjectData.instance().setStripWhitespace(useStripWhitespace);
-            Main.instance().clearUndoables();
+            Main.instance().getUndoableManager().clearUndoables();
         }
     }
 
     @Override
     public boolean remove() {
         Main.instance().setListeningForKeys(true);
-        PanelStatusBar.instance.message("Settings Updated");
+        //todo: fix this
+//        PanelStatusBar.instance.message("Settings Updated");
         return super.remove();
     }
 

@@ -346,34 +346,34 @@ public class MainOld extends ApplicationAdapter {
         }
     }
     
-    public void showDialogDrawables(StyleProperty property, EventListener listener) {
-        DialogDrawables dialog = new DialogDrawables(newSkin, "dialog", property, listener);
-        dialog.setFillParent(true);
-        dialog.show(stage);
-    }
-    
-    public void showDialogDrawables(StyleProperty property) {
-        showDialogDrawables(property, null);
-    }
-    
-    public void showDialogDrawables() {
-        showDialogDrawables(null);
-    }
-    
-    public void showDialogColors(StyleProperty styleProperty, DialogColorsListener listener) {
-        DialogColors dialog = new DialogColors(newSkin, "dialog", styleProperty, listener);
-        dialog.setFillParent(true);
-        dialog.show(stage);
-        dialog.populate();
-    }
-    
-    public void showDialogColors(StyleProperty styleProperty) {
-        showDialogColors(styleProperty, null);
-    }
-    
-    public void showDialogColors() {
-        showDialogColors(null);
-    }
+//    public void showDialogDrawables(StyleProperty property, EventListener listener) {
+//        DialogDrawables dialog = new DialogDrawables(newSkin, "dialog", property, listener);
+//        dialog.setFillParent(true);
+//        dialog.show(stage);
+//    }
+//    
+//    public void showDialogDrawables(StyleProperty property) {
+//        showDialogDrawables(property, null);
+//    }
+//    
+//    public void showDialogDrawables() {
+//        showDialogDrawables(null);
+//    }
+//    
+//    public void showDialogColors(StyleProperty styleProperty, DialogColorsListener listener) {
+//        DialogColors dialog = new DialogColors(newSkin, "dialog", styleProperty, listener);
+//        dialog.setFillParent(true);
+//        dialog.show(stage);
+//        dialog.populate();
+//    }
+//    
+//    public void showDialogColors(StyleProperty styleProperty) {
+//        showDialogColors(styleProperty, null);
+//    }
+//    
+//    public void showDialogColors() {
+//        showDialogColors(null);
+//    }
     
     public void showDialogAbout() {
         DialogAbout dialog = new DialogAbout(newSkin, "dialog");
@@ -404,10 +404,10 @@ public class MainOld extends ApplicationAdapter {
         dialog.show(stage);
     }
     
-    public void showDialogSettings() {
-        DialogSettings dialog = new DialogSettings("", newSkin, "dialog");
-        dialog.show(stage);
-    }
+//    public void showDialogSettings() {
+//        DialogSettings dialog = new DialogSettings("", newSkin, "dialog");
+//        dialog.show(stage);
+//    }
     
     public void showCloseDialog() {
         if (ProjectData.instance().areChangesSaved() || ProjectData.instance().isNewProject()) {

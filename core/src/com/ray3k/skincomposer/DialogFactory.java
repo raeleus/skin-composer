@@ -20,8 +20,8 @@ import com.ray3k.skincomposer.dialog.DialogSettings;
 import com.ray3k.skincomposer.panel.PanelMenuBar;
 
 public class DialogFactory {
-    private Skin skin;
-    private Stage stage;
+    private final Skin skin;
+    private final Stage stage;
     private boolean showingCloseDialog;
 
     public DialogFactory(Skin skin, Stage stage) {

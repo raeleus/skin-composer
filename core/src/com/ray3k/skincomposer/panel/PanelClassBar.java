@@ -150,7 +150,7 @@ public class PanelClassBar {
             @Override
             protected void result(Object object) {
                 if ((Boolean)object) {
-                    Main.instance().addUndoable(new NewStyleUndoable(classSelectBox, styleSelectBox, textField), true);
+                    Main.instance().getUndoableManager().addUndoable(new NewStyleUndoable(classSelectBox, styleSelectBox, textField), true);
                 }
             }
         };
@@ -160,7 +160,7 @@ public class PanelClassBar {
         textField.setTextFieldListener((TextField textField1, char c) -> {
             if (c == '\n') {
                 if (!okButton.isDisabled()) {
-                    Main.instance().addUndoable(new NewStyleUndoable(classSelectBox, styleSelectBox, textField1), true);
+                    Main.instance().getUndoableManager().addUndoable(new NewStyleUndoable(classSelectBox, styleSelectBox, textField1), true);
                     dialog.hide();
                 }
                 Main.instance().getStage().setKeyboardFocus(textField1);
@@ -206,7 +206,7 @@ public class PanelClassBar {
             @Override
             protected void result(Object object) {
                 if ((Boolean)object) {
-                    Main.instance().addUndoable(new DuplicateStyleUndoable(styleSelectBox, classSelectBox, textField), true);
+                    Main.instance().getUndoableManager().addUndoable(new DuplicateStyleUndoable(styleSelectBox, classSelectBox, textField), true);
                 }
             }
         };
@@ -217,7 +217,7 @@ public class PanelClassBar {
         textField.setTextFieldListener((TextField textField1, char c) -> {
             if (c == '\n') {
                 if (!okButton.isDisabled()) {
-                    Main.instance().addUndoable(new DuplicateStyleUndoable(styleSelectBox, classSelectBox, textField1), true);
+                    Main.instance().getUndoableManager().addUndoable(new DuplicateStyleUndoable(styleSelectBox, classSelectBox, textField1), true);
                     dialog.hide();
                 }
                 Main.instance().getStage().setKeyboardFocus(textField1);
@@ -262,7 +262,7 @@ public class PanelClassBar {
             @Override
             protected void result(Object object) {
                 if ((Boolean)object) {
-                    Main.instance().addUndoable(new DeleteStyleUndoable(styleSelectBox, classSelectBox), true);
+                    Main.instance().getUndoableManager().addUndoable(new DeleteStyleUndoable(styleSelectBox, classSelectBox), true);
                 }
             }
         };

@@ -309,7 +309,7 @@ public class DialogFonts extends Dialog {
                             }
                         }
                         
-                        Main.instance().clearUndoables();
+                        Main.instance().getUndoableManager().clearUndoables();
                         
                         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                         PanelPreviewProperties.instance.render();
@@ -443,7 +443,7 @@ public class DialogFonts extends Dialog {
             DialogError.showError("Rename Font Error...", "Error trying to rename a font.\n\nOpen log?");
         }
 
-        Main.instance().clearUndoables();
+        Main.instance().getUndoableManager().clearUndoables();
 
         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         PanelPreviewProperties.instance.render();

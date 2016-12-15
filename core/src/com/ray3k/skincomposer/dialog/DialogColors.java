@@ -374,7 +374,7 @@ public class DialogColors extends Dialog {
                             }
                         }
                         
-                        Main.instance().clearUndoables();
+                        Main.instance().getUndoableManager().clearUndoables();
                         
                         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                         PanelPreviewProperties.instance.render();
@@ -428,7 +428,7 @@ public class DialogColors extends Dialog {
     private void recolorColor(ColorData colorData, Color color) {
         colorData.color = color;
 
-        Main.instance().clearUndoables();
+        Main.instance().getUndoableManager().clearUndoables();
 
         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         PanelPreviewProperties.instance.produceAtlas();
@@ -550,7 +550,7 @@ public class DialogColors extends Dialog {
             DialogError.showError("Name Error...","Error while naming a color.\\nPlease ensure name is formatted appropriately:\\nNo spaces, don't start with a number, - and _ acceptable.\n\nOpen log?");
         }
 
-        Main.instance().clearUndoables();
+        Main.instance().getUndoableManager().clearUndoables();
 
         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         PanelPreviewProperties.instance.render();

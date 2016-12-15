@@ -191,7 +191,7 @@ public class PanelMenuBar {
         undoButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance().undo();
+                Main.instance().getUndoableManager().undo();
             }
         });
         menuItemTable.add(undoButton);
@@ -204,7 +204,7 @@ public class PanelMenuBar {
         redoButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Main.instance().redo();
+                Main.instance().getUndoableManager().redo();
             }
         });
         menuItemTable.add(redoButton);

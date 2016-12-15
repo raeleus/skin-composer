@@ -553,7 +553,7 @@ public class DialogDrawables extends Dialog {
         String oldName = drawable.name;
         drawable.name = name;
 
-        Main.instance().clearUndoables();
+        Main.instance().getUndoableManager().clearUndoables();
         updateStyleValuesForRename(oldName, name);
         
         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
@@ -599,7 +599,7 @@ public class DialogDrawables extends Dialog {
             PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
             PanelPreviewProperties.instance.render();
 
-            Main.instance().clearUndoables();
+            Main.instance().getUndoableManager().clearUndoables();
 
             gatherDrawables();
             sortBySelectedMode();
