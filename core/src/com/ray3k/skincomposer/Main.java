@@ -153,8 +153,4 @@ public class Main extends ApplicationAdapter {
     public UndoableManager getUndoableManager() {
         return undoableManager;
     }
-
-    public void setUndoableManager(UndoableManager undoableManager) {
-        this.undoableManager = undoableManager;
-    }
 }
