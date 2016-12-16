@@ -160,7 +160,16 @@ public class JsonData implements Json.Serializable {
                 }
             } //styles
             else {
-                int classIndex = Main.styleClasses.indexOf(ClassReflection.forName(child.name), false);
+                int classIndex = 0;
+                Class matchClass = ClassReflection.forName(child.name);
+                for (Class clazz : Main.STYLE_CLASSES) {
+                    if (clazz.equals(matchClass)) {
+                        break;
+                    } else {
+                        classIndex++;
+                    }
+                }
+                
                 Class clazz = Main.BASIC_CLASSES[classIndex];
                 for (JsonValue style : child.iterator()) {
                     StyleData data = newStyle(clazz, style.name);
@@ -249,8 +258,8 @@ public class JsonData implements Json.Serializable {
 
         //styles
         Array<Array<StyleData>> valuesArray = classStyleMap.values().toArray();
-        for (int i = 0; i < Main.styleClasses.size; i++) {
-            Class clazz = Main.styleClasses.get(i);
+        for (int i = 0; i < Main.STYLE_CLASSES.length; i++) {
+            Class clazz = Main.STYLE_CLASSES[i];
             Array<StyleData> styles = valuesArray.get(i);
 
             //check if any style has the mandatory fields necessary to write
