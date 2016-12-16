@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.ray3k.skincomposer.RootTable.RootTableListener;
+import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import java.io.File;
 
@@ -38,11 +39,15 @@ public class MainListener extends RootTableListener {
     private RootTable root;
     private DialogFactory dialogFactory;
     private DesktopWorker desktopWorker;
+    private ProjectData projectData;
+    private JsonData jsonData;
     
-    public MainListener(RootTable root, DialogFactory dialogFactory, DesktopWorker desktopWorker) {
+    public MainListener(RootTable root, DialogFactory dialogFactory, DesktopWorker desktopWorker, ProjectData projectData, JsonData jsonData) {
         this.root = root;
         this.dialogFactory = dialogFactory;
         this.desktopWorker = desktopWorker;
+        this.projectData = projectData;
+        this.jsonData = jsonData;
     }
     
     @Override
@@ -184,11 +189,11 @@ public class MainListener extends RootTableListener {
                         if (selection == 0) {
                             saveFile(runnable);
                         } else if (selection == 1) {
-//                            Main.instance().showDialogLoading(runnable);
+                            dialogFactory.showDialogLoading(runnable);
                         }
                     });
         } else {
-//            Main.instance().showDialogLoading(runnable);
+            dialogFactory.showDialogLoading(runnable);
         }
     }
     

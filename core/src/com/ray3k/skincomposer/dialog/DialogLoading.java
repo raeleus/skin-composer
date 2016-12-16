@@ -40,7 +40,7 @@ public class DialogLoading extends Dialog {
     private Runnable runnable;
     
     public DialogLoading(String title, Skin skin, Runnable runnable) {
-        super(title, skin, "dialog-panel");
+        super(title, skin, "dialog");
         this.skin = skin;
         this.runnable = runnable;
         setFillParent(true);
@@ -67,7 +67,7 @@ public class DialogLoading extends Dialog {
         Table t = getContentTable();
         Label label = new Label("Loading...", skin, "title");
         label.setAlignment(Align.center);
-        t.add(label).growX();
+        t.add(label);
         t.row();
         Table table = new Table(skin);
         table.setBackground(Main.instance().getLoadingAnimation());

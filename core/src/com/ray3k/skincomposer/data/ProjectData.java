@@ -38,6 +38,7 @@ import com.ray3k.skincomposer.panel.PanelPreviewProperties;
 import com.ray3k.skincomposer.panel.PanelStyleProperties;
 
 public class ProjectData implements Json.Serializable{
+    //todo: remove instance and use a regular constructor
     private static ProjectData instance;
     private static Preferences generalPref;
     private ObjectMap<String, Object> preferences;
@@ -123,7 +124,7 @@ public class ProjectData implements Json.Serializable{
             generalPref.flush();
         }
         
-        PanelMenuBar.instance().getRecentFilesButton().setDisabled(false);
+//        PanelMenuBar.instance().getRecentFilesButton().setDisabled(false);
     }
     
     public void setMaxTextureDimensions(int width, int height) {
@@ -250,11 +251,11 @@ public class ProjectData implements Json.Serializable{
         putRecentFile(file.path());
         generalPref.putString("last-save-directory", file.parent().path());
         generalPref.flush();
-        PanelClassBar.instance.populate();
-        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//        PanelClassBar.instance.populate();
+//        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         AtlasData.getInstance().atlasCurrent = false;
-        PanelPreviewProperties.instance.produceAtlas();
-        PanelPreviewProperties.instance.populate();
+//        PanelPreviewProperties.instance.produceAtlas();
+//        PanelPreviewProperties.instance.populate();
         instance.setChangesSaved(true);
     }
     

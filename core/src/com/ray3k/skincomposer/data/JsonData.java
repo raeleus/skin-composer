@@ -68,7 +68,7 @@ import com.ray3k.skincomposer.dialog.DialogError;
 import java.io.StringWriter;
 
 public class JsonData implements Json.Serializable {
-
+    //todo: remove instance and use a regular constructor
     private static JsonData instance;
     private Array<ColorData> colors;
     private Array<FontData> fonts;
@@ -82,7 +82,14 @@ public class JsonData implements Json.Serializable {
     }
 
     public static void loadInstance(JsonData instance) {
-        JsonData.instance = instance;
+        JsonData.instance.colors.clear();
+        JsonData.instance.colors.addAll(instance.colors);
+        
+        JsonData.instance.fonts.clear();
+        JsonData.instance.fonts.addAll(instance.fonts);
+        
+        JsonData.instance.classStyleMap.clear();
+        JsonData.instance.classStyleMap.putAll(instance.classStyleMap);
     }
 
     private JsonData() {

@@ -64,6 +64,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.ray3k.skincomposer.data.AtlasData;
+import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.Utils;
 
@@ -88,6 +89,8 @@ public class Main extends ApplicationAdapter {
     private DesktopWorker desktopWorker;
     private AnimatedDrawable loadingAnimation;
     private UndoableManager undoableManager;
+    private ProjectData projectData;
+    private JsonData jsonData;
     
     public static Main instance() {
         return instance;
@@ -130,6 +133,9 @@ public class Main extends ApplicationAdapter {
         loadingAnimation.addDrawable(skin.getDrawable("loading_6"));
         loadingAnimation.addDrawable(skin.getDrawable("loading_7"));
         
+        projectData = ProjectData.instance();
+        jsonData = JsonData.getInstance();
+        
         ProjectData.instance().randomizeId();
         ProjectData.instance().setMaxTextureDimensions(1024, 1024);
         ProjectData.instance().setMaxUndos(30);
@@ -142,7 +148,7 @@ public class Main extends ApplicationAdapter {
         
         RootTable root = new RootTable(stage, skin);
         root.setFillParent(true);
-        root.addListener(new MainListener(root, dialogFactory, desktopWorker));
+        root.addListener(new MainListener(root, dialogFactory, desktopWorker, projectData, jsonData));
         stage.addActor(root);
     }
     
