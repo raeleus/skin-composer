@@ -149,6 +149,7 @@ public class Main extends ApplicationAdapter {
         RootTable root = new RootTable(stage, skin);
         root.setFillParent(true);
         root.addListener(new MainListener(root, dialogFactory, desktopWorker, projectData, jsonData));
+        root.populate();
         stage.addActor(root);
     }
     

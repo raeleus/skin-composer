@@ -26,13 +26,18 @@ package com.ray3k.skincomposer;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.RootTable.RootTableListener;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
+import com.ray3k.skincomposer.data.StyleData;
+import com.ray3k.skincomposer.data.StyleProperty;
 import java.io.File;
 
 public class MainListener extends RootTableListener {
@@ -97,7 +102,6 @@ public class MainListener extends RootTableListener {
                 dialogFactory.showAbout();
                 break;
             case CLASS_SELECTED:
-                //set root table's style list
                 //set root table's style properties
                 //set scrollpanestyles, liststyles, and label styles
                 break;
@@ -117,25 +121,6 @@ public class MainListener extends RootTableListener {
             case DELETE_STYLE:
                 break;
             case RENAME_STYLE:
-                break;
-            case STYLE_PROPERTY:
-                if (event.styleProperty.type == Drawable.class) {
-                    //show drawable dialog
-                } else if (event.styleProperty.type == Color.class) {
-                    //show color dialog
-                } else if (event.styleProperty.type == BitmapFont.class) {
-                    //show fonts dialog
-                } else if (event.styleProperty.type == Float.TYPE) {
-                    //apply value
-                } else if (event.styleProperty.type == ScrollPaneStyle.class) {
-                    //apply value
-                } else if (event.styleProperty.type == LabelStyle.class) {
-                    //apply value
-                } else if (event.styleProperty.type == ListStyle.class) {
-                    //apply value
-                } else if (event.styleProperty.type == CustomStyle.class) {
-                    //show custom style dialog
-                }
                 break;
             case PREVIEW_PROPERTY:
                 break;
@@ -179,6 +164,7 @@ public class MainListener extends RootTableListener {
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
                 projectData.load(fileHandle);
+                root.populate();
             }
         };
         
@@ -307,5 +293,43 @@ public class MainListener extends RootTableListener {
 //                }
 //            }
 //        });
+    }
+
+    @Override
+    public void loadClasses(SelectBox<String> classSelectBox) {
+        System.out.println("load classes");
+        Array<String> names = new Array<>();
+        for (Class clazz : Main.BASIC_CLASSES) {
+            names.add(clazz.getSimpleName());
+        }
+        classSelectBox.setItems(names);
+    }
+
+    @Override
+    public void loadStyles(SelectBox<String> classSelectBox, SelectBox<StyleData> styleSelectBox) {
+        Class selectedClass = Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()];
+        styleSelectBox.setItems(jsonData.getClassStyleMap().get(selectedClass));
+    }
+
+    @Override
+    public void stylePropertyChanged(StyleProperty styleProperty,
+            Actor styleActor) {
+        if (styleProperty.type == Drawable.class) {
+            //show drawable dialog
+        } else if (styleProperty.type == Color.class) {
+            //show color dialog
+        } else if (styleProperty.type == BitmapFont.class) {
+            //show fonts dialog
+        } else if (styleProperty.type == Float.TYPE) {
+            //apply value
+        } else if (styleProperty.type == ScrollPaneStyle.class) {
+            //apply value
+        } else if (styleProperty.type == LabelStyle.class) {
+            //apply value
+        } else if (styleProperty.type == ListStyle.class) {
+            //apply value
+        } else if (styleProperty.type == CustomStyle.class) {
+            //show custom style dialog
+        }
     }
 }

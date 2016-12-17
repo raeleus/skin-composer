@@ -55,14 +55,15 @@ import com.ray3k.skincomposer.MenuButton.MenuButtonListener;
 import com.ray3k.skincomposer.MenuButton.MenuButtonStyle;
 import com.ray3k.skincomposer.MenuList.MenuListStyle;
 import com.ray3k.skincomposer.Spinner.SpinnerStyle;
+import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class RootTable extends Table {
     private final Stage stage;
     private boolean draggingCursor;
-    private SelectBox classSelectBox;
-    private SelectBox styleSelectBox;
+    private SelectBox<String> classSelectBox;
+    private SelectBox<StyleData> styleSelectBox;
     private Array<StyleProperty> styleProperties;
     private BrowseFieldStyle bfColorStyle;
     private BrowseFieldStyle bfDrawableStyle;
@@ -99,11 +100,10 @@ public class RootTable extends Table {
         
         skin.add("default", menuButtonStyle);
         skin.add("default", menuListStyle);
-        
-        populate();
     }
     
-    private void populate() {
+    public void populate() {
+        clearChildren();
         addFileMenu();
         
         row();
@@ -185,17 +185,11 @@ public class RootTable extends Table {
         classSelectBox = new SelectBox(getSkin());
         table.add(classSelectBox).padRight(5.0f).minWidth(150.0f);
         
-        Array<String> names = new Array<>();
-        for (Class clazz : Main.BASIC_CLASSES) {
-            names.add(clazz.getSimpleName());
-        }
-        
-        classSelectBox.setItems(names);
-        
         classSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 fire(new RootTableEvent(RootTableEnum.CLASS_SELECTED));
+                fire(new LoadStylesEvent(classSelectBox, styleSelectBox));
             }
         });
         
@@ -228,7 +222,7 @@ public class RootTable extends Table {
         styleSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                fire(new RootTableEvent(RootTableEnum.STYLE_SELECTED));
+                fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.STYLE_SELECTED));
             }
         });
         
@@ -271,6 +265,9 @@ public class RootTable extends Table {
                 fire(new RootTableEvent(RootTableEnum.RENAME_STYLE));
             }
         });
+        
+        fire(new LoadClassesEvent(classSelectBox));
+        fire(new LoadStylesEvent(classSelectBox, styleSelectBox));
     }
     
     private void addStyleAndPreviewSplit(InputListener scrollPaneListener, InputListener iBeamListener) {
@@ -401,7 +398,7 @@ public class RootTable extends Table {
         
         @Override
         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-            fire(new RootTableEvent(RootTableEnum.STYLE_PROPERTY, styleProp, styleActor));
+            fire(new StylePropertyEvent(styleProp, styleActor));
         }
     }
     
@@ -575,20 +572,41 @@ public class RootTable extends Table {
         NEW, OPEN, RECENT_FILES, SAVE, SAVE_AS, IMPORT, EXPORT, EXIT, UNDO,
         REDO, SETTINGS, COLORS, FONTS, DRAWABLES, ABOUT, CLASS_SELECTED,
         NEW_CLASS, DELETE_CLASS, STYLE_SELECTED, NEW_STYLE, DUPLICATE_STYLE,
-        DELETE_STYLE, RENAME_STYLE, STYLE_PROPERTY, PREVIEW_PROPERTY
+        DELETE_STYLE, RENAME_STYLE, PREVIEW_PROPERTY
     }
     
     public static class RootTableEvent extends Event {
         public RootTableEnum rootTableEnum;
-        public StyleProperty styleProperty;
-        public Actor styleActor;
         
         public RootTableEvent(RootTableEnum rootTableEnum) {
             this.rootTableEnum = rootTableEnum;
         }
-        
-        public RootTableEvent(RootTableEnum rootTableEnum, StyleProperty styleProperty, Actor styleActor) {
-            this.rootTableEnum = rootTableEnum;
+    }
+    
+    private static class LoadClassesEvent extends Event {
+        SelectBox<String> classSelectBox;
+
+        public LoadClassesEvent(SelectBox<String> classSelectBox) {
+            this.classSelectBox = classSelectBox;
+        }
+    }
+    
+    private static class LoadStylesEvent extends Event {
+        SelectBox<String> classSelectBox;
+        SelectBox<StyleData> styleSelectBox;
+
+        public LoadStylesEvent(SelectBox<String> classSelectBox,
+                SelectBox<StyleData> styleSelectBox) {
+            this.classSelectBox = classSelectBox;
+            this.styleSelectBox = styleSelectBox;
+        }
+    }
+    
+    private static class StylePropertyEvent extends Event {
+        StyleProperty styleProperty;
+        Actor styleActor;
+
+        public StylePropertyEvent(StyleProperty styleProperty, Actor styleActor) {
             this.styleProperty = styleProperty;
             this.styleActor = styleActor;
         }
@@ -599,10 +617,22 @@ public class RootTable extends Table {
         public boolean handle(Event event) {
             if (event instanceof RootTableEvent) {
                 rootEvent((RootTableEvent) event);
+            } else if (event instanceof LoadClassesEvent) {
+                loadClasses(((LoadClassesEvent)event).classSelectBox);
+            } else if (event instanceof LoadStylesEvent) {
+                loadStyles(((LoadStylesEvent)event).classSelectBox, ((LoadStylesEvent)event).styleSelectBox);
+            } else if (event instanceof StylePropertyEvent) {
+                stylePropertyChanged(((StylePropertyEvent) event).styleProperty, ((StylePropertyEvent) event).styleActor);
             }
             return false;
         }
         
         public abstract void rootEvent(RootTableEvent event);
+        
+        public abstract void stylePropertyChanged(StyleProperty styleProperty, Actor styleActor);
+    
+        public abstract void loadClasses(SelectBox<String> classSelectBox);
+        
+        public abstract void loadStyles(SelectBox<String> classSelectBox, SelectBox<StyleData> styleSelectBox);
     }
 }

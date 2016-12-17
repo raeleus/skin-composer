@@ -24,8 +24,6 @@
 package com.ray3k.skincomposer;
 
 import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.skincomposer.dialog.DialogDrawables;
-import com.ray3k.skincomposer.dialog.DialogColors;
 import com.ray3k.skincomposer.dialog.DialogAbout;
 import com.ray3k.skincomposer.panel.PanelPreview;
 import com.ray3k.skincomposer.panel.PanelStyleProperties;
@@ -64,10 +62,8 @@ import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
 import com.ray3k.skincomposer.dialog.DialogColorPicker.ColorListener;
-import com.ray3k.skincomposer.dialog.DialogColors.DialogColorsListener;
 import com.ray3k.skincomposer.dialog.DialogFonts;
 import com.ray3k.skincomposer.dialog.DialogLoading;
-import com.ray3k.skincomposer.dialog.DialogSettings;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class MainOld extends ApplicationAdapter {
