@@ -150,10 +150,10 @@ public class MainListener extends RootTableListener {
                     (int selection) -> {
                         if (selection == 0) {
                             saveFile(() -> {
-                                ProjectData.instance().clear();
+                                projectData.clear();
                             });
                         } else if (selection == 1) {
-                            ProjectData.instance().clear();
+                            projectData.clear();
                         }
                     });
         } else {
@@ -165,10 +165,11 @@ public class MainListener extends RootTableListener {
         Runnable runnable = () -> {
             String defaultPath = "";
 
-            if (ProjectData.instance().getLastDirectory() != null) {
+            //todo:compress this to a single line. Put a method in ProjectData
+            if (projectData.getLastDirectory() != null) {
                 FileHandle fileHandle = new FileHandle(defaultPath);
                 if (fileHandle.exists()) {
-                    defaultPath = ProjectData.instance().getLastDirectory();
+                    defaultPath = projectData.getLastDirectory();
                 }
             }
 
@@ -177,11 +178,11 @@ public class MainListener extends RootTableListener {
             File file = desktopWorker.openDialog("Open skin file...", defaultPath, filterPatterns, "Skin Composer files");
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
-                ProjectData.instance().load(fileHandle);
+                projectData.load(fileHandle);
             }
         };
         
-        if (!ProjectData.instance().areChangesSaved() && !ProjectData.instance().isNewProject()) {
+        if (!projectData.areChangesSaved() && !projectData.isNewProject()) {
             dialogFactory.yesNoCancelDialog("Save Changes?",
                     "Do you want to save changes to the existing project?"
                     + "\nAll unsaved changes will be lost.",
@@ -201,7 +202,7 @@ public class MainListener extends RootTableListener {
         if (ProjectData.instance().getSaveFile() != null) {
             
 //            Main.instance().showDialogLoading(() -> {
-//                ProjectData.instance().saveFile();
+//                projectData.saveFile();
 //                if (runnable != null) {
 //                    runnable.run();
 //                }
@@ -215,10 +216,10 @@ public class MainListener extends RootTableListener {
 //        Main.instance().showDialogLoading(() -> {
 //            String defaultPath = "";
 //
-//            if (ProjectData.instance().getLastDirectory() != null) {
+//            if (projectData.getLastDirectory() != null) {
 //                FileHandle fileHandle = new FileHandle(defaultPath);
 //                if (fileHandle.exists()) {
-//                    defaultPath = ProjectData.instance().getLastDirectory();
+//                    defaultPath = projectData.getLastDirectory();
 //                }
 //            }
 //
@@ -230,7 +231,7 @@ public class MainListener extends RootTableListener {
 //                if (fileHandle.extension() == null || !fileHandle.extension().equals(".scmp")) {
 //                    fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".scmp");
 //                }
-//                ProjectData.instance().saveFile(fileHandle);
+//                projectData.saveFile(fileHandle);
 //                if (runnable != null) {
 //                    runnable.run();
 //                }
@@ -242,7 +243,7 @@ public class MainListener extends RootTableListener {
 //        Main.instance().showDialogLoading(() -> {
 //            String defaultPath = "";
 //
-//            if (ProjectData.instance().getLastDirectory() != null) {
+//            if (projectData.getLastDirectory() != null) {
 //                FileHandle fileHandle = new FileHandle(defaultPath);
 //                if (fileHandle.exists()) {
 //                    defaultPath = ProjectData.instance().getLastDirectory();
