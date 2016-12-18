@@ -24,11 +24,12 @@
 
 package com.ray3k.skincomposer;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -43,19 +44,14 @@ public class BrowseField extends Table {
     private TextField textField;
     private Button button;
     
+    //todo: make it so that mousing over the textfield triggers the highlight of the button as well
     public BrowseField(String valueText, BrowseFieldStyle style) {
+        setTouchable(Touchable.enabled);
         if (valueText == null) valueText = "";
         textField = new TextField(valueText, style.textFieldStyle);
         textField.setAlignment(Align.center);
         textField.setFocusTraversal(false);
-        textField.setDisabled(true);
-        textField.addListener(new ClickListener() {
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                super.touchUp(event, x, y, pointer, button);
-                fire(new ChangeListener.ChangeEvent());
-            }
-        });
+        textField.setTouchable(Touchable.disabled);
         add(textField).minWidth(35.0f).prefWidth(35.0f).growX();
         
         if (style.textButtonStyle != null) {
@@ -63,8 +59,45 @@ public class BrowseField extends Table {
         } else {
             button = new ImageButton(style.imageButtonStyle);
         }
-        
+        button.setTouchable(Touchable.disabled);
         add(button).padLeft(5.0f).bottom();
+        
+        addListener(new ClickListener() {
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer,
+                    Actor toActor) {
+                super.exit(event, x, y, pointer, toActor);
+                button.getClickListener().exit(event, x, y, pointer, toActor);
+            }
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer,
+                    Actor fromActor) {
+                super.enter(event, x, y, pointer, fromActor);
+                button.getClickListener().enter(event, x, y, pointer, fromActor);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer,
+                    int buttonNum) {
+                super.touchUp(event, x, y, pointer, buttonNum);
+                button.getClickListener().touchUp(event, x, y, pointer, buttonNum);
+            }
+
+            @Override
+            public void touchDragged(InputEvent event, float x, float y,
+                    int pointer) {
+                super.touchDragged(event, x, y, pointer);
+                button.getClickListener().touchDragged(event, x, y, pointer);
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y,
+                    int pointer, int buttonNum) {
+                button.getClickListener().touchDown(event, x, y, pointer, buttonNum);
+                return super.touchDown(event, x, y, pointer, buttonNum);
+            }
+        });
     }
 
     public TextField getTextField() {
