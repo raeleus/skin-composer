@@ -36,7 +36,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
@@ -44,7 +43,6 @@ public class BrowseField extends Table {
     private TextField textField;
     private Button button;
     
-    //todo: make it so that mousing over the textfield triggers the highlight of the button as well
     public BrowseField(String valueText, BrowseFieldStyle style) {
         setTouchable(Touchable.enabled);
         if (valueText == null) valueText = "";
