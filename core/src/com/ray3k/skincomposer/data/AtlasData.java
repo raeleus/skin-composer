@@ -178,7 +178,7 @@ public class AtlasData {
             }
         }
         
-        Main.instance().getDesktopWorker().texturePack(files, main.getProjectData().getSaveFile(), targetFile, main.getProjectData().getMaxTextureWidth(), main.getProjectData().getMaxTextureHeight(), main.getProjectData().getStripWhitespace());
+        main.getDesktopWorker().texturePack(files, main.getProjectData().getSaveFile(), targetFile, main.getProjectData().getMaxTextureWidth(), main.getProjectData().getMaxTextureHeight(), main.getProjectData().getStripWhitespace());
     }
     
     public void writeAtlas(FileHandle targetFile) throws Exception {
@@ -216,5 +216,10 @@ public class AtlasData {
     public void clearTempData() {
         FileHandle tempFolder = Gdx.files.local("temp/");
         tempFolder.deleteDirectory();
+    }
+    
+    public void set(AtlasData atlasData) {
+        drawables.clear();
+        drawables.addAll(atlasData.drawables);
     }
 }

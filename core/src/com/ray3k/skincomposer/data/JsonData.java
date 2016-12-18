@@ -410,4 +410,15 @@ public class JsonData implements Json.Serializable {
             }
         }
     }
+
+    public void set(JsonData jsonData) {
+        colors.clear();
+        colors.addAll(jsonData.colors);
+        
+        fonts.clear();
+        fonts.addAll(jsonData.fonts);
+        
+        classStyleMap.clear();
+        classStyleMap.putAll(jsonData.classStyleMap);
+    }
 }

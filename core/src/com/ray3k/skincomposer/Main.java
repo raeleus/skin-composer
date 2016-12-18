@@ -63,8 +63,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.ray3k.skincomposer.data.AtlasData;
-import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.Utils;
 

@@ -42,8 +42,8 @@ public class ProjectData implements Json.Serializable{
     private boolean newProject;
     private static final int MAX_RECENT_FILES = 5;
     private Main main;
-    private JsonData jsonData;
-    private AtlasData atlasData;
+    private final JsonData jsonData;
+    private final AtlasData atlasData;
     
     public ProjectData() {
         jsonData = new JsonData();
@@ -244,6 +244,8 @@ public class ProjectData implements Json.Serializable{
         Json json = new Json(JsonWriter.OutputType.minimal);
         ProjectData instance = json.fromJson(ProjectData.class, file);
         newProject = instance.newProject;
+        jsonData.set(instance.jsonData);
+        atlasData.set(instance.atlasData);
         preferences.putAll(instance.preferences);
         
         saveFile = file;
@@ -296,8 +298,8 @@ public class ProjectData implements Json.Serializable{
     @Override
     public void read(Json json, JsonValue jsonValue) {
         preferences = json.readValue("preferences", ObjectMap.class, jsonValue);
-        jsonData = json.readValue("jsonData", JsonData.class, jsonValue);
-        atlasData = json.readValue("atlasData", AtlasData.class, jsonValue);
+        jsonData.set(json.readValue("jsonData", JsonData.class, jsonValue));
+        atlasData.set(json.readValue("atlasData", AtlasData.class, jsonValue));
         if (!jsonValue.get("saveFile").isNull()) {
             saveFile = new FileHandle(jsonValue.getString("saveFile"));
         }
