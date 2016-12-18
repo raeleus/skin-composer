@@ -121,7 +121,7 @@ public class PanelStyleProperties {
             } else if (property.type.equals(Drawable.class)) {
                 final BrowseField browseField = new BrowseField(name, drawableFieldStyle);
                 if (!property.optional) {
-                    browseField.getLabel().setStyle(skin.get("error", LabelStyle.class));
+//                    browseField.getLabel().setStyle(skin.get("error", LabelStyle.class));
                 }
                 browseField.getTextField().setText((String)property.value);
                 browseField.addListener(new ChangeListener() {
@@ -141,7 +141,7 @@ public class PanelStyleProperties {
             } else if (property.type.equals(Color.class)) {
                 final BrowseField browseField = new BrowseField(name, colorFieldStyle);
                 if (!property.optional) {
-                    browseField.getLabel().setStyle(skin.get("error", LabelStyle.class));
+//                    browseField.getLabel().setStyle(skin.get("error", LabelStyle.class));
                 }
                 browseField.getTextField().setText((String)property.value);
                 browseField.addListener(new ChangeListener() {
@@ -160,7 +160,7 @@ public class PanelStyleProperties {
             } else if (property.type.equals(BitmapFont.class)) {
                 final BrowseField browseField = new BrowseField(name, fontFieldStyle);
                 if (!property.optional) {
-                    browseField.getLabel().setStyle(skin.get("error", LabelStyle.class));
+//                    browseField.getLabel().setStyle(skin.get("error", LabelStyle.class));
                 }
                 browseField.getTextField().setText((String)property.value);
                 browseField.addListener(new ChangeListener() {

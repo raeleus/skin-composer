@@ -35,6 +35,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
@@ -46,6 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -72,6 +75,8 @@ public class RootTable extends Table {
     private Array<ScrollPaneStyle> scrollPaneStyles;
     private Array<ListStyle> listStyles;
     private Array<LabelStyle> labelStyles;
+    private Table stylePropertiesTable;
+    private final ScrollPaneListener scrollPaneListener;
     
     public RootTable(Stage stage, Skin skin) {
         super(skin);
@@ -98,8 +103,14 @@ public class RootTable extends Table {
         
         menuButtonStyle.menuListStyle = menuListStyle;
         
+        bfColorStyle = new BrowseFieldStyle(skin.get("color", ImageButtonStyle.class), skin.get(TextFieldStyle.class), skin.get(LabelStyle.class));
+        bfDrawableStyle = new BrowseFieldStyle(skin.get("drawable", ImageButtonStyle.class), skin.get(TextFieldStyle.class), skin.get(LabelStyle.class));
+        bfFontStyle = new BrowseFieldStyle(skin.get("font", ImageButtonStyle.class), skin.get(TextFieldStyle.class), skin.get(LabelStyle.class));
+        
         skin.add("default", menuButtonStyle);
         skin.add("default", menuListStyle);
+        
+        scrollPaneListener = new ScrollPaneListener();
     }
     
     public void populate() {
@@ -110,7 +121,7 @@ public class RootTable extends Table {
         addClassBar();
         
         row();
-        addStyleAndPreviewSplit(new ScrollPaneListener(), new IbeamListener());
+        addStyleAndPreviewSplit(new IbeamListener());
         
         row();
         addStatusBar();
@@ -270,18 +281,18 @@ public class RootTable extends Table {
         fire(new LoadStylesEvent(classSelectBox, styleSelectBox));
     }
     
-    private void addStyleAndPreviewSplit(InputListener scrollPaneListener, InputListener iBeamListener) {
-        Table left = new Table();
-        left.setTouchable(Touchable.enabled);
+    private void addStyleAndPreviewSplit(InputListener iBeamListener) {
+        stylePropertiesTable = new Table();
+        stylePropertiesTable.setTouchable(Touchable.enabled);
         
-        addStyleProperties(left, scrollPaneListener);
+        addStyleProperties(stylePropertiesTable);
         
         Table right = new Table();
         right.setTouchable(Touchable.enabled);
         
         addPreviewPreviewPropertiesSplit(right, scrollPaneListener, iBeamListener);
         
-        SplitPane splitPane = new SplitPane(left, right, false, getSkin());
+        SplitPane splitPane = new SplitPane(stylePropertiesTable, right, false, getSkin());
         add(splitPane).grow();
         
         splitPane.addListener(new InputListener() {
@@ -323,12 +334,20 @@ public class RootTable extends Table {
         
     }
     
-    private void addStyleProperties(final Table left, InputListener scrollPaneListener) {
+    public void refreshStyleProperties() {
+        if (stylePropertiesTable != null) {
+            stylePropertiesTable.clearChildren();
+            addStyleProperties(stylePropertiesTable);
+        }
+    }
+    
+    private void addStyleProperties(final Table left) {
         Label label = new Label("Style Properties", getSkin(), "title");
         left.add(label);
         
         left.row();
         Table table = new Table();
+        table.defaults().padLeft(10.0f).padRight(10.0f).growX();
         ScrollPane scrollPane = new ScrollPane(table, getSkin());
         scrollPane.setFadeScrollBars(false);
         scrollPane.setFlickScroll(false);
@@ -339,7 +358,7 @@ public class RootTable extends Table {
         if (styleProperties != null) {
             for (StyleProperty styleProperty : styleProperties) {
                 label = new Label(styleProperty.name, getSkin());
-                table.add(label);
+                table.add(label).padTop(20.0f).fill(false).expand(false, false);
                 
                 table.row();
                 if (styleProperty.type == Color.class) {
@@ -348,12 +367,12 @@ public class RootTable extends Table {
                     
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
                 } else if (styleProperty.type == BitmapFont.class) {
-                    BrowseField browseField = new BrowseField(styleProperty.name, bfFontStyle);
+                    BrowseField browseField = new BrowseField((String) styleProperty.value, bfFontStyle);
                     table.add(browseField);
                     
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
                 } else if (styleProperty.type == Drawable.class) {
-                    BrowseField browseField = new BrowseField(styleProperty.name, bfDrawableStyle);
+                    BrowseField browseField = new BrowseField((String) styleProperty.value, bfDrawableStyle);
                     table.add(browseField);
                     
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
@@ -386,7 +405,7 @@ public class RootTable extends Table {
             }
         }
     }
-
+    
     private class StylePropertyChangeListener extends ChangeListener {
         private StyleProperty styleProp;
         private Actor styleActor;
@@ -500,10 +519,6 @@ public class RootTable extends Table {
 
     public SelectBox getStyleSelectBox() {
         return styleSelectBox;
-    }
-
-    public Array<StyleProperty> getStyleProperties() {
-        return styleProperties;
     }
 
     public void setStyleProperties(Array<StyleProperty> styleProperties) {

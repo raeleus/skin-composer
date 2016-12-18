@@ -41,11 +41,11 @@ import com.ray3k.skincomposer.data.StyleProperty;
 import java.io.File;
 
 public class MainListener extends RootTableListener {
-    private RootTable root;
-    private DialogFactory dialogFactory;
-    private DesktopWorker desktopWorker;
-    private ProjectData projectData;
-    private JsonData jsonData;
+    private final RootTable root;
+    private final DialogFactory dialogFactory;
+    private final DesktopWorker desktopWorker;
+    private final ProjectData projectData;
+    private final JsonData jsonData;
     
     public MainListener(RootTable root, DialogFactory dialogFactory, DesktopWorker desktopWorker, ProjectData projectData, JsonData jsonData) {
         this.root = root;
@@ -102,7 +102,7 @@ public class MainListener extends RootTableListener {
                 dialogFactory.showAbout();
                 break;
             case CLASS_SELECTED:
-                //set root table's style properties
+                updateStyleProperties();
                 //set scrollpanestyles, liststyles, and label styles
                 break;
             case NEW_CLASS:
@@ -111,7 +111,7 @@ public class MainListener extends RootTableListener {
             case DELETE_CLASS:
                 break;
             case STYLE_SELECTED:
-                //set root table's style properties
+                updateStyleProperties();
                 //set scrollpanestyles, liststyles, and label styles
                 break;
             case NEW_STYLE:
@@ -164,7 +164,6 @@ public class MainListener extends RootTableListener {
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
                 projectData.load(fileHandle);
-                System.out.println(jsonData.getColors().size);
                 root.populate();
             }
         };
@@ -298,7 +297,6 @@ public class MainListener extends RootTableListener {
 
     @Override
     public void loadClasses(SelectBox<String> classSelectBox) {
-        System.out.println("load classes");
         Array<String> names = new Array<>();
         for (Class clazz : Main.BASIC_CLASSES) {
             names.add(clazz.getSimpleName());
@@ -331,6 +329,21 @@ public class MainListener extends RootTableListener {
             //apply value
         } else if (styleProperty.type == CustomStyle.class) {
             //show custom style dialog
+        }
+    }
+    
+    private void updateStyleProperties() {
+        int classIndex = root.getClassSelectBox().getSelectedIndex();
+        if (classIndex >= 0) {
+            Array<StyleData> styleDatas = jsonData.getClassStyleMap().values().toArray().get(classIndex);
+
+            int styleIndex = root.getStyleSelectBox().getSelectedIndex();
+            if (styleIndex >= 0) {
+                StyleData styleData = styleDatas.get(styleIndex);
+
+                root.setStyleProperties(styleData.properties.values().toArray());
+                root.refreshStyleProperties();
+            }
         }
     }
 }

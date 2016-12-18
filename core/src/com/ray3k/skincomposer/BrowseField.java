@@ -42,20 +42,13 @@ import com.badlogic.gdx.utils.Align;
 public class BrowseField extends Table {
     private TextField textField;
     private Button button;
-    private Label label;
     
-    public BrowseField(String text, BrowseFieldStyle style) {
-        
-        Table table = new Table();
-        if (text != null && !text.equals("")) {
-            label = new Label(text, style.labelStyle);
-            table.add(label);
-            table.row();
-        }
-        
-        textField = new TextField("", style.textFieldStyle);
+    public BrowseField(String valueText, BrowseFieldStyle style) {
+        if (valueText == null) valueText = "";
+        textField = new TextField(valueText, style.textFieldStyle);
         textField.setAlignment(Align.center);
         textField.setFocusTraversal(false);
+        textField.setDisabled(true);
         textField.addListener(new ClickListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
@@ -63,8 +56,7 @@ public class BrowseField extends Table {
                 fire(new ChangeListener.ChangeEvent());
             }
         });
-        table.add(textField).minWidth(35.0f).prefWidth(35.0f).growX();
-        add(table).growX();
+        add(textField).minWidth(35.0f).prefWidth(35.0f).growX();
         
         if (style.textButtonStyle != null) {
             button = new TextButton("...", style.textButtonStyle);
@@ -82,9 +74,9 @@ public class BrowseField extends Table {
     public Button getButton() {
         return button;
     }
-
-    public Label getLabel() {
-        return label;
+    
+    public void setValueText(String valueText) {
+        textField.setText(valueText);
     }
     
     static public class BrowseFieldStyle {
