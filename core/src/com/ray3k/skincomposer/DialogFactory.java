@@ -110,7 +110,7 @@ public class DialogFactory {
         } else {
             if (!showingCloseDialog) {
                 showingCloseDialog = true;
-                Dialog dialog = new Dialog("Save Changes?", skin) {
+                Dialog dialog = new Dialog("Save Changes?", skin, "bg") {
                     @Override
                     protected void result(Object object) {
                         if ((int) object == 0) {
@@ -126,7 +126,7 @@ public class DialogFactory {
                         showingCloseDialog = false;
                     }
                 };
-                dialog.getTitleTable().defaults().padLeft(15.0f);
+                dialog.getTitleTable().getCells().first().padLeft(5.0f);
                 Label label = new Label("Do you want to save\nyour changes before you quit?", skin);
                 label.setAlignment(Align.center);
                 dialog.text(label);
