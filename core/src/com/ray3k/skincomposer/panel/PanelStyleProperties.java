@@ -187,7 +187,7 @@ public class PanelStyleProperties {
                 table.row();
                 
                 SelectBox<StyleData> selectBox = new SelectBox(skin, "slim");
-                selectBox.setItems(JsonData.getInstance().getClassStyleMap().get(ScrollPane.class));
+//                selectBox.setItems(JsonData.getInstance().getClassStyleMap().get(ScrollPane.class));
                 
                 boolean found = false;
                 for (StyleData data : selectBox.getItems()) {
@@ -220,7 +220,7 @@ public class PanelStyleProperties {
                 table.row();
                 
                 SelectBox<StyleData> selectBox = new SelectBox(skin, "slim");
-                selectBox.setItems(JsonData.getInstance().getClassStyleMap().get(List.class));
+//                selectBox.setItems(JsonData.getInstance().getClassStyleMap().get(List.class));
                 
                 boolean found = false;
                 for (StyleData data : selectBox.getItems()) {
@@ -253,7 +253,7 @@ public class PanelStyleProperties {
                 table.row();
                 
                 SelectBox<StyleData> selectBox = new SelectBox(skin, "slim");
-                selectBox.setItems(JsonData.getInstance().getClassStyleMap().get(Label.class));
+//                selectBox.setItems(JsonData.getInstance().getClassStyleMap().get(Label.class));
                 
                 boolean found = false;
                 for (StyleData data : selectBox.getItems()) {
@@ -332,9 +332,9 @@ public class PanelStyleProperties {
         @Override
         public void undo() {
             PanelPreviewProperties.instance.produceAtlas();
-            if (oldValue == null || AtlasData.getInstance().getDrawable((String) oldValue) != null) {
-                property.value = oldValue;
-            }
+//            if (oldValue == null || AtlasData.getInstance().getDrawable((String) oldValue) != null) {
+//                property.value = oldValue;
+//            }
             PanelPreviewProperties.instance.render();
             PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         }
@@ -342,9 +342,9 @@ public class PanelStyleProperties {
         @Override
         public void redo() {
             PanelPreviewProperties.instance.produceAtlas();
-            if (newValue == null || AtlasData.getInstance().getDrawable((String) newValue) != null) {
-                property.value = newValue;
-            }
+//            if (newValue == null || AtlasData.getInstance().getDrawable((String) newValue) != null) {
+//                property.value = newValue;
+//            }
             PanelPreviewProperties.instance.render();
             PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         }
@@ -371,12 +371,12 @@ public class PanelStyleProperties {
             if (oldValue == null) {
                 property.value = oldValue;
             } else {
-                for (ColorData color : JsonData.getInstance().getColors()) {
-                    if (color.getName().equals((String) oldValue)) {
-                        property.value = oldValue;
-                        break;
-                    }
-                }
+//                for (ColorData color : JsonData.getInstance().getColors()) {
+//                    if (color.getName().equals((String) oldValue)) {
+//                        property.value = oldValue;
+//                        break;
+//                    }
+//                }
             }
             PanelPreviewProperties.instance.render();
             PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
@@ -387,12 +387,12 @@ public class PanelStyleProperties {
             if (newValue == null) {
                 property.value = newValue;
             } else {
-                for (ColorData color : JsonData.getInstance().getColors()) {
-                    if (color.getName().equals((String) newValue)) {
-                        property.value = newValue;
-                        break;
-                    }
-                }
+//                for (ColorData color : JsonData.getInstance().getColors()) {
+//                    if (color.getName().equals((String) newValue)) {
+//                        property.value = newValue;
+//                        break;
+//                    }
+//                }
             }
             PanelPreviewProperties.instance.render();
             PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
@@ -419,12 +419,12 @@ public class PanelStyleProperties {
             if (oldValue == null) {
                 property.value = oldValue;
             } else {
-                for (FontData font : JsonData.getInstance().getFonts()) {
-                    if (font.getName().equals((String) oldValue)) {
-                        property.value = oldValue;
-                        break;
-                    }
-                }
+//                for (FontData font : JsonData.getInstance().getFonts()) {
+//                    if (font.getName().equals((String) oldValue)) {
+//                        property.value = oldValue;
+//                        break;
+//                    }
+//                }
             }
             
             PanelPreviewProperties.instance.render();
@@ -436,12 +436,12 @@ public class PanelStyleProperties {
             if (newValue == null) {
                 property.value = newValue;
             } else {
-                for (FontData font : JsonData.getInstance().getFonts()) {
-                    if (font.getName().equals((String) newValue)) {
-                        property.value = newValue;
-                        break;
-                    }
-                }
+//                for (FontData font : JsonData.getInstance().getFonts()) {
+//                    if (font.getName().equals((String) newValue)) {
+//                        property.value = newValue;
+//                        break;
+//                    }
+//                }
             }
             PanelPreviewProperties.instance.render();
             PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());

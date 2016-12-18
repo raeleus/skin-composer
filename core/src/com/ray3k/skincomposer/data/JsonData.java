@@ -28,32 +28,15 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin.TintedDrawable;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
-import com.badlogic.gdx.scenes.scene2d.ui.SplitPane.SplitPaneStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
-import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip.TextTooltipStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
@@ -68,36 +51,20 @@ import com.ray3k.skincomposer.dialog.DialogError;
 import java.io.StringWriter;
 
 public class JsonData implements Json.Serializable {
-    //todo: remove instance and use a regular constructor
-    private static JsonData instance;
     private Array<ColorData> colors;
     private Array<FontData> fonts;
     private OrderedMap<Class, Array<StyleData>> classStyleMap;
+    private Main main;
 
-    public static JsonData getInstance() {
-        if (instance == null) {
-            instance = new JsonData();
-        }
-        return instance;
-    }
-
-    public static void loadInstance(JsonData instance) {
-        JsonData.instance.colors.clear();
-        JsonData.instance.colors.addAll(instance.colors);
-        
-        JsonData.instance.fonts.clear();
-        JsonData.instance.fonts.addAll(instance.fonts);
-        
-        JsonData.instance.classStyleMap.clear();
-        JsonData.instance.classStyleMap.putAll(instance.classStyleMap);
-    }
-
-    private JsonData() {
-        instance = this;
+    public JsonData() {
         colors = new Array<>();
         fonts = new Array<>();
 
         initializeClassStyleMap();
+    }
+
+    public void setMain(Main main) {
+        this.main = main;
     }
 
     public void clear() {
@@ -107,21 +74,21 @@ public class JsonData implements Json.Serializable {
     }
 
     public void readFile(FileHandle fileHandle) throws Exception {
-        ProjectData.instance().setChangesSaved(false);
+        main.getProjectData().setChangesSaved(false);
         
         //read drawables from texture atlas file
         FileHandle atlasHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".atlas");
         if (atlasHandle.exists()) {
-            AtlasData.getInstance().readAtlas(atlasHandle);
+            main.getProjectData().getAtlasData().readAtlas(atlasHandle);
         }
 
         //folder for critical files to be copied to
-        FileHandle saveFile = ProjectData.instance().getSaveFile();
+        FileHandle saveFile = main.getProjectData().getSaveFile();
         FileHandle targetDirectory;
         if (saveFile != null) {
             targetDirectory = saveFile.sibling(saveFile.nameWithoutExtension() + "_data");
         } else {
-            targetDirectory = Gdx.files.local("temp/" + ProjectData.instance().getId() + "_data");
+            targetDirectory = Gdx.files.local("temp/" + main.getProjectData().getId() + "_data");
         }
 
         //read json file and create styles
@@ -143,7 +110,7 @@ public class JsonData implements Json.Serializable {
                     BitmapFont.BitmapFontData bitmapFontData = new BitmapFont.BitmapFontData(fontCopy, false);
                     for (String path : bitmapFontData.imagePaths) {
                         FileHandle file = new FileHandle(path);
-                        AtlasData.getInstance().getDrawable(file.nameWithoutExtension()).visible = false;
+                        main.getProjectData().getAtlasData().getDrawable(file.nameWithoutExtension()).visible = false;
                     }
                 }
             } //colors
@@ -155,7 +122,7 @@ public class JsonData implements Json.Serializable {
             } //tinted drawables
             else if (child.name().equals(TintedDrawable.class.getName())) {
                 for (JsonValue tintedDrawable : child.iterator()) {
-                    DrawableData drawableData = new DrawableData(AtlasData.getInstance().getDrawable(tintedDrawable.getString("name")).file);
+                    DrawableData drawableData = new DrawableData(main.getProjectData().getAtlasData().getDrawable(tintedDrawable.getString("name")).file);
                     drawableData.name = tintedDrawable.name;
                     
                     if (!tintedDrawable.get("color").isString()) {
@@ -163,7 +130,7 @@ public class JsonData implements Json.Serializable {
                     } else {
                         drawableData.tintName = tintedDrawable.getString("color");
                     }
-                    AtlasData.getInstance().getDrawables().add(drawableData);
+                    main.getProjectData().getAtlasData().getDrawables().add(drawableData);
                 }
             } //styles
             else {
@@ -238,7 +205,7 @@ public class JsonData implements Json.Serializable {
         
         //tinted drawables
         Array<DrawableData> tintedDrawables = new Array<>();
-        for (DrawableData drawable : AtlasData.getInstance().getDrawables()) {
+        for (DrawableData drawable : main.getProjectData().getAtlasData().getDrawables()) {
             if (drawable.tint != null || drawable.tintName != null) {
                 tintedDrawables.add(drawable);
             }
@@ -335,13 +302,16 @@ public class JsonData implements Json.Serializable {
             classStyleMap.put(clazz, array);
             if (clazz.equals(Slider.class) || clazz.equals(ProgressBar.class) || clazz.equals(SplitPane.class)) {
                 StyleData data = new StyleData(clazz, "default-horizontal");
+                data.jsonData = this;
                 data.deletable = false;
                 array.add(data);
                 data = new StyleData(clazz, "default-vertical");
+                data.jsonData = this;
                 data.deletable = false;
                 array.add(data);
             } else {
                 StyleData data = new StyleData(clazz, "default");
+                data.jsonData = this;
                 data.deletable = false;
                 array.add(data);
             }
@@ -363,6 +333,11 @@ public class JsonData implements Json.Serializable {
             classStyleMap = new OrderedMap<>();
             for (JsonValue data : jsonData.get("classStyleMap").iterator()) {
                 classStyleMap.put(ClassReflection.forName(data.name), json.readValue(Array.class, data));
+            }
+            for (Array<StyleData> styleDatas : classStyleMap.values()) {
+                for (StyleData styleData : styleDatas) {
+                    styleData.jsonData = this;
+                }
             }
         } catch (ReflectionException e) {
             Gdx.app.log(getClass().getName(), "Error parsing json data during file read", e);
@@ -391,6 +366,7 @@ public class JsonData implements Json.Serializable {
         
         if (data == null) {
             data = new StyleData(className, styleName);
+            data.jsonData = this;
             styles.add(data);
         }
         
@@ -400,6 +376,7 @@ public class JsonData implements Json.Serializable {
     public StyleData copyStyle(StyleData original, String styleName) {
         Array<StyleData> styles = getClassStyleMap().get(original.clazz);
         StyleData data = new StyleData(original, styleName);
+        data.jsonData = this;
         styles.add(data);
         
         return data;

@@ -105,9 +105,9 @@ public class PanelMenuBar {
                 recentFilesDialog();
             }
         });
-        if (ProjectData.instance().getRecentFiles().size == 0) {
-            recentFilesButton.setDisabled(true);
-        }
+//        if (ProjectData.instance().getRecentFiles().size == 0) {
+//            recentFilesButton.setDisabled(true);
+//        }
         menuItemTable.add(recentFilesButton);
         
         menuItemTable.row();
@@ -352,22 +352,22 @@ public class PanelMenuBar {
     }
     
     public void newDialog() {
-        if (!ProjectData.instance().areChangesSaved() && !ProjectData.instance().isNewProject()) {
-            yesNoCancelDialog("Save Changes?",
-                    "Do you want to save changes to the existing project?"
-                            + "\nAll unsaved changes will be lost.",
-                    (int selection) -> {
-                        if (selection == 0) {
-                            save(() -> {
-                                ProjectData.instance().clear();
-                            });
-                        } else if (selection == 1) {
-                            ProjectData.instance().clear();
-                        }
-                    });
-        } else {
-            ProjectData.instance().clear();
-        }
+//        if (!ProjectData.instance().areChangesSaved() && !ProjectData.instance().isNewProject()) {
+//            yesNoCancelDialog("Save Changes?",
+//                    "Do you want to save changes to the existing project?"
+//                            + "\nAll unsaved changes will be lost.",
+//                    (int selection) -> {
+//                        if (selection == 0) {
+//                            save(() -> {
+//                                ProjectData.instance().clear();
+//                            });
+//                        } else if (selection == 1) {
+//                            ProjectData.instance().clear();
+//                        }
+//                    });
+//        } else {
+//            ProjectData.instance().clear();
+//        }
     }
     
     private void yesNoCancelDialog(String title, String text, ConfirmationListener listener) {
@@ -410,39 +410,39 @@ public class PanelMenuBar {
     }
     
     public void openDialog() {
-        Runnable runnable = () -> {
-            String defaultPath = "";
-
-            if (ProjectData.instance().getLastDirectory() != null) {
-                FileHandle fileHandle = new FileHandle(defaultPath);
-                if (fileHandle.exists()) {
-                    defaultPath = ProjectData.instance().getLastDirectory();
-                }
-            }
-
-            String[] filterPatterns = {"*.scmp"};
-
-            File file = Main.instance().getDesktopWorker().openDialog("Open skin file...", defaultPath, filterPatterns, "Skin Composer files");
-            if (file != null) {
-                FileHandle fileHandle = new FileHandle(file);
-                ProjectData.instance().load(fileHandle);
-            }
-        };
+//        Runnable runnable = () -> {
+//            String defaultPath = "";
+//
+//            if (ProjectData.instance().getLastDirectory() != null) {
+//                FileHandle fileHandle = new FileHandle(defaultPath);
+//                if (fileHandle.exists()) {
+//                    defaultPath = ProjectData.instance().getLastDirectory();
+//                }
+//            }
+//
+//            String[] filterPatterns = {"*.scmp"};
+//
+//            File file = Main.instance().getDesktopWorker().openDialog("Open skin file...", defaultPath, filterPatterns, "Skin Composer files");
+//            if (file != null) {
+//                FileHandle fileHandle = new FileHandle(file);
+//                ProjectData.instance().load(fileHandle);
+//            }
+//        };
         
-        if (!ProjectData.instance().areChangesSaved() && !ProjectData.instance().isNewProject()) {
-            yesNoCancelDialog("Save Changes?",
-                    "Do you want to save changes to the existing project?"
-                    + "\nAll unsaved changes will be lost.",
-                    (int selection) -> {
-                        if (selection == 0) {
-                            save(runnable);
-                        } else if (selection == 1) {
-//                            Main.instance().showDialogLoading(runnable);
-                        }
-                    });
-        } else {
-//            Main.instance().showDialogLoading(runnable);
-        }
+//        if (!ProjectData.instance().areChangesSaved() && !ProjectData.instance().isNewProject()) {
+//            yesNoCancelDialog("Save Changes?",
+//                    "Do you want to save changes to the existing project?"
+//                    + "\nAll unsaved changes will be lost.",
+//                    (int selection) -> {
+//                        if (selection == 0) {
+//                            save(runnable);
+//                        } else if (selection == 1) {
+////                            Main.instance().showDialogLoading(runnable);
+//                        }
+//                    });
+//        } else {
+////            Main.instance().showDialogLoading(runnable);
+//        }
     }
     
     private void recentFilesDialog() {
@@ -455,14 +455,14 @@ public class PanelMenuBar {
                     if (selectBox.getSelected() != null) {
                         FileHandle file = new FileHandle(selectBox.getSelected());
                         if (file.exists()) {
-                            ProjectData.instance().load(file);
+//                            ProjectData.instance().load(file);
                         }
                     }
                 }
             }
         };
         
-        selectBox.setItems(ProjectData.instance().getRecentFiles());
+//        selectBox.setItems(ProjectData.instance().getRecentFiles());
         
         dialog.text("Select a file to open");
         dialog.getContentTable().row();
@@ -473,17 +473,17 @@ public class PanelMenuBar {
     }
     
     public void save(Runnable runnable) {
-        if (ProjectData.instance().getSaveFile() != null) {
-            
-//            Main.instance().showDialogLoading(() -> {
-//                ProjectData.instance().save();
-//                if (runnable != null) {
-//                    runnable.run();
-//                }
-//            });
-        } else {
-            saveAsDialog(runnable);
-        }
+//        if (ProjectData.instance().getSaveFile() != null) {
+//            
+////            Main.instance().showDialogLoading(() -> {
+////                ProjectData.instance().save();
+////                if (runnable != null) {
+////                    runnable.run();
+////                }
+////            });
+//        } else {
+//            saveAsDialog(runnable);
+//        }
     }
     
     public void saveAsDialog(Runnable runnable) {

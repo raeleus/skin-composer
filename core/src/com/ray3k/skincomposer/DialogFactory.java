@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
+import com.ray3k.skincomposer.data.AtlasData;
+import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogAbout;
@@ -21,16 +23,21 @@ import com.ray3k.skincomposer.dialog.DialogFonts;
 import com.ray3k.skincomposer.dialog.DialogLoading;
 import com.ray3k.skincomposer.dialog.DialogSettings;
 import com.ray3k.skincomposer.panel.PanelMenuBar;
-import java.io.File;
 
 public class DialogFactory {
     private final Skin skin;
     private final Stage stage;
     private boolean showingCloseDialog;
+    private JsonData jsonData;
+    private ProjectData projectData;
+    private AtlasData atlasData;
 
-    public DialogFactory(Skin skin, Stage stage) {
+    public DialogFactory(Skin skin, Stage stage, JsonData jsonData, ProjectData projectData, AtlasData atlasData) {
         this.skin = skin;
         this.stage = stage;
+        this.jsonData = jsonData;
+        this.projectData = projectData;
+        this.atlasData = atlasData;
         showingCloseDialog = false;
     }
     
@@ -40,7 +47,7 @@ public class DialogFactory {
     }
     
     public void showDialogColors(StyleProperty styleProperty, DialogColors.DialogColorsListener listener) {
-        DialogColors dialog = new DialogColors(skin, "dialog", styleProperty, this, listener);
+        DialogColors dialog = new DialogColors(skin, "dialog", styleProperty, this, jsonData, projectData, atlasData, listener);
         dialog.setFillParent(true);
         dialog.show(stage);
         dialog.populate();
@@ -55,7 +62,7 @@ public class DialogFactory {
     }
     
     public void showDialogDrawables(StyleProperty property, EventListener listener) {
-        DialogDrawables dialog = new DialogDrawables(skin, "dialog", property, this, listener);
+        DialogDrawables dialog = new DialogDrawables(skin, "dialog", property, this, jsonData, projectData, atlasData, listener);
         dialog.setFillParent(true);
         dialog.show(stage);
     }
@@ -69,7 +76,7 @@ public class DialogFactory {
     }
     
     public void showDialogFonts(StyleProperty styleProperty, EventListener listener) {
-        DialogFonts dialog = new DialogFonts(skin, "dialog", styleProperty, listener);
+        DialogFonts dialog = new DialogFonts(skin, "dialog", styleProperty, jsonData, projectData, atlasData, listener);
         dialog.setFillParent(true);
         dialog.show(stage);
         dialog.populate();
@@ -84,7 +91,7 @@ public class DialogFactory {
     }
     
     public void showSettings() {
-        DialogSettings dialog = new DialogSettings("", skin, "dialog", this);
+        DialogSettings dialog = new DialogSettings("", skin, "dialog", this, projectData, atlasData);
         dialog.show(stage);
     }
     
@@ -98,7 +105,7 @@ public class DialogFactory {
     }
     
     public void showCloseDialog() {
-        if (ProjectData.instance().areChangesSaved() || ProjectData.instance().isNewProject()) {
+        if (projectData.areChangesSaved() || projectData.isNewProject()) {
             Gdx.app.exit();
         } else {
             if (!showingCloseDialog) {
@@ -108,7 +115,7 @@ public class DialogFactory {
                     protected void result(Object object) {
                         if ((int) object == 0) {
                             PanelMenuBar.instance().save(() -> {
-                                if (ProjectData.instance().areChangesSaved()) {
+                                if (projectData.areChangesSaved()) {
                                     Gdx.app.exit();
                                 }
                             });
@@ -201,14 +208,14 @@ public class DialogFactory {
                     if (selectBox.getSelected() != null) {
                         FileHandle file = new FileHandle(selectBox.getSelected());
                         if (file.exists()) {
-                            ProjectData.instance().load(file);
+                            projectData.load(file);
                         }
                     }
                 }
             }
         };
         
-        selectBox.setItems(ProjectData.instance().getRecentFiles());
+        selectBox.setItems(projectData.getRecentFiles());
         
         dialog.text("Select a file to open");
         dialog.getContentTable().row();

@@ -95,7 +95,7 @@ public class MainOld extends ApplicationAdapter {
         desktopWorker.sizeWindowToFit(800, 800, 50, Gdx.graphics);
         desktopWorker.centerWindow(Gdx.graphics);
         desktopWorker.setCloseListener(() -> {
-            showCloseDialog();
+//            showCloseDialog();
             return false;
         });
         
@@ -112,9 +112,9 @@ public class MainOld extends ApplicationAdapter {
             public boolean keyDown(InputEvent event, int keycode) {
                 if (listeningForKeys && (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))) {
                     if (keycode == Keys.Z) {
-                        undo();
+//                        undo();
                     } else if (keycode == Keys.Y) {
-                        redo();
+//                        redo();
                     } else if (keycode == Keys.N) {
                         PanelMenuBar.instance().newDialog();
                     } else if (keycode == Keys.O) {
@@ -141,11 +141,11 @@ public class MainOld extends ApplicationAdapter {
         loadingAnimation.addDrawable(skin.getDrawable("loading_6"));
         loadingAnimation.addDrawable(skin.getDrawable("loading_7"));
         
-        ProjectData.instance().randomizeId();
-        ProjectData.instance().setMaxTextureDimensions(1024, 1024);
-        ProjectData.instance().setMaxUndos(30);
+//        ProjectData.instance().randomizeId();
+//        ProjectData.instance().setMaxTextureDimensions(1024, 1024);
+//        ProjectData.instance().setMaxUndos(30);
         
-        AtlasData.getInstance().clearTempData();
+//        AtlasData.getInstance().clearTempData();
         
         Table rootTable = new Table(skin);
         rootTable.setFillParent(true);
@@ -285,62 +285,62 @@ public class MainOld extends ApplicationAdapter {
      * @param styleName
      * @return 
      */
-    public StyleData newStyle(Class className, String styleName) {
-        Array<StyleData> styles = JsonData.getInstance().getClassStyleMap().get(className);
-        
-        StyleData data = null;
-        
-        for (StyleData tempStyle : styles) {
-            if (tempStyle.name.equals(styleName)) {
-                data = tempStyle;
-                data.resetProperties();
-            }
-        }
-        
-        if (data == null) {
-            data = new StyleData(className, styleName);
-            styles.add(data);
-        }
-        
-        return data;
-    }
+//    public StyleData newStyle(Class className, String styleName) {
+//        Array<StyleData> styles = JsonData.getInstance().getClassStyleMap().get(className);
+//        
+//        StyleData data = null;
+//        
+//        for (StyleData tempStyle : styles) {
+//            if (tempStyle.name.equals(styleName)) {
+//                data = tempStyle;
+//                data.resetProperties();
+//            }
+//        }
+//        
+//        if (data == null) {
+//            data = new StyleData(className, styleName);
+//            styles.add(data);
+//        }
+//        
+//        return data;
+//    }
     
-    public StyleData copyStyle(StyleData original, String styleName) {
-        Array<StyleData> styles = JsonData.getInstance().getClassStyleMap().get(original.clazz);
-        StyleData data = new StyleData(original, styleName);
-        styles.add(data);
-        
-        return data;
-    }
+//    public StyleData copyStyle(StyleData original, String styleName) {
+//        Array<StyleData> styles = JsonData.getInstance().getClassStyleMap().get(original.clazz);
+//        StyleData data = new StyleData(original, styleName);
+//        styles.add(data);
+//        
+//        return data;
+//    }
     
-    public void deleteStyle(StyleData styleData) {
-        Array<StyleData> styles = JsonData.getInstance().getClassStyleMap().get(styleData.clazz);
-        styles.removeValue(styleData, true);
-        
-        //reset any properties pointing to this style to the default style
-        if (styleData.clazz.equals(Label.class)) {
-            for (StyleData data : JsonData.getInstance().getClassStyleMap().get(TextTooltip.class)) {
-                StyleProperty property = data.properties.get("label");
-                if (property != null && property.value.equals(styleData.name)) {
-                    property.value = "default";
-                }
-            }
-        } else if (styleData.clazz.equals(List.class)) {
-            for (StyleData data : JsonData.getInstance().getClassStyleMap().get(SelectBox.class)) {
-                StyleProperty property = data.properties.get("listStyle");
-                if (property != null && property.value.equals(styleData.name)) {
-                    property.value = "default";
-                }
-            }
-        } else if (styleData.clazz.equals(ScrollPane.class)) {
-            for (StyleData data : JsonData.getInstance().getClassStyleMap().get(SelectBox.class)) {
-                StyleProperty property = data.properties.get("scrollStyle");
-                if (property != null && property.value.equals(styleData.name)) {
-                    property.value = "default";
-                }
-            }
-        }
-    }
+//    public void deleteStyle(StyleData styleData) {
+//        Array<StyleData> styles = JsonData.getInstance().getClassStyleMap().get(styleData.clazz);
+//        styles.removeValue(styleData, true);
+//        
+//        //reset any properties pointing to this style to the default style
+//        if (styleData.clazz.equals(Label.class)) {
+//            for (StyleData data : JsonData.getInstance().getClassStyleMap().get(TextTooltip.class)) {
+//                StyleProperty property = data.properties.get("label");
+//                if (property != null && property.value.equals(styleData.name)) {
+//                    property.value = "default";
+//                }
+//            }
+//        } else if (styleData.clazz.equals(List.class)) {
+//            for (StyleData data : JsonData.getInstance().getClassStyleMap().get(SelectBox.class)) {
+//                StyleProperty property = data.properties.get("listStyle");
+//                if (property != null && property.value.equals(styleData.name)) {
+//                    property.value = "default";
+//                }
+//            }
+//        } else if (styleData.clazz.equals(ScrollPane.class)) {
+//            for (StyleData data : JsonData.getInstance().getClassStyleMap().get(SelectBox.class)) {
+//                StyleProperty property = data.properties.get("scrollStyle");
+//                if (property != null && property.value.equals(styleData.name)) {
+//                    property.value = "default";
+//                }
+//            }
+//        }
+//    }
     
 //    public void showDialogDrawables(StyleProperty property, EventListener listener) {
 //        DialogDrawables dialog = new DialogDrawables(newSkin, "dialog", property, listener);
@@ -376,20 +376,20 @@ public class MainOld extends ApplicationAdapter {
         dialog.show(stage);
     }
     
-    public void showDialogFonts(StyleProperty styleProperty, EventListener listener) {
-        DialogFonts dialog = new DialogFonts(newSkin, "dialog", styleProperty, listener);
-        dialog.setFillParent(true);
-        dialog.show(stage);
-        dialog.populate();
-    }
+//    public void showDialogFonts(StyleProperty styleProperty, EventListener listener) {
+//        DialogFonts dialog = new DialogFonts(newSkin, "dialog", styleProperty, listener);
+//        dialog.setFillParent(true);
+//        dialog.show(stage);
+//        dialog.populate();
+//    }
     
-    public void showDialogFonts(StyleProperty styleProperty) {
-        showDialogFonts(styleProperty, null);
-    }
+//    public void showDialogFonts(StyleProperty styleProperty) {
+//        showDialogFonts(styleProperty, null);
+//    }
     
-    public void showDialogFonts() {
-        showDialogFonts(null);
-    }
+//    public void showDialogFonts() {
+//        showDialogFonts(null);
+//    }
     
     public void showDialogColorPicker(ColorListener listener) {
         showDialogColorPicker(null, listener);
@@ -405,38 +405,38 @@ public class MainOld extends ApplicationAdapter {
 //        dialog.show(stage);
 //    }
     
-    public void showCloseDialog() {
-        if (ProjectData.instance().areChangesSaved() || ProjectData.instance().isNewProject()) {
-            Gdx.app.exit();
-        } else {
-            if (!showingCloseDialog) {
-                showingCloseDialog = true;
-                Dialog dialog = new Dialog("Save Changes?", skin, "dialog") {
-                    @Override
-                    protected void result(Object object) {
-                        if ((int) object == 0) {
-                            PanelMenuBar.instance().save(() -> {
-                                if (ProjectData.instance().areChangesSaved()) {
-                                    Gdx.app.exit();
-                                }
-                            });
-                        } else if ((int) object == 1) {
-                            Gdx.app.exit();
-                        }
-                        
-                        showingCloseDialog = false;
-                    }
-                };
-                Label label = new Label("Do you want to save\nyour changes before you quit?", skin);
-                label.setAlignment(Align.center);
-                dialog.text(label);
-                dialog.getContentTable().getCells().first().pad(10.0f);
-                dialog.button("Yes", 0).button("No", 1).button("Cancel", 2);
-                java.awt.Toolkit.getDefaultToolkit().beep();
-                dialog.show(stage);
-            }
-        }
-    }
+//    public void showCloseDialog() {
+//        if (ProjectData.instance().areChangesSaved() || ProjectData.instance().isNewProject()) {
+//            Gdx.app.exit();
+//        } else {
+//            if (!showingCloseDialog) {
+//                showingCloseDialog = true;
+//                Dialog dialog = new Dialog("Save Changes?", skin, "dialog") {
+//                    @Override
+//                    protected void result(Object object) {
+//                        if ((int) object == 0) {
+//                            PanelMenuBar.instance().save(() -> {
+//                                if (ProjectData.instance().areChangesSaved()) {
+//                                    Gdx.app.exit();
+//                                }
+//                            });
+//                        } else if ((int) object == 1) {
+//                            Gdx.app.exit();
+//                        }
+//                        
+//                        showingCloseDialog = false;
+//                    }
+//                };
+//                Label label = new Label("Do you want to save\nyour changes before you quit?", skin);
+//                label.setAlignment(Align.center);
+//                dialog.text(label);
+//                dialog.getContentTable().getCells().first().pad(10.0f);
+//                dialog.button("Yes", 0).button("No", 1).button("Cancel", 2);
+//                java.awt.Toolkit.getDefaultToolkit().beep();
+//                dialog.show(stage);
+//            }
+//        }
+//    }
     
     public void showDialogLoading(Runnable runnable) {
         DialogLoading dialog = new DialogLoading("", skin, runnable);
@@ -483,74 +483,74 @@ public class MainOld extends ApplicationAdapter {
         PanelMenuBar.instance().getRedoButton().setText("Redo");
     }
     
-    public void undo() {
-        if (undoIndex >= 0 && undoIndex < undoables.size) {
-            ProjectData.instance().setChangesSaved(false);
-            Undoable undoable = undoables.get(undoIndex);
-            undoable.undo();
-            undoIndex--;
-
-            if (undoIndex < 0) {
-                PanelMenuBar.instance().getUndoButton().setDisabled(true);
-                PanelMenuBar.instance().getUndoButton().setText("Undo");
-            } else {
-                PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
-            }
-
-            PanelMenuBar.instance().getRedoButton().setDisabled(false);
-            PanelMenuBar.instance().getRedoButton().setText("Redo " + undoable.getUndoText());
-        }
-    }
+//    public void undo() {
+//        if (undoIndex >= 0 && undoIndex < undoables.size) {
+//            ProjectData.instance().setChangesSaved(false);
+//            Undoable undoable = undoables.get(undoIndex);
+//            undoable.undo();
+//            undoIndex--;
+//
+//            if (undoIndex < 0) {
+//                PanelMenuBar.instance().getUndoButton().setDisabled(true);
+//                PanelMenuBar.instance().getUndoButton().setText("Undo");
+//            } else {
+//                PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
+//            }
+//
+//            PanelMenuBar.instance().getRedoButton().setDisabled(false);
+//            PanelMenuBar.instance().getRedoButton().setText("Redo " + undoable.getUndoText());
+//        }
+//    }
     
-    public void redo() {
-        if (undoIndex >= -1 && undoIndex < undoables.size) {
-            ProjectData.instance().setChangesSaved(false);
-            if (undoIndex < undoables.size - 1) {
-                undoIndex++;
-                undoables.get(undoIndex).redo();
-            }
-
-            if (undoIndex >= undoables.size - 1) {
-                PanelMenuBar.instance().getRedoButton().setDisabled(true);
-                PanelMenuBar.instance().getRedoButton().setText("Redo");
-            } else {
-                PanelMenuBar.instance().getRedoButton().setText("Redo " + undoables.get(undoIndex + 1).getUndoText());
-            }
-
-            PanelMenuBar.instance().getUndoButton().setDisabled(false);
-            PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
-        }
-    }
+//    public void redo() {
+//        if (undoIndex >= -1 && undoIndex < undoables.size) {
+//            ProjectData.instance().setChangesSaved(false);
+//            if (undoIndex < undoables.size - 1) {
+//                undoIndex++;
+//                undoables.get(undoIndex).redo();
+//            }
+//
+//            if (undoIndex >= undoables.size - 1) {
+//                PanelMenuBar.instance().getRedoButton().setDisabled(true);
+//                PanelMenuBar.instance().getRedoButton().setText("Redo");
+//            } else {
+//                PanelMenuBar.instance().getRedoButton().setText("Redo " + undoables.get(undoIndex + 1).getUndoText());
+//            }
+//
+//            PanelMenuBar.instance().getUndoButton().setDisabled(false);
+//            PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
+//        }
+//    }
     
-    public void addUndoable(Undoable undoable, boolean redoImmediately) {
-        ProjectData.instance().setChangesSaved(false);
-        undoIndex++;
-        if (undoIndex <= undoables.size - 1) {
-            undoables.removeRange(undoIndex, undoables.size - 1);
-        }
-        undoables.add(undoable);
-        
-        if (redoImmediately) {
-            undoable.redo();
-        }
-        
-        PanelMenuBar.instance().getRedoButton().setDisabled(true);
-        PanelMenuBar.instance().getRedoButton().setText("Redo");
-        PanelMenuBar.instance().getUndoButton().setDisabled(false);
-        PanelMenuBar.instance().getUndoButton().setText("Undo " + undoable.getUndoText());
-        
-        if (undoables.size > ProjectData.instance().getMaxUndos()) {
-            int offset = undoables.size - ProjectData.instance().getMaxUndos();
-            
-            undoIndex -= offset;
-            undoIndex = MathUtils.clamp(undoIndex, -1, undoables.size - 1);
-            undoables.removeRange(0, offset - 1);
-        }
-    }
+//    public void addUndoable(Undoable undoable, boolean redoImmediately) {
+//        ProjectData.instance().setChangesSaved(false);
+//        undoIndex++;
+//        if (undoIndex <= undoables.size - 1) {
+//            undoables.removeRange(undoIndex, undoables.size - 1);
+//        }
+//        undoables.add(undoable);
+//        
+//        if (redoImmediately) {
+//            undoable.redo();
+//        }
+//        
+//        PanelMenuBar.instance().getRedoButton().setDisabled(true);
+//        PanelMenuBar.instance().getRedoButton().setText("Redo");
+//        PanelMenuBar.instance().getUndoButton().setDisabled(false);
+//        PanelMenuBar.instance().getUndoButton().setText("Undo " + undoable.getUndoText());
+//        
+//        if (undoables.size > ProjectData.instance().getMaxUndos()) {
+//            int offset = undoables.size - ProjectData.instance().getMaxUndos();
+//            
+//            undoIndex -= offset;
+//            undoIndex = MathUtils.clamp(undoIndex, -1, undoables.size - 1);
+//            undoables.removeRange(0, offset - 1);
+//        }
+//    }
     
-    public void addUndoable(Undoable undoable) {
-        addUndoable(undoable, false);
-    }
+//    public void addUndoable(Undoable undoable) {
+//        addUndoable(undoable, false);
+//    }
 
     public boolean isListeningForKeys() {
         return listeningForKeys;

@@ -74,6 +74,7 @@ public class StyleData implements Json.Serializable {
     public Class clazz;
     public OrderedMap<String,StyleProperty> properties;
     public boolean deletable;
+    public JsonData jsonData;
 
     @Override
     public String toString() {
@@ -151,7 +152,7 @@ public class StyleData implements Json.Serializable {
                 break;
             } else if (property.type == ListStyle.class) {
                 String value = (String) property.value;
-                Array<StyleData> datas = JsonData.getInstance().getClassStyleMap().get(List.class);
+                Array<StyleData> datas = jsonData.getClassStyleMap().get(List.class);
                 
                 boolean found = false;
                 for (StyleData data : datas) {
@@ -171,7 +172,7 @@ public class StyleData implements Json.Serializable {
                 if (!returnValue) break;
             } else if (property.type == LabelStyle.class) {
                 String value = (String) property.value;
-                Array<StyleData> datas = JsonData.getInstance().getClassStyleMap().get(Label.class);
+                Array<StyleData> datas = jsonData.getClassStyleMap().get(Label.class);
                 
                 boolean found = false;
                 for (StyleData data : datas) {
@@ -191,7 +192,7 @@ public class StyleData implements Json.Serializable {
                 if (!returnValue) break;
             } else if (property.type == ScrollPaneStyle.class) {
                 String value = (String) property.value;
-                Array<StyleData> datas = JsonData.getInstance().getClassStyleMap().get(ScrollPane.class);
+                Array<StyleData> datas = jsonData.getClassStyleMap().get(ScrollPane.class);
                 
                 boolean found = false;
                 for (StyleData data : datas) {

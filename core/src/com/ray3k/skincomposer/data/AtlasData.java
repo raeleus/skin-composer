@@ -38,28 +38,21 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 
 public class AtlasData {
-    private static AtlasData instance;
     public boolean atlasCurrent = false;
     private Array<DrawableData> drawables;
+    private Main main;
     
-    private AtlasData() {
+    public AtlasData() {
         drawables = new Array<>();
     }
-    
-    public static AtlasData getInstance() {
-        if (instance == null) {
-            instance = new AtlasData();
-        }
-        return instance;
+
+    public void setMain(Main main) {
+        this.main = main;
     }
     
     public void clear() {
         drawables.clear();
         atlasCurrent = false;
-    }
-    
-    public static void loadInstance(AtlasData instance) {
-        AtlasData.instance = instance;
     }
 
     public Array<DrawableData> getDrawables() {
@@ -80,12 +73,12 @@ public class AtlasData {
     
     public void readAtlas(FileHandle fileHandle) throws Exception {
         if (fileHandle.exists()) {
-            FileHandle saveFile = ProjectData.instance().getSaveFile();
+            FileHandle saveFile = main.getProjectData().getSaveFile();
             FileHandle targetDirectory;
             if (saveFile != null) {
                 targetDirectory = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
             } else {
-                targetDirectory = Gdx.files.local("temp/" + ProjectData.instance().getId() + "_data/");
+                targetDirectory = Gdx.files.local("temp/" + main.getProjectData().getId() + "_data/");
             }
             
             targetDirectory.mkdirs();
@@ -165,7 +158,7 @@ public class AtlasData {
     }
     
     public void writeAtlas() throws Exception {
-        FileHandle targetFile = Gdx.files.local("temp/" + ProjectData.instance().getId() + ".atlas");
+        FileHandle targetFile = Gdx.files.local("temp/" + main.getProjectData().getId() + ".atlas");
         targetFile.parent().mkdirs();
         FileHandle[] oldFiles = targetFile.parent().list(new FilenameFilter() {
             @Override
@@ -185,7 +178,7 @@ public class AtlasData {
             }
         }
         
-        Main.instance().getDesktopWorker().texturePack(files, ProjectData.instance().getSaveFile(), targetFile, ProjectData.instance().getMaxTextureWidth(), ProjectData.instance().getMaxTextureHeight(), ProjectData.instance().getStripWhitespace());
+        Main.instance().getDesktopWorker().texturePack(files, main.getProjectData().getSaveFile(), targetFile, main.getProjectData().getMaxTextureWidth(), main.getProjectData().getMaxTextureHeight(), main.getProjectData().getStripWhitespace());
     }
     
     public void writeAtlas(FileHandle targetFile) throws Exception {
@@ -208,12 +201,12 @@ public class AtlasData {
             }
         }
         
-        Main.instance().getDesktopWorker().texturePack(files, ProjectData.instance().getSaveFile(), targetFile, ProjectData.instance().getMaxTextureWidth(), ProjectData.instance().getMaxTextureHeight(), ProjectData.instance().getStripWhitespace());
+        Main.instance().getDesktopWorker().texturePack(files, main.getProjectData().getSaveFile(), targetFile, main.getProjectData().getMaxTextureWidth(), main.getProjectData().getMaxTextureHeight(), main.getProjectData().getStripWhitespace());
     }
     
     public TextureAtlas getAtlas() {
         TextureAtlas atlas = null;
-        FileHandle atlasFile = Gdx.files.local("temp/" + ProjectData.instance().getId() + ".atlas");
+        FileHandle atlasFile = Gdx.files.local("temp/" + main.getProjectData().getId() + ".atlas");
         if (atlasFile.exists()) {
             atlas = new TextureAtlas(atlasFile);
         }

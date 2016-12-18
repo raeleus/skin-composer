@@ -32,37 +32,33 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.ray3k.skincomposer.panel.PanelClassBar;
-import com.ray3k.skincomposer.panel.PanelMenuBar;
-import com.ray3k.skincomposer.panel.PanelPreviewProperties;
-import com.ray3k.skincomposer.panel.PanelStyleProperties;
+import com.ray3k.skincomposer.Main;
 
 public class ProjectData implements Json.Serializable{
-    //todo: remove instance and use a regular constructor
-    private static ProjectData instance;
     private static Preferences generalPref;
     private ObjectMap<String, Object> preferences;
-    private JsonData jsonData;
-    private AtlasData atlasData;
     private FileHandle saveFile;
     private boolean changesSaved;
     private boolean newProject;
     private static final int MAX_RECENT_FILES = 5;
+    private Main main;
+    private JsonData jsonData;
+    private AtlasData atlasData;
     
-    public static ProjectData instance() {
-        if (instance == null) {
-            instance = new ProjectData();
-        }
-        return instance;
-    }
-    
-    private ProjectData() {
+    public ProjectData() {
+        jsonData = new JsonData();
+        atlasData = new AtlasData();
+        
         changesSaved = false;
         newProject = true;
         preferences = new ObjectMap<>();
         generalPref = Gdx.app.getPreferences("com.ray3k.skincomposer");
-        jsonData = JsonData.getInstance();
-        atlasData = AtlasData.getInstance();
+    }
+
+    public void setMain(Main main) {
+        this.main = main;
+        atlasData.setMain(main);
+        jsonData.setMain(main);
     }
     
     public int getId() {
@@ -186,7 +182,7 @@ public class ProjectData implements Json.Serializable{
     }
     
     private void moveImportedFiles(FileHandle oldSave, FileHandle newSave) {
-        FileHandle tempImportFolder = Gdx.files.local("temp/" + ProjectData.instance().getId() + "_data/");
+        FileHandle tempImportFolder = Gdx.files.local("temp/" + getId() + "_data/");
         FileHandle localImportFolder;
         if (oldSave != null) {
             localImportFolder = oldSave.sibling(oldSave.nameWithoutExtension() + "_data/");
@@ -196,7 +192,7 @@ public class ProjectData implements Json.Serializable{
         FileHandle targetFolder = newSave.sibling(newSave.nameWithoutExtension() + "_data/");
         targetFolder.mkdirs();
         
-        for (DrawableData drawableData : AtlasData.getInstance().getDrawables()) {
+        for (DrawableData drawableData : atlasData.getDrawables()) {
             if (drawableData.file.exists()) {
                 //drawable files in the temp folder
                 if (drawableData.file.parent().equals(tempImportFolder)) {
@@ -211,7 +207,7 @@ public class ProjectData implements Json.Serializable{
             }
         }
         
-        for (FontData fontData : JsonData.getInstance().getFonts()) {
+        for (FontData fontData : jsonData.getFonts()) {
             if (fontData.file.exists()) {
                 //font files in the temp folder
                 if (fontData.file.parent().equals(tempImportFolder)) {
@@ -246,17 +242,20 @@ public class ProjectData implements Json.Serializable{
     
     public void load(FileHandle file) {
         Json json = new Json(JsonWriter.OutputType.minimal);
-        instance = json.fromJson(ProjectData.class, file);
-        instance.saveFile = file;
+        ProjectData instance = json.fromJson(ProjectData.class, file);
+        newProject = instance.newProject;
+        preferences.putAll(instance.preferences);
+        
+        saveFile = file;
         putRecentFile(file.path());
         generalPref.putString("last-save-directory", file.parent().path());
         generalPref.flush();
 //        PanelClassBar.instance.populate();
 //        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-        AtlasData.getInstance().atlasCurrent = false;
+        atlasData.atlasCurrent = false;
 //        PanelPreviewProperties.instance.produceAtlas();
 //        PanelPreviewProperties.instance.populate();
-        instance.setChangesSaved(true);
+        setChangesSaved(true);
     }
     
     public void load() {
@@ -295,14 +294,12 @@ public class ProjectData implements Json.Serializable{
     }
 
     @Override
-    public void read(Json json, JsonValue jsonData) {
-        preferences = json.readValue("preferences", ObjectMap.class, jsonData);
-        JsonData.loadInstance(json.readValue("jsonData", JsonData.class, jsonData));
-        this.jsonData = JsonData.getInstance();
-        AtlasData.loadInstance(json.readValue("atlasData", AtlasData.class, jsonData));
-        this.atlasData = AtlasData.getInstance();
-        if (!jsonData.get("saveFile").isNull()) {
-            saveFile = new FileHandle(jsonData.getString("saveFile"));
+    public void read(Json json, JsonValue jsonValue) {
+        preferences = json.readValue("preferences", ObjectMap.class, jsonValue);
+        jsonData = json.readValue("jsonData", JsonData.class, jsonValue);
+        atlasData = json.readValue("atlasData", AtlasData.class, jsonValue);
+        if (!jsonValue.get("saveFile").isNull()) {
+            saveFile = new FileHandle(jsonValue.getString("saveFile"));
         }
     }
 
@@ -313,5 +310,13 @@ public class ProjectData implements Json.Serializable{
     public void setStripWhitespace(boolean useStripWhitespace) {
         generalPref.putBoolean("useStripWhitespace", useStripWhitespace);
         generalPref.flush();
+    }
+
+    public JsonData getJsonData() {
+        return jsonData;
+    }
+
+    public AtlasData getAtlasData() {
+        return atlasData;
     }
 }

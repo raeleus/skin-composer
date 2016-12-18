@@ -986,52 +986,52 @@ public class PanelPreviewProperties {
                     if (field.getType().equals(Drawable.class)) {
                         field.set(returnValue, drawablePairs.get((String) value));
                     } else if (field.getType().equals(Color.class)) {
-                        for (ColorData data : JsonData.getInstance().getColors()) {
-                            if (value.equals(data.getName())) {
-                                field.set(returnValue, data.color);
-                                break;
-                            }
-                        }
+//                        for (ColorData data : JsonData.getInstance().getColors()) {
+//                            if (value.equals(data.getName())) {
+//                                field.set(returnValue, data.color);
+//                                break;
+//                            }
+//                        }
                     } else if (field.getType().equals(BitmapFont.class)) {
-                        for (FontData data : JsonData.getInstance().getFonts()) {
-                            if (value.equals(data.getName())) {
-                                BitmapFont font = new BitmapFont(data.file);
-                                fonts.add(font);
-                                field.set(returnValue, font);
-                            }
-                        }
+//                        for (FontData data : JsonData.getInstance().getFonts()) {
+//                            if (value.equals(data.getName())) {
+//                                BitmapFont font = new BitmapFont(data.file);
+//                                fonts.add(font);
+//                                field.set(returnValue, font);
+//                            }
+//                        }
                     } else if (field.getType().equals(Float.TYPE)) {
                         field.set(returnValue, (float) value);
                     } else if (field.getType().equals(ListStyle.class)) {
-                        Array<StyleData> datas = JsonData.getInstance().getClassStyleMap().get(List.class);
+//                        Array<StyleData> datas = JsonData.getInstance().getClassStyleMap().get(List.class);
 
-                        for (StyleData data : datas) {
-                            if (value.equals(data.name)) {
-                                ListStyle style = createStyle(ListStyle.class, data);
-                                field.set(returnValue, style);
-                                break;
-                            }
-                        }
+//                        for (StyleData data : datas) {
+//                            if (value.equals(data.name)) {
+//                                ListStyle style = createStyle(ListStyle.class, data);
+//                                field.set(returnValue, style);
+//                                break;
+//                            }
+//                        }
                     } else if (field.getType().equals(ScrollPaneStyle.class)) {
-                        Array<StyleData> datas = JsonData.getInstance().getClassStyleMap().get(ScrollPane.class);
+//                        Array<StyleData> datas = JsonData.getInstance().getClassStyleMap().get(ScrollPane.class);
 
-                        for (StyleData data : datas) {
-                            if (value.equals(data.name)) {
-                                ScrollPaneStyle style = createStyle(ScrollPaneStyle.class, data);
-                                field.set(returnValue, style);
-                                break;
-                            }
-                        }
+//                        for (StyleData data : datas) {
+//                            if (value.equals(data.name)) {
+//                                ScrollPaneStyle style = createStyle(ScrollPaneStyle.class, data);
+//                                field.set(returnValue, style);
+//                                break;
+//                            }
+//                        }
                     } else if (field.getType().equals(LabelStyle.class)) {
-                        Array<StyleData> datas = JsonData.getInstance().getClassStyleMap().get(Label.class);
+//                        Array<StyleData> datas = JsonData.getInstance().getClassStyleMap().get(Label.class);
 
-                        for (StyleData data : datas) {
-                            if (value.equals(data.name)) {
-                                LabelStyle style = createStyle(LabelStyle.class, data);
-                                field.set(returnValue, style);
-                                break;
-                            }
-                        }
+//                        for (StyleData data : datas) {
+//                            if (value.equals(data.name)) {
+//                                LabelStyle style = createStyle(LabelStyle.class, data);
+//                                field.set(returnValue, style);
+//                                break;
+//                            }
+//                        }
                     }
                 }
             }
@@ -1276,35 +1276,35 @@ public class PanelPreviewProperties {
                 atlas = null;
             }
             
-            if (!AtlasData.getInstance().atlasCurrent) {
-                AtlasData.getInstance().writeAtlas();
-                AtlasData.getInstance().atlasCurrent = true;
-            }
-            atlas = AtlasData.getInstance().getAtlas();
+//            if (!AtlasData.getInstance().atlasCurrent) {
+//                AtlasData.getInstance().writeAtlas();
+//                AtlasData.getInstance().atlasCurrent = true;
+//            }
+//            atlas = AtlasData.getInstance().getAtlas();
 
-            for (DrawableData data : AtlasData.getInstance().getDrawables()) {
-                String name = data.file.name();
-                name = DrawableData.proper(name);
-                
-                Drawable drawable;
-                if (data.file.name().matches(".*\\.9\\.[a-zA-Z0-9]*$")) {
-                    drawable = new NinePatchDrawable(atlas.createPatch(name));
-                    if (data.tint != null) {
-                        drawable = ((NinePatchDrawable) drawable).tint(data.tint);
-                    } else if (data.tintName != null) {
-                        drawable = ((NinePatchDrawable) drawable).tint(JsonData.getInstance().getColorByName(data.tintName).color);
-                    }
-                } else {
-                    drawable = new SpriteDrawable(atlas.createSprite(name));
-                    if (data.tint != null) {
-                        drawable = ((SpriteDrawable) drawable).tint(data.tint);
-                    } else if (data.tintName != null) {
-                        drawable = ((SpriteDrawable) drawable).tint(JsonData.getInstance().getColorByName(data.tintName).color);
-                    }
-                }
-                
-                drawablePairs.put(data.name, drawable);
-            }
+//            for (DrawableData data : AtlasData.getInstance().getDrawables()) {
+//                String name = data.file.name();
+//                name = DrawableData.proper(name);
+//                
+//                Drawable drawable;
+//                if (data.file.name().matches(".*\\.9\\.[a-zA-Z0-9]*$")) {
+//                    drawable = new NinePatchDrawable(atlas.createPatch(name));
+//                    if (data.tint != null) {
+//                        drawable = ((NinePatchDrawable) drawable).tint(data.tint);
+//                    } else if (data.tintName != null) {
+//                        drawable = ((NinePatchDrawable) drawable).tint(JsonData.getInstance().getColorByName(data.tintName).color);
+//                    }
+//                } else {
+//                    drawable = new SpriteDrawable(atlas.createSprite(name));
+//                    if (data.tint != null) {
+//                        drawable = ((SpriteDrawable) drawable).tint(data.tint);
+//                    } else if (data.tintName != null) {
+//                        drawable = ((SpriteDrawable) drawable).tint(JsonData.getInstance().getColorByName(data.tintName).color);
+//                    }
+//                }
+//                
+//                drawablePairs.put(data.name, drawable);
+//            }
             return true;
         } catch (Exception e) {
             Gdx.app.error(getClass().getName(), "Error while attempting to generate drawables.", e);

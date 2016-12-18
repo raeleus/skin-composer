@@ -71,21 +71,27 @@ public class DialogColors extends Dialog {
     private DialogColorsListener listener;
     private ScrollPane scrollPane;
     private DialogFactory dialogFactory;
+    private JsonData jsonData;
+    private ProjectData projectData;
+    private AtlasData atlasData;
     
-    public DialogColors(Skin skin, StyleProperty styleProperty, DialogFactory dialogFactory, DialogColorsListener listener) {
-        this(skin, "default", styleProperty, dialogFactory, listener);
+    public DialogColors(Skin skin, StyleProperty styleProperty, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, DialogColorsListener listener) {
+        this(skin, "default", styleProperty, dialogFactory, jsonData, projectData, atlasData, listener);
     }
     
-    public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, boolean selectingForTintedDrawable, DialogFactory dialogFactory, DialogColorsListener listener) {
+    public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, boolean selectingForTintedDrawable, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, DialogColorsListener listener) {
         super("", skin, styleName);
         
         this.dialogFactory = dialogFactory;
+        this.jsonData = jsonData;
+        this.projectData = projectData;
+        this.atlasData = atlasData;
         
         this.listener = listener;
         this.skin = skin;
         this.styleProperty = styleProperty;
         this.selectingForTintedDrawable = selectingForTintedDrawable;
-        colors = JsonData.getInstance().getColors();
+        colors = jsonData.getColors();
         getContentTable().defaults().expandX();
         if (styleProperty != null) {
             Label label = new Label("Select a color...", skin, "title");
@@ -150,8 +156,8 @@ public class DialogColors extends Dialog {
         key(Keys.ESCAPE, false);
     }
     
-    public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, DialogFactory dialogFactory, DialogColorsListener listener) {
-        this(skin, styleName, styleProperty, false, dialogFactory, listener);
+    public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, DialogColorsListener listener) {
+        this(skin, styleName, styleProperty, false, dialogFactory, jsonData, projectData, atlasData, listener);
     }
     
     @Override
@@ -216,7 +222,7 @@ public class DialogColors extends Dialog {
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             boolean disable = !ColorData.validate(field.getText());
                             if (!disable) {
-                                for (ColorData data : JsonData.getInstance().getColors()) {
+                                for (ColorData data : jsonData.getColors()) {
                                     if (data.getName().equals(field.getText())) {
                                         disable = true;
                                         break;
@@ -354,7 +360,7 @@ public class DialogColors extends Dialog {
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         colors.removeValue(deleteColor, true);
                         
-                        for (Array<StyleData> datas : JsonData.getInstance().getClassStyleMap().values()) {
+                        for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
                             for (StyleData data : datas) {
                                 for (StyleProperty property : data.properties.values()) {
                                     if (property != null && property.type.equals(Color.class) && property.value != null && property.value.equals(deleteColor.getName())) {
@@ -424,7 +430,7 @@ public class DialogColors extends Dialog {
         PanelPreviewProperties.instance.produceAtlas();
         PanelPreviewProperties.instance.render();
         
-        ProjectData.instance().setChangesSaved(false);
+        projectData.setChangesSaved(false);
         
         populate();
     }
@@ -489,7 +495,7 @@ public class DialogColors extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 boolean disable = !ColorData.validate(textField.getText());
                 if (!disable) {
-                    for (ColorData data : JsonData.getInstance().getColors()) {
+                    for (ColorData data : jsonData.getColors()) {
                         if (data.getName().equals(textField.getText())) {
                             disable = true;
                             break;
@@ -516,7 +522,7 @@ public class DialogColors extends Dialog {
     
     private void renameColor(ColorData color, String newName) {
         //style properties
-        for (Array<StyleData> datas : JsonData.getInstance().getClassStyleMap().values()) {
+        for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
             for (StyleData data : datas) {
                 for (StyleProperty property : data.properties.values()) {
                     if (property != null && property.type.equals(Color.class) && property.value != null && property.value.equals(color.getName())) {
@@ -527,7 +533,7 @@ public class DialogColors extends Dialog {
         }
         
         //tinted drawables
-        for (DrawableData drawableData : AtlasData.getInstance().getDrawables()) {
+        for (DrawableData drawableData : atlasData.getDrawables()) {
             if (drawableData.tintName != null && drawableData.tintName.equals(color.getName())) {
                 drawableData.tintName = newName;
             }
@@ -545,7 +551,7 @@ public class DialogColors extends Dialog {
         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         PanelPreviewProperties.instance.render();
         
-        ProjectData.instance().setChangesSaved(false);
+        projectData.setChangesSaved(false);
         
         populate();
     }
@@ -553,7 +559,7 @@ public class DialogColors extends Dialog {
     private boolean newColor(String name, Color color) {
         if (ColorData.validate(name)) {
             try {
-                ProjectData.instance().setChangesSaved(false);
+                projectData.setChangesSaved(false);
                 colors.add(new ColorData(name, color));
                 sortBySelectedMode();
                 populate();
@@ -572,20 +578,20 @@ public class DialogColors extends Dialog {
     protected void result(Object object) {
         if (styleProperty != null) {
             if (object instanceof ColorData) {
-                ProjectData.instance().setChangesSaved(false);
+                projectData.setChangesSaved(false);
                 ColorData color = (ColorData) object;
                 PanelStatusBar.instance.message("Selected color " + color.getName() + " for \"" + styleProperty.name + "\"");
                 styleProperty.value = color.getName();
                 PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
-                    ProjectData.instance().setChangesSaved(false);
+                    projectData.setChangesSaved(false);
                     styleProperty.value = null;
                     PanelStatusBar.instance.message("Emptied color for \"" + styleProperty.name + "\"");
                     PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                 } else {
                     boolean hasColor = false;
-                    for (ColorData color : JsonData.getInstance().getColors()) {
+                    for (ColorData color : jsonData.getColors()) {
                         if (color.getName().equals(styleProperty.value)) {
                             hasColor = true;
                             break;
@@ -593,7 +599,7 @@ public class DialogColors extends Dialog {
                     }
 
                     if (!hasColor) {
-                        ProjectData.instance().setChangesSaved(false);
+                        projectData.setChangesSaved(false);
                         styleProperty.value = null;
                         PanelStatusBar.instance.message("Deleted color for \"" + styleProperty.name + "\"");
                         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());

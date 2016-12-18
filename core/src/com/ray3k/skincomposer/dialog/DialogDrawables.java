@@ -96,15 +96,21 @@ public class DialogDrawables extends Dialog {
     private FilesDroppedListener filesDroppedListener;
     private EventListener listener;
     private DialogFactory dialogFactory;
+    private JsonData jsonData;
+    private ProjectData projectData;
+    private AtlasData atlasData;
     
-    public DialogDrawables(Skin skin, StyleProperty property, DialogFactory dialogFactory, EventListener listener) {
-        this(skin, "default", property, dialogFactory, listener);
+    public DialogDrawables(Skin skin, StyleProperty property, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, EventListener listener) {
+        this(skin, "default", property, dialogFactory, jsonData, projectData, atlasData, listener);
     }
     
-    public DialogDrawables(Skin skin, String windowStyleName, StyleProperty property, DialogFactory dialogFactory, EventListener listener) {
+    public DialogDrawables(Skin skin, String windowStyleName, StyleProperty property, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, EventListener listener) {
         super("", skin, windowStyleName);
         
         this.dialogFactory = dialogFactory;
+        this.jsonData = jsonData;
+        this.projectData = projectData;
+        this.atlasData = atlasData;
         
         instance = this;
         
@@ -139,7 +145,7 @@ public class DialogDrawables extends Dialog {
      * Recreates the drawables array only including visible drawables.
      */
     private void gatherDrawables() {
-        drawables = new Array<>(AtlasData.getInstance().getDrawables());
+        drawables = new Array<>(atlasData.getDrawables());
         Iterator<DrawableData> iter = drawables.iterator();
         while(iter.hasNext()) {
             DrawableData drawable = iter.next();
@@ -158,13 +164,13 @@ public class DialogDrawables extends Dialog {
                 atlas.dispose();
                 atlas = null;
             }
-            if (!AtlasData.getInstance().atlasCurrent) {
-                AtlasData.getInstance().writeAtlas();
-                AtlasData.getInstance().atlasCurrent = true;
+            if (!atlasData.atlasCurrent) {
+                atlasData.writeAtlas();
+                atlasData.atlasCurrent = true;
             }
-            atlas = AtlasData.getInstance().getAtlas();
+            atlas = atlasData.getAtlas();
 
-            for (DrawableData data : AtlasData.getInstance().getDrawables()) {
+            for (DrawableData data : atlasData.getDrawables()) {
                 String name = data.file.name();
                 name = DrawableData.proper(name);
                 
@@ -174,14 +180,14 @@ public class DialogDrawables extends Dialog {
                     if (data.tint != null) {
                         drawable = ((NinePatchDrawable) drawable).tint(data.tint);
                     } else if (data.tintName != null) {
-                        drawable = ((NinePatchDrawable) drawable).tint(JsonData.getInstance().getColorByName(data.tintName).color);
+                        drawable = ((NinePatchDrawable) drawable).tint(jsonData.getColorByName(data.tintName).color);
                     }
                 } else {
                     drawable = new SpriteDrawable(atlas.createSprite(name));
                     if (data.tint != null) {
                         drawable = ((SpriteDrawable) drawable).tint(data.tint);
                     } else if (data.tintName != null) {
-                        drawable = ((SpriteDrawable) drawable).tint(JsonData.getInstance().getColorByName(data.tintName).color);
+                        drawable = ((SpriteDrawable) drawable).tint(jsonData.getColorByName(data.tintName).color);
                     }
                 }
                 
@@ -390,7 +396,7 @@ public class DialogDrawables extends Dialog {
     }
     
     private void colorSwatchesDialog(DrawableData drawableData) {
-        DialogColors dialog = new DialogColors(getSkin(), "dialog", null, true, dialogFactory, (ColorData colorData) -> {
+        DialogColors dialog = new DialogColors(getSkin(), "dialog", null, true, dialogFactory, jsonData, projectData, atlasData, (ColorData colorData) -> {
             if (colorData != null) {
                 final DrawableData tintedDrawable = new DrawableData(drawableData.file);
                     tintedDrawable.tintName = colorData.getName();
@@ -420,8 +426,8 @@ public class DialogDrawables extends Dialog {
                         protected void result(Object object) {
                             if (object instanceof Boolean && (boolean) object) {
                                 tintedDrawable.name = textField.getText();
-                                AtlasData.getInstance().getDrawables().add(tintedDrawable);
-                                ProjectData.instance().setChangesSaved(false);
+                                atlasData.getDrawables().add(tintedDrawable);
+                                projectData.setChangesSaved(false);
                             }
                         }
 
@@ -439,8 +445,8 @@ public class DialogDrawables extends Dialog {
                             if (keycode2 == Input.Keys.ENTER) {
                                 if (!button.isDisabled()) {
                                     tintedDrawable.name = textField.getText();
-                                    AtlasData.getInstance().getDrawables().add(tintedDrawable);
-                                    ProjectData.instance().setChangesSaved(false);
+                                    atlasData.getDrawables().add(tintedDrawable);
+                                    projectData.setChangesSaved(false);
                                     approveDialog.hide();
                                 }
                             }
@@ -523,7 +529,7 @@ public class DialogDrawables extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 boolean disable = !DrawableData.validate(textField.getText());
                 if (!disable) {
-                    for (DrawableData data : AtlasData.getInstance().getDrawables()) {
+                    for (DrawableData data : atlasData.getDrawables()) {
                         if (data.name.equals(textField.getText())) {
                             disable = true;
                             break;
@@ -560,13 +566,13 @@ public class DialogDrawables extends Dialog {
         PanelPreviewProperties.instance.produceAtlas();
         PanelPreviewProperties.instance.render();
         
-        ProjectData.instance().setChangesSaved(false);
+        projectData.setChangesSaved(false);
         
         sortBySelectedMode();
     }
     
     private void updateStyleValuesForRename(String oldName, String newName) {
-        Values<Array<StyleData>> values = JsonData.getInstance().getClassStyleMap().values();
+        Values<Array<StyleData>> values = jsonData.getClassStyleMap().values();
         for (Array<StyleData> styles : values) {
             for (StyleData style : styles) {
                 for (StyleProperty styleProperty : style.properties.values()) {
@@ -584,9 +590,9 @@ public class DialogDrawables extends Dialog {
         if (drawable.tint == null && drawable.tintName == null && checkDuplicateDrawables(drawable.file, 1)) {
             showConfirmDeleteDialog(drawable);
         } else {
-            AtlasData.getInstance().getDrawables().removeValue(drawable, true);
+            atlasData.getDrawables().removeValue(drawable, true);
 
-            for (Array<StyleData> datas : JsonData.getInstance().getClassStyleMap().values()) {
+            for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
                 for (StyleData data : datas) {
                     for (StyleProperty styleProperty : data.properties.values()) {
                         if (styleProperty != null && styleProperty.type.equals(Drawable.class) && styleProperty.value != null && styleProperty.value.equals(drawable.toString())) {
@@ -715,8 +721,8 @@ public class DialogDrawables extends Dialog {
     private boolean checkDuplicateDrawables(FileHandle handle, int minimum) {
         int count = 0;
         String name = DrawableData.proper(handle.name());
-        for (int i = 0; i < AtlasData.getInstance().getDrawables().size; i++) {
-            DrawableData data = AtlasData.getInstance().getDrawables().get(i);
+        for (int i = 0; i < atlasData.getDrawables().size; i++) {
+            DrawableData data = atlasData.getDrawables().get(i);
             if (name.equals(DrawableData.proper(data.file.name()))) {
                 count++;
             }
@@ -734,12 +740,12 @@ public class DialogDrawables extends Dialog {
     private void removeDuplicateDrawables(FileHandle handle) {
         boolean refreshDrawables = false;
         String name = DrawableData.proper(handle.name());
-        for (int i = 0; i < AtlasData.getInstance().getDrawables().size; i++) {
-            DrawableData data = AtlasData.getInstance().getDrawables().get(i);
+        for (int i = 0; i < atlasData.getDrawables().size; i++) {
+            DrawableData data = atlasData.getDrawables().get(i);
             if (name.equals(DrawableData.proper(data.file.name()))) {
-                AtlasData.getInstance().getDrawables().removeValue(data, true);
+                atlasData.getDrawables().removeValue(data, true);
                 
-                for (Array<StyleData> datas : JsonData.getInstance().getClassStyleMap().values()) {
+                for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
                     for (StyleData tempData : datas) {
                         for (StyleProperty prop : tempData.properties.values()) {
                             if (prop != null && prop.type.equals(Drawable.class) && prop.value != null && prop.value.equals(data.toString())) {
@@ -786,10 +792,10 @@ public class DialogDrawables extends Dialog {
     private void newDrawableDialog() {
         String defaultPath = "";
         
-        if (ProjectData.instance().getLastDirectory() != null) {
+        if (projectData.getLastDirectory() != null) {
             FileHandle fileHandle = new FileHandle(defaultPath);
             if (fileHandle.exists()) {
-                defaultPath = ProjectData.instance().getLastDirectory();
+                defaultPath = projectData.getLastDirectory();
             }
         }
         
@@ -817,12 +823,12 @@ public class DialogDrawables extends Dialog {
     }
     
     private void drawablesSelected(Array<FileHandle> files) {
-        AtlasData.getInstance().atlasCurrent = false;
-        Array<DrawableData> backup = new Array<>(AtlasData.getInstance().getDrawables());
+        atlasData.atlasCurrent = false;
+        Array<DrawableData> backup = new Array<>(atlasData.getDrawables());
         Array<FileHandle> unhandledFiles = new Array<>();
         Array<FileHandle> filesToProcess = new Array<>();
         
-        ProjectData.instance().setLastDirectory(files.get(0).parent().path());
+        projectData.setLastDirectory(files.get(0).parent().path());
         for (FileHandle fileHandle : files) {
             if (checkDuplicateDrawables(fileHandle, 0)) {
                 unhandledFiles.add(fileHandle);
@@ -882,7 +888,7 @@ public class DialogDrawables extends Dialog {
         for (FileHandle file : filesToProcess) {
             DrawableData data = new DrawableData(file);
             if (!checkIfNameExists(data.name)) {
-                AtlasData.getInstance().getDrawables().add(data);
+                atlasData.getDrawables().add(data);
             }
         }        
         
@@ -892,8 +898,8 @@ public class DialogDrawables extends Dialog {
             if (!produceAtlas()) {
                 showDrawableError();
                 Gdx.app.log(getClass().getName(), "Attempting to reload drawables backup...");
-                AtlasData.getInstance().getDrawables().clear();
-                AtlasData.getInstance().getDrawables().addAll(backup);
+                atlasData.getDrawables().clear();
+                atlasData.getDrawables().addAll(backup);
                 gatherDrawables();
                 if (produceAtlas()) {
                     Gdx.app.log(getClass().getName(), "Successfully rolled back changes to drawables");
@@ -901,7 +907,7 @@ public class DialogDrawables extends Dialog {
                     Gdx.app.error(getClass().getName(), "Critical failure, could not roll back changes to drawables");
                 }
             } else {
-                ProjectData.instance().setChangesSaved(false);
+                projectData.setChangesSaved(false);
             }
 
             sortBySelectedMode();
@@ -950,8 +956,8 @@ public class DialogDrawables extends Dialog {
                         protected void result(Object object) {
                             if (object instanceof Boolean && (boolean) object) {
                                 tintedDrawable.name = textField.getText();
-                                AtlasData.getInstance().getDrawables().add(tintedDrawable);
-                                ProjectData.instance().setChangesSaved(false);
+                                atlasData.getDrawables().add(tintedDrawable);
+                                projectData.setChangesSaved(false);
                             }
                         }
 
@@ -969,8 +975,8 @@ public class DialogDrawables extends Dialog {
                             if (keycode2 == Input.Keys.ENTER) {
                                 if (!button.isDisabled()) {
                                     tintedDrawable.name = textField.getText();
-                                    AtlasData.getInstance().getDrawables().add(tintedDrawable);
-                                    ProjectData.instance().setChangesSaved(false);
+                                    atlasData.getDrawables().add(tintedDrawable);
+                                    projectData.setChangesSaved(false);
                                     dialog.hide();
                                 }
                             }
@@ -1030,9 +1036,9 @@ public class DialogDrawables extends Dialog {
         Main.instance().getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
         
         try {
-            if (!AtlasData.getInstance().atlasCurrent) {
-                AtlasData.getInstance().writeAtlas();
-                AtlasData.getInstance().atlasCurrent = true;
+            if (!atlasData.atlasCurrent) {
+                atlasData.writeAtlas();
+                atlasData.atlasCurrent = true;
             }
         } catch (Exception e) {
             Gdx.app.error(getClass().getName(), "Error creating atlas upon drawable dialog exit", e);
@@ -1051,7 +1057,7 @@ public class DialogDrawables extends Dialog {
         instance = null;
         if (object != null) {
             if (object instanceof DrawableData) {
-                ProjectData.instance().setChangesSaved(false);
+                projectData.setChangesSaved(false);
                 PanelStatusBar.instance.message("Drawable selected: " + object.toString() + " for \"" + property.name + "\"");
                 if (object instanceof DrawableData) {
                     DrawableData drawable = (DrawableData) object;
@@ -1060,13 +1066,13 @@ public class DialogDrawables extends Dialog {
                 }
             } else if (object instanceof Boolean && property != null) {
                 if ((boolean) object) {
-                    ProjectData.instance().setChangesSaved(false);
+                    projectData.setChangesSaved(false);
                     property.value = null;
                     PanelStatusBar.instance.message("Drawable emptied for \"" + property.name + "\"");
                     PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                 } else {
                     boolean hasDrawable = false;
-                    for (DrawableData drawable : AtlasData.getInstance().getDrawables()) {
+                    for (DrawableData drawable : atlasData.getDrawables()) {
                         if (drawable.name.equals(property.value)) {
                             hasDrawable = true;
                             break;

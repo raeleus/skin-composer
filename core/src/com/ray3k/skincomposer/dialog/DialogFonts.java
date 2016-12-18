@@ -85,19 +85,26 @@ public class DialogFonts extends Dialog {
     private EventListener listener;
     private FilesDroppedListener filesDroppedListener;
     private ScrollPane scrollPane;
+    private JsonData jsonData;
+    private ProjectData projectData;
+    private AtlasData atlasData;
 
-    public DialogFonts(Skin skin, StyleProperty styleProperty, EventListener listener) {
-        this(skin, "default", styleProperty, listener);
+    public DialogFonts(Skin skin, StyleProperty styleProperty, JsonData jsonData, ProjectData projectData, AtlasData atlasData, EventListener listener) {
+        this(skin, "default", styleProperty, jsonData, projectData, atlasData, listener);
     }
 
-    public DialogFonts(final Skin skin, String styleName, StyleProperty styleProperty, EventListener listener) {
+    public DialogFonts(final Skin skin, String styleName, StyleProperty styleProperty, JsonData jsonData, ProjectData projectData, AtlasData atlasData, EventListener listener) {
         super("", skin, styleName);
+        
+        this.jsonData = jsonData;
+        this.projectData = projectData;
+        this.atlasData = atlasData;
         
         this.listener = listener;
         this.skin = skin;
         this.styleProperty = styleProperty;
-        fonts = JsonData.getInstance().getFonts();
-        drawables = AtlasData.getInstance().getDrawables();
+        fonts = jsonData.getFonts();
+        drawables = atlasData.getDrawables();
 
         fontMap = new ObjectMap<>();
         produceAtlas();
@@ -182,7 +189,7 @@ public class DialogFonts extends Dialog {
     private boolean addFont(String name, FileHandle file) {
         if (FontData.validate(name)) {
             try {
-                ProjectData.instance().setChangesSaved(false);
+                projectData.setChangesSaved(false);
                 FontData font = new FontData(name, file);
                 
                 //remove any existing FontData that shares the same name.
@@ -203,7 +210,7 @@ public class DialogFonts extends Dialog {
                     DrawableData drawable = new DrawableData(new FileHandle(path));
                     drawable.visible = false;
                     if (!drawables.contains(drawable, false)) {
-                        AtlasData.getInstance().atlasCurrent = false;
+                        atlasData.atlasCurrent = false;
                         drawables.add(drawable);
                     }
                 }
@@ -297,7 +304,7 @@ public class DialogFonts extends Dialog {
                             drawables.removeValue(new DrawableData(imagefile), false);
                         }
                         
-                        for (Array<StyleData> datas : JsonData.getInstance().getClassStyleMap().values()) {
+                        for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
                             for (StyleData data : datas) {
                                 for (StyleProperty property : data.properties.values()) {
                                     if (property != null && property.type.equals(BitmapFont.class) && property.value != null && property.value.equals(deleteFont.getName())) {
@@ -398,7 +405,7 @@ public class DialogFonts extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 boolean disable = !FontData.validate(textField.getText());
                 if (!disable) {
-                    for (ColorData data : JsonData.getInstance().getColors()) {
+                    for (ColorData data : jsonData.getColors()) {
                         if (data.getName().equals(textField.getText())) {
                             disable = true;
                             break;
@@ -424,7 +431,7 @@ public class DialogFonts extends Dialog {
     }
     
     private void renameFont(FontData font, String newName) {
-        for (Array<StyleData> datas : JsonData.getInstance().getClassStyleMap().values()) {
+        for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
             for (StyleData data : datas) {
                 for (StyleProperty property : data.properties.values()) {
                     if (property != null && property.type.equals(BitmapFont.class) && property.value != null && property.value.equals(font.getName())) {
@@ -446,7 +453,7 @@ public class DialogFonts extends Dialog {
         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         PanelPreviewProperties.instance.render();
         
-        ProjectData.instance().setChangesSaved(false);
+        projectData.setChangesSaved(false);
         
         populate();
     }
@@ -455,7 +462,7 @@ public class DialogFonts extends Dialog {
     protected void result(Object object) {
         if (styleProperty != null) {
             if (object instanceof FontData) {
-                ProjectData.instance().setChangesSaved(false);
+                projectData.setChangesSaved(false);
                 FontData font = (FontData) object;
                 PanelStatusBar.instance.message("Selected Font: " + font.getName() + " for \"" + styleProperty.name + "\"");
                 styleProperty.value = font.getName();
@@ -463,12 +470,12 @@ public class DialogFonts extends Dialog {
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
                     styleProperty.value = null;
-                    ProjectData.instance().setChangesSaved(false);
+                    projectData.setChangesSaved(false);
                     PanelStatusBar.instance.message("Drawable emptied for \"" + styleProperty.name + "\"");
                     PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                 } else {
                     boolean hasFont = false;
-                    for (FontData font : JsonData.getInstance().getFonts()) {
+                    for (FontData font : jsonData.getFonts()) {
                         if (font.getName().equals(styleProperty.value)) {
                             hasFont = true;
                             break;
@@ -477,7 +484,7 @@ public class DialogFonts extends Dialog {
 
                     if (!hasFont) {
                         styleProperty.value = null;
-                        ProjectData.instance().setChangesSaved(false);
+                        projectData.setChangesSaved(false);
                         PanelStatusBar.instance.message("Drawable deleted for \"" + styleProperty.name + "\"");
                         PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                     }
@@ -564,11 +571,11 @@ public class DialogFonts extends Dialog {
                 atlas = null;
             }
             
-            if (!AtlasData.getInstance().atlasCurrent) {
-                AtlasData.getInstance().writeAtlas();
-                AtlasData.getInstance().atlasCurrent = true;
+            if (!atlasData.atlasCurrent) {
+                atlasData.writeAtlas();
+                atlasData.atlasCurrent = true;
             }
-            atlas = AtlasData.getInstance().getAtlas();
+            atlas = atlasData.getAtlas();
 
             for (FontData font : fonts) {
                 BitmapFontData fontData = new BitmapFontData(font.file, false);
@@ -596,10 +603,10 @@ public class DialogFonts extends Dialog {
     private void newFontDialog() {
         String defaultPath = "";
         
-        if (ProjectData.instance().getLastDirectory() != null) {
+        if (projectData.getLastDirectory() != null) {
             FileHandle fileHandle = new FileHandle(defaultPath);
             if (fileHandle.exists()) {
-                defaultPath = ProjectData.instance().getLastDirectory();
+                defaultPath = projectData.getLastDirectory();
             }
         }
         
@@ -607,7 +614,7 @@ public class DialogFonts extends Dialog {
         
         List<File> files = Main.instance().getDesktopWorker().openMultipleDialog("Choose font file(s)...", defaultPath, filterPatterns, "Font files (*.fnt)");
         if (files != null && files.size() > 0) {
-            ProjectData.instance().setLastDirectory(files.get(0).getParentFile().getPath());
+            projectData.setLastDirectory(files.get(0).getParentFile().getPath());
             fontNameDialog(files, 0);
         }
     }
@@ -695,7 +702,7 @@ public class DialogFonts extends Dialog {
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         boolean disable = !FontData.validate(textField.getText());
                         if (!disable) {
-                            for (FontData data : JsonData.getInstance().getFonts()) {
+                            for (FontData data : jsonData.getFonts()) {
                                 if (data.getName().equals(textField.getText())) {
                                     disable = true;
                                     break;
@@ -707,7 +714,7 @@ public class DialogFonts extends Dialog {
                 });
                 nameDialog.setColor(1.0f, 1.0f, 1.0f, 0.0f);
                 
-                if (!Utils.doesImageFitBox(new FileHandle(bitmapFontData.imagePaths[0]), ProjectData.instance().getMaxTextureWidth(), ProjectData.instance().getMaxTextureHeight())) {
+                if (!Utils.doesImageFitBox(new FileHandle(bitmapFontData.imagePaths[0]), projectData.getMaxTextureWidth(), projectData.getMaxTextureHeight())) {
                     showAddFontSizeError(fileHandle.nameWithoutExtension());
                 } else {
                     nameDialog.show(getStage());
@@ -730,8 +737,8 @@ public class DialogFonts extends Dialog {
         dialog.getContentTable().row();
         dialog.text("Unable to add font \"" + name +
                 "\". Ensure image dimensions\nare less than max texture dimensions (" +
-                ProjectData.instance().getMaxTextureWidth() + "x" + 
-                ProjectData.instance().getMaxTextureHeight() + ").\nSee project settings.");
+                projectData.getMaxTextureWidth() + "x" + 
+                projectData.getMaxTextureHeight() + ").\nSee project settings.");
         dialog.button("Ok");
         dialog.show(getStage());
     }

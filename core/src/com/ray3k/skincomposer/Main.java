@@ -90,7 +90,6 @@ public class Main extends ApplicationAdapter {
     private AnimatedDrawable loadingAnimation;
     private UndoableManager undoableManager;
     private ProjectData projectData;
-    private JsonData jsonData;
     
     public static Main instance() {
         return instance;
@@ -110,8 +109,14 @@ public class Main extends ApplicationAdapter {
     private void initDefaults() {
         if (Utils.isMac()) System.setProperty("java.awt.headless", "true");
         
-        dialogFactory = new DialogFactory(skin, stage);
-        undoableManager = new UndoableManager();
+        projectData = new ProjectData();
+        projectData.setMain(this);
+        projectData.randomizeId();
+        projectData.setMaxTextureDimensions(1024, 1024);
+        projectData.setMaxUndos(30);
+        
+        dialogFactory = new DialogFactory(skin, stage, projectData.getJsonData(), projectData, projectData.getAtlasData());
+        undoableManager = new UndoableManager(projectData);
         
         desktopWorker.attachLogListener();
         desktopWorker.sizeWindowToFit(800, 800, 50, Gdx.graphics);
@@ -133,14 +138,7 @@ public class Main extends ApplicationAdapter {
         loadingAnimation.addDrawable(skin.getDrawable("loading_6"));
         loadingAnimation.addDrawable(skin.getDrawable("loading_7"));
         
-        projectData = ProjectData.instance();
-        jsonData = JsonData.getInstance();
-        
-        ProjectData.instance().randomizeId();
-        ProjectData.instance().setMaxTextureDimensions(1024, 1024);
-        ProjectData.instance().setMaxUndos(30);
-        
-        AtlasData.getInstance().clearTempData();
+        projectData.getAtlasData().clearTempData();
     }
 
     private void populate() {
@@ -148,7 +146,7 @@ public class Main extends ApplicationAdapter {
         
         RootTable root = new RootTable(stage, skin);
         root.setFillParent(true);
-        root.addListener(new MainListener(root, dialogFactory, desktopWorker, projectData, jsonData));
+        root.addListener(new MainListener(root, dialogFactory, desktopWorker, projectData, projectData.getJsonData()));
         root.populate();
         stage.addActor(root);
     }
@@ -196,5 +194,13 @@ public class Main extends ApplicationAdapter {
 
     public UndoableManager getUndoableManager() {
         return undoableManager;
+    }
+
+    public ProjectData getProjectData() {
+        return projectData;
+    }
+
+    public void setProjectData(ProjectData projectData) {
+        this.projectData = projectData;
     }
 }

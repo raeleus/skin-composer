@@ -128,7 +128,7 @@ public class MainListener extends RootTableListener {
     }
     
     public void newFile() {
-        if (!ProjectData.instance().areChangesSaved() && !ProjectData.instance().isNewProject()) {
+        if (!projectData.areChangesSaved() && !projectData.isNewProject()) {
             dialogFactory.yesNoCancelDialog("Save Changes?",
                     "Do you want to save changes to the existing project?"
                             + "\nAll unsaved changes will be lost.",
@@ -142,7 +142,7 @@ public class MainListener extends RootTableListener {
                         }
                     });
         } else {
-            ProjectData.instance().clear();
+            projectData.clear();
         }
     }
     
@@ -164,6 +164,7 @@ public class MainListener extends RootTableListener {
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
                 projectData.load(fileHandle);
+                System.out.println(jsonData.getColors().size);
                 root.populate();
             }
         };
@@ -185,7 +186,7 @@ public class MainListener extends RootTableListener {
     }
     
     public void saveFile(Runnable runnable) {
-        if (ProjectData.instance().getSaveFile() != null) {
+        if (projectData.getSaveFile() != null) {
             
 //            Main.instance().showDialogLoading(() -> {
 //                projectData.saveFile();
@@ -232,7 +233,7 @@ public class MainListener extends RootTableListener {
 //            if (projectData.getLastDirectory() != null) {
 //                FileHandle fileHandle = new FileHandle(defaultPath);
 //                if (fileHandle.exists()) {
-//                    defaultPath = ProjectData.instance().getLastDirectory();
+//                    defaultPath = projectData.getLastDirectory();
 //                }
 //            }
 //
@@ -241,7 +242,7 @@ public class MainListener extends RootTableListener {
 //            File file = desktopWorker.openDialog("Import skin...", defaultPath, filterPatterns, "Json files");
 //            if (file != null) {
 //                FileHandle fileHandle = new FileHandle(file);
-//                ProjectData.instance().setLastDirectory(fileHandle.parent().path());
+//                projectData.setLastDirectory(fileHandle.parent().path());
 //                try {
 //                    JsonData.getInstance().readFile(fileHandle);
 //                    PanelClassBar.instance.populate();
@@ -261,10 +262,10 @@ public class MainListener extends RootTableListener {
 //        Main.instance().showDialogLoading(() -> {
 //            String defaultPath = "";
 //
-//            if (ProjectData.instance().getLastDirectory() != null) {
+//            if (projectData.getLastDirectory() != null) {
 //                FileHandle fileHandle = new FileHandle(defaultPath);
 //                if (fileHandle.exists()) {
-//                    defaultPath = ProjectData.instance().getLastDirectory();
+//                    defaultPath = projectData.getLastDirectory();
 //                }
 //            }
 //
@@ -276,7 +277,7 @@ public class MainListener extends RootTableListener {
 //                if (fileHandle.extension() == null || !fileHandle.extension().equals(".json")) {
 //                    fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".json");
 //                }
-//                ProjectData.instance().setLastDirectory(fileHandle.parent().path());
+//                projectData.setLastDirectory(fileHandle.parent().path());
 //                JsonData.getInstance().writeFile(fileHandle);
 //                
 //                try {

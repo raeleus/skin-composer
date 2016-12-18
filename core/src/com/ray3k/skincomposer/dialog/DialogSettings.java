@@ -45,7 +45,6 @@ import com.ray3k.skincomposer.Spinner.SpinnerStyle;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.panel.PanelPreviewProperties;
-import com.ray3k.skincomposer.panel.PanelStatusBar;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class DialogSettings extends Dialog {
@@ -56,20 +55,24 @@ public class DialogSettings extends Dialog {
     private Integer maxUndos;
     private boolean useStripWhitespace;
     private DialogFactory dialogFactory;
+    private ProjectData projectData;
+    private AtlasData atlasData;
 
-    public DialogSettings(String title, Skin skin, String windowStyleName, DialogFactory dialogFactory) {
+    public DialogSettings(String title, Skin skin, String windowStyleName, DialogFactory dialogFactory, ProjectData projectData, AtlasData atlasData) {
         super(title, skin, windowStyleName);
         
         this.dialogFactory = dialogFactory;
+        this.projectData = projectData;
+        this.atlasData = atlasData;
         
         this.skin = skin;
         
         spinnerStyle = new Spinner.SpinnerStyle(skin.get("spinner-minus-h", Button.ButtonStyle.class), skin.get("spinner-plus-h", Button.ButtonStyle.class), skin.get("default", TextField.TextFieldStyle.class));
         
-        textureWidth = ProjectData.instance().getMaxTextureWidth();
-        textureHeight = ProjectData.instance().getMaxTextureHeight();
-        maxUndos = ProjectData.instance().getMaxUndos();
-        useStripWhitespace = ProjectData.instance().getStripWhitespace();
+        textureWidth = projectData.getMaxTextureWidth();
+        textureHeight = projectData.getMaxTextureHeight();
+        maxUndos = projectData.getMaxUndos();
+        useStripWhitespace = projectData.getStripWhitespace();
         setFillParent(true);
         
         populate();
@@ -80,10 +83,10 @@ public class DialogSettings extends Dialog {
         super.result(object);
         
         if ((boolean) object) {
-            ProjectData.instance().setChangesSaved(false);
-            ProjectData.instance().setMaxTextureDimensions(MathUtils.nextPowerOfTwo(textureWidth), MathUtils.nextPowerOfTwo(textureHeight));
-            ProjectData.instance().setMaxUndos(maxUndos);
-            ProjectData.instance().setStripWhitespace(useStripWhitespace);
+            projectData.setChangesSaved(false);
+            projectData.setMaxTextureDimensions(MathUtils.nextPowerOfTwo(textureWidth), MathUtils.nextPowerOfTwo(textureHeight));
+            projectData.setMaxUndos(maxUndos);
+            projectData.setStripWhitespace(useStripWhitespace);
             Main.instance().getUndoableManager().clearUndoables();
         }
     }
@@ -133,14 +136,14 @@ public class DialogSettings extends Dialog {
         });
         t.add(textButton).colspan(2);
         
-        if (ProjectData.instance().areChangesSaved() && ProjectData.instance().getSaveFile().exists()) {
+        if (projectData.areChangesSaved() && projectData.getSaveFile().exists()) {
             t.row();
             textButton = new TextButton("Open project/import directory", skin);
             textButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                     try {
-                        Utils.openFileExplorer(ProjectData.instance().getSaveFile().sibling(ProjectData.instance().getSaveFile().nameWithoutExtension() + "_data"));
+                        Utils.openFileExplorer(projectData.getSaveFile().sibling(projectData.getSaveFile().nameWithoutExtension() + "_data"));
                     } catch (Exception e) {
                         Gdx.app.error(getClass().getName(), "Error opening project folder", e);
                         DialogError.showError("Folder Error...", "Error opening project folder\n\nOpen log?");
@@ -157,8 +160,8 @@ public class DialogSettings extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 dialogFactory.showDialogLoading(() -> {
                     try {
-                        AtlasData.getInstance().writeAtlas();
-                        AtlasData.getInstance().atlasCurrent = true;
+                        atlasData.writeAtlas();
+                        atlasData.atlasCurrent = true;
                         PanelPreviewProperties.instance.produceAtlas();
                         PanelPreviewProperties.instance.render();
                     } catch (Exception e) {
@@ -178,7 +181,7 @@ public class DialogSettings extends Dialog {
         t.row();
         label = new Label("Max Texture Width: ", skin);
         t.add(label).right();
-        Spinner spinner = new Spinner(ProjectData.instance().getMaxTextureWidth(), 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
+        Spinner spinner = new Spinner(projectData.getMaxTextureWidth(), 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         spinner.setMinimum(256.0);
         spinner.addListener(new ChangeListener() {
             @Override
@@ -198,7 +201,7 @@ public class DialogSettings extends Dialog {
         t.row();
         label = new Label("Max Texture Height: ", skin);
         t.add(label).right();
-        Spinner spinner2 = new Spinner(ProjectData.instance().getMaxTextureHeight(), 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
+        Spinner spinner2 = new Spinner(projectData.getMaxTextureHeight(), 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         spinner2.setMinimum(256.0);
         spinner2.addListener(new ChangeListener() {
             @Override
@@ -229,7 +232,7 @@ public class DialogSettings extends Dialog {
         t.row();
         label = new Label("Max Number of Undos: ", skin);
         t.add(label).right().padTop(10.0f);
-        Spinner spinner3 = new Spinner(ProjectData.instance().getMaxUndos(), 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
+        Spinner spinner3 = new Spinner(projectData.getMaxUndos(), 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         spinner3.setMinimum(1.0);
         spinner3.setMaximum(100.0);
         spinner3.addListener(new ChangeListener() {

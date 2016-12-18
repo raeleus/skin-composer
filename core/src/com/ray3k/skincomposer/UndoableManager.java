@@ -8,10 +8,12 @@ import com.ray3k.skincomposer.panel.PanelMenuBar;
 public class UndoableManager {
     private final Array<Undoable> undoables;
     private int undoIndex;
+    private ProjectData projectData;
 
-    public UndoableManager() {
+    public UndoableManager(ProjectData projectData) {
         undoables = new Array<>();
         undoIndex = -1;
+        this.projectData = projectData;
     }
     
     public void clearUndoables() {
@@ -27,7 +29,7 @@ public class UndoableManager {
     
     public void undo() {
         if (undoIndex >= 0 && undoIndex < undoables.size) {
-            ProjectData.instance().setChangesSaved(false);
+            projectData.setChangesSaved(false);
             Undoable undoable = undoables.get(undoIndex);
             undoable.undo();
             undoIndex--;
@@ -46,7 +48,7 @@ public class UndoableManager {
     
     public void redo() {
         if (undoIndex >= -1 && undoIndex < undoables.size) {
-            ProjectData.instance().setChangesSaved(false);
+            projectData.setChangesSaved(false);
             if (undoIndex < undoables.size - 1) {
                 undoIndex++;
                 undoables.get(undoIndex).redo();
@@ -65,7 +67,7 @@ public class UndoableManager {
     }
     
     public void addUndoable(Undoable undoable, boolean redoImmediately) {
-        ProjectData.instance().setChangesSaved(false);
+        projectData.setChangesSaved(false);
         undoIndex++;
         if (undoIndex <= undoables.size - 1) {
             undoables.removeRange(undoIndex, undoables.size - 1);
@@ -81,8 +83,8 @@ public class UndoableManager {
         PanelMenuBar.instance().getUndoButton().setDisabled(false);
         PanelMenuBar.instance().getUndoButton().setText("Undo " + undoable.getUndoText());
         
-        if (undoables.size > ProjectData.instance().getMaxUndos()) {
-            int offset = undoables.size - ProjectData.instance().getMaxUndos();
+        if (undoables.size > projectData.getMaxUndos()) {
+            int offset = undoables.size - projectData.getMaxUndos();
             
             undoIndex -= offset;
             undoIndex = MathUtils.clamp(undoIndex, -1, undoables.size - 1);
