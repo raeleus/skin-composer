@@ -372,8 +372,8 @@ public class DialogColors extends Dialog {
                         
                         Main.instance().getUndoableManager().clearUndoables();
                         
-                        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-                        PanelPreviewProperties.instance.render();
+//                        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//                        PanelPreviewProperties.instance.render();
                         
                         event.setBubbles(false);
                         populate();
@@ -426,9 +426,9 @@ public class DialogColors extends Dialog {
 
         Main.instance().getUndoableManager().clearUndoables();
 
-        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-        PanelPreviewProperties.instance.produceAtlas();
-        PanelPreviewProperties.instance.render();
+//        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//        PanelPreviewProperties.instance.produceAtlas();
+//        PanelPreviewProperties.instance.render();
         
         projectData.setChangesSaved(false);
         
@@ -548,8 +548,8 @@ public class DialogColors extends Dialog {
 
         Main.instance().getUndoableManager().clearUndoables();
 
-        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-        PanelPreviewProperties.instance.render();
+//        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//        PanelPreviewProperties.instance.render();
         
         projectData.setChangesSaved(false);
         
@@ -582,13 +582,13 @@ public class DialogColors extends Dialog {
                 ColorData color = (ColorData) object;
                 PanelStatusBar.instance.message("Selected color " + color.getName() + " for \"" + styleProperty.name + "\"");
                 styleProperty.value = color.getName();
-                PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//                PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
                     projectData.setChangesSaved(false);
                     styleProperty.value = null;
                     PanelStatusBar.instance.message("Emptied color for \"" + styleProperty.name + "\"");
-                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                 } else {
                     boolean hasColor = false;
                     for (ColorData color : jsonData.getColors()) {
@@ -601,8 +601,8 @@ public class DialogColors extends Dialog {
                     if (!hasColor) {
                         projectData.setChangesSaved(false);
                         styleProperty.value = null;
-                        PanelStatusBar.instance.message("Deleted color for \"" + styleProperty.name + "\"");
-                        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//                        PanelStatusBar.instance.message("Deleted color for \"" + styleProperty.name + "\"");
+//                        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                     }
                 }
             }

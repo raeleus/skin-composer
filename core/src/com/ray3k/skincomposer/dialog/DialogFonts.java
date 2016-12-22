@@ -316,8 +316,8 @@ public class DialogFonts extends Dialog {
                         
                         Main.instance().getUndoableManager().clearUndoables();
                         
-                        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-                        PanelPreviewProperties.instance.render();
+//                        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//                        PanelPreviewProperties.instance.render();
                         
                         event.setBubbles(false);
                         populate();
@@ -450,8 +450,8 @@ public class DialogFonts extends Dialog {
 
         Main.instance().getUndoableManager().clearUndoables();
 
-        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-        PanelPreviewProperties.instance.render();
+//        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//        PanelPreviewProperties.instance.render();
         
         projectData.setChangesSaved(false);
         
@@ -464,15 +464,15 @@ public class DialogFonts extends Dialog {
             if (object instanceof FontData) {
                 projectData.setChangesSaved(false);
                 FontData font = (FontData) object;
-                PanelStatusBar.instance.message("Selected Font: " + font.getName() + " for \"" + styleProperty.name + "\"");
+//                PanelStatusBar.instance.message("Selected Font: " + font.getName() + " for \"" + styleProperty.name + "\"");
                 styleProperty.value = font.getName();
-                PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//                PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
                     styleProperty.value = null;
                     projectData.setChangesSaved(false);
-                    PanelStatusBar.instance.message("Drawable emptied for \"" + styleProperty.name + "\"");
-                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//                    PanelStatusBar.instance.message("Drawable emptied for \"" + styleProperty.name + "\"");
+//                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                 } else {
                     boolean hasFont = false;
                     for (FontData font : jsonData.getFonts()) {
@@ -485,8 +485,8 @@ public class DialogFonts extends Dialog {
                     if (!hasFont) {
                         styleProperty.value = null;
                         projectData.setChangesSaved(false);
-                        PanelStatusBar.instance.message("Drawable deleted for \"" + styleProperty.name + "\"");
-                        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//                        PanelStatusBar.instance.message("Drawable deleted for \"" + styleProperty.name + "\"");
+//                        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                     }
                 }
             }

@@ -562,9 +562,9 @@ public class DialogDrawables extends Dialog {
         Main.instance().getUndoableManager().clearUndoables();
         updateStyleValuesForRename(oldName, name);
         
-        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-        PanelPreviewProperties.instance.produceAtlas();
-        PanelPreviewProperties.instance.render();
+//        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//        PanelPreviewProperties.instance.produceAtlas();
+//        PanelPreviewProperties.instance.render();
         
         projectData.setChangesSaved(false);
         
@@ -602,8 +602,8 @@ public class DialogDrawables extends Dialog {
                 }
             }
 
-            PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-            PanelPreviewProperties.instance.render();
+//            PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//            PanelPreviewProperties.instance.render();
 
             Main.instance().getUndoableManager().clearUndoables();
 
@@ -760,8 +760,8 @@ public class DialogDrawables extends Dialog {
             }
         }
         
-        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-        PanelPreviewProperties.instance.render();
+//        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//        PanelPreviewProperties.instance.render();
         
         if (refreshDrawables) {
             gatherDrawables();
@@ -1062,14 +1062,14 @@ public class DialogDrawables extends Dialog {
                 if (object instanceof DrawableData) {
                     DrawableData drawable = (DrawableData) object;
                     property.value = drawable.name;
-                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                 }
             } else if (object instanceof Boolean && property != null) {
                 if ((boolean) object) {
                     projectData.setChangesSaved(false);
                     property.value = null;
-                    PanelStatusBar.instance.message("Drawable emptied for \"" + property.name + "\"");
-                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//                    PanelStatusBar.instance.message("Drawable emptied for \"" + property.name + "\"");
+//                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                 } else {
                     boolean hasDrawable = false;
                     for (DrawableData drawable : atlasData.getDrawables()) {
@@ -1081,8 +1081,8 @@ public class DialogDrawables extends Dialog {
                     
                     if (!hasDrawable) {
                         property.value = null;
-                        PanelStatusBar.instance.message("Drawable deleted for \"" + property.name + "\"");
-                        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+//                        PanelStatusBar.instance.message("Drawable deleted for \"" + property.name + "\"");
+//                        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                     }
                 }
             }

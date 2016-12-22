@@ -314,7 +314,7 @@ public class MainListener extends RootTableListener {
     public void stylePropertyChanged(StyleProperty styleProperty,
             Actor styleActor) {
         if (styleProperty.type == Drawable.class) {
-            //show drawable dialog
+            dialogFactory.showDialogDrawables(styleProperty);
         } else if (styleProperty.type == Color.class) {
             //show color dialog
         } else if (styleProperty.type == BitmapFont.class) {
