@@ -20,11 +20,11 @@ public class UndoableManager {
         undoables.clear();
         undoIndex = -1;
         
-        PanelMenuBar.instance().getUndoButton().setDisabled(true);
-        PanelMenuBar.instance().getUndoButton().setText("Undo");
-        
-        PanelMenuBar.instance().getRedoButton().setDisabled(true);
-        PanelMenuBar.instance().getRedoButton().setText("Redo");
+//        PanelMenuBar.instance().getUndoButton().setDisabled(true);
+//        PanelMenuBar.instance().getUndoButton().setText("Undo");
+//        
+//        PanelMenuBar.instance().getRedoButton().setDisabled(true);
+//        PanelMenuBar.instance().getRedoButton().setText("Redo");
     }
     
     public void undo() {
@@ -35,14 +35,14 @@ public class UndoableManager {
             undoIndex--;
 
             if (undoIndex < 0) {
-                PanelMenuBar.instance().getUndoButton().setDisabled(true);
-                PanelMenuBar.instance().getUndoButton().setText("Undo");
+//                PanelMenuBar.instance().getUndoButton().setDisabled(true);
+//                PanelMenuBar.instance().getUndoButton().setText("Undo");
             } else {
-                PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
+//                PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
             }
 
-            PanelMenuBar.instance().getRedoButton().setDisabled(false);
-            PanelMenuBar.instance().getRedoButton().setText("Redo " + undoable.getUndoText());
+//            PanelMenuBar.instance().getRedoButton().setDisabled(false);
+//            PanelMenuBar.instance().getRedoButton().setText("Redo " + undoable.getUndoText());
         }
     }
     
@@ -55,14 +55,14 @@ public class UndoableManager {
             }
 
             if (undoIndex >= undoables.size - 1) {
-                PanelMenuBar.instance().getRedoButton().setDisabled(true);
-                PanelMenuBar.instance().getRedoButton().setText("Redo");
+//                PanelMenuBar.instance().getRedoButton().setDisabled(true);
+//                PanelMenuBar.instance().getRedoButton().setText("Redo");
             } else {
-                PanelMenuBar.instance().getRedoButton().setText("Redo " + undoables.get(undoIndex + 1).getUndoText());
+//                PanelMenuBar.instance().getRedoButton().setText("Redo " + undoables.get(undoIndex + 1).getUndoText());
             }
 
-            PanelMenuBar.instance().getUndoButton().setDisabled(false);
-            PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
+//            PanelMenuBar.instance().getUndoButton().setDisabled(false);
+//            PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
         }
     }
     
@@ -78,10 +78,10 @@ public class UndoableManager {
             undoable.redo();
         }
         
-        PanelMenuBar.instance().getRedoButton().setDisabled(true);
-        PanelMenuBar.instance().getRedoButton().setText("Redo");
-        PanelMenuBar.instance().getUndoButton().setDisabled(false);
-        PanelMenuBar.instance().getUndoButton().setText("Undo " + undoable.getUndoText());
+//        PanelMenuBar.instance().getRedoButton().setDisabled(true);
+//        PanelMenuBar.instance().getRedoButton().setText("Redo");
+//        PanelMenuBar.instance().getUndoButton().setDisabled(false);
+//        PanelMenuBar.instance().getUndoButton().setText("Undo " + undoable.getUndoText());
         
         if (undoables.size > projectData.getMaxUndos()) {
             int offset = undoables.size - projectData.getMaxUndos();

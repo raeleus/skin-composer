@@ -55,9 +55,6 @@ import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.skincomposer.panel.PanelClassBar;
-import com.ray3k.skincomposer.panel.PanelPreviewProperties;
-import com.ray3k.skincomposer.panel.PanelStyleProperties;
 import com.ray3k.skincomposer.utils.Utils;
 import java.util.Comparator;
 

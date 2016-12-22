@@ -44,7 +44,6 @@ import com.ray3k.skincomposer.Spinner.Orientation;
 import com.ray3k.skincomposer.Spinner.SpinnerStyle;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.ProjectData;
-import com.ray3k.skincomposer.panel.PanelPreviewProperties;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class DialogSettings extends Dialog {
@@ -162,8 +161,8 @@ public class DialogSettings extends Dialog {
                     try {
                         atlasData.writeAtlas();
                         atlasData.atlasCurrent = true;
-                        PanelPreviewProperties.instance.produceAtlas();
-                        PanelPreviewProperties.instance.render();
+//                        PanelPreviewProperties.instance.produceAtlas();
+//                        PanelPreviewProperties.instance.render();
                     } catch (Exception e) {
                         dialogFactory.showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
                         Gdx.app.error(getClass().getName(), "Unable to write texture atlas to temporary storage!", e);

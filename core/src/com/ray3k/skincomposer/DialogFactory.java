@@ -114,11 +114,11 @@ public class DialogFactory {
                     @Override
                     protected void result(Object object) {
                         if ((int) object == 0) {
-                            PanelMenuBar.instance().save(() -> {
-                                if (projectData.areChangesSaved()) {
-                                    Gdx.app.exit();
-                                }
-                            });
+//                            PanelMenuBar.instance().save(() -> {
+//                                if (projectData.areChangesSaved()) {
+//                                    Gdx.app.exit();
+//                                }
+//                            });
                         } else if ((int) object == 1) {
                             Gdx.app.exit();
                         }

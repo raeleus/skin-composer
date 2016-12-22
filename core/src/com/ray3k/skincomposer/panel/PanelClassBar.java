@@ -133,7 +133,7 @@ public class PanelClassBar {
         styleSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                PanelStyleProperties.instance.populate(styleSelectBox.getSelected());
+//                PanelStyleProperties.instance.populate(styleSelectBox.getSelected());
                 deleteButton.setDisabled(!styleSelectBox.getSelected().deletable);
                 PanelPreviewProperties.instance.populate();
             }
