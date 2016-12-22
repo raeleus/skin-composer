@@ -1055,7 +1055,7 @@ public class DialogDrawables extends Dialog {
         if (object != null) {
             if (object instanceof DrawableData) {
                 projectData.setChangesSaved(false);
-                PanelStatusBar.instance.message("Drawable selected: " + object.toString() + " for \"" + property.name + "\"");
+//                PanelStatusBar.instance.message("Drawable selected: " + object.toString() + " for \"" + property.name + "\"");
                 if (object instanceof DrawableData) {
                     DrawableData drawable = (DrawableData) object;
                     property.value = drawable.name;

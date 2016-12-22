@@ -577,14 +577,14 @@ public class DialogColors extends Dialog {
             if (object instanceof ColorData) {
                 projectData.setChangesSaved(false);
                 ColorData color = (ColorData) object;
-                PanelStatusBar.instance.message("Selected color " + color.getName() + " for \"" + styleProperty.name + "\"");
+//                PanelStatusBar.instance.message("Selected color " + color.getName() + " for \"" + styleProperty.name + "\"");
                 styleProperty.value = color.getName();
 //                PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
                     projectData.setChangesSaved(false);
                     styleProperty.value = null;
-                    PanelStatusBar.instance.message("Emptied color for \"" + styleProperty.name + "\"");
+//                    PanelStatusBar.instance.message("Emptied color for \"" + styleProperty.name + "\"");
 //                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                 } else {
                     boolean hasColor = false;
