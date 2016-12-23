@@ -27,10 +27,13 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.RootTable.RootTableListener;
@@ -314,7 +317,13 @@ public class MainListener extends RootTableListener {
     public void stylePropertyChanged(StyleProperty styleProperty,
             Actor styleActor) {
         if (styleProperty.type == Drawable.class) {
-            dialogFactory.showDialogDrawables(styleProperty);
+            dialogFactory.showDialogDrawables(styleProperty, new EventListener() {
+                @Override
+                public boolean handle(Event event) {
+                    root.refreshStyleProperties(true);
+                    return true;
+                }
+            });
         } else if (styleProperty.type == Color.class) {
             //show color dialog
         } else if (styleProperty.type == BitmapFont.class) {
@@ -342,7 +351,7 @@ public class MainListener extends RootTableListener {
                 StyleData styleData = styleDatas.get(styleIndex);
 
                 root.setStyleProperties(styleData.properties.values().toArray());
-                root.refreshStyleProperties();
+                root.refreshStyleProperties(false);
             }
         }
     }

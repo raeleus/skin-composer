@@ -73,7 +73,6 @@ import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.skincomposer.panel.PanelStatusBar;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
 import java.util.Iterator;
@@ -1085,6 +1084,7 @@ public class DialogDrawables extends Dialog {
             }
         }
         
+        //todo: do proper implementation of event handling with fire(), etc.
         if (listener != null) {
             listener.handle(null);
             listener = null;

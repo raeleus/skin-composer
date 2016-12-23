@@ -75,6 +75,7 @@ public class RootTable extends Table {
     private Array<ListStyle> listStyles;
     private Array<LabelStyle> labelStyles;
     private Table stylePropertiesTable;
+    private ScrollPane stylePropertiesScrollPane;
     private final ScrollPaneListener scrollPaneListener;
     
     public RootTable(Stage stage, Skin skin) {
@@ -333,10 +334,19 @@ public class RootTable extends Table {
         
     }
     
-    public void refreshStyleProperties() {
-        if (stylePropertiesTable != null) {
+    public void refreshStyleProperties(boolean preserveScroll) {
+        if (stylePropertiesTable != null && stylePropertiesScrollPane != null) {
+            float scrollY;
+            if (preserveScroll) scrollY = stylePropertiesScrollPane.getScrollY();
+            else scrollY = 0;
+            
             stylePropertiesTable.clearChildren();
             addStyleProperties(stylePropertiesTable);
+            
+            validate();
+            stylePropertiesScrollPane.setSmoothScrolling(false);
+            stylePropertiesScrollPane.setScrollY(scrollY);
+            stylePropertiesScrollPane.setSmoothScrolling(true);
         }
     }
     
@@ -347,12 +357,12 @@ public class RootTable extends Table {
         left.row();
         Table table = new Table();
         table.defaults().padLeft(10.0f).padRight(10.0f).growX();
-        ScrollPane scrollPane = new ScrollPane(table, getSkin());
-        scrollPane.setFadeScrollBars(false);
-        scrollPane.setFlickScroll(false);
-        scrollPane.addListener(scrollPaneListener);
-        stage.setScrollFocus(scrollPane);
-        left.add(scrollPane).grow().padTop(10.0f).padBottom(10.0f);
+        stylePropertiesScrollPane = new ScrollPane(table, getSkin());
+        stylePropertiesScrollPane.setFadeScrollBars(false);
+        stylePropertiesScrollPane.setFlickScroll(false);
+        stylePropertiesScrollPane.addListener(scrollPaneListener);
+        stage.setScrollFocus(stylePropertiesScrollPane);
+        left.add(stylePropertiesScrollPane).grow().padTop(10.0f).padBottom(10.0f);
         
         if (styleProperties != null) {
             for (StyleProperty styleProperty : styleProperties) {
