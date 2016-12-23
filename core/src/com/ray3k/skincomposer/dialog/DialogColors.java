@@ -579,7 +579,6 @@ public class DialogColors extends Dialog {
             if (object instanceof ColorData) {
                 projectData.setChangesSaved(false);
                 ColorData color = (ColorData) object;
-//                PanelStatusBar.instance.message("Selected color " + color.getName() + " for \"" + styleProperty.name + "\"");
                 ColorUndoable undoable = new ColorUndoable(main.getRootTable(), jsonData, styleProperty, styleProperty.value, color.getName());
                 main.getUndoableManager().addUndoable(undoable, true);
             } else if (object instanceof Boolean) {

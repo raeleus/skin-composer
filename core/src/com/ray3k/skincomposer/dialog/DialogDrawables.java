@@ -1057,7 +1057,6 @@ public class DialogDrawables extends Dialog {
         if (object != null) {
             if (object instanceof DrawableData) {
                 projectData.setChangesSaved(false);
-//                PanelStatusBar.instance.message("Drawable selected: " + object.toString() + " for \"" + property.name + "\"");
                 if (object instanceof DrawableData) {
                     DrawableData drawable = (DrawableData) object;
                     
@@ -1069,9 +1068,11 @@ public class DialogDrawables extends Dialog {
             } else if (object instanceof Boolean && property != null) {
                 if ((boolean) object) {
                     projectData.setChangesSaved(false);
-                    property.value = null;
+                    DrawableUndoable undoable =
+                            new DrawableUndoable(main.getRootTable(), atlasData,
+                                    property, property.value, null);
+                    main.getUndoableManager().addUndoable(undoable, true);
 //                    PanelStatusBar.instance.message("Drawable emptied for \"" + property.name + "\"");
-                    main.getRootTable().refreshStyleProperties(true);
                 } else {
                     boolean hasDrawable = false;
                     for (DrawableData drawable : atlasData.getDrawables()) {

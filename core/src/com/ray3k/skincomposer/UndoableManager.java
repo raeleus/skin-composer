@@ -153,6 +153,7 @@ public class UndoableManager {
             if (oldValue == null || atlasData.getDrawable((String) oldValue) != null) {
                 property.value = oldValue;
             }
+//            PanelStatusBar.instance.message("Drawable selected: " + object.toString() + " for \"" + property.name + "\"");
 //            PanelPreviewProperties.instance.render();
             rootTable.refreshStyleProperties(true);
         }
@@ -163,6 +164,7 @@ public class UndoableManager {
             if (newValue == null || atlasData.getDrawable((String) newValue) != null) {
                 property.value = newValue;
             }
+//            PanelStatusBar.instance.message("Drawable selected: " + object.toString() + " for \"" + property.name + "\"");
 //            PanelPreviewProperties.instance.render();
             rootTable.refreshStyleProperties(true);
         }
@@ -200,6 +202,7 @@ public class UndoableManager {
                     }
                 }
             }
+//            PanelStatusBar.instance.message("Selected color " + color.getName() + " for \"" + styleProperty.name + "\"");
 //            PanelPreviewProperties.instance.render();
             rootTable.refreshStyleProperties(true);
         }
@@ -216,6 +219,7 @@ public class UndoableManager {
                     }
                 }
             }
+//            PanelStatusBar.instance.message("Selected color " + color.getName() + " for \"" + styleProperty.name + "\"");
 //            PanelPreviewProperties.instance.render();
             rootTable.refreshStyleProperties(true);
         }
@@ -252,7 +256,7 @@ public class UndoableManager {
                     }
                 }
             }
-            
+//            PanelStatusBar.instance.message("Selected Font: " + font.getName() + " for \"" + styleProperty.name + "\"");
 //            PanelPreviewProperties.instance.render();
             rootTable.refreshStyleProperties(true);
         }
@@ -269,6 +273,7 @@ public class UndoableManager {
                     }
                 }
             }
+//            PanelStatusBar.instance.message("Selected Font: " + font.getName() + " for \"" + styleProperty.name + "\"");
 //            PanelPreviewProperties.instance.render();
             rootTable.refreshStyleProperties(true);
         }

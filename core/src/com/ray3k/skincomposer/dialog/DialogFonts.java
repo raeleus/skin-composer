@@ -463,9 +463,6 @@ public class DialogFonts extends Dialog {
             if (object instanceof FontData) {
                 projectData.setChangesSaved(false);
                 FontData font = (FontData) object;
-//                PanelStatusBar.instance.message("Selected Font: " + font.getName() + " for \"" + styleProperty.name + "\"");
-                styleProperty.value = font.getName();
-//                PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
                 FontUndoable undoable = new FontUndoable(main.getRootTable(),
                         jsonData, styleProperty, styleProperty.value, font.getName());
                 main.getUndoableManager().addUndoable(undoable, true);
