@@ -37,10 +37,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.RootTable.RootTableListener;
+import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
+import com.ray3k.skincomposer.dialog.DialogColors;
 import java.io.File;
 
 public class MainListener extends RootTableListener {
@@ -317,15 +319,14 @@ public class MainListener extends RootTableListener {
     public void stylePropertyChanged(StyleProperty styleProperty,
             Actor styleActor) {
         if (styleProperty.type == Drawable.class) {
-            dialogFactory.showDialogDrawables(styleProperty, new EventListener() {
-                @Override
-                public boolean handle(Event event) {
-                    root.refreshStyleProperties(true);
-                    return true;
-                }
+            dialogFactory.showDialogDrawables(styleProperty, (Event event) -> {
+                root.refreshStyleProperties(true);
+                return true;
             });
         } else if (styleProperty.type == Color.class) {
-            //show color dialog
+            dialogFactory.showDialogColors(styleProperty, (ColorData colorData) -> {
+                root.refreshStyleProperties(true);
+            });
         } else if (styleProperty.type == BitmapFont.class) {
             //show fonts dialog
         } else if (styleProperty.type == Float.TYPE) {
