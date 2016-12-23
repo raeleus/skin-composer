@@ -22,7 +22,6 @@ import com.ray3k.skincomposer.dialog.DialogDrawables;
 import com.ray3k.skincomposer.dialog.DialogFonts;
 import com.ray3k.skincomposer.dialog.DialogLoading;
 import com.ray3k.skincomposer.dialog.DialogSettings;
-import com.ray3k.skincomposer.panel.PanelMenuBar;
 
 public class DialogFactory {
     private final Skin skin;
@@ -31,14 +30,16 @@ public class DialogFactory {
     private JsonData jsonData;
     private ProjectData projectData;
     private AtlasData atlasData;
+    private Main main;
 
-    public DialogFactory(Skin skin, Stage stage, JsonData jsonData, ProjectData projectData, AtlasData atlasData) {
+    public DialogFactory(Skin skin, Stage stage, JsonData jsonData, ProjectData projectData, AtlasData atlasData, Main main) {
         this.skin = skin;
         this.stage = stage;
         this.jsonData = jsonData;
         this.projectData = projectData;
         this.atlasData = atlasData;
         showingCloseDialog = false;
+        this.main = main;
     }
     
     public void showAbout() {
@@ -62,7 +63,7 @@ public class DialogFactory {
     }
     
     public void showDialogDrawables(StyleProperty property, EventListener listener) {
-        DialogDrawables dialog = new DialogDrawables(skin, "dialog", property, this, jsonData, projectData, atlasData, listener);
+        DialogDrawables dialog = new DialogDrawables(skin, "dialog", property, this, jsonData, projectData, atlasData, main, listener);
         dialog.setFillParent(true);
         dialog.show(stage);
     }

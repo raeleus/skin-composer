@@ -88,6 +88,7 @@ public class Main extends ApplicationAdapter {
     private AnimatedDrawable loadingAnimation;
     private UndoableManager undoableManager;
     private ProjectData projectData;
+    private RootTable rootTable;
     
     public static Main instance() {
         return instance;
@@ -113,7 +114,7 @@ public class Main extends ApplicationAdapter {
         projectData.setMaxTextureDimensions(1024, 1024);
         projectData.setMaxUndos(30);
         
-        dialogFactory = new DialogFactory(skin, stage, projectData.getJsonData(), projectData, projectData.getAtlasData());
+        dialogFactory = new DialogFactory(skin, stage, projectData.getJsonData(), projectData, projectData.getAtlasData(), this);
         undoableManager = new UndoableManager(projectData);
         
         desktopWorker.attachLogListener();
@@ -142,11 +143,11 @@ public class Main extends ApplicationAdapter {
     private void populate() {
         stage.clear();
         
-        RootTable root = new RootTable(stage, skin);
-        root.setFillParent(true);
-        root.addListener(new MainListener(root, dialogFactory, desktopWorker, projectData, projectData.getJsonData()));
-        root.populate();
-        stage.addActor(root);
+        rootTable = new RootTable(stage, skin);
+        rootTable.setFillParent(true);
+        rootTable.addListener(new MainListener(rootTable, dialogFactory, desktopWorker, projectData, projectData.getJsonData()));
+        rootTable.populate();
+        stage.addActor(rootTable);
     }
     
     @Override
@@ -200,5 +201,9 @@ public class Main extends ApplicationAdapter {
 
     public void setProjectData(ProjectData projectData) {
         this.projectData = projectData;
+    }
+
+    public RootTable getRootTable() {
+        return rootTable;
     }
 }

@@ -66,6 +66,7 @@ import com.ray3k.skincomposer.DialogFactory;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.UndoableManager.DrawableUndoable;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
@@ -95,12 +96,13 @@ public class DialogDrawables extends Dialog {
     private JsonData jsonData;
     private ProjectData projectData;
     private AtlasData atlasData;
+    private Main main;
     
-    public DialogDrawables(Skin skin, StyleProperty property, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, EventListener listener) {
-        this(skin, "default", property, dialogFactory, jsonData, projectData, atlasData, listener);
+    public DialogDrawables(Skin skin, StyleProperty property, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, Main main, EventListener listener) {
+        this(skin, "default", property, dialogFactory, jsonData, projectData, atlasData, main, listener);
     }
     
-    public DialogDrawables(Skin skin, String windowStyleName, StyleProperty property, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, EventListener listener) {
+    public DialogDrawables(Skin skin, String windowStyleName, StyleProperty property, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, Main main, EventListener listener) {
         super("", skin, windowStyleName);
         
         this.dialogFactory = dialogFactory;
@@ -1057,15 +1059,18 @@ public class DialogDrawables extends Dialog {
 //                PanelStatusBar.instance.message("Drawable selected: " + object.toString() + " for \"" + property.name + "\"");
                 if (object instanceof DrawableData) {
                     DrawableData drawable = (DrawableData) object;
-                    property.value = drawable.name;
-//                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+                    
+                    DrawableUndoable undoable =
+                            new DrawableUndoable(main.getRootTable(), atlasData,
+                                    property, property.value, drawable.name);
+                    main.getUndoableManager().addUndoable(undoable, true);
                 }
             } else if (object instanceof Boolean && property != null) {
                 if ((boolean) object) {
                     projectData.setChangesSaved(false);
                     property.value = null;
 //                    PanelStatusBar.instance.message("Drawable emptied for \"" + property.name + "\"");
-//                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+                    main.getRootTable().refreshStyleProperties(true);
                 } else {
                     boolean hasDrawable = false;
                     for (DrawableData drawable : atlasData.getDrawables()) {
@@ -1078,7 +1083,7 @@ public class DialogDrawables extends Dialog {
                     if (!hasDrawable) {
                         property.value = null;
 //                        PanelStatusBar.instance.message("Drawable deleted for \"" + property.name + "\"");
-//                        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+                        main.getRootTable().refreshStyleProperties(true);
                     }
                 }
             }
