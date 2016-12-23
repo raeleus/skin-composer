@@ -55,6 +55,7 @@ import com.badlogic.gdx.utils.Sort;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.UndoableManager.FontUndoable;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
@@ -84,17 +85,19 @@ public class DialogFonts extends Dialog {
     private JsonData jsonData;
     private ProjectData projectData;
     private AtlasData atlasData;
+    private Main main;
 
-    public DialogFonts(Skin skin, StyleProperty styleProperty, JsonData jsonData, ProjectData projectData, AtlasData atlasData, EventListener listener) {
-        this(skin, "default", styleProperty, jsonData, projectData, atlasData, listener);
+    public DialogFonts(Skin skin, StyleProperty styleProperty, JsonData jsonData, ProjectData projectData, AtlasData atlasData, Main main, EventListener listener) {
+        this(skin, "default", styleProperty, jsonData, projectData, atlasData, main, listener);
     }
 
-    public DialogFonts(final Skin skin, String styleName, StyleProperty styleProperty, JsonData jsonData, ProjectData projectData, AtlasData atlasData, EventListener listener) {
+    public DialogFonts(final Skin skin, String styleName, StyleProperty styleProperty, JsonData jsonData, ProjectData projectData, AtlasData atlasData, Main main, EventListener listener) {
         super("", skin, styleName);
         
         this.jsonData = jsonData;
         this.projectData = projectData;
         this.atlasData = atlasData;
+        this.main = main;
         
         this.listener = listener;
         this.skin = skin;
@@ -463,12 +466,15 @@ public class DialogFonts extends Dialog {
 //                PanelStatusBar.instance.message("Selected Font: " + font.getName() + " for \"" + styleProperty.name + "\"");
                 styleProperty.value = font.getName();
 //                PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+                FontUndoable undoable = new FontUndoable(main.getRootTable(),
+                        jsonData, styleProperty, styleProperty.value, font.getName());
+                main.getUndoableManager().addUndoable(undoable, true);
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
                     styleProperty.value = null;
                     projectData.setChangesSaved(false);
 //                    PanelStatusBar.instance.message("Drawable emptied for \"" + styleProperty.name + "\"");
-//                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+                    main.getRootTable().refreshStyleProperties(true);
                 } else {
                     boolean hasFont = false;
                     for (FontData font : jsonData.getFonts()) {
@@ -482,7 +488,7 @@ public class DialogFonts extends Dialog {
                         styleProperty.value = null;
                         projectData.setChangesSaved(false);
 //                        PanelStatusBar.instance.message("Drawable deleted for \"" + styleProperty.name + "\"");
-//                        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+                        main.getRootTable().refreshStyleProperties(true);
                     }
                 }
             }

@@ -77,7 +77,7 @@ public class DialogFactory {
     }
     
     public void showDialogFonts(StyleProperty styleProperty, EventListener listener) {
-        DialogFonts dialog = new DialogFonts(skin, "dialog", styleProperty, jsonData, projectData, atlasData, listener);
+        DialogFonts dialog = new DialogFonts(skin, "dialog", styleProperty, jsonData, projectData, atlasData, main, listener);
         dialog.setFillParent(true);
         dialog.show(stage);
         dialog.populate();

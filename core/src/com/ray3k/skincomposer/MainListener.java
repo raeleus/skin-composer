@@ -321,9 +321,7 @@ public class MainListener extends RootTableListener {
         if (styleProperty.type == Drawable.class) {
             dialogFactory.showDialogDrawables(styleProperty);
         } else if (styleProperty.type == Color.class) {
-            dialogFactory.showDialogColors(styleProperty, (ColorData colorData) -> {
-                root.refreshStyleProperties(true);
-            });
+            dialogFactory.showDialogColors(styleProperty);
         } else if (styleProperty.type == BitmapFont.class) {
             dialogFactory.showDialogFonts(styleProperty);
         } else if (styleProperty.type == Float.TYPE) {
