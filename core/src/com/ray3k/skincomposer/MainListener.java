@@ -318,17 +318,18 @@ public class MainListener extends RootTableListener {
     @Override
     public void stylePropertyChanged(StyleProperty styleProperty,
             Actor styleActor) {
+        EventListener refreshListener = (Event event) -> {
+            root.refreshStyleProperties(true);
+            return true;
+        };
         if (styleProperty.type == Drawable.class) {
-            dialogFactory.showDialogDrawables(styleProperty, (Event event) -> {
-                root.refreshStyleProperties(true);
-                return true;
-            });
+            dialogFactory.showDialogDrawables(styleProperty, refreshListener);
         } else if (styleProperty.type == Color.class) {
             dialogFactory.showDialogColors(styleProperty, (ColorData colorData) -> {
                 root.refreshStyleProperties(true);
             });
         } else if (styleProperty.type == BitmapFont.class) {
-            //show fonts dialog
+            dialogFactory.showDialogFonts(styleProperty, refreshListener);
         } else if (styleProperty.type == Float.TYPE) {
             //apply value
         } else if (styleProperty.type == ScrollPaneStyle.class) {
