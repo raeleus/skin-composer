@@ -23,7 +23,6 @@
  ******************************************************************************/
 package com.ray3k.skincomposer.dialog;
 
-import com.ray3k.skincomposer.panel.PanelStatusBar;
 import com.ray3k.skincomposer.data.ColorData;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -49,6 +48,7 @@ import com.badlogic.gdx.utils.Sort;
 import com.ray3k.skincomposer.DialogFactory;
 import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.UndoableManager.ColorUndoable;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.JsonData;
@@ -71,18 +71,20 @@ public class DialogColors extends Dialog {
     private JsonData jsonData;
     private ProjectData projectData;
     private AtlasData atlasData;
+    private Main main;
     
-    public DialogColors(Skin skin, StyleProperty styleProperty, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, DialogColorsListener listener) {
-        this(skin, "default", styleProperty, dialogFactory, jsonData, projectData, atlasData, listener);
+    public DialogColors(Skin skin, StyleProperty styleProperty, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, Main main, DialogColorsListener listener) {
+        this(skin, "default", styleProperty, dialogFactory, jsonData, projectData, atlasData, main, listener);
     }
     
-    public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, boolean selectingForTintedDrawable, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, DialogColorsListener listener) {
+    public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, boolean selectingForTintedDrawable, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, Main main, DialogColorsListener listener) {
         super("", skin, styleName);
         
         this.dialogFactory = dialogFactory;
         this.jsonData = jsonData;
         this.projectData = projectData;
         this.atlasData = atlasData;
+        this.main = main;
         
         this.listener = listener;
         this.skin = skin;
@@ -153,8 +155,8 @@ public class DialogColors extends Dialog {
         key(Keys.ESCAPE, false);
     }
     
-    public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, DialogColorsListener listener) {
-        this(skin, styleName, styleProperty, false, dialogFactory, jsonData, projectData, atlasData, listener);
+    public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, Main main, DialogColorsListener listener) {
+        this(skin, styleName, styleProperty, false, dialogFactory, jsonData, projectData, atlasData, main, listener);
     }
     
     @Override
@@ -195,7 +197,7 @@ public class DialogColors extends Dialog {
                                         dialog.hide();
                                     }
                                 }
-                                Main.instance().getStage().setKeyboardFocus(textField);
+                                main.getStage().setKeyboardFocus(textField);
                             }
                         }
                     });
@@ -578,14 +580,14 @@ public class DialogColors extends Dialog {
                 projectData.setChangesSaved(false);
                 ColorData color = (ColorData) object;
 //                PanelStatusBar.instance.message("Selected color " + color.getName() + " for \"" + styleProperty.name + "\"");
-                styleProperty.value = color.getName();
-//                PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+                ColorUndoable undoable = new ColorUndoable(main.getRootTable(), jsonData, styleProperty, styleProperty.value, color.getName());
+                main.getUndoableManager().addUndoable(undoable, true);
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
                     projectData.setChangesSaved(false);
                     styleProperty.value = null;
 //                    PanelStatusBar.instance.message("Emptied color for \"" + styleProperty.name + "\"");
-//                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+                    main.getRootTable().refreshStyleProperties(true);
                 } else {
                     boolean hasColor = false;
                     for (ColorData color : jsonData.getColors()) {
@@ -599,7 +601,7 @@ public class DialogColors extends Dialog {
                         projectData.setChangesSaved(false);
                         styleProperty.value = null;
 //                        PanelStatusBar.instance.message("Deleted color for \"" + styleProperty.name + "\"");
-//                        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+                        main.getRootTable().refreshStyleProperties(true);
                     }
                 }
             }

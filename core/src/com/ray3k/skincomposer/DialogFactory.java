@@ -48,7 +48,7 @@ public class DialogFactory {
     }
     
     public void showDialogColors(StyleProperty styleProperty, DialogColors.DialogColorsListener listener) {
-        DialogColors dialog = new DialogColors(skin, "dialog", styleProperty, this, jsonData, projectData, atlasData, listener);
+        DialogColors dialog = new DialogColors(skin, "dialog", styleProperty, this, jsonData, projectData, atlasData, main, listener);
         dialog.setFillParent(true);
         dialog.show(stage);
         dialog.populate();

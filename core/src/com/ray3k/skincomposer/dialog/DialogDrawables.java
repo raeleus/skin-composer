@@ -109,6 +109,7 @@ public class DialogDrawables extends Dialog {
         this.jsonData = jsonData;
         this.projectData = projectData;
         this.atlasData = atlasData;
+        this.main = main;
         
         instance = this;
         
@@ -394,7 +395,7 @@ public class DialogDrawables extends Dialog {
     }
     
     private void colorSwatchesDialog(DrawableData drawableData) {
-        DialogColors dialog = new DialogColors(getSkin(), "dialog", null, true, dialogFactory, jsonData, projectData, atlasData, (ColorData colorData) -> {
+        DialogColors dialog = new DialogColors(getSkin(), "dialog", null, true, dialogFactory, jsonData, projectData, atlasData, main, (ColorData colorData) -> {
             if (colorData != null) {
                 final DrawableData tintedDrawable = new DrawableData(drawableData.file);
                     tintedDrawable.tintName = colorData.getName();
