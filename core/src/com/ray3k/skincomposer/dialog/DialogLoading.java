@@ -30,18 +30,17 @@ import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.Main;
 
 public class DialogLoading extends Dialog {
-    private Skin skin;
     private Runnable runnable;
+    private Main main;
     
-    public DialogLoading(String title, Skin skin, Runnable runnable) {
-        super(title, skin, "dialog");
-        this.skin = skin;
+    public DialogLoading(String title, Runnable runnable, Main main) {
+        super(title, main.getSkin(), "dialog");
+        this.main = main;
         this.runnable = runnable;
         setFillParent(true);
         populate();
@@ -65,12 +64,12 @@ public class DialogLoading extends Dialog {
     
     public void populate() {
         Table t = getContentTable();
-        Label label = new Label("Loading...", skin, "title");
+        Label label = new Label("Loading...", main.getSkin(), "title");
         label.setAlignment(Align.center);
         t.add(label);
         t.row();
-        Table table = new Table(skin);
-        table.setBackground(Main.instance().getLoadingAnimation());
+        Table table = new Table(main.getSkin());
+        table.setBackground(main.getLoadingAnimation());
         t.add(table);
     }
 }

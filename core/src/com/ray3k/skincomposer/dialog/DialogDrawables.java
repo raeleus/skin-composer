@@ -128,7 +128,7 @@ public class DialogDrawables extends Dialog {
             }
         };
         
-        Main.instance().getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+        main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
         
         this.property = property;
         drawablePairs = new ObjectMap<>();
@@ -195,7 +195,7 @@ public class DialogDrawables extends Dialog {
             return true;
         } catch (Exception e) {
             Gdx.app.error(getClass().getName(), "Error while attempting to generate drawables.", e);
-            DialogError.showError("Atlas Error...","Error while attempting to generate drawables.\n\nOpen log?");
+            main.getDialogFactory().showDialogError("Atlas Error...","Error while attempting to generate drawables.\n\nOpen log?");
             return false;
         }
     }
@@ -558,10 +558,10 @@ public class DialogDrawables extends Dialog {
         String oldName = drawable.name;
         drawable.name = name;
 
-        Main.instance().getUndoableManager().clearUndoables();
+        main.getUndoableManager().clearUndoables();
         updateStyleValuesForRename(oldName, name);
         
-//        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+        main.getRootTable().refreshStyleProperties(true);
 //        PanelPreviewProperties.instance.produceAtlas();
 //        PanelPreviewProperties.instance.render();
         
@@ -604,7 +604,7 @@ public class DialogDrawables extends Dialog {
 //            PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
 //            PanelPreviewProperties.instance.render();
 
-            Main.instance().getUndoableManager().clearUndoables();
+            main.getUndoableManager().clearUndoables();
 
             gatherDrawables();
             sortBySelectedMode();
@@ -800,7 +800,7 @@ public class DialogDrawables extends Dialog {
         
         String[] filterPatterns = {"*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif"};
         
-        List<File> files = Main.instance().getDesktopWorker().openMultipleDialog("Choose drawable file(s)...", defaultPath, filterPatterns, "Image files");
+        List<File> files = main.getDesktopWorker().openMultipleDialog("Choose drawable file(s)...", defaultPath, filterPatterns, "Image files");
         if (files != null && files.size() > 0) {
             drawablesSelected(files);
         }
@@ -1032,7 +1032,7 @@ public class DialogDrawables extends Dialog {
     
     @Override
     public boolean remove() {        
-        Main.instance().getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
         
         try {
             if (!atlasData.atlasCurrent) {
@@ -1041,7 +1041,7 @@ public class DialogDrawables extends Dialog {
             }
         } catch (Exception e) {
             Gdx.app.error(getClass().getName(), "Error creating atlas upon drawable dialog exit", e);
-            DialogError.showError("Atlas Error...", "Error creating atlas upon drawable dialog exit.\n\nOpen log?");
+            main.getDialogFactory().showDialogError("Atlas Error...", "Error creating atlas upon drawable dialog exit.\n\nOpen log?");
         }
         
         if (atlas != null) {

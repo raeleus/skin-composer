@@ -63,12 +63,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class Main extends ApplicationAdapter {
     public final static String VERSION = "6";
-    private static Main instance;
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,
         ProgressBar.class, ScrollPane.class, SelectBox.class, Slider.class,
@@ -89,10 +89,6 @@ public class Main extends ApplicationAdapter {
     private UndoableManager undoableManager;
     private ProjectData projectData;
     private RootTable rootTable;
-    
-    public static Main instance() {
-        return instance;
-    }
     
     @Override
     public void create() {
@@ -124,8 +120,6 @@ public class Main extends ApplicationAdapter {
             dialogFactory.showCloseDialog();
             return false;
         });
-        
-        instance = this;
         
         loadingAnimation = new AnimatedDrawable(.05f);
         loadingAnimation.addDrawable(skin.getDrawable("loading_0"));
@@ -205,5 +199,9 @@ public class Main extends ApplicationAdapter {
 
     public RootTable getRootTable() {
         return rootTable;
+    }
+
+    public DialogFactory getDialogFactory() {
+        return dialogFactory;
     }
 }

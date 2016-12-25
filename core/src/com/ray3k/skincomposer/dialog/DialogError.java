@@ -3,19 +3,16 @@ package com.ray3k.skincomposer.dialog;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.IOException;
 
 public class DialogError extends Dialog {
-    public static void showError(String title, String message) {
-        DialogError dialog = new DialogError(title, message, Main.instance().getSkin());
-        dialog.show(Main.instance().getStage());
-    }
+    private Main main;
     
-    public DialogError(String title, String message, Skin skin) {
-        super(title, skin);
+    public DialogError(String title, String message, Main main) {
+        super(title, main.getSkin());
+        this.main = main;
         text(message);
         
         button("OK", true).key(Keys.ENTER, true);

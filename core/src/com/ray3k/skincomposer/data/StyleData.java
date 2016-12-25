@@ -67,7 +67,7 @@ import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import com.ray3k.skincomposer.dialog.DialogError;
+import com.ray3k.skincomposer.Main;
 
 public class StyleData implements Json.Serializable {
     public String name = "";
@@ -75,6 +75,8 @@ public class StyleData implements Json.Serializable {
     public OrderedMap<String,StyleProperty> properties;
     public boolean deletable;
     public JsonData jsonData;
+    //todo: ensure that main is reloaded when loaded from a file
+    private Main main;
 
     @Override
     public String toString() {
@@ -86,19 +88,21 @@ public class StyleData implements Json.Serializable {
         return o instanceof StyleData && ((StyleData) o).name.equals(name);
     }
     
-    public StyleData(StyleData styleData, String styleName) {
+    public StyleData(StyleData styleData, String styleName, Main main) {
         name = styleName;
+        this.main = main;
 
         clazz = styleData.clazz;
         properties = new OrderedMap<>();
         for (Entry<String, StyleProperty> entry : styleData.properties.entries()) {
-            properties.put(entry.key, new StyleProperty(entry.value));
+            properties.put(entry.key, new StyleProperty(entry.value, main));
         }
         deletable = true;
     }
     
-    public StyleData (Class clazz, String styleName) {
+    public StyleData (Class clazz, String styleName, Main main) {
         name = styleName;
+        this.main = main;
 
         this.clazz = clazz;
         properties = new OrderedMap<>();
@@ -113,7 +117,7 @@ public class StyleData implements Json.Serializable {
     
     private void newStyleProperties(Class clazz) {
         for (Field field : ClassReflection.getFields(clazz)) {
-            StyleProperty styleProperty = new StyleProperty(field.getType(), field.getName(), true);
+            StyleProperty styleProperty = new StyleProperty(field.getType(), field.getName(), true, main);
             properties.put(field.getName(), styleProperty);
         }
     }
@@ -236,7 +240,7 @@ public class StyleData implements Json.Serializable {
             clazz = ClassReflection.forName(jsonData.getString("clazz"));
         } catch (ReflectionException ex) {
             Gdx.app.error(getClass().toString(), "Error reading from serialized object" , ex);
-            DialogError.showError("Read Error...","Error reading from serialized object.\n\nOpen log?");
+            main.getDialogFactory().showDialogError("Read Error...","Error reading from serialized object.\n\nOpen log?");
         }
     }
 

@@ -1308,7 +1308,7 @@ public class PanelPreviewProperties {
             return true;
         } catch (Exception e) {
             Gdx.app.error(getClass().getName(), "Error while attempting to generate drawables.", e);
-            DialogError.showError("Atlas Error...", "Error while attempting to generate drawables.\n\nOpen log?");
+//            DialogError.showError("Atlas Error...", "Error while attempting to generate drawables.\n\nOpen log?");
             return false;
         }
     }

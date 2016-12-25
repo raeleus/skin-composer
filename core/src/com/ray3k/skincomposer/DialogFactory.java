@@ -19,6 +19,7 @@ import com.ray3k.skincomposer.dialog.DialogAbout;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
 import com.ray3k.skincomposer.dialog.DialogColors;
 import com.ray3k.skincomposer.dialog.DialogDrawables;
+import com.ray3k.skincomposer.dialog.DialogError;
 import com.ray3k.skincomposer.dialog.DialogFonts;
 import com.ray3k.skincomposer.dialog.DialogLoading;
 import com.ray3k.skincomposer.dialog.DialogSettings;
@@ -92,7 +93,7 @@ public class DialogFactory {
     }
     
     public void showSettings() {
-        DialogSettings dialog = new DialogSettings("", skin, "dialog", this, projectData, atlasData);
+        DialogSettings dialog = new DialogSettings("", "dialog", main);
         dialog.show(stage);
     }
     
@@ -141,7 +142,7 @@ public class DialogFactory {
     }
     
     public void showDialogLoading(Runnable runnable) {
-        DialogLoading dialog = new DialogLoading("", skin, runnable);
+        DialogLoading dialog = new DialogLoading("", runnable, main);
         dialog.show(stage);
     }
     
@@ -195,6 +196,11 @@ public class DialogFactory {
         dialog.text(message);
         dialog.button("OK");
         dialog.show(stage);
+    }
+    
+    public void showDialogError(String title, String message) {
+        DialogError dialog = new DialogError(title, message, main);
+        dialog.show(main.getStage());
     }
     
     public interface ConfirmationListener {

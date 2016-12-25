@@ -256,7 +256,7 @@ public class MainListener extends RootTableListener {
 //                    PanelPreviewProperties.instance.populate();
 //                } catch (Exception e) {
 //                    Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
-//                    DialogError.showError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
+//                    DialogError.showDialogError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
 //                }
 //            }
 //        });
@@ -288,7 +288,7 @@ public class MainListener extends RootTableListener {
 //                    AtlasData.getInstance().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
 //                } catch (Exception ex) {
 //                    Gdx.app.error(PanelMenuBar.class.getName(), "Error while writing texture atlas", ex);
-//                    DialogError.showError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
+//                    DialogError.showDialogError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
 //                }
 //                
 //                for (FontData font : JsonData.getInstance().getFonts()) {

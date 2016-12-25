@@ -369,9 +369,9 @@ public class DialogColors extends Dialog {
                             }
                         }
                         
-                        Main.instance().getUndoableManager().clearUndoables();
+                        main.getUndoableManager().clearUndoables();
                         
-//                        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+                        main.getRootTable().refreshStyleProperties(true);
 //                        PanelPreviewProperties.instance.render();
                         
                         event.setBubbles(false);
@@ -423,9 +423,9 @@ public class DialogColors extends Dialog {
     private void recolorColor(ColorData colorData, Color color) {
         colorData.color = color;
 
-        Main.instance().getUndoableManager().clearUndoables();
+        main.getUndoableManager().clearUndoables();
 
-//        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+        main.getRootTable().refreshStyleProperties(true);
 //        PanelPreviewProperties.instance.produceAtlas();
 //        PanelPreviewProperties.instance.render();
         
@@ -449,7 +449,7 @@ public class DialogColors extends Dialog {
             @Override
             public Dialog show(Stage stage) {
                 Dialog dialog = super.show(stage);
-                Main.instance().getStage().setKeyboardFocus(textField);
+                main.getStage().setKeyboardFocus(textField);
                 return dialog;
             }
         };
@@ -542,12 +542,12 @@ public class DialogColors extends Dialog {
             color.setName(newName);
         } catch (ColorData.NameFormatException ex) {
             Gdx.app.error(getClass().getName(), "Error trying to rename a color.", ex);
-            DialogError.showError("Name Error...","Error while naming a color.\\nPlease ensure name is formatted appropriately:\\nNo spaces, don't start with a number, - and _ acceptable.\n\nOpen log?");
+            main.getDialogFactory().showDialogError("Name Error...","Error while naming a color.\\nPlease ensure name is formatted appropriately:\\nNo spaces, don't start with a number, - and _ acceptable.\n\nOpen log?");
         }
 
-        Main.instance().getUndoableManager().clearUndoables();
+        main.getUndoableManager().clearUndoables();
 
-//        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+        main.getRootTable().refreshStyleProperties(true);
 //        PanelPreviewProperties.instance.render();
         
         projectData.setChangesSaved(false);
@@ -565,7 +565,7 @@ public class DialogColors extends Dialog {
                 return true;
             } catch (Exception e) {
                 Gdx.app.log(getClass().getName(), "Error trying to add color.", e);
-                DialogError.showError("Error creating color...", "Error while attempting to create color.\n\nOpen log?");
+                main.getDialogFactory().showDialogError("Error creating color...", "Error while attempting to create color.\n\nOpen log?");
                 return false;
             }
         } else {

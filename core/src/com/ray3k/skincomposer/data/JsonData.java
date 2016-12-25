@@ -46,6 +46,7 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import com.ray3k.skincomposer.DialogFactory;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.dialog.DialogError;
 import java.io.StringWriter;
@@ -301,16 +302,16 @@ public class JsonData implements Json.Serializable {
             Array<StyleData> array = new Array<>();
             classStyleMap.put(clazz, array);
             if (clazz.equals(Slider.class) || clazz.equals(ProgressBar.class) || clazz.equals(SplitPane.class)) {
-                StyleData data = new StyleData(clazz, "default-horizontal");
+                StyleData data = new StyleData(clazz, "default-horizontal", main);
                 data.jsonData = this;
                 data.deletable = false;
                 array.add(data);
-                data = new StyleData(clazz, "default-vertical");
+                data = new StyleData(clazz, "default-vertical", main);
                 data.jsonData = this;
                 data.deletable = false;
                 array.add(data);
             } else {
-                StyleData data = new StyleData(clazz, "default");
+                StyleData data = new StyleData(clazz, "default", main);
                 data.jsonData = this;
                 data.deletable = false;
                 array.add(data);
@@ -341,7 +342,7 @@ public class JsonData implements Json.Serializable {
             }
         } catch (ReflectionException e) {
             Gdx.app.log(getClass().getName(), "Error parsing json data during file read", e);
-            DialogError.showError("Error while reading file...", "Error while attempting to read save file.\nPlease ensure that file is not corrupted.\n\nOpen error log?");
+            main.getDialogFactory().showDialogError("Error while reading file...", "Error while attempting to read save file.\nPlease ensure that file is not corrupted.\n\nOpen error log?");
         }
     }
 
@@ -365,7 +366,7 @@ public class JsonData implements Json.Serializable {
         }
         
         if (data == null) {
-            data = new StyleData(className, styleName);
+            data = new StyleData(className, styleName, main);
             data.jsonData = this;
             styles.add(data);
         }
@@ -375,7 +376,7 @@ public class JsonData implements Json.Serializable {
     
     public StyleData copyStyle(StyleData original, String styleName) {
         Array<StyleData> styles = getClassStyleMap().get(original.clazz);
-        StyleData data = new StyleData(original, styleName);
+        StyleData data = new StyleData(original, styleName, main);
         data.jsonData = this;
         styles.add(data);
         

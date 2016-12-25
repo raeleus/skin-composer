@@ -28,18 +28,21 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import com.ray3k.skincomposer.dialog.DialogError;
+import com.ray3k.skincomposer.Main;
 
 public class StyleProperty implements Json.Serializable{
     public Class type;
     public String name;
     public boolean optional;
     public Object value;
+    //todo: ensure that main is reloaded when loaded from a file
+    private Main main;
 
-    public StyleProperty(Class type, String name, boolean optional) {
+    public StyleProperty(Class type, String name, boolean optional, Main main) {
         this.type = type;
         this.name = name;
         this.optional = optional;
+        this.main = main;
         
         if (type.equals(Float.TYPE)) {
             value = 0.0;
@@ -48,11 +51,12 @@ public class StyleProperty implements Json.Serializable{
         }
     }
     
-    public StyleProperty(StyleProperty styleProperty) {
+    public StyleProperty(StyleProperty styleProperty, Main main) {
         this.type = styleProperty.type;
         this.name = styleProperty.name;
         this.optional = styleProperty.optional;
         this.value = styleProperty.value;
+        this.main = main;
     }
     
     public StyleProperty() {
@@ -85,7 +89,7 @@ public class StyleProperty implements Json.Serializable{
             }
         } catch (ReflectionException ex) {
             Gdx.app.error(getClass().toString(), "Error reading from serialized object" , ex);
-            DialogError.showError("Read Error...","Error reading from serialized object.\n\nOpen log?");
+            main.getDialogFactory().showDialogError("Read Error...","Error reading from serialized object.\n\nOpen log?");
         }
     }
 }

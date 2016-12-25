@@ -47,31 +47,22 @@ import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class DialogSettings extends Dialog {
-    private Skin skin;
     private SpinnerStyle spinnerStyle;
     private Integer textureWidth;
     private Integer textureHeight;
     private Integer maxUndos;
     private boolean useStripWhitespace;
-    private DialogFactory dialogFactory;
-    private ProjectData projectData;
-    private AtlasData atlasData;
+    private Main main;
 
-    public DialogSettings(String title, Skin skin, String windowStyleName, DialogFactory dialogFactory, ProjectData projectData, AtlasData atlasData) {
-        super(title, skin, windowStyleName);
+    public DialogSettings(String title, String windowStyleName, Main main) {
+        super(title, main.getSkin(), windowStyleName);
+        this.main = main;
+        spinnerStyle = new Spinner.SpinnerStyle(main.getSkin().get("spinner-minus-h", Button.ButtonStyle.class), main.getSkin().get("spinner-plus-h", Button.ButtonStyle.class), main.getSkin().get("default", TextField.TextFieldStyle.class));
         
-        this.dialogFactory = dialogFactory;
-        this.projectData = projectData;
-        this.atlasData = atlasData;
-        
-        this.skin = skin;
-        
-        spinnerStyle = new Spinner.SpinnerStyle(skin.get("spinner-minus-h", Button.ButtonStyle.class), skin.get("spinner-plus-h", Button.ButtonStyle.class), skin.get("default", TextField.TextFieldStyle.class));
-        
-        textureWidth = projectData.getMaxTextureWidth();
-        textureHeight = projectData.getMaxTextureHeight();
-        maxUndos = projectData.getMaxUndos();
-        useStripWhitespace = projectData.getStripWhitespace();
+        textureWidth = main.getProjectData().getMaxTextureWidth();
+        textureHeight = main.getProjectData().getMaxTextureHeight();
+        maxUndos = main.getProjectData().getMaxUndos();
+        useStripWhitespace = main.getProjectData().getStripWhitespace();
         setFillParent(true);
         
         populate();
@@ -82,11 +73,11 @@ public class DialogSettings extends Dialog {
         super.result(object);
         
         if ((boolean) object) {
-            projectData.setChangesSaved(false);
-            projectData.setMaxTextureDimensions(MathUtils.nextPowerOfTwo(textureWidth), MathUtils.nextPowerOfTwo(textureHeight));
-            projectData.setMaxUndos(maxUndos);
-            projectData.setStripWhitespace(useStripWhitespace);
-            Main.instance().getUndoableManager().clearUndoables();
+            main.getProjectData().setChangesSaved(false);
+            main.getProjectData().setMaxTextureDimensions(MathUtils.nextPowerOfTwo(textureWidth), MathUtils.nextPowerOfTwo(textureHeight));
+            main.getProjectData().setMaxUndos(maxUndos);
+            main.getProjectData().setStripWhitespace(useStripWhitespace);
+            main.getUndoableManager().clearUndoables();
         }
     }
 
@@ -102,11 +93,11 @@ public class DialogSettings extends Dialog {
         
         getButtonTable().padBottom(15.0f);
         
-        Label label = new Label("Settings", skin, "title");
+        Label label = new Label("Settings", main.getSkin(), "title");
         t.add(label).colspan(2);
         
         t.row();
-        TextButton textButton = new TextButton("Open temp/log directory", skin);
+        TextButton textButton = new TextButton("Open temp/log directory", main.getSkin());
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -114,14 +105,14 @@ public class DialogSettings extends Dialog {
                     Utils.openFileExplorer(Gdx.files.local("temp/"));
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error opening temp folder", e);
-                    DialogError.showError("Folder Error...", "Error opening temp folder.\n\nOpen log?");
+                    main.getDialogFactory().showDialogError("Folder Error...", "Error opening temp folder.\n\nOpen log?");
                 }
             }
         });
         t.add(textButton).colspan(2).padTop(15.0f);
         
         t.row();
-        textButton = new TextButton("Open preferences directory", skin);
+        textButton = new TextButton("Open preferences directory", main.getSkin());
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -129,23 +120,23 @@ public class DialogSettings extends Dialog {
                     Utils.openFileExplorer(Gdx.files.external(".prefs/"));
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error opening preferences folder", e);
-                    DialogError.showError("Folder Error...", "Error opening preferences folder.\n\nOpen log?");
+                    main.getDialogFactory().showDialogError("Folder Error...", "Error opening preferences folder.\n\nOpen log?");
                 }
             }
         });
         t.add(textButton).colspan(2);
         
-        if (projectData.areChangesSaved() && projectData.getSaveFile().exists()) {
+        if (main.getProjectData().areChangesSaved() && main.getProjectData().getSaveFile().exists()) {
             t.row();
-            textButton = new TextButton("Open project/import directory", skin);
+            textButton = new TextButton("Open project/import directory", main.getSkin());
             textButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                     try {
-                        Utils.openFileExplorer(projectData.getSaveFile().sibling(projectData.getSaveFile().nameWithoutExtension() + "_data"));
+                        Utils.openFileExplorer(main.getProjectData().getSaveFile().sibling(main.getProjectData().getSaveFile().nameWithoutExtension() + "_data"));
                     } catch (Exception e) {
                         Gdx.app.error(getClass().getName(), "Error opening project folder", e);
-                        DialogError.showError("Folder Error...", "Error opening project folder\n\nOpen log?");
+                        main.getDialogFactory().showDialogError("Folder Error...", "Error opening project folder\n\nOpen log?");
                     }
                 }
             });
@@ -153,20 +144,20 @@ public class DialogSettings extends Dialog {
         }
         
         t.row();
-        textButton = new TextButton("Repack Texture Atlas", skin);
+        textButton = new TextButton("Repack Texture Atlas", main.getSkin());
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                dialogFactory.showDialogLoading(() -> {
+                main.getDialogFactory().showDialogLoading(() -> {
                     try {
-                        atlasData.writeAtlas();
-                        atlasData.atlasCurrent = true;
+                        main.getProjectData().getAtlasData().writeAtlas();
+                        main.getProjectData().getAtlasData().atlasCurrent = true;
 //                        PanelPreviewProperties.instance.produceAtlas();
 //                        PanelPreviewProperties.instance.render();
                     } catch (Exception e) {
-                        dialogFactory.showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
+                        main.getDialogFactory().showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
                         Gdx.app.error(getClass().getName(), "Unable to write texture atlas to temporary storage!", e);
-                        DialogError.showError("Atlas Error...", "Unable to write texture atlas to temporary storage.\n\nOpen log?");
+                        main.getDialogFactory().showDialogError("Atlas Error...", "Unable to write texture atlas to temporary storage.\n\nOpen log?");
                     }
                 });
             }
@@ -174,13 +165,13 @@ public class DialogSettings extends Dialog {
         t.add(textButton).colspan(2);
         
         t.row();
-        label = new Label("Textures are rounded up to the next power of 2.", skin);
+        label = new Label("Textures are rounded up to the next power of 2.", main.getSkin());
         t.add(label).colspan(2).padTop(10.0f);
         
         t.row();
-        label = new Label("Max Texture Width: ", skin);
+        label = new Label("Max Texture Width: ", main.getSkin());
         t.add(label).right();
-        Spinner spinner = new Spinner(projectData.getMaxTextureWidth(), 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
+        Spinner spinner = new Spinner(main.getProjectData().getMaxTextureWidth(), 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         spinner.setMinimum(256.0);
         spinner.addListener(new ChangeListener() {
             @Override
@@ -198,9 +189,9 @@ public class DialogSettings extends Dialog {
         t.add(spinner).minWidth(150.0f).left();
         
         t.row();
-        label = new Label("Max Texture Height: ", skin);
+        label = new Label("Max Texture Height: ", main.getSkin());
         t.add(label).right();
-        Spinner spinner2 = new Spinner(projectData.getMaxTextureHeight(), 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
+        Spinner spinner2 = new Spinner(main.getProjectData().getMaxTextureHeight(), 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         spinner2.setMinimum(256.0);
         spinner2.addListener(new ChangeListener() {
             @Override
@@ -218,7 +209,7 @@ public class DialogSettings extends Dialog {
         t.add(spinner2).minWidth(150.0f).left();
         
         t.row();
-        ImageTextButton checkBox = new ImageTextButton("Strip whitespace on texture export", skin, "checkbox");
+        ImageTextButton checkBox = new ImageTextButton("Strip whitespace on texture export", main.getSkin(), "checkbox");
         checkBox.setChecked(useStripWhitespace);
         checkBox.addListener(new ChangeListener() {
             @Override
@@ -229,9 +220,9 @@ public class DialogSettings extends Dialog {
         t.add(checkBox).colspan(2).padTop(10.0f);
         
         t.row();
-        label = new Label("Max Number of Undos: ", skin);
+        label = new Label("Max Number of Undos: ", main.getSkin());
         t.add(label).right().padTop(10.0f);
-        Spinner spinner3 = new Spinner(projectData.getMaxUndos(), 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
+        Spinner spinner3 = new Spinner(main.getProjectData().getMaxUndos(), 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         spinner3.setMinimum(1.0);
         spinner3.setMaximum(100.0);
         spinner3.addListener(new ChangeListener() {

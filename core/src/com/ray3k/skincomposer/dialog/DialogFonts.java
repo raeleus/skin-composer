@@ -122,7 +122,7 @@ public class DialogFonts extends Dialog {
             }
         };
         
-        Main.instance().getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+        main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
 
         setFillParent(true);
 
@@ -229,7 +229,7 @@ public class DialogFonts extends Dialog {
                 populate();
             } catch (Exception e) {
                 Gdx.app.error(getClass().getName(), "Error creating font from file", e);
-                DialogError.showError("Font Error...", "Error creating font from file. Check file paths.\n\nOpen log?");
+                main.getDialogFactory().showDialogError("Font Error...", "Error creating font from file. Check file paths.\n\nOpen log?");
             }
             return true;
         } else {
@@ -313,9 +313,9 @@ public class DialogFonts extends Dialog {
                             }
                         }
                         
-                        Main.instance().getUndoableManager().clearUndoables();
+                        main.getUndoableManager().clearUndoables();
                         
-//                        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
+                        main.getRootTable().refreshStyleProperties(true);
 //                        PanelPreviewProperties.instance.render();
                         
                         event.setBubbles(false);
@@ -366,7 +366,7 @@ public class DialogFonts extends Dialog {
             @Override
             public Dialog show(Stage stage) {
                 Dialog dialog = super.show(stage);
-                Main.instance().getStage().setKeyboardFocus(textField);
+                main.getStage().setKeyboardFocus(textField);
                 return dialog;
             }
         };
@@ -444,10 +444,10 @@ public class DialogFonts extends Dialog {
             font.setName(newName);
         } catch (FontData.NameFormatException ex) {
             Gdx.app.error(getClass().getName(), "Error trying to rename a font.", ex);
-            DialogError.showError("Rename Font Error...", "Error trying to rename a font.\n\nOpen log?");
+            main.getDialogFactory().showDialogError("Rename Font Error...", "Error trying to rename a font.\n\nOpen log?");
         }
 
-        Main.instance().getUndoableManager().clearUndoables();
+        main.getUndoableManager().clearUndoables();
 
 //        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
 //        PanelPreviewProperties.instance.render();
@@ -552,7 +552,7 @@ public class DialogFonts extends Dialog {
 
     @Override
     public boolean remove() {
-        Main.instance().getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
         
         produceAtlas();
         
@@ -594,7 +594,7 @@ public class DialogFonts extends Dialog {
             return true;
         } catch (Exception e) {
             Gdx.app.error(getClass().getName(), "Error while attempting to generate drawables.", e);
-            DialogError.showError("Drawables Error...", "Error while attempting to generate drawables. Open log?");
+            main.getDialogFactory().showDialogError("Drawables Error...", "Error while attempting to generate drawables. Open log?");
             return false;
         }
     }
@@ -611,7 +611,7 @@ public class DialogFonts extends Dialog {
         
         String[] filterPatterns = {"*.fnt"};
         
-        List<File> files = Main.instance().getDesktopWorker().openMultipleDialog("Choose font file(s)...", defaultPath, filterPatterns, "Font files (*.fnt)");
+        List<File> files = main.getDesktopWorker().openMultipleDialog("Choose font file(s)...", defaultPath, filterPatterns, "Font files (*.fnt)");
         if (files != null && files.size() > 0) {
             projectData.setLastDirectory(files.get(0).getParentFile().getPath());
             fontNameDialog(files, 0);
@@ -667,7 +667,7 @@ public class DialogFonts extends Dialog {
                                 nameDialog.hide();
                             }
                         }
-                        Main.instance().getStage().setKeyboardFocus(textField1);
+                        main.getStage().setKeyboardFocus(textField1);
                     }
                 });
                 
@@ -722,7 +722,7 @@ public class DialogFonts extends Dialog {
                 }
             } catch (Exception e) {
                 Gdx.app.error(getClass().getName(), "Error creating preview font from file", e);
-                DialogError.showError("Preview Error...", "Error creating preview font from file. Check file paths.\n\nOpen log?");
+                main.getDialogFactory().showDialogError("Preview Error...", "Error creating preview font from file. Check file paths.\n\nOpen log?");
             }
         }
     }

@@ -439,8 +439,8 @@ public class MainOld extends ApplicationAdapter {
 //    }
     
     public void showDialogLoading(Runnable runnable) {
-        DialogLoading dialog = new DialogLoading("", skin, runnable);
-        dialog.show(stage);
+//        DialogLoading dialog = new DialogLoading("", skin, runnable);
+//        dialog.show(stage);
     }
     
     public void showDialogError(String title, String message, Runnable runnable) {

@@ -114,7 +114,7 @@ public class PanelStyleProperties {
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        Main.instance().getUndoableManager().addUndoable(new FloatUndoable(spinner, property), true);
+//                        Main.instance().getUndoableManager().addUndoable(new FloatUndoable(spinner, property), true);
                     }
                 });
                 table.add(spinner).growX();
@@ -201,7 +201,7 @@ public class PanelStyleProperties {
                 selectBox.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        Main.instance().getUndoableManager().addUndoable(new SelectBoxUndoable(property, selectBox), true);
+//                        Main.instance().getUndoableManager().addUndoable(new SelectBoxUndoable(property, selectBox), true);
                     }
                 });
                 
@@ -234,7 +234,7 @@ public class PanelStyleProperties {
                 selectBox.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        Main.instance().getUndoableManager().addUndoable(new SelectBoxUndoable(property, selectBox), true);
+//                        Main.instance().getUndoableManager().addUndoable(new SelectBoxUndoable(property, selectBox), true);
                     }
                 });
                 
@@ -267,7 +267,7 @@ public class PanelStyleProperties {
                 selectBox.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        Main.instance().getUndoableManager().addUndoable(new SelectBoxUndoable(property, selectBox), true);
+//                        Main.instance().getUndoableManager().addUndoable(new SelectBoxUndoable(property, selectBox), true);
                     }
                 });
                 
