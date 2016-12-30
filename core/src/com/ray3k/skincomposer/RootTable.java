@@ -27,6 +27,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -34,6 +35,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -343,10 +346,18 @@ public class RootTable extends Table {
             stylePropertiesTable.clearChildren();
             addStyleProperties(stylePropertiesTable);
             
-            validate();
-            stylePropertiesScrollPane.setSmoothScrolling(false);
-            stylePropertiesScrollPane.setScrollY(scrollY);
-            stylePropertiesScrollPane.setSmoothScrolling(true);
+            if (preserveScroll) {
+                validate();
+                stylePropertiesScrollPane.setSmoothScrolling(false);
+                stylePropertiesScrollPane.setScrollY(scrollY);
+                stylePropertiesScrollPane.addAction(new SequenceAction(new DelayAction(.1f), new Action() {
+                    @Override
+                    public boolean act(float delta) {
+                        stylePropertiesScrollPane.setSmoothScrolling(true);
+                        return true;
+                    }
+                }));
+            }
         }
     }
     
@@ -370,17 +381,17 @@ public class RootTable extends Table {
                 table.row();
                 if (styleProperty.type == Color.class) {
                     BrowseField browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfColorStyle);
-                    table.add(browseField);
+                    table.add(browseField).padTop(20.0f);
                     
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
                 } else if (styleProperty.type == BitmapFont.class) {
                     BrowseField browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfFontStyle);
-                    table.add(browseField);
+                    table.add(browseField).padTop(20.0f);
                     
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
                 } else if (styleProperty.type == Drawable.class) {
                     BrowseField browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfDrawableStyle);
-                    table.add(browseField);
+                    table.add(browseField).padTop(20.0f);
                     
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
                 } else if (styleProperty.type == Float.TYPE) {
