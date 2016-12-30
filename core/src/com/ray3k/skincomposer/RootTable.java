@@ -67,9 +67,9 @@ public class RootTable extends Table {
     private SelectBox<String> classSelectBox;
     private SelectBox<StyleData> styleSelectBox;
     private Array<StyleProperty> styleProperties;
-    private BrowseFieldStyle bfColorStyle;
-    private BrowseFieldStyle bfDrawableStyle;
-    private BrowseFieldStyle bfFontStyle;
+    private final BrowseFieldStyle bfColorStyle;
+    private final BrowseFieldStyle bfDrawableStyle;
+    private final BrowseFieldStyle bfFontStyle;
     private final SpinnerStyle spinnerStyle;
     private Array<ScrollPaneStyle> scrollPaneStyles;
     private Array<ListStyle> listStyles;
@@ -366,41 +366,55 @@ public class RootTable extends Table {
         
         if (styleProperties != null) {
             for (StyleProperty styleProperty : styleProperties) {
-                label = new Label(styleProperty.name, getSkin());
-                table.add(label).padTop(20.0f).fill(false).expand(false, false);
                 
                 table.row();
                 if (styleProperty.type == Color.class) {
-                    BrowseField browseField = new BrowseField((String) styleProperty.value, bfColorStyle);
+                    BrowseField browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfColorStyle);
                     table.add(browseField);
                     
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
                 } else if (styleProperty.type == BitmapFont.class) {
-                    BrowseField browseField = new BrowseField((String) styleProperty.value, bfFontStyle);
+                    BrowseField browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfFontStyle);
                     table.add(browseField);
                     
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
                 } else if (styleProperty.type == Drawable.class) {
-                    BrowseField browseField = new BrowseField((String) styleProperty.value, bfDrawableStyle);
+                    BrowseField browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfDrawableStyle);
                     table.add(browseField);
                     
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
                 } else if (styleProperty.type == Float.TYPE) {
+                    label = new Label(styleProperty.name, getSkin());
+                    table.add(label).padTop(20.0f).fill(false).expand(false, false);
+                    
+                    table.row();
                     Spinner spinner = new Spinner((Double)styleProperty.value, 1.0, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                     table.add(spinner);
                     
                     spinner.addListener(new StylePropertyChangeListener(styleProperty, spinner));
                 } else if (styleProperty.type == ScrollPaneStyle.class) {
+                    label = new Label(styleProperty.name, getSkin());
+                    table.add(label).padTop(20.0f).fill(false).expand(false, false);
+                    
+                    table.row();
                     SelectBox selectBox = new SelectBox(getSkin());
                     table.add(selectBox);
                     
                     selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
                 } else if (styleProperty.type == ListStyle.class) {
+                    label = new Label(styleProperty.name, getSkin());
+                    table.add(label).padTop(20.0f).fill(false).expand(false, false);
+                    
+                    table.row();
                     SelectBox selectBox = new SelectBox(getSkin());
                     table.add(selectBox);
                     
                     selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
                 } else if (styleProperty.type == LabelStyle.class) {
+                    label = new Label(styleProperty.name, getSkin());
+                    table.add(label).padTop(20.0f).fill(false).expand(false, false);
+                    
+                    table.row();
                     SelectBox selectBox = new SelectBox(getSkin());
                     table.add(selectBox);
                     

@@ -119,7 +119,7 @@ public class PanelStyleProperties {
                 });
                 table.add(spinner).growX();
             } else if (property.type.equals(Drawable.class)) {
-                final BrowseField browseField = new BrowseField(name, drawableFieldStyle);
+                final BrowseField browseField = new BrowseField(name, null, drawableFieldStyle);
                 if (!property.optional) {
 //                    browseField.getLabel().setStyle(skin.get("error", LabelStyle.class));
                 }
@@ -139,7 +139,7 @@ public class PanelStyleProperties {
                 });
                 table.add(browseField).growX().padTop(10.0f);
             } else if (property.type.equals(Color.class)) {
-                final BrowseField browseField = new BrowseField(name, colorFieldStyle);
+                final BrowseField browseField = new BrowseField(name, null, colorFieldStyle);
                 if (!property.optional) {
 //                    browseField.getLabel().setStyle(skin.get("error", LabelStyle.class));
                 }
@@ -158,7 +158,7 @@ public class PanelStyleProperties {
                 });
                 table.add(browseField).growX().padTop(10.0f);
             } else if (property.type.equals(BitmapFont.class)) {
-                final BrowseField browseField = new BrowseField(name, fontFieldStyle);
+                final BrowseField browseField = new BrowseField(name, null, fontFieldStyle);
                 if (!property.optional) {
 //                    browseField.getLabel().setStyle(skin.get("error", LabelStyle.class));
                 }

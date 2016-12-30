@@ -146,7 +146,7 @@ public class PanelPreviewProperties {
         table.add(t).center().expand();
         t.defaults().pad(3.0f);
         t.add(new Label("Stage Color: ", skin));
-        BrowseField browseField = new BrowseField(null, colorFieldStyle);
+        BrowseField browseField = new BrowseField(null, null, colorFieldStyle);
         browseField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -940,7 +940,7 @@ public class PanelPreviewProperties {
                 
                 t.row();
                 t.add(new Label("Sample Text Color: ", skin));
-                BrowseField textColorField = new BrowseField(null, colorFieldStyle);
+                BrowseField textColorField = new BrowseField(null, null, colorFieldStyle);
                 t.add(textColorField).growX();
                 
                 t.row();

@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -42,10 +43,16 @@ import com.badlogic.gdx.utils.Align;
 public class BrowseField extends Table {
     private TextField textField;
     private Button button;
+    private Label label;
     
     //todo: use a textbutton style for  the text portion. Don't use a textfield so you can get mouse over effects.
-    public BrowseField(String valueText, BrowseFieldStyle style) {
+    public BrowseField(String valueText, String labelText, BrowseFieldStyle style) {
         setTouchable(Touchable.enabled);
+        
+        label = new Label(labelText, style.labelStyle);
+        add(label);
+        
+        row();
         if (valueText == null) valueText = "";
         textField = new TextField(valueText, style.textFieldStyle);
         textField.setAlignment(Align.center);
