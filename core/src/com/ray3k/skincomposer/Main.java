@@ -137,7 +137,7 @@ public class Main extends ApplicationAdapter {
     private void populate() {
         stage.clear();
         
-        rootTable = new RootTable(stage, skin);
+        rootTable = new RootTable(this);
         rootTable.setFillParent(true);
         rootTable.addListener(new MainListener(rootTable, dialogFactory, desktopWorker, projectData, projectData.getJsonData()));
         rootTable.populate();

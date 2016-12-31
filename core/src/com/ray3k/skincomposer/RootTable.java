@@ -41,11 +41,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
@@ -66,6 +66,7 @@ import com.ray3k.skincomposer.utils.Utils;
 
 public class RootTable extends Table {
     private final Stage stage;
+    private final Main main;
     private boolean draggingCursor;
     private SelectBox<String> classSelectBox;
     private SelectBox<StyleData> styleSelectBox;
@@ -74,23 +75,21 @@ public class RootTable extends Table {
     private final BrowseFieldStyle bfDrawableStyle;
     private final BrowseFieldStyle bfFontStyle;
     private final SpinnerStyle spinnerStyle;
-    private Array<ScrollPaneStyle> scrollPaneStyles;
-    private Array<ListStyle> listStyles;
-    private Array<LabelStyle> labelStyles;
     private Table stylePropertiesTable;
     private ScrollPane stylePropertiesScrollPane;
     private final ScrollPaneListener scrollPaneListener;
     
-    public RootTable(Stage stage, Skin skin) {
-        super(skin);
-        this.stage = stage;
+    public RootTable(Main main) {
+        super(main.getSkin());
+        this.stage = main.getStage();
+        this.main = main;
         
         spinnerStyle = new Spinner.SpinnerStyle(
-                skin.get("spinner-minus-h", Button.ButtonStyle.class),
-                skin.get("spinner-plus-h", Button.ButtonStyle.class),
-                skin.get("spinner", TextField.TextFieldStyle.class));
+                main.getSkin().get("spinner-minus-h", Button.ButtonStyle.class),
+                main.getSkin().get("spinner-plus-h", Button.ButtonStyle.class),
+                main.getSkin().get("spinner", TextField.TextFieldStyle.class));
         
-        TextButtonStyle textButtonStyle = skin.get("file", TextButtonStyle.class);
+        TextButtonStyle textButtonStyle = main.getSkin().get("file", TextButtonStyle.class);
         
         MenuButtonStyle menuButtonStyle = new MenuButton.MenuButtonStyle();
         menuButtonStyle.font = textButtonStyle.font;
@@ -100,18 +99,18 @@ public class RootTable extends Table {
         menuButtonStyle.checked = textButtonStyle.checked;
         
         MenuListStyle menuListStyle = new MenuListStyle();
-        menuListStyle.background = skin.getDrawable("list");
-        menuListStyle.textButtonStyle = skin.get("menu-button", TextButtonStyle.class);
-        menuListStyle.labelStyle = skin.get("white", LabelStyle.class);
+        menuListStyle.background = main.getSkin().getDrawable("list");
+        menuListStyle.textButtonStyle = main.getSkin().get("menu-button", TextButtonStyle.class);
+        menuListStyle.labelStyle = main.getSkin().get("white", LabelStyle.class);
         
         menuButtonStyle.menuListStyle = menuListStyle;
         
-        bfColorStyle = new BrowseFieldStyle(skin.get("color", ImageButtonStyle.class), skin.get(TextFieldStyle.class), skin.get(LabelStyle.class));
-        bfDrawableStyle = new BrowseFieldStyle(skin.get("drawable", ImageButtonStyle.class), skin.get(TextFieldStyle.class), skin.get(LabelStyle.class));
-        bfFontStyle = new BrowseFieldStyle(skin.get("font", ImageButtonStyle.class), skin.get(TextFieldStyle.class), skin.get(LabelStyle.class));
+        bfColorStyle = new BrowseFieldStyle(main.getSkin().get("color", ImageButtonStyle.class), main.getSkin().get(TextFieldStyle.class), main.getSkin().get(LabelStyle.class));
+        bfDrawableStyle = new BrowseFieldStyle(main.getSkin().get("drawable", ImageButtonStyle.class), main.getSkin().get(TextFieldStyle.class), main.getSkin().get(LabelStyle.class));
+        bfFontStyle = new BrowseFieldStyle(main.getSkin().get("font", ImageButtonStyle.class), main.getSkin().get(TextFieldStyle.class), main.getSkin().get(LabelStyle.class));
         
-        skin.add("default", menuButtonStyle);
-        skin.add("default", menuListStyle);
+        main.getSkin().add("default", menuButtonStyle);
+        main.getSkin().add("default", menuListStyle);
         
         scrollPaneListener = new ScrollPaneListener();
     }
@@ -375,6 +374,15 @@ public class RootTable extends Table {
         stage.setScrollFocus(stylePropertiesScrollPane);
         left.add(stylePropertiesScrollPane).grow().padTop(10.0f).padBottom(10.0f);
         
+        //gather all scrollPaneStyles
+        Array<StyleData> scrollPaneStyles = main.getProjectData().getJsonData().getClassStyleMap().get(ScrollPane.class);
+        
+        //gather all listStyles
+        Array<StyleData> listStyles = main.getProjectData().getJsonData().getClassStyleMap().get(List.class);
+        
+        //gather all labelStyles
+        Array<StyleData> labelStyles = main.getProjectData().getJsonData().getClassStyleMap().get(Label.class);
+        
         if (styleProperties != null) {
             for (StyleProperty styleProperty : styleProperties) {
                 
@@ -408,7 +416,8 @@ public class RootTable extends Table {
                     table.add(label).padTop(20.0f).fill(false).expand(false, false);
                     
                     table.row();
-                    SelectBox selectBox = new SelectBox(getSkin());
+                    SelectBox<StyleData> selectBox = new SelectBox<>(getSkin());
+                    selectBox.setItems(scrollPaneStyles);
                     table.add(selectBox);
                     
                     selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
@@ -417,8 +426,10 @@ public class RootTable extends Table {
                     table.add(label).padTop(20.0f).fill(false).expand(false, false);
                     
                     table.row();
-                    SelectBox selectBox = new SelectBox(getSkin());
+                    SelectBox<StyleData> selectBox = new SelectBox<>(getSkin());
+                    selectBox.setItems(listStyles);
                     table.add(selectBox);
+                    
                     
                     selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
                 } else if (styleProperty.type == LabelStyle.class) {
@@ -426,7 +437,8 @@ public class RootTable extends Table {
                     table.add(label).padTop(20.0f).fill(false).expand(false, false);
                     
                     table.row();
-                    SelectBox selectBox = new SelectBox(getSkin());
+                    SelectBox<StyleData> selectBox = new SelectBox<>(getSkin());
+                    selectBox.setItems(labelStyles);
                     table.add(selectBox);
                     
                     selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
@@ -506,6 +518,7 @@ public class RootTable extends Table {
         });
     }
     
+    //todo: implement iBeamListener
     private void addPreview(Table top, InputListener scrollPaneListener, InputListener iBeamListener) {
         Label label = new Label("Preview", getSkin(), "title");
         top.add(label);
