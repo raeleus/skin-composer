@@ -2,6 +2,7 @@ package com.ray3k.skincomposer;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.ColorData;
@@ -14,7 +15,7 @@ import com.ray3k.skincomposer.data.StyleProperty;
 public class UndoableManager {
     private final Array<Undoable> undoables;
     private int undoIndex;
-    private ProjectData projectData;
+    private final ProjectData projectData;
 
     public UndoableManager(ProjectData projectData) {
         undoables = new Array<>();
@@ -316,6 +317,36 @@ public class UndoableManager {
         @Override
         public String getUndoText() {
             return "Change Style Property " + property.name;
+        }
+    }
+
+    public static class NewStyleUndoable implements Undoable {
+        private StyleData styleData;
+        private final Main main;
+        private final Class selectedClass;
+        private final String name;
+
+        public NewStyleUndoable(Class selectedClass, String name, Main main) {
+            this.main = main;
+            this.selectedClass = selectedClass;
+            this.name = name;
+        }
+        
+        @Override
+        public void undo() {
+            main.getProjectData().getJsonData().deleteStyle(styleData);
+            main.getRootTable().refreshStyles(true);
+        }
+
+        @Override
+        public void redo() {
+            styleData = main.getProjectData().getJsonData().newStyle(selectedClass, name);
+            main.getRootTable().refreshStyles(true);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Create Style \"" + styleData.name + "\"";
         }
     }
 }

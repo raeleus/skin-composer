@@ -360,6 +360,13 @@ public class RootTable extends Table {
         }
     }
     
+    public void refreshStyles(boolean scrollToNewest) {
+        populate();
+        if (scrollToNewest) {
+            styleSelectBox.setSelectedIndex(styleSelectBox.getItems().size - 1);
+        }
+    }
+    
     private void addStyleProperties(final Table left) {
         Label label = new Label("Style Properties", getSkin(), "title");
         left.add(label);

@@ -4,16 +4,23 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
+import com.ray3k.skincomposer.UndoableManager.NewStyleUndoable;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
+import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogAbout;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
@@ -104,6 +111,68 @@ public class DialogFactory {
     public void showDialogColorPicker(Color previousColor, DialogColorPicker.ColorListener listener) {
         DialogColorPicker dialog = new DialogColorPicker(skin, "dialog", listener, previousColor);
         dialog.show(stage);
+    }
+    
+    public void showNewStyleDialog(Skin skin, Stage stage) {
+        Class selectedClass = Main.BASIC_CLASSES[main.getRootTable().getClassSelectBox().getSelectedIndex()];
+        
+        final TextField textField = new TextField("", skin);
+        Dialog dialog = new Dialog("New Style", skin, "bg") {
+            @Override
+            protected void result(Object object) {
+                if ((Boolean)object) {
+                    main.getUndoableManager().addUndoable(new NewStyleUndoable(selectedClass, textField.getText(), main), true);
+                }
+            }
+        };
+        dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
+        dialog.button("OK", true).button("Cancel", false);
+        final TextButton okButton = (TextButton) dialog.getButtonTable().getCells().get(0).getActor();
+        
+        textField.setTextFieldListener((TextField textField1, char c) -> {
+            if (c == '\n') {
+                if (!okButton.isDisabled()) {
+                    main.getUndoableManager().addUndoable(new NewStyleUndoable(selectedClass, textField1.getText(), main), true);
+                    dialog.hide();
+                }
+                main.getStage().setKeyboardFocus(textField1);
+            }
+        });
+        
+        textField.addListener(IbeamListener.get());
+        
+        dialog.getTitleLabel().setAlignment(Align.center);
+        dialog.getContentTable().defaults().padLeft(10.0f).padRight(10.0f);
+        dialog.text("What is the name of the new style?");
+        dialog.getContentTable().getCells().first().pad(10.0f);
+        dialog.getContentTable().row();
+        dialog.getContentTable().add(textField).growX();
+        okButton.setDisabled(true);
+        
+        Array<StyleData> currentStyles = main.getProjectData().getJsonData().getClassStyleMap().get(selectedClass);
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                boolean disable = !StyleData.validate(textField.getText());
+                
+                if (!disable) {
+                    for (StyleData data : currentStyles) {
+                        if (data.name.equals(textField.getText())) {
+                            disable = true;
+                            break;
+                        }
+                    }
+                }
+                
+                okButton.setDisabled(disable);
+            }
+        });
+        
+        
+        dialog.key(Input.Keys.ESCAPE, false);
+        
+        dialog.show(stage);
+        stage.setKeyboardFocus(textField);
     }
     
     public void showCloseDialog() {
