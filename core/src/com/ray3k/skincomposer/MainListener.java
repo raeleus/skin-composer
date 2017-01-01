@@ -27,22 +27,17 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.RootTable.RootTableListener;
-import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.skincomposer.dialog.DialogColors;
 import java.io.File;
 
 public class MainListener extends RootTableListener {
@@ -51,13 +46,15 @@ public class MainListener extends RootTableListener {
     private final DesktopWorker desktopWorker;
     private final ProjectData projectData;
     private final JsonData jsonData;
+    private final Main main;
     
-    public MainListener(RootTable root, DialogFactory dialogFactory, DesktopWorker desktopWorker, ProjectData projectData, JsonData jsonData) {
-        this.root = root;
-        this.dialogFactory = dialogFactory;
-        this.desktopWorker = desktopWorker;
-        this.projectData = projectData;
-        this.jsonData = jsonData;
+    public MainListener(Main main) {
+        this.root = main.getRootTable();
+        this.dialogFactory = main.getDialogFactory();
+        this.desktopWorker = main.getDesktopWorker();
+        this.projectData = main.getProjectData();
+        this.jsonData = main.getProjectData().getJsonData();
+        this.main = main;
     }
     
     @Override
@@ -108,7 +105,6 @@ public class MainListener extends RootTableListener {
                 break;
             case CLASS_SELECTED:
                 updateStyleProperties();
-                //set scrollpanestyles, liststyles, and label styles
                 break;
             case NEW_CLASS:
                 //set root table's class list
@@ -117,9 +113,9 @@ public class MainListener extends RootTableListener {
                 break;
             case STYLE_SELECTED:
                 updateStyleProperties();
-                //set scrollpanestyles, liststyles, and label styles
                 break;
             case NEW_STYLE:
+                
                 break;
             case DUPLICATE_STYLE:
                 break;
@@ -327,7 +323,7 @@ public class MainListener extends RootTableListener {
         } else if (styleProperty.type == Float.TYPE) {
             //apply value
         } else if (styleProperty.type == ScrollPaneStyle.class) {
-            //apply value
+            main.getUndoableManager().addUndoable(new UndoableManager.SelectBoxUndoable(root, styleProperty, (SelectBox) styleActor), true);
         } else if (styleProperty.type == LabelStyle.class) {
             //apply value
         } else if (styleProperty.type == ListStyle.class) {
