@@ -378,4 +378,31 @@ public class UndoableManager {
             return "Duplicate Style \"" + styleData.name + "\"";
         }
     }
+    
+    public static class DeleteStyleUndoable implements Undoable {
+        private final StyleData styleData;
+        private final Main main;
+
+        public DeleteStyleUndoable(StyleData styleData, Main main) {
+            this.styleData = styleData;
+            this.main = main;
+        }
+
+        @Override
+        public void undo() {
+            main.getProjectData().getJsonData().copyStyle(styleData, styleData.name);
+            main.getRootTable().refreshStyles(true);
+        }
+
+        @Override
+        public void redo() {
+            main.getProjectData().getJsonData().deleteStyle(styleData);
+            main.getRootTable().refreshStyles(true);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Delete Style \"" + styleData.name + "\"";
+        }
+    }
 }

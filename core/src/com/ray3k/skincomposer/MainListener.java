@@ -121,6 +121,7 @@ public class MainListener extends RootTableListener {
                 dialogFactory.showDuplicateStyleDialog(main.getSkin(), main.getStage());
                 break;
             case DELETE_STYLE:
+                dialogFactory.showDeleteStyleDialog(main.getSkin(), main.getStage());
                 break;
             case RENAME_STYLE:
                 break;

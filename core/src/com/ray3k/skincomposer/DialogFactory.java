@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.ray3k.skincomposer.UndoableManager.DeleteStyleUndoable;
 import com.ray3k.skincomposer.UndoableManager.DuplicateStyleUndoable;
 import com.ray3k.skincomposer.UndoableManager.NewStyleUndoable;
 import com.ray3k.skincomposer.data.AtlasData;
@@ -240,6 +241,32 @@ public class DialogFactory {
         
         dialog.show(stage);
         stage.setKeyboardFocus(textField);
+    }
+    
+    public void showDeleteStyleDialog(Skin skin, Stage stage) {
+        //todo: simplify this with main.getRootTable().getSelectedClass() and getSelectedStyle
+        Class selectedClass = Main.BASIC_CLASSES[main.getRootTable().getClassSelectBox().getSelectedIndex()];
+        StyleData styleData = main.getProjectData().getJsonData().getClassStyleMap().get(selectedClass).get(main.getRootTable().getStyleSelectBox().getSelectedIndex());
+        
+        Dialog dialog = new Dialog("Delete Style", skin, "bg") {
+            @Override
+            protected void result(Object object) {
+                if ((Boolean)object) {
+                    main.getUndoableManager().addUndoable(new DeleteStyleUndoable(styleData, main), true);
+                }
+            }
+        };
+        dialog.getTitleLabel().setAlignment(Align.center);
+        dialog.getContentTable().defaults().padLeft(10.0f).padRight(10.0f);
+        dialog.text("Are you sure you want to delete style " + styleData.name + "?");
+        dialog.getContentTable().getCells().first().pad(10.0f);
+        
+        dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
+        dialog.button("Yes, delete the style", true).button("No", false);
+        
+        dialog.key(Input.Keys.ENTER, true).key(Input.Keys.ESCAPE, false);
+        
+        dialog.show(stage);
     }
     
     public void showCloseDialog() {
