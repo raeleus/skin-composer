@@ -55,6 +55,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.OrderedMap;
 import com.ray3k.skincomposer.BrowseField.BrowseFieldStyle;
 import com.ray3k.skincomposer.MenuButton.MenuButtonListener;
 import com.ray3k.skincomposer.MenuButton.MenuButtonStyle;
@@ -575,6 +576,15 @@ public class RootTable extends Table {
         return styleSelectBox;
     }
 
+    public Class getSelectedClass() {
+        return Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()];
+    }
+    
+    public StyleData getSelectedStyle() {
+        OrderedMap<Class, Array<StyleData>> classStyleMap = main.getProjectData().getJsonData().getClassStyleMap();
+        return  classStyleMap.get(getSelectedClass()).get(styleSelectBox.getSelectedIndex());
+    }
+    
     public void setStyleProperties(Array<StyleProperty> styleProperties) {
         this.styleProperties = styleProperties;
     }

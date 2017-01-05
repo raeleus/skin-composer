@@ -116,8 +116,7 @@ public class DialogFactory {
     }
     
     public void showNewStyleDialog(Skin skin, Stage stage) {
-        //todo: simplify this with main.getRootTable().getSelectedClass()
-        Class selectedClass = Main.BASIC_CLASSES[main.getRootTable().getClassSelectBox().getSelectedIndex()];
+        Class selectedClass = main.getRootTable().getSelectedClass();
         
         final TextField textField = new TextField("", skin);
         Dialog dialog = new Dialog("New Style", skin, "bg") {
@@ -179,9 +178,8 @@ public class DialogFactory {
     }
     
     public void showDuplicateStyleDialog(Skin skin, Stage stage) {
-        //todo: simplify this with main.getRootTable().getSelectedClass() and getSelectedStyle
-        Class selectedClass = Main.BASIC_CLASSES[main.getRootTable().getClassSelectBox().getSelectedIndex()];
-        StyleData originalStyle = main.getProjectData().getJsonData().getClassStyleMap().get(selectedClass).get(main.getRootTable().getStyleSelectBox().getSelectedIndex());
+        Class selectedClass = main.getRootTable().getSelectedClass();
+        StyleData originalStyle = main.getRootTable().getSelectedStyle();
         
         final TextField textField = new TextField("", skin);
         Dialog dialog = new Dialog("Duplicate Style", skin, "bg") {
@@ -244,9 +242,7 @@ public class DialogFactory {
     }
     
     public void showDeleteStyleDialog(Skin skin, Stage stage) {
-        //todo: simplify this with main.getRootTable().getSelectedClass() and getSelectedStyle
-        Class selectedClass = Main.BASIC_CLASSES[main.getRootTable().getClassSelectBox().getSelectedIndex()];
-        StyleData styleData = main.getProjectData().getJsonData().getClassStyleMap().get(selectedClass).get(main.getRootTable().getStyleSelectBox().getSelectedIndex());
+        StyleData styleData = main.getRootTable().getSelectedStyle();
         
         Dialog dialog = new Dialog("Delete Style", skin, "bg") {
             @Override
