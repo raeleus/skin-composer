@@ -346,6 +346,7 @@ public class MainListener extends RootTableListener {
 
                 root.setStyleProperties(styleData.properties.values().toArray());
                 root.refreshStyleProperties(false);
+                root.refreshPreviewProperties();
             }
         }
     }
