@@ -372,7 +372,7 @@ public class DialogColors extends Dialog {
                         main.getUndoableManager().clearUndoables();
                         
                         main.getRootTable().refreshStyleProperties(true);
-//                        PanelPreviewProperties.instance.render();
+//                        PanelPreviewProperties.instance.refreshPreview();
                         
                         event.setBubbles(false);
                         populate();
@@ -427,7 +427,7 @@ public class DialogColors extends Dialog {
 
         main.getRootTable().refreshStyleProperties(true);
 //        PanelPreviewProperties.instance.produceAtlas();
-//        PanelPreviewProperties.instance.render();
+//        PanelPreviewProperties.instance.refreshPreview();
         
         projectData.setChangesSaved(false);
         
@@ -548,7 +548,7 @@ public class DialogColors extends Dialog {
         main.getUndoableManager().clearUndoables();
 
         main.getRootTable().refreshStyleProperties(true);
-//        PanelPreviewProperties.instance.render();
+//        PanelPreviewProperties.instance.refreshPreview();
         
         projectData.setChangesSaved(false);
         

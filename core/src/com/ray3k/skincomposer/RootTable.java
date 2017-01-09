@@ -24,6 +24,7 @@
 package com.ray3k.skincomposer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -39,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
@@ -59,6 +61,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
+import com.badlogic.gdx.scenes.scene2d.ui.TooltipManager;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
@@ -69,11 +72,15 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.OrderedMap;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Field;
 import com.ray3k.skincomposer.BrowseField.BrowseFieldStyle;
 import com.ray3k.skincomposer.MenuButton.MenuButtonListener;
 import com.ray3k.skincomposer.MenuButton.MenuButtonStyle;
 import com.ray3k.skincomposer.MenuList.MenuListStyle;
 import com.ray3k.skincomposer.Spinner.SpinnerStyle;
+import com.ray3k.skincomposer.data.ColorData;
+import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
@@ -93,6 +100,7 @@ public class RootTable extends Table {
     private final SpinnerStyle spinnerStyle;
     private Table stylePropertiesTable;
     private Table previewPropertiesTable;
+    private Table previewTable;
     private ScrollPane stylePropertiesScrollPane;
     private final ScrollPaneListener scrollPaneListener;
     private final ObjectMap<String, Object> previewProperties;
@@ -114,6 +122,8 @@ public class RootTable extends Table {
     private static final String PARAGRAPH_SAMPLE_EXT = PARAGRAPH_SAMPLE
             + "\n\n\n" + PARAGRAPH_SAMPLE + "\n\n\n" + PARAGRAPH_SAMPLE + "\n\n\n"
             + PARAGRAPH_SAMPLE;
+    private final Array<BitmapFont> previewFonts;
+    private final ObjectMap<String, Drawable> drawablePairs;
 
     public RootTable(Main main) {
         super(main.getSkin());
@@ -152,6 +162,8 @@ public class RootTable extends Table {
         getSkin().add("default", menuListStyle);
 
         scrollPaneListener = new ScrollPaneListener();
+        previewFonts = new Array<>();
+        drawablePairs = new ObjectMap<>();
     }
 
     public void populate() {
@@ -516,15 +528,15 @@ public class RootTable extends Table {
     }
 
     private void addPreviewPreviewPropertiesSplit(final Table right, InputListener scrollPaneListener, InputListener iBeamListener) {
-        Table top = new Table();
-        top.setTouchable(Touchable.enabled);
-
-        addPreview(top, scrollPaneListener, iBeamListener);
-
         Table bottom = new Table();
         bottom.setTouchable(Touchable.enabled);
 
         addPreviewProperties(bottom, scrollPaneListener, iBeamListener);
+        
+        Table top = new Table();
+        top.setTouchable(Touchable.enabled);
+
+        addPreview(top, scrollPaneListener, iBeamListener);
 
         SplitPane splitPane = new SplitPane(top, bottom, true, getSkin());
         right.add(splitPane).grow();
@@ -572,13 +584,14 @@ public class RootTable extends Table {
         top.add(label);
 
         top.row();
-        Table table = new Table();
-        ScrollPane scrollPane = new ScrollPane(table, getSkin());
+        previewTable = new Table();
+        ScrollPane scrollPane = new ScrollPane(previewTable, getSkin());
         scrollPane.setFadeScrollBars(false);
         scrollPane.setFlickScroll(false);
         scrollPane.addListener(scrollPaneListener);
         top.add(scrollPane).grow().padTop(10.0f).padBottom(10.0f);
 
+        refreshPreview();
     }
 
     //todo: implement iBeamListener
@@ -619,7 +632,7 @@ public class RootTable extends Table {
                                 browseField.getTextField().setText((int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
                                 previewProperties.put("bgcolor", color);
                                 previewBgColor = color;
-    //                            render();
+                                refreshPreview();
                             }
                         }
                     });
@@ -650,7 +663,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("disabled", disabledCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
@@ -663,7 +676,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("disabled", disabledCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
@@ -678,7 +691,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("text", previewTextField.getText());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("text", previewTextField.getText());
@@ -692,7 +705,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("disabled", disabledCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
@@ -705,7 +718,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("disabled", disabledCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
@@ -720,7 +733,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("text", previewTextField.getText());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("text", previewTextField.getText());
@@ -736,7 +749,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("text", previewTextField.getText());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("text", previewTextField.getText());
@@ -753,7 +766,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("text", listItemsTextArea.getText());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("text", listItemsTextArea.getText());
@@ -767,7 +780,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("disabled", disabledCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
@@ -781,7 +794,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("value", valueSpinner.getValue());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("value", valueSpinner.getValue());
@@ -795,7 +808,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("minimum", minimumSpinner.getValue());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("minimum", minimumSpinner.getValue());
@@ -809,7 +822,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("maximum", maximumSpinner.getValue());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("maximum", maximumSpinner.getValue());
@@ -824,7 +837,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("increment", incrementSpinner.getValue());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("increment", incrementSpinner.getValue());
@@ -848,7 +861,7 @@ public class RootTable extends Table {
                             } else {
                                 previewProperties.put("orientation", true);
                             }
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(selectBox).growX();
@@ -861,7 +874,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("scrollbarsOnTop", onTopCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(onTopCheckBox).left();
@@ -880,7 +893,7 @@ public class RootTable extends Table {
                             } else {
                                 previewProperties.put("hScrollBarPosition", true);
                             }
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(hScrollPosBox).growX();
@@ -899,7 +912,7 @@ public class RootTable extends Table {
                             } else {
                                 previewProperties.put("vScrollBarPosition", true);
                             }
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(vScrollPosBox).growX();
@@ -912,7 +925,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("hScrollDisabled", hScrollCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(hScrollCheckBox).left();
@@ -925,7 +938,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("vScrollDisabled", vScrollCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(vScrollCheckBox).left();
@@ -938,7 +951,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("forceHscroll", forceHScrollCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(forceHScrollCheckBox).left();
@@ -951,7 +964,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("forceVscroll", forceVScrollCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(forceVScrollCheckBox).left();
@@ -965,7 +978,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("variableSizeKnobs", variableSizeKnobsCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(variableSizeKnobsCheckBox).left();
@@ -979,7 +992,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("hOverscroll", hOverscrollCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(hOverscrollCheckBox).left();
@@ -993,7 +1006,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("vOverscroll", vOverscrollCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(vOverscrollCheckBox).left();
@@ -1006,7 +1019,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("fadeScroll", fadeScrollCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(fadeScrollCheckBox).left();
@@ -1020,7 +1033,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("smoothScroll", smoothScrollCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(smoothScrollCheckBox).left();
@@ -1034,7 +1047,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("flickScroll", flickScrollCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(flickScrollCheckBox).left();
@@ -1048,7 +1061,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("clamp", clampCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(clampCheckBox).left();
@@ -1064,7 +1077,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("text", previewTextArea.getText());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("text", previewTextArea.getText());
@@ -1079,7 +1092,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("disabled", disabledCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
@@ -1102,7 +1115,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("text", listItemsTextArea.getText());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("text", listItemsTextArea.getText());
@@ -1116,7 +1129,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("disabled", disabledCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
@@ -1130,7 +1143,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("minimum", minimumSpinner.getValue());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(minimumSpinner).growX();
@@ -1144,7 +1157,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("maximum", maximumSpinner.getValue());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(maximumSpinner).growX();
@@ -1158,7 +1171,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("increment", incrementSpinner.getValue());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(incrementSpinner).growX();
@@ -1182,7 +1195,7 @@ public class RootTable extends Table {
                             } else {
                                 previewProperties.put("orientation", true);
                             }
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(selectBox).growX();
@@ -1205,7 +1218,7 @@ public class RootTable extends Table {
                             } else {
                                 previewProperties.put("orientation", true);
                             }
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(selectBox).growX();
@@ -1220,7 +1233,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("text", textArea.getText());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("text", textArea.getText());
@@ -1235,7 +1248,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("disabled", disabledCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
@@ -1250,7 +1263,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("text", previewTextField.getText());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("text", previewTextField.getText());
@@ -1264,7 +1277,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("disabled", disabledCheckBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
@@ -1277,7 +1290,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("passwordMode", checkBox.isChecked());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     t.add(checkBox).left();
@@ -1292,7 +1305,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("password", pcTextField.getText());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("password", pcTextField.getText());
@@ -1330,7 +1343,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("text", previewTextField.getText());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("text", previewTextField.getText());
@@ -1345,7 +1358,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("message", messageTextField.getText());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("message", messageTextField.getText());
@@ -1361,7 +1374,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("text", previewTextField.getText());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("text", previewTextField.getText());
@@ -1394,7 +1407,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("title", previewTextField.getText());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("title", previewTextField.getText());
@@ -1415,7 +1428,7 @@ public class RootTable extends Table {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             previewProperties.put("text", textArea.getText());
-    //                        render();
+                            refreshPreview();
                         }
                     });
                     previewProperties.put("text", textArea.getText());
@@ -1427,14 +1440,305 @@ public class RootTable extends Table {
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         previewProperties.put("size", previewSizeSelectBox.getSelectedIndex());
                         if (previewSizeSelectBox.getSelectedIndex() != 7) {
-    //                    render();
+                            refreshPreview();
                         }
                     }
                 });
                 previewProperties.put("size", previewSizeSelectBox.getSelectedIndex());
 
-    //        render();
+                refreshPreview();
             }
+        }
+    }
+    
+    public void refreshPreview() {
+        if (previewTable != null) {
+            previewTable.clear();
+            previewTable.setColor((Color) previewProperties.get("bgcolor"));
+
+            for (BitmapFont font : previewFonts) {
+                font.dispose();
+            }
+
+            if (classSelectBox.getSelectedIndex() >= 0) {
+                StyleData styleData = getSelectedStyle();
+                Class clazz = Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()];
+
+                if (!styleData.hasMandatoryFields()) {
+                    Label label;
+                    if (clazz.equals(SelectBox.class)) {
+                        label = new Label("Please fill all mandatory fields\n(Highlighted in Maroon)\n\nscrollStyle and listStyle\nmust already be defined", getSkin());
+                    } else if (clazz.equals(TextTooltip.class)) {
+                        label = new Label("Please fill all mandatory fields\n(Highlighted in Maroon)\n\nlabel must already be defined", getSkin());
+                    } else {
+                        label = new Label("Please fill all mandatory fields\n(Highlighted in Maroon)", getSkin());
+                    }
+                    label.setAlignment(Align.center);
+                    previewTable.add(label);
+                } else if (styleData.hasAllNullFields()) {
+                    Label label;
+                    label = new Label("All fields are empty!\nEmpty classes are not exported\nAdd style properties in the menu to the left", getSkin());
+                    label.setAlignment(Align.center);
+                    previewTable.add(label);
+                } else {
+                    Actor widget = null;
+                    if (clazz.equals(Button.class)) {
+                        Button.ButtonStyle style = createStyle(Button.ButtonStyle.class, styleData);
+                        widget = new Button(style);
+                        ((Button)widget).setDisabled((boolean) previewProperties.get("disabled"));
+                    } else if (clazz.equals(CheckBox.class)) {
+                        CheckBox.CheckBoxStyle style = createStyle(CheckBox.CheckBoxStyle.class, styleData);
+                        widget = new CheckBox("", style);
+                        ((CheckBox)widget).setDisabled((boolean) previewProperties.get("disabled"));
+                        ((CheckBox)widget).setText((String) previewProperties.get("text"));
+                    } else if (clazz.equals(ImageButton.class)) {
+                        ImageButtonStyle style = createStyle(ImageButtonStyle.class, styleData);
+                        widget = new ImageButton(style);
+                        ((ImageButton)widget).setDisabled((boolean) previewProperties.get("disabled"));
+                    } else if (clazz.equals(ImageTextButton.class)) {
+                        ImageTextButton.ImageTextButtonStyle style = createStyle(ImageTextButton.ImageTextButtonStyle.class, styleData);
+                        widget = new ImageTextButton("", style);
+                        ((ImageTextButton)widget).setDisabled((boolean) previewProperties.get("disabled"));
+                        ((ImageTextButton)widget).setText((String) previewProperties.get("text"));
+                    } else if (clazz.equals(Label.class)) {
+                        LabelStyle style = createStyle(LabelStyle.class, styleData);
+                        widget = new Label("", style);
+                        ((Label)widget).setText((String) previewProperties.get("text"));
+                    } else if (clazz.equals(List.class)) {
+                        ListStyle style = createStyle(ListStyle.class, styleData);
+                        widget = new List(style);
+                        Array<String> items = new Array<>(((String) previewProperties.get("text")).split("\\n"));
+                        ((List)widget).setItems(items);
+                    } else if (clazz.equals(ProgressBar.class)) {
+                        ProgressBar.ProgressBarStyle style = createStyle(ProgressBar.ProgressBarStyle.class, styleData);
+                        widget = new ProgressBar((float) (double) previewProperties.get("minimum"), (float) (double) previewProperties.get("maximum"), (float) (double) previewProperties.get("increment"), (boolean) previewProperties.get("orientation"), style);
+                        ((ProgressBar) widget).setValue((float) (double) previewProperties.get("value"));
+                        ((ProgressBar)widget).setDisabled((boolean) previewProperties.get("disabled"));
+                    } else if (clazz.equals(ScrollPane.class)) {
+                        ScrollPaneStyle style = createStyle(ScrollPaneStyle.class, styleData);
+                        Label label = new Label("", getSkin());
+                        widget = new ScrollPane(label, style);
+                        ((ScrollPane) widget).setScrollbarsOnTop((boolean) previewProperties.get("scrollbarsOnTop"));
+                        ((ScrollPane) widget).setScrollBarPositions((boolean) previewProperties.get("hScrollBarPosition"), (boolean) previewProperties.get("vScrollBarPosition"));
+                        ((ScrollPane) widget).setScrollingDisabled((boolean) previewProperties.get("hScrollDisabled"), (boolean) previewProperties.get("vScrollDisabled"));
+                        ((ScrollPane) widget).setForceScroll((boolean) previewProperties.get("forceHscroll"), (boolean) previewProperties.get("forceVscroll"));
+                        ((ScrollPane) widget).setVariableSizeKnobs((boolean) previewProperties.get("variableSizeKnobs"));
+                        ((ScrollPane) widget).setOverscroll((boolean) previewProperties.get("hOverscroll"), (boolean) previewProperties.get("vOverscroll"));
+                        ((ScrollPane) widget).setFadeScrollBars((boolean) previewProperties.get("fadeScroll"));
+                        ((ScrollPane) widget).setSmoothScrolling((boolean) previewProperties.get("smoothScroll"));
+                        ((ScrollPane) widget).setFlickScroll((boolean) previewProperties.get("flickScroll"));
+                        ((ScrollPane) widget).setClamp((boolean) previewProperties.get("clamp"));
+                        label.setText((String) previewProperties.get("text"));
+                    } else if (clazz.equals(SelectBox.class)) {
+                        SelectBox.SelectBoxStyle style = createStyle(SelectBox.SelectBoxStyle.class, styleData);
+                        widget = new SelectBox(style);
+                        ((SelectBox)widget).setDisabled((boolean) previewProperties.get("disabled"));
+                        Array<String> items = new Array<>(((String) previewProperties.get("text")).split("\\n"));
+                        ((SelectBox)widget).setItems(items);
+                    } else if (clazz.equals(Slider.class)) {
+                        Slider.SliderStyle style = createStyle(Slider.SliderStyle.class, styleData);
+                        widget = new Slider((float) (double) previewProperties.get("minimum"), (float) (double) previewProperties.get("maximum"), (float) (double) previewProperties.get("increment"), (boolean) previewProperties.get("orientation"), style);
+                        ((Slider)widget).setDisabled((boolean) previewProperties.get("disabled"));
+                    } else if (clazz.equals(SplitPane.class)) {
+                        SplitPane.SplitPaneStyle style = createStyle(SplitPane.SplitPaneStyle.class, styleData);
+                        Label label1 = new Label("", getSkin());
+                        Label label2 = new Label("", getSkin());
+                        widget = new SplitPane(label1, label2, (boolean) previewProperties.get("orientation"), style);
+                        label1.setText((String) previewProperties.get("text"));
+                        label2.setText((String) previewProperties.get("text"));
+                    } else if (clazz.equals(TextButton.class)) {
+                        TextButtonStyle style = createStyle(TextButtonStyle.class, styleData);
+                        widget = new TextButton("", style);
+                        ((TextButton)widget).setDisabled((boolean) previewProperties.get("disabled"));
+                        ((TextButton)widget).setText((String) previewProperties.get("text"));
+                    } else if (clazz.equals(TextField.class)) {
+                        TextFieldStyle style = createStyle(TextFieldStyle.class, styleData);
+                        widget = new TextField("", style);
+                        ((TextField)widget).setFocusTraversal(false);
+                        ((TextField)widget).setDisabled((boolean) previewProperties.get("disabled"));
+                        ((TextField)widget).setPasswordMode((boolean) previewProperties.get("passwordMode"));
+                        ((TextField)widget).setAlignment((int) previewProperties.get("alignment"));
+                        ((TextField)widget).setText((String) previewProperties.get("text"));
+                        ((TextField)widget).setMessageText((String) previewProperties.get("message"));
+                        String string = (String) previewProperties.get("password");
+                        if (string.length() > 0) {
+                            ((TextField)widget).setPasswordCharacter(string.charAt(0));
+                        }
+                    } else if (clazz.equals(TextTooltip.class)) {
+                        TextTooltip.TextTooltipStyle style = createStyle(TextTooltip.TextTooltipStyle.class, styleData);
+
+                        TooltipManager manager = new TooltipManager();
+                        manager.animations = false;
+                        manager.initialTime = 0.0f;
+                        manager.resetTime = 0.0f;
+                        manager.subsequentTime = 0.0f;
+                        manager.hideAll();
+                        manager.instant();
+                        TextTooltip toolTip = new TextTooltip((String) previewProperties.get("text"), manager, style);
+
+                        widget = new Label("Hover over me", getSkin());
+                        widget.addListener(toolTip);
+                    } else if (clazz.equals(Touchpad.class)) {
+                        Touchpad.TouchpadStyle style = createStyle(Touchpad.TouchpadStyle.class, styleData);
+                        widget = new Touchpad(0, style);
+                    } else if (clazz.equals(Tree.class)) {
+                        Tree.TreeStyle style = createStyle(Tree.TreeStyle.class, styleData);
+                        widget = new Tree(style);
+                        String[] lines = {"this", "is", "a", "test"};
+                        Tree.Node parentNode = null;
+                        for (String line: lines) {
+                            Label label = new Label(line, getSkin());
+                            Tree.Node node = new Tree.Node(label);
+                            if (parentNode == null) {
+                                ((Tree) widget).add(node);
+                            } else {
+                                parentNode.add(node);
+                            }
+                            parentNode = node;
+                        }
+                    } else if (clazz.equals(Window.class))  {
+                        Window.WindowStyle style = createStyle(Window.WindowStyle.class, styleData);
+
+                        Label sampleText = new Label("", getSkin());
+                        sampleText.setText((String) previewProperties.get("text"));
+
+                        widget = new Window((String) previewProperties.get("title"), style);
+                        ((Window)widget).add(sampleText);
+                    }
+
+                    if (widget != null) {
+                        switch ((int) previewProperties.get("size")) {
+                            case (0):
+                                previewTable.add(widget).size(10.0f);
+                                previewSizeSelectBox.setItems(DEFAULT_SIZES);
+                                break;
+                            case (1):
+                                previewTable.add(widget);
+                                previewSizeSelectBox.setItems(DEFAULT_SIZES);
+                                break;
+                            case (2):
+                                previewTable.add(widget).size(200.0f);
+                                previewSizeSelectBox.setItems(DEFAULT_SIZES);
+                                break;
+                            case (3):
+                                previewTable.add(widget).growX();
+                                previewSizeSelectBox.setItems(DEFAULT_SIZES);
+                                break;
+                            case (4):
+                                previewTable.add(widget).growY();
+                                previewSizeSelectBox.setItems(DEFAULT_SIZES);
+                                break;
+                            case (5):
+                                previewTable.add(widget).grow();
+                                previewSizeSelectBox.setItems(DEFAULT_SIZES);
+                                break;
+                            case (6):
+                                Actor addWidget = widget;
+                                TextField widthField = new TextField("", getSkin());
+                                TextField heightField = new TextField("", getSkin());
+                                Dialog dialog = new Dialog("Enter dimensions...", getSkin()) {
+                                    @Override
+                                    protected void result(Object object) {
+                                        if ((boolean)object) {
+                                            previewTable.add(addWidget).size(Integer.parseInt(widthField.getText()), Integer.parseInt(heightField.getText()));
+                                            Array<String> items = new Array<>(DEFAULT_SIZES);
+                                            items.add(widthField.getText() + "x" + heightField.getText());
+                                            previewProperties.put("sizeX", Integer.parseInt(widthField.getText()));
+                                            previewProperties.put("sizeY", Integer.parseInt(heightField.getText()));
+                                            previewSizeSelectBox.setItems(items);
+                                            previewSizeSelectBox.setSelectedIndex(7);
+                                        } else {
+                                            previewSizeSelectBox.setSelectedIndex(1);
+                                        }
+                                    }
+                                };
+                                dialog.text("Enter the preview dimensions: ");
+                                dialog.getContentTable().row();
+                                Table sizeTable = new Table();
+                                sizeTable.add(widthField);
+                                sizeTable.add(new Label(" x ", getSkin()));
+                                sizeTable.add(heightField);
+                                dialog.getContentTable().add(sizeTable);
+                                dialog.button("OK", true);
+                                dialog.button("Cancel", false);
+                                dialog.key(Input.Keys.ESCAPE, false);
+                                dialog.key(Input.Keys.ENTER, true);
+                                dialog.show(stage);
+                                stage.setKeyboardFocus(widthField);
+                                break;
+                            case (7):
+                                previewTable.add(widget).size((int) previewProperties.get("sizeX"), (int) previewProperties.get("sizeY"));
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    //todo: move to mainlistener?
+    private <T> T createStyle(Class<T> clazz, StyleData styleData) {
+        T returnValue = null;
+        try {
+            returnValue = ClassReflection.newInstance(clazz);
+            Field[] fields = ClassReflection.getFields(clazz);
+            for (Field field : fields) {
+                Object value = styleData.properties.get(field.getName()).value;
+                if (value != null) {
+                    if (field.getType().equals(Drawable.class)) {
+                        field.set(returnValue, drawablePairs.get((String) value));
+                    } else if (field.getType().equals(Color.class)) {
+                        for (ColorData data : main.getProjectData().getJsonData().getColors()) {
+                            if (value.equals(data.getName())) {
+                                field.set(returnValue, data.color);
+                                break;
+                            }
+                        }
+                    } else if (field.getType().equals(BitmapFont.class)) {
+                        for (FontData data : main.getProjectData().getJsonData().getFonts()) {
+                            if (value.equals(data.getName())) {
+                                BitmapFont font = new BitmapFont(data.file);
+                                previewFonts.add(font);
+                                field.set(returnValue, font);
+                            }
+                        }
+                    } else if (field.getType().equals(Float.TYPE)) {
+                        field.set(returnValue, (float) value);
+                    } else if (field.getType().equals(ListStyle.class)) {
+                        Array<StyleData> datas = main.getProjectData().getJsonData().getClassStyleMap().get(List.class);
+
+                        for (StyleData data : datas) {
+                            if (value.equals(data.name)) {
+                                ListStyle style = createStyle(ListStyle.class, data);
+                                field.set(returnValue, style);
+                                break;
+                            }
+                        }
+                    } else if (field.getType().equals(ScrollPaneStyle.class)) {
+                        Array<StyleData> datas = main.getProjectData().getJsonData().getClassStyleMap().get(ScrollPane.class);
+
+                        for (StyleData data : datas) {
+                            if (value.equals(data.name)) {
+                                ScrollPaneStyle style = createStyle(ScrollPaneStyle.class, data);
+                                field.set(returnValue, style);
+                                break;
+                            }
+                        }
+                    } else if (field.getType().equals(LabelStyle.class)) {
+                        Array<StyleData> datas = main.getProjectData().getJsonData().getClassStyleMap().get(Label.class);
+
+                        for (StyleData data : datas) {
+                            if (value.equals(data.name)) {
+                                LabelStyle style = createStyle(LabelStyle.class, data);
+                                field.set(returnValue, style);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        } finally {
+            return returnValue;
         }
     }
     

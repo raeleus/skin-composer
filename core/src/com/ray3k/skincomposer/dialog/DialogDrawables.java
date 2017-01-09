@@ -563,7 +563,7 @@ public class DialogDrawables extends Dialog {
         
         main.getRootTable().refreshStyleProperties(true);
 //        PanelPreviewProperties.instance.produceAtlas();
-//        PanelPreviewProperties.instance.render();
+//        PanelPreviewProperties.instance.refreshPreview();
         
         projectData.setChangesSaved(false);
         
@@ -602,7 +602,7 @@ public class DialogDrawables extends Dialog {
             }
 
 //            PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-//            PanelPreviewProperties.instance.render();
+//            PanelPreviewProperties.instance.refreshPreview();
 
             main.getUndoableManager().clearUndoables();
 
@@ -760,7 +760,7 @@ public class DialogDrawables extends Dialog {
         }
         
 //        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-//        PanelPreviewProperties.instance.render();
+//        PanelPreviewProperties.instance.refreshPreview();
         
         if (refreshDrawables) {
             gatherDrawables();

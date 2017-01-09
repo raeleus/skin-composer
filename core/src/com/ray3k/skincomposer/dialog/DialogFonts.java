@@ -316,7 +316,7 @@ public class DialogFonts extends Dialog {
                         main.getUndoableManager().clearUndoables();
                         
                         main.getRootTable().refreshStyleProperties(true);
-//                        PanelPreviewProperties.instance.render();
+//                        PanelPreviewProperties.instance.refreshPreview();
                         
                         event.setBubbles(false);
                         populate();
@@ -450,7 +450,7 @@ public class DialogFonts extends Dialog {
         main.getUndoableManager().clearUndoables();
 
 //        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-//        PanelPreviewProperties.instance.render();
+//        PanelPreviewProperties.instance.refreshPreview();
         
         projectData.setChangesSaved(false);
         
