@@ -415,7 +415,9 @@ public class RootTable extends Table {
     }
 
     public void refreshStyles(boolean scrollToNewest) {
+        int classSelectedIndex = classSelectBox.getSelectedIndex();
         populate();
+        classSelectBox.setSelectedIndex(classSelectedIndex);
         if (scrollToNewest) {
             styleSelectBox.setSelectedIndex(styleSelectBox.getItems().size - 1);
         }
