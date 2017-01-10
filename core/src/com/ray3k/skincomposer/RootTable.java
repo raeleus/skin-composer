@@ -97,6 +97,9 @@ public class RootTable extends Table {
     private final BrowseFieldStyle bfColorStyle;
     private final BrowseFieldStyle bfDrawableStyle;
     private final BrowseFieldStyle bfFontStyle;
+    private final BrowseFieldStyle bfColorStyleR;
+    private final BrowseFieldStyle bfDrawableStyleR;
+    private final BrowseFieldStyle bfFontStyleR;
     private final SpinnerStyle spinnerStyle;
     private Table stylePropertiesTable;
     private Table previewPropertiesTable;
@@ -157,7 +160,10 @@ public class RootTable extends Table {
         bfColorStyle = new BrowseFieldStyle(getSkin().get("color", ImageButtonStyle.class), getSkin().get(TextFieldStyle.class), getSkin().get(LabelStyle.class));
         bfDrawableStyle = new BrowseFieldStyle(getSkin().get("drawable", ImageButtonStyle.class), getSkin().get(TextFieldStyle.class), getSkin().get(LabelStyle.class));
         bfFontStyle = new BrowseFieldStyle(getSkin().get("font", ImageButtonStyle.class), getSkin().get(TextFieldStyle.class), getSkin().get(LabelStyle.class));
-
+        bfColorStyleR = new BrowseFieldStyle(getSkin().get("color", ImageButtonStyle.class), getSkin().get(TextFieldStyle.class), getSkin().get("required", LabelStyle.class));
+        bfDrawableStyleR = new BrowseFieldStyle(getSkin().get("drawable", ImageButtonStyle.class), getSkin().get(TextFieldStyle.class), getSkin().get("required", LabelStyle.class));
+        bfFontStyleR = new BrowseFieldStyle(getSkin().get("font", ImageButtonStyle.class), getSkin().get(TextFieldStyle.class), getSkin().get("required", LabelStyle.class));
+        
         getSkin().add("default", menuButtonStyle);
         getSkin().add("default", menuListStyle);
 
@@ -451,22 +457,41 @@ public class RootTable extends Table {
 
                 table.row();
                 if (styleProperty.type == Color.class) {
-                    BrowseField browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfColorStyle);
+                    BrowseField browseField;
+                    if (styleProperty.optional) {
+                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfColorStyle);
+                    } else {
+                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfColorStyleR);
+                    }
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
                 } else if (styleProperty.type == BitmapFont.class) {
-                    BrowseField browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfFontStyle);
+                    BrowseField browseField;
+                    if (styleProperty.optional) {
+                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfFontStyle);
+                    } else {
+                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfFontStyleR);
+                    }
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
                 } else if (styleProperty.type == Drawable.class) {
-                    BrowseField browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfDrawableStyle);
+                    BrowseField browseField;
+                    if (styleProperty.optional) {
+                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfDrawableStyle);
+                    } else {
+                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfDrawableStyleR);
+                    }
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
                 } else if (styleProperty.type == Float.TYPE) {
-                    label = new Label(styleProperty.name, getSkin());
+                    if (styleProperty.optional) {
+                        label = new Label(styleProperty.name, getSkin());
+                    } else {
+                        label = new Label(styleProperty.name, getSkin(), "required");
+                    }
                     table.add(label).padTop(20.0f).fill(false).expand(false, false);
 
                     table.row();
@@ -475,7 +500,11 @@ public class RootTable extends Table {
 
                     spinner.addListener(new StylePropertyChangeListener(styleProperty, spinner));
                 } else if (styleProperty.type == ScrollPaneStyle.class) {
-                    label = new Label(styleProperty.name, getSkin());
+                    if (styleProperty.optional) {
+                        label = new Label(styleProperty.name, getSkin());
+                    } else {
+                        label = new Label(styleProperty.name, getSkin(), "required");
+                    }
                     table.add(label).padTop(20.0f).fill(false).expand(false, false);
 
                     table.row();
@@ -485,7 +514,11 @@ public class RootTable extends Table {
 
                     selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
                 } else if (styleProperty.type == ListStyle.class) {
-                    label = new Label(styleProperty.name, getSkin());
+                    if (styleProperty.optional) {
+                        label = new Label(styleProperty.name, getSkin());
+                    } else {
+                        label = new Label(styleProperty.name, getSkin(), "required");
+                    }
                     table.add(label).padTop(20.0f).fill(false).expand(false, false);
 
                     table.row();
@@ -495,7 +528,11 @@ public class RootTable extends Table {
 
                     selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
                 } else if (styleProperty.type == LabelStyle.class) {
-                    label = new Label(styleProperty.name, getSkin());
+                    if (styleProperty.optional) {
+                        label = new Label(styleProperty.name, getSkin());
+                    } else {
+                        label = new Label(styleProperty.name, getSkin(), "required");
+                    }
                     table.add(label).padTop(20.0f).fill(false).expand(false, false);
 
                     table.row();
@@ -1469,11 +1506,11 @@ public class RootTable extends Table {
                 if (!styleData.hasMandatoryFields()) {
                     Label label;
                     if (clazz.equals(SelectBox.class)) {
-                        label = new Label("Please fill all mandatory fields\n(Highlighted in Maroon)\n\nscrollStyle and listStyle\nmust already be defined", getSkin());
+                        label = new Label("Please fill all mandatory fields\n(Highlighted on the left)\n\nscrollStyle and listStyle\nmust already be defined", getSkin());
                     } else if (clazz.equals(TextTooltip.class)) {
-                        label = new Label("Please fill all mandatory fields\n(Highlighted in Maroon)\n\nlabel must already be defined", getSkin());
+                        label = new Label("Please fill all mandatory fields\n(Highlighted on the left)\n\nlabel must already be defined", getSkin());
                     } else {
-                        label = new Label("Please fill all mandatory fields\n(Highlighted in Maroon)", getSkin());
+                        label = new Label("Please fill all mandatory fields\n(Highlighted on the left)", getSkin());
                     }
                     label.setAlignment(Align.center);
                     previewTable.add(label);
