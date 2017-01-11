@@ -119,12 +119,14 @@ public class UndoableManager {
         public void undo() {
             property.value = oldValue;
             rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
         public void redo() {
             property.value = newValue;
-            property.value = newValue;
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -154,8 +156,8 @@ public class UndoableManager {
                 property.value = oldValue;
             }
 //            PanelStatusBar.instance.message("Drawable selected: " + object.toString() + " for \"" + property.name + "\"");
-//            PanelPreviewProperties.instance.refreshPreview();
             rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -165,8 +167,8 @@ public class UndoableManager {
                 property.value = newValue;
             }
 //            PanelStatusBar.instance.message("Drawable selected: " + object.toString() + " for \"" + property.name + "\"");
-//            PanelPreviewProperties.instance.refreshPreview();
             rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -203,8 +205,8 @@ public class UndoableManager {
                 }
             }
 //            PanelStatusBar.instance.message("Selected color " + color.getName() + " for \"" + styleProperty.name + "\"");
-//            PanelPreviewProperties.instance.refreshPreview();
             rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -220,8 +222,8 @@ public class UndoableManager {
                 }
             }
 //            PanelStatusBar.instance.message("Selected color " + color.getName() + " for \"" + styleProperty.name + "\"");
-//            PanelPreviewProperties.instance.refreshPreview();
             rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -257,8 +259,8 @@ public class UndoableManager {
                 }
             }
 //            PanelStatusBar.instance.message("Selected Font: " + font.getName() + " for \"" + styleProperty.name + "\"");
-//            PanelPreviewProperties.instance.refreshPreview();
             rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -274,8 +276,8 @@ public class UndoableManager {
                 }
             }
 //            PanelStatusBar.instance.message("Selected Font: " + font.getName() + " for \"" + styleProperty.name + "\"");
-//            PanelPreviewProperties.instance.refreshPreview();
             rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -302,15 +304,15 @@ public class UndoableManager {
         @Override
         public void undo() {
             property.value = oldValue;
-//            PanelPreviewProperties.instance.refreshPreview();
             rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
         public void redo() {
             property.value = newValue;
-//            PanelPreviewProperties.instance.refreshPreview();
             rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override

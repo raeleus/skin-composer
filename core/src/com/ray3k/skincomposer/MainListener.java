@@ -333,8 +333,6 @@ public class MainListener extends RootTableListener {
         } else if (styleProperty.type == CustomStyle.class) {
             //show custom style dialog
         }
-        
-        root.refreshPreview();
     }
     
     private void updateStyleProperties() {

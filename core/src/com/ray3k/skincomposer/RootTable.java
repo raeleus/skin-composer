@@ -1491,6 +1491,8 @@ public class RootTable extends Table {
     }
     
     public void refreshPreview() {
+        System.out.println(getSelectedStyle().properties.get("up").value);
+        
         if (previewTable != null) {
             previewTable.clear();
             previewTable.setColor((Color) previewProperties.get("bgcolor"));
