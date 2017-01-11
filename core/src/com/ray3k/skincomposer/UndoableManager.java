@@ -151,7 +151,7 @@ public class UndoableManager {
 
         @Override
         public void undo() {
-//            PanelPreviewProperties.instance.produceAtlas();
+            rootTable.produceAtlas();
             if (oldValue == null || atlasData.getDrawable((String) oldValue) != null) {
                 property.value = oldValue;
             }
@@ -162,7 +162,7 @@ public class UndoableManager {
 
         @Override
         public void redo() {
-//            PanelPreviewProperties.instance.produceAtlas();
+            rootTable.produceAtlas();
             if (newValue == null || atlasData.getDrawable((String) newValue) != null) {
                 property.value = newValue;
             }

@@ -28,6 +28,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -68,6 +69,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -79,11 +82,15 @@ import com.ray3k.skincomposer.MenuButton.MenuButtonListener;
 import com.ray3k.skincomposer.MenuButton.MenuButtonStyle;
 import com.ray3k.skincomposer.MenuList.MenuListStyle;
 import com.ray3k.skincomposer.Spinner.SpinnerStyle;
+import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.ColorData;
+import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.FontData;
+import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
+import com.ray3k.skincomposer.dialog.DialogError;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class RootTable extends Table {
@@ -127,6 +134,7 @@ public class RootTable extends Table {
             + PARAGRAPH_SAMPLE;
     private final Array<BitmapFont> previewFonts;
     private final ObjectMap<String, Drawable> drawablePairs;
+    private TextureAtlas atlas;
 
     public RootTable(Main main) {
         super(main.getSkin());
@@ -170,6 +178,8 @@ public class RootTable extends Table {
         scrollPaneListener = new ScrollPaneListener();
         previewFonts = new Array<>();
         drawablePairs = new ObjectMap<>();
+        
+        produceAtlas();
     }
 
     public void populate() {
@@ -1490,9 +1500,7 @@ public class RootTable extends Table {
         }
     }
     
-    public void refreshPreview() {
-        System.out.println(getSelectedStyle().properties.get("up").value);
-        
+    public void refreshPreview() {        
         if (previewTable != null) {
             previewTable.clear();
             previewTable.setColor((Color) previewProperties.get("bgcolor"));
@@ -1524,39 +1532,39 @@ public class RootTable extends Table {
                 } else {
                     Actor widget = null;
                     if (clazz.equals(Button.class)) {
-                        Button.ButtonStyle style = createStyle(Button.ButtonStyle.class, styleData);
+                        Button.ButtonStyle style = createPreviewStyle(Button.ButtonStyle.class, styleData);
                         widget = new Button(style);
                         ((Button)widget).setDisabled((boolean) previewProperties.get("disabled"));
                     } else if (clazz.equals(CheckBox.class)) {
-                        CheckBox.CheckBoxStyle style = createStyle(CheckBox.CheckBoxStyle.class, styleData);
+                        CheckBox.CheckBoxStyle style = createPreviewStyle(CheckBox.CheckBoxStyle.class, styleData);
                         widget = new CheckBox("", style);
                         ((CheckBox)widget).setDisabled((boolean) previewProperties.get("disabled"));
                         ((CheckBox)widget).setText((String) previewProperties.get("text"));
                     } else if (clazz.equals(ImageButton.class)) {
-                        ImageButtonStyle style = createStyle(ImageButtonStyle.class, styleData);
+                        ImageButtonStyle style = createPreviewStyle(ImageButtonStyle.class, styleData);
                         widget = new ImageButton(style);
                         ((ImageButton)widget).setDisabled((boolean) previewProperties.get("disabled"));
                     } else if (clazz.equals(ImageTextButton.class)) {
-                        ImageTextButton.ImageTextButtonStyle style = createStyle(ImageTextButton.ImageTextButtonStyle.class, styleData);
+                        ImageTextButton.ImageTextButtonStyle style = createPreviewStyle(ImageTextButton.ImageTextButtonStyle.class, styleData);
                         widget = new ImageTextButton("", style);
                         ((ImageTextButton)widget).setDisabled((boolean) previewProperties.get("disabled"));
                         ((ImageTextButton)widget).setText((String) previewProperties.get("text"));
                     } else if (clazz.equals(Label.class)) {
-                        LabelStyle style = createStyle(LabelStyle.class, styleData);
+                        LabelStyle style = createPreviewStyle(LabelStyle.class, styleData);
                         widget = new Label("", style);
                         ((Label)widget).setText((String) previewProperties.get("text"));
                     } else if (clazz.equals(List.class)) {
-                        ListStyle style = createStyle(ListStyle.class, styleData);
+                        ListStyle style = createPreviewStyle(ListStyle.class, styleData);
                         widget = new List(style);
                         Array<String> items = new Array<>(((String) previewProperties.get("text")).split("\\n"));
                         ((List)widget).setItems(items);
                     } else if (clazz.equals(ProgressBar.class)) {
-                        ProgressBar.ProgressBarStyle style = createStyle(ProgressBar.ProgressBarStyle.class, styleData);
+                        ProgressBar.ProgressBarStyle style = createPreviewStyle(ProgressBar.ProgressBarStyle.class, styleData);
                         widget = new ProgressBar((float) (double) previewProperties.get("minimum"), (float) (double) previewProperties.get("maximum"), (float) (double) previewProperties.get("increment"), (boolean) previewProperties.get("orientation"), style);
                         ((ProgressBar) widget).setValue((float) (double) previewProperties.get("value"));
                         ((ProgressBar)widget).setDisabled((boolean) previewProperties.get("disabled"));
                     } else if (clazz.equals(ScrollPane.class)) {
-                        ScrollPaneStyle style = createStyle(ScrollPaneStyle.class, styleData);
+                        ScrollPaneStyle style = createPreviewStyle(ScrollPaneStyle.class, styleData);
                         Label label = new Label("", getSkin());
                         widget = new ScrollPane(label, style);
                         ((ScrollPane) widget).setScrollbarsOnTop((boolean) previewProperties.get("scrollbarsOnTop"));
@@ -1571,29 +1579,29 @@ public class RootTable extends Table {
                         ((ScrollPane) widget).setClamp((boolean) previewProperties.get("clamp"));
                         label.setText((String) previewProperties.get("text"));
                     } else if (clazz.equals(SelectBox.class)) {
-                        SelectBox.SelectBoxStyle style = createStyle(SelectBox.SelectBoxStyle.class, styleData);
+                        SelectBox.SelectBoxStyle style = createPreviewStyle(SelectBox.SelectBoxStyle.class, styleData);
                         widget = new SelectBox(style);
                         ((SelectBox)widget).setDisabled((boolean) previewProperties.get("disabled"));
                         Array<String> items = new Array<>(((String) previewProperties.get("text")).split("\\n"));
                         ((SelectBox)widget).setItems(items);
                     } else if (clazz.equals(Slider.class)) {
-                        Slider.SliderStyle style = createStyle(Slider.SliderStyle.class, styleData);
+                        Slider.SliderStyle style = createPreviewStyle(Slider.SliderStyle.class, styleData);
                         widget = new Slider((float) (double) previewProperties.get("minimum"), (float) (double) previewProperties.get("maximum"), (float) (double) previewProperties.get("increment"), (boolean) previewProperties.get("orientation"), style);
                         ((Slider)widget).setDisabled((boolean) previewProperties.get("disabled"));
                     } else if (clazz.equals(SplitPane.class)) {
-                        SplitPane.SplitPaneStyle style = createStyle(SplitPane.SplitPaneStyle.class, styleData);
+                        SplitPane.SplitPaneStyle style = createPreviewStyle(SplitPane.SplitPaneStyle.class, styleData);
                         Label label1 = new Label("", getSkin());
                         Label label2 = new Label("", getSkin());
                         widget = new SplitPane(label1, label2, (boolean) previewProperties.get("orientation"), style);
                         label1.setText((String) previewProperties.get("text"));
                         label2.setText((String) previewProperties.get("text"));
                     } else if (clazz.equals(TextButton.class)) {
-                        TextButtonStyle style = createStyle(TextButtonStyle.class, styleData);
+                        TextButtonStyle style = createPreviewStyle(TextButtonStyle.class, styleData);
                         widget = new TextButton("", style);
                         ((TextButton)widget).setDisabled((boolean) previewProperties.get("disabled"));
                         ((TextButton)widget).setText((String) previewProperties.get("text"));
                     } else if (clazz.equals(TextField.class)) {
-                        TextFieldStyle style = createStyle(TextFieldStyle.class, styleData);
+                        TextFieldStyle style = createPreviewStyle(TextFieldStyle.class, styleData);
                         widget = new TextField("", style);
                         ((TextField)widget).setFocusTraversal(false);
                         ((TextField)widget).setDisabled((boolean) previewProperties.get("disabled"));
@@ -1606,7 +1614,7 @@ public class RootTable extends Table {
                             ((TextField)widget).setPasswordCharacter(string.charAt(0));
                         }
                     } else if (clazz.equals(TextTooltip.class)) {
-                        TextTooltip.TextTooltipStyle style = createStyle(TextTooltip.TextTooltipStyle.class, styleData);
+                        TextTooltip.TextTooltipStyle style = createPreviewStyle(TextTooltip.TextTooltipStyle.class, styleData);
 
                         TooltipManager manager = new TooltipManager();
                         manager.animations = false;
@@ -1620,10 +1628,10 @@ public class RootTable extends Table {
                         widget = new Label("Hover over me", getSkin());
                         widget.addListener(toolTip);
                     } else if (clazz.equals(Touchpad.class)) {
-                        Touchpad.TouchpadStyle style = createStyle(Touchpad.TouchpadStyle.class, styleData);
+                        Touchpad.TouchpadStyle style = createPreviewStyle(Touchpad.TouchpadStyle.class, styleData);
                         widget = new Touchpad(0, style);
                     } else if (clazz.equals(Tree.class)) {
-                        Tree.TreeStyle style = createStyle(Tree.TreeStyle.class, styleData);
+                        Tree.TreeStyle style = createPreviewStyle(Tree.TreeStyle.class, styleData);
                         widget = new Tree(style);
                         String[] lines = {"this", "is", "a", "test"};
                         Tree.Node parentNode = null;
@@ -1638,7 +1646,7 @@ public class RootTable extends Table {
                             parentNode = node;
                         }
                     } else if (clazz.equals(Window.class))  {
-                        Window.WindowStyle style = createStyle(Window.WindowStyle.class, styleData);
+                        Window.WindowStyle style = createPreviewStyle(Window.WindowStyle.class, styleData);
 
                         Label sampleText = new Label("", getSkin());
                         sampleText.setText((String) previewProperties.get("text"));
@@ -1717,8 +1725,7 @@ public class RootTable extends Table {
         }
     }
     
-    //todo: move to mainlistener?
-    private <T> T createStyle(Class<T> clazz, StyleData styleData) {
+    private <T> T createPreviewStyle(Class<T> clazz, StyleData styleData) {
         T returnValue = null;
         try {
             returnValue = ClassReflection.newInstance(clazz);
@@ -1750,7 +1757,7 @@ public class RootTable extends Table {
 
                         for (StyleData data : datas) {
                             if (value.equals(data.name)) {
-                                ListStyle style = createStyle(ListStyle.class, data);
+                                ListStyle style = createPreviewStyle(ListStyle.class, data);
                                 field.set(returnValue, style);
                                 break;
                             }
@@ -1760,7 +1767,7 @@ public class RootTable extends Table {
 
                         for (StyleData data : datas) {
                             if (value.equals(data.name)) {
-                                ScrollPaneStyle style = createStyle(ScrollPaneStyle.class, data);
+                                ScrollPaneStyle style = createPreviewStyle(ScrollPaneStyle.class, data);
                                 field.set(returnValue, style);
                                 break;
                             }
@@ -1770,7 +1777,7 @@ public class RootTable extends Table {
 
                         for (StyleData data : datas) {
                             if (value.equals(data.name)) {
-                                LabelStyle style = createStyle(LabelStyle.class, data);
+                                LabelStyle style = createPreviewStyle(LabelStyle.class, data);
                                 field.set(returnValue, style);
                                 break;
                             }
@@ -1780,6 +1787,56 @@ public class RootTable extends Table {
             }
         } finally {
             return returnValue;
+        }
+    }
+    
+    //todo: use pixmapatlas instead and only include drawables in use.
+    /**
+     * Writes a TextureAtlas based on drawables list. Creates drawables to be
+     * displayed on screen
+     * @return 
+     */
+    public boolean produceAtlas() {
+        try {
+            if (atlas != null) {
+                atlas.dispose();
+                atlas = null;
+            }
+            
+            if (!main.getProjectData().getAtlasData().atlasCurrent) {
+                main.getProjectData().getAtlasData().writeAtlas();
+                main.getProjectData().getAtlasData().atlasCurrent = true;
+            }
+            atlas = main.getProjectData().getAtlasData().getAtlas();
+
+            for (DrawableData data : main.getProjectData().getAtlasData().getDrawables()) {
+                String name = data.file.name();
+                name = DrawableData.proper(name);
+                
+                Drawable drawable;
+                if (data.file.name().matches(".*\\.9\\.[a-zA-Z0-9]*$")) {
+                    drawable = new NinePatchDrawable(atlas.createPatch(name));
+                    if (data.tint != null) {
+                        drawable = ((NinePatchDrawable) drawable).tint(data.tint);
+                    } else if (data.tintName != null) {
+                        drawable = ((NinePatchDrawable) drawable).tint(main.getProjectData().getJsonData().getColorByName(data.tintName).color);
+                    }
+                } else {
+                    drawable = new SpriteDrawable(atlas.createSprite(name));
+                    if (data.tint != null) {
+                        drawable = ((SpriteDrawable) drawable).tint(data.tint);
+                    } else if (data.tintName != null) {
+                        drawable = ((SpriteDrawable) drawable).tint(main.getProjectData().getJsonData().getColorByName(data.tintName).color);
+                    }
+                }
+                
+                drawablePairs.put(data.name, drawable);
+            }
+            return true;
+        } catch (Exception e) {
+            Gdx.app.error(getClass().getName(), "Error while attempting to generate drawables.", e);
+            main.getDialogFactory().showDialogError("Atlas Error...", "Error while attempting to generate drawables.\n\nOpen log?");
+            return false;
         }
     }
     
