@@ -7,73 +7,72 @@ import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.JsonData;
-import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 
 public class UndoableManager {
     private final Array<Undoable> undoables;
     private int undoIndex;
-    private final ProjectData projectData;
+    private final Main main;
 
-    public UndoableManager(ProjectData projectData) {
+    public UndoableManager(Main main) {
         undoables = new Array<>();
         undoIndex = -1;
-        this.projectData = projectData;
+        this.main = main;
     }
     
     public void clearUndoables() {
         undoables.clear();
         undoIndex = -1;
         
-//        PanelMenuBar.instance().getUndoButton().setDisabled(true);
-//        PanelMenuBar.instance().getUndoButton().setText("Undo");
-//        
-//        PanelMenuBar.instance().getRedoButton().setDisabled(true);
-//        PanelMenuBar.instance().getRedoButton().setText("Redo");
+        main.getRootTable().setUndoDisabled(true);
+        main.getRootTable().setRedoDisabled(true);
+        
+        main.getRootTable().setUndoText("Undo");
+        main.getRootTable().setRedoText("Redo");
     }
     
     public void undo() {
         if (undoIndex >= 0 && undoIndex < undoables.size) {
-            projectData.setChangesSaved(false);
+            main.getProjectData().setChangesSaved(false);
             Undoable undoable = undoables.get(undoIndex);
             undoable.undo();
             undoIndex--;
 
             if (undoIndex < 0) {
-//                PanelMenuBar.instance().getUndoButton().setDisabled(true);
-//                PanelMenuBar.instance().getUndoButton().setText("Undo");
+                main.getRootTable().setUndoDisabled(true);
+                main.getRootTable().setUndoText("Undo");
             } else {
-//                PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
+                main.getRootTable().setUndoText("Undo " + undoables.get(undoIndex).getUndoText());
             }
 
-//            PanelMenuBar.instance().getRedoButton().setDisabled(false);
-//            PanelMenuBar.instance().getRedoButton().setText("Redo " + undoable.getUndoText());
+            main.getRootTable().setRedoDisabled(false);
+            main.getRootTable().setRedoText("Redo " + undoable.getUndoText());
         }
     }
     
     public void redo() {
         if (undoIndex >= -1 && undoIndex < undoables.size) {
-            projectData.setChangesSaved(false);
+            main.getProjectData().setChangesSaved(false);
             if (undoIndex < undoables.size - 1) {
                 undoIndex++;
                 undoables.get(undoIndex).redo();
             }
 
             if (undoIndex >= undoables.size - 1) {
-//                PanelMenuBar.instance().getRedoButton().setDisabled(true);
-//                PanelMenuBar.instance().getRedoButton().setText("Redo");
+                main.getRootTable().setRedoDisabled(true);
+                main.getRootTable().setRedoText("Redo");
             } else {
-//                PanelMenuBar.instance().getRedoButton().setText("Redo " + undoables.get(undoIndex + 1).getUndoText());
+                main.getRootTable().setRedoText("Redo " + undoables.get(undoIndex + 1).getUndoText());
             }
 
-//            PanelMenuBar.instance().getUndoButton().setDisabled(false);
-//            PanelMenuBar.instance().getUndoButton().setText("Undo " + undoables.get(undoIndex).getUndoText());
+            main.getRootTable().setUndoDisabled(false);
+            main.getRootTable().setUndoText("Undo " + undoables.get(undoIndex).getUndoText());
         }
     }
     
     public void addUndoable(Undoable undoable, boolean redoImmediately) {
-        projectData.setChangesSaved(false);
+        main.getProjectData().setChangesSaved(false);
         undoIndex++;
         if (undoIndex <= undoables.size - 1) {
             undoables.removeRange(undoIndex, undoables.size - 1);
@@ -84,13 +83,13 @@ public class UndoableManager {
             undoable.redo();
         }
         
-//        PanelMenuBar.instance().getRedoButton().setDisabled(true);
-//        PanelMenuBar.instance().getRedoButton().setText("Redo");
-//        PanelMenuBar.instance().getUndoButton().setDisabled(false);
-//        PanelMenuBar.instance().getUndoButton().setText("Undo " + undoable.getUndoText());
+        main.getRootTable().setUndoDisabled(false);
+        main.getRootTable().setRedoDisabled(true);
+        main.getRootTable().setRedoText("Redo");
+        main.getRootTable().setUndoText("Undo " + undoable.getUndoText());
         
-        if (undoables.size > projectData.getMaxUndos()) {
-            int offset = undoables.size - projectData.getMaxUndos();
+        if (undoables.size > main.getProjectData().getMaxUndos()) {
+            int offset = undoables.size - main.getProjectData().getMaxUndos();
             
             undoIndex -= offset;
             undoIndex = MathUtils.clamp(undoIndex, -1, undoables.size - 1);

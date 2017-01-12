@@ -165,7 +165,7 @@ public class MenuList<T> extends Table {
         updateContents();
     }
     
-    private void updateContents() {
+    public void updateContents() {
         setSize(0.0f, 0.0f);
         clearChildren();
         buttons.clear();
@@ -237,6 +237,14 @@ public class MenuList<T> extends Table {
 
     public Array<TextButton> getButtons() {
         return buttons;
+    }
+    
+    public void setDisabled(int index, boolean disabled) {
+        buttons.get(index).setDisabled(disabled);
+    }
+    
+    public void setDisabled(T item, boolean disabled) {
+        setDisabled(items.indexOf(item, false), disabled);
     }
     
     public MenuListStyle getStyle() {

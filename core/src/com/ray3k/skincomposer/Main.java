@@ -111,7 +111,7 @@ public class Main extends ApplicationAdapter {
         projectData.setMaxUndos(30);
         
         dialogFactory = new DialogFactory(skin, stage, projectData.getJsonData(), projectData, projectData.getAtlasData(), this);
-        undoableManager = new UndoableManager(projectData);
+        undoableManager = new UndoableManager(this);
         
         desktopWorker.attachLogListener();
         desktopWorker.sizeWindowToFit(800, 800, 50, Gdx.graphics);

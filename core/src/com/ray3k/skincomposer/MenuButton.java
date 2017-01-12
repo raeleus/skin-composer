@@ -153,6 +153,18 @@ public class MenuButton<T> extends TextButton {
         return menuList.getSelectedItem();
     }
     
+    public void setDisabled(int index, boolean disabled) {
+        menuList.setDisabled(index, disabled);
+    }
+    
+    public void setDisabled(T item, boolean disabled) {
+        menuList.setDisabled(item, disabled);
+    }
+    
+    public void updateContents() {
+        menuList.updateContents();
+    }
+    
     @Override
     public void setStyle(ButtonStyle style) {
         if (style == null) {

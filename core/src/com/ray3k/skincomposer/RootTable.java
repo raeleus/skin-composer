@@ -132,6 +132,9 @@ public class RootTable extends Table {
     private final Array<BitmapFont> previewFonts;
     private final ObjectMap<String, Drawable> drawablePairs;
     private TextureAtlas atlas;
+    private MenuItem undoButton;
+    private MenuItem redoButton;
+    private MenuButton editMenu;
 
     public RootTable(Main main) {
         super(main.getSkin());
@@ -219,18 +222,22 @@ public class RootTable extends Table {
         }
         menuButton.addListener(new MenuBarListener(menuButton));
 
-        menuButton = new MenuButton("Edit", getSkin());
-        menuButtonGroup.add(menuButton);
-        table.add(menuButton);
+        editMenu = new MenuButton("Edit", getSkin());
+        menuButtonGroup.add(editMenu);
+        table.add(editMenu);
 
-        menuButton.setItems(new MenuItem("Undo", RootTableEnum.UNDO),
-                new MenuItem("Redo", RootTableEnum.REDO));
+        undoButton = new MenuItem("Undo", RootTableEnum.UNDO);
+        redoButton = new MenuItem("Redo", RootTableEnum.REDO);
+        
+        editMenu.setItems(undoButton, redoButton);
         if (Utils.isMac()) {
-            menuButton.setShortcuts("⌘+Z", "⌘+Y");
+            editMenu.setShortcuts("⌘+Z", "⌘+Y");
         } else {
-            menuButton.setShortcuts("Ctrl+Z", "Ctrl+Y");
+            editMenu.setShortcuts("Ctrl+Z", "Ctrl+Y");
         }
-        menuButton.addListener(new MenuBarListener(menuButton));
+        editMenu.setDisabled(undoButton, true);
+        editMenu.setDisabled(redoButton, true);
+        editMenu.addListener(new MenuBarListener(editMenu));
 
         menuButton = new MenuButton("Project", getSkin());
         menuButtonGroup.add(menuButton);
@@ -251,6 +258,24 @@ public class RootTable extends Table {
         menuButton.addListener(new MenuBarListener(menuButton));
     }
 
+    public void setUndoDisabled(boolean disabled) {
+        editMenu.setDisabled(undoButton, disabled);
+    }
+    
+    public void setRedoDisabled(boolean disabled) {
+        editMenu.setDisabled(redoButton, disabled);
+    }
+    
+    public void setUndoText(String text) {
+        undoButton.text = text;
+        editMenu.updateContents();
+    }
+    
+    public void setRedoText(String text) {
+        redoButton.text = text;
+        editMenu.updateContents();
+    }
+    
     private void addClassBar() {
         Table table = new Table();
         table.setBackground(getSkin().getDrawable("class-bar"));

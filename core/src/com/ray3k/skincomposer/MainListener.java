@@ -87,8 +87,10 @@ public class MainListener extends RootTableListener {
                 dialogFactory.showCloseDialog();
                 break;
             case UNDO:
+                main.getUndoableManager().undo();
                 break;
             case REDO:
+                main.getUndoableManager().redo();
                 break;
             case SETTINGS:
                 dialogFactory.showSettings();
