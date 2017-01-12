@@ -154,7 +154,7 @@ public class UndoableManager {
             if (oldValue == null || atlasData.getDrawable((String) oldValue) != null) {
                 property.value = oldValue;
             }
-//            PanelStatusBar.instance.message("Drawable selected: " + object.toString() + " for \"" + property.name + "\"");
+            rootTable.setStatusBarMessage("Drawable selected: " + oldValue);
             rootTable.refreshStyleProperties(true);
             rootTable.refreshPreview();
         }
@@ -165,7 +165,7 @@ public class UndoableManager {
             if (newValue == null || atlasData.getDrawable((String) newValue) != null) {
                 property.value = newValue;
             }
-//            PanelStatusBar.instance.message("Drawable selected: " + object.toString() + " for \"" + property.name + "\"");
+            rootTable.setStatusBarMessage("Drawable selected: " + newValue);
             rootTable.refreshStyleProperties(true);
             rootTable.refreshPreview();
         }
@@ -203,7 +203,7 @@ public class UndoableManager {
                     }
                 }
             }
-//            PanelStatusBar.instance.message("Selected color " + color.getName() + " for \"" + styleProperty.name + "\"");
+            rootTable.setStatusBarMessage("Selected color: " + oldValue);
             rootTable.refreshStyleProperties(true);
             rootTable.refreshPreview();
         }
@@ -220,7 +220,7 @@ public class UndoableManager {
                     }
                 }
             }
-//            PanelStatusBar.instance.message("Selected color " + color.getName() + " for \"" + styleProperty.name + "\"");
+            rootTable.setStatusBarMessage("Selected color: " + newValue);
             rootTable.refreshStyleProperties(true);
             rootTable.refreshPreview();
         }
@@ -257,7 +257,7 @@ public class UndoableManager {
                     }
                 }
             }
-//            PanelStatusBar.instance.message("Selected Font: " + font.getName() + " for \"" + styleProperty.name + "\"");
+            rootTable.setStatusBarMessage("Selected Font: " + oldValue);
             rootTable.refreshStyleProperties(true);
             rootTable.refreshPreview();
         }
@@ -274,7 +274,7 @@ public class UndoableManager {
                     }
                 }
             }
-//            PanelStatusBar.instance.message("Selected Font: " + font.getName() + " for \"" + styleProperty.name + "\"");
+            rootTable.setStatusBarMessage("Selected Font: " + newValue);
             rootTable.refreshStyleProperties(true);
             rootTable.refreshPreview();
         }

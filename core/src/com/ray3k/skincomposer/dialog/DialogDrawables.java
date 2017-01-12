@@ -768,7 +768,7 @@ public class DialogDrawables extends Dialog {
     }
     
     /**
-     * Show an error indicating a drawable that exceeds project specifications
+     * Show an setStatusBarError indicating a drawable that exceeds project specifications
      */
     private void showDrawableError() {
         Dialog dialog = new Dialog("Error...", getSkin());
@@ -1072,7 +1072,7 @@ public class DialogDrawables extends Dialog {
                             new DrawableUndoable(main.getRootTable(), atlasData,
                                     property, property.value, null);
                     main.getUndoableManager().addUndoable(undoable, true);
-//                    PanelStatusBar.instance.message("Drawable emptied for \"" + property.name + "\"");
+                    main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + property.name + "\"");
                 } else {
                     boolean hasDrawable = false;
                     for (DrawableData drawable : atlasData.getDrawables()) {
@@ -1084,7 +1084,7 @@ public class DialogDrawables extends Dialog {
                     
                     if (!hasDrawable) {
                         property.value = null;
-//                        PanelStatusBar.instance.message("Drawable deleted for \"" + property.name + "\"");
+                        main.getRootTable().setStatusBarMessage("Drawable deleted for \"" + property.name + "\"");
                         main.getRootTable().refreshStyleProperties(true);
                     }
                 }

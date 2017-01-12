@@ -585,7 +585,7 @@ public class DialogColors extends Dialog {
                 if ((boolean) object) {
                     projectData.setChangesSaved(false);
                     styleProperty.value = null;
-//                    PanelStatusBar.instance.message("Emptied color for \"" + styleProperty.name + "\"");
+                    main.getRootTable().setStatusBarMessage("Emptied color for \"" + styleProperty.name + "\"");
                     main.getRootTable().refreshStyleProperties(true);
                 } else {
                     boolean hasColor = false;
@@ -599,7 +599,7 @@ public class DialogColors extends Dialog {
                     if (!hasColor) {
                         projectData.setChangesSaved(false);
                         styleProperty.value = null;
-//                        PanelStatusBar.instance.message("Deleted color for \"" + styleProperty.name + "\"");
+                        main.getRootTable().setStatusBarMessage("Deleted color for \"" + styleProperty.name + "\"");
                         main.getRootTable().refreshStyleProperties(true);
                     }
                 }

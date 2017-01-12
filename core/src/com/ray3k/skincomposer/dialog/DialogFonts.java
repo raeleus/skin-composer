@@ -470,7 +470,7 @@ public class DialogFonts extends Dialog {
                 if ((boolean) object) {
                     styleProperty.value = null;
                     projectData.setChangesSaved(false);
-//                    PanelStatusBar.instance.message("Drawable emptied for \"" + styleProperty.name + "\"");
+                    main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + styleProperty.name + "\"");
                     main.getRootTable().refreshStyleProperties(true);
                 } else {
                     boolean hasFont = false;
@@ -484,7 +484,7 @@ public class DialogFonts extends Dialog {
                     if (!hasFont) {
                         styleProperty.value = null;
                         projectData.setChangesSaved(false);
-//                        PanelStatusBar.instance.message("Drawable deleted for \"" + styleProperty.name + "\"");
+                        main.getRootTable().setStatusBarMessage("Drawable deleted for \"" + styleProperty.name + "\"");
                         main.getRootTable().refreshStyleProperties(true);
                     }
                 }

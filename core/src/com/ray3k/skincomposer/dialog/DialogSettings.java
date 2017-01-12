@@ -83,8 +83,7 @@ public class DialogSettings extends Dialog {
 
     @Override
     public boolean remove() {
-        //todo: fix this
-//        PanelStatusBar.instance.message("Settings Updated");
+        main.getRootTable().setStatusBarMessage("Settings Updated");
         return super.remove();
     }
 
