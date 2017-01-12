@@ -32,12 +32,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 import com.ray3k.skincomposer.Main;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 
-public class AtlasData {
+public class AtlasData implements Json.Serializable {
     public boolean atlasCurrent = false;
     private Array<DrawableData> drawables;
     private Main main;
@@ -221,5 +223,17 @@ public class AtlasData {
     public void set(AtlasData atlasData) {
         drawables.clear();
         drawables.addAll(atlasData.drawables);
+    }
+
+    @Override
+    public void write(Json json) {
+        json.writeValue("atlasCurrent", atlasCurrent);
+        json.writeValue("drawables", drawables, Array.class, DrawableData.class);
+    }
+
+    @Override
+    public void read(Json json, JsonValue jsonData) {
+        atlasCurrent = json.readValue("atlasCurrent", Boolean.TYPE, jsonData);
+        drawables = json.readValue("drawables", Array.class, DrawableData.class, jsonData);
     }
 }

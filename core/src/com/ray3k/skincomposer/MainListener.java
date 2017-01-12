@@ -23,6 +23,7 @@
  ******************************************************************************/
 package com.ray3k.skincomposer;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -34,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.RootTable.RootTableListener;
+import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
@@ -190,112 +192,110 @@ public class MainListener extends RootTableListener {
     public void saveFile(Runnable runnable) {
         if (projectData.getSaveFile() != null) {
             
-//            Main.instance().showDialogLoading(() -> {
-//                projectData.saveFile();
-//                if (runnable != null) {
-//                    runnable.run();
-//                }
-//            });
+            dialogFactory.showDialogLoading(() -> {
+                projectData.save();
+                if (runnable != null) {
+                    runnable.run();
+                }
+            });
         } else {
             saveAsFile(runnable);
         }
     }
     
     public void saveAsFile(Runnable runnable) {
-//        Main.instance().showDialogLoading(() -> {
-//            String defaultPath = "";
-//
-//            if (projectData.getLastDirectory() != null) {
-//                FileHandle fileHandle = new FileHandle(defaultPath);
-//                if (fileHandle.exists()) {
-//                    defaultPath = projectData.getLastDirectory();
-//                }
-//            }
-//
-//            String[] filterPatterns = {"*.scmp"};
-//
-//            File file = desktopWorker.saveDialog("Save skin file as...", defaultPath, filterPatterns, "Skin Composer files");
-//            if (file != null) {
-//                FileHandle fileHandle = new FileHandle(file);
-//                if (fileHandle.extension() == null || !fileHandle.extension().equals(".scmp")) {
-//                    fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".scmp");
-//                }
-//                projectData.saveFile(fileHandle);
-//                if (runnable != null) {
-//                    runnable.run();
-//                }
-//            }
-//        });
+        dialogFactory.showDialogLoading(() -> {
+            String defaultPath = "";
+
+            if (projectData.getLastDirectory() != null) {
+                FileHandle fileHandle = new FileHandle(defaultPath);
+                if (fileHandle.exists()) {
+                    defaultPath = projectData.getLastDirectory();
+                }
+            }
+
+            String[] filterPatterns = {"*.scmp"};
+
+            File file = desktopWorker.saveDialog("Save skin file as...", defaultPath, filterPatterns, "Skin Composer files");
+            if (file != null) {
+                FileHandle fileHandle = new FileHandle(file);
+                if (fileHandle.extension() == null || !fileHandle.extension().equals(".scmp")) {
+                    fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".scmp");
+                }
+                projectData.save(fileHandle);
+                if (runnable != null) {
+                    runnable.run();
+                }
+            }
+        });
     }
     
     public void importFile() {
-//        Main.instance().showDialogLoading(() -> {
-//            String defaultPath = "";
-//
-//            if (projectData.getLastDirectory() != null) {
-//                FileHandle fileHandle = new FileHandle(defaultPath);
-//                if (fileHandle.exists()) {
-//                    defaultPath = projectData.getLastDirectory();
-//                }
-//            }
-//
-//            String[] filterPatterns = {"*.json"};
-//
-//            File file = desktopWorker.openDialog("Import skin...", defaultPath, filterPatterns, "Json files");
-//            if (file != null) {
-//                FileHandle fileHandle = new FileHandle(file);
-//                projectData.setLastDirectory(fileHandle.parent().path());
-//                try {
-//                    JsonData.getInstance().readFile(fileHandle);
-//                    PanelClassBar.instance.populate();
-//                    PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-//                    AtlasData.getInstance().atlasCurrent = false;
-//                    PanelPreviewProperties.instance.produceAtlas();
-//                    PanelPreviewProperties.instance.populate();
-//                } catch (Exception e) {
-//                    Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
-//                    DialogError.showDialogError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
-//                }
-//            }
-//        });
+        dialogFactory.showDialogLoading(() -> {
+            String defaultPath = "";
+
+            if (projectData.getLastDirectory() != null) {
+                FileHandle fileHandle = new FileHandle(defaultPath);
+                if (fileHandle.exists()) {
+                    defaultPath = projectData.getLastDirectory();
+                }
+            }
+
+            String[] filterPatterns = {"*.json"};
+
+            File file = desktopWorker.openDialog("Import skin...", defaultPath, filterPatterns, "Json files");
+            if (file != null) {
+                FileHandle fileHandle = new FileHandle(file);
+                projectData.setLastDirectory(fileHandle.parent().path());
+                try {
+                    jsonData.readFile(fileHandle);
+                    main.getProjectData().getAtlasData().atlasCurrent = false;
+                    main.getRootTable().produceAtlas();
+                    main.getRootTable().populate();
+                } catch (Exception e) {
+                    Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
+                    dialogFactory.showDialogError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
+                }
+            }
+        });
     }
     
     public void exportFile() {
-//        Main.instance().showDialogLoading(() -> {
-//            String defaultPath = "";
-//
-//            if (projectData.getLastDirectory() != null) {
-//                FileHandle fileHandle = new FileHandle(defaultPath);
-//                if (fileHandle.exists()) {
-//                    defaultPath = projectData.getLastDirectory();
-//                }
-//            }
-//
-//            String[] filterPatterns = {"*.json"};
-//
-//            File file = desktopWorker.saveDialog("Export skin...", defaultPath, filterPatterns, "Json files");
-//            if (file != null) {
-//                FileHandle fileHandle = new FileHandle(file);
-//                if (fileHandle.extension() == null || !fileHandle.extension().equals(".json")) {
-//                    fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".json");
-//                }
-//                projectData.setLastDirectory(fileHandle.parent().path());
-//                JsonData.getInstance().writeFile(fileHandle);
-//                
-//                try {
-//                    AtlasData.getInstance().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
-//                } catch (Exception ex) {
-//                    Gdx.app.error(PanelMenuBar.class.getName(), "Error while writing texture atlas", ex);
-//                    DialogError.showDialogError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
-//                }
-//                
-//                for (FontData font : JsonData.getInstance().getFonts()) {
-//                    if (!font.file.parent().equals(fileHandle.parent())) {
-//                        font.file.copyTo(fileHandle.parent());
-//                    }
-//                }
-//            }
-//        });
+        dialogFactory.showDialogLoading(() -> {
+            String defaultPath = "";
+
+            if (projectData.getLastDirectory() != null) {
+                FileHandle fileHandle = new FileHandle(defaultPath);
+                if (fileHandle.exists()) {
+                    defaultPath = projectData.getLastDirectory();
+                }
+            }
+
+            String[] filterPatterns = {"*.json"};
+
+            File file = desktopWorker.saveDialog("Export skin...", defaultPath, filterPatterns, "Json files");
+            if (file != null) {
+                FileHandle fileHandle = new FileHandle(file);
+                if (fileHandle.extension() == null || !fileHandle.extension().equals(".json")) {
+                    fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".json");
+                }
+                projectData.setLastDirectory(fileHandle.parent().path());
+                main.getProjectData().getJsonData().writeFile(fileHandle);
+                
+                try {
+                    main.getProjectData().getAtlasData().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
+                } catch (Exception ex) {
+                    Gdx.app.error(getClass().getName(), "Error while writing texture atlas", ex);
+                    dialogFactory.showDialogError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
+                }
+                
+                for (FontData font : main.getProjectData().getJsonData().getFonts()) {
+                    if (!font.file.parent().equals(fileHandle.parent())) {
+                        font.file.copyTo(fileHandle.parent());
+                    }
+                }
+            }
+        });
     }
 
     @Override

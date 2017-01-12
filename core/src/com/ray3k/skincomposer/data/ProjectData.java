@@ -34,7 +34,7 @@ import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.Main;
 
-public class ProjectData implements Json.Serializable{
+public class ProjectData implements Json.Serializable {
     private static Preferences generalPref;
     private ObjectMap<String, Object> preferences;
     private FileHandle saveFile;
@@ -181,6 +181,7 @@ public class ProjectData implements Json.Serializable{
         return newProject;
     }
     
+    //todo: do not create a folder if there are no files to transfer.
     private void moveImportedFiles(FileHandle oldSave, FileHandle newSave) {
         FileHandle tempImportFolder = Gdx.files.local("temp/" + getId() + "_data/");
         FileHandle localImportFolder;
@@ -252,11 +253,9 @@ public class ProjectData implements Json.Serializable{
         putRecentFile(file.path());
         generalPref.putString("last-save-directory", file.parent().path());
         generalPref.flush();
-//        PanelClassBar.instance.populate();
-//        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
         atlasData.atlasCurrent = false;
-//        PanelPreviewProperties.instance.produceAtlas();
-//        PanelPreviewProperties.instance.populate();
+        main.getRootTable().produceAtlas();
+        main.getRootTable().populate();
         setChangesSaved(true);
     }
     
@@ -274,11 +273,8 @@ public class ProjectData implements Json.Serializable{
         jsonData.clear();
         atlasData.clear();
         saveFile = null;
-//        PanelClassBar.instance.populate();
-//        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-//        PanelPreviewProperties.instance.produceAtlas();
-//        PanelPreviewProperties.instance.populate();
-//todo: replace with roottable.refresh();
+        main.getRootTable().produceAtlas();
+        main.getRootTable().populate();
         setChangesSaved(false);
         newProject = true;
     }
