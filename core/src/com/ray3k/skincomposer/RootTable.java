@@ -82,15 +82,12 @@ import com.ray3k.skincomposer.MenuButton.MenuButtonListener;
 import com.ray3k.skincomposer.MenuButton.MenuButtonStyle;
 import com.ray3k.skincomposer.MenuList.MenuListStyle;
 import com.ray3k.skincomposer.Spinner.SpinnerStyle;
-import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.FontData;
-import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
-import com.ray3k.skincomposer.dialog.DialogError;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class RootTable extends Table {
@@ -633,7 +630,8 @@ public class RootTable extends Table {
         top.add(label);
 
         top.row();
-        previewTable = new Table();
+        previewTable = new Table(getSkin());
+        previewTable.setBackground("white");
         ScrollPane scrollPane = new ScrollPane(previewTable, getSkin());
         scrollPane.setFadeScrollBars(false);
         scrollPane.setFlickScroll(false);
@@ -1685,6 +1683,7 @@ public class RootTable extends Table {
                                 Actor addWidget = widget;
                                 TextField widthField = new TextField("", getSkin());
                                 TextField heightField = new TextField("", getSkin());
+                                System.out.println("trigger");
                                 Dialog dialog = new Dialog("Enter dimensions...", getSkin()) {
                                     @Override
                                     protected void result(Object object) {
@@ -1701,13 +1700,16 @@ public class RootTable extends Table {
                                         }
                                     }
                                 };
+                                dialog.getTitleTable().getCells().first().padLeft(5.0f);
                                 dialog.text("Enter the preview dimensions: ");
+                                dialog.getContentTable().getCells().first().pad(10.0f);
                                 dialog.getContentTable().row();
                                 Table sizeTable = new Table();
-                                sizeTable.add(widthField);
+                                sizeTable.add(widthField).padLeft(10.0f);
                                 sizeTable.add(new Label(" x ", getSkin()));
-                                sizeTable.add(heightField);
+                                sizeTable.add(heightField).padRight(10.0f);
                                 dialog.getContentTable().add(sizeTable);
+                                dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
                                 dialog.button("OK", true);
                                 dialog.button("Cancel", false);
                                 dialog.key(Input.Keys.ESCAPE, false);
