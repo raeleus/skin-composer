@@ -75,7 +75,6 @@ public class StyleData implements Json.Serializable {
     public OrderedMap<String,StyleProperty> properties;
     public boolean deletable;
     public JsonData jsonData;
-    //todo: ensure that main is reloaded when loaded from a file
     private Main main;
 
     @Override

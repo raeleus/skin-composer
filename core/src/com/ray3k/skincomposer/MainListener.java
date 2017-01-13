@@ -343,7 +343,7 @@ public class MainListener extends RootTableListener {
             Array<StyleData> styleDatas = jsonData.getClassStyleMap().values().toArray().get(classIndex);
 
             int styleIndex = root.getStyleSelectBox().getSelectedIndex();
-            if (styleIndex >= 0) {
+            if (styleIndex >= 0 && styleIndex < styleDatas.size) {
                 StyleData styleData = styleDatas.get(styleIndex);
 
                 root.setStyleProperties(styleData.properties.values().toArray());
