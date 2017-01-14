@@ -166,6 +166,7 @@ public class RootTable extends Table {
         menuListStyle.background = getSkin().getDrawable("list");
         menuListStyle.textButtonStyle = getSkin().get("menu-button", TextButtonStyle.class);
         menuListStyle.labelStyle = getSkin().get("white", LabelStyle.class);
+//        menuListStyle.disabledLabelStyle = 
 
         menuButtonStyle.menuListStyle = menuListStyle;
 

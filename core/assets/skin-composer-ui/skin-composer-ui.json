@@ -21,9 +21,9 @@ com.badlogic.gdx.graphics.Color: {
 		a: 1
 	}
 	disabled: {
-		r: 0.2627451
-		g: 0.69803923
-		b: 0.60784316
+		r: 0.5800001
+		g: 0.5800001
+		b: 0.5800001
 		a: 1
 	}
 	link: {
@@ -365,9 +365,11 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 	}
 	menu-button: {
 		font: font
+		disabledFontColor: disabled
 		up: button-menu
 		down: button-menu-pressed
 		over: button-menu-over
+		disabled: button-menu
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {

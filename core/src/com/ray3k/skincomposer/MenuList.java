@@ -241,6 +241,18 @@ public class MenuList<T> extends Table {
     
     public void setDisabled(int index, boolean disabled) {
         buttons.get(index).setDisabled(disabled);
+        
+        if(disabled) {
+            if (style.disabledLabelStyle != null && buttons.get(index).getChildren().size > 1) {
+                Label label = (Label) buttons.get(index).getChildren().get(1);
+                label.setStyle(style.disabledLabelStyle);
+            }
+        } else {
+            if (style.labelStyle != null && buttons.get(index).getChildren().size > 1) {
+                Label label = (Label) buttons.get(index).getChildren().get(1);
+                label.setStyle(style.labelStyle);
+            }
+        }
     }
     
     public void setDisabled(T item, boolean disabled) {
@@ -259,6 +271,7 @@ public class MenuList<T> extends Table {
          * OPTIONAL
          */
         public LabelStyle labelStyle;
+        public LabelStyle disabledLabelStyle;
     }
     
     public static class MenuListEvent extends Event {
