@@ -101,15 +101,15 @@ public class UndoableManager {
         addUndoable(undoable, false);
     }
     
-    public static class FloatUndoable implements Undoable {
+    public static class DoubleUndoable implements Undoable {
         private final StyleProperty property;
-        private final float oldValue;
-        private final float newValue;
+        private final double oldValue;
+        private final double newValue;
         RootTable rootTable;
 
-        public FloatUndoable(RootTable rootTable, StyleProperty property, float newValue) {
+        public DoubleUndoable(RootTable rootTable, StyleProperty property, double newValue) {
             this.property = property;
-            oldValue = (float) property.value;
+            oldValue = (double) property.value;
             this.newValue = newValue;
             this.rootTable = rootTable;
         }

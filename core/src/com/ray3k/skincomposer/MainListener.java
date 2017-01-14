@@ -325,13 +325,13 @@ public class MainListener extends RootTableListener {
         } else if (styleProperty.type == BitmapFont.class) {
             dialogFactory.showDialogFonts(styleProperty);
         } else if (styleProperty.type == Float.TYPE) {
-            //apply value
+            main.getUndoableManager().addUndoable(new UndoableManager.DoubleUndoable(root, styleProperty, ((Spinner) styleActor).getValue()));
         } else if (styleProperty.type == ScrollPaneStyle.class) {
             main.getUndoableManager().addUndoable(new UndoableManager.SelectBoxUndoable(root, styleProperty, (SelectBox) styleActor), true);
         } else if (styleProperty.type == LabelStyle.class) {
-            //apply value
+            main.getUndoableManager().addUndoable(new UndoableManager.SelectBoxUndoable(root, styleProperty, (SelectBox) styleActor), true);
         } else if (styleProperty.type == ListStyle.class) {
-            //apply value
+            main.getUndoableManager().addUndoable(new UndoableManager.SelectBoxUndoable(root, styleProperty, (SelectBox) styleActor), true);
         } else if (styleProperty.type == CustomStyle.class) {
             //show custom style dialog
         }
