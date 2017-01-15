@@ -114,8 +114,7 @@ public class RootTable extends Table {
     private ScrollPane stylePropertiesScrollPane;
     private final ScrollPaneListener scrollPaneListener;
     private final ObjectMap<String, Object> previewProperties;
-    //todo:make final
-    private Color previewBgColor;
+    private final Color previewBgColor;
     private SelectBox<String> previewSizeSelectBox;
     private static final String[] DEFAULT_SIZES = {"small", "default", "large", "growX", "growY", "grow", "custom"};
     private static final String TEXT_SAMPLE = "Lorem ipsum dolor sit";
@@ -708,7 +707,7 @@ public class RootTable extends Table {
                             if (color != null) {
                                 browseField.getTextField().setText((int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
                                 previewProperties.put("bgcolor", color);
-                                previewBgColor = color;
+                                previewBgColor.set(color);
                                 refreshPreview();
                             }
                         }
@@ -717,7 +716,7 @@ public class RootTable extends Table {
             });
             t.add(browseField).growX();
             if (previewBgColor == null) {
-                previewBgColor = Color.WHITE;
+                previewBgColor.set(Color.WHITE);
             }
             previewProperties.put("bgcolor", previewBgColor);
             browseField.getTextField().setText((int) (previewBgColor.r * 255) + "," + (int) (previewBgColor.g * 255) + "," + (int) (previewBgColor.b * 255) + "," + (int) (previewBgColor.a * 255));
