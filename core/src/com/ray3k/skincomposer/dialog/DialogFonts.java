@@ -390,6 +390,7 @@ public class DialogFonts extends Dialog {
         dialog.getContentTable().row();
         textField.setText(font.getName());
         textField.selectAll();
+        textField.addListener(main.getIbeamListener());
         dialog.getContentTable().add(textField);
         
         dialog.button("OK", true);
@@ -671,7 +672,7 @@ public class DialogFonts extends Dialog {
                     }
                 });
                 
-                textField.addListener(IbeamListener.get());
+                textField.addListener(main.getIbeamListener());
                 
                 nameDialog.getContentTable().defaults().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
                 nameDialog.text("Please enter a name for the new font: ");

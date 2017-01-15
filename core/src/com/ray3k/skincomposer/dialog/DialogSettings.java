@@ -31,19 +31,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
-import com.ray3k.skincomposer.DialogFactory;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.Spinner.Orientation;
 import com.ray3k.skincomposer.Spinner.SpinnerStyle;
-import com.ray3k.skincomposer.data.AtlasData;
-import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class DialogSettings extends Dialog {
@@ -151,8 +147,8 @@ public class DialogSettings extends Dialog {
                     try {
                         main.getProjectData().getAtlasData().writeAtlas();
                         main.getProjectData().getAtlasData().atlasCurrent = true;
-//                        PanelPreviewProperties.instance.produceAtlas();
-//                        PanelPreviewProperties.instance.render();
+                        main.getRootTable().produceAtlas();
+                        main.getRootTable().refreshPreview();
                     } catch (Exception e) {
                         main.getDialogFactory().showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
                         Gdx.app.error(getClass().getName(), "Unable to write texture atlas to temporary storage!", e);
@@ -185,6 +181,7 @@ public class DialogSettings extends Dialog {
             }
             
         });
+        spinner.getTextField().addListener(main.getIbeamListener());
         t.add(spinner).minWidth(150.0f).left();
         
         t.row();
@@ -205,6 +202,7 @@ public class DialogSettings extends Dialog {
             }
             
         });
+        spinner2.getTextField().addListener(main.getIbeamListener());
         t.add(spinner2).minWidth(150.0f).left();
         
         t.row();
@@ -237,6 +235,7 @@ public class DialogSettings extends Dialog {
             }
             
         });
+        spinner3.getTextField().addListener(main.getIbeamListener());
         t.add(spinner3).minWidth(150.0f).left().padTop(10.0f);
         
         button("OK", true);

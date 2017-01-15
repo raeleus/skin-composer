@@ -46,7 +46,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Sort;
 import com.ray3k.skincomposer.DialogFactory;
-import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.UndoableManager.ColorUndoable;
 import com.ray3k.skincomposer.data.AtlasData;
@@ -202,7 +201,7 @@ public class DialogColors extends Dialog {
                         }
                     });
                     
-                    field.addListener(IbeamListener.get());
+                    field.addListener(main.getIbeamListener());
 
                     dialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
                     dialog.text("Please enter a name for the new color: ");
@@ -480,6 +479,7 @@ public class DialogColors extends Dialog {
         dialog.getContentTable().row();
         textField.setText(color.getName());
         textField.selectAll();
+        textField.addListener(main.getIbeamListener());
         dialog.getContentTable().add(textField);
         dialog.getCell(dialog.getContentTable()).pad(15.0f);
         

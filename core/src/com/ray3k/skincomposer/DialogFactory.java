@@ -111,7 +111,7 @@ public class DialogFactory {
     }
     
     public void showDialogColorPicker(Color previousColor, DialogColorPicker.ColorListener listener) {
-        DialogColorPicker dialog = new DialogColorPicker(skin, "dialog", listener, previousColor);
+        DialogColorPicker dialog = new DialogColorPicker(main, "dialog", listener, previousColor);
         dialog.show(stage);
     }
     
@@ -141,7 +141,7 @@ public class DialogFactory {
             }
         });
         
-        textField.addListener(IbeamListener.get());
+        textField.addListener(main.getIbeamListener());
         
         dialog.getTitleLabel().setAlignment(Align.center);
         dialog.getContentTable().defaults().padLeft(10.0f).padRight(10.0f);
@@ -205,7 +205,7 @@ public class DialogFactory {
             }
         });
         
-        textField.addListener(IbeamListener.get());
+        textField.addListener(main.getIbeamListener());
         
         dialog.getTitleLabel().setAlignment(Align.center);
         dialog.getContentTable().defaults().padLeft(10.0f).padRight(10.0f);

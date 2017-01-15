@@ -222,8 +222,6 @@ public class Spinner extends Table {
             
         });
         
-        textField.addListener(IbeamListener.get());
-        
         final Spinner spinner = this;
         addCaptureListener(new ChangeListener() {
             @Override

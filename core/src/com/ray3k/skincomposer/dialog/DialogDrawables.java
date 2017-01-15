@@ -418,7 +418,7 @@ public class DialogDrawables extends Dialog {
                             button.setDisabled(!DrawableData.validate(textField.getText()) || checkIfNameExists(textField.getText()));
                         }
                     });
-                    textField.addListener(IbeamListener.get());
+                    textField.addListener(main.getIbeamListener());
 
                     Dialog approveDialog = new Dialog("TintedDrawable...", getSkin()) {
                         @Override
@@ -549,6 +549,7 @@ public class DialogDrawables extends Dialog {
                 }
             }
         });
+        textField.addListener(main.getIbeamListener());
         dialog.getContentTable().add(textField);
         
         dialog.show(getStage());
@@ -948,7 +949,7 @@ public class DialogDrawables extends Dialog {
                             button.setDisabled(!DrawableData.validate(textField.getText()) || checkIfNameExists(textField.getText()));
                         }
                     });
-                    textField.addListener(IbeamListener.get());
+                    textField.addListener(main.getIbeamListener());
 
                     Dialog dialog = new Dialog("TintedDrawable...", getSkin()) {
                         @Override
@@ -968,6 +969,7 @@ public class DialogDrawables extends Dialog {
                             return super.remove();
                         }
                     };
+                    dialog.getTitleTable().getCells().first().padLeft(5.0f);
                     dialog.addCaptureListener(new InputListener() {
                         @Override
                         public boolean keyDown(InputEvent event, int keycode2) {
@@ -983,6 +985,7 @@ public class DialogDrawables extends Dialog {
                         }
                     });
                     dialog.text("What is the name of the new tinted drawable?");
+                    dialog.getContentTable().getCells().first().pad(10.0f);
 
                     Drawable drawable = drawablePairs.get(drawableData);
                     Drawable preview = null;
@@ -999,8 +1002,9 @@ public class DialogDrawables extends Dialog {
                     }
 
                     dialog.getContentTable().row();
-                    dialog.getContentTable().add(textField).growX();
+                    dialog.getContentTable().add(textField).growX().pad(10.0f);
 
+                    dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
                     dialog.button(button, true);
                     dialog.button("Cancel", false);
                     dialog.key(Input.Keys.ESCAPE, false);

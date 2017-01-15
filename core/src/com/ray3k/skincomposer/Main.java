@@ -63,7 +63,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.Utils;
 
@@ -89,6 +88,7 @@ public class Main extends ApplicationAdapter {
     private UndoableManager undoableManager;
     private ProjectData projectData;
     private RootTable rootTable;
+    private IbeamListener ibeamListener;
     
     @Override
     public void create() {
@@ -103,6 +103,8 @@ public class Main extends ApplicationAdapter {
     
     private void initDefaults() {
         if (Utils.isMac()) System.setProperty("java.awt.headless", "true");
+        
+        ibeamListener = new IbeamListener();
         
         projectData = new ProjectData();
         projectData.setMain(this);
@@ -203,5 +205,9 @@ public class Main extends ApplicationAdapter {
 
     public DialogFactory getDialogFactory() {
         return dialogFactory;
+    }
+
+    public IbeamListener getIbeamListener() {
+        return ibeamListener;
     }
 }

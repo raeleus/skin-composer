@@ -30,16 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class IbeamListener extends ClickListener {
-    private static IbeamListener instance;
-    
-    public static IbeamListener get() {
-        if (instance == null) {
-            instance = new IbeamListener();
-        }
-        return instance;
-    }
-    
-    private IbeamListener() {
+    public IbeamListener() {
         super();
     }
     

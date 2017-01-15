@@ -143,7 +143,7 @@ public class RootTable extends Table {
         super(main.getSkin());
         this.stage = main.getStage();
         this.main = main;
-
+        
         previewProperties = new ObjectMap<>();
         previewBgColor = new Color(Color.WHITE);
 
@@ -194,7 +194,7 @@ public class RootTable extends Table {
         addClassBar();
 
         row();
-        addStyleAndPreviewSplit(new IbeamListener());
+        addStyleAndPreviewSplit();
 
         row();
         addStatusBar();
@@ -309,6 +309,7 @@ public class RootTable extends Table {
             }
         });
 
+        //todo: Ensure delete button is disabled for default styles.
         button = new Button(getSkin(), "delete");
         table.add(button).padRight(30.0f);
 
@@ -376,7 +377,7 @@ public class RootTable extends Table {
         fire(new LoadStylesEvent(classSelectBox, styleSelectBox));
     }
 
-    private void addStyleAndPreviewSplit(InputListener iBeamListener) {
+    private void addStyleAndPreviewSplit() {
         stylePropertiesTable = new Table();
         stylePropertiesTable.setTouchable(Touchable.enabled);
 
@@ -385,7 +386,7 @@ public class RootTable extends Table {
         Table right = new Table();
         right.setTouchable(Touchable.enabled);
 
-        addPreviewPreviewPropertiesSplit(right, scrollPaneListener, iBeamListener);
+        addPreviewPreviewPropertiesSplit(right, scrollPaneListener);
 
         SplitPane splitPane = new SplitPane(stylePropertiesTable, right, false, getSkin());
         add(splitPane).grow();
@@ -532,6 +533,7 @@ public class RootTable extends Table {
 
                     table.row();
                     Spinner spinner = new Spinner((Double) styleProperty.value, 1.0, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
+                    spinner.getTextField().addListener(main.getIbeamListener());
                     table.add(spinner);
 
                     spinner.addListener(new StylePropertyChangeListener(styleProperty, spinner));
@@ -588,8 +590,8 @@ public class RootTable extends Table {
 
     private class StylePropertyChangeListener extends ChangeListener {
 
-        private StyleProperty styleProp;
-        private Actor styleActor;
+        private final StyleProperty styleProp;
+        private final Actor styleActor;
 
         public StylePropertyChangeListener(StyleProperty styleProp, Actor styleActor) {
             this.styleProp = styleProp;
@@ -602,16 +604,16 @@ public class RootTable extends Table {
         }
     }
 
-    private void addPreviewPreviewPropertiesSplit(final Table right, InputListener scrollPaneListener, InputListener iBeamListener) {
+    private void addPreviewPreviewPropertiesSplit(final Table right, InputListener scrollPaneListener) {
         Table bottom = new Table();
         bottom.setTouchable(Touchable.enabled);
 
-        addPreviewProperties(bottom, scrollPaneListener, iBeamListener);
+        addPreviewProperties(bottom, scrollPaneListener);
         
         Table top = new Table();
         top.setTouchable(Touchable.enabled);
 
-        addPreview(top, scrollPaneListener, iBeamListener);
+        addPreview(top, scrollPaneListener);
 
         SplitPane splitPane = new SplitPane(top, bottom, true, getSkin());
         right.add(splitPane).grow();
@@ -654,7 +656,7 @@ public class RootTable extends Table {
     }
 
     //todo: implement iBeamListener
-    private void addPreview(Table top, InputListener scrollPaneListener, InputListener iBeamListener) {
+    private void addPreview(Table top, InputListener scrollPaneListener) {
         Label label = new Label("Preview", getSkin(), "title");
         top.add(label);
 
@@ -671,7 +673,7 @@ public class RootTable extends Table {
     }
 
     //todo: implement iBeamListener
-    private void addPreviewProperties(Table bottom, InputListener scrollPaneListener, InputListener iBeamListener) {
+    private void addPreviewProperties(Table bottom, InputListener scrollPaneListener) {
         Label label = new Label("Preview Properties", getSkin(), "title");
         bottom.add(label);
 
@@ -762,7 +764,7 @@ public class RootTable extends Table {
                     t.add(new Label("Text: ", getSkin()));
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
-                    previewTextField.addListener(com.ray3k.skincomposer.IbeamListener.get());
+                    previewTextField.addListener(main.getIbeamListener());
                     previewTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -804,7 +806,7 @@ public class RootTable extends Table {
                     t.add(new Label("Text: ", getSkin()));
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
-                    previewTextField.addListener(com.ray3k.skincomposer.IbeamListener.get());
+                    previewTextField.addListener(main.getIbeamListener());
                     previewTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -820,7 +822,7 @@ public class RootTable extends Table {
                     t.add(new Label("Text: ", getSkin()));
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
-                    previewTextField.addListener(com.ray3k.skincomposer.IbeamListener.get());
+                    previewTextField.addListener(main.getIbeamListener());
                     previewTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -837,7 +839,7 @@ public class RootTable extends Table {
                     TextArea listItemsTextArea = new TextArea("Lorem ipsum\ndolor sit\namet, consectetur", getSkin());
                     listItemsTextArea.setFocusTraversal(false);
                     listItemsTextArea.setPrefRows(3);
-                    listItemsTextArea.addListener(com.ray3k.skincomposer.IbeamListener.get());
+                    listItemsTextArea.addListener(main.getIbeamListener());
                     listItemsTextArea.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -873,6 +875,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
+                    valueSpinner.getTextField().addListener(main.getIbeamListener());
                     previewProperties.put("value", valueSpinner.getValue());
                     t.add(valueSpinner).growX();
 
@@ -887,6 +890,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
+                    minimumSpinner.getTextField().addListener(main.getIbeamListener());
                     previewProperties.put("minimum", minimumSpinner.getValue());
                     t.add(minimumSpinner).growX();
 
@@ -901,6 +905,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
+                    maximumSpinner.getTextField().addListener(main.getIbeamListener());
                     previewProperties.put("maximum", maximumSpinner.getValue());
                     t.add(maximumSpinner).growX();
 
@@ -916,6 +921,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
+                    incrementSpinner.getTextField().addListener(main.getIbeamListener());
                     previewProperties.put("increment", incrementSpinner.getValue());
                     t.add(incrementSpinner).growX();
 
@@ -1148,7 +1154,7 @@ public class RootTable extends Table {
                     TextArea previewTextArea = new TextArea(PARAGRAPH_SAMPLE_EXT, getSkin());
                     previewTextArea.setFocusTraversal(false);
                     previewTextArea.setPrefRows(5);
-                    previewTextArea.addListener(com.ray3k.skincomposer.IbeamListener.get());
+                    previewTextArea.addListener(main.getIbeamListener());
                     previewTextArea.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1179,6 +1185,7 @@ public class RootTable extends Table {
                     Spinner spinner = new Spinner(3, 1, true, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(1);
+                    spinner.getTextField().addListener(main.getIbeamListener());
                     t.add(spinner).growX();
 
                     t.row();
@@ -1186,7 +1193,7 @@ public class RootTable extends Table {
                     TextArea listItemsTextArea = new TextArea("Lorem ipsum\ndolor sit\namet, consectetur", getSkin());
                     listItemsTextArea.setFocusTraversal(false);
                     listItemsTextArea.setPrefRows(3);
-                    listItemsTextArea.addListener(com.ray3k.skincomposer.IbeamListener.get());
+                    listItemsTextArea.addListener(main.getIbeamListener());
                     listItemsTextArea.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1222,6 +1229,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
+                    minimumSpinner.getTextField().addListener(main.getIbeamListener());
                     t.add(minimumSpinner).growX();
                     previewProperties.put("minimum", minimumSpinner.getValue());
 
@@ -1236,6 +1244,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
+                    maximumSpinner.getTextField().addListener(main.getIbeamListener());
                     t.add(maximumSpinner).growX();
                     previewProperties.put("maximum", maximumSpinner.getValue());
 
@@ -1250,6 +1259,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
+                    incrementSpinner.getTextField().addListener(main.getIbeamListener());
                     t.add(incrementSpinner).growX();
                     previewProperties.put("increment", incrementSpinner.getValue());
 
@@ -1304,7 +1314,7 @@ public class RootTable extends Table {
                     TextArea textArea = new TextArea(PARAGRAPH_SAMPLE, getSkin());
                     textArea.setFocusTraversal(false);
                     textArea.setPrefRows(5);
-                    textArea.addListener(com.ray3k.skincomposer.IbeamListener.get());
+                    textArea.addListener(main.getIbeamListener());
                     textArea.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1334,7 +1344,7 @@ public class RootTable extends Table {
                     t.add(new Label("Text: ", getSkin()));
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
-                    previewTextField.addListener(com.ray3k.skincomposer.IbeamListener.get());
+                    previewTextField.addListener(main.getIbeamListener());
                     previewTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1376,7 +1386,7 @@ public class RootTable extends Table {
                     t.add(new Label("Password Character: ", getSkin()));
                     TextField pcTextField = new TextField("*", getSkin());
                     pcTextField.setFocusTraversal(false);
-                    pcTextField.addListener(com.ray3k.skincomposer.IbeamListener.get());
+                    pcTextField.addListener(main.getIbeamListener());
                     pcTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1414,7 +1424,7 @@ public class RootTable extends Table {
                     t.add(new Label("Text: ", getSkin()));
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
-                    previewTextField.addListener(com.ray3k.skincomposer.IbeamListener.get());
+                    previewTextField.addListener(main.getIbeamListener());
                     previewTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1429,7 +1439,7 @@ public class RootTable extends Table {
                     t.add(new Label("Message Text: ", getSkin()));
                     TextField messageTextField = new TextField(TEXT_SAMPLE, getSkin());
                     messageTextField.setFocusTraversal(false);
-                    messageTextField.addListener(com.ray3k.skincomposer.IbeamListener.get());
+                    messageTextField.addListener(main.getIbeamListener());
                     messageTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1445,7 +1455,7 @@ public class RootTable extends Table {
                     t.add(new Label("Text: ", getSkin()));
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
-                    previewTextField.addListener(com.ray3k.skincomposer.IbeamListener.get());
+                    previewTextField.addListener(main.getIbeamListener());
                     previewTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1464,6 +1474,7 @@ public class RootTable extends Table {
                     Spinner spinner = new Spinner(0.0, 1.0, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(1);
+                    spinner.getTextField().addListener(main.getIbeamListener());
                     t.add(spinner).growX();
 
                     t.row();
@@ -1471,6 +1482,7 @@ public class RootTable extends Table {
                     spinner = new Spinner(0.0, 1.0, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(1);
+                    spinner.getTextField().addListener(main.getIbeamListener());
                     t.add(spinner).growX();
 
                 } else if (clazz.equals(Window.class)) {
@@ -1478,7 +1490,7 @@ public class RootTable extends Table {
                     t.add(new Label("Title Text: ", getSkin()));
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
-                    previewTextField.addListener(com.ray3k.skincomposer.IbeamListener.get());
+                    previewTextField.addListener(main.getIbeamListener());
                     previewTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1499,7 +1511,7 @@ public class RootTable extends Table {
                     TextArea textArea = new TextArea(PARAGRAPH_SAMPLE, getSkin());
                     textArea.setFocusTraversal(false);
                     textArea.setPrefRows(5);
-                    textArea.addListener(com.ray3k.skincomposer.IbeamListener.get());
+                    textArea.addListener(main.getIbeamListener());
                     textArea.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1977,22 +1989,6 @@ public class RootTable extends Table {
                 }
             }
         }
-    }
-
-    private class IbeamListener extends InputListener {
-
-        @Override
-        public void exit(InputEvent event, float x, float y, int pointer,
-                Actor toActor) {
-            Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-        }
-
-        @Override
-        public void enter(InputEvent event, float x, float y, int pointer,
-                Actor fromActor) {
-            Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Ibeam);
-        }
-
     }
 
     private class MenuBarListener extends MenuButtonListener {
