@@ -5,7 +5,13 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 6
+* Version 7
+
+### Changes ###
+
+* Switched to TinyFileDialogs for all file dialogs across all platforms.
+* Updated user interface to Skin Composer UI.
+* Refactored all of the interface code to allow for new features.
 
 ### Contact ###
 
