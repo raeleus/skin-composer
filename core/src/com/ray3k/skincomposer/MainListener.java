@@ -155,15 +155,7 @@ public class MainListener extends RootTableListener {
     
     public void openFile() {
         Runnable runnable = () -> {
-            String defaultPath = "";
-
-            //todo:compress this to a single line. Put a method in ProjectData
-            if (projectData.getLastDirectory() != null) {
-                FileHandle fileHandle = new FileHandle(defaultPath);
-                if (fileHandle.exists()) {
-                    defaultPath = projectData.getLastDirectory();
-                }
-            }
+            String defaultPath = projectData.getDefaultPath();
 
             String[] filterPatterns = {"*.scmp"};
 
@@ -207,14 +199,7 @@ public class MainListener extends RootTableListener {
     
     public void saveAsFile(Runnable runnable) {
         dialogFactory.showDialogLoading(() -> {
-            String defaultPath = "";
-
-            if (projectData.getLastDirectory() != null) {
-                FileHandle fileHandle = new FileHandle(defaultPath);
-                if (fileHandle.exists()) {
-                    defaultPath = projectData.getLastDirectory();
-                }
-            }
+            String defaultPath = projectData.getDefaultPath();
 
             String[] filterPatterns = {"*.scmp"};
 

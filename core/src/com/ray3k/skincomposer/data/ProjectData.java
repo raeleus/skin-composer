@@ -181,6 +181,19 @@ public class ProjectData implements Json.Serializable {
         return newProject;
     }
     
+    public String getDefaultPath() {
+        String defaultPath = "";
+
+        if (getLastDirectory() != null) {
+            FileHandle fileHandle = new FileHandle(getLastDirectory());
+            if (fileHandle.exists()) {
+                defaultPath = getLastDirectory();
+            }
+        }
+        
+        return defaultPath;
+    }
+    
     //todo: do not create a folder if there are no files to transfer.
     private void moveImportedFiles(FileHandle oldSave, FileHandle newSave) {
         FileHandle tempImportFolder = Gdx.files.local("temp/" + getId() + "_data/");
