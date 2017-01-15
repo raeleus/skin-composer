@@ -23,6 +23,7 @@
  ******************************************************************************/
 package com.ray3k.skincomposer;
 
+import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;

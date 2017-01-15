@@ -1,4 +1,4 @@
-package com.ray3k.skincomposer;
+package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.UndoableManager.DeleteStyleUndoable;
 import com.ray3k.skincomposer.UndoableManager.DuplicateStyleUndoable;
 import com.ray3k.skincomposer.UndoableManager.NewStyleUndoable;
@@ -24,16 +25,9 @@ import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.skincomposer.dialog.DialogAbout;
-import com.ray3k.skincomposer.dialog.DialogColorPicker;
-import com.ray3k.skincomposer.dialog.DialogColors;
-import com.ray3k.skincomposer.dialog.DialogDrawables;
-import com.ray3k.skincomposer.dialog.DialogError;
-import com.ray3k.skincomposer.dialog.DialogFonts;
-import com.ray3k.skincomposer.dialog.DialogLoading;
-import com.ray3k.skincomposer.dialog.DialogSettings;
 
 public class DialogFactory {
+    private static DialogFactory instance;
     private final Skin skin;
     private final Stage stage;
     private boolean showingCloseDialog;
@@ -43,6 +37,7 @@ public class DialogFactory {
     private Main main;
 
     public DialogFactory(Skin skin, Stage stage, JsonData jsonData, ProjectData projectData, AtlasData atlasData, Main main) {
+        instance = this;
         this.skin = skin;
         this.stage = stage;
         this.jsonData = jsonData;
@@ -360,6 +355,12 @@ public class DialogFactory {
     public void showDialogError(String title, String message) {
         DialogError dialog = new DialogError(title, message, main);
         dialog.show(main.getStage());
+    }
+    
+    public static void showDialogErrorStatic(String title, String message) {
+        if (instance != null) {
+            instance.showDialogError(title, message);
+        }
     }
     
     public interface ConfirmationListener {

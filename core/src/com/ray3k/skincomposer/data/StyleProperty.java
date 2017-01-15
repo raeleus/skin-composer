@@ -28,21 +28,18 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.dialog.DialogFactory;
 
 public class StyleProperty implements Json.Serializable{
     public Class type;
     public String name;
     public boolean optional;
     public Object value;
-    //todo: ensure that main is reloaded when loaded from a file
-    private Main main;
 
-    public StyleProperty(Class type, String name, boolean optional, Main main) {
+    public StyleProperty(Class type, String name, boolean optional) {
         this.type = type;
         this.name = name;
         this.optional = optional;
-        this.main = main;
         
         if (type.equals(Float.TYPE)) {
             value = 0.0;
@@ -51,12 +48,11 @@ public class StyleProperty implements Json.Serializable{
         }
     }
     
-    public StyleProperty(StyleProperty styleProperty, Main main) {
+    public StyleProperty(StyleProperty styleProperty) {
         this.type = styleProperty.type;
         this.name = styleProperty.name;
         this.optional = styleProperty.optional;
         this.value = styleProperty.value;
-        this.main = main;
     }
     
     public StyleProperty() {
@@ -72,24 +68,24 @@ public class StyleProperty implements Json.Serializable{
     }
 
     @Override
-    public void read(Json json, JsonValue jsonData) {
+    public void read(Json json, JsonValue jsonValue) {
         try {
-            name = jsonData.getString("name");
-            optional = jsonData.getBoolean("optional");
-            if (jsonData.get("value").isNumber()) {
+            name = jsonValue.getString("name");
+            optional = jsonValue.getBoolean("optional");
+            if (jsonValue.get("value").isNumber()) {
                 type = Float.TYPE;
-                value = Double.parseDouble(jsonData.getString("value"));
+                value = Double.parseDouble(jsonValue.getString("value"));
             } else {
-                type = ClassReflection.forName(jsonData.getString("type"));
-                if (jsonData.get("value").isNull()) {
+                type = ClassReflection.forName(jsonValue.getString("type"));
+                if (jsonValue.get("value").isNull()) {
                     value = null;
                 } else {
-                    value = jsonData.getString("value");
+                    value = jsonValue.getString("value");
                 }
             }
         } catch (ReflectionException ex) {
             Gdx.app.error(getClass().toString(), "Error reading from serialized object" , ex);
-            main.getDialogFactory().showDialogError("Read Error...","Error reading from serialized object.\n\nOpen log?");
+            DialogFactory.showDialogErrorStatic("Read Error...","Error reading from serialized object.\n\nOpen log?");
         }
     }
 }

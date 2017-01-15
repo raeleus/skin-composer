@@ -94,7 +94,7 @@ public class StyleData implements Json.Serializable {
         clazz = styleData.clazz;
         properties = new OrderedMap<>();
         for (Entry<String, StyleProperty> entry : styleData.properties.entries()) {
-            properties.put(entry.key, new StyleProperty(entry.value, main));
+            properties.put(entry.key, new StyleProperty(entry.value));
         }
         deletable = true;
     }
@@ -116,7 +116,7 @@ public class StyleData implements Json.Serializable {
     
     private void newStyleProperties(Class clazz) {
         for (Field field : ClassReflection.getFields(clazz)) {
-            StyleProperty styleProperty = new StyleProperty(field.getType(), field.getName(), true, main);
+            StyleProperty styleProperty = new StyleProperty(field.getType(), field.getName(), true);
             properties.put(field.getName(), styleProperty);
         }
     }

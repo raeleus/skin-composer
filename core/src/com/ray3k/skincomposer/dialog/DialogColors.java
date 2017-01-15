@@ -45,7 +45,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Sort;
-import com.ray3k.skincomposer.DialogFactory;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.UndoableManager.ColorUndoable;
 import com.ray3k.skincomposer.data.AtlasData;

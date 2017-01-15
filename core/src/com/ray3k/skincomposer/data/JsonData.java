@@ -46,7 +46,7 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import com.ray3k.skincomposer.DialogFactory;
+import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.dialog.DialogError;
 import java.io.StringWriter;
