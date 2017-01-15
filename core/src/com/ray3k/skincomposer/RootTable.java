@@ -655,7 +655,6 @@ public class RootTable extends Table {
         });
     }
 
-    //todo: implement iBeamListener
     private void addPreview(Table top, InputListener scrollPaneListener) {
         Label label = new Label("Preview", getSkin(), "title");
         top.add(label);
@@ -671,8 +670,7 @@ public class RootTable extends Table {
 
         refreshPreview();
     }
-
-    //todo: implement iBeamListener
+    
     private void addPreviewProperties(Table bottom, InputListener scrollPaneListener) {
         Label label = new Label("Preview Properties", getSkin(), "title");
         bottom.add(label);
@@ -1652,6 +1650,7 @@ public class RootTable extends Table {
                         if (string.length() > 0) {
                             ((TextField)widget).setPasswordCharacter(string.charAt(0));
                         }
+                        widget.addListener(main.getIbeamListener());
                     } else if (clazz.equals(TextTooltip.class)) {
                         TextTooltip.TextTooltipStyle style = createPreviewStyle(TextTooltip.TextTooltipStyle.class, styleData);
 
