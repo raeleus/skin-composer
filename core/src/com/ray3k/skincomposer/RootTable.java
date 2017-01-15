@@ -138,6 +138,7 @@ public class RootTable extends Table {
     private MenuItem redoButton;
     private MenuButton editMenu;
     private Label statusLabel;
+    private Button styleDeleteButton;
 
     public RootTable(Main main) {
         super(main.getSkin());
@@ -300,6 +301,8 @@ public class RootTable extends Table {
         });
 
         Button button = new Button(getSkin(), "new");
+        //todo:add new functionality for custom classes.
+        button.setDisabled(true);
         table.add(button);
 
         button.addListener(new ChangeListener() {
@@ -309,8 +312,9 @@ public class RootTable extends Table {
             }
         });
 
-        //todo: Ensure delete button is disabled for default styles.
         button = new Button(getSkin(), "delete");
+        //todo:add delete functionality for custom classes.
+        button.setDisabled(true);
         table.add(button).padRight(30.0f);
 
         button.addListener(new ChangeListener() {
@@ -353,10 +357,10 @@ public class RootTable extends Table {
             }
         });
 
-        button = new Button(getSkin(), "delete");
-        table.add(button);
+        styleDeleteButton = new Button(getSkin(), "delete");
+        table.add(styleDeleteButton);
 
-        button.addListener(new ChangeListener() {
+        styleDeleteButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 fire(new RootTableEvent(RootTableEnum.DELETE_STYLE));
@@ -377,6 +381,10 @@ public class RootTable extends Table {
         fire(new LoadStylesEvent(classSelectBox, styleSelectBox));
     }
 
+    public Button getStyleDeleteButton() {
+        return styleDeleteButton;
+    }
+    
     private void addStyleAndPreviewSplit() {
         stylePropertiesTable = new Table();
         stylePropertiesTable.setTouchable(Touchable.enabled);
@@ -1832,7 +1840,6 @@ public class RootTable extends Table {
         }
     }
     
-    //todo: use pixmapatlas instead and only include drawables in use.
     /**
      * Writes a TextureAtlas based on drawables list. Creates drawables to be
      * displayed on screen
@@ -2046,7 +2053,6 @@ public class RootTable extends Table {
     }
 
     private static class LoadStylesEvent extends Event {
-
         SelectBox<String> classSelectBox;
         SelectBox<StyleData> styleSelectBox;
 

@@ -29,6 +29,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
@@ -332,6 +333,8 @@ public class MainListener extends RootTableListener {
             if (styleIndex >= 0 && styleIndex < styleDatas.size) {
                 StyleData styleData = styleDatas.get(styleIndex);
 
+                root.getStyleDeleteButton().setDisabled(!styleData.deletable);
+                
                 root.setStyleProperties(styleData.properties.values().toArray());
                 root.refreshStyleProperties(false);
                 root.refreshPreviewProperties();
