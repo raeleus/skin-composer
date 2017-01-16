@@ -368,6 +368,8 @@ public class RootTable extends Table {
         });
 
         button = new Button(getSkin(), "settings");
+        //todo:Add rename functionality to styles.
+        button.setDisabled(true);
         table.add(button).expandX().left();
 
         button.addListener(new ChangeListener() {
