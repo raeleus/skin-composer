@@ -270,6 +270,7 @@ public class DialogFactory {
                     @Override
                     protected void result(Object object) {
                         if ((int) object == 0) {
+                            //todo: enable save upon exit.
 //                            PanelMenuBar.instance().save(() -> {
 //                                if (projectData.areChangesSaved()) {
 //                                    Gdx.app.exit();
@@ -301,16 +302,18 @@ public class DialogFactory {
     }
     
     public void yesNoDialog(String title, String text, ConfirmationListener listener) {
-        Dialog dialog = new Dialog(title, skin, "dialog") {
+        Dialog dialog = new Dialog(title, skin, "bg") {
             @Override
             protected void result(Object object) {
                 listener.selected((int) object);
             }
         };
+        dialog.getTitleTable().getCells().first().padLeft(5.0f);
         Label label = new Label(text, skin);
         label.setAlignment(Align.center);
         dialog.text(label);
         dialog.getContentTable().getCells().first().pad(10.0f);
+        dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("Yes", 0);
         dialog.button("No", 1);
         dialog.key(Input.Keys.ESCAPE, 1);
@@ -318,16 +321,18 @@ public class DialogFactory {
     }
     
     public void yesNoCancelDialog(String title, String text, ConfirmationListener listener) {
-        Dialog dialog = new Dialog(title, skin, "dialog") {
+        Dialog dialog = new Dialog(title, skin, "bg") {
             @Override
             protected void result(Object object) {
                 listener.selected((int) object);
             }
         };
+        dialog.getTitleTable().getCells().first().padLeft(5.0f);
         Label label = new Label(text, skin);
         label.setAlignment(Align.center);
         dialog.text(label);
         dialog.getContentTable().getCells().first().pad(10.0f);
+        dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("Yes", 0);
         dialog.button("No", 1);
         dialog.button("Cancel", 2);
