@@ -185,6 +185,8 @@ public class RootTable extends Table {
         drawablePairs = new ObjectMap<>();
         
         produceAtlas();
+        
+        main.getStage().addListener(new ShortcutListener(this));
     }
 
     public void populate() {
@@ -221,9 +223,9 @@ public class RootTable extends Table {
                 new MenuItem("Export...", RootTableEnum.EXPORT),
                 new MenuItem("Exit", RootTableEnum.EXIT));
         if (Utils.isMac()) {
-            menuButton.setShortcuts("⌘+N", "⌘+O", "⌘+S", "Shift+⌘+S");
+            menuButton.setShortcuts("⌘+N", "⌘+O", "⌘+S", null, "Shift+⌘+S");
         } else {
-            menuButton.setShortcuts("Ctrl+N", "Ctrl+O", "Ctrl+S", "Shift+Ctrl+S");
+            menuButton.setShortcuts("Ctrl+N", "Ctrl+O", "Ctrl+S", null, "Shift+Ctrl+S");
         }
         menuButton.addListener(new MenuBarListener(menuButton));
 
@@ -2099,5 +2101,44 @@ public class RootTable extends Table {
         public abstract void loadClasses(SelectBox<String> classSelectBox);
 
         public abstract void loadStyles(SelectBox<String> classSelectBox, SelectBox<StyleData> styleSelectBox);
+    }
+
+    public static class ShortcutListener extends InputListener {
+
+        private final RootTable rootTable;
+
+        public ShortcutListener(RootTable rootTable) {
+            this.rootTable = rootTable;
+        }
+
+        @Override
+        public boolean keyDown(InputEvent event, int keycode) {
+            if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
+                switch (keycode) {
+                    case Input.Keys.Z:
+                        rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.UNDO));
+                        break;
+                    case Input.Keys.Y:
+                        rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.REDO));
+                        break;
+                    case Input.Keys.N:
+                        rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.NEW));
+                        break;
+                    case Input.Keys.O:
+                        rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.OPEN));
+                        break;
+                    case Input.Keys.S:
+                        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
+                            rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.SAVE_AS));
+                        } else {
+                            rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.SAVE));
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return false;
+        }
     }
 }
