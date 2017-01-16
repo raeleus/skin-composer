@@ -334,7 +334,7 @@ public class MainListener extends RootTableListener {
                 StyleData styleData = styleDatas.get(styleIndex);
 
                 root.getStyleDeleteButton().setDisabled(!styleData.deletable);
-                
+
                 root.setStyleProperties(styleData.properties.values().toArray());
                 root.refreshStyleProperties(false);
                 root.refreshPreviewProperties();

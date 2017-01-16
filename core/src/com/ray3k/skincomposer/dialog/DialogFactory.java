@@ -270,12 +270,11 @@ public class DialogFactory {
                     @Override
                     protected void result(Object object) {
                         if ((int) object == 0) {
-                            //todo: enable save upon exit.
-//                            PanelMenuBar.instance().save(() -> {
-//                                if (projectData.areChangesSaved()) {
-//                                    Gdx.app.exit();
-//                                }
-//                            });
+                            main.getMainListener().saveFile(() -> {
+                                if (projectData.areChangesSaved()) {
+                                    Gdx.app.exit();
+                                }
+                            });
                         } else if ((int) object == 1) {
                             Gdx.app.exit();
                         }
