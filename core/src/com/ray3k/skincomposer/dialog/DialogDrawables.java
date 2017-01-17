@@ -418,7 +418,7 @@ public class DialogDrawables extends Dialog {
                     });
                     textField.addListener(main.getIbeamListener());
 
-                    Dialog approveDialog = new Dialog("TintedDrawable...", getSkin()) {
+                    Dialog approveDialog = new Dialog("TintedDrawable...", getSkin(), "bg") {
                         @Override
                         protected void result(Object object) {
                             if (object instanceof Boolean && (boolean) object) {
@@ -623,7 +623,7 @@ public class DialogDrawables extends Dialog {
      * @param drawable 
      */
     private void showConfirmDeleteDialog(DrawableData drawable) {
-        Dialog dialog = new Dialog("Delete duplicates?", getSkin()){
+        Dialog dialog = new Dialog("Delete duplicates?", getSkin(), "bg"){
             @Override
             protected void result(Object object) {
                 if ((boolean) object) {
@@ -776,7 +776,7 @@ public class DialogDrawables extends Dialog {
      * Show an setStatusBarError indicating a drawable that exceeds project specifications
      */
     private void showDrawableError() {
-        Dialog dialog = new Dialog("Error...", getSkin());
+        Dialog dialog = new Dialog("Error...", getSkin(), "bg");
         
         dialog.getTitleTable().padLeft(5.0f);
         dialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
@@ -852,7 +852,7 @@ public class DialogDrawables extends Dialog {
      * @param filesToProcess 
      */
     private void showRemoveDuplicatesDialog(Array<FileHandle> unhandledFiles, Array<DrawableData> backup, Array<FileHandle> filesToProcess) {
-        Dialog dialog = new Dialog("Delete duplicates?", getSkin()){
+        Dialog dialog = new Dialog("Delete duplicates?", getSkin(), "bg"){
             @Override
             protected void result(Object object) {
                 if ((boolean) object) {
@@ -951,7 +951,7 @@ public class DialogDrawables extends Dialog {
                     });
                     textField.addListener(main.getIbeamListener());
 
-                    Dialog dialog = new Dialog("TintedDrawable...", getSkin()) {
+                    Dialog dialog = new Dialog("TintedDrawable...", getSkin(), "bg") {
                         @Override
                         protected void result(Object object) {
                             if (object instanceof Boolean && (boolean) object) {
