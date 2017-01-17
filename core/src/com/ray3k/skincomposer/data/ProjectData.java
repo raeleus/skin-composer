@@ -1,7 +1,7 @@
 /*******************************************************************************
  * MIT License
  * 
- * Copyright (c) 2016 Raymond Buckley
+ * Copyright (c) 2017 Raymond Buckley
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -142,7 +142,7 @@ public class ProjectData implements Json.Serializable {
             generalPref.flush();
         }
         
-//        PanelMenuBar.instance().getRecentFilesButton().setDisabled(false);
+        main.getRootTable().setRecentFilesDisabled(false);
     }
     
     public void setMaxTextureDimensions(int width, int height) {

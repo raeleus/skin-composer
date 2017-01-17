@@ -1,7 +1,7 @@
 /*******************************************************************************
  * MIT License
  * 
- * Copyright (c) 2016 Raymond Buckley
+ * Copyright (c) 2017 Raymond Buckley
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -370,7 +370,7 @@ public class DialogColors extends Dialog {
                         main.getUndoableManager().clearUndoables();
                         
                         main.getRootTable().refreshStyleProperties(true);
-//                        PanelPreviewProperties.instance.refreshPreview();
+                        main.getRootTable().refreshPreview();
                         
                         event.setBubbles(false);
                         populate();
@@ -424,8 +424,8 @@ public class DialogColors extends Dialog {
         main.getUndoableManager().clearUndoables();
 
         main.getRootTable().refreshStyleProperties(true);
-//        PanelPreviewProperties.instance.produceAtlas();
-//        PanelPreviewProperties.instance.refreshPreview();
+        main.getRootTable().produceAtlas();
+        main.getRootTable().refreshPreview();
         
         projectData.setChangesSaved(false);
         
@@ -547,7 +547,7 @@ public class DialogColors extends Dialog {
         main.getUndoableManager().clearUndoables();
 
         main.getRootTable().refreshStyleProperties(true);
-//        PanelPreviewProperties.instance.refreshPreview();
+        main.getRootTable().refreshPreview();
         
         projectData.setChangesSaved(false);
         

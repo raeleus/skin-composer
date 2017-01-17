@@ -1,7 +1,7 @@
 /*******************************************************************************
  * MIT License
  * 
- * Copyright (c) 2016 Raymond Buckley
+ * Copyright (c) 2017 Raymond Buckley
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -562,8 +562,8 @@ public class DialogDrawables extends Dialog {
         updateStyleValuesForRename(oldName, name);
         
         main.getRootTable().refreshStyleProperties(true);
-//        PanelPreviewProperties.instance.produceAtlas();
-//        PanelPreviewProperties.instance.refreshPreview();
+        main.getRootTable().produceAtlas();
+        main.getRootTable().refreshPreview();
         
         projectData.setChangesSaved(false);
         
@@ -601,8 +601,8 @@ public class DialogDrawables extends Dialog {
                 }
             }
 
-//            PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-//            PanelPreviewProperties.instance.refreshPreview();
+            main.getRootTable().refreshStyleProperties(true);
+            main.getRootTable().refreshPreview();
 
             main.getUndoableManager().clearUndoables();
 
@@ -759,8 +759,8 @@ public class DialogDrawables extends Dialog {
             }
         }
         
-//        PanelStyleProperties.instance.populate(PanelClassBar.instance.getStyleSelectBox().getSelected());
-//        PanelPreviewProperties.instance.refreshPreview();
+        main.getRootTable().refreshStyleProperties(true);
+        main.getRootTable().refreshPreview();
         
         if (refreshDrawables) {
             gatherDrawables();
