@@ -340,7 +340,7 @@ public class DialogFactory {
     }
     
     public void showDialogError(String title, String message, Runnable runnable) {
-        Dialog dialog = new Dialog(title, skin, "dialog") {
+        Dialog dialog = new Dialog(title, skin, "bg") {
             @Override
             public boolean remove() {
                 if (runnable != null) {
@@ -373,7 +373,7 @@ public class DialogFactory {
     
     public void recentFiles() {
         SelectBox<String> selectBox = new SelectBox(skin);
-        Dialog dialog = new Dialog("Recent Files...", skin) {
+        Dialog dialog = new Dialog("Recent Files...", skin, "bg") {
             @Override
             protected void result(Object object) {
                 super.result(object);
@@ -387,12 +387,14 @@ public class DialogFactory {
                 }
             }
         };
-        
+        dialog.getTitleTable().getCells().first().padLeft(5.0f);
         selectBox.setItems(projectData.getRecentFiles());
         
         dialog.text("Select a file to open");
         dialog.getContentTable().row();
-        dialog.getContentTable().add(selectBox);
+        dialog.getContentTable().add(selectBox).padLeft(10.0f).padRight(10.0f);
+        dialog.getContentTable().getCells().first().pad(10.0f);
+        dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("OK", true).key(Input.Keys.ENTER, true);
         dialog.button("Cancel", false).key(Input.Keys.ESCAPE, false);
         dialog.show(stage);

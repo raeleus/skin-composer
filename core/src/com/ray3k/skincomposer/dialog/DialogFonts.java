@@ -729,7 +729,7 @@ public class DialogFonts extends Dialog {
     }
     
     private void showAddFontSizeError(String name) {
-        Dialog dialog = new Dialog("", skin, "dialog");
+        Dialog dialog = new Dialog("", skin, "bg");
         
         Label label = new Label("Error adding font...", skin, "title");
         dialog.getContentTable().add(label);

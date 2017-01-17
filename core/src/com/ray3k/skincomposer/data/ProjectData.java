@@ -87,8 +87,12 @@ public class ProjectData implements Json.Serializable {
     public Array<String> getRecentFiles() {
         Array<String> returnValue = new Array<>();
         int maxIndex = Math.min(MAX_RECENT_FILES, generalPref.getInteger("recentFilesCount", 0));
-        for (int i = 0; i < maxIndex; i++) {
-            returnValue.add(generalPref.getString("recentFile" + i));
+        for (int i = maxIndex - 1; i >= 0; i--) {
+            String path = generalPref.getString("recentFile" + i);
+            FileHandle file = new FileHandle(path);
+            if (file.exists()) {
+                returnValue.add(path);
+            }
         }
         
         return returnValue;
