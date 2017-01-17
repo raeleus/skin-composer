@@ -84,23 +84,41 @@ public class ProjectData implements Json.Serializable {
         return (String) preferences.get("last-directory", generalPref.getString("last-directory", Gdx.files.getLocalStoragePath()));
     }
     
-    public Array<String> getRecentFiles() {
-        Array<String> returnValue = new Array<>();
+    public Array<RecentFile> getRecentFiles() {
+        Array<RecentFile> returnValue = new Array<>();
         int maxIndex = Math.min(MAX_RECENT_FILES, generalPref.getInteger("recentFilesCount", 0));
         for (int i = maxIndex - 1; i >= 0; i--) {
             String path = generalPref.getString("recentFile" + i);
             FileHandle file = new FileHandle(path);
+            RecentFile recentFile = new RecentFile();
+            recentFile.fileHandle = file;
+            recentFile.name = file.nameWithoutExtension();
             if (file.exists()) {
-                returnValue.add(path);
+                returnValue.add(recentFile);
             }
         }
         
         return returnValue;
     }
     
+    public static class RecentFile {
+        private String name;
+        private FileHandle fileHandle;
+
+        public FileHandle getFileHandle() {
+            return fileHandle;
+        }
+        
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+    
     public void putRecentFile(String filePath) {
         boolean exists = false;
-        for (String path : getRecentFiles()) {
+        for (RecentFile recentFile : getRecentFiles()) {
+            String path = recentFile.fileHandle.toString();
             if (path.equals(filePath)) {
                 exists = true;
                 break;

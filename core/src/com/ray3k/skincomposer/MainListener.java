@@ -165,6 +165,7 @@ public class MainListener extends RootTableListener {
                 FileHandle fileHandle = new FileHandle(file);
                 projectData.load(fileHandle);
                 root.populate();
+                root.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
             }
         };
         

@@ -136,6 +136,8 @@ public class RootTable extends Table {
     private TextureAtlas atlas;
     private MenuItem undoButton;
     private MenuItem redoButton;
+    private MenuItem recentFilesButton;
+    private MenuButton fileMenu;
     private MenuButton editMenu;
     private Label statusLabel;
     private Button styleDeleteButton;
@@ -210,24 +212,26 @@ public class RootTable extends Table {
 
         MenuButtonGroup menuButtonGroup = new MenuButtonGroup();
 
-        MenuButton<MenuItem> menuButton = new MenuButton("File", getSkin());
-        menuButtonGroup.add(menuButton);
-        table.add(menuButton).padLeft(2.0f);
+        fileMenu = new MenuButton("File", getSkin());
+        menuButtonGroup.add(fileMenu);
+        table.add(fileMenu).padLeft(2.0f);
 
-        menuButton.setItems(new MenuItem("New", RootTableEnum.NEW),
+        recentFilesButton = new MenuItem("Recent Files...", RootTableEnum.RECENT_FILES);
+        
+        fileMenu.setItems(new MenuItem("New", RootTableEnum.NEW),
                 new MenuItem("Open...", RootTableEnum.OPEN),
-                new MenuItem("Recent Files...", RootTableEnum.RECENT_FILES),
+                recentFilesButton,
                 new MenuItem("Save", RootTableEnum.SAVE),
                 new MenuItem("Save As...", RootTableEnum.SAVE_AS),
                 new MenuItem("Import...", RootTableEnum.IMPORT),
                 new MenuItem("Export...", RootTableEnum.EXPORT),
                 new MenuItem("Exit", RootTableEnum.EXIT));
         if (Utils.isMac()) {
-            menuButton.setShortcuts("⌘+N", "⌘+O", "⌘+S", null, "Shift+⌘+S");
+            fileMenu.setShortcuts("⌘+N", "⌘+O", "⌘+S", null, "Shift+⌘+S");
         } else {
-            menuButton.setShortcuts("Ctrl+N", "Ctrl+O", "Ctrl+S", null, "Shift+Ctrl+S");
+            fileMenu.setShortcuts("Ctrl+N", "Ctrl+O", "Ctrl+S", null, "Shift+Ctrl+S");
         }
-        menuButton.addListener(new MenuBarListener(menuButton));
+        fileMenu.addListener(new MenuBarListener(fileMenu));
 
         editMenu = new MenuButton("Edit", getSkin());
         menuButtonGroup.add(editMenu);
@@ -246,7 +250,7 @@ public class RootTable extends Table {
         editMenu.setDisabled(redoButton, true);
         editMenu.addListener(new MenuBarListener(editMenu));
 
-        menuButton = new MenuButton("Project", getSkin());
+        MenuButton<MenuItem> menuButton = new MenuButton("Project", getSkin());
         menuButtonGroup.add(menuButton);
         table.add(menuButton);
 
@@ -263,6 +267,10 @@ public class RootTable extends Table {
 
         menuButton.setItems(new MenuItem("About...", RootTableEnum.ABOUT));
         menuButton.addListener(new MenuBarListener(menuButton));
+    }
+    
+    public void setRecentFilesDisabled(boolean disabled) {
+        fileMenu.setDisabled(recentFilesButton, disabled);
     }
 
     public void setUndoDisabled(boolean disabled) {

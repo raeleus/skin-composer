@@ -23,6 +23,7 @@ import com.ray3k.skincomposer.UndoableManager.NewStyleUndoable;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
+import com.ray3k.skincomposer.data.ProjectData.RecentFile;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 
@@ -372,14 +373,14 @@ public class DialogFactory {
     }
     
     public void recentFiles() {
-        SelectBox<String> selectBox = new SelectBox(skin);
+        SelectBox<RecentFile> selectBox = new SelectBox(skin);
         Dialog dialog = new Dialog("Recent Files...", skin, "bg") {
             @Override
             protected void result(Object object) {
                 super.result(object);
                 if ((boolean) object) {
                     if (selectBox.getSelected() != null) {
-                        FileHandle file = new FileHandle(selectBox.getSelected());
+                        FileHandle file = selectBox.getSelected().getFileHandle();
                         if (file.exists()) {
                             projectData.load(file);
                         }
