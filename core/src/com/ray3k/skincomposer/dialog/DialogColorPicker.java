@@ -282,6 +282,14 @@ public class DialogColorPicker extends Dialog {
         saturationSpinner.setTransversalNext(brightnessSpinner.getTextField());
         brightnessSpinner.setTransversalNext(redSpinner.getTextField());
         
+        redSpinner.setTransversalPrevious(brightnessSpinner.getTextField());
+        greenSpinner.setTransversalPrevious(redSpinner.getTextField());
+        blueSpinner.setTransversalPrevious(greenSpinner.getTextField());
+        alphaSpinner.setTransversalPrevious(blueSpinner.getTextField());
+        hueSpinner.setTransversalPrevious(alphaSpinner.getTextField());
+        saturationSpinner.setTransversalPrevious(hueSpinner.getTextField());
+        brightnessSpinner.setTransversalPrevious(saturationSpinner.getTextField());
+        
         ChangeListener rgbListener = new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
