@@ -54,7 +54,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TooltipManager;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
@@ -64,7 +63,6 @@ import com.badlogic.gdx.utils.ObjectMap.Values;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.Sort;
 import com.ray3k.skincomposer.FilesDroppedListener;
-import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.UndoableManager.DrawableUndoable;
 import com.ray3k.skincomposer.data.AtlasData;
@@ -435,6 +433,7 @@ public class DialogDrawables extends Dialog {
                             gatherDrawables();
                             produceAtlas();
                             sortBySelectedMode();
+                            getStage().setScrollFocus(scrollPane);
                             return super.remove();
                         }
                     };
@@ -493,7 +492,7 @@ public class DialogDrawables extends Dialog {
     
     private void renameDrawableDialog(DrawableData drawable) {
         TextField textField = new TextField("", getSkin());
-        Dialog dialog = new Dialog("Rename drawable?", getSkin()) {
+        Dialog dialog = new Dialog("Rename drawable?", getSkin(), "bg") {
             @Override
             protected void result(Object object) {
                 super.result(object);
@@ -501,6 +500,7 @@ public class DialogDrawables extends Dialog {
                 if (object instanceof Boolean && (boolean) object == true) {
                     renameDrawable(drawable, textField.getText());
                 }
+                getStage().setScrollFocus(scrollPane);
             }
 
             @Override
@@ -966,6 +966,7 @@ public class DialogDrawables extends Dialog {
                             gatherDrawables();
                             produceAtlas();
                             sortBySelectedMode();
+                            getStage().setScrollFocus(scrollPane);
                             return super.remove();
                         }
                     };
