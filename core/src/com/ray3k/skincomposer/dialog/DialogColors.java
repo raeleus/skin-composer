@@ -232,6 +232,7 @@ public class DialogColors extends Dialog {
                     dialog.show(getStage());
                     getStage().setKeyboardFocus(field);
                     field.selectAll();
+                    field.setFocusTraversal(false);
                 }
             }
         });
@@ -515,6 +516,7 @@ public class DialogColors extends Dialog {
             }
         });
         
+        textField.setFocusTraversal(false);
         dialog.show(getStage());
     }
     

@@ -53,7 +53,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Sort;
 import com.ray3k.skincomposer.FilesDroppedListener;
-import com.ray3k.skincomposer.IbeamListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.UndoableManager.FontUndoable;
 import com.ray3k.skincomposer.data.AtlasData;
@@ -427,6 +426,8 @@ public class DialogFonts extends Dialog {
             }
         });
         
+        textField.setFocusTraversal(false);
+        
         dialog.show(getStage());
     }
     
@@ -713,6 +714,8 @@ public class DialogFonts extends Dialog {
                     }
                 });
                 nameDialog.setColor(1.0f, 1.0f, 1.0f, 0.0f);
+                
+                textField.setFocusTraversal(false);
                 
                 if (!Utils.doesImageFitBox(new FileHandle(bitmapFontData.imagePaths[0]), projectData.getMaxTextureWidth(), projectData.getMaxTextureHeight())) {
                     showAddFontSizeError(fileHandle.nameWithoutExtension());

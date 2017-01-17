@@ -194,6 +194,7 @@ public class DialogFactory {
         
         dialog.show(stage);
         stage.setKeyboardFocus(textField);
+        textField.setFocusTraversal(false);
     }
     
     public void showDuplicateStyleDialog(Skin skin, Stage stage) {
@@ -258,6 +259,8 @@ public class DialogFactory {
         
         dialog.show(stage);
         stage.setKeyboardFocus(textField);
+        
+        textField.setFocusTraversal(false);
     }
     
     public void showDeleteStyleDialog(Skin skin, Stage stage) {

@@ -54,6 +54,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TooltipManager;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
@@ -481,6 +482,8 @@ public class DialogDrawables extends Dialog {
                     approveDialog.show(getStage());
                     getStage().setKeyboardFocus(textField);
                     textField.selectAll();
+                    
+                    textField.setFocusTraversal(false);
             }
         });
         dialog.setFillParent(true);
@@ -550,6 +553,8 @@ public class DialogDrawables extends Dialog {
         });
         textField.addListener(main.getIbeamListener());
         dialog.getContentTable().add(textField);
+        
+        textField.setFocusTraversal(false);
         
         dialog.show(getStage());
     }
@@ -784,10 +789,6 @@ public class DialogDrawables extends Dialog {
         dialog.show(getStage());
     }
     
-    /**
-     * Show a Java FX file chooser for new drawables. This allows selection of
-     * multiple files at once.
-     */
     private void newDrawableDialog() {
         String defaultPath = "";
         
@@ -1010,6 +1011,7 @@ public class DialogDrawables extends Dialog {
                     dialog.show(getStage());
                     getStage().setKeyboardFocus(textField);
                     textField.selectAll();
+                    textField.setFocusTraversal(false);
                 }
             }
         });

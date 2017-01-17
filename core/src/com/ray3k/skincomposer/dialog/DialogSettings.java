@@ -238,6 +238,14 @@ public class DialogSettings extends Dialog {
         spinner3.getTextField().addListener(main.getIbeamListener());
         t.add(spinner3).minWidth(150.0f).left().padTop(10.0f);
         
+        spinner.setTransversalNext(spinner2.getTextField());
+        spinner2.setTransversalNext(spinner3.getTextField());
+        spinner3.setTransversalNext(spinner.getTextField());
+        
+        spinner.setTransversalPrevious(spinner3.getTextField());
+        spinner2.setTransversalPrevious(spinner.getTextField());
+        spinner3.setTransversalPrevious(spinner2.getTextField());
+        
         button("OK", true);
         button ("Cancel", false);
         key(Keys.ESCAPE, false);
