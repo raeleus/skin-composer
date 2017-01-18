@@ -156,7 +156,7 @@ public class MainListener extends RootTableListener {
     
     public void openFile() {
         Runnable runnable = () -> {
-            String defaultPath = projectData.getDefaultPath();
+            String defaultPath = projectData.getLastOpenSavePath();
 
             String[] filterPatterns = {"*.scmp"};
 
@@ -164,6 +164,7 @@ public class MainListener extends RootTableListener {
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
                 projectData.load(fileHandle);
+                projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
                 root.populate();
                 root.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
             }
@@ -201,7 +202,7 @@ public class MainListener extends RootTableListener {
     
     public void saveAsFile(Runnable runnable) {
         dialogFactory.showDialogLoading(() -> {
-            String defaultPath = projectData.getDefaultPath();
+            String defaultPath = projectData.getLastOpenSavePath();
 
             String[] filterPatterns = {"*.scmp"};
 
@@ -212,6 +213,7 @@ public class MainListener extends RootTableListener {
                     fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".scmp");
                 }
                 projectData.save(fileHandle);
+                projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
                 if (runnable != null) {
                     runnable.run();
                 }
@@ -223,10 +225,10 @@ public class MainListener extends RootTableListener {
         dialogFactory.showDialogLoading(() -> {
             String defaultPath = "";
 
-            if (projectData.getLastDirectory() != null) {
+            if (projectData.getLastImportExportPath() != null) {
                 FileHandle fileHandle = new FileHandle(defaultPath);
                 if (fileHandle.exists()) {
-                    defaultPath = projectData.getLastDirectory();
+                    defaultPath = projectData.getLastImportExportPath();
                 }
             }
 
@@ -235,7 +237,7 @@ public class MainListener extends RootTableListener {
             File file = desktopWorker.openDialog("Import skin...", defaultPath, filterPatterns, "Json files");
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
-                projectData.setLastDirectory(fileHandle.parent().path());
+                projectData.setLastImportExportPath(fileHandle.parent().path() + "/");
                 try {
                     jsonData.readFile(fileHandle);
                     main.getProjectData().getAtlasData().atlasCurrent = false;
@@ -253,10 +255,10 @@ public class MainListener extends RootTableListener {
         dialogFactory.showDialogLoading(() -> {
             String defaultPath = "";
 
-            if (projectData.getLastDirectory() != null) {
+            if (projectData.getLastImportExportPath() != null) {
                 FileHandle fileHandle = new FileHandle(defaultPath);
                 if (fileHandle.exists()) {
-                    defaultPath = projectData.getLastDirectory();
+                    defaultPath = projectData.getLastImportExportPath();
                 }
             }
 
@@ -268,7 +270,7 @@ public class MainListener extends RootTableListener {
                 if (fileHandle.extension() == null || !fileHandle.extension().equals(".json")) {
                     fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".json");
                 }
-                projectData.setLastDirectory(fileHandle.parent().path());
+                projectData.setLastImportExportPath(fileHandle.parent().path() + "/");
                 main.getProjectData().getJsonData().writeFile(fileHandle);
                 
                 try {

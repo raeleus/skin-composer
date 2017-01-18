@@ -792,10 +792,10 @@ public class DialogDrawables extends Dialog {
     private void newDrawableDialog() {
         String defaultPath = "";
         
-        if (projectData.getLastDirectory() != null) {
+        if (projectData.getLastDrawablePath() != null) {
             FileHandle fileHandle = new FileHandle(defaultPath);
             if (fileHandle.exists()) {
-                defaultPath = projectData.getLastDirectory();
+                defaultPath = projectData.getLastDrawablePath();
             }
         }
         
@@ -828,7 +828,7 @@ public class DialogDrawables extends Dialog {
         Array<FileHandle> unhandledFiles = new Array<>();
         Array<FileHandle> filesToProcess = new Array<>();
         
-        projectData.setLastDirectory(files.get(0).parent().path());
+        projectData.setLastDrawablePath(files.get(0).parent().path());
         for (FileHandle fileHandle : files) {
             if (checkDuplicateDrawables(fileHandle, 0)) {
                 unhandledFiles.add(fileHandle);

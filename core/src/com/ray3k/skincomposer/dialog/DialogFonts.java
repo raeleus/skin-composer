@@ -604,10 +604,10 @@ public class DialogFonts extends Dialog {
     private void newFontDialog() {
         String defaultPath = "";
         
-        if (projectData.getLastDirectory() != null) {
+        if (projectData.getLastFontPath() != null) {
             FileHandle fileHandle = new FileHandle(defaultPath);
             if (fileHandle.exists()) {
-                defaultPath = projectData.getLastDirectory();
+                defaultPath = projectData.getLastFontPath();
             }
         }
         
@@ -615,7 +615,7 @@ public class DialogFonts extends Dialog {
         
         List<File> files = main.getDesktopWorker().openMultipleDialog("Choose font file(s)...", defaultPath, filterPatterns, "Font files (*.fnt)");
         if (files != null && files.size() > 0) {
-            projectData.setLastDirectory(files.get(0).getParentFile().getPath());
+            projectData.setLastFontPath(files.get(0).getParentFile().getPath());
             fontNameDialog(files, 0);
         }
     }

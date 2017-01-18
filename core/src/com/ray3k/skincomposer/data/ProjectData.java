@@ -74,15 +74,15 @@ public class ProjectData implements Json.Serializable {
         setId(id);
     }
     
-    public void setLastDirectory(String lastDirectory) {
-        preferences.put("last-directory", lastDirectory);
-        generalPref.putString("last-directory", lastDirectory);
-        generalPref.flush();
-    }
-    
-    public String getLastDirectory() {
-        return (String) preferences.get("last-directory", generalPref.getString("last-directory", Gdx.files.getLocalStoragePath()));
-    }
+//    public void setLastDirectory(String lastDirectory) {
+//        preferences.put("last-directory", lastDirectory);
+//        generalPref.putString("last-directory", lastDirectory);
+//        generalPref.flush();
+//    }
+//    
+//    public String getLastDirectory() {
+//        return (String) preferences.get("last-directory", generalPref.getString("last-directory", Gdx.files.getLocalStoragePath()));
+//    }
     
     public Array<RecentFile> getRecentFiles() {
         Array<RecentFile> returnValue = new Array<>();
@@ -170,15 +170,15 @@ public class ProjectData implements Json.Serializable {
         return saveFile;
     }
     
-    public String getBestSaveDirectory() {
-        if (saveFile != null) {
-            return saveFile.parent().path();
-        } else if (generalPref.contains("last-save-directory")) {
-            return generalPref.getString("last-save-directory");
-        } else {
-            return getLastDirectory();
-        }
-    }
+//    public String getBestSaveDirectory() {
+//        if (saveFile != null) {
+//            return saveFile.parent().path();
+//        } else if (generalPref.contains("last-save-directory")) {
+//            return generalPref.getString("last-save-directory");
+//        } else {
+//            return getLastDirectory();
+//        }
+//    }
 
     public boolean areChangesSaved() {
         return changesSaved;
@@ -203,18 +203,19 @@ public class ProjectData implements Json.Serializable {
         return newProject;
     }
     
-    public String getDefaultPath() {
-        String defaultPath = "";
-
-        if (getLastDirectory() != null) {
-            FileHandle fileHandle = new FileHandle(getLastDirectory());
-            if (fileHandle.exists()) {
-                defaultPath = getLastDirectory();
-            }
-        }
-        
-        return defaultPath;
-    }
+//    public String getDefaultPath() {
+//        String defaultPath = "";
+//
+//        if (getLastDirectory() != null) {
+//            FileHandle fileHandle = new FileHandle(getLastDirectory());
+//            if (fileHandle.exists()) {
+//                System.out.println("Yes" + fileHandle.path());
+//                defaultPath = getLastDirectory() + "/";
+//            }
+//        }
+//        
+//        return defaultPath;
+//    }
     
     //todo: do not create a folder if there are no files to transfer.
     private void moveImportedFiles(FileHandle oldSave, FileHandle newSave) {
@@ -264,8 +265,6 @@ public class ProjectData implements Json.Serializable {
         
         saveFile = file;
         putRecentFile(file.path());
-        generalPref.putString("last-save-directory", file.parent().path());
-        generalPref.flush();
         Json json = new Json(JsonWriter.OutputType.minimal);
         json.setUsePrototypes(false);
         file.writeString(json.prettyPrint(this), false);
@@ -286,8 +285,7 @@ public class ProjectData implements Json.Serializable {
         
         saveFile = file;
         putRecentFile(file.path());
-        generalPref.putString("last-save-directory", file.parent().path());
-        generalPref.flush();
+        setLastOpenSavePath(file.parent().path() + "/");
         atlasData.atlasCurrent = false;
         main.getRootTable().produceAtlas();
         main.getRootTable().populate();
@@ -351,5 +349,78 @@ public class ProjectData implements Json.Serializable {
 
     public AtlasData getAtlasData() {
         return atlasData;
+    }
+
+    public String getLastOpenSavePath() {
+
+        return (String) preferences.get("last-open-save-path",
+                generalPref.getString("last-open-save-path",
+                        generalPref.getString("last-path",
+                                Gdx.files.getLocalStoragePath())));
+    }
+    
+    public void setLastOpenSavePath(String openSavePath) {
+        preferences.put("last-open-save-path", openSavePath);
+        generalPref.putString("last-open-save-path", openSavePath);
+        generalPref.flush();
+        
+        setLastPath(openSavePath);
+    }
+    
+    public String getLastImportExportPath() {
+        return (String) preferences.get("last-import-export-path",
+                generalPref.getString("last-import-export-path",
+                        generalPref.getString("last-path",
+                                Gdx.files.getLocalStoragePath())));
+    }
+    
+    public void setLastImportExportPath(String importExportPath) {
+        preferences.put("last-import-export-path", importExportPath);
+        generalPref.putString("last-import-export-path", importExportPath);
+        generalPref.flush();
+        
+        setLastPath(importExportPath);
+    }
+    
+    public String getLastFontPath() {
+        return (String) preferences.get("last-font-path",
+                generalPref.getString("last-font-path",
+                        generalPref.getString("last-path",
+                                Gdx.files.getLocalStoragePath())));
+    }
+    
+    public void setLastFontPath(String fontPath) {
+        preferences.put("last-font-path", fontPath);
+        generalPref.putString("last-font-path", fontPath);
+        generalPref.flush();
+        
+        setLastPath(fontPath);
+    }
+    
+    public String getLastDrawablePath() {
+        return (String) preferences.get("last-drawable-path",
+                generalPref.getString("last-drawable-path",
+                        generalPref.getString("last-path",
+                                Gdx.files.getLocalStoragePath())));
+    }
+    
+    public void setLastDrawablePath(String drawablePath) {
+        preferences.put("last-drawable-path", drawablePath);
+        generalPref.putString("last-drawable-path", drawablePath);
+        generalPref.flush();
+        
+        setLastPath(drawablePath);
+    }
+    
+    public String getLastPath() {
+        return (String) preferences.get("last-path",
+                generalPref.getString("last-path",
+                        Gdx.files.getLocalStoragePath()));
+    }
+    
+    public void setLastPath(String lastPath) {
+        preferences.put("last-path", lastPath);
+        generalPref.putString("last-path", lastPath);
+        generalPref.flush();
     }
 }
