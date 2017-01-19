@@ -375,6 +375,13 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 		over: button-menu-over
 		disabled: button-menu
 	}
+	browse-field: {
+		font: font
+		fontColor: pressed
+		up: browse-field
+		down: browse-field-pressed
+		over: browse-field-over
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 	default: {

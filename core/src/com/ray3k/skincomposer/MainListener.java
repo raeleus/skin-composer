@@ -223,14 +223,7 @@ public class MainListener extends RootTableListener {
     
     public void importFile() {
         dialogFactory.showDialogLoading(() -> {
-            String defaultPath = "";
-
-            if (projectData.getLastImportExportPath() != null) {
-                FileHandle fileHandle = new FileHandle(defaultPath);
-                if (fileHandle.exists()) {
-                    defaultPath = projectData.getLastImportExportPath();
-                }
-            }
+            String defaultPath = projectData.getLastImportExportPath();
 
             String[] filterPatterns = {"*.json"};
 
@@ -253,14 +246,7 @@ public class MainListener extends RootTableListener {
     
     public void exportFile() {
         dialogFactory.showDialogLoading(() -> {
-            String defaultPath = "";
-
-            if (projectData.getLastImportExportPath() != null) {
-                FileHandle fileHandle = new FileHandle(defaultPath);
-                if (fileHandle.exists()) {
-                    defaultPath = projectData.getLastImportExportPath();
-                }
-            }
+            String defaultPath = projectData.getLastImportExportPath();
 
             String[] filterPatterns = {"*.json"};
 

@@ -172,12 +172,12 @@ public class RootTable extends Table {
 
         menuButtonStyle.menuListStyle = menuListStyle;
 
-        bfColorStyle = new BrowseFieldStyle(getSkin().get("color", ImageButtonStyle.class), getSkin().get(TextButtonStyle.class), getSkin().get(LabelStyle.class));
-        bfDrawableStyle = new BrowseFieldStyle(getSkin().get("drawable", ImageButtonStyle.class), getSkin().get(TextButtonStyle.class), getSkin().get(LabelStyle.class));
-        bfFontStyle = new BrowseFieldStyle(getSkin().get("font", ImageButtonStyle.class), getSkin().get(TextButtonStyle.class), getSkin().get(LabelStyle.class));
-        bfColorStyleR = new BrowseFieldStyle(getSkin().get("color", ImageButtonStyle.class), getSkin().get(TextButtonStyle.class), getSkin().get("required", LabelStyle.class));
-        bfDrawableStyleR = new BrowseFieldStyle(getSkin().get("drawable", ImageButtonStyle.class), getSkin().get(TextButtonStyle.class), getSkin().get("required", LabelStyle.class));
-        bfFontStyleR = new BrowseFieldStyle(getSkin().get("font", ImageButtonStyle.class), getSkin().get(TextButtonStyle.class), getSkin().get("required", LabelStyle.class));
+        bfColorStyle = new BrowseFieldStyle(getSkin().get("color", ImageButtonStyle.class), getSkin().get("browse-field", TextButtonStyle.class), getSkin().get(LabelStyle.class));
+        bfDrawableStyle = new BrowseFieldStyle(getSkin().get("drawable", ImageButtonStyle.class), getSkin().get("browse-field", TextButtonStyle.class), getSkin().get(LabelStyle.class));
+        bfFontStyle = new BrowseFieldStyle(getSkin().get("font", ImageButtonStyle.class), getSkin().get("browse-field", TextButtonStyle.class), getSkin().get(LabelStyle.class));
+        bfColorStyleR = new BrowseFieldStyle(getSkin().get("color", ImageButtonStyle.class), getSkin().get("browse-field", TextButtonStyle.class), getSkin().get("required", LabelStyle.class));
+        bfDrawableStyleR = new BrowseFieldStyle(getSkin().get("drawable", ImageButtonStyle.class), getSkin().get("browse-field", TextButtonStyle.class), getSkin().get("required", LabelStyle.class));
+        bfFontStyleR = new BrowseFieldStyle(getSkin().get("font", ImageButtonStyle.class), getSkin().get("browse-field", TextButtonStyle.class), getSkin().get("required", LabelStyle.class));
         
         getSkin().add("default", menuButtonStyle);
         getSkin().add("default", menuListStyle);
