@@ -172,12 +172,12 @@ public class RootTable extends Table {
 
         menuButtonStyle.menuListStyle = menuListStyle;
 
-        bfColorStyle = new BrowseFieldStyle(getSkin().get("color", ImageButtonStyle.class), getSkin().get(TextFieldStyle.class), getSkin().get(LabelStyle.class));
-        bfDrawableStyle = new BrowseFieldStyle(getSkin().get("drawable", ImageButtonStyle.class), getSkin().get(TextFieldStyle.class), getSkin().get(LabelStyle.class));
-        bfFontStyle = new BrowseFieldStyle(getSkin().get("font", ImageButtonStyle.class), getSkin().get(TextFieldStyle.class), getSkin().get(LabelStyle.class));
-        bfColorStyleR = new BrowseFieldStyle(getSkin().get("color", ImageButtonStyle.class), getSkin().get(TextFieldStyle.class), getSkin().get("required", LabelStyle.class));
-        bfDrawableStyleR = new BrowseFieldStyle(getSkin().get("drawable", ImageButtonStyle.class), getSkin().get(TextFieldStyle.class), getSkin().get("required", LabelStyle.class));
-        bfFontStyleR = new BrowseFieldStyle(getSkin().get("font", ImageButtonStyle.class), getSkin().get(TextFieldStyle.class), getSkin().get("required", LabelStyle.class));
+        bfColorStyle = new BrowseFieldStyle(getSkin().get("color", ImageButtonStyle.class), getSkin().get(TextButtonStyle.class), getSkin().get(LabelStyle.class));
+        bfDrawableStyle = new BrowseFieldStyle(getSkin().get("drawable", ImageButtonStyle.class), getSkin().get(TextButtonStyle.class), getSkin().get(LabelStyle.class));
+        bfFontStyle = new BrowseFieldStyle(getSkin().get("font", ImageButtonStyle.class), getSkin().get(TextButtonStyle.class), getSkin().get(LabelStyle.class));
+        bfColorStyleR = new BrowseFieldStyle(getSkin().get("color", ImageButtonStyle.class), getSkin().get(TextButtonStyle.class), getSkin().get("required", LabelStyle.class));
+        bfDrawableStyleR = new BrowseFieldStyle(getSkin().get("drawable", ImageButtonStyle.class), getSkin().get(TextButtonStyle.class), getSkin().get("required", LabelStyle.class));
+        bfFontStyleR = new BrowseFieldStyle(getSkin().get("font", ImageButtonStyle.class), getSkin().get(TextButtonStyle.class), getSkin().get("required", LabelStyle.class));
         
         getSkin().add("default", menuButtonStyle);
         getSkin().add("default", menuListStyle);
@@ -725,7 +725,7 @@ public class RootTable extends Table {
                         @Override
                         public void selected(Color color) {
                             if (color != null) {
-                                browseField.getTextField().setText((int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
+                                browseField.getTextButton().setText((int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
                                 previewProperties.put("bgcolor", color);
                                 previewBgColor.set(color);
                                 refreshPreview();
@@ -739,7 +739,7 @@ public class RootTable extends Table {
                 previewBgColor.set(Color.WHITE);
             }
             previewProperties.put("bgcolor", previewBgColor);
-            browseField.getTextField().setText((int) (previewBgColor.r * 255) + "," + (int) (previewBgColor.g * 255) + "," + (int) (previewBgColor.b * 255) + "," + (int) (previewBgColor.a * 255));
+            browseField.getTextButton().setText((int) (previewBgColor.r * 255) + "," + (int) (previewBgColor.g * 255) + "," + (int) (previewBgColor.b * 255) + "," + (int) (previewBgColor.a * 255));
 
             t.row();
             t.add(new Label("Size: ", getSkin())).right();

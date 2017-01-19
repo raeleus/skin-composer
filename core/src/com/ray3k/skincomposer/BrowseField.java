@@ -35,13 +35,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 
 public class BrowseField extends Table {
-    private TextField textField;
+    private TextButton textButton;
     private Button button;
     private Label label;
     
@@ -54,25 +52,37 @@ public class BrowseField extends Table {
         
         row();
         if (valueText == null) valueText = "";
-        textField = new TextField(valueText, style.textFieldStyle);
-        textField.setAlignment(Align.center);
-        textField.setFocusTraversal(false);
-        textField.setTouchable(Touchable.disabled);
-        add(textField).minWidth(35.0f).prefWidth(35.0f).growX();
+        textButton = new TextButton(valueText, style.mainButtonStyle);
+        textButton.setTouchable(Touchable.disabled);
+        add(textButton).minWidth(35.0f).prefWidth(35.0f).growX();
         
-        if (style.textButtonStyle != null) {
-            button = new TextButton("...", style.textButtonStyle);
-        } else {
-            button = new ImageButton(style.imageButtonStyle);
-        }
+        button = new ImageButton(style.rightButtonStyle);
+        
         button.setTouchable(Touchable.disabled);
         add(button).padLeft(5.0f).bottom();
+        
+        textButton.addCaptureListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                event.setBubbles(false);
+                BrowseField.this.fire(new ChangeEvent());
+            }
+        });
+        
+        button.addCaptureListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                event.setBubbles(false);
+//                BrowseField.this.fire(new ChangeEvent());
+            }
+        });
         
         addListener(new ClickListener() {
             @Override
             public void exit(InputEvent event, float x, float y, int pointer,
                     Actor toActor) {
                 super.exit(event, x, y, pointer, toActor);
+                textButton.getClickListener().exit(event, x, y, pointer, toActor);
                 button.getClickListener().exit(event, x, y, pointer, toActor);
             }
 
@@ -80,6 +90,7 @@ public class BrowseField extends Table {
             public void enter(InputEvent event, float x, float y, int pointer,
                     Actor fromActor) {
                 super.enter(event, x, y, pointer, fromActor);
+                textButton.getClickListener().enter(event, x, y, pointer, fromActor);
                 button.getClickListener().enter(event, x, y, pointer, fromActor);
             }
 
@@ -87,6 +98,7 @@ public class BrowseField extends Table {
             public void touchUp(InputEvent event, float x, float y, int pointer,
                     int buttonNum) {
                 super.touchUp(event, x, y, pointer, buttonNum);
+                textButton.getClickListener().touchUp(event, x, y, pointer, buttonNum);
                 button.getClickListener().touchUp(event, x, y, pointer, buttonNum);
             }
 
@@ -94,20 +106,22 @@ public class BrowseField extends Table {
             public void touchDragged(InputEvent event, float x, float y,
                     int pointer) {
                 super.touchDragged(event, x, y, pointer);
+                textButton.getClickListener().touchDragged(event, x, y, pointer);
                 button.getClickListener().touchDragged(event, x, y, pointer);
             }
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y,
                     int pointer, int buttonNum) {
+                textButton.getClickListener().touchDown(event, x, y, pointer, buttonNum);
                 button.getClickListener().touchDown(event, x, y, pointer, buttonNum);
                 return super.touchDown(event, x, y, pointer, buttonNum);
             }
         });
     }
 
-    public TextField getTextField() {
-        return textField;
+    public TextButton getTextButton() {
+        return textButton;
     }
 
     public Button getButton() {
@@ -115,33 +129,23 @@ public class BrowseField extends Table {
     }
     
     public void setValueText(String valueText) {
-        textField.setText(valueText);
+        textButton.setText(valueText);
     }
     
     static public class BrowseFieldStyle {
-        public TextButtonStyle textButtonStyle;
-        public ImageButtonStyle imageButtonStyle;
-        public TextFieldStyle textFieldStyle;
+        public ImageButtonStyle rightButtonStyle;
+        public TextButtonStyle mainButtonStyle;
         public LabelStyle labelStyle;
 
-        public BrowseFieldStyle(TextButtonStyle textButtonStyle, TextFieldStyle textFieldStyle, LabelStyle labelStyle) {
-            this.textButtonStyle = textButtonStyle;
-            this.textFieldStyle = textFieldStyle;
-            this.labelStyle = labelStyle;
-            imageButtonStyle = null;
-        }
-
-        public BrowseFieldStyle(ImageButtonStyle imageButtonStyle, TextFieldStyle textFieldStyle, LabelStyle labelStyle) {
-            textButtonStyle = null;
-            this.textFieldStyle = textFieldStyle;
-            this.imageButtonStyle = imageButtonStyle;
+        public BrowseFieldStyle(ImageButtonStyle imageButtonStyle, TextButtonStyle textButtonStyle, LabelStyle labelStyle) {
+            this.mainButtonStyle = textButtonStyle;
+            this.rightButtonStyle = imageButtonStyle;
             this.labelStyle = labelStyle;
         }
         
         public BrowseFieldStyle(BrowseFieldStyle style) {
-            textButtonStyle = style.textButtonStyle;
-            textFieldStyle = style.textFieldStyle;
-            imageButtonStyle = style.imageButtonStyle;
+            mainButtonStyle = style.mainButtonStyle;
+            rightButtonStyle = style.rightButtonStyle;
             labelStyle = style.labelStyle;
         }
     }
