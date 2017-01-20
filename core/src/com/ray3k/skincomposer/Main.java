@@ -91,6 +91,7 @@ public class Main extends ApplicationAdapter {
     private RootTable rootTable;
     private IbeamListener ibeamListener;
     private MainListener mainListener;
+    private HandListener handListener;
     
     @Override
     public void create() {
@@ -136,6 +137,7 @@ public class Main extends ApplicationAdapter {
         loadingAnimation.addDrawable(skin.getDrawable("loading_7"));
         
         projectData.getAtlasData().clearTempData();
+        handListener = new HandListener();
     }
 
     private void populate() {
@@ -217,5 +219,13 @@ public class Main extends ApplicationAdapter {
 
     public MainListener getMainListener() {
         return mainListener;
+    }
+
+    public HandListener getHandListener() {
+        return handListener;
+    }
+
+    public void setHandListener(HandListener handListener) {
+        this.handListener = handListener;
     }
 }

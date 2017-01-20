@@ -47,6 +47,8 @@ public class Spinner extends Table {
     private BigDecimal increment;
     private boolean rounding;
     private TextField textField;
+    private Button buttonMinus;
+    private Button buttonPlus;
     private Actor transversalNext, transversalPrevious;
     public static enum Orientation {
         HORIZONTAL, HORIZONTAL_FLIPPED, VERTICAL, VERTICAL_FLIPPED, RIGHT_STACK, LEFT_STACK
@@ -67,8 +69,8 @@ public class Spinner extends Table {
     }
     
     private void addWidgets() {
-        Button buttonMinus = new Button(style.buttonMinusStyle);
-        Button buttonPlus = new Button(style.buttonPlusStyle);
+        buttonMinus = new Button(style.buttonMinusStyle);
+        buttonPlus = new Button(style.buttonPlusStyle);
         textField = new TextField("", style.textFieldStyle) {
             @Override
             public void next(boolean up) {
@@ -324,6 +326,14 @@ public class Spinner extends Table {
 
     public TextField getTextField() {
         return textField;
+    }
+
+    public Button getButtonMinus() {
+        return buttonMinus;
+    }
+
+    public Button getButtonPlus() {
+        return buttonPlus;
     }
 
     public Actor getTransversalNext() {

@@ -120,6 +120,7 @@ public class DialogColors extends Dialog {
                 sortBySelectedMode();
             }
         });
+        selectBox.addListener(main.getHandListener());
         table.add(selectBox);
         
         TextButton imageButton = new TextButton("New Color", skin, "new");
@@ -129,6 +130,7 @@ public class DialogColors extends Dialog {
                 showColorPicker();
             }
         });
+        imageButton.addListener(main.getHandListener());
         table.add(imageButton).expandX().left();
         getContentTable().add(table).left().expandX();
         getContentTable().row();
@@ -144,10 +146,14 @@ public class DialogColors extends Dialog {
         if (styleProperty != null) {
             button("Clear Color", true);
             button("Cancel", false);
+            getButtonTable().getCells().get(0).getActor().addListener(main.getHandListener());
+            getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         } else if (selectingForTintedDrawable) {
             button("Cancel", false);
+            getButtonTable().getCells().get(0).getActor().addListener(main.getHandListener());
         } else {
             button("Close", false);
+            getButtonTable().getCells().get(0).getActor().addListener(main.getHandListener());
         }
         getButtonTable().padBottom(15.0f);
         key(Keys.ESCAPE, false);
@@ -183,6 +189,8 @@ public class DialogColors extends Dialog {
                     
                     dialog.button("Ok", true).button("Cancel", false).key(Keys.ESCAPE, false);
                     final TextButton button = (TextButton) dialog.getButtonTable().getCells().first().getActor();
+                    button.addListener(main.getHandListener());
+                    dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
                     dialog.getButtonTable().pad(15.0f);
 
                     field.setTextFieldListener(new TextField.TextFieldListener() {
@@ -245,6 +253,7 @@ public class DialogColors extends Dialog {
             colorTable.defaults().padTop(5.0f);
             for (ColorData color : colors) {
                 Button button = new Button(skin, "color-base");
+                button.addListener(main.getHandListener());
                 Label label = new Label(color.toString(), skin, "white");
                 label.setTouchable(Touchable.disabled);
                 
@@ -487,6 +496,8 @@ public class DialogColors extends Dialog {
         dialog.button("Cancel", false).key(Keys.ESCAPE, false);
         okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
         okButton.setDisabled(true);
+        okButton.addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         dialog.getButtonTable().padBottom(15.0f);
         
         textField.addListener(new ChangeListener() {

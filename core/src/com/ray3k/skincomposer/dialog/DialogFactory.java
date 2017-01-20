@@ -72,7 +72,7 @@ public class DialogFactory {
     }
     
     public void showAbout() {
-        DialogAbout dialog = new DialogAbout(skin, "dialog");
+        DialogAbout dialog = new DialogAbout(main, skin, "dialog");
         dialog.show(stage);
     }
     

@@ -29,23 +29,16 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-public class HandListener extends ClickListener {
-    private static HandListener instance;
-    
-    public static HandListener get() {
-        if (instance == null) {
-            instance = new HandListener();
-        }
-        return instance;
-    }
-    
-    private HandListener() {
+public class HandListener extends ClickListener {    
+    public HandListener() {
         super();
     }
     
     @Override
     public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-        Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+        if (pointer == -1) {
+            Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+        }
     }
 
     @Override

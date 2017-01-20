@@ -243,36 +243,50 @@ public class DialogColorPicker extends Dialog {
         hueSpinner.setMinimum(0.0);
         hueSpinner.setMaximum(359.0);
         hueSpinner.getTextField().addListener(main.getIbeamListener());
+        hueSpinner.getButtonMinus().addListener(main.getHandListener());
+        hueSpinner.getButtonPlus().addListener(main.getHandListener());
         
         saturationSpinner = new Spinner(v.y * 100.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         saturationSpinner.setMinimum(0.0);
         saturationSpinner.setMaximum(100.0);
         saturationSpinner.getTextField().addListener(main.getIbeamListener());
+        saturationSpinner.getButtonMinus().addListener(main.getHandListener());
+        saturationSpinner.getButtonPlus().addListener(main.getHandListener());
         
         brightnessSpinner = new Spinner(v.z * 100.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         brightnessSpinner.setMinimum(0.0);
         brightnessSpinner.setMaximum(100.0);
         brightnessSpinner.getTextField().addListener(main.getIbeamListener());
+        brightnessSpinner.getButtonMinus().addListener(main.getHandListener());
+        brightnessSpinner.getButtonPlus().addListener(main.getHandListener());
         
         redSpinner = new Spinner(selectedColor.r * 255.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         redSpinner.setMinimum(0.0);
         redSpinner.setMaximum(255.0);
         redSpinner.getTextField().addListener(main.getIbeamListener());
+        redSpinner.getButtonMinus().addListener(main.getHandListener());
+        redSpinner.getButtonPlus().addListener(main.getHandListener());
         
         greenSpinner = new Spinner(selectedColor.g * 255.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         greenSpinner.setMinimum(0.0);
         greenSpinner.setMaximum(255.0);
         greenSpinner.getTextField().addListener(main.getIbeamListener());
+        greenSpinner.getButtonMinus().addListener(main.getHandListener());
+        greenSpinner.getButtonPlus().addListener(main.getHandListener());
         
         blueSpinner = new Spinner(selectedColor.b * 255.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         blueSpinner.setMinimum(0.0);
         blueSpinner.setMaximum(255.0);
         blueSpinner.getTextField().addListener(main.getIbeamListener());
+        blueSpinner.getButtonMinus().addListener(main.getHandListener());
+        blueSpinner.getButtonPlus().addListener(main.getHandListener());
         
         alphaSpinner = new Spinner(selectedColor.a * 255.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
         alphaSpinner.setMinimum(0.0);
         alphaSpinner.setMaximum(255.0);
         alphaSpinner.getTextField().addListener(main.getIbeamListener());
+        alphaSpinner.getButtonMinus().addListener(main.getHandListener());
+        alphaSpinner.getButtonPlus().addListener(main.getHandListener());
         
         redSpinner.setTransversalNext(greenSpinner.getTextField());
         greenSpinner.setTransversalNext(blueSpinner.getTextField());
@@ -502,6 +516,7 @@ public class DialogColorPicker extends Dialog {
         
         table = new Table();
         TextButton textButton = new TextButton("OK", skin);
+        textButton.addListener(main.getHandListener());
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -514,6 +529,7 @@ public class DialogColorPicker extends Dialog {
         table.add(textButton).growX();
         table.row();
         textButton = new TextButton("Cancel", skin);
+        textButton.addListener(main.getHandListener());
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {

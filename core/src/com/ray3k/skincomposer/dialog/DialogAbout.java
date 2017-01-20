@@ -33,11 +33,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.skincomposer.HandListener;
 import com.ray3k.skincomposer.Main;
 
-public class DialogAbout extends Dialog {
-    public DialogAbout(Skin skin, String windowStyleName) {
+public class DialogAbout extends Dialog {    
+    public DialogAbout(Main main, Skin skin, String windowStyleName) {
         super("", skin, windowStyleName);
         
         key(Keys.ENTER, true);
@@ -54,7 +53,7 @@ public class DialogAbout extends Dialog {
         table.add(label).padBottom(0);
         table.row();
         TextButton button = new TextButton("ray3k.wordpress.com/software/skin-composer-for-libgdx/", skin, "link");
-        button.addListener(HandListener.get());
+        button.addListener(main.getHandListener());
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -64,6 +63,7 @@ public class DialogAbout extends Dialog {
         table.add(button).padTop(0);
         
         button("Close");
+        getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
         getCell(getButtonTable()).padBottom(20.0f);
         
         table.setWidth(200);
