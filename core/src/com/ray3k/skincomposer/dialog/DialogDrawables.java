@@ -80,7 +80,7 @@ import java.util.List;
 public class DialogDrawables extends Dialog {
     public static DialogDrawables instance;
     private static int[] sizes = {125, 150, 200, 250};
-    private SelectBox sizeSelectBox;
+    private SelectBox sortSelectBox;
     private ScrollPane scrollPane;
     private Slider zoomSlider;
     private StyleProperty property;
@@ -216,23 +216,25 @@ public class DialogDrawables extends Dialog {
         
         table.add("Sort by:");
         
-        sizeSelectBox = new SelectBox(getSkin());
-        sizeSelectBox.setItems("A-Z", "Z-A", "Oldest", "Newest");
-        sizeSelectBox.addListener(new ChangeListener() {
+        sortSelectBox = new SelectBox(getSkin());
+        sortSelectBox.setItems("A-Z", "Z-A", "Oldest", "Newest");
+        sortSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 sortBySelectedMode();
             }
         });
-        table.add(sizeSelectBox);
+        sortSelectBox.addListener(main.getHandListener());
+        table.add(sortSelectBox);
         
-        TextButton textButton = new TextButton("Add Drawable", getSkin());
+        TextButton textButton = new TextButton("Add Drawable", getSkin(), "new");
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 newDrawableDialog();
             }
         });
+        textButton.addListener(main.getHandListener());
         table.add(textButton);
         
         table.add(new Label("Zoom:", getSkin())).right().expandX();
@@ -243,6 +245,7 @@ public class DialogDrawables extends Dialog {
                 refreshDrawableDisplay();
             }
         });
+        zoomSlider.addListener(main.getHandListener());
         table.add(zoomSlider);
         
         getContentTable().row();
@@ -258,8 +261,11 @@ public class DialogDrawables extends Dialog {
         if (property != null) {
             button("Clear Drawable", true);
             button("Cancel", false);
+            getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+            getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         } else {
             button("Close", false);
+            getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
         }
     }
 
@@ -293,6 +299,7 @@ public class DialogDrawables extends Dialog {
                         hide();
                     }
                 });
+                drawableButton.addListener(main.getHandListener());
             } else {
                 drawableButton = new Button(getSkin(), "color-base-static");
             }
@@ -319,6 +326,9 @@ public class DialogDrawables extends Dialog {
                 }
             });
             button.addListener(fixDuplicateTouchListener);
+            if (property == null) {
+                button.addListener(main.getHandListener());
+            }
             table.add(button);
 
             //swatches
@@ -331,6 +341,9 @@ public class DialogDrawables extends Dialog {
                 }
             });
             button.addListener(fixDuplicateTouchListener);
+            if (property == null) {
+                button.addListener(main.getHandListener());
+            }
             table.add(button);
             
             //rename (ONLY FOR TINTS)
@@ -344,6 +357,9 @@ public class DialogDrawables extends Dialog {
                     }
                 });
                 button.addListener(fixDuplicateTouchListener);
+                if (property == null) {
+                    button.addListener(main.getHandListener());
+                }
                 table.add(button);
             } else {
                 table.add();
@@ -359,6 +375,9 @@ public class DialogDrawables extends Dialog {
                 }
             });
             button.addListener(fixDuplicateTouchListener);
+            if (property == null) {
+                button.addListener(main.getHandListener());
+            }
             table.add(button).expandX().right();
 
             //preview
@@ -410,6 +429,7 @@ public class DialogDrawables extends Dialog {
                     final TextField textField = new TextField(drawableData.name, getSkin());
                     final TextButton button = new TextButton("OK", getSkin());
                     button.setDisabled(!DrawableData.validate(textField.getText()) || checkIfNameExists(textField.getText()));
+                    button.addListener(main.getHandListener());
                     textField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -477,6 +497,7 @@ public class DialogDrawables extends Dialog {
 
                     approveDialog.button(button, true);
                     approveDialog.button("Cancel", false);
+                    approveDialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
                     approveDialog.key(Input.Keys.ESCAPE, false);
                     approveDialog.show(getStage());
                     getStage().setKeyboardFocus(textField);
@@ -521,6 +542,8 @@ public class DialogDrawables extends Dialog {
         dialog.button("Cancel", false).key(Keys.ESCAPE, false);
         TextButton okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
         okButton.setDisabled(true);
+        okButton.addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         
         dialog.getContentTable().row();
         textField.setText(drawable.name);
@@ -642,6 +665,8 @@ public class DialogDrawables extends Dialog {
                 + "Delete duplicates?");
         dialog.button("OK", true);
         dialog.button("Cancel", false);
+        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         dialog.key(Input.Keys.ENTER, true);
         dialog.key(Input.Keys.ESCAPE, false);
         dialog.show(getStage());
@@ -651,7 +676,7 @@ public class DialogDrawables extends Dialog {
      * Sorts by selected sort order and populates the list.
      */
     private void sortBySelectedMode() {
-        switch (sizeSelectBox.getSelectedIndex()) {
+        switch (sortSelectBox.getSelectedIndex()) {
             case 0:
                 sortDrawablesAZ();
                 break;
@@ -873,6 +898,8 @@ public class DialogDrawables extends Dialog {
                 + "Delete duplicates?");
         dialog.button("OK", true);
         dialog.button("Cancel", false);
+        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         dialog.key(Input.Keys.ENTER, true);
         dialog.key(Input.Keys.ESCAPE, false);
         dialog.show(getStage());
@@ -1007,7 +1034,9 @@ public class DialogDrawables extends Dialog {
 
                     dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
                     dialog.button(button, true);
+                    button.addListener(main.getHandListener());
                     dialog.button("Cancel", false);
+                    dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
                     dialog.key(Input.Keys.ESCAPE, false);
                     dialog.show(getStage());
                     getStage().setKeyboardFocus(textField);

@@ -148,6 +148,8 @@ public class DialogFactory {
         };
         dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("OK", true).button("Cancel", false);
+        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         final TextButton okButton = (TextButton) dialog.getButtonTable().getCells().get(0).getActor();
         
         textField.setTextFieldListener((TextField textField1, char c) -> {
@@ -214,6 +216,8 @@ public class DialogFactory {
         dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("OK", true).button("Cancel", false);
         final TextButton okButton = (TextButton) dialog.getButtonTable().getCells().get(0).getActor();
+        okButton.addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         
         textField.setTextFieldListener((TextField textField1, char c) -> {
             if (c == '\n') {
@@ -281,6 +285,8 @@ public class DialogFactory {
         
         dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("Yes, delete the style", true).button("No", false);
+        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         
         dialog.key(Input.Keys.ENTER, true).key(Input.Keys.ESCAPE, false);
         
@@ -316,6 +322,9 @@ public class DialogFactory {
                 dialog.getContentTable().getCells().first().pad(10.0f);
                 dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
                 dialog.button("Yes", 0).button("No", 1).button("Cancel", 2);
+                dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+                dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+                dialog.getButtonTable().getCells().get(2).getActor().addListener(main.getHandListener());
                 java.awt.Toolkit.getDefaultToolkit().beep();
                 dialog.show(stage);
             }
@@ -342,6 +351,8 @@ public class DialogFactory {
         dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("Yes", 0);
         dialog.button("No", 1);
+        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         dialog.key(Input.Keys.ESCAPE, 1);
         dialog.show(stage);
     }
@@ -362,6 +373,9 @@ public class DialogFactory {
         dialog.button("Yes", 0);
         dialog.button("No", 1);
         dialog.button("Cancel", 2);
+        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().get(2).getActor().addListener(main.getHandListener());
         dialog.key(Input.Keys.ESCAPE, 2);
         dialog.show(stage);
     }
@@ -380,6 +394,7 @@ public class DialogFactory {
         
         dialog.text(message);
         dialog.button("OK");
+        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
         dialog.show(stage);
     }
     
@@ -424,6 +439,8 @@ public class DialogFactory {
         dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("OK", true).key(Input.Keys.ENTER, true);
         dialog.button("Cancel", false).key(Input.Keys.ESCAPE, false);
+        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         dialog.show(stage);
     }
 }

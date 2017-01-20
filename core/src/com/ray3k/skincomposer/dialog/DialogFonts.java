@@ -145,6 +145,7 @@ public class DialogFonts extends Dialog {
                 sortBySelectedMode();
             }
         });
+        selectBox.addListener(main.getHandListener());
         table.add(selectBox);
 
         TextButton imageButton = new TextButton("New Font", skin, "new");
@@ -154,6 +155,7 @@ public class DialogFonts extends Dialog {
                 newFontDialog();
             }
         });
+        imageButton.addListener(main.getHandListener());
         table.add(imageButton).expandX();
         getContentTable().add(table).expandX().left();
         getContentTable().row();
@@ -162,8 +164,11 @@ public class DialogFonts extends Dialog {
         if (styleProperty != null) {
             button("Clear Font", true);
             button("Cancel", false);
+            getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+            getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         } else {
             button("Close", false);
+            getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
         }
         
         getButtonTable().padBottom(15.0f);
@@ -248,6 +253,7 @@ public class DialogFonts extends Dialog {
                 Label label = new Label(font.getName(), skin);
                 label.setTouchable(Touchable.disabled);
                 button.add(label).left();
+                button.addListener(main.getHandListener());
                 
                 Button renameButton = new Button(skin, "settings-small");
                 renameButton.addListener(new ChangeListener() {

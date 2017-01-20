@@ -40,6 +40,8 @@ public class DialogError extends Dialog {
         
         button("OK", true).key(Keys.ENTER, true);
         button("Cancel", false).key(Keys.ESCAPE, false);
+        getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+        getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
     }
 
     @Override
