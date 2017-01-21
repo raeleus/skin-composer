@@ -47,8 +47,10 @@ public class BrowseField extends Table {
     public BrowseField(String valueText, String labelText, BrowseFieldStyle style) {
         setTouchable(Touchable.enabled);
         
-        label = new Label(labelText, style.labelStyle);
-        add(label);
+        if (labelText != null && !labelText.equals("")) {
+            label = new Label(labelText, style.labelStyle);
+            add(label);
+        }
         
         row();
         if (valueText == null) valueText = "";

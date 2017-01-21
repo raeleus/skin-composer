@@ -722,7 +722,6 @@ public class RootTable extends Table {
         refreshPreview();
     }
     
-    //todo:Change check boxes to imagetextbuttons. Stage color label not aligned with browse field.
     private void addPreviewProperties(Table bottom, InputListener scrollPaneListener) {
         Label label = new Label("Preview Properties", getSkin(), "title");
         bottom.add(label);
@@ -788,7 +787,7 @@ public class RootTable extends Table {
                 if (clazz.equals(Button.class)) {
                     t.row();
                     t.add(new Label("Disabled: ", getSkin())).right();
-                    CheckBox disabledCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton disabledCheckBox = new ImageTextButton("", getSkin(), "switch");
                     disabledCheckBox.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -802,7 +801,7 @@ public class RootTable extends Table {
                 } else if (clazz.equals(CheckBox.class)) {
                     t.row();
                     t.add(new Label("Disabled: ", getSkin())).right();
-                    CheckBox disabledCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton disabledCheckBox = new ImageTextButton("", getSkin(), "switch");
                     disabledCheckBox.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -832,7 +831,7 @@ public class RootTable extends Table {
                 } else if (clazz.equals(ImageButton.class)) {
                     t.row();
                     t.add(new Label("Disabled: ", getSkin())).right();
-                    CheckBox disabledCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton disabledCheckBox = new ImageTextButton("", getSkin(), "switch");
                     disabledCheckBox.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -846,7 +845,7 @@ public class RootTable extends Table {
                 } else if (clazz.equals(ImageTextButton.class)) {
                     t.row();
                     t.add(new Label("Disabled: ", getSkin())).right();
-                    CheckBox disabledCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton disabledCheckBox = new ImageTextButton("", getSkin(), "switch");
                     disabledCheckBox.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -909,7 +908,7 @@ public class RootTable extends Table {
                 } else if (clazz.equals(ProgressBar.class)) {
                     t.row();
                     t.add(new Label("Disabled: ", getSkin())).right();
-                    CheckBox disabledCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton disabledCheckBox = new ImageTextButton("", getSkin(), "switch");
                     disabledCheckBox.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1017,7 +1016,7 @@ public class RootTable extends Table {
                 } else if (clazz.equals(ScrollPane.class)) {
                     t.row();
                     t.add(new Label("Scrollbars On Top: ", getSkin())).right();
-                    CheckBox onTopCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton onTopCheckBox = new ImageTextButton("", getSkin(), "switch");
                     onTopCheckBox.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1071,7 +1070,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("H Scrolling Disabled: ", getSkin())).right();
-                    CheckBox hScrollCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton hScrollCheckBox = new ImageTextButton("", getSkin(), "switch");
                     hScrollCheckBox.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1085,7 +1084,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("V Scrolling Disabled: ", getSkin())).right();
-                    CheckBox vScrollCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton vScrollCheckBox = new ImageTextButton("", getSkin(), "switch");
                     vScrollCheckBox.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1099,7 +1098,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Force H Scroll: ", getSkin())).right();
-                    CheckBox forceHScrollCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton forceHScrollCheckBox = new ImageTextButton("", getSkin(), "switch");
                     forceHScrollCheckBox.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1113,7 +1112,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Force V Scroll: ", getSkin())).right();
-                    CheckBox forceVScrollCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton forceVScrollCheckBox = new ImageTextButton("", getSkin(), "switch");
                     forceVScrollCheckBox.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1127,7 +1126,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Variable Size Knobs: ", getSkin())).right();
-                    CheckBox variableSizeKnobsCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton variableSizeKnobsCheckBox = new ImageTextButton("", getSkin(), "switch");
                     variableSizeKnobsCheckBox.setChecked(true);
                     variableSizeKnobsCheckBox.addListener(new ChangeListener() {
                         @Override
@@ -1142,7 +1141,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("H Overscroll: ", getSkin())).right();
-                    CheckBox hOverscrollCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton hOverscrollCheckBox = new ImageTextButton("", getSkin(), "switch");
                     hOverscrollCheckBox.setChecked(true);
                     hOverscrollCheckBox.addListener(new ChangeListener() {
                         @Override
@@ -1157,7 +1156,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("V Overscroll: ", getSkin())).right();
-                    CheckBox vOverscrollCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton vOverscrollCheckBox = new ImageTextButton("", getSkin(), "switch");
                     vOverscrollCheckBox.setChecked(true);
                     vOverscrollCheckBox.addListener(new ChangeListener() {
                         @Override
@@ -1172,7 +1171,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Fade Scroll Bars: ", getSkin())).right();
-                    CheckBox fadeScrollCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton fadeScrollCheckBox = new ImageTextButton("", getSkin(), "switch");
                     fadeScrollCheckBox.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1186,7 +1185,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Smooth Scrolling: ", getSkin())).right();
-                    CheckBox smoothScrollCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton smoothScrollCheckBox = new ImageTextButton("", getSkin(), "switch");
                     smoothScrollCheckBox.setChecked(true);
                     smoothScrollCheckBox.addListener(new ChangeListener() {
                         @Override
@@ -1201,7 +1200,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Flick Scroll: ", getSkin())).right();
-                    CheckBox flickScrollCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton flickScrollCheckBox = new ImageTextButton("", getSkin(), "switch");
                     flickScrollCheckBox.setChecked(true);
                     flickScrollCheckBox.addListener(new ChangeListener() {
                         @Override
@@ -1216,7 +1215,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Clamp: ", getSkin())).right();
-                    CheckBox clampCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton clampCheckBox = new ImageTextButton("", getSkin(), "switch");
                     clampCheckBox.setChecked(true);
                     clampCheckBox.addListener(new ChangeListener() {
                         @Override
@@ -1249,7 +1248,7 @@ public class RootTable extends Table {
                 } else if (clazz.equals(SelectBox.class)) {
                     t.row();
                     t.add(new Label("Disabled: ", getSkin())).right();
-                    CheckBox disabledCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton disabledCheckBox = new ImageTextButton("", getSkin(), "switch");
                     disabledCheckBox.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1290,7 +1289,7 @@ public class RootTable extends Table {
                 } else if (clazz.equals(Slider.class)) {
                     t.row();
                     t.add(new Label("Disabled: ", getSkin())).right();
-                    CheckBox disabledCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton disabledCheckBox = new ImageTextButton("", getSkin(), "switch");
                     disabledCheckBox.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1421,7 +1420,7 @@ public class RootTable extends Table {
                 } else if (clazz.equals(TextButton.class)) {
                     t.row();
                     t.add(new Label("Disabled: ", getSkin())).right();
-                    CheckBox disabledCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton disabledCheckBox = new ImageTextButton("", getSkin(), "switch");
                     disabledCheckBox.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1451,7 +1450,7 @@ public class RootTable extends Table {
                 } else if (clazz.equals(TextField.class)) {
                     t.row();
                     t.add(new Label("Disabled: ", getSkin())).right();
-                    CheckBox disabledCheckBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton disabledCheckBox = new ImageTextButton("", getSkin(), "switch");
                     disabledCheckBox.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1465,7 +1464,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Password Mode: ", getSkin())).right();
-                    CheckBox checkBox = new CheckBox("", getSkin(), "switch");
+                    ImageTextButton checkBox = new ImageTextButton("", getSkin(), "switch");
                     checkBox.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
