@@ -543,6 +543,7 @@ public class RootTable extends Table {
                     } else {
                         browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfColorStyleR);
                     }
+                    browseField.addListener(main.getHandListener());
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
@@ -553,6 +554,7 @@ public class RootTable extends Table {
                     } else {
                         browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfFontStyleR);
                     }
+                    browseField.addListener(main.getHandListener());
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
@@ -563,6 +565,7 @@ public class RootTable extends Table {
                     } else {
                         browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfDrawableStyleR);
                     }
+                    browseField.addListener(main.getHandListener());
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
@@ -577,6 +580,8 @@ public class RootTable extends Table {
                     table.row();
                     Spinner spinner = new Spinner((Double) styleProperty.value, 1.0, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                     spinner.getTextField().addListener(main.getIbeamListener());
+                    spinner.getButtonMinus().addListener(main.getHandListener());
+                    spinner.getButtonPlus().addListener(main.getHandListener());
                     table.add(spinner);
 
                     spinner.addListener(new StylePropertyChangeListener(styleProperty, spinner));
@@ -591,6 +596,7 @@ public class RootTable extends Table {
                     table.row();
                     SelectBox<StyleData> selectBox = new SelectBox<>(getSkin());
                     selectBox.setItems(scrollPaneStyles);
+                    selectBox.addListener(main.getHandListener());
                     table.add(selectBox);
 
                     selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
@@ -605,6 +611,7 @@ public class RootTable extends Table {
                     table.row();
                     SelectBox<StyleData> selectBox = new SelectBox<>(getSkin());
                     selectBox.setItems(listStyles);
+                    selectBox.addListener(main.getHandListener());
                     table.add(selectBox);
 
                     selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
@@ -619,6 +626,7 @@ public class RootTable extends Table {
                     table.row();
                     SelectBox<StyleData> selectBox = new SelectBox<>(getSkin());
                     selectBox.setItems(labelStyles);
+                    selectBox.addListener(main.getHandListener());
                     table.add(selectBox);
 
                     selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
@@ -714,6 +722,7 @@ public class RootTable extends Table {
         refreshPreview();
     }
     
+    //todo:Change check boxes to imagetextbuttons. Stage color label not aligned with browse field.
     private void addPreviewProperties(Table bottom, InputListener scrollPaneListener) {
         Label label = new Label("Preview Properties", getSkin(), "title");
         bottom.add(label);
@@ -757,6 +766,7 @@ public class RootTable extends Table {
                     });
                 }
             });
+            browseField.addListener(main.getHandListener());
             t.add(browseField).growX();
             if (previewBgColor == null) {
                 previewBgColor.set(Color.WHITE);
@@ -770,6 +780,7 @@ public class RootTable extends Table {
             previewSizeSelectBox = new SelectBox<>(getSkin());
             previewSizeSelectBox.setItems(DEFAULT_SIZES);
             previewSizeSelectBox.setSelectedIndex(1);
+            previewSizeSelectBox.addListener(main.getHandListener());
             t.add(previewSizeSelectBox).growX().minWidth(200.0f);
 
             if (classSelectBox.getSelectedIndex() >= 0) {
@@ -785,6 +796,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
+                    disabledCheckBox.addListener(main.getHandListener());
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
                     t.add(disabledCheckBox).left();
                 } else if (clazz.equals(CheckBox.class)) {
@@ -798,6 +810,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
+                    disabledCheckBox.addListener(main.getHandListener());
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
                     t.add(disabledCheckBox).left();
 
@@ -827,6 +840,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
+                    disabledCheckBox.addListener(main.getHandListener());
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
                     t.add(disabledCheckBox).left();
                 } else if (clazz.equals(ImageTextButton.class)) {
@@ -840,6 +854,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
+                    disabledCheckBox.addListener(main.getHandListener());
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
                     t.add(disabledCheckBox).left();
 
@@ -902,6 +917,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
+                    disabledCheckBox.addListener(main.getHandListener());
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
                     t.add(disabledCheckBox).left();
 
@@ -916,6 +932,8 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
+                    valueSpinner.getButtonMinus().addListener(main.getHandListener());
+                    valueSpinner.getButtonPlus().addListener(main.getHandListener());
                     valueSpinner.getTextField().addListener(main.getIbeamListener());
                     previewProperties.put("value", valueSpinner.getValue());
                     t.add(valueSpinner).growX();
@@ -932,6 +950,8 @@ public class RootTable extends Table {
                         }
                     });
                     minimumSpinner.getTextField().addListener(main.getIbeamListener());
+                    minimumSpinner.getButtonMinus().addListener(main.getHandListener());
+                    minimumSpinner.getButtonPlus().addListener(main.getHandListener());
                     previewProperties.put("minimum", minimumSpinner.getValue());
                     t.add(minimumSpinner).growX();
 
@@ -947,6 +967,8 @@ public class RootTable extends Table {
                         }
                     });
                     maximumSpinner.getTextField().addListener(main.getIbeamListener());
+                    maximumSpinner.getButtonMinus().addListener(main.getHandListener());
+                    maximumSpinner.getButtonPlus().addListener(main.getHandListener());
                     previewProperties.put("maximum", maximumSpinner.getValue());
                     t.add(maximumSpinner).growX();
 
@@ -963,6 +985,8 @@ public class RootTable extends Table {
                         }
                     });
                     incrementSpinner.getTextField().addListener(main.getIbeamListener());
+                    incrementSpinner.getButtonMinus().addListener(main.getHandListener());
+                    incrementSpinner.getButtonPlus().addListener(main.getHandListener());
                     previewProperties.put("increment", incrementSpinner.getValue());
                     t.add(incrementSpinner).growX();
 
@@ -987,6 +1011,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
+                    selectBox.addListener(main.getHandListener());
                     t.add(selectBox).growX();
 
                 } else if (clazz.equals(ScrollPane.class)) {
@@ -1001,6 +1026,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(onTopCheckBox).left();
+                    onTopCheckBox.addListener(main.getHandListener());
                     previewProperties.put("scrollbarsOnTop", onTopCheckBox.isChecked());
 
                     t.row();
@@ -1020,6 +1046,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(hScrollPosBox).growX();
+                    hScrollPosBox.addListener(main.getHandListener());
                     previewProperties.put("hScrollBarPosition", true);
 
                     t.row();
@@ -1039,6 +1066,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(vScrollPosBox).growX();
+                    vScrollPosBox.addListener(main.getHandListener());
                     previewProperties.put("vScrollBarPosition", true);
 
                     t.row();
@@ -1052,6 +1080,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(hScrollCheckBox).left();
+                    hScrollCheckBox.addListener(main.getHandListener());
                     previewProperties.put("hScrollDisabled", hScrollCheckBox.isChecked());
 
                     t.row();
@@ -1065,6 +1094,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(vScrollCheckBox).left();
+                    vScrollCheckBox.addListener(main.getHandListener());
                     previewProperties.put("vScrollDisabled", vScrollCheckBox.isChecked());
 
                     t.row();
@@ -1078,6 +1108,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(forceHScrollCheckBox).left();
+                    forceHScrollCheckBox.addListener(main.getHandListener());
                     previewProperties.put("forceHscroll", forceHScrollCheckBox.isChecked());
 
                     t.row();
@@ -1091,6 +1122,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(forceVScrollCheckBox).left();
+                    forceVScrollCheckBox.addListener(main.getHandListener());
                     previewProperties.put("forceVscroll", forceVScrollCheckBox.isChecked());
 
                     t.row();
@@ -1105,6 +1137,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(variableSizeKnobsCheckBox).left();
+                    variableSizeKnobsCheckBox.addListener(main.getHandListener());
                     previewProperties.put("variableSizeKnobs", variableSizeKnobsCheckBox.isChecked());
 
                     t.row();
@@ -1119,6 +1152,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(hOverscrollCheckBox).left();
+                    hOverscrollCheckBox.addListener(main.getHandListener());
                     previewProperties.put("hOverscroll", hOverscrollCheckBox.isChecked());
 
                     t.row();
@@ -1133,6 +1167,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(vOverscrollCheckBox).left();
+                    vOverscrollCheckBox.addListener(main.getHandListener());
                     previewProperties.put("vOverscroll", vOverscrollCheckBox.isChecked());
 
                     t.row();
@@ -1146,6 +1181,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(fadeScrollCheckBox).left();
+                    fadeScrollCheckBox.addListener(main.getHandListener());
                     previewProperties.put("fadeScroll", fadeScrollCheckBox.isChecked());
 
                     t.row();
@@ -1160,6 +1196,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(smoothScrollCheckBox).left();
+                    smoothScrollCheckBox.addListener(main.getHandListener());
                     previewProperties.put("smoothScroll", smoothScrollCheckBox.isChecked());
 
                     t.row();
@@ -1174,6 +1211,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(flickScrollCheckBox).left();
+                    flickScrollCheckBox.addListener(main.getHandListener());
                     previewProperties.put("flickScroll", flickScrollCheckBox.isChecked());
 
                     t.row();
@@ -1188,6 +1226,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(clampCheckBox).left();
+                    clampCheckBox.addListener(main.getHandListener());
                     previewProperties.put("clamp", clampCheckBox.isChecked());
 
                     t.row();
@@ -1219,6 +1258,7 @@ public class RootTable extends Table {
                         }
                     });
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
+                    disabledCheckBox.addListener(main.getHandListener());
                     t.add(disabledCheckBox).left();
 
                     t.row();
@@ -1227,6 +1267,8 @@ public class RootTable extends Table {
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(1);
                     spinner.getTextField().addListener(main.getIbeamListener());
+                    spinner.getButtonMinus().addListener(main.getHandListener());
+                    spinner.getButtonPlus().addListener(main.getHandListener());
                     t.add(spinner).growX();
 
                     t.row();
@@ -1257,6 +1299,7 @@ public class RootTable extends Table {
                         }
                     });
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
+                    disabledCheckBox.addListener(main.getHandListener());
                     t.add(disabledCheckBox).left();
 
                     t.row();
@@ -1272,6 +1315,8 @@ public class RootTable extends Table {
                     });
                     minimumSpinner.getTextField().addListener(main.getIbeamListener());
                     t.add(minimumSpinner).growX();
+                    minimumSpinner.getButtonMinus().addListener(main.getHandListener());
+                    minimumSpinner.getButtonPlus().addListener(main.getHandListener());
                     previewProperties.put("minimum", minimumSpinner.getValue());
 
                     t.row();
@@ -1287,6 +1332,8 @@ public class RootTable extends Table {
                     });
                     maximumSpinner.getTextField().addListener(main.getIbeamListener());
                     t.add(maximumSpinner).growX();
+                    maximumSpinner.getButtonMinus().addListener(main.getHandListener());
+                    maximumSpinner.getButtonPlus().addListener(main.getHandListener());
                     previewProperties.put("maximum", maximumSpinner.getValue());
 
                     t.row();
@@ -1302,6 +1349,8 @@ public class RootTable extends Table {
                     });
                     incrementSpinner.getTextField().addListener(main.getIbeamListener());
                     t.add(incrementSpinner).growX();
+                    incrementSpinner.getButtonMinus().addListener(main.getHandListener());
+                    incrementSpinner.getButtonPlus().addListener(main.getHandListener());
                     previewProperties.put("increment", incrementSpinner.getValue());
 
                     t.row();
@@ -1325,6 +1374,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
+                    selectBox.addListener(main.getHandListener());
                     t.add(selectBox).growX();
                 } else if (clazz.equals(SplitPane.class)) {
                     t.row();
@@ -1348,6 +1398,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
+                    selectBox.addListener(main.getHandListener());
                     t.add(selectBox).growX();
 
                     t.row();
@@ -1379,6 +1430,7 @@ public class RootTable extends Table {
                         }
                     });
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
+                    disabledCheckBox.addListener(main.getHandListener());
                     t.add(disabledCheckBox).left();
 
                     t.row();
@@ -1408,6 +1460,7 @@ public class RootTable extends Table {
                         }
                     });
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
+                    disabledCheckBox.addListener(main.getHandListener());
                     t.add(disabledCheckBox).left();
 
                     t.row();
@@ -1421,6 +1474,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(checkBox).left();
+                    checkBox.addListener(main.getHandListener());
                     previewProperties.put("passwordMode", checkBox.isChecked());
 
                     t.row();
@@ -1459,6 +1513,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(selectBox).growX();
+                    selectBox.addListener(main.getHandListener());
                     previewProperties.put("alignment", Align.left);
 
                     t.row();
@@ -1516,6 +1571,8 @@ public class RootTable extends Table {
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(1);
                     spinner.getTextField().addListener(main.getIbeamListener());
+                    spinner.getButtonMinus().addListener(main.getHandListener());
+                    spinner.getButtonPlus().addListener(main.getHandListener());
                     t.add(spinner).growX();
 
                     t.row();
@@ -1524,6 +1581,8 @@ public class RootTable extends Table {
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(1);
                     spinner.getTextField().addListener(main.getIbeamListener());
+                    spinner.getButtonMinus().addListener(main.getHandListener());
+                    spinner.getButtonPlus().addListener(main.getHandListener());
                     t.add(spinner).growX();
 
                 } else if (clazz.equals(Window.class)) {
@@ -1545,6 +1604,7 @@ public class RootTable extends Table {
                     t.row();
                     t.add(new Label("Sample Text Color: ", getSkin()));
                     BrowseField textColorField = new BrowseField(null, null, bfColorStyle);
+                    textColorField.addListener(main.getHandListener());
                     t.add(textColorField).growX();
 
                     t.row();
@@ -1615,20 +1675,24 @@ public class RootTable extends Table {
                         Button.ButtonStyle style = createPreviewStyle(Button.ButtonStyle.class, styleData);
                         widget = new Button(style);
                         ((Button)widget).setDisabled((boolean) previewProperties.get("disabled"));
+                        widget.addListener(main.getHandListener());
                     } else if (clazz.equals(CheckBox.class)) {
                         CheckBox.CheckBoxStyle style = createPreviewStyle(CheckBox.CheckBoxStyle.class, styleData);
                         widget = new CheckBox("", style);
                         ((CheckBox)widget).setDisabled((boolean) previewProperties.get("disabled"));
                         ((CheckBox)widget).setText((String) previewProperties.get("text"));
+                        widget.addListener(main.getHandListener());
                     } else if (clazz.equals(ImageButton.class)) {
                         ImageButtonStyle style = createPreviewStyle(ImageButtonStyle.class, styleData);
                         widget = new ImageButton(style);
                         ((ImageButton)widget).setDisabled((boolean) previewProperties.get("disabled"));
+                        widget.addListener(main.getHandListener());
                     } else if (clazz.equals(ImageTextButton.class)) {
                         ImageTextButton.ImageTextButtonStyle style = createPreviewStyle(ImageTextButton.ImageTextButtonStyle.class, styleData);
                         widget = new ImageTextButton("", style);
                         ((ImageTextButton)widget).setDisabled((boolean) previewProperties.get("disabled"));
                         ((ImageTextButton)widget).setText((String) previewProperties.get("text"));
+                        widget.addListener(main.getHandListener());
                     } else if (clazz.equals(Label.class)) {
                         LabelStyle style = createPreviewStyle(LabelStyle.class, styleData);
                         widget = new Label("", style);
@@ -1638,6 +1702,7 @@ public class RootTable extends Table {
                         widget = new List(style);
                         Array<String> items = new Array<>(((String) previewProperties.get("text")).split("\\n"));
                         ((List)widget).setItems(items);
+                        widget.addListener(main.getHandListener());
                     } else if (clazz.equals(ProgressBar.class)) {
                         ProgressBar.ProgressBarStyle style = createPreviewStyle(ProgressBar.ProgressBarStyle.class, styleData);
                         widget = new ProgressBar((float) (double) previewProperties.get("minimum"), (float) (double) previewProperties.get("maximum"), (float) (double) previewProperties.get("increment"), (boolean) previewProperties.get("orientation"), style);
@@ -1664,10 +1729,12 @@ public class RootTable extends Table {
                         ((SelectBox)widget).setDisabled((boolean) previewProperties.get("disabled"));
                         Array<String> items = new Array<>(((String) previewProperties.get("text")).split("\\n"));
                         ((SelectBox)widget).setItems(items);
+                        widget.addListener(main.getHandListener());
                     } else if (clazz.equals(Slider.class)) {
                         Slider.SliderStyle style = createPreviewStyle(Slider.SliderStyle.class, styleData);
                         widget = new Slider((float) (double) previewProperties.get("minimum"), (float) (double) previewProperties.get("maximum"), (float) (double) previewProperties.get("increment"), (boolean) previewProperties.get("orientation"), style);
                         ((Slider)widget).setDisabled((boolean) previewProperties.get("disabled"));
+                        widget.addListener(main.getHandListener());
                     } else if (clazz.equals(SplitPane.class)) {
                         SplitPane.SplitPaneStyle style = createPreviewStyle(SplitPane.SplitPaneStyle.class, styleData);
                         Label label1 = new Label("", getSkin());
@@ -1675,11 +1742,14 @@ public class RootTable extends Table {
                         widget = new SplitPane(label1, label2, (boolean) previewProperties.get("orientation"), style);
                         label1.setText((String) previewProperties.get("text"));
                         label2.setText((String) previewProperties.get("text"));
+                        //todo: use double sided arrows for this. see orientation
+                        widget.addListener(main.getHandListener());
                     } else if (clazz.equals(TextButton.class)) {
                         TextButtonStyle style = createPreviewStyle(TextButtonStyle.class, styleData);
                         widget = new TextButton("", style);
                         ((TextButton)widget).setDisabled((boolean) previewProperties.get("disabled"));
                         ((TextButton)widget).setText((String) previewProperties.get("text"));
+                        widget.addListener(main.getHandListener());
                     } else if (clazz.equals(TextField.class)) {
                         TextFieldStyle style = createPreviewStyle(TextFieldStyle.class, styleData);
                         widget = new TextField("", style);
@@ -1711,6 +1781,7 @@ public class RootTable extends Table {
                     } else if (clazz.equals(Touchpad.class)) {
                         Touchpad.TouchpadStyle style = createPreviewStyle(Touchpad.TouchpadStyle.class, styleData);
                         widget = new Touchpad(0, style);
+                        widget.addListener(main.getHandListener());
                     } else if (clazz.equals(Tree.class)) {
                         Tree.TreeStyle style = createPreviewStyle(Tree.TreeStyle.class, styleData);
                         widget = new Tree(style);
@@ -1726,6 +1797,7 @@ public class RootTable extends Table {
                             }
                             parentNode = node;
                         }
+                        widget.addListener(main.getHandListener());
                     } else if (clazz.equals(Window.class))  {
                         Window.WindowStyle style = createPreviewStyle(Window.WindowStyle.class, styleData);
 
@@ -1736,7 +1808,7 @@ public class RootTable extends Table {
                         ((Window)widget).add(sampleText);
                     }
 
-                    if (widget != null) {
+                    if (widget != null) {                        
                         switch ((int) previewProperties.get("size")) {
                             case (0):
                                 previewTable.add(widget).size(10.0f);
