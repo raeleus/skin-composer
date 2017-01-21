@@ -213,6 +213,8 @@ public class RootTable extends Table {
         MenuButtonGroup menuButtonGroup = new MenuButtonGroup();
 
         fileMenu = new MenuButton("File", getSkin());
+        fileMenu.addListener(main.getHandListener());
+        fileMenu.getMenuList().addListener(main.getHandListener());
         menuButtonGroup.add(fileMenu);
         table.add(fileMenu).padLeft(2.0f);
 
@@ -234,6 +236,8 @@ public class RootTable extends Table {
         fileMenu.addListener(new MenuBarListener(fileMenu));
 
         editMenu = new MenuButton("Edit", getSkin());
+        editMenu.addListener(main.getHandListener());
+        editMenu.getMenuList().addListener(main.getHandListener());
         menuButtonGroup.add(editMenu);
         table.add(editMenu);
 
@@ -251,6 +255,8 @@ public class RootTable extends Table {
         editMenu.addListener(new MenuBarListener(editMenu));
 
         MenuButton<MenuItem> menuButton = new MenuButton("Project", getSkin());
+        menuButton.addListener(main.getHandListener());
+        menuButton.getMenuList().addListener(main.getHandListener());
         menuButtonGroup.add(menuButton);
         table.add(menuButton);
 
@@ -262,6 +268,8 @@ public class RootTable extends Table {
         menuButton.addListener(new MenuBarListener(menuButton));
 
         menuButton = new MenuButton("Help", getSkin());
+        menuButton.addListener(main.getHandListener());
+        menuButton.getMenuList().addListener(main.getHandListener());
         menuButtonGroup.add(menuButton);
         table.add(menuButton);
 
@@ -300,6 +308,7 @@ public class RootTable extends Table {
         table.add(label).padRight(10.0f).padLeft(10.0f);
 
         classSelectBox = new SelectBox(getSkin());
+        classSelectBox.addListener(main.getHandListener());
         table.add(classSelectBox).padRight(5.0f).minWidth(150.0f);
 
         classSelectBox.addListener(new ChangeListener() {
@@ -311,9 +320,8 @@ public class RootTable extends Table {
         });
 
         Button button = new Button(getSkin(), "new");
-        //todo:add new functionality for custom classes.
-        button.setDisabled(true);
-        table.add(button);
+        //todo:add new functionality for custom classes. Add hand listener.
+//        table.add(button);
 
         button.addListener(new ChangeListener() {
             @Override
@@ -325,7 +333,8 @@ public class RootTable extends Table {
         button = new Button(getSkin(), "delete");
         //todo:add delete functionality for custom classes.
         button.setDisabled(true);
-        table.add(button).padRight(30.0f);
+//        table.add(button).padRight(30.0f);
+        table.add().padRight(60.0f);
 
         button.addListener(new ChangeListener() {
             @Override
@@ -346,8 +355,11 @@ public class RootTable extends Table {
                 fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.STYLE_SELECTED));
             }
         });
+        
+        styleSelectBox.addListener(main.getHandListener());
 
         button = new Button(getSkin(), "new");
+        button.addListener(main.getHandListener());
         table.add(button);
 
         button.addListener(new ChangeListener() {
@@ -358,6 +370,7 @@ public class RootTable extends Table {
         });
 
         button = new Button(getSkin(), "duplicate");
+        button.addListener(main.getHandListener());
         table.add(button);
 
         button.addListener(new ChangeListener() {
@@ -368,6 +381,7 @@ public class RootTable extends Table {
         });
 
         styleDeleteButton = new Button(getSkin(), "delete");
+        styleDeleteButton.addListener(main.getHandListener());
         table.add(styleDeleteButton);
 
         styleDeleteButton.addListener(new ChangeListener() {
@@ -378,7 +392,7 @@ public class RootTable extends Table {
         });
 
         button = new Button(getSkin(), "settings");
-        //todo:Add rename functionality to styles.
+        //todo:Add rename functionality to styles. Add hand listener.
         button.setDisabled(true);
         table.add(button).expandX().left();
 
@@ -392,9 +406,18 @@ public class RootTable extends Table {
         fire(new LoadClassesEvent(classSelectBox));
         fire(new LoadStylesEvent(classSelectBox, styleSelectBox));
     }
-
-    public Button getStyleDeleteButton() {
-        return styleDeleteButton;
+    
+    public void setStyleDeleteButtonDisabled(boolean disabled) {
+        styleDeleteButton.setDisabled(disabled);
+        if (disabled) {
+            if (styleDeleteButton.getListeners().contains(main.getHandListener(), true)) {
+                styleDeleteButton.removeListener(main.getHandListener());
+            }
+        } else {
+            if (!styleDeleteButton.getListeners().contains(main.getHandListener(), true)) {
+                styleDeleteButton.addListener(main.getHandListener());
+            }
+        }
     }
     
     private void addStyleAndPreviewSplit() {

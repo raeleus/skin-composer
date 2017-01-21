@@ -402,6 +402,8 @@ public class DialogFonts extends Dialog {
         dialog.button("Cancel", false).key(Keys.ESCAPE, false);
         okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
         okButton.setDisabled(true);
+        okButton.addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         
         dialog.getButtonTable().padBottom(15.0f);
         
@@ -663,6 +665,8 @@ public class DialogFonts extends Dialog {
                 
                 nameDialog.button("OK", true);
                 nameDialog.button("Cancel", false);
+                nameDialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+                nameDialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
                 final TextButton button = (TextButton) nameDialog.getButtonTable().getCells().first().getActor();
                 
                 nameDialog.getButtonTable().padBottom(15.0f);

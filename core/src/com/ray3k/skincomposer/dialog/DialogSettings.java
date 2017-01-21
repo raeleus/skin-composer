@@ -43,12 +43,12 @@ import com.ray3k.skincomposer.Spinner.SpinnerStyle;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class DialogSettings extends Dialog {
-    private SpinnerStyle spinnerStyle;
+    private final SpinnerStyle spinnerStyle;
     private Integer textureWidth;
     private Integer textureHeight;
     private Integer maxUndos;
     private boolean useStripWhitespace;
-    private Main main;
+    private final Main main;
 
     public DialogSettings(String title, String windowStyleName, Main main) {
         super(title, main.getSkin(), windowStyleName);
@@ -104,6 +104,7 @@ public class DialogSettings extends Dialog {
                 }
             }
         });
+        textButton.addListener(main.getHandListener());
         t.add(textButton).colspan(2).padTop(15.0f);
         
         t.row();
@@ -119,6 +120,7 @@ public class DialogSettings extends Dialog {
                 }
             }
         });
+        textButton.addListener(main.getHandListener());
         t.add(textButton).colspan(2);
         
         if (main.getProjectData().areChangesSaved() && main.getProjectData().getSaveFile().exists()) {
@@ -135,6 +137,7 @@ public class DialogSettings extends Dialog {
                     }
                 }
             });
+            textButton.addListener(main.getHandListener());
             t.add(textButton).colspan(2);
         }
         
@@ -157,6 +160,7 @@ public class DialogSettings extends Dialog {
                 });
             }
         });
+        textButton.addListener(main.getHandListener());
         t.add(textButton).colspan(2);
         
         t.row();
@@ -182,6 +186,8 @@ public class DialogSettings extends Dialog {
             
         });
         spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(main.getHandListener());
+        spinner.getButtonPlus().addListener(main.getHandListener());
         t.add(spinner).minWidth(150.0f).left();
         
         t.row();
@@ -203,6 +209,8 @@ public class DialogSettings extends Dialog {
             
         });
         spinner2.getTextField().addListener(main.getIbeamListener());
+        spinner2.getButtonMinus().addListener(main.getHandListener());
+        spinner2.getButtonPlus().addListener(main.getHandListener());
         t.add(spinner2).minWidth(150.0f).left();
         
         t.row();
@@ -214,6 +222,7 @@ public class DialogSettings extends Dialog {
                 useStripWhitespace = checkBox.isChecked();
             }
         });
+        checkBox.addListener(main.getHandListener());
         t.add(checkBox).colspan(2).padTop(10.0f);
         
         t.row();
@@ -236,6 +245,8 @@ public class DialogSettings extends Dialog {
             
         });
         spinner3.getTextField().addListener(main.getIbeamListener());
+        spinner3.getButtonMinus().addListener(main.getHandListener());
+        spinner3.getButtonPlus().addListener(main.getHandListener());
         t.add(spinner3).minWidth(150.0f).left().padTop(10.0f);
         
         spinner.setTransversalNext(spinner2.getTextField());
@@ -248,6 +259,8 @@ public class DialogSettings extends Dialog {
         
         button("OK", true);
         button ("Cancel", false);
+        getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+        getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         key(Keys.ESCAPE, false);
     }
 }
