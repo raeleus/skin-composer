@@ -287,6 +287,11 @@ public class DialogDrawables extends Dialog {
         manager.hideAll();
         manager.instant();
         
+        if (drawables.size == 0) {
+            Label label = new Label("No drawables have been added!", getSkin());
+            contentGroup.addActor(label);
+        }
+        
         for (DrawableData drawable : drawables) {
             Button drawableButton;
             
