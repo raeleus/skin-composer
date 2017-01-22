@@ -150,6 +150,14 @@ public class AtlasData implements Json.Serializable {
                 FileHandle outputFile = targetDirectory.child(name);
                 PixmapIO.writePNG(outputFile, savePixmap);
                 DrawableData drawable = new DrawableData(outputFile);
+                
+                //delete drawables with the same name
+                for (DrawableData originalData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {
+                    if (originalData.name.equals(drawable.name)) {
+                        main.getProjectData().getAtlasData().getDrawables().removeValue(originalData, true);
+                    }
+                }
+                    
                 drawables.add(drawable);
             }
             

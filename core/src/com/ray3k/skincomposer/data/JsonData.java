@@ -106,6 +106,14 @@ public class JsonData implements Json.Serializable {
                         fontFile.copyTo(fontCopy);
                     }
                     FontData fontData = new FontData(font.name(), fontCopy);
+                    
+                    //delete fonts with the same name
+                    for (FontData originalData : new Array<>(fonts)) {
+                        if (originalData.getName().equals(fontData.getName())) {
+                            fonts.removeValue(originalData, true);
+                        }
+                    }
+                    
                     fonts.add(fontData);
 
                     BitmapFont.BitmapFontData bitmapFontData = new BitmapFont.BitmapFontData(fontCopy, false);
@@ -118,6 +126,14 @@ public class JsonData implements Json.Serializable {
             else if (child.name().equals(Color.class.getName())) {
                 for (JsonValue color : child.iterator()) {
                     ColorData colorData = new ColorData(color.name, new Color(color.getFloat("r", 0.0f), color.getFloat("g", 0.0f), color.getFloat("b", 0.0f), color.getFloat("a", 0.0f)));
+                    
+                    //delete colors with the same name
+                    for (ColorData originalData : new Array<>(colors)) {
+                        if (originalData.getName().equals(colorData.getName())) {
+                            colors.removeValue(originalData, true);
+                        }
+                    }
+                    
                     colors.add(colorData);
                 }
             } //tinted drawables
@@ -131,6 +147,15 @@ public class JsonData implements Json.Serializable {
                     } else {
                         drawableData.tintName = tintedDrawable.getString("color");
                     }
+                    
+                    //todo:test overwriting a base drawable that is depended on by another tint
+                    //delete drawables with the same name
+                    for (DrawableData originalData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {
+                        if (originalData.name.equals(drawableData.name)) {
+                            main.getProjectData().getAtlasData().getDrawables().removeValue(originalData, true);
+                        }
+                    }
+                    
                     main.getProjectData().getAtlasData().getDrawables().add(drawableData);
                 }
             } //styles
