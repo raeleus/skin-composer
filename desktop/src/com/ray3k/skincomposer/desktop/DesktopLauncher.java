@@ -41,6 +41,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         config.setWindowListener(desktopLauncher);
         config.setTitle("Skin Composer - New Project*");
         config.setWindowSizeLimits(675, 400, -1, -1);
+        config.setWindowIcon("logo-16.png", "logo-32.png", "logo-48.png", "logo.png");
         Main main = new Main();
         main.setDesktopWorker(desktopLauncher);
         
