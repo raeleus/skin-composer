@@ -1074,13 +1074,6 @@ public class RootTable extends Table {
                     t.add(new Label("Minimum: ", getSkin())).right();
                     Spinner minimumSpinner = new Spinner(0.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                     minimumSpinner.getTextField().setFocusTraversal(false);
-                    minimumSpinner.addListener(new ChangeListener() {
-                        @Override
-                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                            previewProperties.put("minimum", minimumSpinner.getValue());
-                            refreshPreview();
-                        }
-                    });
                     minimumSpinner.getTextField().addListener(main.getIbeamListener());
                     minimumSpinner.getButtonMinus().addListener(main.getHandListener());
                     minimumSpinner.getButtonPlus().addListener(main.getHandListener());
@@ -1091,19 +1084,31 @@ public class RootTable extends Table {
                     t.add(new Label("Maximum: ", getSkin())).right();
                     Spinner maximumSpinner = new Spinner(100.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                     maximumSpinner.getTextField().setFocusTraversal(false);
-                    maximumSpinner.addListener(new ChangeListener() {
-                        @Override
-                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                            previewProperties.put("maximum", maximumSpinner.getValue());
-                            refreshPreview();
-                        }
-                    });
                     maximumSpinner.getTextField().addListener(main.getIbeamListener());
                     maximumSpinner.getButtonMinus().addListener(main.getHandListener());
                     maximumSpinner.getButtonPlus().addListener(main.getHandListener());
                     previewProperties.put("maximum", maximumSpinner.getValue());
                     t.add(maximumSpinner).growX();
 
+                    minimumSpinner.setMaximum(maximumSpinner.getValue());
+                    maximumSpinner.setMinimum(minimumSpinner.getValue());
+                    minimumSpinner.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                            previewProperties.put("minimum", minimumSpinner.getValue());
+                            maximumSpinner.setMinimum(minimumSpinner.getValue());
+                            refreshPreview();
+                        }
+                    });
+                    maximumSpinner.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                            previewProperties.put("maximum", maximumSpinner.getValue());
+                            minimumSpinner.setMaximum(maximumSpinner.getValue());
+                            refreshPreview();
+                        }
+                    });
+                    
                     t.row();
                     t.add(new Label("Increment: ", getSkin())).right();
                     Spinner incrementSpinner = new Spinner(1.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
@@ -1438,13 +1443,6 @@ public class RootTable extends Table {
                     t.add(new Label("Minimum: ", getSkin())).right();
                     Spinner minimumSpinner = new Spinner(0.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                     minimumSpinner.getTextField().setFocusTraversal(false);
-                    minimumSpinner.addListener(new ChangeListener() {
-                        @Override
-                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                            previewProperties.put("minimum", minimumSpinner.getValue());
-                            refreshPreview();
-                        }
-                    });
                     minimumSpinner.getTextField().addListener(main.getIbeamListener());
                     t.add(minimumSpinner).growX();
                     minimumSpinner.getButtonMinus().addListener(main.getHandListener());
@@ -1455,18 +1453,30 @@ public class RootTable extends Table {
                     t.add(new Label("Maximum: ", getSkin())).right();
                     Spinner maximumSpinner = new Spinner(100.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                     maximumSpinner.getTextField().setFocusTraversal(false);
-                    maximumSpinner.addListener(new ChangeListener() {
-                        @Override
-                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                            previewProperties.put("maximum", maximumSpinner.getValue());
-                            refreshPreview();
-                        }
-                    });
                     maximumSpinner.getTextField().addListener(main.getIbeamListener());
                     t.add(maximumSpinner).growX();
                     maximumSpinner.getButtonMinus().addListener(main.getHandListener());
                     maximumSpinner.getButtonPlus().addListener(main.getHandListener());
                     previewProperties.put("maximum", maximumSpinner.getValue());
+                    
+                    minimumSpinner.setMaximum(maximumSpinner.getValue());
+                    maximumSpinner.setMinimum(minimumSpinner.getValue());
+                    minimumSpinner.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                            previewProperties.put("minimum", minimumSpinner.getValue());
+                            maximumSpinner.setMinimum(minimumSpinner.getValue());
+                            refreshPreview();
+                        }
+                    });
+                    maximumSpinner.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                            previewProperties.put("maximum", maximumSpinner.getValue());
+                            minimumSpinner.setMaximum(maximumSpinner.getValue());
+                            refreshPreview();
+                        }
+                    });
 
                     t.row();
                     t.add(new Label("Increment: ", getSkin())).right();
