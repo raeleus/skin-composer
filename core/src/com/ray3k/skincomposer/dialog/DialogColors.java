@@ -438,7 +438,7 @@ public class DialogColors extends Dialog {
     }
     
     private void recolorDialog(ColorData colorData) {
-        dialogFactory.showDialogColorPicker(new DialogColorPicker.ColorListener() {
+        dialogFactory.showDialogColorPicker(colorData.color, new DialogColorPicker.ColorListener() {
             @Override
             public void selected(Color color) {
                 if (color != null) {
