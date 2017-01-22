@@ -11,7 +11,9 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 
 * Switched to TinyFileDialogs for all file dialogs across all platforms.
 * Updated user interface to Skin Composer UI.
+* Recent files menu option.
 * Refactored all of the interface code to allow for new features.
+* Multiple bug fixes and improvements.
 
 ### Contact ###
 
@@ -32,7 +34,7 @@ These will remain as issues until I can get my hands a proper Mac to do testing.
 ### License ###
 MIT License
 
-Copyright (c) 2016 Raymond Buckley
+Copyright (c) 2017 Raymond Buckley
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
