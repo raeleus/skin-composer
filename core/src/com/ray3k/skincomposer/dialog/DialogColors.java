@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Sort;
@@ -367,11 +368,30 @@ public class DialogColors extends Dialog {
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         colors.removeValue(deleteColor, true);
                         
+                        //clear style properties that use this color.
                         for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
                             for (StyleData data : datas) {
                                 for (StyleProperty property : data.properties.values()) {
                                     if (property != null && property.type.equals(Color.class) && property.value != null && property.value.equals(deleteColor.getName())) {
                                         property.value = null;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        //delete tinted drawables based on this color.
+                        for(DrawableData drawableData : new Array<>(projectData.getAtlasData().getDrawables())) {
+                            if (drawableData.tintName != null && drawableData.tintName.equals(deleteColor.getName())) {
+                                projectData.getAtlasData().getDrawables().removeValue(drawableData, true);
+                                
+                                //clear any style properties based on this tinted drawable.
+                                for (Array<StyleData> styleDatas : jsonData.getClassStyleMap().values()) {
+                                    for (StyleData styleData : styleDatas) {
+                                        for (StyleProperty styleProperty : styleData.properties.values()) {
+                                            if (styleProperty != null && styleProperty.type.equals(Drawable.class) && styleProperty.value != null && styleProperty.value.equals(drawableData.toString())) {
+                                                styleProperty.value = null;
+                                            }
+                                        }
                                     }
                                 }
                             }
