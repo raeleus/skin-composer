@@ -267,7 +267,7 @@ public class DialogColors extends Dialog {
                     label.setColor(borderColor);
                 }
                 
-                Color bgColor = color.color;
+                Color bgColor = new Color(color.color.r, color.color.g, color.color.b, 1.0f);
                 Table table = new Table(skin);
                 table.setBackground("white");
                 table.setColor(bgColor);
