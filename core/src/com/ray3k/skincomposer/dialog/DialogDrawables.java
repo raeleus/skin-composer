@@ -80,7 +80,8 @@ import java.util.List;
 
 public class DialogDrawables extends Dialog {
     public static DialogDrawables instance;
-    private static int[] sizes = {125, 150, 200, 250};
+    private final static int[] sizes = {125, 150, 200, 250};
+    private static float scrollPosition = 0.0f;
     private SelectBox sortSelectBox;
     private ScrollPane scrollPane;
     private Slider zoomSlider;
@@ -253,11 +254,11 @@ public class DialogDrawables extends Dialog {
         getContentTable().row();
         contentGroup = new HorizontalGroup();
         contentGroup.center().wrap(true).space(5.0f).wrapSpace(5.0f).rowAlign(Align.left);
-        sortBySelectedMode();
         scrollPane = new ScrollPane(contentGroup, getSkin());
         scrollPane.setFadeScrollBars(false);
         scrollPane.setFlickScroll(false);
         getContentTable().add(scrollPane).grow();
+        sortBySelectedMode();
         
         getContentTable().row();
         if (property != null) {
@@ -275,6 +276,8 @@ public class DialogDrawables extends Dialog {
     public Dialog show(Stage stage, Action action) {
         Dialog dialog = super.show(stage, action);
         stage.setScrollFocus(scrollPane);
+        validate();
+        scrollPane.setScrollY(scrollPosition);
         return dialog;
     }
     
@@ -1073,7 +1076,9 @@ public class DialogDrawables extends Dialog {
     }
     
     @Override
-    public boolean remove() {        
+    public boolean remove() {
+        scrollPosition = scrollPane.getScrollY();
+        
         main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
         
         try {
