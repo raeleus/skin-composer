@@ -129,6 +129,7 @@ public class MainListener extends RootTableListener {
                 dialogFactory.showDeleteStyleDialog(main.getSkin(), main.getStage());
                 break;
             case RENAME_STYLE:
+                dialogFactory.showRenameStyleDialog(main.getSkin(), main.getStage());
                 break;
             case PREVIEW_PROPERTY:
                 break;
@@ -323,6 +324,7 @@ public class MainListener extends RootTableListener {
                 StyleData styleData = styleDatas.get(styleIndex);
 
                 root.setStyleDeleteButtonDisabled(!styleData.deletable);
+                root.setStyleRenameButtonDisabled(!styleData.deletable);
 
                 root.setStyleProperties(styleData.properties.values().toArray());
                 root.refreshStyleProperties(false);

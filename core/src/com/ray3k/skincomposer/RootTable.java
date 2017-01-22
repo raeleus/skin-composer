@@ -141,6 +141,7 @@ public class RootTable extends Table {
     private MenuButton editMenu;
     private Label statusLabel;
     private Button styleDeleteButton;
+    private Button styleRenameButton;
     private final DragListener hSplitPaneDragListener;
     private final DragListener vSplitPaneDragListener;
     private final InputListener hSplitPaneInputListener;
@@ -466,12 +467,10 @@ public class RootTable extends Table {
             }
         });
 
-        button = new Button(getSkin(), "settings");
-        //todo:Add rename functionality to styles. Add hand listener.
-        button.setDisabled(true);
-        table.add(button).expandX().left();
+        styleRenameButton = new Button(getSkin(), "settings");
+        table.add(styleRenameButton).expandX().left();
 
-        button.addListener(new ChangeListener() {
+        styleRenameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 fire(new RootTableEvent(RootTableEnum.RENAME_STYLE));
@@ -491,6 +490,19 @@ public class RootTable extends Table {
         } else {
             if (!styleDeleteButton.getListeners().contains(main.getHandListener(), true)) {
                 styleDeleteButton.addListener(main.getHandListener());
+            }
+        }
+    }
+    
+    public void setStyleRenameButtonDisabled(boolean disabled) {
+        styleRenameButton.setDisabled(disabled);
+        if (disabled) {
+            if (styleRenameButton.getListeners().contains(main.getHandListener(), true)) {
+                styleRenameButton.removeListener(main.getHandListener());
+            }
+        } else {
+            if (!styleRenameButton.getListeners().contains(main.getHandListener(), true)) {
+                styleRenameButton.addListener(main.getHandListener());
             }
         }
     }
@@ -671,6 +683,22 @@ public class RootTable extends Table {
                     SelectBox<StyleData> selectBox = new SelectBox<>(getSkin());
                     selectBox.setItems(scrollPaneStyles);
                     selectBox.addListener(main.getHandListener());
+                    
+                    if (styleProperty.value != null) {
+                        String name = ((String) styleProperty.value);
+                        int index = 0;
+                        for (StyleData styleData : scrollPaneStyles) {
+                            if (styleData.name.equals(name)) {
+                                break;
+                            } else {
+                                index++;
+                            }
+                        }
+                        if (index < scrollPaneStyles.size) {
+                            selectBox.setSelectedIndex(index);
+                        }
+                    }
+                    
                     table.add(selectBox);
 
                     selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
@@ -686,6 +714,21 @@ public class RootTable extends Table {
                     SelectBox<StyleData> selectBox = new SelectBox<>(getSkin());
                     selectBox.setItems(listStyles);
                     selectBox.addListener(main.getHandListener());
+                    
+                    if (styleProperty.value != null) {
+                        String name = ((String) styleProperty.value);
+                        int index = 0;
+                        for (StyleData styleData : listStyles) {
+                            if (styleData.name.equals(name)) {
+                                break;
+                            } else {
+                                index++;
+                            }
+                        }
+                        if (index < listStyles.size) {
+                            selectBox.setSelectedIndex(index);
+                        }
+                    }
                     table.add(selectBox);
 
                     selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
@@ -701,6 +744,22 @@ public class RootTable extends Table {
                     SelectBox<StyleData> selectBox = new SelectBox<>(getSkin());
                     selectBox.setItems(labelStyles);
                     selectBox.addListener(main.getHandListener());
+                    
+                    if (styleProperty.value != null) {
+                        String name = ((String) styleProperty.value);
+                        int index = 0;
+                        for (StyleData styleData : labelStyles) {
+                            if (styleData.name.equals(name)) {
+                                break;
+                            } else {
+                                index++;
+                            }
+                        }
+                        if (index < labelStyles.size) {
+                            selectBox.setSelectedIndex(index);
+                        }
+                    }
+                    
                     table.add(selectBox);
 
                     selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));

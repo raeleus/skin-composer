@@ -40,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.UndoableManager;
 import com.ray3k.skincomposer.UndoableManager.DeleteStyleUndoable;
 import com.ray3k.skincomposer.UndoableManager.DuplicateStyleUndoable;
 import com.ray3k.skincomposer.UndoableManager.NewStyleUndoable;
@@ -291,6 +292,72 @@ public class DialogFactory {
         dialog.key(Input.Keys.ENTER, true).key(Input.Keys.ESCAPE, false);
         
         dialog.show(stage);
+    }
+    
+    public void showRenameStyleDialog(Skin skin, Stage stage) {
+        Class selectedClass = main.getRootTable().getSelectedClass();
+        
+        final TextField textField = new TextField(main.getRootTable().getSelectedStyle().name, skin);
+        Dialog dialog = new Dialog("Rename Style", skin, "bg") {
+            @Override
+            protected void result(Object object) {
+                if ((Boolean)object) {
+                    main.getUndoableManager().addUndoable(new UndoableManager.RenameStyleUndoable(main.getRootTable().getSelectedStyle(), main, textField.getText()), true);
+                }
+            }
+        };
+        dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
+        dialog.button("OK", true).button("Cancel", false);
+        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        final TextButton okButton = (TextButton) dialog.getButtonTable().getCells().get(0).getActor();
+        
+        textField.setTextFieldListener((TextField textField1, char c) -> {
+            if (c == '\n') {
+                if (!okButton.isDisabled()) {
+                    main.getUndoableManager().addUndoable(new UndoableManager.RenameStyleUndoable(main.getRootTable().getSelectedStyle(), main, textField1.getText()), true);
+                    dialog.hide();
+                }
+                main.getStage().setKeyboardFocus(textField1);
+            }
+        });
+        
+        textField.addListener(main.getIbeamListener());
+        
+        dialog.getTitleLabel().setAlignment(Align.center);
+        dialog.getContentTable().defaults().padLeft(10.0f).padRight(10.0f);
+        dialog.text("What would you like to rename the style \"" + main.getRootTable().getSelectedStyle().name + "\" to?");
+        dialog.getContentTable().getCells().first().pad(10.0f);
+        dialog.getContentTable().row();
+        dialog.getContentTable().add(textField).growX();
+        okButton.setDisabled(true);
+        
+        Array<StyleData> currentStyles = main.getProjectData().getJsonData().getClassStyleMap().get(selectedClass);
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                boolean disable = !StyleData.validate(textField.getText());
+                
+                if (!disable) {
+                    for (StyleData data : currentStyles) {
+                        if (data.name.equals(textField.getText())) {
+                            disable = true;
+                            break;
+                        }
+                    }
+                }
+                
+                okButton.setDisabled(disable);
+            }
+        });
+        
+        
+        dialog.key(Input.Keys.ESCAPE, false);
+        
+        dialog.show(stage);
+        stage.setKeyboardFocus(textField);
+        textField.selectAll();
+        textField.setFocusTraversal(false);
     }
     
     public void showCloseDialog() {

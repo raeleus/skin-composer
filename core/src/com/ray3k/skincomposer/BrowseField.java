@@ -43,7 +43,6 @@ public class BrowseField extends Table {
     private Button button;
     private Label label;
     
-    //todo: use a textbutton style for  the text portion. Don't use a textfield so you can get mouse over effects.
     public BrowseField(String valueText, String labelText, BrowseFieldStyle style) {
         setTouchable(Touchable.enabled);
         

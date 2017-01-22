@@ -228,4 +228,16 @@ public class Main extends ApplicationAdapter {
     public void setHandListener(HandListener handListener) {
         this.handListener = handListener;
     }
+
+    public static Class basicToStyleClass(Class clazz) {
+        int i = 0;
+        for (Class basicClass : BASIC_CLASSES) {
+            if (clazz.equals(basicClass)) {
+                break;
+            } else {
+                i++;
+            }
+        }
+        return STYLE_CLASSES[i];
+    }
 }

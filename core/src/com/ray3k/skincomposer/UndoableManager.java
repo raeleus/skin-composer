@@ -429,4 +429,57 @@ public class UndoableManager {
             return "Delete Style \"" + styleData.name + "\"";
         }
     }
+
+    public static class RenameStyleUndoable implements Undoable {
+        private final StyleData styleData;
+        private final Main main;
+        private final String oldName;
+        private final String newName;
+
+        public RenameStyleUndoable(StyleData styleData, Main main, String name) {
+            this.styleData = styleData;
+            this.main = main;
+            
+            oldName = styleData.name;
+            newName = name;
+        }
+        
+        @Override
+        public void undo() {
+            styleData.name = oldName;
+            
+            for (Array<StyleData> styles : main.getProjectData().getJsonData().getClassStyleMap().values()) {
+                for (StyleData style : styles) {
+                    for (StyleProperty styleProperty : style.properties.values()) {
+                        if (styleProperty.type.equals(Main.basicToStyleClass(styleData.clazz)) && styleProperty.value.equals(newName)) {
+                            styleProperty.value = oldName;
+                        }
+                    }
+                }
+            }
+            main.getRootTable().refreshStyles(true);
+        }
+
+        @Override
+        public void redo() {
+            styleData.name = newName;
+            
+            for (Array<StyleData> styles : main.getProjectData().getJsonData().getClassStyleMap().values()) {
+                for (StyleData style : styles) {
+                    for (StyleProperty styleProperty : style.properties.values()) {
+                        if (styleProperty.type.equals(Main.basicToStyleClass(styleData.clazz)) && styleProperty.value.equals(oldName)) {
+                            styleProperty.value = newName;
+                        }
+                    }
+                }
+            }
+            main.getRootTable().refreshStyles(true);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Rename Style \"" + styleData.name + "\"";
+        }
+        
+    }
 }
