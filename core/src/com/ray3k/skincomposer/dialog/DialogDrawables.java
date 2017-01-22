@@ -858,7 +858,7 @@ public class DialogDrawables extends Dialog {
         Array<FileHandle> unhandledFiles = new Array<>();
         Array<FileHandle> filesToProcess = new Array<>();
         
-        projectData.setLastDrawablePath(files.get(0).parent().path());
+        projectData.setLastDrawablePath(files.get(0).parent().path() + "/");
         for (FileHandle fileHandle : files) {
             if (checkDuplicateDrawables(fileHandle, 0)) {
                 unhandledFiles.add(fileHandle);
