@@ -13,19 +13,26 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.Main;
 
-public class DialogNewClass extends Dialog {
+public class DialogCustomClass extends Dialog {
     private boolean customNameEntered;
     private final TextField classField, displayField;
     private final TextButton okButton;
+    private Main main;
     
-    public DialogNewClass(Main main) {
-        super("New Custom Class", main.getSkin(), "bg");
+    public DialogCustomClass(Main main) {
+        this(main, false, null, null);
+    }
+    
+    public DialogCustomClass(Main main, boolean renameMode, String fullyQualifiedName, String displayName) {
+        super(!renameMode ? "New Custom Class" : "Rename Custom Class", main.getSkin(), "bg");
         getTitleLabel().setAlignment(Align.center);
         
+        this.main = main;
         customNameEntered = false;
         
         Label label = new Label("What is the fully qualified name?", getSkin());
         getContentTable().add(label).pad(10.0f).padBottom(0.0f);
+        
         getContentTable().row();
         label = new Label("(ex. com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle)", getSkin());
         getContentTable().add(label).pad(10.0f).padTop(0.0f).padBottom(5.0f);
@@ -38,6 +45,8 @@ public class DialogNewClass extends Dialog {
                 displayField.selectAll();
             }
         };
+        classField.setText(fullyQualifiedName);
+        classField.selectAll();
         classField.addListener(main.getIbeamListener());
         getContentTable().add(classField).growX().padLeft(10.0f).padRight(10.0f);
         
@@ -56,6 +65,7 @@ public class DialogNewClass extends Dialog {
                 classField.selectAll();
             }
         };
+        displayField.setText(displayName);
         displayField.addListener(main.getIbeamListener());
         getContentTable().add(displayField).growX().padLeft(10.0f).padRight(10.0f);
         
@@ -105,34 +115,40 @@ public class DialogNewClass extends Dialog {
     protected void result(Object object) {
         super.result(object);
         
-        fire(new NewClassEvent((boolean) object, classField.getText(), displayField.getText()));
+        fire(new CustomClassEvent((boolean) object, classField.getText(), displayField.getText()));
     }
     
     private void updateOkButton() {
         if (classField.getText().matches("^.*[^\\.]$") && !displayField.getText().equals("")) {
             okButton.setDisabled(false);
+            if (!okButton.getListeners().contains(main.getHandListener(), true)) {
+                okButton.addListener(main.getHandListener());
+            }
         } else {
             okButton.setDisabled(true);
+            if (okButton.getListeners().contains(main.getHandListener(), true)) {
+                okButton.removeListener(main.getHandListener());
+            }
         }
     }
     
-    private static class NewClassEvent extends Event {
+    private static class CustomClassEvent extends Event {
         boolean result;
         String fullyQualifiedName;
         String displayName;
         
-        public NewClassEvent(boolean result, String fullyQualifiedName, String displayName) {
+        public CustomClassEvent(boolean result, String fullyQualifiedName, String displayName) {
             this.result = result;
             this.fullyQualifiedName = fullyQualifiedName;
             this.displayName = displayName;
         }
     }
     
-    public static abstract class NewClassListener implements EventListener {
+    public static abstract class CustomClassListener implements EventListener {
         @Override
         public boolean handle(Event event) {
-            if (event instanceof NewClassEvent) {
-                NewClassEvent newClassEvent = (NewClassEvent) event;
+            if (event instanceof CustomClassEvent) {
+                CustomClassEvent newClassEvent = (CustomClassEvent) event;
                 if (newClassEvent.result) {
                     newClassEntered(newClassEvent.fullyQualifiedName, newClassEvent.displayName);
                 } else {

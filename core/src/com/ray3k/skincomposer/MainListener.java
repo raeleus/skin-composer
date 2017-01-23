@@ -41,7 +41,7 @@ import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.skincomposer.dialog.DialogNewClass;
+import com.ray3k.skincomposer.dialog.DialogCustomClass;
 import java.io.File;
 
 public class MainListener extends RootTableListener {
@@ -113,7 +113,7 @@ public class MainListener extends RootTableListener {
                 updateStyleProperties();
                 break;
             case NEW_CLASS:
-                dialogFactory.showNewClassDialog(new DialogNewClass.NewClassListener() {
+                dialogFactory.showNewClassDialog(new DialogCustomClass.CustomClassListener() {
                     @Override
                     public void newClassEntered(String fullyQualifiedName,
                             String displayName) {
@@ -131,6 +131,18 @@ public class MainListener extends RootTableListener {
             case DELETE_CLASS:
                 break;
             case RENAME_CLASS:
+                dialogFactory.showRenameClassDialog("test.class", "test", new DialogCustomClass.CustomClassListener() {
+                    @Override
+                    public void newClassEntered(String fullyQualifiedName,
+                            String displayName) {
+                        renameClass(fullyQualifiedName, displayName);
+                    }
+
+                    @Override
+                    public void cancelled() {
+                        
+                    }
+                });
                 break;
             case STYLE_SELECTED:
                 updateStyleProperties();
@@ -295,6 +307,10 @@ public class MainListener extends RootTableListener {
     public void newClass(String fullyQualifiedName, String displayName) {
         System.out.println(fullyQualifiedName);
         System.out.println(displayName);
+    }
+    
+    public void renameClass(String fullyQualifiedname, String displayName) {
+        
     }
     
     @Override

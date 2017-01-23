@@ -50,7 +50,7 @@ import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.ProjectData.RecentFile;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.skincomposer.dialog.DialogNewClass.NewClassListener;
+import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
 
 public class DialogFactory {
 
@@ -518,8 +518,14 @@ public class DialogFactory {
         dialog.show(stage);
     }
 
-    public void showNewClassDialog(NewClassListener listener) {
-        DialogNewClass dialog = new DialogNewClass(main);
+    public void showNewClassDialog(CustomClassListener listener) {
+        DialogCustomClass dialog = new DialogCustomClass(main);
+        dialog.addListener(listener);
+        dialog.show(stage);
+    }
+    
+    public void showRenameClassDialog(String fullyQualifiedName, String displayName, CustomClassListener listener) {
+        DialogCustomClass dialog = new DialogCustomClass(main, true, fullyQualifiedName, displayName);
         dialog.addListener(listener);
         dialog.show(stage);
     }
