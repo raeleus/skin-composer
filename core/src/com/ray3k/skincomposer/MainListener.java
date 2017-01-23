@@ -41,6 +41,7 @@ import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
+import com.ray3k.skincomposer.dialog.DialogNewClass;
 import java.io.File;
 
 public class MainListener extends RootTableListener {
@@ -112,9 +113,24 @@ public class MainListener extends RootTableListener {
                 updateStyleProperties();
                 break;
             case NEW_CLASS:
-                //set root table's class list
+                dialogFactory.showNewClassDialog(new DialogNewClass.NewClassListener() {
+                    @Override
+                    public void newClassEntered(String fullyQualifiedName,
+                            String displayName) {
+                        newClass(fullyQualifiedName, displayName);
+                    }
+
+                    @Override
+                    public void cancelled() {
+                        
+                    }
+                });
+                break;
+            case DUPLICATE_CLASS:
                 break;
             case DELETE_CLASS:
+                break;
+            case RENAME_CLASS:
                 break;
             case STYLE_SELECTED:
                 updateStyleProperties();
@@ -276,6 +292,11 @@ public class MainListener extends RootTableListener {
         });
     }
 
+    public void newClass(String fullyQualifiedName, String displayName) {
+        System.out.println(fullyQualifiedName);
+        System.out.println(displayName);
+    }
+    
     @Override
     public void loadClasses(SelectBox<String> classSelectBox) {
         Array<String> names = new Array<>();
@@ -316,9 +337,12 @@ public class MainListener extends RootTableListener {
     
     private void updateStyleProperties() {
         int classIndex = root.getClassSelectBox().getSelectedIndex();
-        if (classIndex >= 0) {
-            Array<StyleData> styleDatas = jsonData.getClassStyleMap().values().toArray().get(classIndex);
+        if (classIndex >= 0 && classIndex < Main.BASIC_CLASSES.length) {
+            root.setClassDeleteButtonDisabled(true);
+            root.setClassRenameButtonDisabled(true);
 
+            Array<StyleData> styleDatas = jsonData.getClassStyleMap().values().toArray().get(classIndex);
+            
             int styleIndex = root.getStyleSelectBox().getSelectedIndex();
             if (styleIndex >= 0 && styleIndex < styleDatas.size) {
                 StyleData styleData = styleDatas.get(styleIndex);
@@ -331,6 +355,9 @@ public class MainListener extends RootTableListener {
                 root.refreshPreviewProperties();
                 root.refreshPreview();
             }
+        } else {
+            root.setClassDeleteButtonDisabled(false);
+            root.setClassRenameButtonDisabled(false);
         }
     }
 }

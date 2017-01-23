@@ -140,6 +140,8 @@ public class RootTable extends Table {
     private MenuButton fileMenu;
     private MenuButton editMenu;
     private Label statusLabel;
+    private Button classDeleteButton;
+    private Button classRenameButton;
     private Button styleDeleteButton;
     private Button styleRenameButton;
     private final DragListener hSplitPaneDragListener;
@@ -397,7 +399,8 @@ public class RootTable extends Table {
 
         Button button = new Button(getSkin(), "new");
         //todo:add new functionality for custom classes. Add hand listener.
-//        table.add(button);
+        button.addListener(main.getHandListener());
+        table.add(button);
 
         button.addListener(new ChangeListener() {
             @Override
@@ -406,16 +409,39 @@ public class RootTable extends Table {
             }
         });
 
-        button = new Button(getSkin(), "delete");
-        //todo:add delete functionality for custom classes.
-        button.setDisabled(true);
-//        table.add(button).padRight(30.0f);
-        table.add().padRight(60.0f);
+        button = new Button(getSkin(), "duplicate");
+        //todo:add duplicate functionality for custom classes.
+        button.addListener(main.getHandListener());
+        table.add(button);
 
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                fire(new RootTableEvent(RootTableEnum.DUPLICATE_CLASS));
+            }
+        });
+        
+        classDeleteButton = new Button(getSkin(), "delete");
+        //todo:add delete functionality for custom classes.
+        classDeleteButton.setDisabled(true);
+        table.add(classDeleteButton);
+
+        classDeleteButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 fire(new RootTableEvent(RootTableEnum.DELETE_CLASS));
+            }
+        });
+        
+        classRenameButton = new Button(getSkin(), "settings");
+        //todo:add rename functionality for custom classes.
+        classRenameButton.setDisabled(true);
+        table.add(classRenameButton).padRight(30.0f);
+
+        classRenameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                fire(new RootTableEvent(RootTableEnum.RENAME_CLASS));
             }
         });
 
@@ -479,6 +505,32 @@ public class RootTable extends Table {
 
         fire(new LoadClassesEvent(classSelectBox));
         fire(new LoadStylesEvent(classSelectBox, styleSelectBox));
+    }
+    
+    public void setClassDeleteButtonDisabled(boolean disabled) {
+        classDeleteButton.setDisabled(disabled);
+        if (disabled) {
+            if (classDeleteButton.getListeners().contains(main.getHandListener(), true)) {
+                classDeleteButton.removeListener(main.getHandListener());
+            }
+        } else {
+            if (!classDeleteButton.getListeners().contains(main.getHandListener(), true)) {
+                classDeleteButton.addListener(main.getHandListener());
+            }
+        }
+    }
+    
+    public void setClassRenameButtonDisabled(boolean disabled) {
+        classRenameButton.setDisabled(disabled);
+        if (disabled) {
+            if (classRenameButton.getListeners().contains(main.getHandListener(), true)) {
+                classRenameButton.removeListener(main.getHandListener());
+            }
+        } else {
+            if (!classRenameButton.getListeners().contains(main.getHandListener(), true)) {
+                classRenameButton.addListener(main.getHandListener());
+            }
+        }
     }
     
     public void setStyleDeleteButtonDisabled(boolean disabled) {
@@ -2285,8 +2337,8 @@ public class RootTable extends Table {
     public static enum RootTableEnum {
         NEW, OPEN, RECENT_FILES, SAVE, SAVE_AS, IMPORT, EXPORT, EXIT, UNDO,
         REDO, SETTINGS, COLORS, FONTS, DRAWABLES, ABOUT, CLASS_SELECTED,
-        NEW_CLASS, DELETE_CLASS, STYLE_SELECTED, NEW_STYLE, DUPLICATE_STYLE,
-        DELETE_STYLE, RENAME_STYLE, PREVIEW_PROPERTY
+        NEW_CLASS, DUPLICATE_CLASS, DELETE_CLASS, RENAME_CLASS, STYLE_SELECTED,
+        NEW_STYLE, DUPLICATE_STYLE, DELETE_STYLE, RENAME_STYLE, PREVIEW_PROPERTY
     }
 
     public static class RootTableEvent extends Event {
