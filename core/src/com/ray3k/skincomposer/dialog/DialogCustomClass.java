@@ -19,12 +19,12 @@ public class DialogCustomClass extends Dialog {
     private final TextButton okButton;
     private Main main;
     
-    public DialogCustomClass(Main main) {
-        this(main, false, null, null);
+    public DialogCustomClass(Main main, String title) {
+        this(main, title, null, null);
     }
     
-    public DialogCustomClass(Main main, boolean renameMode, String fullyQualifiedName, String displayName) {
-        super(!renameMode ? "New Custom Class" : "Rename Custom Class", main.getSkin(), "bg");
+    public DialogCustomClass(Main main, String title, String fullyQualifiedName, String displayName) {
+        super(title, main.getSkin(), "bg");
         getTitleLabel().setAlignment(Align.center);
         
         this.main = main;

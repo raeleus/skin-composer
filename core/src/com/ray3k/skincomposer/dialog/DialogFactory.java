@@ -519,13 +519,19 @@ public class DialogFactory {
     }
 
     public void showNewClassDialog(CustomClassListener listener) {
-        DialogCustomClass dialog = new DialogCustomClass(main);
+        DialogCustomClass dialog = new DialogCustomClass(main, "New Custom Class");
         dialog.addListener(listener);
         dialog.show(stage);
     }
     
     public void showRenameClassDialog(String fullyQualifiedName, String displayName, CustomClassListener listener) {
-        DialogCustomClass dialog = new DialogCustomClass(main, true, fullyQualifiedName, displayName);
+        DialogCustomClass dialog = new DialogCustomClass(main, "Rename Custom Class", fullyQualifiedName, displayName);
+        dialog.addListener(listener);
+        dialog.show(stage);
+    }
+    
+    public void showDuplicateClassDialog(String fullyQualifiedName, String displayName, CustomClassListener listener) {
+        DialogCustomClass dialog = new DialogCustomClass(main, "Duplicate Class", fullyQualifiedName, displayName);
         dialog.addListener(listener);
         dialog.show(stage);
     }

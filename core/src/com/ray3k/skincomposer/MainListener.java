@@ -127,6 +127,18 @@ public class MainListener extends RootTableListener {
                 });
                 break;
             case DUPLICATE_CLASS:
+                dialogFactory.showDuplicateClassDialog("test.class", "test", new DialogCustomClass.CustomClassListener() {
+                    @Override
+                    public void newClassEntered(String fullyQualifiedName,
+                            String displayName) {
+                        duplicateClass(fullyQualifiedName, displayName);
+                    }
+
+                    @Override
+                    public void cancelled() {
+                        
+                    }
+                });
                 break;
             case DELETE_CLASS:
                 break;
@@ -310,6 +322,10 @@ public class MainListener extends RootTableListener {
     }
     
     public void renameClass(String fullyQualifiedname, String displayName) {
+        
+    }
+    
+    public void duplicateClass(String fullyQualifiedname, String displayName) {
         
     }
     
