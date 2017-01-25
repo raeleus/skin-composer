@@ -46,15 +46,14 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.Main;
-import com.ray3k.skincomposer.dialog.DialogError;
 import java.io.StringWriter;
 
 public class JsonData implements Json.Serializable {
     private Array<ColorData> colors;
     private Array<FontData> fonts;
     private OrderedMap<Class, Array<StyleData>> classStyleMap;
+    private Array<CustomClass> customClasses;
     private Main main;
 
     public JsonData() {
@@ -62,6 +61,7 @@ public class JsonData implements Json.Serializable {
         fonts = new Array<>();
 
         initializeClassStyleMap();
+        customClasses = new Array<>();
     }
 
     public void setMain(Main main) {
@@ -349,6 +349,7 @@ public class JsonData implements Json.Serializable {
         json.writeValue("colors", colors);
         json.writeValue("fonts", fonts);
         json.writeValue("classStyleMap", classStyleMap);
+        json.writeValue("customClasses", customClasses, Array.class, CustomClass.class);
     }
 
     @Override
@@ -365,6 +366,7 @@ public class JsonData implements Json.Serializable {
                     styleData.jsonData = this;
                 }
             }
+            customClasses = json.readValue("customClasses", Array.class, CustomClass.class, new Array<>(), jsonData);
         } catch (ReflectionException e) {
             Gdx.app.log(getClass().getName(), "Error parsing json data during file read", e);
             main.getDialogFactory().showDialogError("Error while reading file...", "Error while attempting to read save file.\nPlease ensure that file is not corrupted.\n\nOpen error log?");

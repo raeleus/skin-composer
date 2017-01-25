@@ -23,6 +23,7 @@
  ***************************************************************************** */
 package com.ray3k.skincomposer;
 
+import com.ray3k.skincomposer.data.CustomProperty;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -815,7 +816,7 @@ public class RootTable extends Table {
                     table.add(selectBox);
 
                     selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
-                } else if (styleProperty.type == CustomStyle.class) {
+                } else if (styleProperty.type == CustomProperty.class) {
                     //todo: implement custom styles...
                     Button button = new Button(getSkin(), "duplicate");
                     table.add(button);
