@@ -30,68 +30,69 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.Main;
 
-public class DialogCustomClass extends Dialog {
-    private boolean customNameEntered;
-    private final TextField classField, displayField;
+public class DialogCustomProperty extends Dialog {
+    private final TextField classField;
     private final TextButton okButton;
+    private final SelectBox<PropertyType> propertyTypeBox;
     private Main main;
-    
-    public DialogCustomClass(Main main, String title) {
-        this(main, title, null, null);
+    public static enum PropertyType {
+        NONE("None"), FLOAT("Float"), TEXT("Text"), DRAWABLE("Drawable"), FONT("Font");
+
+        String name;
+        PropertyType(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
     
-    public DialogCustomClass(Main main, String title, String fullyQualifiedName, String displayName) {
+    public DialogCustomProperty(Main main, String title) {
+        this(main, title, null, PropertyType.NONE);
+    }
+    
+    public DialogCustomProperty(Main main, String title, String propertyName, PropertyType propertyType) {
         super(title, main.getSkin(), "bg");
         getTitleLabel().setAlignment(Align.center);
         
         this.main = main;
-        customNameEntered = false;
         
-        Label label = new Label("What is the fully qualified name?", getSkin());
+        Label label = new Label("What is the property name?", getSkin());
         getContentTable().add(label).pad(10.0f).padBottom(0.0f);
         
         getContentTable().row();
-        label = new Label("(ex. com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle)", getSkin());
+        label = new Label("(ex. up)", getSkin());
         getContentTable().add(label).pad(10.0f).padTop(0.0f).padBottom(5.0f);
         
         getContentTable().row();
-        classField = new TextField("", getSkin()) {
-            @Override
-            public void next(boolean up) {
-                getStage().setKeyboardFocus(displayField);
-                displayField.selectAll();
-            }
-        };
-        classField.setText(fullyQualifiedName);
+        classField = new TextField("", getSkin());
+        classField.setFocusTraversal(false);
+        classField.setText(propertyName);
         classField.selectAll();
         classField.addListener(main.getIbeamListener());
         getContentTable().add(classField).growX().padLeft(10.0f).padRight(10.0f);
         
         getContentTable().row();
-        label = new Label("What is the display name?", getSkin());
-        getContentTable().add(label).pad(10.0f).padBottom(0.0f);
+        label = new Label("What is the property type?", getSkin());
+        getContentTable().add(label).pad(10.0f).padBottom(5.0f);
+
         getContentTable().row();
-        label = new Label("(ex. List)", getSkin());
-        getContentTable().add(label).pad(10.0f).padTop(0.0f).padBottom(5.0f);
-        
-        getContentTable().row();
-        displayField = new TextField("", main.getSkin()) {
-            @Override
-            public void next(boolean up) {
-                getStage().setKeyboardFocus(classField);
-                classField.selectAll();
-            }
-        };
-        displayField.setText(displayName);
-        displayField.addListener(main.getIbeamListener());
-        getContentTable().add(displayField).growX().padLeft(10.0f).padRight(10.0f);
-        
+        propertyTypeBox = new SelectBox<>(getSkin());
+        propertyTypeBox.setItems(PropertyType.TEXT, PropertyType.FLOAT, PropertyType.FONT, PropertyType.DRAWABLE);
+        if (propertyType != null && propertyType != PropertyType.NONE) {
+            propertyTypeBox.setSelected(propertyType);
+        }
+        getContentTable().add(propertyTypeBox).growX().padLeft(10.0f).padRight(10.0f);
+
         getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         button("OK", true).key(Keys.ENTER, true);
         button("Cancel", false).key(Keys.ESCAPE, false);
@@ -103,23 +104,7 @@ public class DialogCustomClass extends Dialog {
         
         classField.addListener(new ChangeListener() {
             @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                if (!customNameEntered) {
-                    if (!customNameEntered) {
-                        String text = classField.getText();
-                        text = text.replaceFirst(".*(\\.|\\$)", "");
-                        displayField.setText(text);
-                    }
-                }
-                
-                updateOkButton();
-            }
-        });
-        
-        displayField.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                customNameEntered = true;
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {                
                 updateOkButton();
             }
         });
@@ -138,11 +123,11 @@ public class DialogCustomClass extends Dialog {
     protected void result(Object object) {
         super.result(object);
         
-        fire(new CustomClassEvent((boolean) object, classField.getText(), displayField.getText()));
+        fire(new CustomPropertyEvent((boolean) object, classField.getText(), propertyTypeBox.getSelected()));
     }
     
     private void updateOkButton() {
-        if (classField.getText().matches("^.*[^\\.]$") && !displayField.getText().equals("")) {
+        if (validate(classField.getText())) {
             okButton.setDisabled(false);
             if (!okButton.getListeners().contains(main.getHandListener(), true)) {
                 okButton.addListener(main.getHandListener());
@@ -155,25 +140,25 @@ public class DialogCustomClass extends Dialog {
         }
     }
     
-    private static class CustomClassEvent extends Event {
+    private static class CustomPropertyEvent extends Event {
         boolean result;
-        String fullyQualifiedName;
-        String displayName;
+        String propertyName;
+        PropertyType propertyType;
         
-        public CustomClassEvent(boolean result, String fullyQualifiedName, String displayName) {
+        public CustomPropertyEvent(boolean result, String propertyName, PropertyType propertyType) {
             this.result = result;
-            this.fullyQualifiedName = fullyQualifiedName;
-            this.displayName = displayName;
+            this.propertyName = propertyName;
+            this.propertyType = propertyType;
         }
     }
     
-    public static abstract class CustomClassListener implements EventListener {
+    public static abstract class CustomStylePropertyListener implements EventListener {
         @Override
         public boolean handle(Event event) {
-            if (event instanceof CustomClassEvent) {
-                CustomClassEvent newClassEvent = (CustomClassEvent) event;
-                if (newClassEvent.result) {
-                    newClassEntered(newClassEvent.fullyQualifiedName, newClassEvent.displayName);
+            if (event instanceof CustomPropertyEvent) {
+                CustomPropertyEvent newPropertyEvent = (CustomPropertyEvent) event;
+                if (newPropertyEvent.result) {
+                    newPropertyEntered(newPropertyEvent.propertyName, newPropertyEvent.propertyType);
                 } else {
                     cancelled();
                 }
@@ -181,8 +166,12 @@ public class DialogCustomClass extends Dialog {
             return false;
         }
         
-        public abstract void newClassEntered(String fullyQualifiedName, String displayName);
+        public abstract void newPropertyEntered(String propertyName, PropertyType propertyType);
         
         public abstract void cancelled();
+    }
+    
+    public static boolean validate(String name) {
+        return name != null && !name.matches("^\\d.*|^-.*|.*\\s.*|.*[^a-zA-Z\\d\\s-_].*|^$");
     }
 }

@@ -1,4 +1,4 @@
-/** *****************************************************************************
+/*******************************************************************************
  * MIT License
  *
  * Copyright (c) 2017 Raymond Buckley
@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- ***************************************************************************** */
+ ******************************************************************************/
 package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Gdx;
@@ -51,6 +51,8 @@ import com.ray3k.skincomposer.data.ProjectData.RecentFile;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
+import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyListener;
+import com.ray3k.skincomposer.dialog.DialogCustomProperty.PropertyType;
 
 public class DialogFactory {
 
@@ -532,6 +534,24 @@ public class DialogFactory {
     
     public void showDuplicateClassDialog(String fullyQualifiedName, String displayName, CustomClassListener listener) {
         DialogCustomClass dialog = new DialogCustomClass(main, "Duplicate Class", fullyQualifiedName, displayName);
+        dialog.addListener(listener);
+        dialog.show(stage);
+    }
+
+    public void showNewStylePropertyDialog(CustomStylePropertyListener listener) {
+        DialogCustomProperty dialog = new DialogCustomProperty(main, "New Custom Property");
+        dialog.addListener(listener);
+        dialog.show(stage);
+    }
+    
+    public void showRenameStylePropertyDialog(String propertyName, PropertyType propertyType, CustomStylePropertyListener listener) {
+        DialogCustomProperty dialog = new DialogCustomProperty(main, "Rename Custom Property", propertyName, propertyType);
+        dialog.addListener(listener);
+        dialog.show(stage);
+    }
+    
+    public void showDuplicateStylePropertyDialog(String propertyName, PropertyType propertyType, CustomStylePropertyListener listener) {
+        DialogCustomProperty dialog = new DialogCustomProperty(main, "Duplicate Custom Property", propertyName, propertyType);
         dialog.addListener(listener);
         dialog.show(stage);
     }

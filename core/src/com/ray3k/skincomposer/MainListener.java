@@ -42,6 +42,7 @@ import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogCustomClass;
+import com.ray3k.skincomposer.dialog.DialogCustomProperty;
 import java.io.File;
 
 public class MainListener extends RootTableListener {
@@ -170,6 +171,41 @@ public class MainListener extends RootTableListener {
                 break;
             case RENAME_STYLE:
                 dialogFactory.showRenameStyleDialog(main.getSkin(), main.getStage());
+                break;
+            case NEW_STYLE_PROPERTY:
+                dialogFactory.showNewStylePropertyDialog(new DialogCustomProperty.CustomStylePropertyListener() {
+                    @Override
+                    public void newPropertyEntered(String propertyName, DialogCustomProperty.PropertyType propertyType) {
+                    }
+
+                    @Override
+                    public void cancelled() {
+                    }
+                });
+                break;
+            case DUPLICATE_STYLE_PROPERTY:
+                dialogFactory.showDuplicateStylePropertyDialog("test", DialogCustomProperty.PropertyType.TEXT, new DialogCustomProperty.CustomStylePropertyListener() {
+                    @Override
+                    public void newPropertyEntered(String propertyName, DialogCustomProperty.PropertyType propertyType) {
+                    }
+
+                    @Override
+                    public void cancelled() {
+                    }
+                });
+                break;
+            case DELETE_STYLE_PROPERTY:
+                break;
+            case RENAME_STYLE_PROPERTY:
+                dialogFactory.showRenameStylePropertyDialog("test", DialogCustomProperty.PropertyType.TEXT, new DialogCustomProperty.CustomStylePropertyListener() {
+                    @Override
+                    public void newPropertyEntered(String propertyName, DialogCustomProperty.PropertyType propertyType) {
+                    }
+
+                    @Override
+                    public void cancelled() {
+                    }
+                });
                 break;
             case PREVIEW_PROPERTY:
                 break;
