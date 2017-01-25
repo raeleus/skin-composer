@@ -44,6 +44,8 @@ import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogCustomClass;
 import com.ray3k.skincomposer.dialog.DialogCustomProperty;
+import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyListener;
+import com.ray3k.skincomposer.dialog.DialogCustomProperty.PropertyType;
 import java.io.File;
 
 public class MainListener extends RootTableListener {
@@ -143,6 +145,7 @@ public class MainListener extends RootTableListener {
                 });
                 break;
             case DELETE_CLASS:
+                deleteClass();
                 break;
             case RENAME_CLASS:
                 dialogFactory.showRenameClassDialog("test.class", "test", new DialogCustomClass.CustomClassListener() {
@@ -174,9 +177,10 @@ public class MainListener extends RootTableListener {
                 dialogFactory.showRenameStyleDialog(main.getSkin(), main.getStage());
                 break;
             case NEW_STYLE_PROPERTY:
-                dialogFactory.showNewStylePropertyDialog(new DialogCustomProperty.CustomStylePropertyListener() {
+                dialogFactory.showNewStylePropertyDialog(new CustomStylePropertyListener() {
                     @Override
-                    public void newPropertyEntered(String propertyName, DialogCustomProperty.PropertyType propertyType) {
+                    public void newPropertyEntered(String propertyName, PropertyType propertyType) {
+                        newProperty(propertyName, propertyType);
                     }
 
                     @Override
@@ -185,9 +189,10 @@ public class MainListener extends RootTableListener {
                 });
                 break;
             case DUPLICATE_STYLE_PROPERTY:
-                dialogFactory.showDuplicateStylePropertyDialog("test", DialogCustomProperty.PropertyType.TEXT, new DialogCustomProperty.CustomStylePropertyListener() {
+                dialogFactory.showDuplicateStylePropertyDialog("test", PropertyType.TEXT, new CustomStylePropertyListener() {
                     @Override
-                    public void newPropertyEntered(String propertyName, DialogCustomProperty.PropertyType propertyType) {
+                    public void newPropertyEntered(String propertyName, PropertyType propertyType) {
+                        duplicateProperty(propertyName, propertyType);
                     }
 
                     @Override
@@ -196,11 +201,13 @@ public class MainListener extends RootTableListener {
                 });
                 break;
             case DELETE_STYLE_PROPERTY:
+                deleteProperty();
                 break;
             case RENAME_STYLE_PROPERTY:
-                dialogFactory.showRenameStylePropertyDialog("test", DialogCustomProperty.PropertyType.TEXT, new DialogCustomProperty.CustomStylePropertyListener() {
+                dialogFactory.showRenameStylePropertyDialog("test", PropertyType.TEXT, new CustomStylePropertyListener() {
                     @Override
-                    public void newPropertyEntered(String propertyName, DialogCustomProperty.PropertyType propertyType) {
+                    public void newPropertyEntered(String propertyName, PropertyType propertyType) {
+                        renameProperty(propertyName, propertyType);
                     }
 
                     @Override
@@ -354,15 +361,35 @@ public class MainListener extends RootTableListener {
     }
 
     public void newClass(String fullyQualifiedName, String displayName) {
-        System.out.println(fullyQualifiedName);
-        System.out.println(displayName);
+        //create custom class instance.
     }
     
     public void renameClass(String fullyQualifiedname, String displayName) {
         
     }
     
+    public void deleteClass() {
+        
+    }
+    
     public void duplicateClass(String fullyQualifiedname, String displayName) {
+        
+    }
+    
+    public void newProperty(String propertyName, PropertyType propertyType) {
+        //add a new custom property to the template style of the current custom class.
+        //go through all styles of custom class and add the custom property to each.
+    }
+    
+    public void renameProperty(String propertyName, PropertyType propertyType) {
+        
+    }
+    
+    public void deleteProperty() {
+        
+    }
+    
+    public void duplicateProperty(String propertyName, PropertyType propertyType) {
         
     }
     
