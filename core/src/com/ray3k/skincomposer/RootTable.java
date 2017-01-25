@@ -817,11 +817,27 @@ public class RootTable extends Table {
                     selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
                 } else if (styleProperty.type == CustomStyle.class) {
                     //todo: implement custom styles...
+                    Button button = new Button(getSkin(), "duplicate");
+                    table.add(button);
+                    
+                    button = new Button(getSkin(), "delete");
+                    table.add(button);
+                    
+                    button = new Button(getSkin(), "settings");
+                    table.add(button);
                 }
 
                 table.row();
             }
         }
+        
+        //todo: only if this is a custom class.
+        left.row();
+        table = new Table();
+        left.add(table).right().padBottom(10.0f);
+        
+        Button button = new Button(getSkin(), "new");
+        table.add(button);
     }
 
     private class StylePropertyChangeListener extends ChangeListener {
