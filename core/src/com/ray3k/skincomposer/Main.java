@@ -64,6 +64,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.ray3k.skincomposer.data.AtlasData;
+import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.Utils;
 
@@ -199,6 +201,14 @@ public class Main extends ApplicationAdapter {
 
     public ProjectData getProjectData() {
         return projectData;
+    }
+    
+    public JsonData getJsonData() {
+        return projectData.getJsonData();
+    }
+    
+    public AtlasData getAtlasData() {
+        return projectData.getAtlasData();
     }
 
     public void setProjectData(ProjectData projectData) {

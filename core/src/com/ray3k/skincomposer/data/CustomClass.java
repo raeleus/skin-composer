@@ -40,6 +40,7 @@ public class CustomClass implements Json.Serializable {
     public CustomClass(String fullyQualifiedName, String displayName) {
         this.fullyQualifiedName = fullyQualifiedName;
         this.displayName = displayName;
+        styles = new Array<>();
     }
 
     public String getFullyQualifiedName() {
@@ -56,6 +57,14 @@ public class CustomClass implements Json.Serializable {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public Array<CustomStyle> getStyles() {
+        return styles;
+    }
+
+    public CustomStyle getTemplateStyle() {
+        return templateStyle;
     }
 
     @Override
@@ -81,5 +90,16 @@ public class CustomClass implements Json.Serializable {
         }
         templateStyle = json.readValue("templateStyle", CustomStyle.class, jsonData);
     }
-    
+
+    @Override
+    public CustomClass clone() throws CloneNotSupportedException {
+        CustomClass returnValue = (CustomClass) super.clone();
+        
+        returnValue.styles.clear();
+        for (CustomStyle style : styles) {
+            returnValue.styles.add(style.clone());
+        }
+        
+        return returnValue;
+    }
 }

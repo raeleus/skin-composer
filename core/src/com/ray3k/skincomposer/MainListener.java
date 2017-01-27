@@ -37,15 +37,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.RootTable.RootTableListener;
+import com.ray3k.skincomposer.UndoableManager.DeleteCustomClassUndoable;
+import com.ray3k.skincomposer.UndoableManager.DuplicateCustomClassUndoable;
 import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogCustomClass;
-import com.ray3k.skincomposer.dialog.DialogCustomProperty;
 import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyListener;
 import com.ray3k.skincomposer.dialog.DialogCustomProperty.PropertyType;
+import com.ray3k.skincomposer.data.CustomClass;
+import com.ray3k.skincomposer.data.CustomProperty;
+import com.ray3k.skincomposer.UndoableManager.NewCustomClassUndoable;
+import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
 import java.io.File;
 
 public class MainListener extends RootTableListener {
@@ -121,7 +126,8 @@ public class MainListener extends RootTableListener {
                     @Override
                     public void newClassEntered(String fullyQualifiedName,
                             String displayName) {
-                        newClass(fullyQualifiedName, displayName);
+                        main.getUndoableManager().addUndoable(
+                                new NewCustomClassUndoable(fullyQualifiedName,displayName, main), true);
                     }
 
                     @Override
@@ -131,11 +137,11 @@ public class MainListener extends RootTableListener {
                 });
                 break;
             case DUPLICATE_CLASS:
-                dialogFactory.showDuplicateClassDialog("test.class", "test", new DialogCustomClass.CustomClassListener() {
+                dialogFactory.showDuplicateClassDialog("test.class", "test", new CustomClassListener() {
                     @Override
                     public void newClassEntered(String fullyQualifiedName,
                             String displayName) {
-                        duplicateClass(fullyQualifiedName, displayName);
+                        main.getUndoableManager().addUndoable(new DuplicateCustomClassUndoable(main, displayName, fullyQualifiedName), true);
                     }
 
                     @Override
@@ -145,14 +151,15 @@ public class MainListener extends RootTableListener {
                 });
                 break;
             case DELETE_CLASS:
-                deleteClass();
+                main.getUndoableManager().addUndoable(new DeleteCustomClassUndoable(main), true);
                 break;
             case RENAME_CLASS:
                 dialogFactory.showRenameClassDialog("test.class", "test", new DialogCustomClass.CustomClassListener() {
                     @Override
                     public void newClassEntered(String fullyQualifiedName,
                             String displayName) {
-                        renameClass(fullyQualifiedName, displayName);
+                        //todo: ensure users can't input the same display name or fully qualified name in the dialogs!
+                        main.getUndoableManager().addUndoable(new UndoableManager.RenameCustomClassUndoable(main, displayName, fullyQualifiedName), true);
                     }
 
                     @Override
@@ -175,45 +182,6 @@ public class MainListener extends RootTableListener {
                 break;
             case RENAME_STYLE:
                 dialogFactory.showRenameStyleDialog(main.getSkin(), main.getStage());
-                break;
-            case NEW_STYLE_PROPERTY:
-                dialogFactory.showNewStylePropertyDialog(new CustomStylePropertyListener() {
-                    @Override
-                    public void newPropertyEntered(String propertyName, PropertyType propertyType) {
-                        newProperty(propertyName, propertyType);
-                    }
-
-                    @Override
-                    public void cancelled() {
-                    }
-                });
-                break;
-            case DUPLICATE_STYLE_PROPERTY:
-                dialogFactory.showDuplicateStylePropertyDialog("test", PropertyType.TEXT, new CustomStylePropertyListener() {
-                    @Override
-                    public void newPropertyEntered(String propertyName, PropertyType propertyType) {
-                        duplicateProperty(propertyName, propertyType);
-                    }
-
-                    @Override
-                    public void cancelled() {
-                    }
-                });
-                break;
-            case DELETE_STYLE_PROPERTY:
-                deleteProperty();
-                break;
-            case RENAME_STYLE_PROPERTY:
-                dialogFactory.showRenameStylePropertyDialog("test", PropertyType.TEXT, new CustomStylePropertyListener() {
-                    @Override
-                    public void newPropertyEntered(String propertyName, PropertyType propertyType) {
-                        renameProperty(propertyName, propertyType);
-                    }
-
-                    @Override
-                    public void cancelled() {
-                    }
-                });
                 break;
             case PREVIEW_PROPERTY:
                 break;
@@ -359,39 +327,6 @@ public class MainListener extends RootTableListener {
             }
         });
     }
-
-    public void newClass(String fullyQualifiedName, String displayName) {
-        //create custom class instance.
-    }
-    
-    public void renameClass(String fullyQualifiedname, String displayName) {
-        
-    }
-    
-    public void deleteClass() {
-        
-    }
-    
-    public void duplicateClass(String fullyQualifiedname, String displayName) {
-        
-    }
-    
-    public void newProperty(String propertyName, PropertyType propertyType) {
-        //add a new custom property to the template style of the current custom class.
-        //go through all styles of custom class and add the custom property to each.
-    }
-    
-    public void renameProperty(String propertyName, PropertyType propertyType) {
-        
-    }
-    
-    public void deleteProperty() {
-        
-    }
-    
-    public void duplicateProperty(String propertyName, PropertyType propertyType) {
-        
-    }
     
     @Override
     public void loadClasses(SelectBox<String> classSelectBox) {
@@ -455,5 +390,52 @@ public class MainListener extends RootTableListener {
             root.setClassDeleteButtonDisabled(false);
             root.setClassRenameButtonDisabled(false);
         }
+    }
+
+    @Override
+    public void newCustomProperty() {
+        dialogFactory.showNewStylePropertyDialog(new CustomStylePropertyListener() {
+            @Override
+            public void newPropertyEntered(String propertyName, PropertyType propertyType) {
+                main.getUndoableManager().addUndoable(new UndoableManager.NewCustomPropertyUndoable(main, propertyName, propertyType));
+            }
+
+            @Override
+            public void cancelled() {
+            }
+        });
+    }
+
+    @Override
+    public void duplicateCustomProperty(CustomProperty customProperty) {
+        dialogFactory.showDuplicateStylePropertyDialog("test", PropertyType.TEXT, new CustomStylePropertyListener() {
+            @Override
+            public void newPropertyEntered(String propertyName, PropertyType propertyType) {
+                main.getUndoableManager().addUndoable(new UndoableManager.DuplicateCustomPropertyUndoable(main, customProperty, propertyName, propertyType), true);
+            }
+
+            @Override
+            public void cancelled() {
+            }
+        });
+    }
+
+    @Override
+    public void deleteCustomProperty(CustomProperty customProperty) {
+        main.getUndoableManager().addUndoable(new UndoableManager.DeleteCustomPropertyUndoable(main, customProperty), true);
+    }
+
+    @Override
+    public void renameCustomProperty(CustomProperty customProperty) {
+        dialogFactory.showRenameStylePropertyDialog("test", PropertyType.TEXT, new CustomStylePropertyListener() {
+            @Override
+            public void newPropertyEntered(String propertyName, PropertyType propertyType) {
+                main.getUndoableManager().addUndoable(new UndoableManager.RenameCustomPropertyUndoable(main, customProperty, propertyName, propertyType), true);
+            }
+
+            @Override
+            public void cancelled() {
+            }
+        });
     }
 }

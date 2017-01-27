@@ -639,6 +639,16 @@ public class RootTable extends Table {
         }
     }
 
+    public void refreshClasses(boolean scrollToNewest) {
+        int classSelectedIndex = classSelectBox.getSelectedIndex();
+        populate();
+        if (scrollToNewest) {
+            classSelectBox.setSelectedIndex(classSelectBox.getItems().size - 1);
+        } else {
+            classSelectBox.setSelectedIndex(classSelectedIndex);
+        }
+    }
+    
     public void refreshStyles(boolean scrollToNewest) {
         int classSelectedIndex = classSelectBox.getSelectedIndex();
         populate();
@@ -838,6 +848,12 @@ public class RootTable extends Table {
         left.add(table).right().padBottom(10.0f);
         
         Button button = new Button(getSkin(), "new");
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                fire(new CustomPropertyEvent(null, CustomPropertyEnum.NEW_PROPERTY));
+            }
+        });
         table.add(button);
     }
 
@@ -2285,11 +2301,11 @@ public class RootTable extends Table {
         display(text);
     }
 
-    public SelectBox getClassSelectBox() {
+    public SelectBox<String> getClassSelectBox() {
         return classSelectBox;
     }
 
-    public SelectBox getStyleSelectBox() {
+    public SelectBox<StyleData> getStyleSelectBox() {
         return styleSelectBox;
     }
 
@@ -2355,9 +2371,7 @@ public class RootTable extends Table {
         NEW, OPEN, RECENT_FILES, SAVE, SAVE_AS, IMPORT, EXPORT, EXIT, UNDO,
         REDO, SETTINGS, COLORS, FONTS, DRAWABLES, ABOUT, CLASS_SELECTED,
         NEW_CLASS, DUPLICATE_CLASS, DELETE_CLASS, RENAME_CLASS, STYLE_SELECTED,
-        NEW_STYLE, DUPLICATE_STYLE, DELETE_STYLE, RENAME_STYLE, NEW_STYLE_PROPERTY,
-        DUPLICATE_STYLE_PROPERTY, DELETE_STYLE_PROPERTY, RENAME_STYLE_PROPERTY,
-        PREVIEW_PROPERTY
+        NEW_STYLE, DUPLICATE_STYLE, DELETE_STYLE, RENAME_STYLE, PREVIEW_PROPERTY
     }
 
     public static class RootTableEvent extends Event {
@@ -2400,6 +2414,20 @@ public class RootTable extends Table {
         }
     }
 
+    private static enum CustomPropertyEnum {
+        NEW_PROPERTY, DUPLICATE_PROPERTY, DELETE_PROPERTY, RENAME_PROPERTY;
+    }
+    
+    private static class CustomPropertyEvent extends Event {
+        private CustomProperty customProperty;
+        private CustomPropertyEnum customPropertyEnum;
+        
+        public CustomPropertyEvent(CustomProperty customProperty, CustomPropertyEnum customPropertyEnum) {
+            this.customProperty = customProperty;
+            this.customPropertyEnum = customPropertyEnum;
+        }
+    }
+    
     public static abstract class RootTableListener implements EventListener {
 
         @Override
@@ -2412,6 +2440,24 @@ public class RootTable extends Table {
                 loadStyles(((LoadStylesEvent) event).classSelectBox, ((LoadStylesEvent) event).styleSelectBox);
             } else if (event instanceof StylePropertyEvent) {
                 stylePropertyChanged(((StylePropertyEvent) event).styleProperty, ((StylePropertyEvent) event).styleActor);
+            } else if (event instanceof CustomPropertyEvent) {
+                CustomPropertyEvent propertyEvent = (CustomPropertyEvent) event;
+                if (null != propertyEvent.customPropertyEnum) switch (propertyEvent.customPropertyEnum) {
+                    case NEW_PROPERTY:
+                        newCustomProperty();
+                        break;
+                    case DELETE_PROPERTY:
+                        deleteCustomProperty(propertyEvent.customProperty);
+                        break;
+                    case RENAME_PROPERTY:
+                        renameCustomProperty(propertyEvent.customProperty);
+                        break;
+                    case DUPLICATE_PROPERTY:
+                        duplicateCustomProperty(propertyEvent.customProperty);
+                        break;
+                    default:
+                        break;
+                }
             }
             return false;
         }
@@ -2423,6 +2469,14 @@ public class RootTable extends Table {
         public abstract void loadClasses(SelectBox<String> classSelectBox);
 
         public abstract void loadStyles(SelectBox<String> classSelectBox, SelectBox<StyleData> styleSelectBox);
+    
+        public abstract void newCustomProperty();
+        
+        public abstract void duplicateCustomProperty(CustomProperty customProperty);
+        
+        public abstract void deleteCustomProperty(CustomProperty customProperty);
+        
+        public abstract void renameCustomProperty(CustomProperty customProperty);
     }
 
     public static class ShortcutListener extends InputListener {

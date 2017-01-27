@@ -23,15 +23,20 @@
  ******************************************************************************/
 package com.ray3k.skincomposer;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.ColorData;
+import com.ray3k.skincomposer.data.CustomClass;
+import com.ray3k.skincomposer.data.CustomProperty;
 import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
+import com.ray3k.skincomposer.dialog.DialogCustomProperty.PropertyType;
+import java.util.Iterator;
 
 public class UndoableManager {
     private final Array<Undoable> undoables;
@@ -259,7 +264,7 @@ public class UndoableManager {
         private Object oldValue, newValue;
         private RootTable rootTable;
         private JsonData jsonData;
-
+    
         public FontUndoable(RootTable rootTable, JsonData jsonData, StyleProperty property, Object oldValue, Object newValue) {
             this.property = property;
             this.oldValue = oldValue;
@@ -267,7 +272,7 @@ public class UndoableManager {
             this.rootTable = rootTable;
             this.jsonData = jsonData;
         }
-        
+    
         @Override
         public void undo() {
             if (oldValue == null) {
@@ -284,7 +289,7 @@ public class UndoableManager {
             rootTable.refreshStyleProperties(true);
             rootTable.refreshPreview();
         }
-
+    
         @Override
         public void redo() {
             if (newValue == null) {
@@ -357,13 +362,13 @@ public class UndoableManager {
         
         @Override
         public void undo() {
-            main.getProjectData().getJsonData().deleteStyle(styleData);
+            main.getJsonData().deleteStyle(styleData);
             main.getRootTable().refreshStyles(true);
         }
 
         @Override
         public void redo() {
-            styleData = main.getProjectData().getJsonData().newStyle(selectedClass, name);
+            styleData = main.getJsonData().newStyle(selectedClass, name);
             main.getRootTable().refreshStyles(true);
         }
 
@@ -387,13 +392,13 @@ public class UndoableManager {
         
         @Override
         public void undo() {
-            main.getProjectData().getJsonData().deleteStyle(styleData);
+            main.getJsonData().deleteStyle(styleData);
             main.getRootTable().refreshStyles(true);
         }
 
         @Override
         public void redo() {
-            styleData = main.getProjectData().getJsonData().copyStyle(originalStyle, name);
+            styleData = main.getJsonData().copyStyle(originalStyle, name);
             main.getRootTable().refreshStyles(true);
         }
 
@@ -414,13 +419,13 @@ public class UndoableManager {
 
         @Override
         public void undo() {
-            main.getProjectData().getJsonData().copyStyle(styleData, styleData.name);
+            main.getJsonData().copyStyle(styleData, styleData.name);
             main.getRootTable().refreshStyles(true);
         }
 
         @Override
         public void redo() {
-            main.getProjectData().getJsonData().deleteStyle(styleData);
+            main.getJsonData().deleteStyle(styleData);
             main.getRootTable().refreshStyles(true);
         }
 
@@ -448,7 +453,7 @@ public class UndoableManager {
         public void undo() {
             styleData.name = oldName;
             
-            for (Array<StyleData> styles : main.getProjectData().getJsonData().getClassStyleMap().values()) {
+            for (Array<StyleData> styles : main.getJsonData().getClassStyleMap().values()) {
                 for (StyleData style : styles) {
                     for (StyleProperty styleProperty : style.properties.values()) {
                         if (styleProperty.type.equals(Main.basicToStyleClass(styleData.clazz)) && styleProperty.value.equals(newName)) {
@@ -464,7 +469,7 @@ public class UndoableManager {
         public void redo() {
             styleData.name = newName;
             
-            for (Array<StyleData> styles : main.getProjectData().getJsonData().getClassStyleMap().values()) {
+            for (Array<StyleData> styles : main.getJsonData().getClassStyleMap().values()) {
                 for (StyleData style : styles) {
                     for (StyleProperty styleProperty : style.properties.values()) {
                         if (styleProperty.type.equals(Main.basicToStyleClass(styleData.clazz)) && styleProperty.value.equals(oldName)) {
@@ -481,5 +486,394 @@ public class UndoableManager {
             return "Rename Style \"" + styleData.name + "\"";
         }
         
+    }
+
+    public static class NewCustomClassUndoable implements Undoable {
+        private String fullyQualifiedName;
+        private String displayName;
+        private Main main;
+        private CustomClass customClass;
+
+        public NewCustomClassUndoable(String fullyQualifiedName, String displayName, Main main) {
+            this.fullyQualifiedName = fullyQualifiedName;
+            this.displayName = displayName;
+            this.main = main;
+            customClass = new CustomClass(fullyQualifiedName, displayName);
+        }
+        
+        @Override
+        public void undo() {
+            main.getJsonData().getCustomClasses().removeValue(customClass, true);
+        }
+
+        @Override
+        public void redo() {
+            main.getJsonData().getCustomClasses().add(customClass);
+            main.getRootTable().refreshClasses(true);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "New Class " + displayName;
+        }
+    }
+    
+    public static class RenameCustomClassUndoable implements Undoable {
+        private Main main;
+        private String displayName;
+        private String fullyQualifiedName;
+        private String oldName;
+        private String oldFullyQualifiedName;
+        private CustomClass customClass;
+
+        public RenameCustomClassUndoable(Main main, String displayName, String fullyQualifiedName) {
+            this.main = main;
+            this.displayName = displayName;
+            this.fullyQualifiedName = fullyQualifiedName;
+            oldName = main.getRootTable().getClassSelectBox().getSelected();
+            
+            for (CustomClass foundClass : main.getJsonData().getCustomClasses()) {
+                if (foundClass.getDisplayName().equals(displayName)) {
+                    oldFullyQualifiedName = foundClass.getFullyQualifiedName();
+                    customClass = foundClass;
+                    break;
+                }
+            }
+        }
+
+        @Override
+        public void undo() {
+            customClass.setDisplayName(oldName);
+            customClass.setFullyQualifiedName(oldFullyQualifiedName);
+            main.getRootTable().refreshClasses(false);
+        }
+
+        @Override
+        public void redo() {
+            customClass.setDisplayName(oldName);
+            customClass.setFullyQualifiedName(oldFullyQualifiedName);
+            main.getRootTable().refreshClasses(false);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Rename Class to " + displayName;
+        }
+        
+    }
+    
+    public static class DeleteCustomClassUndoable implements Undoable {
+        private Main main;
+        private CustomClass customClass;
+
+        public DeleteCustomClassUndoable(Main main) {
+            this.main = main;
+            
+            String name = main.getRootTable().getClassSelectBox().getSelected();
+            for (CustomClass foundClass : main.getJsonData().getCustomClasses()) {
+                if (foundClass.getDisplayName().equals(name)) {
+                    customClass = foundClass;
+                    break;
+                }
+            }
+        }
+        
+        @Override
+        public void undo() {
+            main.getJsonData().getCustomClasses().add(customClass);
+            main.getRootTable().refreshClasses(true);
+            main.getRootTable().refreshClasses(false);
+        }
+
+        @Override
+        public void redo() {
+            main.getJsonData().getCustomClasses().removeValue(customClass, true);
+            main.getRootTable().refreshClasses(false);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Delete class " + customClass.getDisplayName();
+        }
+        
+    }
+    
+    public static class DuplicateCustomClassUndoable implements Undoable{
+        private Main main;
+        private CustomClass customClass;
+
+        public DuplicateCustomClassUndoable(Main main, String displayName, String fullyQualifiedName) {
+            this.main = main;
+            
+            String name = main.getRootTable().getClassSelectBox().getSelected();
+            for (CustomClass foundClass : main.getJsonData().getCustomClasses()) {
+                if (foundClass.getDisplayName().equals(name)) {
+                    try {
+                        customClass = foundClass.clone();
+                        customClass.setDisplayName(displayName);
+                        customClass.setFullyQualifiedName(fullyQualifiedName);
+                    } catch (CloneNotSupportedException e) {
+                        Gdx.app.error(getClass().getName(), "Error creating clone of custom class.", e);
+                        main.getDialogFactory().showDialogError("Clone Error", "Failure to clone custom class. View log?");
+                    }
+                    break;
+                }
+            }
+        }
+        
+        @Override
+        public void undo() {
+            main.getJsonData().getCustomClasses().removeValue(customClass, true);
+            main.getRootTable().refreshClasses(true);
+        }
+
+        @Override
+        public void redo() {
+            main.getJsonData().getCustomClasses().add(customClass);
+            main.getRootTable().refreshClasses(true);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Duplicate class " + customClass.getDisplayName();
+        }
+    }
+    
+    public static class NewCustomPropertyUndoable implements Undoable {
+        private Main main;
+        private CustomClass customClass;
+        private CustomProperty customProperty;
+
+        public NewCustomPropertyUndoable(Main main, String propertyName, PropertyType propertyType) {
+            this.main = main;
+            
+            String name = main.getRootTable().getClassSelectBox().getSelected();
+            for (CustomClass foundClass : main.getJsonData().getCustomClasses()) {
+                if (foundClass.getDisplayName().equals(name)) {
+                    customClass = foundClass;
+                    customProperty = new CustomProperty(propertyName, propertyType);
+                    break;
+                }
+            }
+        }
+        
+        
+        @Override
+        public void undo() {
+            customClass.getTemplateStyle().getProperties().removeValue(customProperty, true);
+
+            for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
+                Iterator<CustomProperty> iter = style.getProperties().iterator();
+                while (iter.hasNext()) {
+                    CustomProperty property = iter.next();
+                    if (property.getName().equals(customProperty.getName())) {
+                        iter.remove();
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void redo() {
+            customClass.getTemplateStyle().getProperties().add(customProperty);
+
+            for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
+                try {
+                    style.getProperties().add(customProperty.clone());
+                } catch (CloneNotSupportedException e) {
+                    Gdx.app.error(getClass().getName(), "Error creating custom property.", e);
+                    main.getDialogFactory().showDialogError("Custom Property Error", "Failure to create custom property. View log?");
+                }
+            }
+        }
+
+        @Override
+        public String getUndoText() {
+            return "New Property " + customProperty.getName();
+        }
+    }
+    
+    public static class DuplicateCustomPropertyUndoable implements Undoable {
+        private Main main;
+        private CustomClass customClass;
+        private CustomProperty customProperty;
+
+        public DuplicateCustomPropertyUndoable(Main main, CustomProperty originalProperty, String propertyName, PropertyType propertyType) {
+            this.main = main;
+            
+            String name = main.getRootTable().getClassSelectBox().getSelected();
+            for (CustomClass foundClass : main.getJsonData().getCustomClasses()) {
+                if (foundClass.getDisplayName().equals(name)) {
+                    try {
+                        customClass = foundClass;
+                        customProperty = originalProperty.clone();
+                        break;
+                    } catch (CloneNotSupportedException e) {
+                        Gdx.app.error(getClass().getName(), "Error creating clone of custom property.", e);
+                        main.getDialogFactory().showDialogError("Clone Error", "Failure to clone custom property. View log?");
+                    }
+                }
+            }
+        }
+        
+        
+        @Override
+        public void undo() {
+            customClass.getTemplateStyle().getProperties().removeValue(customProperty, true);
+
+            for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
+                Iterator<CustomProperty> iter = style.getProperties().iterator();
+                while (iter.hasNext()) {
+                    CustomProperty property = iter.next();
+                    if (property.getName().equals(customProperty.getName())) {
+                        iter.remove();
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void redo() {
+            customClass.getTemplateStyle().getProperties().add(customProperty);
+
+            for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
+                try {
+                    style.getProperties().add(customProperty.clone());
+                } catch (CloneNotSupportedException e) {
+                    Gdx.app.error(getClass().getName(), "Error creating clone of custom class.", e);
+                    main.getDialogFactory().showDialogError("Clone Error", "Failure to clone custom class. View log?");
+                }
+            }
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Duplicate Property " + customProperty.getName();
+        }
+    }
+    
+    public static class RenameCustomPropertyUndoable implements Undoable {
+        private Main main;
+        private CustomClass customClass;
+        private CustomProperty customProperty;
+        private final String oldName;
+        private final PropertyType oldType;
+        private final String newName;
+        private final PropertyType newType;
+
+        public RenameCustomPropertyUndoable(Main main, CustomProperty customProperty, String propertyName, PropertyType propertyType) {
+            this.main = main;
+            
+            this.customProperty = customProperty;
+            
+            String name = main.getRootTable().getClassSelectBox().getSelected();
+            for (CustomClass foundClass : main.getJsonData().getCustomClasses()) {
+                if (foundClass.getDisplayName().equals(name)) {
+                    customClass = foundClass;
+                    break;
+                }
+            }
+            
+            oldName = customProperty.getName();
+            oldType = customProperty.getType();
+            newName = propertyName;
+            newType = propertyType;
+        }
+        
+        
+        @Override
+        public void undo() {
+            for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
+                //rename the property in every style in this class.
+                for (CustomProperty property : style.getProperties()) {
+                    if (property.getName().equals(customProperty.getName())) {
+                        property.setName(oldName);
+                        property.setType(oldType);
+                    }
+                }
+            }
+
+            //rename the template style
+            customProperty.setName(oldName);
+            customProperty.setType(oldType);
+            main.getRootTable().refreshStyleProperties(true);
+        }
+
+        @Override
+        public void redo() {
+            for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
+                //rename the property in every style in this class.
+                for (CustomProperty property : style.getProperties()) {
+                    if (property.getName().equals(customProperty.getName())) {
+                        property.setName(newName);
+                        property.setType(newType);
+                    }
+                }
+            }
+
+            //rename the template style
+            customProperty.setName(newName);
+            customProperty.setType(newType);
+            main.getRootTable().refreshStyleProperties(true);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Rename Property " + customProperty.getName();
+        }
+    }
+
+    public static class DeleteCustomPropertyUndoable implements Undoable {
+        private Main main;
+        private CustomClass customClass;
+        private CustomProperty customProperty;
+
+        public DeleteCustomPropertyUndoable(Main main, CustomProperty customProperty) {
+            this.main = main;
+            
+            this.customProperty = customProperty;
+            
+            String name = main.getRootTable().getClassSelectBox().getSelected();
+            for (CustomClass foundClass : main.getJsonData().getCustomClasses()) {
+                if (foundClass.getDisplayName().equals(name)) {
+                    customClass = foundClass;
+                    break;
+                }
+            }
+        }
+        
+        @Override
+        public void undo() {
+            customClass.getTemplateStyle().getProperties().add(customProperty);
+
+            for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
+                try {
+                    style.getProperties().add(customProperty.clone());
+                } catch (CloneNotSupportedException e) {
+                    Gdx.app.error(getClass().getName(), "Error creating custom property.", e);
+                    main.getDialogFactory().showDialogError("Custom Property Error", "Failure to create custom property. View log?");
+                }
+            }
+        }
+        
+        @Override
+        public void redo() {
+            customClass.getTemplateStyle().getProperties().removeValue(customProperty, true);
+
+            for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
+                Iterator<CustomProperty> iter = style.getProperties().iterator();
+                while (iter.hasNext()) {
+                    CustomProperty property = iter.next();
+                    if (property.getName().equals(customProperty.getName())) {
+                        iter.remove();
+                    }
+                }
+            }
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Delete Property " + customProperty.getName();
+        }
     }
 }

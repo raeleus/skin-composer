@@ -48,6 +48,18 @@ public class CustomStyle implements Json.Serializable {
     public void setParentClass(CustomClass parentClass) {
         this.parentClass = parentClass;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Array<CustomProperty> getProperties() {
+        return properties;
+    }
     
     @Override
     public String toString() {
@@ -58,6 +70,7 @@ public class CustomStyle implements Json.Serializable {
     public CustomStyle clone() throws CloneNotSupportedException {
         CustomStyle returnValue = (CustomStyle) super.clone();
 
+        returnValue.properties.clear();
         for (CustomProperty property : properties) {
             returnValue.properties.add(property.clone());
         }

@@ -25,11 +25,13 @@ package com.ray3k.skincomposer.data;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.ray3k.skincomposer.dialog.DialogCustomProperty.PropertyType;
 
 public class CustomProperty implements Json.Serializable {
     private String name;
     private Object value;
     private CustomStyle parentStyle;
+    private PropertyType type;
 
     public CustomProperty() {
         
@@ -62,6 +64,14 @@ public class CustomProperty implements Json.Serializable {
 
     public void setParentStyle(CustomStyle parentStyle) {
         this.parentStyle = parentStyle;
+    }
+
+    public PropertyType getType() {
+        return type;
+    }
+
+    public void setType(PropertyType type) {
+        this.type = type;
     }
 
     @Override

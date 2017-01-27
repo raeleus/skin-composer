@@ -449,4 +449,8 @@ public class JsonData implements Json.Serializable {
         classStyleMap.clear();
         classStyleMap.putAll(jsonData.classStyleMap);
     }
+
+    public Array<CustomClass> getCustomClasses() {
+        return customClasses;
+    }
 }
