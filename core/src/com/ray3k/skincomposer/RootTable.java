@@ -141,6 +141,7 @@ public class RootTable extends Table {
     private MenuButton fileMenu;
     private MenuButton editMenu;
     private Label statusLabel;
+    private Button classDuplicateButton;
     private Button classDeleteButton;
     private Button classRenameButton;
     private Button styleDeleteButton;
@@ -399,7 +400,6 @@ public class RootTable extends Table {
         });
 
         Button button = new Button(getSkin(), "new");
-        //todo:add new functionality for custom classes. Add hand listener.
         button.addListener(main.getHandListener());
         table.add(button);
 
@@ -410,12 +410,12 @@ public class RootTable extends Table {
             }
         });
 
-        button = new Button(getSkin(), "duplicate");
-        //todo:add duplicate functionality for custom classes.
-        button.addListener(main.getHandListener());
-        table.add(button);
+        classDuplicateButton = new Button(getSkin(), "duplicate");
+        classDuplicateButton.setDisabled(true);
+        classDuplicateButton.addListener(main.getHandListener());
+        table.add(classDuplicateButton);
 
-        button.addListener(new ChangeListener() {
+        classDuplicateButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 fire(new RootTableEvent(RootTableEnum.DUPLICATE_CLASS));
@@ -423,7 +423,6 @@ public class RootTable extends Table {
         });
         
         classDeleteButton = new Button(getSkin(), "delete");
-        //todo:add delete functionality for custom classes.
         classDeleteButton.setDisabled(true);
         table.add(classDeleteButton);
 
@@ -435,7 +434,6 @@ public class RootTable extends Table {
         });
         
         classRenameButton = new Button(getSkin(), "settings");
-        //todo:add rename functionality for custom classes.
         classRenameButton.setDisabled(true);
         table.add(classRenameButton).padRight(30.0f);
 
@@ -506,6 +504,19 @@ public class RootTable extends Table {
 
         fire(new LoadClassesEvent(classSelectBox));
         fire(new LoadStylesEvent(classSelectBox, styleSelectBox));
+    }
+    
+    public void setClassDuplicateButtonDisabled(boolean disabled) {
+        classDuplicateButton.setDisabled(disabled);
+        if (disabled) {
+            if (classDuplicateButton.getListeners().contains(main.getHandListener(), true)) {
+                classDuplicateButton.removeListener(main.getHandListener());
+            }
+        } else {
+            if (!classDuplicateButton.getListeners().contains(main.getHandListener(), true)) {
+                classDuplicateButton.addListener(main.getHandListener());
+            }
+        }
     }
     
     public void setClassDeleteButtonDisabled(boolean disabled) {

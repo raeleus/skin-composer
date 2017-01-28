@@ -104,6 +104,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 		up: button-duplicate
 		down: button-duplicate-pressed
 		over: button-duplicate-over
+		disabled: button-duplicate-disabled
 	}
 	new: {
 		up: button-new

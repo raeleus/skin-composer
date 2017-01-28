@@ -600,8 +600,6 @@ public class UndoableManager {
                 customClass = ((CustomClass) selected).copy();
                 customClass.setDisplayName(displayName);
                 customClass.setFullyQualifiedName(fullyQualifiedName);
-            } else {
-                //todo: facilitate cloning of normal classes
             }
         }
         

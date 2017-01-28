@@ -539,19 +539,15 @@ public class DialogFactory {
     }
     
     public void showDuplicateClassDialog(CustomClassListener listener) {
-        DialogCustomClass dialog;
-        
         Object selected = main.getRootTable().getClassSelectBox().getSelected();
         if (selected instanceof CustomClass) {
-            dialog = new DialogCustomClass(main, "Duplicate Class", false,
+            DialogCustomClass dialog = new DialogCustomClass(main, "Duplicate Class", false,
                     ((CustomClass) selected).getFullyQualifiedName(), 
                     ((CustomClass) selected).getDisplayName());
-        } else {
-            dialog = new DialogCustomClass(main, "Duplicate Class", false, null, null);
+            dialog.addListener(listener);
+            dialog.show(stage);
         }
         
-        dialog.addListener(listener);
-        dialog.show(stage);
     }
 
     public void showNewStylePropertyDialog(CustomStylePropertyListener listener) {

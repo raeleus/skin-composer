@@ -378,6 +378,7 @@ public class MainListener extends RootTableListener {
     private void updateStyleProperties() {
         int classIndex = root.getClassSelectBox().getSelectedIndex();
         if (classIndex >= 0 && classIndex < Main.BASIC_CLASSES.length) {
+            root.setClassDuplicateButtonDisabled(true);
             root.setClassDeleteButtonDisabled(true);
             root.setClassRenameButtonDisabled(true);
 
@@ -396,6 +397,7 @@ public class MainListener extends RootTableListener {
                 root.refreshPreview();
             }
         } else {
+            root.setClassDuplicateButtonDisabled(false);
             root.setClassDeleteButtonDisabled(false);
             root.setClassRenameButtonDisabled(false);
         }
