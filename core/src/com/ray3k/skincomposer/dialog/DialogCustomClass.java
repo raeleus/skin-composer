@@ -27,6 +27,8 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -35,24 +37,51 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.data.CustomClass;
 
 public class DialogCustomClass extends Dialog {
     private boolean customNameEntered;
     private final TextField classField, displayField;
     private final TextButton okButton;
     private Main main;
+    private boolean allowSameName;
+    private String originalFullyQualifiedName, originalDisplayName;
     
-    public DialogCustomClass(Main main, String title) {
-        this(main, title, null, null);
+    public DialogCustomClass(Main main, String title, boolean allowSameName) {
+        this(main, title, allowSameName, null, null);
     }
     
-    //todo: qualify string first instead of just setting ok to disabled from creation.
-    public DialogCustomClass(Main main, String title, String fullyQualifiedName, String displayName) {
+    public DialogCustomClass(Main main, String title, boolean allowSameName, String fullyQualifiedName, String displayName) {
         super(title, main.getSkin(), "bg");
         getTitleLabel().setAlignment(Align.center);
         
         this.main = main;
-        customNameEntered = false;
+        
+        if (fullyQualifiedName == null && displayName == null) {
+            customNameEntered = false;
+        } else {
+            customNameEntered = true;
+        }
+        
+        InputListener enterListener = new InputListener() {
+            @Override
+            public boolean keyTyped(InputEvent event, char character) {
+                if (character == '\n') {
+                    event.stop();
+                    
+                    if (!okButton.isDisabled()) {
+                        result(true);
+                        hide();
+                    }
+                }
+                return false;
+            }
+            
+        };
+        
+        this.allowSameName = allowSameName;
+        originalFullyQualifiedName = fullyQualifiedName;
+        originalDisplayName = displayName;
         
         Label label = new Label("What is the fully qualified name?", getSkin());
         getContentTable().add(label).pad(10.0f).padBottom(0.0f);
@@ -70,6 +99,7 @@ public class DialogCustomClass extends Dialog {
             }
         };
         classField.setText(fullyQualifiedName);
+        classField.addCaptureListener(enterListener);
         classField.selectAll();
         classField.addListener(main.getIbeamListener());
         getContentTable().add(classField).growX().padLeft(10.0f).padRight(10.0f);
@@ -90,15 +120,16 @@ public class DialogCustomClass extends Dialog {
             }
         };
         displayField.setText(displayName);
+        displayField.addCaptureListener(enterListener);
         displayField.addListener(main.getIbeamListener());
         getContentTable().add(displayField).growX().padLeft(10.0f).padRight(10.0f);
         
         getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
-        button("OK", true).key(Keys.ENTER, true);
+        button("OK", true);
         button("Cancel", false).key(Keys.ESCAPE, false);
         
         okButton = (TextButton) getButtonTable().getCells().first().getActor();
-        okButton.setDisabled(true);
+        updateOkButton();
         
         getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         
@@ -142,11 +173,34 @@ public class DialogCustomClass extends Dialog {
         fire(new CustomClassEvent((boolean) object, classField.getText(), displayField.getText()));
     }
     
-    //todo: ensure names/classes don't match existing classes.
     private void updateOkButton() {
         if (classField.getText().matches("^.*[^\\.]$") && !displayField.getText().equals("")) {
-            okButton.setDisabled(false);
-            if (!okButton.getListeners().contains(main.getHandListener(), true)) {
+            boolean buttonDisabled = false;
+            
+            if (!allowSameName || !classField.getText().equals(originalFullyQualifiedName) || !displayField.getText().equals(originalDisplayName)) {
+                for (CustomClass otherClass : main.getJsonData().getCustomClasses()) {
+                    if (otherClass.getDisplayName().equals(displayField.getText())
+                            || otherClass.getFullyQualifiedName().equals(classField.getText())) {
+                            buttonDisabled = true;
+                        break;
+                    }
+                }
+                
+                for (Class clazz : Main.STYLE_CLASSES) {
+                    if (classField.getText().equals(clazz.getName())) {
+                        buttonDisabled = true;
+                    }
+                }
+                
+                for (Class clazz : Main.BASIC_CLASSES) {
+                    if (displayField.getText().equals(clazz.getSimpleName())) {
+                        buttonDisabled = true;
+                    }
+                }
+            }
+            
+            okButton.setDisabled(buttonDisabled);
+            if (!buttonDisabled && !okButton.getListeners().contains(main.getHandListener(), true)) {
                 okButton.addListener(main.getHandListener());
             }
         } else {

@@ -522,7 +522,7 @@ public class DialogFactory {
     }
 
     public void showNewClassDialog(CustomClassListener listener) {
-        DialogCustomClass dialog = new DialogCustomClass(main, "New Custom Class");
+        DialogCustomClass dialog = new DialogCustomClass(main, "New Custom Class", false);
         dialog.addListener(listener);
         dialog.show(stage);
     }
@@ -530,7 +530,7 @@ public class DialogFactory {
     public void showRenameClassDialog(CustomClassListener listener) {
         Object selected = main.getRootTable().getClassSelectBox().getSelected();
         if (selected instanceof CustomClass) {
-            DialogCustomClass dialog = new DialogCustomClass(main, "Rename Custom Class", 
+            DialogCustomClass dialog = new DialogCustomClass(main, "Rename Custom Class", true, 
                     ((CustomClass) selected).getFullyQualifiedName(), 
                     ((CustomClass) selected).getDisplayName());
             dialog.addListener(listener);
@@ -543,11 +543,11 @@ public class DialogFactory {
         
         Object selected = main.getRootTable().getClassSelectBox().getSelected();
         if (selected instanceof CustomClass) {
-            dialog = new DialogCustomClass(main, "Duplicate Class", 
+            dialog = new DialogCustomClass(main, "Duplicate Class", false,
                     ((CustomClass) selected).getFullyQualifiedName(), 
                     ((CustomClass) selected).getDisplayName());
         } else {
-            dialog = new DialogCustomClass(main, "Duplicate Class", null, null);
+            dialog = new DialogCustomClass(main, "Duplicate Class", false, null, null);
         }
         
         dialog.addListener(listener);

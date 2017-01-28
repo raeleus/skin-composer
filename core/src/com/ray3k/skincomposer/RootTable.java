@@ -645,7 +645,7 @@ public class RootTable extends Table {
         if (scrollToNewest) {
             classSelectBox.setSelectedIndex(classSelectBox.getItems().size - 1);
         } else {
-            classSelectBox.setSelectedIndex(classSelectedIndex);
+            classSelectBox.setSelectedIndex(Math.min(classSelectedIndex, classSelectBox.getItems().size - 1));
         }
     }
     
