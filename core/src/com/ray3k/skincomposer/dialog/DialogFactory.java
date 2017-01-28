@@ -45,6 +45,7 @@ import com.ray3k.skincomposer.UndoableManager.DeleteStyleUndoable;
 import com.ray3k.skincomposer.UndoableManager.DuplicateStyleUndoable;
 import com.ray3k.skincomposer.UndoableManager.NewStyleUndoable;
 import com.ray3k.skincomposer.data.AtlasData;
+import com.ray3k.skincomposer.data.CustomClass;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.ProjectData.RecentFile;
@@ -526,14 +527,29 @@ public class DialogFactory {
         dialog.show(stage);
     }
     
-    public void showRenameClassDialog(String fullyQualifiedName, String displayName, CustomClassListener listener) {
-        DialogCustomClass dialog = new DialogCustomClass(main, "Rename Custom Class", fullyQualifiedName, displayName);
-        dialog.addListener(listener);
-        dialog.show(stage);
+    public void showRenameClassDialog(CustomClassListener listener) {
+        Object selected = main.getRootTable().getClassSelectBox().getSelected();
+        if (selected instanceof CustomClass) {
+            DialogCustomClass dialog = new DialogCustomClass(main, "Rename Custom Class", 
+                    ((CustomClass) selected).getFullyQualifiedName(), 
+                    ((CustomClass) selected).getDisplayName());
+            dialog.addListener(listener);
+            dialog.show(stage);
+        }
     }
     
-    public void showDuplicateClassDialog(String fullyQualifiedName, String displayName, CustomClassListener listener) {
-        DialogCustomClass dialog = new DialogCustomClass(main, "Duplicate Class", fullyQualifiedName, displayName);
+    public void showDuplicateClassDialog(CustomClassListener listener) {
+        DialogCustomClass dialog;
+        
+        Object selected = main.getRootTable().getClassSelectBox().getSelected();
+        if (selected instanceof CustomClass) {
+            dialog = new DialogCustomClass(main, "Duplicate Class", 
+                    ((CustomClass) selected).getFullyQualifiedName(), 
+                    ((CustomClass) selected).getDisplayName());
+        } else {
+            dialog = new DialogCustomClass(main, "Duplicate Class", null, null);
+        }
+        
         dialog.addListener(listener);
         dialog.show(stage);
     }

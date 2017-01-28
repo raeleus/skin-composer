@@ -137,7 +137,7 @@ public class MainListener extends RootTableListener {
                 });
                 break;
             case DUPLICATE_CLASS:
-                dialogFactory.showDuplicateClassDialog("test.class", "test", new CustomClassListener() {
+                dialogFactory.showDuplicateClassDialog(new CustomClassListener() {
                     @Override
                     public void newClassEntered(String fullyQualifiedName,
                             String displayName) {
@@ -154,7 +154,7 @@ public class MainListener extends RootTableListener {
                 main.getUndoableManager().addUndoable(new DeleteCustomClassUndoable(main), true);
                 break;
             case RENAME_CLASS:
-                dialogFactory.showRenameClassDialog("test.class", "test", new DialogCustomClass.CustomClassListener() {
+                dialogFactory.showRenameClassDialog(new DialogCustomClass.CustomClassListener() {
                     @Override
                     public void newClassEntered(String fullyQualifiedName,
                             String displayName) {
@@ -329,19 +329,28 @@ public class MainListener extends RootTableListener {
     }
     
     @Override
-    public void loadClasses(SelectBox<String> classSelectBox) {
-        Array<String> names = new Array<>();
+    public void loadClasses(SelectBox classSelectBox) {
+        Array names = new Array<>();
         for (Class clazz : Main.BASIC_CLASSES) {
             names.add(clazz.getSimpleName());
+        }
+        for (CustomClass customClass : main.getJsonData().getCustomClasses()) {
+            names.add(customClass);
         }
         classSelectBox.setItems(names);
     }
 
     @Override
-    public void loadStyles(SelectBox<String> classSelectBox, SelectBox<StyleData> styleSelectBox) {
-        Class selectedClass = Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()];
-        styleSelectBox.setItems(jsonData.getClassStyleMap().get(selectedClass));
-        styleSelectBox.setSelectedIndex(0);
+    public void loadStyles(SelectBox classSelectBox, SelectBox styleSelectBox) {
+        int selection = classSelectBox.getSelectedIndex();
+        if (selection < Main.BASIC_CLASSES.length) { 
+            Class selectedClass = Main.BASIC_CLASSES[selection];
+            styleSelectBox.setItems(jsonData.getClassStyleMap().get(selectedClass));
+            styleSelectBox.setSelectedIndex(0);
+        } else {
+            CustomClass customClass = (CustomClass) classSelectBox.getSelected();
+            styleSelectBox.setItems(new Array<>());
+        }
     }
 
     @Override

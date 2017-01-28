@@ -99,8 +99,8 @@ public class RootTable extends Table {
     private final Stage stage;
     private final Main main;
     private boolean draggingCursor;
-    private SelectBox<String> classSelectBox;
-    private SelectBox<StyleData> styleSelectBox;
+    private SelectBox classSelectBox;
+    private SelectBox styleSelectBox;
     private Array<StyleProperty> styleProperties;
     private final BrowseFieldStyle bfColorStyle;
     private final BrowseFieldStyle bfDrawableStyle;
@@ -2301,11 +2301,11 @@ public class RootTable extends Table {
         display(text);
     }
 
-    public SelectBox<String> getClassSelectBox() {
+    public SelectBox getClassSelectBox() {
         return classSelectBox;
     }
 
-    public SelectBox<StyleData> getStyleSelectBox() {
+    public SelectBox getStyleSelectBox() {
         return styleSelectBox;
     }
 
@@ -2385,19 +2385,19 @@ public class RootTable extends Table {
 
     private static class LoadClassesEvent extends Event {
 
-        SelectBox<String> classSelectBox;
+        SelectBox classSelectBox;
 
-        public LoadClassesEvent(SelectBox<String> classSelectBox) {
+        public LoadClassesEvent(SelectBox classSelectBox) {
             this.classSelectBox = classSelectBox;
         }
     }
 
     private static class LoadStylesEvent extends Event {
-        SelectBox<String> classSelectBox;
-        SelectBox<StyleData> styleSelectBox;
+        SelectBox classSelectBox;
+        SelectBox styleSelectBox;
 
-        public LoadStylesEvent(SelectBox<String> classSelectBox,
-                SelectBox<StyleData> styleSelectBox) {
+        public LoadStylesEvent(SelectBox classSelectBox,
+                SelectBox styleSelectBox) {
             this.classSelectBox = classSelectBox;
             this.styleSelectBox = styleSelectBox;
         }
@@ -2466,9 +2466,9 @@ public class RootTable extends Table {
 
         public abstract void stylePropertyChanged(StyleProperty styleProperty, Actor styleActor);
 
-        public abstract void loadClasses(SelectBox<String> classSelectBox);
+        public abstract void loadClasses(SelectBox classSelectBox);
 
-        public abstract void loadStyles(SelectBox<String> classSelectBox, SelectBox<StyleData> styleSelectBox);
+        public abstract void loadStyles(SelectBox classSelectBox, SelectBox styleSelectBox);
     
         public abstract void newCustomProperty();
         

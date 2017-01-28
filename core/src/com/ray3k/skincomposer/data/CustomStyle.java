@@ -31,6 +31,7 @@ public class CustomStyle implements Json.Serializable {
     private String name;
     private Array<CustomProperty> properties;
     private CustomClass parentClass;
+    private boolean deletable;
 
     public CustomStyle() {
         
@@ -39,6 +40,7 @@ public class CustomStyle implements Json.Serializable {
     public CustomStyle(String name) {
         this.name = name;
         properties = new Array<>();
+        deletable = true;
     }
 
     public CustomClass getParentClass() {
@@ -60,20 +62,29 @@ public class CustomStyle implements Json.Serializable {
     public Array<CustomProperty> getProperties() {
         return properties;
     }
+
+    public boolean isDeletable() {
+        return deletable;
+    }
+
+    public void setDeletable(boolean deletable) {
+        this.deletable = deletable;
+    }
     
     @Override
     public String toString() {
         return name;
     }
     
-    @Override
-    public CustomStyle clone() throws CloneNotSupportedException {
-        CustomStyle returnValue = (CustomStyle) super.clone();
+    public CustomStyle copy() {
+        CustomStyle returnValue = new CustomStyle(name);
 
-        returnValue.properties.clear();
         for (CustomProperty property : properties) {
-            returnValue.properties.add(property.clone());
+            returnValue.properties.add(property.copy());
         }
+        
+        returnValue.parentClass = parentClass;
+        returnValue.deletable = deletable;
 
         return returnValue;
     }
@@ -82,6 +93,7 @@ public class CustomStyle implements Json.Serializable {
     public void write(Json json) {
         json.writeValue("name", name);
         json.writeValue("properties", properties, Array.class, CustomProperty.class);
+        json.writeValue("deletable", deletable);
     }
 
     @Override
@@ -91,5 +103,6 @@ public class CustomStyle implements Json.Serializable {
         for (CustomProperty property : properties) {
             property.setParentStyle(this);
         }
+        deletable = jsonData.getBoolean("deletable");
     }
 }

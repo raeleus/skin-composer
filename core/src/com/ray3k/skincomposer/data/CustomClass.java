@@ -41,6 +41,9 @@ public class CustomClass implements Json.Serializable {
         this.fullyQualifiedName = fullyQualifiedName;
         this.displayName = displayName;
         styles = new Array<>();
+        CustomStyle defaultStyle = new CustomStyle("default");
+        defaultStyle.setDeletable(false);
+        styles.add(defaultStyle);
     }
 
     public String getFullyQualifiedName() {
@@ -90,14 +93,16 @@ public class CustomClass implements Json.Serializable {
         }
         templateStyle = json.readValue("templateStyle", CustomStyle.class, jsonData);
     }
-
-    @Override
-    public CustomClass clone() throws CloneNotSupportedException {
-        CustomClass returnValue = (CustomClass) super.clone();
+    
+    public CustomClass copy() {
+        CustomClass returnValue = new CustomClass(fullyQualifiedName, displayName);
         
-        returnValue.styles.clear();
         for (CustomStyle style : styles) {
-            returnValue.styles.add(style.clone());
+            returnValue.styles.add(style.copy());
+        }
+        
+        if (templateStyle != null) {
+            returnValue.templateStyle = templateStyle.copy();
         }
         
         return returnValue;

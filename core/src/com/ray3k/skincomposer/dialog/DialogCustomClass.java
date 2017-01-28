@@ -46,6 +46,7 @@ public class DialogCustomClass extends Dialog {
         this(main, title, null, null);
     }
     
+    //todo: qualify string first instead of just setting ok to disabled from creation.
     public DialogCustomClass(Main main, String title, String fullyQualifiedName, String displayName) {
         super(title, main.getSkin(), "bg");
         getTitleLabel().setAlignment(Align.center);
@@ -141,6 +142,7 @@ public class DialogCustomClass extends Dialog {
         fire(new CustomClassEvent((boolean) object, classField.getText(), displayField.getText()));
     }
     
+    //todo: ensure names/classes don't match existing classes.
     private void updateOkButton() {
         if (classField.getText().matches("^.*[^\\.]$") && !displayField.getText().equals("")) {
             okButton.setDisabled(false);

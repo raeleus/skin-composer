@@ -37,6 +37,8 @@ import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogCustomProperty.PropertyType;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UndoableManager {
     private final Array<Undoable> undoables;
@@ -318,11 +320,11 @@ public class UndoableManager {
         private SelectBox<StyleData> selectBox;
         private String oldValue, newValue;
         private RootTable rootTable;
-
+    
         public SelectBoxUndoable(RootTable rootTable, StyleProperty property, SelectBox<StyleData> selectBox) {
             this.property = property;
             this.selectBox = selectBox;
-            
+
             oldValue = (String) property.value;
             newValue = selectBox.getSelected().name;
             this.rootTable = rootTable;
@@ -489,10 +491,10 @@ public class UndoableManager {
     }
 
     public static class NewCustomClassUndoable implements Undoable {
-        private String fullyQualifiedName;
-        private String displayName;
-        private Main main;
-        private CustomClass customClass;
+        private final String fullyQualifiedName;
+        private final String displayName;
+        private final Main main;
+        private final CustomClass customClass;
 
         public NewCustomClassUndoable(String fullyQualifiedName, String displayName, Main main) {
             this.fullyQualifiedName = fullyQualifiedName;
@@ -519,26 +521,20 @@ public class UndoableManager {
     }
     
     public static class RenameCustomClassUndoable implements Undoable {
-        private Main main;
-        private String displayName;
-        private String fullyQualifiedName;
-        private String oldName;
-        private String oldFullyQualifiedName;
-        private CustomClass customClass;
+        private final Main main;
+        private final String displayName;
+        private final String fullyQualifiedName;
+        private final String oldName;
+        private final String oldFullyQualifiedName;
+        private final CustomClass customClass;
 
         public RenameCustomClassUndoable(Main main, String displayName, String fullyQualifiedName) {
             this.main = main;
             this.displayName = displayName;
             this.fullyQualifiedName = fullyQualifiedName;
-            oldName = main.getRootTable().getClassSelectBox().getSelected();
-            
-            for (CustomClass foundClass : main.getJsonData().getCustomClasses()) {
-                if (foundClass.getDisplayName().equals(displayName)) {
-                    oldFullyQualifiedName = foundClass.getFullyQualifiedName();
-                    customClass = foundClass;
-                    break;
-                }
-            }
+            customClass = (CustomClass) main.getRootTable().getClassSelectBox().getSelected();
+            oldName = customClass.getDisplayName();
+            oldFullyQualifiedName = customClass.getFullyQualifiedName();
         }
 
         @Override
@@ -550,8 +546,8 @@ public class UndoableManager {
 
         @Override
         public void redo() {
-            customClass.setDisplayName(oldName);
-            customClass.setFullyQualifiedName(oldFullyQualifiedName);
+            customClass.setDisplayName(displayName);
+            customClass.setFullyQualifiedName(fullyQualifiedName);
             main.getRootTable().refreshClasses(false);
         }
 
@@ -563,19 +559,12 @@ public class UndoableManager {
     }
     
     public static class DeleteCustomClassUndoable implements Undoable {
-        private Main main;
-        private CustomClass customClass;
+        private final Main main;
+        private final CustomClass customClass;
 
         public DeleteCustomClassUndoable(Main main) {
             this.main = main;
-            
-            String name = main.getRootTable().getClassSelectBox().getSelected();
-            for (CustomClass foundClass : main.getJsonData().getCustomClasses()) {
-                if (foundClass.getDisplayName().equals(name)) {
-                    customClass = foundClass;
-                    break;
-                }
-            }
+            customClass = (CustomClass) main.getRootTable().getClassSelectBox().getSelected();
         }
         
         @Override
@@ -605,19 +594,14 @@ public class UndoableManager {
         public DuplicateCustomClassUndoable(Main main, String displayName, String fullyQualifiedName) {
             this.main = main;
             
-            String name = main.getRootTable().getClassSelectBox().getSelected();
-            for (CustomClass foundClass : main.getJsonData().getCustomClasses()) {
-                if (foundClass.getDisplayName().equals(name)) {
-                    try {
-                        customClass = foundClass.clone();
-                        customClass.setDisplayName(displayName);
-                        customClass.setFullyQualifiedName(fullyQualifiedName);
-                    } catch (CloneNotSupportedException e) {
-                        Gdx.app.error(getClass().getName(), "Error creating clone of custom class.", e);
-                        main.getDialogFactory().showDialogError("Clone Error", "Failure to clone custom class. View log?");
-                    }
-                    break;
-                }
+            Object selected = main.getRootTable().getClassSelectBox().getSelected();
+
+            if (selected instanceof CustomClass) {
+                customClass = ((CustomClass) selected).copy();
+                customClass.setDisplayName(displayName);
+                customClass.setFullyQualifiedName(fullyQualifiedName);
+            } else {
+                //todo: facilitate cloning of normal classes
             }
         }
         
@@ -640,21 +624,15 @@ public class UndoableManager {
     }
     
     public static class NewCustomPropertyUndoable implements Undoable {
-        private Main main;
-        private CustomClass customClass;
-        private CustomProperty customProperty;
+        private final Main main;
+        private final CustomClass customClass;
+        private final CustomProperty customProperty;
 
         public NewCustomPropertyUndoable(Main main, String propertyName, PropertyType propertyType) {
             this.main = main;
             
-            String name = main.getRootTable().getClassSelectBox().getSelected();
-            for (CustomClass foundClass : main.getJsonData().getCustomClasses()) {
-                if (foundClass.getDisplayName().equals(name)) {
-                    customClass = foundClass;
-                    customProperty = new CustomProperty(propertyName, propertyType);
-                    break;
-                }
-            }
+            customProperty = new CustomProperty(propertyName, propertyType);
+            customClass = (CustomClass) main.getRootTable().getClassSelectBox().getSelected();
         }
         
         
@@ -678,12 +656,7 @@ public class UndoableManager {
             customClass.getTemplateStyle().getProperties().add(customProperty);
 
             for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
-                try {
-                    style.getProperties().add(customProperty.clone());
-                } catch (CloneNotSupportedException e) {
-                    Gdx.app.error(getClass().getName(), "Error creating custom property.", e);
-                    main.getDialogFactory().showDialogError("Custom Property Error", "Failure to create custom property. View log?");
-                }
+                style.getProperties().add(customProperty.copy());
             }
         }
 
@@ -694,26 +667,16 @@ public class UndoableManager {
     }
     
     public static class DuplicateCustomPropertyUndoable implements Undoable {
-        private Main main;
-        private CustomClass customClass;
+        private final Main main;
+        private final CustomClass customClass;
         private CustomProperty customProperty;
 
         public DuplicateCustomPropertyUndoable(Main main, CustomProperty originalProperty, String propertyName, PropertyType propertyType) {
             this.main = main;
             
-            String name = main.getRootTable().getClassSelectBox().getSelected();
-            for (CustomClass foundClass : main.getJsonData().getCustomClasses()) {
-                if (foundClass.getDisplayName().equals(name)) {
-                    try {
-                        customClass = foundClass;
-                        customProperty = originalProperty.clone();
-                        break;
-                    } catch (CloneNotSupportedException e) {
-                        Gdx.app.error(getClass().getName(), "Error creating clone of custom property.", e);
-                        main.getDialogFactory().showDialogError("Clone Error", "Failure to clone custom property. View log?");
-                    }
-                }
-            }
+            customProperty = originalProperty.copy();
+            
+            customClass = (CustomClass) main.getRootTable().getClassSelectBox().getSelected();
         }
         
         
@@ -737,12 +700,7 @@ public class UndoableManager {
             customClass.getTemplateStyle().getProperties().add(customProperty);
 
             for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
-                try {
-                    style.getProperties().add(customProperty.clone());
-                } catch (CloneNotSupportedException e) {
-                    Gdx.app.error(getClass().getName(), "Error creating clone of custom class.", e);
-                    main.getDialogFactory().showDialogError("Clone Error", "Failure to clone custom class. View log?");
-                }
+                style.getProperties().add(customProperty.copy());
             }
         }
 
@@ -753,9 +711,9 @@ public class UndoableManager {
     }
     
     public static class RenameCustomPropertyUndoable implements Undoable {
-        private Main main;
-        private CustomClass customClass;
-        private CustomProperty customProperty;
+        private final Main main;
+        private final CustomClass customClass;
+        private final CustomProperty customProperty;
         private final String oldName;
         private final PropertyType oldType;
         private final String newName;
@@ -766,13 +724,7 @@ public class UndoableManager {
             
             this.customProperty = customProperty;
             
-            String name = main.getRootTable().getClassSelectBox().getSelected();
-            for (CustomClass foundClass : main.getJsonData().getCustomClasses()) {
-                if (foundClass.getDisplayName().equals(name)) {
-                    customClass = foundClass;
-                    break;
-                }
-            }
+            customClass = (CustomClass) main.getRootTable().getClassSelectBox().getSelected();
             
             oldName = customProperty.getName();
             oldType = customProperty.getType();
@@ -833,13 +785,7 @@ public class UndoableManager {
             
             this.customProperty = customProperty;
             
-            String name = main.getRootTable().getClassSelectBox().getSelected();
-            for (CustomClass foundClass : main.getJsonData().getCustomClasses()) {
-                if (foundClass.getDisplayName().equals(name)) {
-                    customClass = foundClass;
-                    break;
-                }
-            }
+            customClass = (CustomClass) main.getRootTable().getClassSelectBox().getSelected();
         }
         
         @Override
@@ -847,12 +793,7 @@ public class UndoableManager {
             customClass.getTemplateStyle().getProperties().add(customProperty);
 
             for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
-                try {
-                    style.getProperties().add(customProperty.clone());
-                } catch (CloneNotSupportedException e) {
-                    Gdx.app.error(getClass().getName(), "Error creating custom property.", e);
-                    main.getDialogFactory().showDialogError("Custom Property Error", "Failure to create custom property. View log?");
-                }
+                style.getProperties().add(customProperty.copy());
             }
         }
         

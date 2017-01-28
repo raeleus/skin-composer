@@ -79,9 +79,10 @@ public class CustomProperty implements Json.Serializable {
         return name;
     }
     
-    @Override
-    public CustomProperty clone() throws CloneNotSupportedException {
-        CustomProperty returnValue = (CustomProperty) super.clone();
+    public CustomProperty copy() {
+        CustomProperty returnValue = new CustomProperty(name, value);
+        returnValue.parentStyle = parentStyle;
+        returnValue.type = type;
         return returnValue;
     }
 
