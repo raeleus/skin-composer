@@ -174,6 +174,7 @@ public class DialogCustomClass extends Dialog {
     }
     
     private void updateOkButton() {
+        //todo:use a regex string on displayfield to prevent numbers etc. like other dialogs
         if (classField.getText().matches("^.*[^\\.]$") && !displayField.getText().equals("")) {
             boolean buttonDisabled = false;
             

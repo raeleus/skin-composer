@@ -43,6 +43,7 @@ public class CustomClass implements Json.Serializable {
         styles = new Array<>();
         CustomStyle defaultStyle = new CustomStyle("default");
         defaultStyle.setDeletable(false);
+        defaultStyle.setParentClass(this);
         styles.add(defaultStyle);
     }
 

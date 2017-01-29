@@ -31,6 +31,7 @@ import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.CustomClass;
 import com.ray3k.skincomposer.data.CustomProperty;
+import com.ray3k.skincomposer.data.CustomStyle;
 import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.StyleData;
@@ -491,13 +492,11 @@ public class UndoableManager {
     }
 
     public static class NewCustomClassUndoable implements Undoable {
-        private final String fullyQualifiedName;
         private final String displayName;
         private final Main main;
         private final CustomClass customClass;
 
         public NewCustomClassUndoable(String fullyQualifiedName, String displayName, Main main) {
-            this.fullyQualifiedName = fullyQualifiedName;
             this.displayName = displayName;
             this.main = main;
             customClass = new CustomClass(fullyQualifiedName, displayName);
@@ -813,6 +812,131 @@ public class UndoableManager {
         @Override
         public String getUndoText() {
             return "Delete Property " + customProperty.getName();
+        }
+    }
+
+    public static class NewCustomStyleUndoable implements Undoable {
+        private final Main main;
+        private final CustomClass parent;
+        private final CustomStyle style;
+
+        public NewCustomStyleUndoable(Main main, String name, CustomClass parent) {
+            this.main = main;
+            this.parent = parent;
+            
+            style = new CustomStyle(name);
+            style.setParentClass(parent);
+        }
+        
+        @Override
+        public void undo() {
+            parent.getStyles().removeValue(style, true);
+            main.getRootTable().refreshStyles(true);
+        }
+
+        @Override
+        public void redo() {
+            parent.getStyles().add(style);
+            main.getRootTable().getClassSelectBox().setSelected(parent);
+            main.getRootTable().refreshStyles(true);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "New style " + style.getName();
+        }
+    }
+    
+    public static class DuplicateCustomStyleUndoable implements Undoable {
+        private final Main main;
+        private final CustomStyle style;
+
+        public DuplicateCustomStyleUndoable(Main main, String name, CustomStyle originalStyle) {
+            this.main = main;
+            
+            style = originalStyle.copy();
+            style.setName(name);
+            style.setDeletable(true);
+        }
+        
+        @Override
+        public void undo() {
+            style.getParentClass().getStyles().removeValue(style, true);
+            main.getRootTable().refreshStyles(true);
+        }
+
+        @Override
+        public void redo() {
+            style.getParentClass().getStyles().add(style);
+            main.getRootTable().getClassSelectBox().setSelected(style.getParentClass());
+            main.getRootTable().refreshStyles(true);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Duplicate style " + style.getName();
+        }
+    }
+    
+    public static class DeleteCustomStyleUndoable implements Undoable {
+        private final Main main;
+        private final CustomStyle style;
+
+        public DeleteCustomStyleUndoable(Main main, CustomStyle style) {
+            this.main = main;
+            
+            this.style = style;
+        }
+        
+        @Override
+        public void undo() {
+            style.getParentClass().getStyles().add(style);
+            main.getRootTable().getClassSelectBox().setSelected(style.getParentClass());
+            main.getRootTable().refreshStyles(true);
+        }
+
+        @Override
+        public void redo() {
+            style.getParentClass().getStyles().removeValue(style, true);
+            main.getRootTable().refreshStyles(true);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Delete style " + style.getName();
+        }
+    }
+
+    public static class RenameCustomStyleUndoable implements Undoable {
+        private final Main main;
+        private final CustomStyle style;
+        String oldName, name;
+
+        public RenameCustomStyleUndoable(Main main, String name, CustomStyle style) {
+            this.main = main;
+            
+            this.style = style;
+            oldName = style.getName();
+            this.name = name;
+        }
+        
+        @Override
+        public void undo() {
+            style.setName(oldName);
+            style.getParentClass().getStyles().removeValue(style, true);
+            main.getRootTable().refreshStyles(true);
+        }
+
+        @Override
+        public void redo() {
+            style.setName(name);
+            main.getRootTable().getClassSelectBox().setSelected(style.getParentClass());
+            main.getRootTable().refreshStyles(true);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Duplicate style " + style.getName();
         }
     }
 }

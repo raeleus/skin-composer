@@ -46,6 +46,7 @@ import com.ray3k.skincomposer.UndoableManager.DuplicateStyleUndoable;
 import com.ray3k.skincomposer.UndoableManager.NewStyleUndoable;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.CustomClass;
+import com.ray3k.skincomposer.data.CustomStyle;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.ProjectData.RecentFile;
@@ -54,6 +55,7 @@ import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
 import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyListener;
 import com.ray3k.skincomposer.dialog.DialogCustomProperty.PropertyType;
+import com.ray3k.skincomposer.dialog.DialogCustomStyle.CustomStyleListener;
 
 public class DialogFactory {
 
@@ -550,6 +552,32 @@ public class DialogFactory {
         
     }
 
+    public void showNewCustomStyleDialog(CustomStyleListener listener) {
+        DialogCustomStyle dialog = new DialogCustomStyle(main, "New Style", false);
+        dialog.addListener(listener);
+        dialog.show(stage);
+    }
+    
+    public void showDuplicateCustomStyleDialog(CustomStyleListener listener) {
+        Object selected = main.getRootTable().getStyleSelectBox().getSelected();
+        if (selected instanceof CustomStyle) {
+            DialogCustomStyle dialog = new DialogCustomStyle(main, "Duplicate Style", false,
+                    ((CustomStyle) selected).getName());
+            dialog.addListener(listener);
+            dialog.show(stage);
+        }
+    }
+    
+    public void showRenameCustomStyleDialog(CustomStyleListener listener) {
+        Object selected = main.getRootTable().getStyleSelectBox().getSelected();
+        if (selected instanceof CustomStyle) {
+            DialogCustomStyle dialog = new DialogCustomStyle(main, "Rename Style", false,
+                    ((CustomStyle) selected).getName());
+            dialog.addListener(listener);
+            dialog.show(stage);
+        }
+    }
+    
     public void showNewStylePropertyDialog(CustomStylePropertyListener listener) {
         DialogCustomProperty dialog = new DialogCustomProperty(main, "New Custom Property");
         dialog.addListener(listener);

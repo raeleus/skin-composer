@@ -51,6 +51,7 @@ import com.ray3k.skincomposer.data.CustomClass;
 import com.ray3k.skincomposer.data.CustomProperty;
 import com.ray3k.skincomposer.UndoableManager.NewCustomClassUndoable;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
+import com.ray3k.skincomposer.dialog.DialogCustomStyle;
 import java.io.File;
 
 public class MainListener extends RootTableListener {
@@ -172,16 +173,68 @@ public class MainListener extends RootTableListener {
                 updateStyleProperties();
                 break;
             case NEW_STYLE:
-                dialogFactory.showNewStyleDialog(main.getSkin(), main.getStage());
+                if (main.getRootTable().getClassSelectBox().getSelectedIndex() < Main.BASIC_CLASSES.length) {
+                    dialogFactory.showNewStyleDialog(main.getSkin(), main.getStage());
+                } else {
+                    dialogFactory.showNewCustomStyleDialog(new DialogCustomStyle.CustomStyleListener() {
+                        @Override
+                        public void newStyleEntered(String name) {
+                            main.getUndoableManager().addUndoable(
+                                    new UndoableManager.NewCustomStyleUndoable(main,
+                                            name,
+                                            (CustomClass) main.getRootTable().getClassSelectBox().getSelected()), true);
+                        }
+
+                        @Override
+                        public void cancelled() {
+                        }
+                    });
+                }
                 break;
             case DUPLICATE_STYLE:
-                dialogFactory.showDuplicateStyleDialog(main.getSkin(), main.getStage());
+                if (main.getRootTable().getClassSelectBox().getSelectedIndex() < Main.BASIC_CLASSES.length) {
+                    dialogFactory.showDuplicateStyleDialog(main.getSkin(), main.getStage());
+                } else {
+                    dialogFactory.showDuplicateCustomStyleDialog(new DialogCustomStyle.CustomStyleListener() {
+                        @Override
+                        public void newStyleEntered(String name) {
+                            main.getUndoableManager().addUndoable(
+                                    new UndoableManager.DuplicateCustomStyleUndoable(main,
+                                            name,
+                                            (CustomStyle) main.getRootTable().getStyleSelectBox().getSelected()), true);
+                        }
+
+                        @Override
+                        public void cancelled() {
+                        }
+                    });
+                }
                 break;
             case DELETE_STYLE:
-                dialogFactory.showDeleteStyleDialog(main.getSkin(), main.getStage());
+                if (main.getRootTable().getClassSelectBox().getSelectedIndex() < Main.BASIC_CLASSES.length) {
+                    dialogFactory.showDeleteStyleDialog(main.getSkin(), main.getStage());
+                } else {
+                    main.getUndoableManager().addUndoable(new UndoableManager.DeleteCustomStyleUndoable(main, (CustomStyle) main.getRootTable().getStyleSelectBox().getSelected()), true);
+                }
                 break;
             case RENAME_STYLE:
-                dialogFactory.showRenameStyleDialog(main.getSkin(), main.getStage());
+                if (main.getRootTable().getClassSelectBox().getSelectedIndex() < Main.BASIC_CLASSES.length) {
+                    dialogFactory.showRenameStyleDialog(main.getSkin(), main.getStage());
+                } else {
+                    dialogFactory.showRenameCustomStyleDialog(new DialogCustomStyle.CustomStyleListener() {
+                        @Override
+                        public void newStyleEntered(String name) {
+                            main.getUndoableManager().addUndoable(
+                                    new UndoableManager.RenameCustomStyleUndoable(main,
+                                            name,
+                                            (CustomStyle) main.getRootTable().getStyleSelectBox().getSelected()), true);
+                        }
+
+                        @Override
+                        public void cancelled() {
+                        }
+                    });
+                }
                 break;
             case PREVIEW_PROPERTY:
                 break;
@@ -349,7 +402,7 @@ public class MainListener extends RootTableListener {
             styleSelectBox.setSelectedIndex(0);
         } else {
             CustomClass customClass = (CustomClass) classSelectBox.getSelected();
-            styleSelectBox.setItems(new Array<>());
+            styleSelectBox.setItems(customClass.getStyles());
         }
     }
 
@@ -400,6 +453,19 @@ public class MainListener extends RootTableListener {
             root.setClassDuplicateButtonDisabled(false);
             root.setClassDeleteButtonDisabled(false);
             root.setClassRenameButtonDisabled(false);
+            
+            Object selected = main.getRootTable().getStyleSelectBox().getSelected();
+            
+            if (selected instanceof CustomStyle) {
+                CustomStyle customStyle = (CustomStyle) selected;
+                if (customStyle.isDeletable()) {
+                    main.getRootTable().setStyleDeleteButtonDisabled(false);
+                    main.getRootTable().setStyleRenameButtonDisabled(false);
+                } else {
+                    main.getRootTable().setStyleDeleteButtonDisabled(true);
+                    main.getRootTable().setStyleRenameButtonDisabled(true);
+                }
+            }
         }
     }
 
