@@ -44,7 +44,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -55,13 +54,13 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Sort;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.UndoableManager;
+import com.ray3k.skincomposer.UndoableManager.CustomFontUndoable;
 import com.ray3k.skincomposer.UndoableManager.FontUndoable;
-import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.ColorData;
+import com.ray3k.skincomposer.data.CustomProperty;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.FontData;
-import com.ray3k.skincomposer.data.JsonData;
-import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
@@ -70,9 +69,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class DialogFonts extends Dialog {
-
-    private Skin skin;
     private StyleProperty styleProperty;
+    private CustomProperty customProperty;
     private Array<FontData> fonts;
     private Array<DrawableData> drawables;
     private Table fontsTable;
@@ -82,28 +80,16 @@ public class DialogFonts extends Dialog {
     private EventListener listener;
     private FilesDroppedListener filesDroppedListener;
     private ScrollPane scrollPane;
-    private JsonData jsonData;
-    private ProjectData projectData;
-    private AtlasData atlasData;
     private Main main;
 
-    public DialogFonts(Skin skin, StyleProperty styleProperty, JsonData jsonData, ProjectData projectData, AtlasData atlasData, Main main, EventListener listener) {
-        this(skin, "default", styleProperty, jsonData, projectData, atlasData, main, listener);
-    }
-
-    public DialogFonts(final Skin skin, String styleName, StyleProperty styleProperty, JsonData jsonData, ProjectData projectData, AtlasData atlasData, Main main, EventListener listener) {
-        super("", skin, styleName);
-        
-        this.jsonData = jsonData;
-        this.projectData = projectData;
-        this.atlasData = atlasData;
+    public DialogFonts(Main main, EventListener listener) {
+        super("", main.getSkin(), "dialog");
         this.main = main;
         
         this.listener = listener;
-        this.skin = skin;
-        this.styleProperty = styleProperty;
-        fonts = jsonData.getFonts();
-        drawables = atlasData.getDrawables();
+        
+        fonts = main.getJsonData().getFonts();
+        drawables = main.getAtlasData().getDrawables();
 
         fontMap = new ObjectMap<>();
         produceAtlas();
@@ -124,21 +110,35 @@ public class DialogFonts extends Dialog {
         
         main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
 
+        populate();
+    }
+    
+    public DialogFonts(Main main, StyleProperty styleProperty, EventListener listener) {
+        this(main, listener);
+        this.styleProperty = styleProperty;
+    }
+    
+    public DialogFonts(Main main, CustomProperty customProperty, EventListener listener) {
+        this(main, listener);
+        this.customProperty = customProperty;
+    }
+    
+    private void populate() {
         setFillParent(true);
 
-        if (styleProperty != null) {
-            getContentTable().add(new Label("Select a Font...", skin, "title"));
+        if (styleProperty != null || customProperty != null) {
+            getContentTable().add(new Label("Select a Font...", getSkin(), "title"));
             getContentTable().row();
         } else {
-            getContentTable().add(new Label("Fonts", skin, "title"));
+            getContentTable().add(new Label("Fonts", getSkin(), "title"));
             getContentTable().row();
         }
 
         Table table = new Table();
         table.defaults().pad(2.0f);
 
-        table.add(new Label("Sort by: ", skin)).padLeft(20.0f);
-        selectBox = new SelectBox<>(skin);
+        table.add(new Label("Sort by: ", getSkin())).padLeft(20.0f);
+        selectBox = new SelectBox<>(getSkin());
         selectBox.setItems(new String[]{"A-Z", "Z-A", "Oldest", "Newest"});
         selectBox.addListener(new ChangeListener() {
             @Override
@@ -149,7 +149,7 @@ public class DialogFonts extends Dialog {
         selectBox.addListener(main.getHandListener());
         table.add(selectBox);
 
-        TextButton imageButton = new TextButton("New Font", skin, "new");
+        TextButton imageButton = new TextButton("New Font", getSkin(), "new");
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -163,7 +163,7 @@ public class DialogFonts extends Dialog {
         getContentTable().row();
 
         key(Keys.ESCAPE, false);
-        if (styleProperty != null) {
+        if (styleProperty != null || customProperty != null) {
             button("Clear Font", true);
             button("Cancel", false);
             getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
@@ -179,7 +179,7 @@ public class DialogFonts extends Dialog {
 
         table = new Table();
         table.add(fontsTable).pad(5.0f);
-        scrollPane = new ScrollPane(table, skin);
+        scrollPane = new ScrollPane(table, getSkin());
         scrollPane.setFadeScrollBars(false);
         getContentTable().add(scrollPane).grow();
     }
@@ -194,7 +194,7 @@ public class DialogFonts extends Dialog {
     private boolean addFont(String name, FileHandle file) {
         if (FontData.validate(name)) {
             try {
-                projectData.setChangesSaved(false);
+                main.getProjectData().setChangesSaved(false);
                 FontData font = new FontData(name, file);
                 
                 //remove any existing FontData that shares the same name.
@@ -215,7 +215,7 @@ public class DialogFonts extends Dialog {
                     DrawableData drawable = new DrawableData(new FileHandle(path));
                     drawable.visible = false;
                     if (!drawables.contains(drawable, false)) {
-                        atlasData.atlasCurrent = false;
+                        main.getAtlasData().atlasCurrent = false;
                         drawables.add(drawable);
                     }
                 }
@@ -232,7 +232,7 @@ public class DialogFonts extends Dialog {
                 
                 
                 sortBySelectedMode();
-                populate();
+                refreshTable();
             } catch (Exception e) {
                 Gdx.app.error(getClass().getName(), "Error creating font from file", e);
                 main.getDialogFactory().showDialogError("Font Error...", "Error creating font from file. Check file paths.\n\nOpen log?");
@@ -243,21 +243,21 @@ public class DialogFonts extends Dialog {
         }
     }
 
-    public void populate() {
+    public void refreshTable() {
         fontsTable.clear();
         fontsTable.defaults().growX().pad(5.0f);
 
         if (fonts.size == 0) {
-            fontsTable.add(new Label("No fonts have been set!", skin));
+            fontsTable.add(new Label("No fonts have been set!", getSkin()));
         } else {
             for (FontData font : fonts) {
-                Button button = new Button(skin, "color-base");
-                Label label = new Label(font.getName(), skin);
+                Button button = new Button(getSkin(), "color-base");
+                Label label = new Label(font.getName(), getSkin());
                 label.setTouchable(Touchable.disabled);
                 button.add(label).left();
                 button.addListener(main.getHandListener());
                 
-                Button renameButton = new Button(skin, "settings-small");
+                Button renameButton = new Button(getSkin(), "settings-small");
                 renameButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -281,7 +281,7 @@ public class DialogFonts extends Dialog {
                 label = new Label("Lorem Ipsum", style);
                 label.setAlignment(Align.center);
                 label.setTouchable(Touchable.disabled);
-                Table bg = new Table(skin);
+                Table bg = new Table(getSkin());
                 bg.setBackground("white");
                 BitmapFontData bf = new BitmapFontData(font.file, false);
                 if (bf.imagePaths.length > 0) {
@@ -298,7 +298,7 @@ public class DialogFonts extends Dialog {
                 bg.add(label).pad(5.0f).grow();
                 button.add(bg).padLeft(15).growX();
 
-                Button closeButton = new Button(skin, "delete-small");
+                Button closeButton = new Button(getSkin(), "delete-small");
                 final FontData deleteFont = font;
                 closeButton.addListener(new ChangeListener() {
                     @Override
@@ -310,7 +310,7 @@ public class DialogFonts extends Dialog {
                             drawables.removeValue(new DrawableData(imagefile), false);
                         }
                         
-                        for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
+                        for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
                             for (StyleData data : datas) {
                                 for (StyleProperty property : data.properties.values()) {
                                     if (property != null && property.type.equals(BitmapFont.class) && property.value != null && property.value.equals(deleteFont.getName())) {
@@ -326,7 +326,7 @@ public class DialogFonts extends Dialog {
                         main.getRootTable().refreshPreview();
                         
                         event.setBubbles(false);
-                        populate();
+                        refreshTable();
                     }
                 });
                 closeButton.addListener(new InputListener() {
@@ -339,7 +339,7 @@ public class DialogFonts extends Dialog {
                 });
                 button.add(closeButton).padLeft(5.0f).right();
 
-                if (styleProperty == null) {
+                if (styleProperty == null && customProperty == null) {
                     button.setTouchable(Touchable.childrenOnly);
                 } else {
                     final FontData fontResult = font;
@@ -359,10 +359,10 @@ public class DialogFonts extends Dialog {
     }
     
     private void renameDialog(FontData font) {
-        TextField textField = new TextField("", skin);
+        TextField textField = new TextField("", getSkin());
         TextButton okButton;
         
-        Dialog dialog = new Dialog("Rename Font?", skin, "bg") {
+        Dialog dialog = new Dialog("Rename Font?", getSkin(), "bg") {
             @Override
             protected void result(Object object) {
                 if ((boolean) object) {
@@ -381,17 +381,17 @@ public class DialogFonts extends Dialog {
         
         dialog.getTitleTable().padLeft(5.0f);
         
-        Table bg = new  Table(skin);
+        Table bg = new  Table(getSkin());
         bg.setBackground("white");
         bg.setColor(Color.WHITE);
         dialog.getContentTable().add(bg);
         
-        Label label = new Label(font.getName(), skin, "white");
+        Label label = new Label(font.getName(), getSkin(), "white");
         label.setColor(Color.BLACK);
         bg.add(label).pad(10);
         
         dialog.getContentTable().row();
-        label = new Label("What do you want to rename the font to?", skin);
+        label = new Label("What do you want to rename the font to?", getSkin());
         dialog.getContentTable().add(label);
         
         dialog.getContentTable().row();
@@ -414,7 +414,7 @@ public class DialogFonts extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 boolean disable = !FontData.validate(textField.getText());
                 if (!disable) {
-                    for (ColorData data : jsonData.getColors()) {
+                    for (ColorData data : main.getJsonData().getColors()) {
                         if (data.getName().equals(textField.getText())) {
                             disable = true;
                             break;
@@ -442,7 +442,7 @@ public class DialogFonts extends Dialog {
     }
     
     private void renameFont(FontData font, String newName) {
-        for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
+        for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
             for (StyleData data : datas) {
                 for (StyleProperty property : data.properties.values()) {
                     if (property != null && property.type.equals(BitmapFont.class) && property.value != null && property.value.equals(font.getName())) {
@@ -464,29 +464,29 @@ public class DialogFonts extends Dialog {
         main.getRootTable().refreshStyleProperties(true);
         main.getRootTable().refreshPreview();
         
-        projectData.setChangesSaved(false);
+        main.getProjectData().setChangesSaved(false);
         
-        populate();
+        refreshTable();
     }
 
     @Override
     protected void result(Object object) {
         if (styleProperty != null) {
             if (object instanceof FontData) {
-                projectData.setChangesSaved(false);
+                main.getProjectData().setChangesSaved(false);
                 FontData font = (FontData) object;
                 FontUndoable undoable = new FontUndoable(main.getRootTable(),
-                        jsonData, styleProperty, styleProperty.value, font.getName());
+                        main.getJsonData(), styleProperty, styleProperty.value, font.getName());
                 main.getUndoableManager().addUndoable(undoable, true);
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
                     styleProperty.value = null;
-                    projectData.setChangesSaved(false);
+                    main.getProjectData().setChangesSaved(false);
                     main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + styleProperty.name + "\"");
                     main.getRootTable().refreshStyleProperties(true);
                 } else {
                     boolean hasFont = false;
-                    for (FontData font : jsonData.getFonts()) {
+                    for (FontData font : main.getJsonData().getFonts()) {
                         if (font.getName().equals(styleProperty.value)) {
                             hasFont = true;
                             break;
@@ -495,8 +495,37 @@ public class DialogFonts extends Dialog {
 
                     if (!hasFont) {
                         styleProperty.value = null;
-                        projectData.setChangesSaved(false);
+                        main.getProjectData().setChangesSaved(false);
                         main.getRootTable().setStatusBarMessage("Drawable deleted for \"" + styleProperty.name + "\"");
+                        main.getRootTable().refreshStyleProperties(true);
+                    }
+                }
+            }
+        } else if (customProperty != null) {
+            if (object instanceof FontData) {
+                main.getProjectData().setChangesSaved(false);
+                FontData font = (FontData) object;
+                CustomFontUndoable undoable = new CustomFontUndoable(main, customProperty, font.getName());
+                main.getUndoableManager().addUndoable(undoable, true);
+            } else if (object instanceof Boolean) {
+                if ((boolean) object) {
+                    customProperty.setValue(null);
+                    main.getProjectData().setChangesSaved(false);
+                    main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + customProperty.getName() + "\"");
+                    main.getRootTable().refreshStyleProperties(true);
+                } else {
+                    boolean hasFont = false;
+                    for (FontData font : main.getJsonData().getFonts()) {
+                        if (font.getName().equals(customProperty.getValue())) {
+                            hasFont = true;
+                            break;
+                        }
+                    }
+
+                    if (!hasFont) {
+                        customProperty.setValue(null);
+                        main.getProjectData().setChangesSaved(false);
+                        main.getRootTable().setStatusBarMessage("Drawable deleted for \"" + customProperty.getName() + "\"");
                         main.getRootTable().refreshStyleProperties(true);
                     }
                 }
@@ -527,12 +556,12 @@ public class DialogFonts extends Dialog {
 
     private void sortFontsAZ() {
         Sort.instance().sort(fonts, (FontData o1, FontData o2) -> o1.toString().compareToIgnoreCase(o2.toString()));
-        populate();
+        refreshTable();
     }
 
     private void sortFontsZA() {
         Sort.instance().sort(fonts, (FontData o1, FontData o2) -> o1.toString().compareToIgnoreCase(o2.toString()) * -1);
-        populate();
+        refreshTable();
     }
 
     private void sortFontsOldest() {
@@ -546,7 +575,7 @@ public class DialogFonts extends Dialog {
             }
         });
 
-        populate();
+        refreshTable();
     }
 
     private void sortFontsNewest() {
@@ -559,7 +588,7 @@ public class DialogFonts extends Dialog {
                 return 0;
             }
         });
-        populate();
+        refreshTable();
     }
 
     @Override
@@ -582,11 +611,11 @@ public class DialogFonts extends Dialog {
                 atlas = null;
             }
             
-            if (!atlasData.atlasCurrent) {
-                atlasData.writeAtlas();
-                atlasData.atlasCurrent = true;
+            if (!main.getAtlasData().atlasCurrent) {
+                main.getAtlasData().writeAtlas();
+                main.getAtlasData().atlasCurrent = true;
             }
-            atlas = atlasData.getAtlas();
+            atlas = main.getAtlasData().getAtlas();
 
             for (FontData font : fonts) {
                 BitmapFontData fontData = new BitmapFontData(font.file, false);
@@ -614,10 +643,10 @@ public class DialogFonts extends Dialog {
     private void newFontDialog() {
         String defaultPath = "";
         
-        if (projectData.getLastFontPath() != null) {
+        if (main.getProjectData().getLastFontPath() != null) {
             FileHandle fileHandle = new FileHandle(defaultPath);
             if (fileHandle.exists()) {
-                defaultPath = projectData.getLastFontPath();
+                defaultPath = main.getProjectData().getLastFontPath();
             }
         }
         
@@ -625,7 +654,7 @@ public class DialogFonts extends Dialog {
         
         List<File> files = main.getDesktopWorker().openMultipleDialog("Choose font file(s)...", defaultPath, filterPatterns, "Font files (*.fnt)");
         if (files != null && files.size() > 0) {
-            projectData.setLastFontPath(files.get(0).getParentFile().getPath() + "/");
+            main.getProjectData().setLastFontPath(files.get(0).getParentFile().getPath() + "/");
             fontNameDialog(files, 0);
         }
     }
@@ -644,8 +673,8 @@ public class DialogFonts extends Dialog {
             try {
                 final FileHandle fileHandle = files.get(index);
 
-                final TextField textField = new TextField(FontData.filter(fileHandle.nameWithoutExtension()), skin);
-                final Dialog nameDialog = new Dialog("Enter a name...", skin, "bg") {
+                final TextField textField = new TextField(FontData.filter(fileHandle.nameWithoutExtension()), getSkin());
+                final Dialog nameDialog = new Dialog("Enter a name...", getSkin(), "bg") {
                     @Override
                     protected void result(Object object) {
                         if ((Boolean) object) {
@@ -697,7 +726,7 @@ public class DialogFonts extends Dialog {
 
                 LabelStyle previewStyle = new LabelStyle();
                 previewStyle.font = new BitmapFont(fileHandle);
-                Table table = new Table(skin);
+                Table table = new Table(getSkin());
                 table.setBackground("white");
                 BitmapFontData bitmapFontData = new BitmapFontData(fileHandle, false);
                 if (Utils.brightness(Utils.averageEdgeColor(new FileHandle(bitmapFontData.imagePaths[0]))) > .5f) {
@@ -715,7 +744,7 @@ public class DialogFonts extends Dialog {
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         boolean disable = !FontData.validate(textField.getText());
                         if (!disable) {
-                            for (FontData data : jsonData.getFonts()) {
+                            for (FontData data : main.getJsonData().getFonts()) {
                                 if (data.getName().equals(textField.getText())) {
                                     disable = true;
                                     break;
@@ -729,7 +758,7 @@ public class DialogFonts extends Dialog {
                 
                 textField.setFocusTraversal(false);
                 
-                if (!Utils.doesImageFitBox(new FileHandle(bitmapFontData.imagePaths[0]), projectData.getMaxTextureWidth(), projectData.getMaxTextureHeight())) {
+                if (!Utils.doesImageFitBox(new FileHandle(bitmapFontData.imagePaths[0]), main.getProjectData().getMaxTextureWidth(), main.getProjectData().getMaxTextureHeight())) {
                     showAddFontSizeError(fileHandle.nameWithoutExtension());
                 } else {
                     nameDialog.show(getStage());
@@ -744,16 +773,16 @@ public class DialogFonts extends Dialog {
     }
     
     private void showAddFontSizeError(String name) {
-        Dialog dialog = new Dialog("", skin, "bg");
+        Dialog dialog = new Dialog("", getSkin(), "bg");
         
-        Label label = new Label("Error adding font...", skin, "title");
+        Label label = new Label("Error adding font...", getSkin(), "title");
         dialog.getContentTable().add(label);
         
         dialog.getContentTable().row();
         dialog.text("Unable to add font \"" + name +
                 "\". Ensure image dimensions\nare less than max texture dimensions (" +
-                projectData.getMaxTextureWidth() + "x" + 
-                projectData.getMaxTextureHeight() + ").\nSee project settings.");
+                main.getProjectData().getMaxTextureWidth() + "x" + 
+                main.getProjectData().getMaxTextureHeight() + ").\nSee project settings.");
         dialog.button("Ok");
         dialog.show(getStage());
     }

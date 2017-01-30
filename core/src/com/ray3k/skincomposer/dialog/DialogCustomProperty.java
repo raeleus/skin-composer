@@ -36,25 +36,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 
 public class DialogCustomProperty extends Dialog {
     private final TextField classField;
     private final TextButton okButton;
     private final SelectBox<PropertyType> propertyTypeBox;
     private Main main;
-    public static enum PropertyType {
-        NONE("None"), FLOAT("Float"), TEXT("Text"), DRAWABLE("Drawable"), FONT("Font");
-
-        String name;
-        PropertyType(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
     
     public DialogCustomProperty(Main main, String title) {
         this(main, title, null, PropertyType.NONE);
@@ -87,7 +75,7 @@ public class DialogCustomProperty extends Dialog {
 
         getContentTable().row();
         propertyTypeBox = new SelectBox<>(getSkin());
-        propertyTypeBox.setItems(PropertyType.TEXT, PropertyType.FLOAT, PropertyType.FONT, PropertyType.DRAWABLE);
+        propertyTypeBox.setItems(PropertyType.TEXT, PropertyType.FLOAT, PropertyType.FONT, PropertyType.DRAWABLE, PropertyType.COLOR);
         if (propertyType != null && propertyType != PropertyType.NONE) {
             propertyTypeBox.setSelected(propertyType);
         }

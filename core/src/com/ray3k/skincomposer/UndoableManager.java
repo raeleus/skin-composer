@@ -23,7 +23,6 @@
  ******************************************************************************/
 package com.ray3k.skincomposer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.utils.Array;
@@ -31,15 +30,13 @@ import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.CustomClass;
 import com.ray3k.skincomposer.data.CustomProperty;
+import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.CustomStyle;
 import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.skincomposer.dialog.DialogCustomProperty.PropertyType;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class UndoableManager {
     private final Array<Undoable> undoables;
@@ -165,6 +162,68 @@ public class UndoableManager {
         }
     }
     
+    public static class CustomDoubleUndoable implements Undoable {
+        private final CustomProperty property;
+        private final double oldValue;
+        private final double newValue;
+        private final Main main;
+
+        public CustomDoubleUndoable(Main main, CustomProperty property, double newValue) {
+            this.property = property;
+            oldValue = (double) property.getValue();
+            this.newValue = newValue;
+            this.main = main;
+        }
+        
+        @Override
+        public void undo() {
+            property.setValue(oldValue);
+            main.getRootTable().refreshStyleProperties(true);
+        }
+
+        @Override
+        public void redo() {
+            property.setValue(newValue);
+            main.getRootTable().refreshStyleProperties(true);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Change Style Property " + property.getName();
+        }
+    }
+    
+    public static class TextUndoable implements Undoable {
+        private final CustomProperty property;
+        private final String oldValue;
+        private final String newValue;
+        private final Main main;
+
+        public TextUndoable(Main main, CustomProperty property, String newValue) {
+            this.property = property;
+            oldValue = (String) property.getValue();
+            this.newValue = newValue;
+            this.main = main;
+        }
+        
+        @Override
+        public void undo() {
+            property.setValue(oldValue);
+            main.getRootTable().refreshStyleProperties(true);
+        }
+
+        @Override
+        public void redo() {
+            property.setValue(newValue);
+            main.getRootTable().refreshStyleProperties(true);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Change Style Property " + property.getName();
+        }
+    }
+    
     public static class DrawableUndoable implements Undoable {
         private StyleProperty property;
         private Object oldValue, newValue;
@@ -204,6 +263,45 @@ public class UndoableManager {
         @Override
         public String getUndoText() {
             return "Change Style Property " + property.name;
+        }
+        
+    }
+    
+    public static class CustomDrawableUndoable implements Undoable {
+        private final CustomProperty property;
+        private final String oldValue, newValue;
+        private final Main main;
+
+        public CustomDrawableUndoable(Main main, CustomProperty property, String newValue) {
+            this.property = property;
+            this.oldValue = (String) property.getValue();
+            this.newValue = newValue;
+            this.main = main;
+        }
+
+        @Override
+        public void undo() {
+            main.getRootTable().produceAtlas();
+            if (oldValue == null || main.getAtlasData().getDrawable(oldValue) != null) {
+                property.setValue(oldValue);
+            }
+            main.getRootTable().setStatusBarMessage("Drawable selected: " + oldValue);
+            main.getRootTable().refreshStyleProperties(true);
+        }
+
+        @Override
+        public void redo() {
+            main.getRootTable().produceAtlas();
+            if (newValue == null || main.getAtlasData().getDrawable(newValue) != null) {
+                property.setValue(newValue);
+            }
+            main.getRootTable().setStatusBarMessage("Drawable selected: " + newValue);
+            main.getRootTable().refreshStyleProperties(true);
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Change Style Property " + property.getName();
         }
         
     }
@@ -262,6 +360,58 @@ public class UndoableManager {
         }
     }
     
+    public static class CustomColorUndoable implements Undoable {
+        private final CustomProperty property;
+        private final Object oldValue, newValue;
+        private final Main main;
+
+        public CustomColorUndoable(Main main, CustomProperty property, Object newValue) {
+            this.property = property;
+            oldValue = property.getValue();
+            this.newValue = newValue;
+            this.main = main;
+        }
+        
+        @Override
+        public void undo() {
+            if (oldValue == null) {
+                property.setValue(oldValue);
+            } else {
+                for (ColorData color : main.getJsonData().getColors()) {
+                    if (color.getName().equals((String) oldValue)) {
+                        property.setValue(oldValue);
+                        break;
+                    }
+                }
+            }
+            main.getRootTable().setStatusBarMessage("Selected color: " + oldValue);
+            main.getRootTable().refreshStyleProperties(true);
+            main.getRootTable().refreshPreview();
+        }
+
+        @Override
+        public void redo() {
+            if (newValue == null) {
+                property.setValue(newValue);
+            } else {
+                for (ColorData color : main.getJsonData().getColors()) {
+                    if (color.getName().equals((String) newValue)) {
+                        property.setValue(newValue);
+                        break;
+                    }
+                }
+            }
+            main.getRootTable().setStatusBarMessage("Selected color: " + newValue);
+            main.getRootTable().refreshStyleProperties(true);
+            main.getRootTable().refreshPreview();
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Change Style Property " + property.getName();
+        }
+    }
+    
     public static class FontUndoable implements Undoable {
         private StyleProperty property;
         private Object oldValue, newValue;
@@ -313,6 +463,58 @@ public class UndoableManager {
         @Override
         public String getUndoText() {
             return "Change Style Property " + property.name;
+        }
+    }
+    
+    public static class CustomFontUndoable implements Undoable {
+        private final CustomProperty property;
+        private final Object oldValue, newValue;
+        private final Main main;
+    
+        public CustomFontUndoable(Main main, CustomProperty property, Object newValue) {
+            this.property = property;
+            this.oldValue = property.getValue();
+            this.newValue = newValue;
+            this.main = main;
+        }
+    
+        @Override
+        public void undo() {
+            if (oldValue == null) {
+                property.setValue(oldValue);
+            } else {
+                for (FontData font : main.getJsonData().getFonts()) {
+                    if (font.getName().equals((String) oldValue)) {
+                        property.setValue(oldValue);
+                        break;
+                    }
+                }
+            }
+            main.getRootTable().setStatusBarMessage("Selected Font: " + oldValue);
+            main.getRootTable().refreshStyleProperties(true);
+            main.getRootTable().refreshPreview();
+        }
+    
+        @Override
+        public void redo() {
+            if (newValue == null) {
+                property.setValue(newValue);
+            } else {
+                for (FontData font : main.getJsonData().getFonts()) {
+                    if (font.getName().equals((String) newValue)) {
+                        property.setValue(newValue);
+                        break;
+                    }
+                }
+            }
+            main.getRootTable().setStatusBarMessage("Selected Font: " + newValue);
+            main.getRootTable().refreshStyleProperties(true);
+            main.getRootTable().refreshPreview();
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Change Style Property " + property.getName();
         }
     }
     
@@ -655,6 +857,7 @@ public class UndoableManager {
             for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
                 style.getProperties().add(customProperty.copy());
             }
+            main.getRootTable().refreshStyleProperties(true);
         }
 
         @Override
@@ -824,8 +1027,8 @@ public class UndoableManager {
             this.main = main;
             this.parent = parent;
             
-            style = new CustomStyle(name);
-            style.setParentClass(parent);
+            style = parent.getTemplateStyle().copy();
+            style.setName(name);
         }
         
         @Override

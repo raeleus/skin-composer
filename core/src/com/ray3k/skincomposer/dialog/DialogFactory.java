@@ -46,15 +46,17 @@ import com.ray3k.skincomposer.UndoableManager.DuplicateStyleUndoable;
 import com.ray3k.skincomposer.UndoableManager.NewStyleUndoable;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.CustomClass;
+import com.ray3k.skincomposer.data.CustomProperty;
+import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.CustomStyle;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.ProjectData.RecentFile;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
+import com.ray3k.skincomposer.dialog.DialogColors.DialogColorsListener;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
 import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyListener;
-import com.ray3k.skincomposer.dialog.DialogCustomProperty.PropertyType;
 import com.ray3k.skincomposer.dialog.DialogCustomStyle.CustomStyleListener;
 
 public class DialogFactory {
@@ -87,23 +89,41 @@ public class DialogFactory {
 
     public void showDialogColors(StyleProperty styleProperty,
             DialogColors.DialogColorsListener listener) {
-        DialogColors dialog = new DialogColors(skin, "dialog", styleProperty, this, jsonData, projectData, atlasData, main, listener);
+        DialogColors dialog = new DialogColors(main, styleProperty, listener);
         dialog.setFillParent(true);
         dialog.show(stage);
-        dialog.populate();
+        dialog.refreshTable();
     }
 
+    public void showDialogColors(CustomProperty styleProperty, DialogColorsListener listener) {
+        DialogColors dialog = new DialogColors(main, styleProperty, listener);
+        dialog.setFillParent(true);
+        dialog.show(stage);
+        dialog.refreshTable();
+    }
+    
     public void showDialogColors(StyleProperty styleProperty) {
+        showDialogColors(styleProperty, null);
+    }
+    
+    public void showDialogColors(CustomProperty styleProperty) {
         showDialogColors(styleProperty, null);
     }
 
     public void showColors() {
-        showDialogColors(null);
+        showDialogColors((StyleProperty)null);
     }
 
     public void showDialogDrawables(StyleProperty property,
             EventListener listener) {
-        DialogDrawables dialog = new DialogDrawables(skin, "dialog", property, this, jsonData, projectData, atlasData, main, listener);
+        DialogDrawables dialog = new DialogDrawables(main, property, listener);
+        dialog.setFillParent(true);
+        dialog.show(stage);
+    }
+    
+    public void showDialogDrawables(CustomProperty property,
+            EventListener listener) {
+        DialogDrawables dialog = new DialogDrawables(main, property, listener);
         dialog.setFillParent(true);
         dialog.show(stage);
     }
@@ -111,25 +131,39 @@ public class DialogFactory {
     public void showDialogDrawables(StyleProperty property) {
         showDialogDrawables(property, null);
     }
-
-    public void showDrawables() {
-        showDialogDrawables(null);
+    
+    public void showDialogDrawables(CustomProperty property) {
+        showDialogDrawables(property, null);
     }
 
-    public void showDialogFonts(StyleProperty styleProperty,
-            EventListener listener) {
-        DialogFonts dialog = new DialogFonts(skin, "dialog", styleProperty, jsonData, projectData, atlasData, main, listener);
+    public void showDrawables() {
+        showDialogDrawables((StyleProperty)null);
+    }
+
+    public void showDialogFonts(StyleProperty styleProperty, EventListener listener) {
+        DialogFonts dialog = new DialogFonts(main, styleProperty, listener);
         dialog.setFillParent(true);
         dialog.show(stage);
-        dialog.populate();
+        dialog.refreshTable();
     }
 
     public void showDialogFonts(StyleProperty styleProperty) {
         showDialogFonts(styleProperty, null);
     }
+    
+    public void showDialogFonts(CustomProperty customProperty, EventListener listener) {
+        DialogFonts dialog = new DialogFonts(main, customProperty, listener);
+        dialog.setFillParent(true);
+        dialog.show(stage);
+        dialog.refreshTable();
+    }
+    
+    public void showDialogFonts(CustomProperty customProperty) {
+        showDialogFonts(customProperty, null);
+    }
 
     public void showFonts() {
-        showDialogFonts(null);
+        showDialogFonts((StyleProperty)null);
     }
 
     public void showSettings() {

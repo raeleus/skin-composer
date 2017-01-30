@@ -25,21 +25,42 @@ package com.ray3k.skincomposer.data;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-import com.ray3k.skincomposer.dialog.DialogCustomProperty.PropertyType;
 
 public class CustomProperty implements Json.Serializable {
     private String name;
     private Object value;
     private CustomStyle parentStyle;
     private PropertyType type;
+    public static enum PropertyType {
+        NONE("None"), FLOAT("Float"), TEXT("Text"), DRAWABLE("Drawable"), FONT("Font"), COLOR("Color");
+
+        String name;
+        PropertyType(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
 
     public CustomProperty() {
         
     }
     
-    public CustomProperty(String name, Object value) {
+    public CustomProperty(String name, PropertyType type) {
         this.name = name;
-        this.value = value;
+        this.type = type;
+        
+        switch (type) {
+            case TEXT:
+                value = "";
+                break;
+            case FLOAT:
+                value = 0.0;
+                break;
+        }
     }
 
     public String getName() {
@@ -80,15 +101,16 @@ public class CustomProperty implements Json.Serializable {
     }
     
     public CustomProperty copy() {
-        CustomProperty returnValue = new CustomProperty(name, value);
+        CustomProperty returnValue = new CustomProperty(name, type);
         returnValue.parentStyle = parentStyle;
-        returnValue.type = type;
+        returnValue.value = value;
         return returnValue;
     }
 
     @Override
     public void write(Json json) {
         json.writeValue("name", name);
+        json.writeValue("type", type);
         json.writeValue("value", value);
     }
 
@@ -96,5 +118,6 @@ public class CustomProperty implements Json.Serializable {
     public void read(Json json, JsonValue jsonData) {
         name = jsonData.getString("name");
         value = json.readValue("value", null, jsonData);
+        type = json.readValue("type", PropertyType.class, jsonData);
     }
 }

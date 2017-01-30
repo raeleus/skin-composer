@@ -37,7 +37,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -47,11 +46,11 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Sort;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.UndoableManager;
 import com.ray3k.skincomposer.UndoableManager.ColorUndoable;
-import com.ray3k.skincomposer.data.AtlasData;
+import com.ray3k.skincomposer.UndoableManager.CustomColorUndoable;
+import com.ray3k.skincomposer.data.CustomProperty;
 import com.ray3k.skincomposer.data.DrawableData;
-import com.ray3k.skincomposer.data.JsonData;
-import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
@@ -60,49 +59,58 @@ import java.util.Comparator;
 public class DialogColors extends Dialog {
     private Array<ColorData> colors;
     private Table colorTable;
-    private Skin skin;
     private StyleProperty styleProperty;
+    private CustomProperty customProperty;
     private boolean selectingForTintedDrawable;
     private SelectBox<String> selectBox;
     private DialogColorsListener listener;
     private ScrollPane scrollPane;
-    private DialogFactory dialogFactory;
-    private JsonData jsonData;
-    private ProjectData projectData;
-    private AtlasData atlasData;
     private Main main;
     
-    public DialogColors(Skin skin, StyleProperty styleProperty, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, Main main, DialogColorsListener listener) {
-        this(skin, "default", styleProperty, dialogFactory, jsonData, projectData, atlasData, main, listener);
-    }
-    
-    public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, boolean selectingForTintedDrawable, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, Main main, DialogColorsListener listener) {
-        super("", skin, styleName);
-        
-        this.dialogFactory = dialogFactory;
-        this.jsonData = jsonData;
-        this.projectData = projectData;
-        this.atlasData = atlasData;
+    public DialogColors(Main main, boolean selectingForTintedDrawable, DialogColorsListener listener) {
+        super("", main.getSkin(), "dialog");
+ 
         this.main = main;
         
         this.listener = listener;
-        this.skin = skin;
-        this.styleProperty = styleProperty;
         this.selectingForTintedDrawable = selectingForTintedDrawable;
-        colors = jsonData.getColors();
+        colors = main.getJsonData().getColors();
+        
+        populate();
+    }
+    
+    public DialogColors(Main main, StyleProperty styleProperty, boolean selectingForTintedDrawable, DialogColorsListener listener) {
+        this(main, selectingForTintedDrawable, listener);
+        this.styleProperty = styleProperty;
+    }
+    
+    public DialogColors(Main main, StyleProperty styleProperty, DialogColorsListener listener) {
+        this(main, styleProperty, false, listener);
+    }
+    
+    public DialogColors(Main main, CustomProperty customProperty, boolean selectingForTintedDrawable, DialogColorsListener listener) {
+        this(main, selectingForTintedDrawable, listener);
+        this.customProperty = customProperty;
+    }
+    
+    public DialogColors(Main main, CustomProperty customProperty, DialogColorsListener listener) {
+        this(main, customProperty, false, listener);
+    }
+    
+    private void populate() {
         getContentTable().defaults().expandX();
-        if (styleProperty != null) {
-            Label label = new Label("Select a color...", skin, "title");
+        if (styleProperty != null || customProperty != null) {
+            Label label = new Label("Select a color...", getSkin(), "title");
             label.setAlignment(Align.center);
             getContentTable().add(label);
             getContentTable().row();
         } else if (selectingForTintedDrawable) {
-            Label label = new Label("Select a color for tinted drawable...", skin, "title");
+            Label label = new Label("Select a color for tinted drawable...", getSkin(), "title");
             label.setAlignment(Align.center);
             getContentTable().add(label);
             getContentTable().row();
         } else {
-            Label label = new Label("Colors", skin, "title");
+            Label label = new Label("Colors", getSkin(), "title");
             label.setAlignment(Align.center);
             getContentTable().add(label);
             getContentTable().row();
@@ -112,8 +120,8 @@ public class DialogColors extends Dialog {
         
         table.defaults().pad(2.0f);
         
-        table.add(new Label("Sort by: ", skin)).padLeft(20.0f);
-        selectBox = new SelectBox<String>(skin);
+        table.add(new Label("Sort by: ", getSkin())).padLeft(20.0f);
+        selectBox = new SelectBox<String>(getSkin());
         selectBox.setItems(new String[] {"A-Z", "Z-A"});
         selectBox.addListener(new ChangeListener() {
             @Override
@@ -124,7 +132,7 @@ public class DialogColors extends Dialog {
         selectBox.addListener(main.getHandListener());
         table.add(selectBox);
         
-        TextButton imageButton = new TextButton("New Color", skin, "new");
+        TextButton imageButton = new TextButton("New Color", getSkin(), "new");
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -136,15 +144,15 @@ public class DialogColors extends Dialog {
         getContentTable().add(table).left().expandX();
         getContentTable().row();
         colorTable = new Table();
-        populate();
+        refreshTable();
         
         table = new Table();
         table.add(colorTable).pad(5.0f);
-        scrollPane = new ScrollPane(table, skin);
+        scrollPane = new ScrollPane(table, getSkin());
         scrollPane.setFadeScrollBars(false);
         getContentTable().add(scrollPane).grow();
         
-        if (styleProperty != null) {
+        if (styleProperty != null || customProperty != null) {
             button("Clear Color", true);
             button("Cancel", false);
             getButtonTable().getCells().get(0).getActor().addListener(main.getHandListener());
@@ -160,10 +168,6 @@ public class DialogColors extends Dialog {
         key(Keys.ESCAPE, false);
     }
     
-    public DialogColors(final Skin skin, String styleName, StyleProperty styleProperty, DialogFactory dialogFactory, JsonData jsonData, ProjectData projectData, AtlasData atlasData, Main main, DialogColorsListener listener) {
-        this(skin, styleName, styleProperty, false, dialogFactory, jsonData, projectData, atlasData, main, listener);
-    }
-    
     @Override
     public Dialog show(Stage stage) {
         Dialog dialog = super.show(stage);
@@ -172,12 +176,12 @@ public class DialogColors extends Dialog {
     }
     
     private void showColorPicker() {
-        dialogFactory.showDialogColorPicker(new DialogColorPicker.ColorListener() {
+        main.getDialogFactory().showDialogColorPicker(new DialogColorPicker.ColorListener() {
             @Override
             public void selected(Color color) {
                 if (color != null) {
-                    final TextField field = new TextField("RGBA_" + (int) (color.r * 255) + "_" + (int) (color.g * 255) + "_" + (int) (color.b * 255) + "_" + (int) (color.a * 255), skin);
-                    final Dialog dialog = new Dialog("Color name...", skin, "bg") {
+                    final TextField field = new TextField("RGBA_" + (int) (color.r * 255) + "_" + (int) (color.g * 255) + "_" + (int) (color.b * 255) + "_" + (int) (color.a * 255), getSkin());
+                    final Dialog dialog = new Dialog("Color name...", getSkin(), "bg") {
                         @Override
                         protected void result(Object object) {
                             if ((Boolean) object == true) {
@@ -218,7 +222,7 @@ public class DialogColors extends Dialog {
                     dialog.getContentTable().row();
                     dialog.text("Preview:");
                     dialog.getContentTable().row();
-                    Table table = new Table(skin);
+                    Table table = new Table(getSkin());
                     table.setBackground("white");
                     table.setColor(color);
                     dialog.getContentTable().add(table).minSize(50.0f);
@@ -228,7 +232,7 @@ public class DialogColors extends Dialog {
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             boolean disable = !ColorData.validate(field.getText());
                             if (!disable) {
-                                for (ColorData data : jsonData.getColors()) {
+                                for (ColorData data : main.getJsonData().getColors()) {
                                     if (data.getName().equals(field.getText())) {
                                         disable = true;
                                         break;
@@ -247,15 +251,15 @@ public class DialogColors extends Dialog {
         });
     }
     
-    public void populate() {
+    public void refreshTable() {
         colorTable.clear();
         
         if (colors.size > 0) {
             colorTable.defaults().padTop(5.0f);
             for (ColorData color : colors) {
-                Button button = new Button(skin, "color-base");
+                Button button = new Button(getSkin(), "color-base");
                 button.addListener(main.getHandListener());
-                Label label = new Label(color.toString(), skin, "white");
+                Label label = new Label(color.toString(), getSkin(), "white");
                 label.setTouchable(Touchable.disabled);
                 
                 float brightness = Utils.brightness(color.color);
@@ -269,17 +273,17 @@ public class DialogColors extends Dialog {
                 }
                 
                 Color bgColor = new Color(color.color.r, color.color.g, color.color.b, 1.0f);
-                Table table = new Table(skin);
+                Table table = new Table(getSkin());
                 table.setBackground("white");
                 table.setColor(bgColor);
                 table.add(label).pad(3.0f);
                 
-                if (styleProperty == null && !selectingForTintedDrawable) {
+                if (styleProperty == null && customProperty == null && !selectingForTintedDrawable) {
                     table.addCaptureListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             event.setBubbles(false);
-                            populate();
+                            refreshTable();
                         }
                     });
                     table.addCaptureListener(new InputListener() {
@@ -290,7 +294,7 @@ public class DialogColors extends Dialog {
                         }
                     });
                 }
-                Table borderTable = new Table(skin);
+                Table borderTable = new Table(getSkin());
                 borderTable.setBackground("white");
                 borderTable.setColor(borderColor);
                 borderTable.add(table).growX().pad(1.0f);
@@ -298,7 +302,7 @@ public class DialogColors extends Dialog {
                 button.add(borderTable).growX();
                 
                 //rename button
-                Button renameButton = new Button(skin, "settings-small");
+                Button renameButton = new Button(getSkin(), "settings-small");
                 renameButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -318,7 +322,7 @@ public class DialogColors extends Dialog {
                 button.add(renameButton).padLeft(10.0f);
                 
                 //recolor button
-                Button recolorButton = new Button(skin, "colorwheel");
+                Button recolorButton = new Button(getSkin(), "colorwheel");
                 recolorButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -337,16 +341,16 @@ public class DialogColors extends Dialog {
                 });
                 button.add(recolorButton);
                 
-                label = new Label("(" + ((int)(color.color.r * 255)) + ", " + ((int)(color.color.g * 255)) + ", " + ((int)(color.color.b * 255)) + ", " + ((int)(color.color.a * 255)) + ")", skin);
+                label = new Label("(" + ((int)(color.color.r * 255)) + ", " + ((int)(color.color.g * 255)) + ", " + ((int)(color.color.b * 255)) + ", " + ((int)(color.color.a * 255)) + ")", getSkin());
                 label.setTouchable(Touchable.disabled);
                 label.setAlignment(Align.center);
                 
-                if (styleProperty == null && !selectingForTintedDrawable) {
+                if (styleProperty == null && customProperty == null && !selectingForTintedDrawable) {
                     label.addCaptureListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             event.setBubbles(false);
-                            populate();
+                            refreshTable();
                         }
                     });
                     label.addCaptureListener(new InputListener() {
@@ -361,7 +365,7 @@ public class DialogColors extends Dialog {
                 button.add(label).padLeft(5.0f).minWidth(160.0f);
                 
                 //delete color button
-                Button closeButton = new Button(skin, "delete-small");
+                Button closeButton = new Button(getSkin(), "delete-small");
                 final ColorData deleteColor = color;
                 closeButton.addListener(new ChangeListener() {
                     @Override
@@ -369,7 +373,7 @@ public class DialogColors extends Dialog {
                         colors.removeValue(deleteColor, true);
                         
                         //clear style properties that use this color.
-                        for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
+                        for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
                             for (StyleData data : datas) {
                                 for (StyleProperty property : data.properties.values()) {
                                     if (property != null && property.type.equals(Color.class) && property.value != null && property.value.equals(deleteColor.getName())) {
@@ -380,12 +384,12 @@ public class DialogColors extends Dialog {
                         }
                         
                         //delete tinted drawables based on this color.
-                        for(DrawableData drawableData : new Array<>(projectData.getAtlasData().getDrawables())) {
+                        for(DrawableData drawableData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {
                             if (drawableData.tintName != null && drawableData.tintName.equals(deleteColor.getName())) {
-                                projectData.getAtlasData().getDrawables().removeValue(drawableData, true);
+                                main.getProjectData().getAtlasData().getDrawables().removeValue(drawableData, true);
                                 
                                 //clear any style properties based on this tinted drawable.
-                                for (Array<StyleData> styleDatas : jsonData.getClassStyleMap().values()) {
+                                for (Array<StyleData> styleDatas : main.getJsonData().getClassStyleMap().values()) {
                                     for (StyleData styleData : styleDatas) {
                                         for (StyleProperty styleProperty : styleData.properties.values()) {
                                             if (styleProperty != null && styleProperty.type.equals(Drawable.class) && styleProperty.value != null && styleProperty.value.equals(drawableData.toString())) {
@@ -403,7 +407,7 @@ public class DialogColors extends Dialog {
                         main.getRootTable().refreshPreview();
                         
                         event.setBubbles(false);
-                        populate();
+                        refreshTable();
                     }
                 });
                 closeButton.addListener(new InputListener() {
@@ -416,7 +420,7 @@ public class DialogColors extends Dialog {
                 });
                 
                 button.add(closeButton).padLeft(5.0f);
-                if (styleProperty == null && !selectingForTintedDrawable) {
+                if (styleProperty == null && customProperty == null && !selectingForTintedDrawable) {
                     button.setTouchable(Touchable.childrenOnly);
                 } else {
                     setObject(button, color);
@@ -433,12 +437,12 @@ public class DialogColors extends Dialog {
                 colorTable.row();
             }
         } else {
-            colorTable.add(new Label("No colors have been set!", skin, "required"));
+            colorTable.add(new Label("No colors have been set!", getSkin(), "required"));
         }
     }
     
     private void recolorDialog(ColorData colorData) {
-        dialogFactory.showDialogColorPicker(colorData.color, new DialogColorPicker.ColorListener() {
+        main.getDialogFactory().showDialogColorPicker(colorData.color, new DialogColorPicker.ColorListener() {
             @Override
             public void selected(Color color) {
                 if (color != null) {
@@ -457,16 +461,16 @@ public class DialogColors extends Dialog {
         main.getRootTable().produceAtlas();
         main.getRootTable().refreshPreview();
         
-        projectData.setChangesSaved(false);
+        main.getProjectData().setChangesSaved(false);
         
-        populate();
+        refreshTable();
     }
     
     private void renameDialog(ColorData color) {
-        TextField textField = new TextField("", skin);
+        TextField textField = new TextField("", getSkin());
         TextButton okButton;
         
-        Dialog dialog = new Dialog("Rename Color?", skin, "bg") {
+        Dialog dialog = new Dialog("Rename Color?", getSkin(), "bg") {
             @Override
             protected void result(Object object) {
                 if ((boolean) object) {
@@ -492,17 +496,17 @@ public class DialogColors extends Dialog {
             borderColor = Color.WHITE;
         }
         
-        Table bg = new  Table(skin);
+        Table bg = new  Table(getSkin());
         bg.setBackground("white");
         bg.setColor(borderColor);
         dialog.getContentTable().add(bg);
         
-        Label label = new Label(color.getName(), skin, "white");
+        Label label = new Label(color.getName(), getSkin(), "white");
         label.setColor(color.color);
         bg.add(label).pad(10);
         
         dialog.getContentTable().row();
-        label = new Label("What do you want to rename the color to?", skin);
+        label = new Label("What do you want to rename the color to?", getSkin());
         dialog.getContentTable().add(label);
         
         dialog.getContentTable().row();
@@ -525,7 +529,7 @@ public class DialogColors extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 boolean disable = !ColorData.validate(textField.getText());
                 if (!disable) {
-                    for (ColorData data : jsonData.getColors()) {
+                    for (ColorData data : main.getJsonData().getColors()) {
                         if (data.getName().equals(textField.getText())) {
                             disable = true;
                             break;
@@ -553,7 +557,7 @@ public class DialogColors extends Dialog {
     
     private void renameColor(ColorData color, String newName) {
         //style properties
-        for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
+        for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
             for (StyleData data : datas) {
                 for (StyleProperty property : data.properties.values()) {
                     if (property != null && property.type.equals(Color.class) && property.value != null && property.value.equals(color.getName())) {
@@ -564,7 +568,7 @@ public class DialogColors extends Dialog {
         }
         
         //tinted drawables
-        for (DrawableData drawableData : atlasData.getDrawables()) {
+        for (DrawableData drawableData : main.getAtlasData().getDrawables()) {
             if (drawableData.tintName != null && drawableData.tintName.equals(color.getName())) {
                 drawableData.tintName = newName;
             }
@@ -582,18 +586,18 @@ public class DialogColors extends Dialog {
         main.getRootTable().refreshStyleProperties(true);
         main.getRootTable().refreshPreview();
         
-        projectData.setChangesSaved(false);
+        main.getProjectData().setChangesSaved(false);
         
-        populate();
+        refreshTable();
     }
     
     private boolean newColor(String name, Color color) {
         if (ColorData.validate(name)) {
             try {
-                projectData.setChangesSaved(false);
+                main.getProjectData().setChangesSaved(false);
                 colors.add(new ColorData(name, color));
                 sortBySelectedMode();
-                populate();
+                refreshTable();
                 return true;
             } catch (Exception e) {
                 Gdx.app.log(getClass().getName(), "Error trying to add color.", e);
@@ -609,19 +613,19 @@ public class DialogColors extends Dialog {
     protected void result(Object object) {
         if (styleProperty != null) {
             if (object instanceof ColorData) {
-                projectData.setChangesSaved(false);
+                main.getProjectData().setChangesSaved(false);
                 ColorData color = (ColorData) object;
-                ColorUndoable undoable = new ColorUndoable(main.getRootTable(), jsonData, styleProperty, styleProperty.value, color.getName());
+                ColorUndoable undoable = new ColorUndoable(main.getRootTable(), main.getJsonData(), styleProperty, styleProperty.value, color.getName());
                 main.getUndoableManager().addUndoable(undoable, true);
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
-                    projectData.setChangesSaved(false);
+                    main.getProjectData().setChangesSaved(false);
                     styleProperty.value = null;
                     main.getRootTable().setStatusBarMessage("Emptied color for \"" + styleProperty.name + "\"");
                     main.getRootTable().refreshStyleProperties(true);
                 } else {
                     boolean hasColor = false;
-                    for (ColorData color : jsonData.getColors()) {
+                    for (ColorData color : main.getJsonData().getColors()) {
                         if (color.getName().equals(styleProperty.value)) {
                             hasColor = true;
                             break;
@@ -629,9 +633,38 @@ public class DialogColors extends Dialog {
                     }
 
                     if (!hasColor) {
-                        projectData.setChangesSaved(false);
+                        main.getProjectData().setChangesSaved(false);
                         styleProperty.value = null;
                         main.getRootTable().setStatusBarMessage("Deleted color for \"" + styleProperty.name + "\"");
+                        main.getRootTable().refreshStyleProperties(true);
+                    }
+                }
+            }
+        } else if (customProperty != null) {
+            if (object instanceof ColorData) {
+                main.getProjectData().setChangesSaved(false);
+                ColorData color = (ColorData) object;
+                CustomColorUndoable undoable = new UndoableManager.CustomColorUndoable(main, customProperty, color.getName());
+                main.getUndoableManager().addUndoable(undoable, true);
+            } else if (object instanceof Boolean) {
+                if ((boolean) object) {
+                    main.getProjectData().setChangesSaved(false);
+                    customProperty.setValue(null);
+                    main.getRootTable().setStatusBarMessage("Emptied color for \"" + customProperty.getName() + "\"");
+                    main.getRootTable().refreshStyleProperties(true);
+                } else {
+                    boolean hasColor = false;
+                    for (ColorData color : main.getJsonData().getColors()) {
+                        if (color.getName().equals(customProperty.getValue())) {
+                            hasColor = true;
+                            break;
+                        }
+                    }
+
+                    if (!hasColor) {
+                        main.getProjectData().setChangesSaved(false);
+                        customProperty.setValue(null);
+                        main.getRootTable().setStatusBarMessage("Deleted color for \"" + customProperty.getName() + "\"");
                         main.getRootTable().refreshStyleProperties(true);
                     }
                 }
@@ -665,7 +698,7 @@ public class DialogColors extends Dialog {
                 return o1.toString().compareToIgnoreCase(o2.toString());
             }
         });
-        populate();
+        refreshTable();
     }
     
     private void sortFontsZA() {
@@ -675,7 +708,7 @@ public class DialogColors extends Dialog {
                 return o1.toString().compareToIgnoreCase(o2.toString()) * -1;
             }
         });
-        populate();
+        refreshTable();
     }
     
     public static interface DialogColorsListener {

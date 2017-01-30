@@ -34,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.RootTable.RootTableListener;
@@ -46,10 +47,10 @@ import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogCustomClass;
 import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyListener;
-import com.ray3k.skincomposer.dialog.DialogCustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.CustomClass;
 import com.ray3k.skincomposer.data.CustomProperty;
 import com.ray3k.skincomposer.UndoableManager.NewCustomClassUndoable;
+import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
 import com.ray3k.skincomposer.dialog.DialogCustomStyle;
 import java.io.File;
@@ -423,8 +424,6 @@ public class MainListener extends RootTableListener {
             main.getUndoableManager().addUndoable(new UndoableManager.SelectBoxUndoable(root, styleProperty, (SelectBox) styleActor), true);
         } else if (styleProperty.type == ListStyle.class) {
             main.getUndoableManager().addUndoable(new UndoableManager.SelectBoxUndoable(root, styleProperty, (SelectBox) styleActor), true);
-        } else if (styleProperty.type == CustomStyle.class) {
-            //show custom style dialog
         }
     }
     
@@ -450,21 +449,22 @@ public class MainListener extends RootTableListener {
                 root.refreshPreview();
             }
         } else {
-            root.setClassDuplicateButtonDisabled(false);
-            root.setClassDeleteButtonDisabled(false);
-            root.setClassRenameButtonDisabled(false);
+            main.getRootTable().setClassDuplicateButtonDisabled(false);
+            main.getRootTable().setClassDeleteButtonDisabled(false);
+            main.getRootTable().setClassRenameButtonDisabled(false);
             
             Object selected = main.getRootTable().getStyleSelectBox().getSelected();
             
             if (selected instanceof CustomStyle) {
                 CustomStyle customStyle = (CustomStyle) selected;
-                if (customStyle.isDeletable()) {
-                    main.getRootTable().setStyleDeleteButtonDisabled(false);
-                    main.getRootTable().setStyleRenameButtonDisabled(false);
-                } else {
-                    main.getRootTable().setStyleDeleteButtonDisabled(true);
-                    main.getRootTable().setStyleRenameButtonDisabled(true);
-                }
+                
+                main.getRootTable().setStyleDeleteButtonDisabled(!customStyle.isDeletable());
+                main.getRootTable().setStyleRenameButtonDisabled(!customStyle.isDeletable());
+                
+                root.setCustomStyleProperties(customStyle.getProperties());
+                root.refreshStyleProperties(false);
+                root.refreshPreviewProperties();
+                root.refreshPreview();
             }
         }
     }
@@ -474,7 +474,7 @@ public class MainListener extends RootTableListener {
         dialogFactory.showNewStylePropertyDialog(new CustomStylePropertyListener() {
             @Override
             public void newPropertyEntered(String propertyName, PropertyType propertyType) {
-                main.getUndoableManager().addUndoable(new UndoableManager.NewCustomPropertyUndoable(main, propertyName, propertyType));
+                main.getUndoableManager().addUndoable(new UndoableManager.NewCustomPropertyUndoable(main, propertyName, propertyType), true);
             }
 
             @Override
@@ -514,5 +514,29 @@ public class MainListener extends RootTableListener {
             public void cancelled() {
             }
         });
+    }
+
+    @Override
+    public void customPropertyValueChanged(CustomProperty customProperty,
+            Actor styleActor) {
+        if (null != customProperty.getType()) switch (customProperty.getType()) {
+            case DRAWABLE:
+                dialogFactory.showDialogDrawables(customProperty);
+                break;
+            case COLOR:
+                dialogFactory.showDialogColors(customProperty);
+                break;
+            case FONT:
+                dialogFactory.showDialogFonts(customProperty);
+                break;
+            case FLOAT:
+                main.getUndoableManager().addUndoable(new UndoableManager.CustomDoubleUndoable(main, customProperty, ((Spinner) styleActor).getValue()), true);
+                break;
+            case TEXT:
+                main.getUndoableManager().addUndoable(new UndoableManager.TextUndoable(main, customProperty, ((TextField) styleActor).getText()), true);
+                break;
+            default:
+                break;
+        }
     }
 }

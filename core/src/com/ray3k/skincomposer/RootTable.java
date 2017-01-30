@@ -87,6 +87,7 @@ import com.ray3k.skincomposer.MenuButton.MenuButtonStyle;
 import com.ray3k.skincomposer.MenuList.MenuListStyle;
 import com.ray3k.skincomposer.Spinner.SpinnerStyle;
 import com.ray3k.skincomposer.data.ColorData;
+import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.StyleData;
@@ -102,6 +103,7 @@ public class RootTable extends Table {
     private SelectBox classSelectBox;
     private SelectBox styleSelectBox;
     private Array<StyleProperty> styleProperties;
+    private Array<CustomProperty> customProperties;
     private final BrowseFieldStyle bfColorStyle;
     private final BrowseFieldStyle bfDrawableStyle;
     private final BrowseFieldStyle bfFontStyle;
@@ -837,35 +839,69 @@ public class RootTable extends Table {
                     table.add(selectBox);
 
                     selectBox.addListener(new StylePropertyChangeListener(styleProperty, selectBox));
-                } else if (styleProperty.type == CustomProperty.class) {
-                    //todo: implement custom styles...
-                    Button button = new Button(getSkin(), "duplicate");
-                    table.add(button);
-                    
-                    button = new Button(getSkin(), "delete");
-                    table.add(button);
-                    
-                    button = new Button(getSkin(), "settings");
-                    table.add(button);
                 }
 
                 table.row();
             }
-        }
-        
-        //todo: only if this is a custom class.
-        left.row();
-        table = new Table();
-        left.add(table).right().padBottom(10.0f);
-        
-        Button button = new Button(getSkin(), "new");
-        button.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                fire(new CustomPropertyEvent(null, CustomPropertyEnum.NEW_PROPERTY));
+        } else if (customProperties != null) {
+            for (CustomProperty styleProperty : customProperties) {
+                if (styleProperty.getType() == PropertyType.COLOR) {
+                    BrowseField browseField = new BrowseField((String) styleProperty.getValue(), styleProperty.getName(), bfColorStyle);
+                    browseField.addListener(main.getHandListener());
+                    table.add(browseField).padTop(20.0f);
+
+                    browseField.addListener(new CustomPropertyChangeListener(styleProperty, browseField));
+                } else if (styleProperty.getType() == PropertyType.FONT) {
+                    BrowseField browseField = new BrowseField((String) styleProperty.getValue(), styleProperty.getName(), bfFontStyle);
+                    browseField.addListener(main.getHandListener());
+                    table.add(browseField).padTop(20.0f);
+
+                    browseField.addListener(new CustomPropertyChangeListener(styleProperty, browseField));
+                } else if (styleProperty.getType() == PropertyType.DRAWABLE) {
+                    BrowseField browseField = new BrowseField((String) styleProperty.getValue(), styleProperty.getName(), bfDrawableStyle);
+                    browseField.addListener(main.getHandListener());
+                    table.add(browseField).padTop(20.0f);
+
+                    browseField.addListener(new CustomPropertyChangeListener(styleProperty, browseField));
+                } else if (styleProperty.getType() == PropertyType.FLOAT) {
+                    label = new Label(styleProperty.getName(), getSkin());
+                    table.add(label).padTop(20.0f).fill(false).expand(false, false);
+
+                    table.row();
+                    Spinner spinner = new Spinner((Double) styleProperty.getValue(), 1.0, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
+                    spinner.getTextField().addListener(main.getIbeamListener());
+                    spinner.getButtonMinus().addListener(main.getHandListener());
+                    spinner.getButtonPlus().addListener(main.getHandListener());
+                    table.add(spinner);
+
+                    spinner.addListener(new CustomPropertyChangeListener(styleProperty, spinner));
+                } else if (styleProperty.getType() == PropertyType.TEXT) {
+                    label = new Label(styleProperty.getName(), getSkin());
+                    table.add(label).padTop(20.0f).fill(false).expand(false, false);
+                    
+                    table.row();
+                    TextField textField = new TextField((String) styleProperty.getValue(), getSkin());
+                    textField.addListener(main.getIbeamListener());
+                    table.add(textField);
+                    
+                    textField.addListener(new CustomPropertyChangeListener(styleProperty, textField));
+                }
+                table.row();
             }
-        });
-        table.add(button);
+            
+            left.row();
+            table = new Table();
+            left.add(table).right().padBottom(10.0f);
+
+            Button button = new Button(getSkin(), "new");
+            button.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                    fire(new CustomPropertyEvent(null, null, CustomPropertyEnum.NEW));
+                }
+            });
+            table.add(button);
+        }
     }
 
     private class StylePropertyChangeListener extends ChangeListener {
@@ -881,6 +917,22 @@ public class RootTable extends Table {
         @Override
         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
             fire(new StylePropertyEvent(styleProp, styleActor));
+        }
+    }
+    
+    private class CustomPropertyChangeListener extends ChangeListener {
+
+        private final CustomProperty styleProp;
+        private final Actor styleActor;
+
+        public CustomPropertyChangeListener(CustomProperty styleProp, Actor styleActor) {
+            this.styleProp = styleProp;
+            this.styleActor = styleActor;
+        }
+
+        @Override
+        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+            fire(new CustomPropertyEvent(styleProp, styleActor, CustomPropertyEnum.CHANGE_VALUE));
         }
     }
 
@@ -976,42 +1028,44 @@ public class RootTable extends Table {
             Table t = new Table();
             previewPropertiesTable.add(t).center().expand();
             t.defaults().pad(3.0f);
-            t.add(new Label("Stage Color: ", getSkin()));
-            BrowseField browseField = new BrowseField(null, null, bfColorStyle);
-            browseField.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                    main.getDialogFactory().showDialogColorPicker((Color) previewProperties.get("bgcolor"), new DialogColorPicker.ColorListener() {
-                        @Override
-                        public void selected(Color color) {
-                            if (color != null) {
-                                browseField.getTextButton().setText((int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
-                                previewProperties.put("bgcolor", color);
-                                previewBgColor.set(color);
-                                refreshPreview();
-                            }
-                        }
-                    });
-                }
-            });
-            browseField.addListener(main.getHandListener());
-            t.add(browseField).growX();
+            
             if (previewBgColor == null) {
                 previewBgColor.set(Color.WHITE);
             }
             previewProperties.put("bgcolor", previewBgColor);
-            browseField.getTextButton().setText((int) (previewBgColor.r * 255) + "," + (int) (previewBgColor.g * 255) + "," + (int) (previewBgColor.b * 255) + "," + (int) (previewBgColor.a * 255));
 
-            t.row();
-            t.add(new Label("Size: ", getSkin())).right();
+            if (classSelectBox.getSelectedIndex() >= 0 && classSelectBox.getSelectedIndex() < Main.BASIC_CLASSES.length) {
+                t.add(new Label("Stage Color: ", getSkin()));
+                BrowseField browseField = new BrowseField(null, null, bfColorStyle);
+                browseField.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        main.getDialogFactory().showDialogColorPicker((Color) previewProperties.get("bgcolor"), new DialogColorPicker.ColorListener() {
+                            @Override
+                            public void selected(Color color) {
+                                if (color != null) {
+                                    browseField.getTextButton().setText((int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
+                                    previewProperties.put("bgcolor", color);
+                                    previewBgColor.set(color);
+                                    refreshPreview();
+                                }
+                            }
+                        });
+                    }
+                });
+                
+                browseField.addListener(main.getHandListener());
+                t.add(browseField).growX();
+                browseField.getTextButton().setText((int) (previewBgColor.r * 255) + "," + (int) (previewBgColor.g * 255) + "," + (int) (previewBgColor.b * 255) + "," + (int) (previewBgColor.a * 255));
 
-            previewSizeSelectBox = new SelectBox<>(getSkin());
-            previewSizeSelectBox.setItems(DEFAULT_SIZES);
-            previewSizeSelectBox.setSelectedIndex(1);
-            previewSizeSelectBox.addListener(main.getHandListener());
-            t.add(previewSizeSelectBox).growX().minWidth(200.0f);
+                t.row();
+                t.add(new Label("Size: ", getSkin())).right();
 
-            if (classSelectBox.getSelectedIndex() >= 0) {
+                previewSizeSelectBox = new SelectBox<>(getSkin());
+                previewSizeSelectBox.setItems(DEFAULT_SIZES);
+                previewSizeSelectBox.setSelectedIndex(1);
+                previewSizeSelectBox.addListener(main.getHandListener());
+                t.add(previewSizeSelectBox).growX().minWidth(200.0f);
                 Class clazz = Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()];
                 if (clazz.equals(Button.class)) {
                     t.row();
@@ -1874,6 +1928,9 @@ public class RootTable extends Table {
                 previewProperties.put("size", previewSizeSelectBox.getSelectedIndex());
 
                 refreshPreview();
+            } else {
+                Label label = new Label("No preview available for custom classes!", getSkin());
+                t.add(label);
             }
         }
     }
@@ -1887,7 +1944,7 @@ public class RootTable extends Table {
                 font.dispose();
             }
 
-            if (classSelectBox.getSelectedIndex() >= 0) {
+            if (classSelectBox.getSelectedIndex() >= 0 && classSelectBox.getSelectedIndex() < Main.BASIC_CLASSES.length) {
                 StyleData styleData = getSelectedStyle();
                 Class clazz = Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()];
 
@@ -2122,6 +2179,9 @@ public class RootTable extends Table {
                         }
                     }
                 }
+            } else {
+                Label label = new Label("No preview available for custom classes!", getSkin());
+                previewTable.add(label);
             }
         }
     }
@@ -2331,6 +2391,12 @@ public class RootTable extends Table {
 
     public void setStyleProperties(Array<StyleProperty> styleProperties) {
         this.styleProperties = styleProperties;
+        customProperties = null;
+    }
+    
+    public void setCustomStyleProperties(Array<CustomProperty> styleProperties) {
+        this.styleProperties = null;
+        customProperties = styleProperties;
     }
 
     private class ScrollPaneListener extends InputListener {
@@ -2426,16 +2492,18 @@ public class RootTable extends Table {
     }
 
     private static enum CustomPropertyEnum {
-        NEW_PROPERTY, DUPLICATE_PROPERTY, DELETE_PROPERTY, RENAME_PROPERTY;
+        NEW, DUPLICATE, DELETE, RENAME, CHANGE_VALUE;
     }
     
     private static class CustomPropertyEvent extends Event {
         private CustomProperty customProperty;
         private CustomPropertyEnum customPropertyEnum;
+        private Actor styleActor;
         
-        public CustomPropertyEvent(CustomProperty customProperty, CustomPropertyEnum customPropertyEnum) {
+        public CustomPropertyEvent(CustomProperty customProperty, Actor styleActor, CustomPropertyEnum customPropertyEnum) {
             this.customProperty = customProperty;
             this.customPropertyEnum = customPropertyEnum;
+            this.styleActor = styleActor;
         }
     }
     
@@ -2454,17 +2522,20 @@ public class RootTable extends Table {
             } else if (event instanceof CustomPropertyEvent) {
                 CustomPropertyEvent propertyEvent = (CustomPropertyEvent) event;
                 if (null != propertyEvent.customPropertyEnum) switch (propertyEvent.customPropertyEnum) {
-                    case NEW_PROPERTY:
+                    case NEW:
                         newCustomProperty();
                         break;
-                    case DELETE_PROPERTY:
+                    case DELETE:
                         deleteCustomProperty(propertyEvent.customProperty);
                         break;
-                    case RENAME_PROPERTY:
+                    case RENAME:
                         renameCustomProperty(propertyEvent.customProperty);
                         break;
-                    case DUPLICATE_PROPERTY:
+                    case DUPLICATE:
                         duplicateCustomProperty(propertyEvent.customProperty);
+                        break;
+                    case CHANGE_VALUE:
+                        customPropertyValueChanged(propertyEvent.customProperty, propertyEvent.styleActor);
                         break;
                     default:
                         break;
@@ -2486,6 +2557,8 @@ public class RootTable extends Table {
         public abstract void duplicateCustomProperty(CustomProperty customProperty);
         
         public abstract void deleteCustomProperty(CustomProperty customProperty);
+        
+        public abstract void customPropertyValueChanged(CustomProperty customProperty, Actor styleActor);
         
         public abstract void renameCustomProperty(CustomProperty customProperty);
     }
