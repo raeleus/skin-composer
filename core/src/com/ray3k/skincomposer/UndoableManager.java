@@ -129,6 +129,7 @@ public class UndoableManager {
         addUndoable(undoable, false);
     }
     
+    //todo:figure out a way to enable undo and redo for doubles and text without refreshing the display or losing focus
     public static class DoubleUndoable implements Undoable {
         private final StyleProperty property;
         private final double oldValue;
@@ -178,13 +179,11 @@ public class UndoableManager {
         @Override
         public void undo() {
             property.setValue(oldValue);
-            main.getRootTable().refreshStyleProperties(true);
         }
 
         @Override
         public void redo() {
             property.setValue(newValue);
-            main.getRootTable().refreshStyleProperties(true);
         }
 
         @Override
@@ -193,13 +192,13 @@ public class UndoableManager {
         }
     }
     
-    public static class TextUndoable implements Undoable {
+    public static class CustomTextUndoable implements Undoable {
         private final CustomProperty property;
         private final String oldValue;
         private final String newValue;
         private final Main main;
 
-        public TextUndoable(Main main, CustomProperty property, String newValue) {
+        public CustomTextUndoable(Main main, CustomProperty property, String newValue) {
             this.property = property;
             oldValue = (String) property.getValue();
             this.newValue = newValue;
@@ -209,13 +208,11 @@ public class UndoableManager {
         @Override
         public void undo() {
             property.setValue(oldValue);
-            main.getRootTable().refreshStyleProperties(true);
         }
 
         @Override
         public void redo() {
             property.setValue(newValue);
-            main.getRootTable().refreshStyleProperties(true);
         }
 
         @Override

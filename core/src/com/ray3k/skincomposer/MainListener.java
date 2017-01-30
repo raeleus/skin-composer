@@ -533,7 +533,7 @@ public class MainListener extends RootTableListener {
                 main.getUndoableManager().addUndoable(new UndoableManager.CustomDoubleUndoable(main, customProperty, ((Spinner) styleActor).getValue()), true);
                 break;
             case TEXT:
-                main.getUndoableManager().addUndoable(new UndoableManager.TextUndoable(main, customProperty, ((TextField) styleActor).getText()), true);
+                main.getUndoableManager().addUndoable(new UndoableManager.CustomTextUndoable(main, customProperty, ((TextField) styleActor).getText()), true);
                 break;
             default:
                 break;
