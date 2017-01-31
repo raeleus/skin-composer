@@ -46,6 +46,7 @@ public class CustomClass implements Json.Serializable {
         defaultStyle.setParentClass(this);
         styles.add(defaultStyle);
         templateStyle = new CustomStyle("template");
+        templateStyle.setParentClass(this);
     }
 
     public String getFullyQualifiedName() {
