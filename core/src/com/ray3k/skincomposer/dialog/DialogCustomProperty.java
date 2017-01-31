@@ -36,10 +36,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.data.CustomProperty;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
+import com.ray3k.skincomposer.data.CustomStyle;
 
 public class DialogCustomProperty extends Dialog {
-    private final TextField classField;
+    private final TextField nameField;
     private final TextButton okButton;
     private final SelectBox<PropertyType> propertyTypeBox;
     private Main main;
@@ -62,12 +64,12 @@ public class DialogCustomProperty extends Dialog {
         getContentTable().add(label).pad(10.0f).padTop(0.0f).padBottom(5.0f);
         
         getContentTable().row();
-        classField = new TextField("", getSkin());
-        classField.setFocusTraversal(false);
-        classField.setText(propertyName);
-        classField.selectAll();
-        classField.addListener(main.getIbeamListener());
-        getContentTable().add(classField).growX().padLeft(10.0f).padRight(10.0f);
+        nameField = new TextField("", getSkin());
+        nameField.setFocusTraversal(false);
+        nameField.setText(propertyName);
+        nameField.selectAll();
+        nameField.addListener(main.getIbeamListener());
+        getContentTable().add(nameField).growX().padLeft(10.0f).padRight(10.0f);
         
         getContentTable().row();
         label = new Label("What is the property type?", getSkin());
@@ -91,7 +93,7 @@ public class DialogCustomProperty extends Dialog {
         
         getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         
-        classField.addListener(new ChangeListener() {
+        nameField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {                
                 updateOkButton();
@@ -103,7 +105,7 @@ public class DialogCustomProperty extends Dialog {
     public Dialog show(Stage stage) {
         Dialog dialog = super.show(stage);
         
-        stage.setKeyboardFocus(classField);
+        stage.setKeyboardFocus(nameField);
         
         return dialog;
     }
@@ -112,15 +114,31 @@ public class DialogCustomProperty extends Dialog {
     protected void result(Object object) {
         super.result(object);
         
-        fire(new CustomPropertyEvent((boolean) object, classField.getText(), propertyTypeBox.getSelected()));
+        fire(new CustomPropertyEvent((boolean) object, nameField.getText(), propertyTypeBox.getSelected()));
     }
     
     private void updateOkButton() {
-        if (validate(classField.getText())) {
-            okButton.setDisabled(false);
-            if (!okButton.getListeners().contains(main.getHandListener(), true)) {
-                okButton.addListener(main.getHandListener());
+        if (validate(nameField.getText())) {
+            boolean unique = true;
+            for (CustomProperty customProperty : ((CustomStyle)main.getRootTable().getStyleSelectBox().getSelected()).getProperties()) {
+                if (customProperty.getName().equals(nameField.getText())) {
+                    unique = false;
+                    break;
+                }
             }
+            
+            if (unique) {
+                okButton.setDisabled(false);
+                if (!okButton.getListeners().contains(main.getHandListener(), true)) {
+                    okButton.addListener(main.getHandListener());
+                }
+            } else {
+                okButton.setDisabled(true);
+                if (okButton.getListeners().contains(main.getHandListener(), true)) {
+                    okButton.removeListener(main.getHandListener());
+                }
+            }
+            
         } else {
             okButton.setDisabled(true);
             if (okButton.getListeners().contains(main.getHandListener(), true)) {
