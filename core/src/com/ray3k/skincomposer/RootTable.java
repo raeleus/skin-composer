@@ -2139,7 +2139,6 @@ public class RootTable extends Table {
                                 Actor addWidget = widget;
                                 TextField widthField = new TextField("", getSkin());
                                 TextField heightField = new TextField("", getSkin());
-                                System.out.println("trigger");
                                 Dialog dialog = new Dialog("Enter dimensions...", getSkin()) {
                                     @Override
                                     protected void result(Object object) {

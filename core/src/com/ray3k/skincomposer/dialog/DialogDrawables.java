@@ -96,18 +96,18 @@ public class DialogDrawables extends Dialog {
     private Main main;
     
     public DialogDrawables(Main main, StyleProperty property, EventListener listener) {
-        this(main, listener);
+        super("", main.getSkin(), "dialog");
         this.property = property;
+        initialize(main, listener);
     }
     
     public DialogDrawables(Main main, CustomProperty property, EventListener listener) {
-        this(main, listener);
+        super("", main.getSkin(), "dialog");
         this.customProperty = property;
+        initialize(main, listener);
     }
     
-    public DialogDrawables(Main main, EventListener listener) {
-        super("", main.getSkin(), "dialog");
-        
+    public void initialize(Main main, EventListener listener) {
         this.main = main;
         
         instance = this;

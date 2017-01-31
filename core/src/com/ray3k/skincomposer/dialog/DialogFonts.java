@@ -82,8 +82,7 @@ public class DialogFonts extends Dialog {
     private ScrollPane scrollPane;
     private Main main;
 
-    public DialogFonts(Main main, EventListener listener) {
-        super("", main.getSkin(), "dialog");
+    public void initialize(Main main, EventListener listener) {
         this.main = main;
         
         this.listener = listener;
@@ -114,13 +113,15 @@ public class DialogFonts extends Dialog {
     }
     
     public DialogFonts(Main main, StyleProperty styleProperty, EventListener listener) {
-        this(main, listener);
+        super("", main.getSkin(), "dialog");
         this.styleProperty = styleProperty;
+        initialize(main, listener);
     }
     
     public DialogFonts(Main main, CustomProperty customProperty, EventListener listener) {
-        this(main, listener);
+        super("", main.getSkin(), "dialog");
         this.customProperty = customProperty;
+        initialize(main, listener);
     }
     
     private void populate() {
@@ -480,7 +481,9 @@ public class DialogFonts extends Dialog {
                 main.getUndoableManager().addUndoable(undoable, true);
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
-                    styleProperty.value = null;
+                    FontUndoable undoable = new FontUndoable(main.getRootTable(),
+                            main.getJsonData(), styleProperty, styleProperty.value, null);
+                    main.getUndoableManager().addUndoable(undoable, true);
                     main.getProjectData().setChangesSaved(false);
                     main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + styleProperty.name + "\"");
                     main.getRootTable().refreshStyleProperties(true);
@@ -509,7 +512,9 @@ public class DialogFonts extends Dialog {
                 main.getUndoableManager().addUndoable(undoable, true);
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
-                    customProperty.setValue(null);
+                    FontUndoable undoable = new FontUndoable(main.getRootTable(),
+                            main.getJsonData(), styleProperty, styleProperty.value, null);
+                    main.getUndoableManager().addUndoable(undoable, true);
                     main.getProjectData().setChangesSaved(false);
                     main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + customProperty.getName() + "\"");
                     main.getRootTable().refreshStyleProperties(true);

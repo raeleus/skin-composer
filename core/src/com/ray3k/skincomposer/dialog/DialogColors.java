@@ -67,21 +67,10 @@ public class DialogColors extends Dialog {
     private ScrollPane scrollPane;
     private Main main;
     
-    public DialogColors(Main main, boolean selectingForTintedDrawable, DialogColorsListener listener) {
-        super("", main.getSkin(), "dialog");
- 
-        this.main = main;
-        
-        this.listener = listener;
-        this.selectingForTintedDrawable = selectingForTintedDrawable;
-        colors = main.getJsonData().getColors();
-        
-        populate();
-    }
-    
     public DialogColors(Main main, StyleProperty styleProperty, boolean selectingForTintedDrawable, DialogColorsListener listener) {
-        this(main, selectingForTintedDrawable, listener);
+        super("", main.getSkin(), "dialog");
         this.styleProperty = styleProperty;
+        populate(main, selectingForTintedDrawable, listener);
     }
     
     public DialogColors(Main main, StyleProperty styleProperty, DialogColorsListener listener) {
@@ -89,15 +78,22 @@ public class DialogColors extends Dialog {
     }
     
     public DialogColors(Main main, CustomProperty customProperty, boolean selectingForTintedDrawable, DialogColorsListener listener) {
-        this(main, selectingForTintedDrawable, listener);
+        super("", main.getSkin(), "dialog");
         this.customProperty = customProperty;
+        populate(main, selectingForTintedDrawable, listener);
     }
     
     public DialogColors(Main main, CustomProperty customProperty, DialogColorsListener listener) {
         this(main, customProperty, false, listener);
     }
     
-    private void populate() {
+    private void populate(Main main, boolean selectingForTintedDrawable, DialogColorsListener listener) {
+        this.main = main;
+        
+        this.listener = listener;
+        this.selectingForTintedDrawable = selectingForTintedDrawable;
+        colors = main.getJsonData().getColors();
+        
         getContentTable().defaults().expandX();
         if (styleProperty != null || customProperty != null) {
             Label label = new Label("Select a color...", getSkin(), "title");
@@ -620,9 +616,8 @@ public class DialogColors extends Dialog {
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
                     main.getProjectData().setChangesSaved(false);
-                    styleProperty.value = null;
-                    main.getRootTable().setStatusBarMessage("Emptied color for \"" + styleProperty.name + "\"");
-                    main.getRootTable().refreshStyleProperties(true);
+                    ColorUndoable undoable = new ColorUndoable(main.getRootTable(), main.getJsonData(), styleProperty, styleProperty.value, null);
+                    main.getUndoableManager().addUndoable(undoable, true);
                 } else {
                     boolean hasColor = false;
                     for (ColorData color : main.getJsonData().getColors()) {
@@ -649,7 +644,8 @@ public class DialogColors extends Dialog {
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
                     main.getProjectData().setChangesSaved(false);
-                    customProperty.setValue(null);
+                    ColorUndoable undoable = new ColorUndoable(main.getRootTable(), main.getJsonData(), styleProperty, styleProperty.value, null);
+                    main.getUndoableManager().addUndoable(undoable, true);
                     main.getRootTable().setStatusBarMessage("Emptied color for \"" + customProperty.getName() + "\"");
                     main.getRootTable().refreshStyleProperties(true);
                 } else {

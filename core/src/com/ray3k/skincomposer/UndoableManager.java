@@ -24,7 +24,6 @@
 package com.ray3k.skincomposer;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.data.AtlasData;
@@ -54,11 +53,12 @@ public class UndoableManager {
         undoables.clear();
         undoIndex = -1;
         
+        main.getRootTable().setUndoText("Undo");
+        main.getRootTable().setRedoText("Redo");
+        
         main.getRootTable().setUndoDisabled(true);
         main.getRootTable().setRedoDisabled(true);
         
-        main.getRootTable().setUndoText("Undo");
-        main.getRootTable().setRedoText("Redo");
     }
     
     public void undo() {
