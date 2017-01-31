@@ -24,6 +24,7 @@
 package com.ray3k.skincomposer;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.data.AtlasData;
@@ -129,32 +130,33 @@ public class UndoableManager {
         addUndoable(undoable, false);
     }
     
-    //todo:figure out a way to enable undo and redo for doubles and text without refreshing the display or losing focus
     public static class DoubleUndoable implements Undoable {
         private final StyleProperty property;
         private final double oldValue;
         private final double newValue;
-        RootTable rootTable;
+        private final Main main;
 
-        public DoubleUndoable(RootTable rootTable, StyleProperty property, double newValue) {
+        public DoubleUndoable(Main main, StyleProperty property, double newValue) {
             this.property = property;
             oldValue = (double) property.value;
             this.newValue = newValue;
-            this.rootTable = rootTable;
+            this.main = main;
+            
+            property.value = newValue;
         }
         
         @Override
         public void undo() {
             property.value = oldValue;
-            rootTable.refreshStyleProperties(true);
-            rootTable.refreshPreview();
+            main.getRootTable().refreshStyleProperties(true);
+            main.getRootTable().refreshPreview();
         }
 
         @Override
         public void redo() {
             property.value = newValue;
-            rootTable.refreshStyleProperties(true);
-            rootTable.refreshPreview();
+            main.getRootTable().refreshStyleProperties(true);
+            main.getRootTable().refreshPreview();
         }
 
         @Override
@@ -174,16 +176,20 @@ public class UndoableManager {
             oldValue = (double) property.getValue();
             this.newValue = newValue;
             this.main = main;
+            
+            property.setValue(newValue);
         }
         
         @Override
         public void undo() {
             property.setValue(oldValue);
+            main.getRootTable().refreshStyleProperties(true);
         }
 
         @Override
         public void redo() {
             property.setValue(newValue);
+            main.getRootTable().refreshStyleProperties(true);
         }
 
         @Override
@@ -203,16 +209,20 @@ public class UndoableManager {
             oldValue = (String) property.getValue();
             this.newValue = newValue;
             this.main = main;
+            
+            property.setValue(newValue);
         }
         
         @Override
         public void undo() {
             property.setValue(oldValue);
+            main.getRootTable().refreshStyleProperties(true);
         }
 
         @Override
         public void redo() {
             property.setValue(newValue);
+            main.getRootTable().refreshStyleProperties(true);
         }
 
         @Override

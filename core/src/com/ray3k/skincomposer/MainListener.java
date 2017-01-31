@@ -417,7 +417,7 @@ public class MainListener extends RootTableListener {
         } else if (styleProperty.type == BitmapFont.class) {
             dialogFactory.showDialogFonts(styleProperty);
         } else if (styleProperty.type == Float.TYPE) {
-            main.getUndoableManager().addUndoable(new UndoableManager.DoubleUndoable(root, styleProperty, ((Spinner) styleActor).getValue()), true);
+            main.getUndoableManager().addUndoable(new UndoableManager.DoubleUndoable(main, styleProperty, ((Spinner) styleActor).getValue()), false);
         } else if (styleProperty.type == ScrollPaneStyle.class) {
             main.getUndoableManager().addUndoable(new UndoableManager.SelectBoxUndoable(root, styleProperty, (SelectBox) styleActor), true);
         } else if (styleProperty.type == LabelStyle.class) {
@@ -530,10 +530,10 @@ public class MainListener extends RootTableListener {
                 dialogFactory.showDialogFonts(customProperty);
                 break;
             case FLOAT:
-                main.getUndoableManager().addUndoable(new UndoableManager.CustomDoubleUndoable(main, customProperty, ((Spinner) styleActor).getValue()), true);
+                main.getUndoableManager().addUndoable(new UndoableManager.CustomDoubleUndoable(main, customProperty, ((Spinner) styleActor).getValue()), false);
                 break;
             case TEXT:
-                main.getUndoableManager().addUndoable(new UndoableManager.CustomTextUndoable(main, customProperty, ((TextField) styleActor).getText()), true);
+                main.getUndoableManager().addUndoable(new UndoableManager.CustomTextUndoable(main, customProperty, ((TextField) styleActor).getText()), false);
                 break;
             default:
                 break;
