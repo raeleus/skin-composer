@@ -225,6 +225,7 @@ public class DialogDrawables extends Dialog {
             }
         });
         sortSelectBox.addListener(main.getHandListener());
+        sortSelectBox.getList().addListener(main.getHandListener());
         table.add(sortSelectBox);
         
         TextButton textButton = new TextButton("Add Drawable", getSkin(), "new");

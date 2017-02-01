@@ -148,6 +148,7 @@ public class DialogFonts extends Dialog {
             }
         });
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         table.add(selectBox);
 
         TextButton imageButton = new TextButton("New Font", getSkin(), "new");

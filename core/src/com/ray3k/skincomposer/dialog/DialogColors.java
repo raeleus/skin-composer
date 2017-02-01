@@ -126,6 +126,7 @@ public class DialogColors extends Dialog {
             }
         });
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         table.add(selectBox);
         
         TextButton imageButton = new TextButton("New Color", getSkin(), "new");

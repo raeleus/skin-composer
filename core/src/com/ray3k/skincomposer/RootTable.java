@@ -391,6 +391,7 @@ public class RootTable extends Table {
 
         classSelectBox = new SelectBox(getSkin());
         classSelectBox.addListener(main.getHandListener());
+        classSelectBox.getList().addListener(main.getHandListener());
         table.add(classSelectBox).padRight(5.0f).minWidth(150.0f);
 
         classSelectBox.addListener(new ChangeListener() {
@@ -460,6 +461,7 @@ public class RootTable extends Table {
         });
         
         styleSelectBox.addListener(main.getHandListener());
+        styleSelectBox.getList().addListener(main.getHandListener());
 
         button = new Button(getSkin(), "new");
         button.addListener(main.getHandListener());
@@ -759,6 +761,7 @@ public class RootTable extends Table {
                     SelectBox<StyleData> selectBox = new SelectBox<>(getSkin());
                     selectBox.setItems(scrollPaneStyles);
                     selectBox.addListener(main.getHandListener());
+                    selectBox.getList().addListener(main.getHandListener());
                     
                     if (styleProperty.value != null) {
                         String name = ((String) styleProperty.value);
@@ -790,6 +793,7 @@ public class RootTable extends Table {
                     SelectBox<StyleData> selectBox = new SelectBox<>(getSkin());
                     selectBox.setItems(listStyles);
                     selectBox.addListener(main.getHandListener());
+                    selectBox.getList().addListener(main.getHandListener());
                     
                     if (styleProperty.value != null) {
                         String name = ((String) styleProperty.value);
@@ -820,6 +824,7 @@ public class RootTable extends Table {
                     SelectBox<StyleData> selectBox = new SelectBox<>(getSkin());
                     selectBox.setItems(labelStyles);
                     selectBox.addListener(main.getHandListener());
+                    selectBox.getList().addListener(main.getHandListener());
                     
                     if (styleProperty.value != null) {
                         String name = ((String) styleProperty.value);
@@ -1065,6 +1070,7 @@ public class RootTable extends Table {
                 previewSizeSelectBox.setItems(DEFAULT_SIZES);
                 previewSizeSelectBox.setSelectedIndex(1);
                 previewSizeSelectBox.addListener(main.getHandListener());
+                previewSizeSelectBox.getList().addListener(main.getHandListener());
                 t.add(previewSizeSelectBox).growX().minWidth(200.0f);
                 Class clazz = Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()];
                 if (clazz.equals(Button.class)) {
@@ -1299,6 +1305,7 @@ public class RootTable extends Table {
                         }
                     });
                     selectBox.addListener(main.getHandListener());
+                    selectBox.getList().addListener(main.getHandListener());
                     t.add(selectBox).growX();
 
                 } else if (clazz.equals(ScrollPane.class)) {
@@ -1334,6 +1341,7 @@ public class RootTable extends Table {
                     });
                     t.add(hScrollPosBox).growX();
                     hScrollPosBox.addListener(main.getHandListener());
+                    hScrollPosBox.getList().addListener(main.getHandListener());
                     previewProperties.put("hScrollBarPosition", true);
 
                     t.row();
@@ -1354,6 +1362,7 @@ public class RootTable extends Table {
                     });
                     t.add(vScrollPosBox).growX();
                     vScrollPosBox.addListener(main.getHandListener());
+                    vScrollPosBox.getList().addListener(main.getHandListener());
                     previewProperties.put("vScrollBarPosition", true);
 
                     t.row();
@@ -1667,6 +1676,7 @@ public class RootTable extends Table {
                         }
                     });
                     selectBox.addListener(main.getHandListener());
+                    selectBox.getList().addListener(main.getHandListener());
                     t.add(selectBox).growX();
                 } else if (clazz.equals(SplitPane.class)) {
                     t.row();
@@ -1691,6 +1701,7 @@ public class RootTable extends Table {
                         }
                     });
                     selectBox.addListener(main.getHandListener());
+                    selectBox.getList().addListener(main.getHandListener());
                     t.add(selectBox).growX();
 
                     t.row();
@@ -1806,6 +1817,7 @@ public class RootTable extends Table {
                     });
                     t.add(selectBox).growX();
                     selectBox.addListener(main.getHandListener());
+                    selectBox.getList().addListener(main.getHandListener());
                     previewProperties.put("alignment", Align.left);
 
                     t.row();
@@ -2025,6 +2037,7 @@ public class RootTable extends Table {
                         Array<String> items = new Array<>(((String) previewProperties.get("text")).split("\\n"));
                         ((SelectBox)widget).setItems(items);
                         widget.addListener(main.getHandListener());
+                        ((SelectBox)widget).getList().addListener(main.getHandListener());
                     } else if (clazz.equals(Slider.class)) {
                         Slider.SliderStyle style = createPreviewStyle(Slider.SliderStyle.class, styleData);
                         widget = new Slider((float) (double) previewProperties.get("minimum"), (float) (double) previewProperties.get("maximum"), (float) (double) previewProperties.get("increment"), (boolean) previewProperties.get("orientation"), style);

@@ -544,6 +544,8 @@ public class DialogFactory {
         };
         dialog.getTitleTable().getCells().first().padLeft(5.0f);
         selectBox.setItems(projectData.getRecentFiles());
+        selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
 
         dialog.text("Select a file to open");
         dialog.getContentTable().row();
