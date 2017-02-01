@@ -30,7 +30,7 @@ import java.io.File;
 import java.util.List;
 
 public interface DesktopWorker {
-    public void texturePack(Array<FileHandle> handles, FileHandle localFile, FileHandle targetFile, int MaxWidth, int MaxHeight, boolean useStripWhitespace);
+    public void texturePack(Array<FileHandle> handles, FileHandle localFile, FileHandle targetFile);
     public void sizeWindowToFit(int maxWidth, int maxHeight, int displayBorder, Graphics graphics);
     public void centerWindow(Graphics graphics);
     public void addFilesDroppedListener(FilesDroppedListener filesDroppedListener);

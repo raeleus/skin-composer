@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
 import com.ray3k.skincomposer.CloseListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.DesktopWorker;
@@ -72,20 +73,16 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     }
     
     @Override
-    public void texturePack(Array<FileHandle> handles, FileHandle localFile, FileHandle targetFile, int maxWidth, int maxHeight, boolean useStripWhitespace) {
-        Settings settings = new TexturePacker.Settings();
-        settings.maxWidth = maxWidth;
-        settings.maxHeight = maxHeight;
-        settings.duplicatePadding = true;
-        settings.square = true;
-        settings.filterMin = Texture.TextureFilter.Linear;
-        settings.filterMag = Texture.TextureFilter.Linear;
-        settings.fast = true;
-        settings.useIndexes = false;
-        settings.silent = true;
-        settings.flattenPaths = true;
-        settings.stripWhitespaceX = useStripWhitespace;
-        settings.stripWhitespaceY = useStripWhitespace;
+    public void texturePack(Array<FileHandle> handles, FileHandle localFile, FileHandle targetFile) {
+        //copy defaults.json to temp folder if it doesn't exist
+        FileHandle fileHandle = Gdx.files.local("texturepacker/defaults.json");
+        if (!fileHandle.exists()) {
+            Gdx.files.internal("defaults.json").copyTo(fileHandle);
+        }
+        
+        Json json = new Json();
+        Settings settings = json.fromJson(Settings.class, fileHandle);
+        
         TexturePacker p = new TexturePacker(settings);
         for (FileHandle handle : handles) {
             if (handle.exists()) {

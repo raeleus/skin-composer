@@ -188,7 +188,7 @@ public class AtlasData implements Json.Serializable {
             }
         }
         
-        main.getDesktopWorker().texturePack(files, main.getProjectData().getSaveFile(), targetFile, main.getProjectData().getMaxTextureWidth(), main.getProjectData().getMaxTextureHeight(), main.getProjectData().getStripWhitespace());
+        main.getDesktopWorker().texturePack(files, main.getProjectData().getSaveFile(), targetFile);
     }
     
     public void writeAtlas(FileHandle targetFile) throws Exception {
@@ -211,7 +211,7 @@ public class AtlasData implements Json.Serializable {
             }
         }
         
-        main.getDesktopWorker().texturePack(files, main.getProjectData().getSaveFile(), targetFile, main.getProjectData().getMaxTextureWidth(), main.getProjectData().getMaxTextureHeight(), main.getProjectData().getStripWhitespace());
+        main.getDesktopWorker().texturePack(files, main.getProjectData().getSaveFile(), targetFile);
     }
     
     public TextureAtlas getAtlas() {

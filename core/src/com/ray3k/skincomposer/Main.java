@@ -26,6 +26,7 @@ package com.ray3k.skincomposer;
 import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -108,6 +109,12 @@ public class Main extends ApplicationAdapter {
     
     private void initDefaults() {
         if (Utils.isMac()) System.setProperty("java.awt.headless", "true");
+        
+        //copy defaults.json to temp folder if it doesn't exist
+        FileHandle fileHandle = Gdx.files.local("texturepacker/defaults.json");
+        if (!fileHandle.exists()) {
+            Gdx.files.internal("defaults.json").copyTo(fileHandle);
+        }
         
         ibeamListener = new IbeamListener();
         
