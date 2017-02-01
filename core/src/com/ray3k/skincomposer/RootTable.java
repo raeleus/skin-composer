@@ -873,6 +873,9 @@ public class RootTable extends Table {
                     table.add(label).padTop(20.0f).fill(false).expand(false, false);
 
                     table.row();
+                    if (styleProperty.getValue() instanceof Float) {
+                        styleProperty.setValue((double) (float) styleProperty.getValue());
+                    }
                     Spinner spinner = new Spinner((Double) styleProperty.getValue(), 1.0, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                     spinner.getTextField().addListener(main.getIbeamListener());
                     spinner.getButtonMinus().addListener(main.getHandListener());
