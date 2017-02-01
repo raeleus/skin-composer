@@ -886,6 +886,7 @@ public class RootTable extends Table {
                     
                     table.row();
                     TextField textField = new TextField((String) styleProperty.getValue(), getSkin());
+                    textField.setAlignment(Align.center);
                     textField.addListener(main.getIbeamListener());
                     table.add(textField);
                     
