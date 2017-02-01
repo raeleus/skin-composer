@@ -826,8 +826,8 @@ public class DialogDrawables extends Dialog {
         String defaultPath = "";
         
         if (main.getProjectData().getLastDrawablePath() != null) {
-            FileHandle fileHandle = new FileHandle(defaultPath);
-            if (fileHandle.exists()) {
+            FileHandle fileHandle = new FileHandle(main.getProjectData().getLastDrawablePath());
+            if (fileHandle.parent().exists()) {
                 defaultPath = main.getProjectData().getLastDrawablePath();
             }
         }
