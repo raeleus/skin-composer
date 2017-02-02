@@ -291,6 +291,19 @@ public class JsonData implements Json.Serializable {
                 json.writeObjectEnd();
             }
         }
+        
+        //custom classes
+        for (CustomClass customClass : customClasses) {
+            json.writeObjectStart(customClass.getFullyQualifiedName());
+            for (CustomStyle customStyle : customClass.getStyles()) {
+                json.writeObjectStart(customStyle.getName());
+                for (CustomProperty customProperty : customStyle.getProperties()) {
+                    json.writeValue(customProperty.getName(), customProperty.getValue());
+                }
+                json.writeObjectEnd();
+            }
+            json.writeObjectEnd();
+        }
 
         json.writeObjectEnd();
         fileHandle.writeString(json.prettyPrint(stringWriter.toString()), false);
