@@ -895,6 +895,37 @@ public class RootTable extends Table {
                     
                     textField.addListener(new CustomPropertyChangeListener(styleProperty, textField));
                 }
+                
+                Button duplicateButton = new Button(getSkin(), "duplicate");
+                table.add(duplicateButton).fill(false).expand(false, false).pad(0).bottom();
+                duplicateButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event,
+                            Actor actor) {
+                        fire(new CustomPropertyEvent(styleProperty, duplicateButton, CustomPropertyEnum.DUPLICATE));
+                    }
+                });
+                
+                Button deleteButton = new Button(getSkin(), "delete");
+                table.add(deleteButton).fill(false).expand(false, false).pad(0).bottom();
+                deleteButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event,
+                            Actor actor) {
+                        fire(new CustomPropertyEvent(styleProperty, duplicateButton, CustomPropertyEnum.DELETE));
+                    }
+                });
+                
+                Button renameButton = new Button(getSkin(), "settings");
+                table.add(renameButton).fill(false).expand(false, false).pad(0).bottom();
+                renameButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event,
+                            Actor actor) {
+                        fire(new CustomPropertyEvent(styleProperty, duplicateButton, CustomPropertyEnum.RENAME));
+                    }
+                });
+                
                 table.row();
             }
             

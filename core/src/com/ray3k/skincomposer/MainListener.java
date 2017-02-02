@@ -485,7 +485,7 @@ public class MainListener extends RootTableListener {
 
     @Override
     public void duplicateCustomProperty(CustomProperty customProperty) {
-        dialogFactory.showDuplicateStylePropertyDialog("test", PropertyType.TEXT, new CustomStylePropertyListener() {
+        dialogFactory.showDuplicateStylePropertyDialog(customProperty.getName(), customProperty.getType(), new CustomStylePropertyListener() {
             @Override
             public void newPropertyEntered(String propertyName, PropertyType propertyType) {
                 main.getUndoableManager().addUndoable(new UndoableManager.DuplicateCustomPropertyUndoable(main, customProperty, propertyName, propertyType), true);
@@ -504,7 +504,7 @@ public class MainListener extends RootTableListener {
 
     @Override
     public void renameCustomProperty(CustomProperty customProperty) {
-        dialogFactory.showRenameStylePropertyDialog("test", PropertyType.TEXT, new CustomStylePropertyListener() {
+        dialogFactory.showRenameStylePropertyDialog(customProperty.getName(), customProperty.getType(), new CustomStylePropertyListener() {
             @Override
             public void newPropertyEntered(String propertyName, PropertyType propertyType) {
                 main.getUndoableManager().addUndoable(new UndoableManager.RenameCustomPropertyUndoable(main, customProperty, propertyName, propertyType), true);

@@ -846,7 +846,7 @@ public class UndoableManager {
         public void undo() {
             customClass.getTemplateStyle().getProperties().removeValue(customProperty, true);
 
-            for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
+            for (CustomStyle style : customClass.getStyles()) {
                 Iterator<CustomProperty> iter = style.getProperties().iterator();
                 while (iter.hasNext()) {
                     CustomProperty property = iter.next();
@@ -855,13 +855,15 @@ public class UndoableManager {
                     }
                 }
             }
+            
+            main.getRootTable().refreshStyleProperties(true);
         }
 
         @Override
         public void redo() {
             customClass.getTemplateStyle().getProperties().add(customProperty);
 
-            for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
+            for (CustomStyle style : customClass.getStyles()) {
                 style.getProperties().add(customProperty.copy());
             }
             main.getRootTable().refreshStyleProperties(true);
@@ -876,12 +878,14 @@ public class UndoableManager {
     public static class DuplicateCustomPropertyUndoable implements Undoable {
         private final Main main;
         private final CustomClass customClass;
-        private CustomProperty customProperty;
+        private final CustomProperty customProperty;
 
         public DuplicateCustomPropertyUndoable(Main main, CustomProperty originalProperty, String propertyName, PropertyType propertyType) {
             this.main = main;
             
             customProperty = originalProperty.copy();
+            customProperty.setName(propertyName);
+            customProperty.setType(propertyType);
             
             customClass = (CustomClass) main.getRootTable().getClassSelectBox().getSelected();
         }
@@ -900,6 +904,8 @@ public class UndoableManager {
                     }
                 }
             }
+            
+            main.getRootTable().refreshStyleProperties(true);
         }
 
         @Override
@@ -909,6 +915,8 @@ public class UndoableManager {
             for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
                 style.getProperties().add(customProperty.copy());
             }
+            
+            main.getRootTable().refreshStyleProperties(true);
         }
 
         @Override
@@ -983,9 +991,9 @@ public class UndoableManager {
     }
 
     public static class DeleteCustomPropertyUndoable implements Undoable {
-        private Main main;
-        private CustomClass customClass;
-        private CustomProperty customProperty;
+        private final Main main;
+        private final CustomClass customClass;
+        private final CustomProperty customProperty;
 
         public DeleteCustomPropertyUndoable(Main main, CustomProperty customProperty) {
             this.main = main;
@@ -1002,6 +1010,8 @@ public class UndoableManager {
             for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
                 style.getProperties().add(customProperty.copy());
             }
+            
+            main.getRootTable().refreshStyleProperties(true);
         }
         
         @Override
@@ -1017,6 +1027,8 @@ public class UndoableManager {
                     }
                 }
             }
+            
+            main.getRootTable().refreshStyleProperties(true);
         }
 
         @Override
