@@ -46,6 +46,7 @@ public class DialogSettings extends Dialog {
 
     private final SpinnerStyle spinnerStyle;
     private Integer maxUndos;
+    private boolean resourcesRelative;
     private final Main main;
 
     public DialogSettings(String title, String windowStyleName, Main main) {
@@ -54,6 +55,7 @@ public class DialogSettings extends Dialog {
         spinnerStyle = new Spinner.SpinnerStyle(main.getSkin().get("spinner-minus-h", Button.ButtonStyle.class), main.getSkin().get("spinner-plus-h", Button.ButtonStyle.class), main.getSkin().get("default", TextField.TextFieldStyle.class));
 
         maxUndos = main.getProjectData().getMaxUndos();
+        resourcesRelative = main.getProjectData().areResourcesRelative();
         setFillParent(true);
 
         populate();
@@ -66,6 +68,7 @@ public class DialogSettings extends Dialog {
         if ((boolean) object) {
             main.getProjectData().setChangesSaved(false);
             main.getProjectData().setMaxUndos(maxUndos);
+            main.getProjectData().setResourcesRelative(resourcesRelative);
             main.getUndoableManager().clearUndoables();
         }
     }
@@ -197,6 +200,17 @@ public class DialogSettings extends Dialog {
         spinner3.getButtonMinus().addListener(main.getHandListener());
         spinner3.getButtonPlus().addListener(main.getHandListener());
         t.add(spinner3).minWidth(150.0f).left().padTop(10.0f);
+        
+        t.row();
+        ImageTextButton checkBox = new ImageTextButton("Keep resources relative?", getSkin(), "checkbox");
+        checkBox.setChecked(resourcesRelative);
+        checkBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                resourcesRelative = checkBox.isChecked();
+            }
+        });
+        t.add(checkBox).padTop(10.0f).colspan(2);
 
         button("OK", true);
         button("Cancel", false);

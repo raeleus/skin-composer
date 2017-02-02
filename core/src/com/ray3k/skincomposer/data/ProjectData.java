@@ -135,19 +135,6 @@ public class ProjectData implements Json.Serializable {
         main.getRootTable().setRecentFilesDisabled(false);
     }
     
-    public void setMaxTextureDimensions(int width, int height) {
-        preferences.put("texture-max-width", width);
-        preferences.put("texture-max-height", height);
-    }
-    
-    public int getMaxTextureWidth() {
-        return (int) preferences.get("texture-max-width", 1024);
-    }
-    
-    public int getMaxTextureHeight() {
-        return (int) preferences.get("texture-max-height", 1024);
-    }
-    
     public void setMaxUndos(int maxUndos) {
         preferences.put("maxUndos", maxUndos);
     }
@@ -183,7 +170,6 @@ public class ProjectData implements Json.Serializable {
         return newProject;
     }
     
-    //todo: do not create a folder if there are no files to transfer.
     private void moveImportedFiles(FileHandle oldSave, FileHandle newSave) {
         FileHandle tempImportFolder = Gdx.files.local("temp/" + getId() + "_data/");
         FileHandle localImportFolder;
@@ -193,10 +179,10 @@ public class ProjectData implements Json.Serializable {
             localImportFolder = null;
         }
         FileHandle targetFolder = newSave.sibling(newSave.nameWithoutExtension() + "_data/");
-        targetFolder.mkdirs();
         
         for (DrawableData drawableData : atlasData.getDrawables()) {
             if (drawableData.file.exists()) {
+                targetFolder.mkdirs();
                 //drawable files in the temp folder
                 if (drawableData.file.parent().equals(tempImportFolder)) {
                     drawableData.file.moveTo(targetFolder);
@@ -212,6 +198,8 @@ public class ProjectData implements Json.Serializable {
         
         for (FontData fontData : jsonData.getFonts()) {
             if (fontData.file.exists()) {
+                targetFolder.mkdirs();
+                
                 //font files in the temp folder
                 if (fontData.file.parent().equals(tempImportFolder)) {
                     fontData.file.moveTo(targetFolder);
@@ -226,8 +214,31 @@ public class ProjectData implements Json.Serializable {
         }
     }
     
+    public void makeResourcesRelative(FileHandle saveFile) {
+        FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
+        
+        for (DrawableData drawableData : main.getAtlasData().getDrawables()) {
+            if (drawableData.file.exists() && !targetFolder.equals(drawableData.file.parent())) {
+                targetFolder.mkdirs();
+                drawableData.file.copyTo(targetFolder);
+                drawableData.file = targetFolder.child(drawableData.file.name());
+            }
+        }
+        
+        for (FontData fontData : main.getJsonData().getFonts()) {
+            if (fontData.file.exists() && !targetFolder.equals(fontData.file.parent())) {
+                fontData.file.copyTo(targetFolder);
+                fontData.file = targetFolder.child(fontData.file.name());
+            }
+        }
+    }
+    
     public void save(FileHandle file) {
         moveImportedFiles(saveFile, file);
+        
+        if (main.getProjectData().areResourcesRelative()) {
+            makeResourcesRelative(file);
+        }
         
         saveFile = file;
         putRecentFile(file.path());
@@ -266,7 +277,6 @@ public class ProjectData implements Json.Serializable {
         preferences.clear();
 
         randomizeId();
-        setMaxTextureDimensions(1024, 1024);
         setMaxUndos(30);
         
         jsonData.clear();
@@ -298,15 +308,6 @@ public class ProjectData implements Json.Serializable {
         if (!jsonValue.get("saveFile").isNull()) {
             saveFile = new FileHandle(jsonValue.getString("saveFile"));
         }
-    }
-
-    public boolean getStripWhitespace() {
-        return generalPref.getBoolean("useStripWhitespace", false);
-    }
-
-    public void setStripWhitespace(boolean useStripWhitespace) {
-        generalPref.putBoolean("useStripWhitespace", useStripWhitespace);
-        generalPref.flush();
     }
 
     public JsonData getJsonData() {
@@ -378,5 +379,13 @@ public class ProjectData implements Json.Serializable {
     public void setLastPath(String lastPath) {
         generalPref.putString("last-path", lastPath);
         generalPref.flush();
+    }
+    
+    public boolean areResourcesRelative() {
+        return (boolean) preferences.get("resources-relative", false);
+    }
+    
+    public void setResourcesRelative(boolean resourcesRelative) {
+        preferences.put("resources-relative", resourcesRelative);
     }
 }

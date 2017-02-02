@@ -765,7 +765,8 @@ public class DialogFonts extends Dialog {
                 
                 textField.setFocusTraversal(false);
                 
-                if (!Utils.doesImageFitBox(new FileHandle(bitmapFontData.imagePaths[0]), main.getProjectData().getMaxTextureWidth(), main.getProjectData().getMaxTextureHeight())) {
+                //todo:fix this so that values are pulled from the default.json file for max width and height
+                if (!Utils.doesImageFitBox(new FileHandle(bitmapFontData.imagePaths[0]), 1024, 1024)) {
                     showAddFontSizeError(fileHandle.nameWithoutExtension());
                 } else {
                     nameDialog.show(getStage());
@@ -786,10 +787,11 @@ public class DialogFonts extends Dialog {
         dialog.getContentTable().add(label);
         
         dialog.getContentTable().row();
+        //todo:fix this so that values are pulled from the default.json file for max width and height
         dialog.text("Unable to add font \"" + name +
                 "\". Ensure image dimensions\nare less than max texture dimensions (" +
-                main.getProjectData().getMaxTextureWidth() + "x" + 
-                main.getProjectData().getMaxTextureHeight() + ").\nSee project settings.");
+                1024 + "x" + 
+                1024 + ").\nSee project settings.");
         dialog.button("Ok");
         dialog.show(getStage());
     }

@@ -121,7 +121,6 @@ public class Main extends ApplicationAdapter {
         projectData = new ProjectData();
         projectData.setMain(this);
         projectData.randomizeId();
-        projectData.setMaxTextureDimensions(1024, 1024);
         projectData.setMaxUndos(30);
         
         dialogFactory = new DialogFactory(skin, stage, projectData.getJsonData(), projectData, projectData.getAtlasData(), this);
