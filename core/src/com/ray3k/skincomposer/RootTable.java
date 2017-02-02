@@ -868,7 +868,7 @@ public class RootTable extends Table {
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new CustomPropertyChangeListener(styleProperty, browseField));
-                } else if (styleProperty.getType() == PropertyType.FLOAT) {
+                } else if (styleProperty.getType() == PropertyType.NUMBER) {
                     label = new Label(styleProperty.getName(), getSkin());
                     table.add(label).padTop(20.0f).fill(false).expand(false, false);
 

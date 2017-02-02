@@ -32,7 +32,7 @@ public class CustomProperty implements Json.Serializable {
     private CustomStyle parentStyle;
     private PropertyType type;
     public static enum PropertyType {
-        NONE("None"), FLOAT("Float"), TEXT("Text"), DRAWABLE("Drawable"), FONT("Font"), COLOR("Color");
+        NONE("None"), NUMBER("Number"), TEXT("Text"), DRAWABLE("Drawable"), FONT("Font"), COLOR("Color");
 
         String name;
         PropertyType(String name) {
@@ -57,7 +57,7 @@ public class CustomProperty implements Json.Serializable {
             case TEXT:
                 value = "";
                 break;
-            case FLOAT:
+            case NUMBER:
                 value = 0.0;
                 break;
         }

@@ -529,7 +529,7 @@ public class MainListener extends RootTableListener {
             case FONT:
                 dialogFactory.showDialogFonts(customProperty);
                 break;
-            case FLOAT:
+            case NUMBER:
                 main.getUndoableManager().addUndoable(new UndoableManager.CustomDoubleUndoable(main, customProperty, ((Spinner) styleActor).getValue()), false);
                 break;
             case TEXT:

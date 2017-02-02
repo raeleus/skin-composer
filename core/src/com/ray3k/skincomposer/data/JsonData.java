@@ -47,7 +47,9 @@ import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import java.io.StringWriter;
+import java.util.regex.Pattern;
 
 public class JsonData implements Json.Serializable {
     private Array<ColorData> colors;
@@ -161,39 +163,77 @@ public class JsonData implements Json.Serializable {
             } //styles
             else {
                 int classIndex = 0;
-                Class matchClass = ClassReflection.forName(child.name);
-                for (Class clazz : Main.STYLE_CLASSES) {
-                    if (clazz.equals(matchClass)) {
-                        break;
-                    } else {
-                        classIndex++;
-                    }
-                }
                 
-                Class clazz = Main.BASIC_CLASSES[classIndex];
-                for (JsonValue style : child.iterator()) {
-                    StyleData data = newStyle(clazz, style.name);
-                    for (JsonValue property : style.iterator()) {
-                        StyleProperty styleProperty = data.properties.get(property.name);
-                        if (styleProperty.type.equals(Float.TYPE)) {
-                            styleProperty.value = (double) property.asFloat();
-                        } else if (styleProperty.type.equals(Color.class)) {
-                            if (property.isString()) {
-                                styleProperty.value = property.asString();
-                            } else {
-                                Gdx.app.error(getClass().getName(), "Can't import JSON files that do not use predefined colors.");
-                            }
+                if (testClassString(child.name)) {
+                    Class matchClass = ClassReflection.forName(child.name);
+                    for (Class clazz : Main.STYLE_CLASSES) {
+                        if (clazz.equals(matchClass)) {
+                            break;
                         } else {
-                            if (property.isString()) {
-                                styleProperty.value = property.asString();
+                            classIndex++;
+                        }
+                    }
+
+                    Class clazz = Main.BASIC_CLASSES[classIndex];
+                    for (JsonValue style : child.iterator()) {
+                        StyleData data = newStyle(clazz, style.name);
+                        for (JsonValue property : style.iterator()) {
+                            StyleProperty styleProperty = data.properties.get(property.name);
+                            if (styleProperty.type.equals(Float.TYPE)) {
+                                styleProperty.value = (double) property.asFloat();
+                            } else if (styleProperty.type.equals(Color.class)) {
+                                if (property.isString()) {
+                                    styleProperty.value = property.asString();
+                                } else {
+                                    Gdx.app.error(getClass().getName(), "Can't import JSON files that do not use predefined colors.");
+                                }
                             } else {
-                                Gdx.app.error(getClass().getName(), "Can't import JSON files that do not use String names for field values.");
+                                if (property.isString()) {
+                                    styleProperty.value = property.asString();
+                                } else {
+                                    Gdx.app.error(getClass().getName(), "Can't import JSON files that do not use String names for field values.");
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    CustomClass customClass = new CustomClass(child.name, child.name.replaceFirst(".*\\.", ""));
+                    customClasses.add(customClass);
+                    for (JsonValue style : child.iterator()) {
+                        CustomStyle customStyle = new CustomStyle(style.name);
+                        customClass.getStyles().add(customStyle);
+                        
+                        for (JsonValue property : style.iterator()) {
+                            CustomProperty customProperty = new CustomProperty();
+                            customStyle.getProperties().add(customProperty);
+                            
+                            customProperty.setName(property.name);
+                            
+                            if (property.isNumber()) {
+                                customProperty.setType(PropertyType.NUMBER);
+                                customProperty.setValue(property.asDouble());
+                            } else {
+                                customProperty.setType(PropertyType.TEXT);
+                                customProperty.setValue(property.asString());
                             }
                         }
                     }
                 }
             }
         }
+    }
+    
+    private boolean testClassString(String fullyQualifiedName) {
+        boolean returnValue = false;
+        
+        for (Class clazz : Main.STYLE_CLASSES) {
+            if (fullyQualifiedName.equals(clazz.getName())) {
+                returnValue = true;
+                break;
+            }
+        }
+        
+        return returnValue;
     }
 
     public void writeFile(FileHandle fileHandle) {
