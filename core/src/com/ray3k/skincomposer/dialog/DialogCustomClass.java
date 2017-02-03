@@ -180,10 +180,20 @@ public class DialogCustomClass extends Dialog {
             
             if (!allowSameName || !classField.getText().equals(originalFullyQualifiedName) || !displayField.getText().equals(originalDisplayName)) {
                 for (CustomClass otherClass : main.getJsonData().getCustomClasses()) {
-                    if (otherClass.getDisplayName().equals(displayField.getText())
-                            || otherClass.getFullyQualifiedName().equals(classField.getText())) {
+                    if (!allowSameName) {
+                        if ((otherClass.getDisplayName().equals(displayField.getText()))
+                                || otherClass.getFullyQualifiedName().equals(classField.getText())) {
+                                buttonDisabled = true;
+                            break;
+                        }
+                    } else {
+                        if (otherClass.getDisplayName().equals(displayField.getText()) && !otherClass.getDisplayName().equals(originalDisplayName)) {
                             buttonDisabled = true;
-                        break;
+                            break;
+                        } else if (otherClass.getFullyQualifiedName().equals(classField.getText()) && !otherClass.getFullyQualifiedName().equals(originalFullyQualifiedName)) {
+                            buttonDisabled = true;
+                            break;
+                        }
                     }
                 }
                 
