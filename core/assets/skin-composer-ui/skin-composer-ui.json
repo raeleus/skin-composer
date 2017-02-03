@@ -432,4 +432,41 @@ com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 		stageBackground: stage-background
 	}
 }
+com.ray3k.skincomposer.BrowseField$BrowseFieldStyle: {
+	default: {
+		rightButtonStyle: color
+		mainButtonStyle: browse-field
+		labelStyle: default
+	}
+	color: {
+		rightButtonStyle: color
+		mainButtonStyle: browse-field
+		labelStyle: default
+	}
+	drawable: {
+		rightButtonStyle: drawable
+		mainButtonStyle: browse-field
+		labelStyle: default
+	}
+	font: {
+		rightButtonStyle: font
+		mainButtonStyle: browse-field
+		labelStyle: default
+	}
+	color-required: {
+		rightButtonStyle: color
+		mainButtonStyle: browse-field
+		labelStyle: required
+	}
+	drawable-required: {
+		rightButtonStyle: drawable
+		mainButtonStyle: browse-field
+		labelStyle: required
+	}
+	font-required: {
+		rightButtonStyle: font
+		mainButtonStyle: browse-field
+		labelStyle: required
+	}
+}
 }

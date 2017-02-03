@@ -32,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
@@ -121,6 +122,14 @@ public class BrowseField extends Table {
         });
     }
 
+    public BrowseField(String valueText, String labelText, Skin skin, String style) {
+        this(valueText, labelText, skin.get(style, BrowseFieldStyle.class));
+    }
+    
+    public BrowseField(String valueText, String labelText, Skin skin) {
+        this(valueText, labelText, skin, "default");
+    }
+    
     public TextButton getTextButton() {
         return textButton;
     }
@@ -138,6 +147,10 @@ public class BrowseField extends Table {
         public TextButtonStyle mainButtonStyle;
         public LabelStyle labelStyle;
 
+        public BrowseFieldStyle() {
+            
+        }
+        
         public BrowseFieldStyle(ImageButtonStyle imageButtonStyle, TextButtonStyle textButtonStyle, LabelStyle labelStyle) {
             this.mainButtonStyle = textButtonStyle;
             this.rightButtonStyle = imageButtonStyle;

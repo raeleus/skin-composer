@@ -104,12 +104,6 @@ public class RootTable extends Table {
     private SelectBox styleSelectBox;
     private Array<StyleProperty> styleProperties;
     private Array<CustomProperty> customProperties;
-    private final BrowseFieldStyle bfColorStyle;
-    private final BrowseFieldStyle bfDrawableStyle;
-    private final BrowseFieldStyle bfFontStyle;
-    private final BrowseFieldStyle bfColorStyleR;
-    private final BrowseFieldStyle bfDrawableStyleR;
-    private final BrowseFieldStyle bfFontStyleR;
     private final SpinnerStyle spinnerStyle;
     private Table stylePropertiesTable;
     private Table previewPropertiesTable;
@@ -182,13 +176,6 @@ public class RootTable extends Table {
         menuListStyle.disabledLabelStyle = getSkin().get("disabled", LabelStyle.class);
 
         menuButtonStyle.menuListStyle = menuListStyle;
-
-        bfColorStyle = new BrowseFieldStyle(getSkin().get("color", ImageButtonStyle.class), getSkin().get("browse-field", TextButtonStyle.class), getSkin().get(LabelStyle.class));
-        bfDrawableStyle = new BrowseFieldStyle(getSkin().get("drawable", ImageButtonStyle.class), getSkin().get("browse-field", TextButtonStyle.class), getSkin().get(LabelStyle.class));
-        bfFontStyle = new BrowseFieldStyle(getSkin().get("font", ImageButtonStyle.class), getSkin().get("browse-field", TextButtonStyle.class), getSkin().get(LabelStyle.class));
-        bfColorStyleR = new BrowseFieldStyle(getSkin().get("color", ImageButtonStyle.class), getSkin().get("browse-field", TextButtonStyle.class), getSkin().get("required", LabelStyle.class));
-        bfDrawableStyleR = new BrowseFieldStyle(getSkin().get("drawable", ImageButtonStyle.class), getSkin().get("browse-field", TextButtonStyle.class), getSkin().get("required", LabelStyle.class));
-        bfFontStyleR = new BrowseFieldStyle(getSkin().get("font", ImageButtonStyle.class), getSkin().get("browse-field", TextButtonStyle.class), getSkin().get("required", LabelStyle.class));
         
         getSkin().add("default", menuButtonStyle);
         getSkin().add("default", menuListStyle);
@@ -703,9 +690,9 @@ public class RootTable extends Table {
                 if (styleProperty.type == Color.class) {
                     BrowseField browseField;
                     if (styleProperty.optional) {
-                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfColorStyle);
+                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, getSkin(), "color");
                     } else {
-                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfColorStyleR);
+                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, getSkin(), "color-required");
                     }
                     browseField.addListener(main.getHandListener());
                     table.add(browseField).padTop(20.0f);
@@ -714,9 +701,9 @@ public class RootTable extends Table {
                 } else if (styleProperty.type == BitmapFont.class) {
                     BrowseField browseField;
                     if (styleProperty.optional) {
-                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfFontStyle);
+                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, getSkin(), "fpmt");
                     } else {
-                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfFontStyleR);
+                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, getSkin(), "font-required");
                     }
                     browseField.addListener(main.getHandListener());
                     table.add(browseField).padTop(20.0f);
@@ -725,9 +712,9 @@ public class RootTable extends Table {
                 } else if (styleProperty.type == Drawable.class) {
                     BrowseField browseField;
                     if (styleProperty.optional) {
-                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfDrawableStyle);
+                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, getSkin(), "drawable");
                     } else {
-                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, bfDrawableStyleR);
+                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, getSkin(), "drawable-required");
                     }
                     browseField.addListener(main.getHandListener());
                     table.add(browseField).padTop(20.0f);
@@ -851,19 +838,19 @@ public class RootTable extends Table {
         } else if (customProperties != null) {
             for (CustomProperty styleProperty : customProperties) {
                 if (styleProperty.getType() == PropertyType.COLOR) {
-                    BrowseField browseField = new BrowseField((String) styleProperty.getValue(), styleProperty.getName(), bfColorStyle);
+                    BrowseField browseField = new BrowseField((String) styleProperty.getValue(), styleProperty.getName(), getSkin(), "color");
                     browseField.addListener(main.getHandListener());
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new CustomPropertyChangeListener(styleProperty, browseField));
                 } else if (styleProperty.getType() == PropertyType.FONT) {
-                    BrowseField browseField = new BrowseField((String) styleProperty.getValue(), styleProperty.getName(), bfFontStyle);
+                    BrowseField browseField = new BrowseField((String) styleProperty.getValue(), styleProperty.getName(), getSkin(), "font");
                     browseField.addListener(main.getHandListener());
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new CustomPropertyChangeListener(styleProperty, browseField));
                 } else if (styleProperty.getType() == PropertyType.DRAWABLE) {
-                    BrowseField browseField = new BrowseField((String) styleProperty.getValue(), styleProperty.getName(), bfDrawableStyle);
+                    BrowseField browseField = new BrowseField((String) styleProperty.getValue(), styleProperty.getName(), getSkin(), "drawable");
                     browseField.addListener(main.getHandListener());
                     table.add(browseField).padTop(20.0f);
 
@@ -1076,7 +1063,7 @@ public class RootTable extends Table {
 
             if (classSelectBox.getSelectedIndex() >= 0 && classSelectBox.getSelectedIndex() < Main.BASIC_CLASSES.length) {
                 t.add(new Label("Stage Color: ", getSkin()));
-                BrowseField browseField = new BrowseField(null, null, bfColorStyle);
+                BrowseField browseField = new BrowseField(null, null, getSkin(), "color");
                 browseField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1942,7 +1929,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Sample Text Color: ", getSkin()));
-                    BrowseField textColorField = new BrowseField(null, null, bfColorStyle);
+                    BrowseField textColorField = new BrowseField(null, null, getSkin(), "color");
                     textColorField.addListener(main.getHandListener());
                     t.add(textColorField).growX();
 
