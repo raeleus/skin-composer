@@ -50,6 +50,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Sort;
 import com.ray3k.skincomposer.FilesDroppedListener;
@@ -80,9 +82,29 @@ public class DialogFonts extends Dialog {
     private FilesDroppedListener filesDroppedListener;
     private ScrollPane scrollPane;
     private Main main;
+    private int maxTextureWidth;
+    private int maxTextureHeight;
 
     public void initialize(Main main, EventListener listener) {
         this.main = main;
+        
+        maxTextureWidth = 1024;
+        maxTextureHeight = 1024;
+        
+        //extract max texture dimensions from defaults.json
+        FileHandle defaultsFile = Gdx.files.internal("defaults.json");
+        if (defaultsFile.exists()) {
+            JsonReader reader = new JsonReader();
+            JsonValue val = reader.parse(defaultsFile);
+
+            for (JsonValue child : val.iterator()) {
+                if (child.name.equals("maxWidth") && child.isNumber()) {
+                    maxTextureWidth = child.asInt();
+                } else if (child.name.equals("maxHeight") && child.isNumber()) {
+                    maxTextureHeight = child.asInt();
+                }
+            }
+        }
         
         this.listener = listener;
         
@@ -764,8 +786,7 @@ public class DialogFonts extends Dialog {
                 
                 textField.setFocusTraversal(false);
                 
-                //todo:fix this so that values are pulled from the default.json file for max width and height
-                if (!Utils.doesImageFitBox(new FileHandle(bitmapFontData.imagePaths[0]), 1024, 1024)) {
+                if (!Utils.doesImageFitBox(new FileHandle(bitmapFontData.imagePaths[0]), maxTextureWidth, maxTextureHeight)) {
                     showAddFontSizeError(fileHandle.nameWithoutExtension());
                 } else {
                     nameDialog.show(getStage());
@@ -791,11 +812,10 @@ public class DialogFonts extends Dialog {
         dialog.getContentTable().add(label);
         
         dialog.getContentTable().row();
-        //todo:fix this so that values are pulled from the default.json file for max width and height
         dialog.text("Unable to add font \"" + name +
                 "\". Ensure image dimensions\nare less than max texture dimensions (" +
-                1024 + "x" + 
-                1024 + ").\nSee project settings.");
+                maxTextureWidth + "x" + 
+                maxTextureHeight + ").\nSee project settings.");
         dialog.button("Ok");
         dialog.show(getStage());
     }
