@@ -5,15 +5,14 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 7
+* Version 8
 
 ### Changes ###
 
-* Switched to TinyFileDialogs for all file dialogs across all platforms.
-* Updated user interface to Skin Composer UI.
-* Recent files menu option.
-* Refactored all of the interface code to allow for new features.
-* Multiple bug fixes and improvements.
+*Added "Custom Class" option to include styles for classes not part of Scene2D.ui. Press the "plus" button next to the class select box.
+*Defaults for exported texture atlasses are now editable via a defaults.json file. See "Project >> Settings >> Open texture packer settings file".
+*Imported resources (Drawables and Fonts) can be kept relative to the save file. See "Project >> Settings >> Keep resources relative?".
+*Fixed errors with default paths for drawables and fonts.
 
 ### Contact ###
 

@@ -71,7 +71,7 @@ import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "7";
+    public final static String VERSION = "8";
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,
         ProgressBar.class, ScrollPane.class, SelectBox.class, Slider.class,
