@@ -277,7 +277,6 @@ public class ProjectData implements Json.Serializable {
     }
     
     private void correctFilePaths() {
-         //todo: verify drawable and font files. If it doesn't exist, check local folder and change paths as nec
         FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
         
         if (targetFolder.exists()) {

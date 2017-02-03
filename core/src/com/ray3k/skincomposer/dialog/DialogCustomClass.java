@@ -38,6 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.CustomClass;
+import com.ray3k.skincomposer.data.DrawableData;
 
 public class DialogCustomClass extends Dialog {
     private boolean customNameEntered;
@@ -174,8 +175,7 @@ public class DialogCustomClass extends Dialog {
     }
     
     private void updateOkButton() {
-        //todo:use a regex string on displayfield to prevent numbers etc. like other dialogs
-        if (classField.getText().matches("^.*[^\\.]$") && !displayField.getText().equals("")) {
+        if (classField.getText().matches("^.*[^\\.]$") && DrawableData.validate(displayField.getText())) {
             boolean buttonDisabled = false;
             
             if (!allowSameName || !classField.getText().equals(originalFullyQualifiedName) || !displayField.getText().equals(originalDisplayName)) {

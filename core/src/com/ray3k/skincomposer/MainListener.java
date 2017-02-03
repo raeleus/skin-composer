@@ -160,7 +160,6 @@ public class MainListener extends RootTableListener {
                     @Override
                     public void newClassEntered(String fullyQualifiedName,
                             String displayName) {
-                        //todo: ensure users can't input the same display name or fully qualified name in the dialogs!
                         main.getUndoableManager().addUndoable(new UndoableManager.RenameCustomClassUndoable(main, displayName, fullyQualifiedName), true);
                     }
 
