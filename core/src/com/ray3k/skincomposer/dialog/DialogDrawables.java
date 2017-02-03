@@ -943,6 +943,10 @@ public class DialogDrawables extends Dialog {
                     Gdx.app.error(getClass().getName(), "Critical failure, could not roll back changes to drawables");
                 }
             } else {
+                if (main.getProjectData().areResourcesRelative()) {
+                    main.getProjectData().makeResourcesRelative();
+                }
+                
                 main.getProjectData().setChangesSaved(false);
             }
 

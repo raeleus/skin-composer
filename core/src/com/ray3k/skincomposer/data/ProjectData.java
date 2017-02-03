@@ -233,6 +233,10 @@ public class ProjectData implements Json.Serializable {
         }
     }
     
+    public void makeResourcesRelative() {
+        makeResourcesRelative(saveFile);
+    }
+    
     public void save(FileHandle file) {
         moveImportedFiles(saveFile, file);
         

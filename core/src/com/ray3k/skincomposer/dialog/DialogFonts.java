@@ -54,7 +54,6 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Sort;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.Main;
-import com.ray3k.skincomposer.UndoableManager;
 import com.ray3k.skincomposer.UndoableManager.CustomFontUndoable;
 import com.ray3k.skincomposer.UndoableManager.FontUndoable;
 import com.ray3k.skincomposer.data.ColorData;
@@ -776,6 +775,11 @@ public class DialogFonts extends Dialog {
             } catch (Exception e) {
                 Gdx.app.error(getClass().getName(), "Error creating preview font from file", e);
                 main.getDialogFactory().showDialogError("Preview Error...", "Error creating preview font from file. Check file paths.\n\nOpen log?");
+            }
+        } else {
+            //after all fonts are processed
+            if (main.getProjectData().areResourcesRelative()) {
+                main.getProjectData().makeResourcesRelative();
             }
         }
     }
