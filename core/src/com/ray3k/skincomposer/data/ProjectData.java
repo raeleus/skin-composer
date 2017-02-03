@@ -264,9 +264,37 @@ public class ProjectData implements Json.Serializable {
         putRecentFile(file.path());
         setLastOpenSavePath(file.parent().path() + "/");
         atlasData.atlasCurrent = false;
+        
+        correctFilePaths();
+        
         main.getRootTable().produceAtlas();
         main.getRootTable().populate();
         setChangesSaved(true);
+    }
+    
+    private void correctFilePaths() {
+         //todo: verify drawable and font files. If it doesn't exist, check local folder and change paths as nec
+        FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
+        
+        if (targetFolder.exists()) {
+            for (DrawableData drawableData : atlasData.getDrawables()) {
+                if (!drawableData.file.exists()) {
+                    FileHandle newFile = targetFolder.child(drawableData.file.name());
+                    if (newFile.exists()) {
+                        drawableData.file = newFile;
+                    }
+                }
+            }
+            
+            for (FontData fontData : jsonData.getFonts()) {
+                if (!fontData.file.exists()) {
+                    FileHandle newFile = targetFolder.child(fontData.file.name());
+                    if (newFile.exists()) {
+                        fontData.file = newFile;
+                    }
+                }
+            }
+        }
     }
     
     public void load() {
