@@ -123,7 +123,7 @@ public class Main extends ApplicationAdapter {
         projectData.randomizeId();
         projectData.setMaxUndos(30);
         
-        dialogFactory = new DialogFactory(skin, stage, projectData.getJsonData(), projectData, projectData.getAtlasData(), this);
+        dialogFactory = new DialogFactory(this);
         undoableManager = new UndoableManager(this);
         
         desktopWorker.attachLogListener();

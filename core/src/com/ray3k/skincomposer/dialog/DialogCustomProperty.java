@@ -41,17 +41,23 @@ import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.CustomStyle;
 
 public class DialogCustomProperty extends Dialog {
+    private boolean allowSameName;
+    private String oldName;
     private final TextField nameField;
     private final TextButton okButton;
     private final SelectBox<PropertyType> propertyTypeBox;
     private Main main;
     
     public DialogCustomProperty(Main main, String title) {
-        this(main, title, null, PropertyType.NONE);
+        this(main, title, null, PropertyType.NONE, false);
     }
     
-    public DialogCustomProperty(Main main, String title, String propertyName, PropertyType propertyType) {
+    public DialogCustomProperty(Main main, String title, String propertyName, PropertyType propertyType, boolean allowSameName) {
         super(title, main.getSkin(), "bg");
+        
+        this.allowSameName = allowSameName;
+        oldName = propertyName;
+        
         getTitleLabel().setAlignment(Align.center);
         
         this.main = main;
@@ -90,7 +96,7 @@ public class DialogCustomProperty extends Dialog {
         button("Cancel", false).key(Keys.ESCAPE, false);
         
         okButton = (TextButton) getButtonTable().getCells().first().getActor();
-        okButton.setDisabled(true);
+        updateOkButton();
         
         getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         
@@ -122,9 +128,16 @@ public class DialogCustomProperty extends Dialog {
         if (validate(nameField.getText())) {
             boolean unique = true;
             for (CustomProperty customProperty : ((CustomStyle)main.getRootTable().getStyleSelectBox().getSelected()).getProperties()) {
-                if (customProperty.getName().equals(nameField.getText())) {
-                    unique = false;
-                    break;
+                if (!allowSameName) {
+                    if (customProperty.getName().equals(nameField.getText())) {
+                        unique = false;
+                        break;
+                    }
+                } else {
+                    if (customProperty.getName().equals(nameField.getText()) && !customProperty.getName().equals(oldName)) {
+                        unique = false;
+                        break;
+                    }
                 }
             }
             

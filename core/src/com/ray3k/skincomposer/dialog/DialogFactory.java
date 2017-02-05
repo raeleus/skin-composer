@@ -44,13 +44,10 @@ import com.ray3k.skincomposer.UndoableManager;
 import com.ray3k.skincomposer.UndoableManager.DeleteStyleUndoable;
 import com.ray3k.skincomposer.UndoableManager.DuplicateStyleUndoable;
 import com.ray3k.skincomposer.UndoableManager.NewStyleUndoable;
-import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.CustomClass;
 import com.ray3k.skincomposer.data.CustomProperty;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.CustomStyle;
-import com.ray3k.skincomposer.data.JsonData;
-import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.ProjectData.RecentFile;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
@@ -60,45 +57,33 @@ import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyLis
 import com.ray3k.skincomposer.dialog.DialogCustomStyle.CustomStyleListener;
 
 public class DialogFactory {
-
     private static DialogFactory instance;
-    private final Skin skin;
-    private final Stage stage;
     private boolean showingCloseDialog;
-    private JsonData jsonData;
-    private ProjectData projectData;
-    private AtlasData atlasData;
-    private Main main;
+    private final Main main;
 
-    public DialogFactory(Skin skin, Stage stage, JsonData jsonData,
-            ProjectData projectData, AtlasData atlasData, Main main) {
+    public DialogFactory(Main main) {
         instance = this;
-        this.skin = skin;
-        this.stage = stage;
-        this.jsonData = jsonData;
-        this.projectData = projectData;
-        this.atlasData = atlasData;
         showingCloseDialog = false;
         this.main = main;
     }
 
     public void showAbout() {
-        DialogAbout dialog = new DialogAbout(main, skin, "dialog");
-        dialog.show(stage);
+        DialogAbout dialog = new DialogAbout(main, main.getSkin(), "dialog");
+        dialog.show(main.getStage());
     }
 
     public void showDialogColors(StyleProperty styleProperty,
             DialogColors.DialogColorsListener listener) {
         DialogColors dialog = new DialogColors(main, styleProperty, listener);
         dialog.setFillParent(true);
-        dialog.show(stage);
+        dialog.show(main.getStage());
         dialog.refreshTable();
     }
 
     public void showDialogColors(CustomProperty styleProperty, DialogColorsListener listener) {
         DialogColors dialog = new DialogColors(main, styleProperty, listener);
         dialog.setFillParent(true);
-        dialog.show(stage);
+        dialog.show(main.getStage());
         dialog.refreshTable();
     }
     
@@ -118,14 +103,14 @@ public class DialogFactory {
             EventListener listener) {
         DialogDrawables dialog = new DialogDrawables(main, property, listener);
         dialog.setFillParent(true);
-        dialog.show(stage);
+        dialog.show(main.getStage());
     }
     
     public void showDialogDrawables(CustomProperty property,
             EventListener listener) {
         DialogDrawables dialog = new DialogDrawables(main, property, listener);
         dialog.setFillParent(true);
-        dialog.show(stage);
+        dialog.show(main.getStage());
     }
 
     public void showDialogDrawables(StyleProperty property) {
@@ -143,7 +128,7 @@ public class DialogFactory {
     public void showDialogFonts(StyleProperty styleProperty, EventListener listener) {
         DialogFonts dialog = new DialogFonts(main, styleProperty, listener);
         dialog.setFillParent(true);
-        dialog.show(stage);
+        dialog.show(main.getStage());
         dialog.refreshTable();
     }
 
@@ -154,7 +139,7 @@ public class DialogFactory {
     public void showDialogFonts(CustomProperty customProperty, EventListener listener) {
         DialogFonts dialog = new DialogFonts(main, customProperty, listener);
         dialog.setFillParent(true);
-        dialog.show(stage);
+        dialog.show(main.getStage());
         dialog.refreshTable();
     }
     
@@ -168,7 +153,7 @@ public class DialogFactory {
 
     public void showSettings() {
         DialogSettings dialog = new DialogSettings("", "dialog", main);
-        dialog.show(stage);
+        dialog.show(main.getStage());
     }
 
     public void showDialogColorPicker(DialogColorPicker.ColorListener listener) {
@@ -178,7 +163,7 @@ public class DialogFactory {
     public void showDialogColorPicker(Color previousColor,
             DialogColorPicker.ColorListener listener) {
         DialogColorPicker dialog = new DialogColorPicker(main, "dialog", listener, previousColor);
-        dialog.show(stage);
+        dialog.show(main.getStage());
     }
 
     public void showNewStyleDialog(Skin skin, Stage stage) {
@@ -404,17 +389,17 @@ public class DialogFactory {
     }
 
     public void showCloseDialog() {
-        if (projectData.areChangesSaved() || projectData.isNewProject()) {
+        if (main.getProjectData().areChangesSaved() || main.getProjectData().isNewProject()) {
             Gdx.app.exit();
         } else {
             if (!showingCloseDialog) {
                 showingCloseDialog = true;
-                Dialog dialog = new Dialog("Save Changes?", skin, "bg") {
+                Dialog dialog = new Dialog("Save Changes?", main.getSkin(), "bg") {
                     @Override
                     protected void result(Object object) {
                         if ((int) object == 0) {
                             main.getMainListener().saveFile(() -> {
-                                if (projectData.areChangesSaved()) {
+                                if (main.getProjectData().areChangesSaved()) {
                                     Gdx.app.exit();
                                 }
                             });
@@ -426,7 +411,7 @@ public class DialogFactory {
                     }
                 };
                 dialog.getTitleTable().getCells().first().padLeft(5.0f);
-                Label label = new Label("Do you want to save\nyour changes before you quit?", skin);
+                Label label = new Label("Do you want to save\nyour changes before you quit?", main.getSkin());
                 label.setAlignment(Align.center);
                 dialog.text(label);
                 dialog.getContentTable().getCells().first().pad(10.0f);
@@ -436,26 +421,26 @@ public class DialogFactory {
                 dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
                 dialog.getButtonTable().getCells().get(2).getActor().addListener(main.getHandListener());
                 java.awt.Toolkit.getDefaultToolkit().beep();
-                dialog.show(stage);
+                dialog.show(main.getStage());
             }
         }
     }
 
     public void showDialogLoading(Runnable runnable) {
         DialogLoading dialog = new DialogLoading("", runnable, main);
-        dialog.show(stage);
+        dialog.show(main.getStage());
     }
 
     public void yesNoDialog(String title, String text,
             ConfirmationListener listener) {
-        Dialog dialog = new Dialog(title, skin, "bg") {
+        Dialog dialog = new Dialog(title, main.getSkin(), "bg") {
             @Override
             protected void result(Object object) {
                 listener.selected((int) object);
             }
         };
         dialog.getTitleTable().getCells().first().padLeft(5.0f);
-        Label label = new Label(text, skin);
+        Label label = new Label(text, main.getSkin());
         label.setAlignment(Align.center);
         dialog.text(label);
         dialog.getContentTable().getCells().first().pad(10.0f);
@@ -465,19 +450,19 @@ public class DialogFactory {
         dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
         dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         dialog.key(Input.Keys.ESCAPE, 1);
-        dialog.show(stage);
+        dialog.show(main.getStage());
     }
 
     public void yesNoCancelDialog(String title, String text,
             ConfirmationListener listener) {
-        Dialog dialog = new Dialog(title, skin, "bg") {
+        Dialog dialog = new Dialog(title, main.getSkin(), "bg") {
             @Override
             protected void result(Object object) {
                 listener.selected((int) object);
             }
         };
         dialog.getTitleTable().getCells().first().padLeft(5.0f);
-        Label label = new Label(text, skin);
+        Label label = new Label(text, main.getSkin());
         label.setAlignment(Align.center);
         dialog.text(label);
         dialog.getContentTable().getCells().first().pad(10.0f);
@@ -489,11 +474,11 @@ public class DialogFactory {
         dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         dialog.getButtonTable().getCells().get(2).getActor().addListener(main.getHandListener());
         dialog.key(Input.Keys.ESCAPE, 2);
-        dialog.show(stage);
+        dialog.show(main.getStage());
     }
 
     public void showDialogError(String title, String message, Runnable runnable) {
-        Dialog dialog = new Dialog(title, skin, "bg") {
+        Dialog dialog = new Dialog(title, main.getSkin(), "bg") {
             @Override
             public boolean remove() {
                 if (runnable != null) {
@@ -507,7 +492,7 @@ public class DialogFactory {
         dialog.text(message);
         dialog.button("OK");
         dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
-        dialog.show(stage);
+        dialog.show(main.getStage());
     }
 
     public void showDialogError(String title, String message) {
@@ -527,8 +512,8 @@ public class DialogFactory {
     }
 
     public void recentFiles() {
-        SelectBox<RecentFile> selectBox = new SelectBox(skin);
-        Dialog dialog = new Dialog("Recent Files...", skin, "bg") {
+        SelectBox<RecentFile> selectBox = new SelectBox(main.getSkin());
+        Dialog dialog = new Dialog("Recent Files...", main.getSkin(), "bg") {
             @Override
             protected void result(Object object) {
                 super.result(object);
@@ -536,14 +521,14 @@ public class DialogFactory {
                     if (selectBox.getSelected() != null) {
                         FileHandle file = selectBox.getSelected().getFileHandle();
                         if (file.exists()) {
-                            projectData.load(file);
+                            main.getProjectData().load(file);
                         }
                     }
                 }
             }
         };
         dialog.getTitleTable().getCells().first().padLeft(5.0f);
-        selectBox.setItems(projectData.getRecentFiles());
+        selectBox.setItems(main.getProjectData().getRecentFiles());
         selectBox.addListener(main.getHandListener());
         selectBox.getList().addListener(main.getHandListener());
 
@@ -556,13 +541,13 @@ public class DialogFactory {
         dialog.button("Cancel", false).key(Input.Keys.ESCAPE, false);
         dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
         dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
-        dialog.show(stage);
+        dialog.show(main.getStage());
     }
 
     public void showNewClassDialog(CustomClassListener listener) {
         DialogCustomClass dialog = new DialogCustomClass(main, "New Custom Class", false);
         dialog.addListener(listener);
-        dialog.show(stage);
+        dialog.show(main.getStage());
     }
     
     public void showRenameClassDialog(CustomClassListener listener) {
@@ -572,7 +557,7 @@ public class DialogFactory {
                     ((CustomClass) selected).getFullyQualifiedName(), 
                     ((CustomClass) selected).getDisplayName());
             dialog.addListener(listener);
-            dialog.show(stage);
+            dialog.show(main.getStage());
         }
     }
     
@@ -583,7 +568,7 @@ public class DialogFactory {
                     ((CustomClass) selected).getFullyQualifiedName(), 
                     ((CustomClass) selected).getDisplayName());
             dialog.addListener(listener);
-            dialog.show(stage);
+            dialog.show(main.getStage());
         }
         
     }
@@ -591,7 +576,7 @@ public class DialogFactory {
     public void showNewCustomStyleDialog(CustomStyleListener listener) {
         DialogCustomStyle dialog = new DialogCustomStyle(main, "New Style", false);
         dialog.addListener(listener);
-        dialog.show(stage);
+        dialog.show(main.getStage());
     }
     
     public void showDuplicateCustomStyleDialog(CustomStyleListener listener) {
@@ -600,7 +585,7 @@ public class DialogFactory {
             DialogCustomStyle dialog = new DialogCustomStyle(main, "Duplicate Style", false,
                     ((CustomStyle) selected).getName());
             dialog.addListener(listener);
-            dialog.show(stage);
+            dialog.show(main.getStage());
         }
     }
     
@@ -610,25 +595,25 @@ public class DialogFactory {
             DialogCustomStyle dialog = new DialogCustomStyle(main, "Rename Style", false,
                     ((CustomStyle) selected).getName());
             dialog.addListener(listener);
-            dialog.show(stage);
+            dialog.show(main.getStage());
         }
     }
     
     public void showNewStylePropertyDialog(CustomStylePropertyListener listener) {
         DialogCustomProperty dialog = new DialogCustomProperty(main, "New Custom Property");
         dialog.addListener(listener);
-        dialog.show(stage);
+        dialog.show(main.getStage());
     }
     
     public void showRenameStylePropertyDialog(String propertyName, PropertyType propertyType, CustomStylePropertyListener listener) {
-        DialogCustomProperty dialog = new DialogCustomProperty(main, "Rename Custom Property", propertyName, propertyType);
+        DialogCustomProperty dialog = new DialogCustomProperty(main, "Rename Custom Property", propertyName, propertyType, true);
         dialog.addListener(listener);
-        dialog.show(stage);
+        dialog.show(main.getStage());
     }
     
     public void showDuplicateStylePropertyDialog(String propertyName, PropertyType propertyType, CustomStylePropertyListener listener) {
-        DialogCustomProperty dialog = new DialogCustomProperty(main, "Duplicate Custom Property", propertyName, propertyType);
+        DialogCustomProperty dialog = new DialogCustomProperty(main, "Duplicate Custom Property", propertyName, propertyType, false);
         dialog.addListener(listener);
-        dialog.show(stage);
+        dialog.show(main.getStage());
     }
 }
