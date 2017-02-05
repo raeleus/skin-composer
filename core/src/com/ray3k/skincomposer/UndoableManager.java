@@ -872,6 +872,7 @@ public class UndoableManager {
             
             customProperty = new CustomProperty(propertyName, propertyType);
             customClass = (CustomClass) main.getRootTable().getClassSelectBox().getSelected();
+            customProperty.setParentStyle(customClass.getTemplateStyle());
         }
         
         
@@ -897,7 +898,9 @@ public class UndoableManager {
             customClass.getTemplateStyle().getProperties().add(customProperty);
 
             for (CustomStyle style : customClass.getStyles()) {
-                style.getProperties().add(customProperty.copy());
+                CustomProperty property = customProperty.copy();
+                property.setParentStyle(style);
+                style.getProperties().add(property);
             }
             main.getRootTable().refreshStyleProperties(true);
         }
@@ -983,37 +986,36 @@ public class UndoableManager {
         
         @Override
         public void undo() {
-            for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
+            Array<CustomStyle> styles = new Array<>(customClass.getStyles());
+            styles.add(customProperty.getParentStyle().getParentClass().getTemplateStyle());
+            for (com.ray3k.skincomposer.data.CustomStyle style : styles) {
                 //rename the property in every style in this class.
                 for (CustomProperty property : style.getProperties()) {
-                    if (property.getName().equals(customProperty.getName())) {
+                    if (property.getName().equals(newName)) {
                         property.setName(oldName);
                         property.setType(oldType);
                     }
                 }
             }
-
-            //rename the template style
-            customProperty.setName(oldName);
-            customProperty.setType(oldType);
+            
             main.getRootTable().refreshStyleProperties(true);
         }
 
         @Override
         public void redo() {
-            for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
+            Array<CustomStyle> styles = new Array<>(customClass.getStyles());
+            
+            styles.add(customProperty.getParentStyle().getParentClass().getTemplateStyle());
+            for (com.ray3k.skincomposer.data.CustomStyle style : styles) {
                 //rename the property in every style in this class.
                 for (CustomProperty property : style.getProperties()) {
-                    if (property.getName().equals(customProperty.getName())) {
+                    if (property.getName().equals(oldName)) {
                         property.setName(newName);
                         property.setType(newType);
                     }
                 }
             }
 
-            //rename the template style
-            customProperty.setName(newName);
-            customProperty.setType(newType);
             main.getRootTable().refreshStyleProperties(true);
         }
 
