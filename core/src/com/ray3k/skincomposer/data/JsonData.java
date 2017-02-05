@@ -338,7 +338,40 @@ public class JsonData implements Json.Serializable {
             for (CustomStyle customStyle : customClass.getStyles()) {
                 json.writeObjectStart(customStyle.getName());
                 for (CustomProperty customProperty : customStyle.getProperties()) {
-                    json.writeValue(customProperty.getName(), customProperty.getValue());
+                    //only write value if it is valid
+                    boolean writeValue = false;
+                    if (customProperty.getValue() instanceof Double && customProperty.getType() == PropertyType.NUMBER
+                            || customProperty.getValue() instanceof Boolean && customProperty.getType() == PropertyType.BOOL) {
+                        writeValue = true;
+                    } else if (customProperty.getValue() instanceof String) {
+                        if (customProperty.getType() == PropertyType.TEXT) {
+                            writeValue = true;
+                        } else if (customProperty.getType() == PropertyType.COLOR) {
+                            for (ColorData data : getColors()) {
+                                if (data.getName().equals(customProperty.getValue())) {
+                                    writeValue = true;
+                                    break;
+                                }
+                            }
+                        } else if (customProperty.getType() == PropertyType.DRAWABLE) {
+                            for (DrawableData data : main.getAtlasData().getDrawables()) {
+                                if (data.name.equals(customProperty.getValue())) {
+                                    writeValue = true;
+                                    break;
+                                }
+                            }
+                        } else if (customProperty.getType() == PropertyType.FONT) {
+                            for (FontData data : getFonts()) {
+                                if (data.getName().equals(customProperty.getValue())) {
+                                    writeValue = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (writeValue) {
+                        json.writeValue(customProperty.getName(), customProperty.getValue());
+                    }
                 }
                 json.writeObjectEnd();
             }
@@ -420,6 +453,9 @@ public class JsonData implements Json.Serializable {
                 }
             }
             customClasses = json.readValue("customClasses", Array.class, CustomClass.class, new Array<>(), jsonData);
+            for (CustomClass customClass : customClasses) {
+                customClass.setMain(main);
+            }
         } catch (ReflectionException e) {
             Gdx.app.log(getClass().getName(), "Error parsing json data during file read", e);
             main.getDialogFactory().showDialogError("Error while reading file...", "Error while attempting to read save file.\nPlease ensure that file is not corrupted.\n\nOpen error log?");

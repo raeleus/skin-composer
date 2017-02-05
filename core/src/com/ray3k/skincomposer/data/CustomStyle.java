@@ -26,12 +26,14 @@ package com.ray3k.skincomposer.data;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.ray3k.skincomposer.Main;
 
 public class CustomStyle implements Json.Serializable {
     private String name;
     private Array<CustomProperty> properties;
     private CustomClass parentClass;
     private boolean deletable;
+    private Main main;
 
     public CustomStyle() {
         
@@ -69,6 +71,17 @@ public class CustomStyle implements Json.Serializable {
 
     public void setDeletable(boolean deletable) {
         this.deletable = deletable;
+    }
+
+    public Main getMain() {
+        return main;
+    }
+
+    public void setMain(Main main) {
+        this.main = main;
+        for (CustomProperty property : properties) {
+            property.setMain(main);
+        }
     }
     
     @Override

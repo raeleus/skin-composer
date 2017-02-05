@@ -25,12 +25,15 @@ package com.ray3k.skincomposer.data;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.ray3k.skincomposer.Main;
 
 public class CustomProperty implements Json.Serializable {
     private String name;
     private Object value;
     private CustomStyle parentStyle;
     private PropertyType type;
+    private Main main;
+    
     public static enum PropertyType {
         NONE("None"), NUMBER("Number"), TEXT("Text"), DRAWABLE("Drawable"), FONT("Font"), COLOR("Color"), BOOL("Boolean");
 
@@ -98,6 +101,14 @@ public class CustomProperty implements Json.Serializable {
         this.type = type;
     }
 
+    public Main getMain() {
+        return main;
+    }
+
+    public void setMain(Main main) {
+        this.main = main;
+    }
+
     @Override
     public String toString() {
         return name;
@@ -114,7 +125,44 @@ public class CustomProperty implements Json.Serializable {
     public void write(Json json) {
         json.writeValue("name", name);
         json.writeValue("type", type);
-        json.writeValue("value", value);
+        
+        //only write value if it is valid
+        boolean writeValue = false;
+        if (value instanceof Double && type == PropertyType.NUMBER
+                || value instanceof Boolean && type == PropertyType.BOOL) {
+            writeValue = true;
+        } else if (value instanceof String) {
+            if (type == PropertyType.TEXT) {
+                writeValue = true;
+            } else if (type == PropertyType.COLOR) {
+                for (ColorData data : main.getJsonData().getColors()) {
+                    if (data.getName().equals(value)) {
+                        writeValue = true;
+                        break;
+                    }
+                }
+            } else if (type == PropertyType.DRAWABLE) {
+                for (DrawableData data : main.getAtlasData().getDrawables()) {
+                    if (data.name.equals(value)) {
+                        writeValue = true;
+                        break;
+                    }
+                }
+            } else if (type == PropertyType.FONT) {
+                for (FontData data : main.getJsonData().getFonts()) {
+                    if (data.getName().equals(value)) {
+                        writeValue = true;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        if (writeValue) {
+            json.writeValue("value", value);
+        } else {
+            json.writeValue("value", (Object) null);
+        }
     }
 
     @Override

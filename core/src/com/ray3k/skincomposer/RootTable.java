@@ -837,19 +837,46 @@ public class RootTable extends Table {
         } else if (customProperties != null) {
             for (CustomProperty styleProperty : customProperties) {
                 if (styleProperty.getType() == PropertyType.COLOR) {
-                    BrowseField browseField = new BrowseField((String) styleProperty.getValue(), styleProperty.getName(), getSkin(), "color");
+                    String value = "";
+                    if (styleProperty.getValue() instanceof String) {
+                        for (ColorData color : main.getJsonData().getColors()) {
+                            if (color.getName().equals(styleProperty.getValue())) {
+                                value = (String) styleProperty.getValue();
+                                break;
+                            }
+                        }
+                    }
+                    BrowseField browseField = new BrowseField(value, styleProperty.getName(), getSkin(), "color");
                     browseField.addListener(main.getHandListener());
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new CustomPropertyChangeListener(styleProperty, browseField));
                 } else if (styleProperty.getType() == PropertyType.FONT) {
-                    BrowseField browseField = new BrowseField((String) styleProperty.getValue(), styleProperty.getName(), getSkin(), "font");
+                    String value = "";
+                    if (styleProperty.getValue() instanceof String) {
+                        for (FontData font : main.getJsonData().getFonts()) {
+                            if (font.getName().equals(styleProperty.getValue())) {
+                                value = (String) styleProperty.getValue();
+                                break;
+                            }
+                        }
+                    }
+                    BrowseField browseField = new BrowseField(value, styleProperty.getName(), getSkin(), "font");
                     browseField.addListener(main.getHandListener());
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new CustomPropertyChangeListener(styleProperty, browseField));
                 } else if (styleProperty.getType() == PropertyType.DRAWABLE) {
-                    BrowseField browseField = new BrowseField((String) styleProperty.getValue(), styleProperty.getName(), getSkin(), "drawable");
+                    String value = "";
+                    if (styleProperty.getValue() instanceof String) {
+                        for (DrawableData drawable : main.getAtlasData().getDrawables()) {
+                            if (drawable.name.equals(styleProperty.getValue())) {
+                                value = (String) styleProperty.getValue();
+                                break;
+                            }
+                        }
+                    }
+                    BrowseField browseField = new BrowseField(value, styleProperty.getName(), getSkin(), "drawable");
                     browseField.addListener(main.getHandListener());
                     table.add(browseField).padTop(20.0f);
 
@@ -862,7 +889,11 @@ public class RootTable extends Table {
                     if (styleProperty.getValue() instanceof Float) {
                         styleProperty.setValue((double) (float) styleProperty.getValue());
                     }
-                    Spinner spinner = new Spinner((Double) styleProperty.getValue(), 1.0, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
+                    Double value = 0.0;
+                    if (styleProperty.getValue() instanceof Double) {
+                        value = (Double) styleProperty.getValue();
+                    }
+                    Spinner spinner = new Spinner(value, 1.0, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
                     spinner.getTextField().addListener(main.getIbeamListener());
                     spinner.getButtonMinus().addListener(main.getHandListener());
                     spinner.getButtonPlus().addListener(main.getHandListener());
@@ -874,7 +905,11 @@ public class RootTable extends Table {
                     table.add(label).padTop(20.0f).fill(false).expand(false, false);
                     
                     table.row();
-                    TextField textField = new TextField((String) styleProperty.getValue(), getSkin());
+                    String value = "";
+                    if (styleProperty.getValue() instanceof String) {
+                        value = (String) styleProperty.getValue();
+                    }
+                    TextField textField = new TextField(value, getSkin());
                     textField.setAlignment(Align.center);
                     textField.addListener(main.getIbeamListener());
                     table.add(textField);
@@ -882,6 +917,11 @@ public class RootTable extends Table {
                     textField.addListener(new CustomPropertyChangeListener(styleProperty, textField));
                 } else if (styleProperty.getType() == PropertyType.BOOL) {
                     ImageTextButton checkBox = new ImageTextButton(styleProperty.getName(), getSkin(), "switch");
+                    boolean value = false;
+                    if (styleProperty.getValue() instanceof Boolean) {
+                        value = (boolean) styleProperty.getValue();
+                    }
+                    checkBox.setChecked(value);
                     table.add(checkBox).padTop(20.0f).fill(false).expand(false, false);
                     
                     checkBox.addListener(new CustomPropertyChangeListener(styleProperty, checkBox));

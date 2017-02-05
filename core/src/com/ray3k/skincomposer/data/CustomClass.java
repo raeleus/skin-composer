@@ -26,12 +26,14 @@ package com.ray3k.skincomposer.data;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.ray3k.skincomposer.Main;
 
 public class CustomClass implements Json.Serializable {
     private String fullyQualifiedName;
     private String displayName;
     private Array<CustomStyle> styles;
     private CustomStyle templateStyle;
+    private Main main;
 
     public CustomClass() {
         
@@ -73,6 +75,17 @@ public class CustomClass implements Json.Serializable {
         return templateStyle;
     }
 
+    public Main getMain() {
+        return main;
+    }
+
+    public void setMain(Main main) {
+        this.main = main;
+        for (CustomStyle style : styles) {
+            style.setMain(main);
+        }
+    }
+
     @Override
     public String toString() {
         return displayName;
@@ -95,6 +108,7 @@ public class CustomClass implements Json.Serializable {
             style.setParentClass(this);
         }
         templateStyle = json.readValue("templateStyle", CustomStyle.class, jsonData);
+        templateStyle.setParentClass(this);
     }
     
     public CustomClass copy() {
