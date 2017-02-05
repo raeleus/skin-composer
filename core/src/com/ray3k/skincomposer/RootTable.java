@@ -81,7 +81,6 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
-import com.ray3k.skincomposer.BrowseField.BrowseFieldStyle;
 import com.ray3k.skincomposer.MenuButton.MenuButtonListener;
 import com.ray3k.skincomposer.MenuButton.MenuButtonStyle;
 import com.ray3k.skincomposer.MenuList.MenuListStyle;
@@ -881,6 +880,11 @@ public class RootTable extends Table {
                     table.add(textField);
                     
                     textField.addListener(new CustomPropertyChangeListener(styleProperty, textField));
+                } else if (styleProperty.getType() == PropertyType.BOOL) {
+                    ImageTextButton checkBox = new ImageTextButton(styleProperty.getName(), getSkin(), "switch");
+                    table.add(checkBox).padTop(20.0f).fill(false).expand(false, false);
+                    
+                    checkBox.addListener(new CustomPropertyChangeListener(styleProperty, checkBox));
                 }
                 
                 Button duplicateButton = new Button(getSkin(), "duplicate");
