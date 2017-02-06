@@ -916,15 +916,19 @@ public class RootTable extends Table {
                     
                     textField.addListener(new CustomPropertyChangeListener(styleProperty, textField));
                 } else if (styleProperty.getType() == PropertyType.BOOL) {
-                    ImageTextButton checkBox = new ImageTextButton(styleProperty.getName(), getSkin(), "switch");
+                    label = new Label(styleProperty.getName(), getSkin());
+                    table.add(label).padTop(20.0f).fill(false).expand(false, false);
+                    
+                    table.row();
+                    Button button = new Button(getSkin(), "switch");
                     boolean value = false;
                     if (styleProperty.getValue() instanceof Boolean) {
                         value = (boolean) styleProperty.getValue();
                     }
-                    checkBox.setChecked(value);
-                    table.add(checkBox).padTop(20.0f).fill(false).expand(false, false);
+                    button.setChecked(value);
+                    table.add(button).fill(false);
                     
-                    checkBox.addListener(new CustomPropertyChangeListener(styleProperty, checkBox));
+                    button.addListener(new CustomPropertyChangeListener(styleProperty, button));
                 }
                 
                 Button duplicateButton = new Button(getSkin(), "duplicate");
