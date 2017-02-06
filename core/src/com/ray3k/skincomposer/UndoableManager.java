@@ -167,13 +167,13 @@ public class UndoableManager {
     
     public static class CustomDoubleUndoable implements Undoable {
         private final CustomProperty property;
-        private final double oldValue;
-        private final double newValue;
+        private final Object oldValue;
+        private final Object newValue;
         private final Main main;
 
         public CustomDoubleUndoable(Main main, CustomProperty property, double newValue) {
             this.property = property;
-            oldValue = (double) property.getValue();
+            oldValue = property.getValue();
             this.newValue = newValue;
             this.main = main;
             
@@ -200,13 +200,13 @@ public class UndoableManager {
     
     public static class CustomTextUndoable implements Undoable {
         private final CustomProperty property;
-        private final String oldValue;
-        private final String newValue;
+        private final Object oldValue;
+        private final Object newValue;
         private final Main main;
 
         public CustomTextUndoable(Main main, CustomProperty property, String newValue) {
             this.property = property;
-            oldValue = (String) property.getValue();
+            oldValue = property.getValue();
             this.newValue = newValue;
             this.main = main;
             
@@ -233,13 +233,13 @@ public class UndoableManager {
     
     public static class CustomBoolUndoable implements Undoable {
         private final CustomProperty property;
-        private final boolean oldValue;
-        private final boolean newValue;
+        private final Object oldValue;
+        private final Object newValue;
         private final Main main;
 
         public CustomBoolUndoable(Main main, CustomProperty property, boolean newValue) {
             this.property = property;
-            oldValue = (boolean) property.getValue();
+            oldValue = property.getValue();
             this.newValue = newValue;
             this.main = main;
             
