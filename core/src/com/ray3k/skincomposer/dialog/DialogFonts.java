@@ -534,8 +534,7 @@ public class DialogFonts extends Dialog {
                 main.getUndoableManager().addUndoable(undoable, true);
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
-                    FontUndoable undoable = new FontUndoable(main.getRootTable(),
-                            main.getJsonData(), styleProperty, styleProperty.value, null);
+                    CustomFontUndoable undoable = new CustomFontUndoable(main, customProperty, null);
                     main.getUndoableManager().addUndoable(undoable, true);
                     main.getProjectData().setChangesSaved(false);
                     main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + customProperty.getName() + "\"");

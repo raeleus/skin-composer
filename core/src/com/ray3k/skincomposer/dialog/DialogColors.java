@@ -645,7 +645,8 @@ public class DialogColors extends Dialog {
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
                     main.getProjectData().setChangesSaved(false);
-                    ColorUndoable undoable = new ColorUndoable(main.getRootTable(), main.getJsonData(), styleProperty, styleProperty.value, null);
+
+                    CustomColorUndoable undoable = new UndoableManager.CustomColorUndoable(main, customProperty, null);
                     main.getUndoableManager().addUndoable(undoable, true);
                     main.getRootTable().setStatusBarMessage("Emptied color for \"" + customProperty.getName() + "\"");
                     main.getRootTable().refreshStyleProperties(true);

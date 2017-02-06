@@ -1148,7 +1148,7 @@ public class DialogDrawables extends Dialog {
                         main.getProjectData().setChangesSaved(false);
                         CustomDrawableUndoable undoable = new CustomDrawableUndoable(main, customProperty, null);
                         main.getUndoableManager().addUndoable(undoable, true);
-                        main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + property.name + "\"");
+                        main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + customProperty.getName() + "\"");
                     } else {
                         boolean hasDrawable = false;
                         for (DrawableData drawable : main.getAtlasData().getDrawables()) {
