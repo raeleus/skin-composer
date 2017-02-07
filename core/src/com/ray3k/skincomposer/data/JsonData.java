@@ -197,17 +197,39 @@ public class JsonData implements Json.Serializable {
                         }
                     }
                 } else {
-                    CustomClass customClass = new CustomClass(child.name, child.name.replaceFirst(".*\\.", ""));
+                    CustomClass customClass = new CustomClass(child.name, child.name.replaceFirst(".*(\\.|\\$)", ""));
+                    customClass.setMain(main);
+                    
+                    CustomClass existingClass = getCustomClass(customClass.getDisplayName());
+                    if (existingClass != null) {
+                        customClasses.removeValue(existingClass, true);
+                    }
+                    
                     customClasses.add(customClass);
                     for (JsonValue style : child.iterator()) {
                         CustomStyle customStyle = new CustomStyle(style.name);
+                        customStyle.setParentClass(customClass);
+                        customStyle.setMain(main);
+                        
+                        CustomStyle existingStyle = customClass.getStyle(style.name);
+                        if (existingStyle != null) {
+                            customClass.getStyles().removeValue(existingStyle, true);
+                        }
+                        
                         customClass.getStyles().add(customStyle);
                         
                         for (JsonValue property : style.iterator()) {
                             CustomProperty customProperty = new CustomProperty();
-                            customStyle.getProperties().add(customProperty);
-                            
                             customProperty.setName(property.name);
+                            customProperty.setParentStyle(customStyle);
+                            customProperty.setMain(main);
+                            
+                            CustomProperty existingProperty = customStyle.getProperty(property.name);
+                            if (existingProperty != null) {
+                                customStyle.getProperties().removeValue(existingProperty, true);
+                            }
+                            
+                            customStyle.getProperties().add(customProperty);
                             
                             if (property.isNumber()) {
                                 customProperty.setType(PropertyType.NUMBER);
@@ -216,11 +238,28 @@ public class JsonData implements Json.Serializable {
                                 customProperty.setType(PropertyType.TEXT);
                                 customProperty.setValue(property.asString());
                             }
+                            
+                            //add to template style as necessary
+                            if (customClass.getTemplateStyle().getProperty(customProperty.getName()) == null) {
+                                CustomProperty dupeProperty = customProperty.copy();
+                                dupeProperty.setValue(null);
+                                customClass.getTemplateStyle().getProperties().add(dupeProperty);
+                            }
                         }
                     }
                 }
             }
         }
+    }
+    
+    public CustomClass getCustomClass(String name) {
+        for (CustomClass customClass : customClasses) {
+            if (customClass.getDisplayName().equals(name)) {
+                return customClass;
+            }
+        }
+        
+        return null;
     }
     
     private boolean testClassString(String fullyQualifiedName) {

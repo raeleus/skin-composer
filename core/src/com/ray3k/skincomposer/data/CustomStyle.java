@@ -45,6 +45,16 @@ public class CustomStyle implements Json.Serializable {
         deletable = true;
     }
 
+    public CustomProperty getProperty(String name) {
+        for (CustomProperty property : properties) {
+            if (property.getName().equals(name)) {
+                return property;
+            }
+        }
+        
+        return null;
+    }
+    
     public CustomClass getParentClass() {
         return parentClass;
     }
