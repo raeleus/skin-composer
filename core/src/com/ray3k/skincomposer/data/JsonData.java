@@ -229,21 +229,26 @@ public class JsonData implements Json.Serializable {
                                 customStyle.getProperties().removeValue(existingProperty, true);
                             }
                             
-                            customStyle.getProperties().add(customProperty);
                             
                             if (property.isNumber()) {
                                 customProperty.setType(PropertyType.NUMBER);
                                 customProperty.setValue(property.asDouble());
-                            } else {
+                            } else if (property.isString()) {
                                 customProperty.setType(PropertyType.TEXT);
                                 customProperty.setValue(property.asString());
+                            } else {
+                                customProperty = null;
                             }
                             
-                            //add to template style as necessary
-                            if (customClass.getTemplateStyle().getProperty(customProperty.getName()) == null) {
-                                CustomProperty dupeProperty = customProperty.copy();
-                                dupeProperty.setValue(null);
-                                customClass.getTemplateStyle().getProperties().add(dupeProperty);
+                            if (customProperty != null) {
+                                customStyle.getProperties().add(customProperty);
+
+                                //add to template style as necessary
+                                if (customClass.getTemplateStyle().getProperty(customProperty.getName()) == null) {
+                                    CustomProperty dupeProperty = customProperty.copy();
+                                    dupeProperty.setValue(null);
+                                    customClass.getTemplateStyle().getProperties().add(dupeProperty);
+                                }
                             }
                         }
                     }
