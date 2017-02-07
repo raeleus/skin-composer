@@ -216,6 +216,10 @@ public class JsonData implements Json.Serializable {
                             customClass.getStyles().removeValue(existingStyle, true);
                         }
                         
+                        if (customStyle.getName().equals("default")) {
+                            customStyle.setDeletable(false);
+                        }
+                        
                         customClass.getStyles().add(customStyle);
                         
                         for (JsonValue property : style.iterator()) {
@@ -250,6 +254,27 @@ public class JsonData implements Json.Serializable {
                                     customClass.getTemplateStyle().getProperties().add(dupeProperty);
                                 }
                             }
+                        }
+                    }
+                    
+                    //ensure default style has all the template styles.
+                    for (CustomStyle style : customClass.getStyles()) {
+                        if (style.getName().equals("default")) {
+                            for (CustomProperty templateProperty : customClass.getTemplateStyle().getProperties()) {
+                                boolean hasProperty = false;
+                                for (CustomProperty customProperty : style.getProperties()) {
+                                    if (customProperty.getName().equals(templateProperty.getName())) {
+                                        hasProperty = true;
+                                        break;
+                                    }
+                                }
+                                
+                                if (!hasProperty) {
+                                    style.getProperties().add(templateProperty.copy());
+                                }
+                            }
+                            
+                            break;
                         }
                     }
                 }
