@@ -49,7 +49,6 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import java.io.StringWriter;
-import java.util.regex.Pattern;
 
 public class JsonData implements Json.Serializable {
     private Array<ColorData> colors;

@@ -94,6 +94,7 @@ public class CustomClass implements Json.Serializable {
         for (CustomStyle style : styles) {
             style.setMain(main);
         }
+        templateStyle.setMain(main);
     }
 
     @Override
@@ -131,6 +132,8 @@ public class CustomClass implements Json.Serializable {
         if (templateStyle != null) {
             returnValue.templateStyle = templateStyle.copy();
         }
+        
+        returnValue.main = main;
         
         return returnValue;
     }
