@@ -283,14 +283,6 @@ public class DialogDrawables extends Dialog {
     private void refreshDrawableDisplay() {
         contentGroup.clear();
         
-        TooltipManager manager = new TooltipManager();
-        manager.animations = false;
-        manager.initialTime = .4f;
-        manager.resetTime = 0.0f;
-        manager.subsequentTime = 0.0f;
-        manager.hideAll();
-        manager.instant();
-        
         if (drawables.size == 0) {
             Label label = new Label("No drawables have been added!", getSkin());
             contentGroup.addActor(label);
@@ -415,7 +407,7 @@ public class DialogDrawables extends Dialog {
             table.add(label).colspan(4).growX().width(sizes[MathUtils.floor(zoomSlider.getValue())]);
             
             //Tooltip
-            TextTooltip toolTip = new TextTooltip(drawable.name, manager, getSkin());
+            TextTooltip toolTip = new TextTooltip(drawable.name, main.getTooltipManager(), getSkin());
             label.addListener(toolTip);
         }
     }

@@ -58,6 +58,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip.TextTooltipStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TooltipManager;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree;
@@ -95,6 +96,7 @@ public class Main extends ApplicationAdapter {
     private IbeamListener ibeamListener;
     private MainListener mainListener;
     private HandListener handListener;
+    private TooltipManager tooltipManager;
     
     @Override
     public void create() {
@@ -146,6 +148,14 @@ public class Main extends ApplicationAdapter {
         
         projectData.getAtlasData().clearTempData();
         handListener = new HandListener();
+        
+        tooltipManager = new TooltipManager();
+        tooltipManager.animations = false;
+        tooltipManager.initialTime = .4f;
+        tooltipManager.resetTime = 0.0f;
+        tooltipManager.subsequentTime = 0.0f;
+        tooltipManager.hideAll();
+        tooltipManager.instant();
     }
 
     private void populate() {
@@ -241,8 +251,8 @@ public class Main extends ApplicationAdapter {
         return handListener;
     }
 
-    public void setHandListener(HandListener handListener) {
-        this.handListener = handListener;
+    public TooltipManager getTooltipManager() {
+        return tooltipManager;
     }
 
     public static Class basicToStyleClass(Class clazz) {
