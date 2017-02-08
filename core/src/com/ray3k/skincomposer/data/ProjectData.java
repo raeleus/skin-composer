@@ -264,6 +264,11 @@ public class ProjectData implements Json.Serializable {
         atlasData.set(instance.atlasData);
         preferences.putAll(instance.preferences);
         
+        //set main for custom classes, styles, and properties
+        for (CustomClass customClass : jsonData.getCustomClasses()) {
+            customClass.setMain(main);
+        }
+        
         saveFile = file;
         putRecentFile(file.path());
         setLastOpenSavePath(file.parent().path() + "/");

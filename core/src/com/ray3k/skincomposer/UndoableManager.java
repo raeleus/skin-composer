@@ -742,6 +742,7 @@ public class UndoableManager {
             this.displayName = displayName;
             this.main = main;
             customClass = new CustomClass(fullyQualifiedName, displayName);
+            customClass.setMain(main);
         }
         
         @Override
@@ -871,6 +872,7 @@ public class UndoableManager {
             this.main = main;
             
             customProperty = new CustomProperty(propertyName, propertyType);
+            customProperty.setMain(main);
             customClass = (CustomClass) main.getRootTable().getClassSelectBox().getSelected();
             customProperty.setParentStyle(customClass.getTemplateStyle());
         }

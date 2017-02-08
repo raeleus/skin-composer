@@ -108,6 +108,7 @@ public class CustomStyle implements Json.Serializable {
         
         returnValue.parentClass = parentClass;
         returnValue.deletable = deletable;
+        returnValue.main = main;
 
         return returnValue;
     }

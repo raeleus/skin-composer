@@ -118,6 +118,7 @@ public class CustomProperty implements Json.Serializable {
         CustomProperty returnValue = new CustomProperty(name, type);
         returnValue.parentStyle = parentStyle;
         returnValue.value = value;
+        returnValue.main = main;
         return returnValue;
     }
 
