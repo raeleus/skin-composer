@@ -50,7 +50,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
-import com.badlogic.gdx.scenes.scene2d.ui.TooltipManager;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -331,6 +330,9 @@ public class DialogDrawables extends Dialog {
                 button.addListener(main.getHandListener());
             }
             table.add(button);
+            
+            TextTooltip toolTip = new TextTooltip("New Tinted Drawable", main.getTooltipManager(), getSkin());
+            button.addListener(toolTip);
 
             //swatches
             button = new Button(getSkin(), "swatches");
@@ -347,6 +349,9 @@ public class DialogDrawables extends Dialog {
             }
             table.add(button);
             
+            toolTip = new TextTooltip("Tinted Drawable from Colors", main.getTooltipManager(), getSkin());
+            button.addListener(toolTip);
+            
             //rename (ONLY FOR TINTS)
             if (drawable.tint != null || drawable.tintName != null) {
                 button = new Button(getSkin(), "settings-small");
@@ -362,6 +367,9 @@ public class DialogDrawables extends Dialog {
                     button.addListener(main.getHandListener());
                 }
                 table.add(button);
+                
+                toolTip = new TextTooltip("Rename Tinted Drawable", main.getTooltipManager(), getSkin());
+                button.addListener(toolTip);
             } else {
                 table.add();
             }
@@ -380,6 +388,9 @@ public class DialogDrawables extends Dialog {
                 button.addListener(main.getHandListener());
             }
             table.add(button).expandX().right();
+            
+            toolTip = new TextTooltip("Delete Drawable", main.getTooltipManager(), getSkin());
+            button.addListener(toolTip);
 
             //preview
             table.row();
@@ -407,7 +418,7 @@ public class DialogDrawables extends Dialog {
             table.add(label).colspan(4).growX().width(sizes[MathUtils.floor(zoomSlider.getValue())]);
             
             //Tooltip
-            TextTooltip toolTip = new TextTooltip(drawable.name, main.getTooltipManager(), getSkin());
+            toolTip = new TextTooltip(drawable.name, main.getTooltipManager(), getSkin());
             label.addListener(toolTip);
         }
     }

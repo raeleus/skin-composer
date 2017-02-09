@@ -40,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
@@ -318,6 +319,9 @@ public class DialogColors extends Dialog {
                 });
                 button.add(renameButton).padLeft(10.0f);
                 
+                TextTooltip toolTip = new TextTooltip("Rename Color", main.getTooltipManager(), getSkin());
+                renameButton.addListener(toolTip);
+                
                 //recolor button
                 Button recolorButton = new Button(getSkin(), "colorwheel");
                 recolorButton.addListener(new ChangeListener() {
@@ -337,6 +341,9 @@ public class DialogColors extends Dialog {
                     
                 });
                 button.add(recolorButton);
+                
+                toolTip = new TextTooltip("Change Color", main.getTooltipManager(), getSkin());
+                recolorButton.addListener(toolTip);
                 
                 label = new Label("(" + ((int)(color.color.r * 255)) + ", " + ((int)(color.color.g * 255)) + ", " + ((int)(color.color.b * 255)) + ", " + ((int)(color.color.a * 255)) + ")", getSkin());
                 label.setTouchable(Touchable.disabled);
@@ -415,6 +422,9 @@ public class DialogColors extends Dialog {
                     }
                     
                 });
+                
+                toolTip = new TextTooltip("Delete Color", main.getTooltipManager(), getSkin());
+                closeButton.addListener(toolTip);
                 
                 button.add(closeButton).padLeft(5.0f);
                 if (styleProperty == null && customProperty == null && !selectingForTintedDrawable) {

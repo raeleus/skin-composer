@@ -398,6 +398,10 @@ public class RootTable extends Table {
                 fire(new RootTableEvent(RootTableEnum.NEW_CLASS));
             }
         });
+        
+        //Tooltip
+        TextTooltip toolTip = new TextTooltip("New Class", main.getTooltipManager(), getSkin());
+        button.addListener(toolTip);
 
         classDuplicateButton = new Button(getSkin(), "duplicate");
         classDuplicateButton.setDisabled(true);
@@ -411,6 +415,9 @@ public class RootTable extends Table {
             }
         });
         
+        toolTip = new TextTooltip("Duplicate Class", main.getTooltipManager(), getSkin());
+        classDuplicateButton.addListener(toolTip);
+        
         classDeleteButton = new Button(getSkin(), "delete");
         classDeleteButton.setDisabled(true);
         table.add(classDeleteButton);
@@ -422,6 +429,9 @@ public class RootTable extends Table {
             }
         });
         
+        toolTip = new TextTooltip("Delete Class", main.getTooltipManager(), getSkin());
+        classDeleteButton.addListener(toolTip);
+        
         classRenameButton = new Button(getSkin(), "settings");
         classRenameButton.setDisabled(true);
         table.add(classRenameButton).padRight(30.0f);
@@ -432,6 +442,9 @@ public class RootTable extends Table {
                 fire(new RootTableEvent(RootTableEnum.RENAME_CLASS));
             }
         });
+        
+        toolTip = new TextTooltip("Rename Class", main.getTooltipManager(), getSkin());
+        classRenameButton.addListener(toolTip);
 
         label = new Label("Style:", getSkin());
         table.add(label).padRight(10.0f);
@@ -459,6 +472,9 @@ public class RootTable extends Table {
                 fire(new RootTableEvent(RootTableEnum.NEW_STYLE));
             }
         });
+        
+        toolTip = new TextTooltip("New Style", main.getTooltipManager(), getSkin());
+        button.addListener(toolTip);
 
         button = new Button(getSkin(), "duplicate");
         button.addListener(main.getHandListener());
@@ -470,6 +486,9 @@ public class RootTable extends Table {
                 fire(new RootTableEvent(RootTableEnum.DUPLICATE_STYLE));
             }
         });
+        
+        toolTip = new TextTooltip("Duplicate Style", main.getTooltipManager(), getSkin());
+        button.addListener(toolTip);
 
         styleDeleteButton = new Button(getSkin(), "delete");
         styleDeleteButton.addListener(main.getHandListener());
@@ -481,6 +500,9 @@ public class RootTable extends Table {
                 fire(new RootTableEvent(RootTableEnum.DELETE_STYLE));
             }
         });
+        
+        toolTip = new TextTooltip("Delete Style", main.getTooltipManager(), getSkin());
+        styleDeleteButton.addListener(toolTip);
 
         styleRenameButton = new Button(getSkin(), "settings");
         table.add(styleRenameButton).expandX().left();
@@ -491,6 +513,9 @@ public class RootTable extends Table {
                 fire(new RootTableEvent(RootTableEnum.RENAME_STYLE));
             }
         });
+        
+        toolTip = new TextTooltip("Rename Style", main.getTooltipManager(), getSkin());
+        styleRenameButton.addListener(toolTip);
 
         fire(new LoadClassesEvent(classSelectBox));
         fire(new LoadStylesEvent(classSelectBox, styleSelectBox));
@@ -941,6 +966,9 @@ public class RootTable extends Table {
                     }
                 });
                 
+                TextTooltip toolTip = new TextTooltip("Duplicate Style Property", main.getTooltipManager(), getSkin());
+                duplicateButton.addListener(toolTip);
+                
                 Button deleteButton = new Button(getSkin(), "delete");
                 table.add(deleteButton).fill(false).expand(false, false).pad(0).bottom();
                 deleteButton.addListener(new ChangeListener() {
@@ -951,6 +979,9 @@ public class RootTable extends Table {
                     }
                 });
                 
+                toolTip = new TextTooltip("Delete Style Property", main.getTooltipManager(), getSkin());
+                deleteButton.addListener(toolTip);
+                
                 Button renameButton = new Button(getSkin(), "settings");
                 table.add(renameButton).fill(false).expand(false, false).pad(0).bottom();
                 renameButton.addListener(new ChangeListener() {
@@ -960,6 +991,9 @@ public class RootTable extends Table {
                         fire(new CustomPropertyEvent(styleProperty, duplicateButton, CustomPropertyEnum.RENAME));
                     }
                 });
+                
+                toolTip = new TextTooltip("Rename Style Property", main.getTooltipManager(), getSkin());
+                renameButton.addListener(toolTip);
                 
                 table.row();
             }
@@ -976,6 +1010,9 @@ public class RootTable extends Table {
                 }
             });
             table.add(button);
+            
+            TextTooltip toolTip = new TextTooltip("New Style Property", main.getTooltipManager(), getSkin());
+            button.addListener(toolTip);
         }
     }
 
