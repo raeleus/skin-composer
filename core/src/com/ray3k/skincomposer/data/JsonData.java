@@ -73,6 +73,7 @@ public class JsonData implements Json.Serializable {
         colors.clear();
         fonts.clear();
         initializeClassStyleMap();
+        customClasses.clear();
     }
 
     public void readFile(FileHandle fileHandle) throws Exception {
