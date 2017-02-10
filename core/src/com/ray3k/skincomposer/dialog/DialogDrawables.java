@@ -1164,7 +1164,7 @@ public class DialogDrawables extends Dialog {
                         if (!hasDrawable) {
                             main.getProjectData().setChangesSaved(false);
                             main.getUndoableManager().clearUndoables();
-                            property.value = null;
+                            customProperty.setValue(null);
                             main.getRootTable().setStatusBarMessage("Drawable deleted for \"" + customProperty.getName() + "\"");
                             main.getRootTable().refreshStyleProperties(true);
                         }
