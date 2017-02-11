@@ -11,8 +11,9 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 
 *Added "Custom Class" option to include styles for classes not part of Scene2D.ui. Press the "plus" button next to the class select box.
 *Defaults for exported texture atlasses are now editable via a defaults.json file. See "Project >> Settings >> Open texture packer settings file".
-*Imported resources (Drawables and Fonts) can be kept relative to the save file. See "Project >> Settings >> Keep resources relative?".
+*File resources (Drawables and Fonts) can be kept relative to the save file. See "Project >> Settings >> Keep resources relative?".
 *Fixed errors with default paths for drawables and fonts.
+*Added tooltips to buttons as necessary.
 
 ### Contact ###
 

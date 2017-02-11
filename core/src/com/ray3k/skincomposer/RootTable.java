@@ -728,7 +728,7 @@ public class RootTable extends Table {
                 } else if (styleProperty.type == BitmapFont.class) {
                     BrowseField browseField;
                     if (styleProperty.optional) {
-                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, getSkin(), "fpmt");
+                        browseField = new BrowseField((String) styleProperty.value, styleProperty.name, getSkin(), "font");
                     } else {
                         browseField = new BrowseField((String) styleProperty.value, styleProperty.name, getSkin(), "font-required");
                     }
