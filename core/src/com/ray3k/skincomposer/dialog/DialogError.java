@@ -36,8 +36,12 @@ public class DialogError extends Dialog {
     public DialogError(String title, String message, Main main) {
         super(title, main.getSkin());
         this.main = main;
-        text(message);
+        getTitleTable().getCells().first().padLeft(5.0f);
         
+        text(message);
+        getContentTable().getCells().first().pad(10.0f);
+        
+        getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         button("OK", true).key(Keys.ENTER, true);
         button("Cancel", false).key(Keys.ESCAPE, false);
         getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
