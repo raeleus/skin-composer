@@ -47,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
@@ -87,7 +88,6 @@ import com.ray3k.skincomposer.MenuButton.MenuButtonStyle;
 import com.ray3k.skincomposer.MenuList.MenuListStyle;
 import com.ray3k.skincomposer.Spinner.SpinnerStyle;
 import com.ray3k.skincomposer.data.ColorData;
-import com.ray3k.skincomposer.data.CustomClass;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.CustomStyle;
 import com.ray3k.skincomposer.data.DrawableData;
@@ -2304,7 +2304,9 @@ public class RootTable extends Table {
             } else {
                 HorizontalGroup horizontalGroup = new HorizontalGroup();
                 horizontalGroup.wrap();
-                horizontalGroup.pad(5.0f);
+                horizontalGroup.space(10.0f);
+                horizontalGroup.wrapSpace(10.0f);
+                horizontalGroup.setTouchable(Touchable.disabled);
                 previewTable.add(horizontalGroup).grow().pad(10.0f);
                 
                 CustomStyle customStyle = (CustomStyle) styleSelectBox.getSelected();
@@ -2369,7 +2371,8 @@ public class RootTable extends Table {
                             }
                             
                             if (drawable != null) {
-                                
+                                Image image = new Image(drawablePairs.get(drawable.name));
+                                horizontalGroup.addActor(image);
                             }
                             break;
                     } 
