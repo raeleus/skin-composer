@@ -2051,7 +2051,7 @@ public class RootTable extends Table {
 
                 refreshPreview();
             } else {
-                Label label = new Label("No preview available for custom classes!", getSkin());
+                Label label = new Label("No preview properties available for custom classes!", getSkin());
                 t.add(label);
             }
         }
