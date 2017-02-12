@@ -372,10 +372,10 @@ public class JsonData implements Json.Serializable {
             Array<StyleData> styles = valuesArray.get(i);
 
             //check if any style has the mandatory fields necessary to write
-            boolean hasMandatoryStyles = true;
+            boolean hasMandatoryStyles = false;
             for (StyleData style : styles) {
-                if (!style.hasMandatoryFields() || style.hasAllNullFields()) {
-                    hasMandatoryStyles = false;
+                if (style.hasMandatoryFields() && ! style.hasAllNullFields()) {
+                    hasMandatoryStyles = true;
                     break;
                 }
             }
@@ -403,54 +403,75 @@ public class JsonData implements Json.Serializable {
         
         //custom classes
         for (CustomClass customClass : customClasses) {
-            json.writeObjectStart(customClass.getFullyQualifiedName());
-            for (CustomStyle customStyle : customClass.getStyles()) {
-                json.writeObjectStart(customStyle.getName());
-                for (CustomProperty customProperty : customStyle.getProperties()) {
-                    //only write value if it is valid
-                    boolean writeValue = false;
-                    if (customProperty.getValue() instanceof Double && customProperty.getType() == PropertyType.NUMBER
-                            || customProperty.getValue() instanceof Boolean && customProperty.getType() == PropertyType.BOOL) {
-                        writeValue = true;
-                    } else if (customProperty.getValue() instanceof String) {
-                        if (customProperty.getType() == PropertyType.TEXT) {
+            
+            if (customClassHasFields(customClass)) {
+                json.writeObjectStart(customClass.getFullyQualifiedName());
+                for (CustomStyle customStyle : customClass.getStyles()) {
+                    json.writeObjectStart(customStyle.getName());
+                    for (CustomProperty customProperty : customStyle.getProperties()) {
+                        //only write value if it is valid
+                        boolean writeValue = false;
+                        if (customProperty.getValue() instanceof Double && customProperty.getType() == PropertyType.NUMBER
+                                || customProperty.getValue() instanceof Boolean && customProperty.getType() == PropertyType.BOOL) {
                             writeValue = true;
-                        } else if (customProperty.getType() == PropertyType.COLOR) {
-                            for (ColorData data : getColors()) {
-                                if (data.getName().equals(customProperty.getValue())) {
-                                    writeValue = true;
-                                    break;
+                        } else if (customProperty.getValue() instanceof String && !((String) customProperty.getValue()).equals("")) {
+                            if (customProperty.getType() == PropertyType.TEXT) {
+                                writeValue = true;
+                            } else if (customProperty.getType() == PropertyType.COLOR) {
+                                for (ColorData data : getColors()) {
+                                    if (data.getName().equals(customProperty.getValue())) {
+                                        writeValue = true;
+                                        break;
+                                    }
                                 }
-                            }
-                        } else if (customProperty.getType() == PropertyType.DRAWABLE) {
-                            for (DrawableData data : main.getAtlasData().getDrawables()) {
-                                if (data.name.equals(customProperty.getValue())) {
-                                    writeValue = true;
-                                    break;
+                            } else if (customProperty.getType() == PropertyType.DRAWABLE) {
+                                for (DrawableData data : main.getAtlasData().getDrawables()) {
+                                    if (data.name.equals(customProperty.getValue())) {
+                                        writeValue = true;
+                                        break;
+                                    }
                                 }
-                            }
-                        } else if (customProperty.getType() == PropertyType.FONT) {
-                            for (FontData data : getFonts()) {
-                                if (data.getName().equals(customProperty.getValue())) {
-                                    writeValue = true;
-                                    break;
+                            } else if (customProperty.getType() == PropertyType.FONT) {
+                                for (FontData data : getFonts()) {
+                                    if (data.getName().equals(customProperty.getValue())) {
+                                        writeValue = true;
+                                        break;
+                                    }
                                 }
                             }
                         }
+                        if (writeValue) {
+                            json.writeValue(customProperty.getName(), customProperty.getValue());
+                        }
                     }
-                    if (writeValue) {
-                        json.writeValue(customProperty.getName(), customProperty.getValue());
-                    }
+                    json.writeObjectEnd();
                 }
                 json.writeObjectEnd();
             }
-            json.writeObjectEnd();
         }
 
         json.writeObjectEnd();
         fileHandle.writeString(json.prettyPrint(stringWriter.toString()), false);
     }
 
+    private boolean customClassHasFields(CustomClass customClass) {
+        for (CustomStyle style : customClass.getStyles()) {
+            for (CustomProperty property : style.getProperties()) {
+                if (property.getValue() != null) {
+                    if (!(property.getValue() instanceof String)) {
+                        return true;
+                    } else {
+                        if (!((String)property.getValue()).equals("")) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+    
     public Array<ColorData> getColors() {
         return colors;
     }
