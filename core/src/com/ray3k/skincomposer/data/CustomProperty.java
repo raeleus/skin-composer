@@ -129,7 +129,9 @@ public class CustomProperty implements Json.Serializable {
         
         //only write value if it is valid
         boolean writeValue = false;
-        if (value instanceof Double && type == PropertyType.NUMBER
+
+        if (value instanceof Float && type == PropertyType.NUMBER
+                || value instanceof Double && type == PropertyType.NUMBER
                 || value instanceof Boolean && type == PropertyType.BOOL) {
             writeValue = true;
         } else if (value instanceof String) {
