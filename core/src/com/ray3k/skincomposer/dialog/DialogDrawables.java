@@ -836,7 +836,10 @@ public class DialogDrawables extends Dialog {
             }
         }
         
-        String[] filterPatterns = {"*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif"};
+        String[] filterPatterns = null;
+        if (!Utils.isMac()) {
+            filterPatterns = new String[] {"*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif"};
+        }
         
         List<File> files = main.getDesktopWorker().openMultipleDialog("Choose drawable file(s)...", defaultPath, filterPatterns, "Image files");
         if (files != null && files.size() > 0) {

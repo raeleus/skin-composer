@@ -684,7 +684,10 @@ public class DialogFonts extends Dialog {
             }
         }
         
-        String[] filterPatterns = {"*.fnt"};
+        String[] filterPatterns = null;
+        if (!Utils.isMac()) {
+            filterPatterns = new String[] {"*.fnt"};
+        }
         
         List<File> files = main.getDesktopWorker().openMultipleDialog("Choose font file(s)...", defaultPath, filterPatterns, "Font files (*.fnt)");
         if (files != null && files.size() > 0) {

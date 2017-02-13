@@ -54,6 +54,7 @@ import com.ray3k.skincomposer.UndoableManager.NewCustomClassUndoable;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
 import com.ray3k.skincomposer.dialog.DialogCustomStyle;
+import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
 
 public class MainListener extends RootTableListener {
@@ -265,7 +266,10 @@ public class MainListener extends RootTableListener {
         Runnable runnable = () -> {
             String defaultPath = projectData.getLastOpenSavePath();
 
-            String[] filterPatterns = {"*.scmp"};
+            String[] filterPatterns = null;
+            if (!Utils.isMac()) {
+                filterPatterns = new String[] {"*.scmp"};
+            }
 
             File file = desktopWorker.openDialog("Open skin file...", defaultPath, filterPatterns, "Skin Composer files");
             if (file != null) {
@@ -332,7 +336,10 @@ public class MainListener extends RootTableListener {
         dialogFactory.showDialogLoading(() -> {
             String defaultPath = projectData.getLastImportExportPath();
 
-            String[] filterPatterns = {"*.json"};
+            String[] filterPatterns = null;
+            if (!Utils.isMac()) {
+                filterPatterns = new String[] {"*.scmp"};
+            }
 
             File file = desktopWorker.openDialog("Import skin...", defaultPath, filterPatterns, "Json files");
             if (file != null) {
