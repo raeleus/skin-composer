@@ -528,13 +528,15 @@ public class DialogFactory {
             }
         };
         dialog.getTitleTable().getCells().first().padLeft(5.0f);
-        selectBox.setItems(main.getProjectData().getRecentFiles());
+        Array<RecentFile> recentFiles = main.getProjectData().getRecentFiles();
+        recentFiles.reverse();
+        selectBox.setItems(recentFiles);
         selectBox.addListener(main.getHandListener());
         selectBox.getList().addListener(main.getHandListener());
 
         dialog.text("Select a file to open");
         dialog.getContentTable().row();
-        dialog.getContentTable().add(selectBox).padLeft(10.0f).padRight(10.0f);
+        dialog.getContentTable().add(selectBox).padLeft(10.0f).padRight(10.0f).growX();
         dialog.getContentTable().getCells().first().pad(10.0f);
         dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("OK", true).key(Input.Keys.ENTER, true);

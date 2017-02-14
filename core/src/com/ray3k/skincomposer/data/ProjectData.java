@@ -33,6 +33,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.Main;
+import java.util.Iterator;
 
 public class ProjectData implements Json.Serializable {
     private static Preferences generalPref;
@@ -77,7 +78,7 @@ public class ProjectData implements Json.Serializable {
     public Array<RecentFile> getRecentFiles() {
         Array<RecentFile> returnValue = new Array<>();
         int maxIndex = Math.min(MAX_RECENT_FILES, generalPref.getInteger("recentFilesCount", 0));
-        for (int i = maxIndex - 1; i >= 0; i--) {
+        for (int i = 0; i < maxIndex; i++) {
             String path = generalPref.getString("recentFile" + i);
             FileHandle file = new FileHandle(path);
             RecentFile recentFile = new RecentFile();
@@ -106,31 +107,31 @@ public class ProjectData implements Json.Serializable {
     }
     
     public void putRecentFile(String filePath) {
-        boolean exists = false;
-        for (RecentFile recentFile : getRecentFiles()) {
-            String path = recentFile.fileHandle.toString();
-            if (path.equals(filePath)) {
-                exists = true;
-                break;
+        Array<RecentFile> recentFiles = getRecentFiles();
+        Iterator<RecentFile> iter = recentFiles.iterator();
+        while(iter.hasNext()) {
+            RecentFile recentFile = iter.next();
+            if (recentFile.fileHandle.toString().equals(filePath)) {
+                iter.remove();
             }
+        }
+        RecentFile newFile = new RecentFile();
+        newFile.fileHandle = new FileHandle(filePath);
+        newFile.name = newFile.fileHandle.nameWithoutExtension();
+
+        recentFiles.add(newFile);
+        while (recentFiles.size > MAX_RECENT_FILES) {
+            recentFiles.removeIndex(0);
         }
         
-        if (!exists) {
-            int index = generalPref.getInteger("recentFilesCount", 0);
-
-            if (index >= MAX_RECENT_FILES) {
-                for (int i = 1; i < MAX_RECENT_FILES; i++) {
-                    String value = generalPref.getString("recentFile" + i);
-                    generalPref.putString("recentFile" + (i - 1), value);
-                }
-                generalPref.remove("recentFile" + (MAX_RECENT_FILES - 1));
-
-                index = MAX_RECENT_FILES - 1;
-            }
-            generalPref.putString("recentFile" + index, filePath);
-            generalPref.putInteger("recentFilesCount", index + 1);
-            generalPref.flush();
+        int size = Math.min(MAX_RECENT_FILES, recentFiles.size);
+        generalPref.putInteger("recentFilesCount", size);
+        
+        for (int i = 0; i < size; i++) {
+            RecentFile recentFile = recentFiles.get(i);
+            generalPref.putString("recentFile" + i, recentFile.fileHandle.toString());
         }
+        generalPref.flush();
         
         main.getRootTable().setRecentFilesDisabled(false);
     }
