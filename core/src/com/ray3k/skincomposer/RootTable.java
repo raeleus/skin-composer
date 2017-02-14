@@ -144,7 +144,6 @@ public class RootTable extends Table {
     private Button classRenameButton;
     private Button styleDeleteButton;
     private Button styleRenameButton;
-    private boolean listenForShortcuts;
     private final DragListener hSplitPaneDragListener;
     private final DragListener vSplitPaneDragListener;
     private final InputListener hSplitPaneInputListener;
@@ -154,7 +153,6 @@ public class RootTable extends Table {
         super(main.getSkin());
         this.stage = main.getStage();
         this.main = main;
-        listenForShortcuts = true;
         
         previewProperties = new ObjectMap<>();
         previewBgColor = new Color(Color.WHITE);
@@ -2654,14 +2652,6 @@ public class RootTable extends Table {
         }
     }
 
-    public boolean isListenForShortcuts() {
-        return listenForShortcuts;
-    }
-
-    public void setListenForShortcuts(boolean listenForShortcuts) {
-        this.listenForShortcuts = listenForShortcuts;
-    }
-
     private static class MenuItem {
 
         String text;
@@ -2807,7 +2797,7 @@ public class RootTable extends Table {
 
         @Override
         public boolean keyDown(InputEvent event, int keycode) {
-            if (rootTable.listenForShortcuts && (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT))) {
+            if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
                 switch (keycode) {
                     case Input.Keys.Z:
                         rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.UNDO));

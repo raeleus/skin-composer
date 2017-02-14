@@ -244,13 +244,11 @@ public class MainListener extends RootTableListener {
     }
     
     public void newFile() {
-        main.getRootTable().setListenForShortcuts(false);
         if (!projectData.areChangesSaved() && !projectData.isNewProject()) {
             dialogFactory.yesNoCancelDialog("Save Changes?",
                     "Do you want to save changes to the existing project?"
                             + "\nAll unsaved changes will be lost.",
                     (int selection) -> {
-                        main.getRootTable().setListenForShortcuts(true);
                         if (selection == 0) {
                             saveFile(() -> {
                                 projectData.clear();
@@ -261,13 +259,10 @@ public class MainListener extends RootTableListener {
                     });
         } else {
             projectData.clear();
-            main.getRootTable().setListenForShortcuts(true);
         }
     }
     
     public void openFile() {
-        main.getRootTable().setListenForShortcuts(false);
-        
         Runnable runnable = () -> {
             String defaultPath = projectData.getLastOpenSavePath();
 
@@ -284,8 +279,6 @@ public class MainListener extends RootTableListener {
                 root.populate();
                 root.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
             }
-            
-            main.getRootTable().setListenForShortcuts(true);
         };
         
         if (!projectData.areChangesSaved() && !projectData.isNewProject()) {
@@ -297,8 +290,6 @@ public class MainListener extends RootTableListener {
                             saveFile(runnable);
                         } else if (selection == 1) {
                             dialogFactory.showDialogLoading(runnable);
-                        } else {
-                            main.getRootTable().setListenForShortcuts(true);
                         }
                     });
         } else {
