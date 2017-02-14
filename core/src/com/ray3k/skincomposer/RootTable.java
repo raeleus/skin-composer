@@ -2798,28 +2798,38 @@ public class RootTable extends Table {
         @Override
         public boolean keyDown(InputEvent event, int keycode) {
             if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
-                switch (keycode) {
-                    case Input.Keys.Z:
-                        rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.UNDO));
+                //trigger shortcuts only if no dialogs are open.
+                boolean listenForShortcuts = true;
+                for (Actor actor : rootTable.getStage().getActors()) {
+                    if (actor instanceof Dialog) {
+                        listenForShortcuts = false;
                         break;
-                    case Input.Keys.Y:
-                        rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.REDO));
-                        break;
-                    case Input.Keys.N:
-                        rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.NEW));
-                        break;
-                    case Input.Keys.O:
-                        rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.OPEN));
-                        break;
-                    case Input.Keys.S:
-                        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
-                            rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.SAVE_AS));
-                        } else {
-                            rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.SAVE));
-                        }
-                        break;
-                    default:
-                        break;
+                    }
+                }
+                if (listenForShortcuts) {
+                    switch (keycode) {
+                        case Input.Keys.Z:
+                            rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.UNDO));
+                            break;
+                        case Input.Keys.Y:
+                            rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.REDO));
+                            break;
+                        case Input.Keys.N:
+                            rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.NEW));
+                            break;
+                        case Input.Keys.O:
+                            rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.OPEN));
+                            break;
+                        case Input.Keys.S:
+                            if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
+                                rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.SAVE_AS));
+                            } else {
+                                rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.SAVE));
+                            }
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
             return false;
