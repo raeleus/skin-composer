@@ -2302,80 +2302,109 @@ public class RootTable extends Table {
                     }
                 }
             } else {
-                HorizontalGroup horizontalGroup = new HorizontalGroup();
-                horizontalGroup.wrap();
-                horizontalGroup.space(10.0f);
-                horizontalGroup.wrapSpace(10.0f);
-                horizontalGroup.setTouchable(Touchable.disabled);
-                previewTable.add(horizontalGroup).grow().pad(10.0f);
                 
                 CustomStyle customStyle = (CustomStyle) styleSelectBox.getSelected();
-                for (CustomProperty customProperty : customStyle.getProperties()) {
-                    switch(customProperty.getType()) {
-                        case TEXT:
-                            Label labelText = new Label((String) customProperty.getValue(), getSkin());
-                            horizontalGroup.addActor(labelText);
+                
+                boolean showMessage = true;
+                
+                if (customStyle.getProperties().size == 0) {
+                    Label label = new Label("No style properties!\nEmpty classes are not exported\nAdd style properties in the menu to the left", getSkin());
+                    label.setAlignment(0);
+                    previewTable.add(label);
+                } else {
+                    for (CustomProperty customProperty : customStyle.getProperties()) {
+                        if (customProperty.getValue() != null && !(customProperty.getValue() instanceof String) || customProperty.getValue() != null && !((String)customProperty.getValue()).equals("")) {
+                            showMessage = false;
                             break;
-                        case BOOL:
-                            Label labelBoolean = new Label(Boolean.toString((boolean) customProperty.getValue()), getSkin());
-                            horizontalGroup.addActor(labelBoolean);
-                            break;
-                        case COLOR:
-                            ColorData colorData = null;
-                            
-                            String colorName = (String) customProperty.getValue();
-                            for (ColorData cd : main.getJsonData().getColors()) {
-                                if (cd.getName().equals(colorName)) {
-                                    colorData = cd;
-                                    break;
-                                }
-                            }
-                            
-                            if (colorData != null) {
-                                Table colorTable = new Table(getSkin());
-                                colorTable.setBackground("white");
-                                colorTable.setColor(colorData.color);
-                                colorTable.add().size(25.0f);
+                        }
+                    }
+                    
+                    if (showMessage) {
+                        Label label = new Label("All properties are empty!\nEmpty classes are not exported\nAdd style properties in the menu to the left", getSkin());
+                        label.setAlignment(0);
+                        previewTable.add(label);
+                    }
+                }
+                 
+                if (!showMessage) {
+                    HorizontalGroup horizontalGroup = new HorizontalGroup();
+                    horizontalGroup.wrap();
+                    horizontalGroup.space(10.0f);
+                    horizontalGroup.wrapSpace(10.0f);
+                    horizontalGroup.setTouchable(Touchable.disabled);
+                    previewTable.add(horizontalGroup).grow().pad(10.0f);
 
-                                horizontalGroup.addActor(colorTable);
-                            }
-                            break;
-                        case FONT:
-                            BitmapFont font = null;
-                            FontData fontData = null;
-                            
-                            String fontName = (String) customProperty.getValue();
-                            for (FontData fd : main.getJsonData().getFonts()) {
-                                if (fd.getName().equals(fontName)) {
-                                    fontData = fd;
-                                    font = new BitmapFont(fd.file);
-                                    previewFonts.add(font);
-                                    break;
+                    for (CustomProperty customProperty : customStyle.getProperties()) {
+                        switch(customProperty.getType()) {
+                            case TEXT:
+                                Label labelText = new Label((String) customProperty.getValue(), getSkin());
+                                horizontalGroup.addActor(labelText);
+                                break;
+                            case NUMBER:
+                                Label labelNumber = new Label(Double.toString((double) customProperty.getValue()), getSkin());
+                                horizontalGroup.addActor(labelNumber);
+                                break;
+                            case BOOL:
+                                Label labelBoolean = new Label(Boolean.toString((boolean) customProperty.getValue()), getSkin());
+                                horizontalGroup.addActor(labelBoolean);
+                                break;
+                            case COLOR:
+                                ColorData colorData = null;
+
+                                String colorName = (String) customProperty.getValue();
+                                for (ColorData cd : main.getJsonData().getColors()) {
+                                    if (cd.getName().equals(colorName)) {
+                                        colorData = cd;
+                                        break;
+                                    }
                                 }
-                            }
-                            
-                            if (font != null) {
-                                Label labelFont = new Label(fontData.getName(), new LabelStyle(font, Color.WHITE));
-                                horizontalGroup.addActor(labelFont);
-                            }
-                            break;
-                        case DRAWABLE:
-                            DrawableData drawable = null;
-                            
-                            String drawableName = (String) customProperty.getValue();
-                            for (DrawableData dd : main.getAtlasData().getDrawables()) {
-                                if (dd.name.equals(drawableName)) {
-                                    drawable = dd;
-                                    break;
+
+                                if (colorData != null) {
+                                    Table colorTable = new Table(getSkin());
+                                    colorTable.setBackground("white");
+                                    colorTable.setColor(colorData.color);
+                                    colorTable.add().size(25.0f);
+
+                                    horizontalGroup.addActor(colorTable);
                                 }
-                            }
-                            
-                            if (drawable != null) {
-                                Image image = new Image(drawablePairs.get(drawable.name));
-                                horizontalGroup.addActor(image);
-                            }
-                            break;
-                    } 
+                                break;
+                            case FONT:
+                                BitmapFont font = null;
+                                FontData fontData = null;
+
+                                String fontName = (String) customProperty.getValue();
+                                for (FontData fd : main.getJsonData().getFonts()) {
+                                    if (fd.getName().equals(fontName)) {
+                                        fontData = fd;
+                                        font = new BitmapFont(fd.file);
+                                        previewFonts.add(font);
+                                        break;
+                                    }
+                                }
+
+                                if (font != null) {
+                                    Label labelFont = new Label(fontData.getName(), new LabelStyle(font, Color.WHITE));
+                                    horizontalGroup.addActor(labelFont);
+                                }
+                                break;
+                            case DRAWABLE:
+                                DrawableData drawable = null;
+
+                                String drawableName = (String) customProperty.getValue();
+                                for (DrawableData dd : main.getAtlasData().getDrawables()) {
+                                    if (dd.name.equals(drawableName)) {
+                                        drawable = dd;
+                                        break;
+                                    }
+                                }
+
+                                if (drawable != null) {
+                                    Image image = new Image(drawablePairs.get(drawable.name));
+                                    horizontalGroup.addActor(image);
+                                }
+                                break;
+                        } 
+                    }
                 }
             }
         }
