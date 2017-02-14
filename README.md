@@ -5,15 +5,13 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 8
+* Version 9
 
 ### Changes ###
 
-*Added "Custom Class" option to include styles for classes not part of Scene2D.ui. Press the "plus" button next to the class select box.
-*Defaults for exported texture atlasses are now editable via a defaults.json file. See "Project >> Settings >> Open texture packer settings file".
-*File resources (Drawables and Fonts) can be kept relative to the save file. See "Project >> Settings >> Keep resources relative?".
-*Fixed errors with default paths for drawables and fonts.
-*Added tooltips to buttons as necessary.
+*Added a pseudo preview for custom classes. Drawables, fonts, colors, etc. are laid out one after the other.
+*Solved dialog file filter issue on OSX affecting Open and Import.
+*Various bug fixes in relation to custom classes.
 
 ### Contact ###
 
@@ -22,6 +20,8 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * raymond.ray3k (at) gmail.com
 
 ### Notes ###
+
+To run Skin Composer on OSX, download the .jar version of the app and run it via terminal with the following command: **java -jar -XstartOnFirstThread skin_composer.jar**
 
 Contributer RaimundWege has shared the following information for anyone who is working from source in Android Studio on Mac.
 
