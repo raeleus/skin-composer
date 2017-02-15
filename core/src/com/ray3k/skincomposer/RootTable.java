@@ -163,26 +163,6 @@ public class RootTable extends Table {
                 getSkin().get("spinner-plus-h", Button.ButtonStyle.class),
                 getSkin().get("spinner", TextField.TextFieldStyle.class));
 
-        TextButtonStyle textButtonStyle = getSkin().get("file", TextButtonStyle.class);
-
-        MenuButtonStyle menuButtonStyle = new MenuButton.MenuButtonStyle();
-        menuButtonStyle.font = textButtonStyle.font;
-        menuButtonStyle.up = textButtonStyle.up;
-        menuButtonStyle.down = textButtonStyle.down;
-        menuButtonStyle.over = textButtonStyle.over;
-        menuButtonStyle.checked = textButtonStyle.checked;
-
-        MenuListStyle menuListStyle = new MenuListStyle();
-        menuListStyle.background = getSkin().getDrawable("list");
-        menuListStyle.textButtonStyle = getSkin().get("menu-button", TextButtonStyle.class);
-        menuListStyle.labelStyle = getSkin().get("white", LabelStyle.class);
-        menuListStyle.disabledLabelStyle = getSkin().get("disabled", LabelStyle.class);
-
-        menuButtonStyle.menuListStyle = menuListStyle;
-        
-        getSkin().add("default", menuButtonStyle);
-        getSkin().add("default", menuListStyle);
-
         hSplitPaneDragListener = new DragListener() {
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer) {

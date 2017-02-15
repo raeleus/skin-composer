@@ -657,15 +657,6 @@ link
   orig: 2, 6
   offset: 0, 0
   index: -1
-link
-  rotate: false
-  xy: 417, 219
-  size: 2, 6
-  split: 0, 0, 0, 1
-  pad: 0, 0, 0, 2
-  orig: 2, 6
-  offset: 0, 0
-  index: -1
 link-empty
   rotate: false
   xy: 454, 279
@@ -930,13 +921,6 @@ toggle-on-pressed
   xy: 38, 69
   size: 35, 15
   orig: 35, 15
-  offset: 0, 0
-  index: -1
-white
-  rotate: false
-  xy: 175, 317
-  size: 1, 1
-  orig: 1, 1
   offset: 0, 0
   index: -1
 white

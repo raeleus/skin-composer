@@ -469,4 +469,28 @@ com.ray3k.skincomposer.BrowseField$BrowseFieldStyle: {
 		labelStyle: required
 	}
 }
+com.ray3k.skincomposer.MenuList$MenuListStyle: {
+	default: {
+		background: list
+		textButtonStyle: menu-button
+		labelStyle: white
+		disabledLabelStyle: disabled
+	}
+}
+com.ray3k.skincomposer.MenuButton$MenuButtonStyle: {
+	default: {
+		menuListStyle: default
+		font: font
+		up: button-file
+		down: button-file-pressed
+		over: button-file-over
+		checked: button-file-pressed
+		pressedOffsetX: 0
+		pressedOffsetY: 0
+		unpressedOffsetX: 0
+		unpressedOffsetY: 0
+		checkedOffsetX: 0
+		checkedOffsetY: 0
+	}
+}
 }
