@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.actions.VisibleAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -2329,81 +2330,88 @@ public class RootTable extends Table {
                 if (!showMessage) {
                     HorizontalGroup horizontalGroup = new HorizontalGroup();
                     horizontalGroup.wrap();
-                    horizontalGroup.space(10.0f);
+                    //the following causes a crash. LibGDX bug.
+//                    horizontalGroup.space(10.0f);
                     horizontalGroup.wrapSpace(10.0f);
                     horizontalGroup.setTouchable(Touchable.disabled);
                     previewTable.add(horizontalGroup).grow().pad(10.0f);
 
                     for (CustomProperty customProperty : customStyle.getProperties()) {
-                        if (customProperty.getValue() != null) switch(customProperty.getType()) {
-                            case TEXT:
-                                Label labelText = new Label((String) customProperty.getValue(), getSkin());
-                                horizontalGroup.addActor(labelText);
-                                break;
-                            case NUMBER:
-                                Label labelNumber = new Label(Double.toString((double) customProperty.getValue()), getSkin());
-                                horizontalGroup.addActor(labelNumber);
-                                break;
-                            case BOOL:
-                                Label labelBoolean = new Label(Boolean.toString((boolean) customProperty.getValue()), getSkin());
-                                horizontalGroup.addActor(labelBoolean);
-                                break;
-                            case COLOR:
-                                ColorData colorData = null;
+                        if (customProperty.getValue() != null) {
+                            Container container = new Container();
+                            container.pad(5.0f);
+                            horizontalGroup.addActor(container);
+                            
+                            switch (customProperty.getType()) {
+                                case TEXT:
+                                    Label labelText = new Label((String) customProperty.getValue(), getSkin());
+                                    container.setActor(labelText);
+                                    break;
+                                case NUMBER:
+                                    Label labelNumber = new Label(Double.toString((double) customProperty.getValue()), getSkin());
+                                    container.setActor(labelNumber);
+                                    break;
+                                case BOOL:
+                                    Label labelBoolean = new Label(Boolean.toString((boolean) customProperty.getValue()), getSkin());
+                                    container.setActor(labelBoolean);
+                                    break;
+                                case COLOR:
+                                    ColorData colorData = null;
 
-                                String colorName = (String) customProperty.getValue();
-                                for (ColorData cd : main.getJsonData().getColors()) {
-                                    if (cd.getName().equals(colorName)) {
-                                        colorData = cd;
-                                        break;
+                                    String colorName = (String) customProperty.getValue();
+                                    for (ColorData cd : main.getJsonData().getColors()) {
+                                        if (cd.getName().equals(colorName)) {
+                                            colorData = cd;
+                                            break;
+                                        }
                                     }
-                                }
 
-                                if (colorData != null) {
-                                    Table colorTable = new Table(getSkin());
-                                    colorTable.setBackground("white");
-                                    colorTable.setColor(colorData.color);
-                                    colorTable.add().size(25.0f);
+                                    if (colorData != null) {
+                                        Table colorTable = new Table(getSkin());
+                                        colorTable.setBackground("white");
+                                        colorTable.setColor(colorData.color);
+                                        colorTable.add().size(25.0f);
 
-                                    horizontalGroup.addActor(colorTable);
-                                }
-                                break;
-                            case FONT:
-                                BitmapFont font = null;
-                                FontData fontData = null;
-
-                                String fontName = (String) customProperty.getValue();
-                                for (FontData fd : main.getJsonData().getFonts()) {
-                                    if (fd.getName().equals(fontName)) {
-                                        fontData = fd;
-                                        font = new BitmapFont(fd.file);
-                                        previewFonts.add(font);
-                                        break;
+                                        container.setActor(colorTable);
                                     }
-                                }
+                                    break;
+                                case FONT:
+                                    BitmapFont font = null;
+                                    FontData fontData = null;
 
-                                if (font != null) {
-                                    Label labelFont = new Label(fontData.getName(), new LabelStyle(font, Color.WHITE));
-                                    horizontalGroup.addActor(labelFont);
-                                }
-                                break;
-                            case DRAWABLE:
-                                DrawableData drawable = null;
-
-                                String drawableName = (String) customProperty.getValue();
-                                for (DrawableData dd : main.getAtlasData().getDrawables()) {
-                                    if (dd.name.equals(drawableName)) {
-                                        drawable = dd;
-                                        break;
+                                    String fontName = (String) customProperty.getValue();
+                                    for (FontData fd : main.getJsonData().getFonts()) {
+                                        if (fd.getName().equals(fontName)) {
+                                            fontData = fd;
+                                            font = new BitmapFont(fd.file);
+                                            previewFonts.add(font);
+                                            break;
+                                        }
                                     }
-                                }
 
-                                if (drawable != null) {
-                                    Image image = new Image(drawablePairs.get(drawable.name));
-                                    horizontalGroup.addActor(image);
-                                }
-                                break;
-                        } 
+                                    if (font != null) {
+                                        Label labelFont = new Label(fontData.getName(), new LabelStyle(font, Color.WHITE));
+                                        container.setActor(labelFont);
+                                    }
+                                    break;
+                                case DRAWABLE:
+                                    DrawableData drawable = null;
+
+                                    String drawableName = (String) customProperty.getValue();
+                                    for (DrawableData dd : main.getAtlasData().getDrawables()) {
+                                        if (dd.name.equals(drawableName)) {
+                                            drawable = dd;
+                                            break;
+                                        }
+                                    }
+
+                                    if (drawable != null) {
+                                        Image image = new Image(drawablePairs.get(drawable.name));
+                                        container.setActor(image);
+                                    }
+                                    break;
+                            }
+                        }
                     }
                 }
             }
