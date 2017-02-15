@@ -2335,7 +2335,7 @@ public class RootTable extends Table {
                     previewTable.add(horizontalGroup).grow().pad(10.0f);
 
                     for (CustomProperty customProperty : customStyle.getProperties()) {
-                        switch(customProperty.getType()) {
+                        if (customProperty.getValue() != null) switch(customProperty.getType()) {
                             case TEXT:
                                 Label labelText = new Label((String) customProperty.getValue(), getSkin());
                                 horizontalGroup.addActor(labelText);
