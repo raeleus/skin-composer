@@ -348,6 +348,7 @@ public class MainListener extends RootTableListener {
                 try {
                     jsonData.readFile(fileHandle);
                     main.getProjectData().getAtlasData().atlasCurrent = false;
+                    jsonData.checkForPropertyConsistency();
                     main.getRootTable().produceAtlas();
                     main.getRootTable().populate();
                 } catch (Exception e) {

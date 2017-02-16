@@ -37,6 +37,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin.TintedDrawable;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
@@ -102,26 +103,28 @@ public class JsonData implements Json.Serializable {
             //fonts
             if (child.name().equals(BitmapFont.class.getName())) {
                 for (JsonValue font : child.iterator()) {
-                    FileHandle fontFile = fileHandle.sibling(font.getString("file"));
-                    FileHandle fontCopy = targetDirectory.child(font.getString("file"));
-                    if (!fontCopy.parent().equals(fontFile.parent())) {
-                        fontFile.copyTo(fontCopy);
-                    }
-                    FontData fontData = new FontData(font.name(), fontCopy);
-                    
-                    //delete fonts with the same name
-                    for (FontData originalData : new Array<>(fonts)) {
-                        if (originalData.getName().equals(fontData.getName())) {
-                            fonts.removeValue(originalData, true);
+                    if (font.get("file") != null) {
+                        FileHandle fontFile = fileHandle.sibling(font.getString("file"));
+                        FileHandle fontCopy = targetDirectory.child(font.getString("file"));
+                        if (!fontCopy.parent().equals(fontFile.parent())) {
+                            fontFile.copyTo(fontCopy);
                         }
-                    }
-                    
-                    fonts.add(fontData);
+                        FontData fontData = new FontData(font.name(), fontCopy);
 
-                    BitmapFont.BitmapFontData bitmapFontData = new BitmapFont.BitmapFontData(fontCopy, false);
-                    for (String path : bitmapFontData.imagePaths) {
-                        FileHandle file = new FileHandle(path);
-                        main.getProjectData().getAtlasData().getDrawable(file.nameWithoutExtension()).visible = false;
+                        //delete fonts with the same name
+                        for (FontData originalData : new Array<>(fonts)) {
+                            if (originalData.getName().equals(fontData.getName())) {
+                                fonts.removeValue(originalData, true);
+                            }
+                        }
+
+                        fonts.add(fontData);
+
+                        BitmapFont.BitmapFontData bitmapFontData = new BitmapFont.BitmapFontData(fontCopy, false);
+                        for (String path : bitmapFontData.imagePaths) {
+                            FileHandle file = new FileHandle(path);
+                            main.getProjectData().getAtlasData().getDrawable(file.nameWithoutExtension()).visible = false;
+                        }
                     }
                 }
             } //colors
@@ -275,6 +278,88 @@ public class JsonData implements Json.Serializable {
                             }
                             
                             break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    public void checkForPropertyConsistency() {
+        for (Class clazz : classStyleMap.keys()) {
+            for (StyleData styleData : classStyleMap.get(clazz)) {
+                for (StyleProperty property : styleData.properties.values()) {
+                    if (property.value != null) {
+                        boolean keep = false;
+                        if (property.type == Color.class) {
+                            for (ColorData color : colors) {
+                                if (property.value.equals(color.getName())) {
+                                    keep = true;
+                                    break;
+                                }
+                            }
+                        } else if (property.type == BitmapFont.class) {
+                            for (FontData font : fonts) {
+                                if (property.value.equals(font.getName())) {
+                                    keep = true;
+                                    break;
+                                }
+                            }
+                        } else if (property.type == Drawable.class) {
+                            for (DrawableData drawable : main.getAtlasData().getDrawables()) {
+                                if (property.value.equals(drawable.name)) {
+                                    keep = true;
+                                    break;
+                                }
+                            }
+                        } else {
+                            keep = true;
+                        }
+
+                        if (!keep) {
+                            property.value = null;
+                        }
+                    }
+                }
+            }
+        }
+        
+        for (CustomClass customClass : customClasses) {
+            for (CustomStyle customStyle: customClass.getStyles()) {
+                for (CustomProperty customProperty : customStyle.getProperties()) {
+                    if (customProperty.getValue() != null) {
+                        boolean keep = false;
+                        if (null == customProperty.getType()) {
+                            keep = true;
+                        } else switch (customProperty.getType()) {
+                            case COLOR:
+                                for (ColorData color : colors) {
+                                    if (customProperty.getValue().equals(color.getName())) {
+                                        keep = true;
+                                        break;
+                                    }
+                                }   break;
+                            case DRAWABLE:
+                                for (DrawableData drawable : main.getAtlasData().getDrawables()) {
+                                    if (customProperty.getValue().equals(drawable.name)) {
+                                        keep = true;
+                                        break;
+                                    }
+                                }   break;
+                            case FONT:
+                                for (FontData font : fonts) {
+                                    if (customProperty.getValue().equals(font.getName())) {
+                                        keep = true;
+                                        break;
+                                    }
+                                }   break;
+                            default:
+                                keep = true;
+                                break;
+                        }
+
+                        if (!keep) {
+                            customProperty.setValue(null);
                         }
                     }
                 }
