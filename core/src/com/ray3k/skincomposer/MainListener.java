@@ -338,7 +338,7 @@ public class MainListener extends RootTableListener {
 
             String[] filterPatterns = null;
             if (!Utils.isMac()) {
-                filterPatterns = new String[] {"*.scmp"};
+                filterPatterns = new String[] {"*.json"};
             }
 
             File file = desktopWorker.openDialog("Import skin...", defaultPath, filterPatterns, "Json files");
