@@ -496,7 +496,8 @@ public class JsonData implements Json.Serializable {
                     for (CustomProperty customProperty : customStyle.getProperties()) {
                         //only write value if it is valid
                         boolean writeValue = false;
-                        if (customProperty.getValue() instanceof Double && customProperty.getType() == PropertyType.NUMBER
+                        if (customProperty.getValue() instanceof Float && customProperty.getType() == PropertyType.NUMBER
+                                || customProperty.getValue() instanceof Double && customProperty.getType() == PropertyType.NUMBER
                                 || customProperty.getValue() instanceof Boolean && customProperty.getType() == PropertyType.BOOL) {
                             writeValue = true;
                         } else if (customProperty.getValue() instanceof String && !((String) customProperty.getValue()).equals("")) {
