@@ -1122,7 +1122,7 @@ public class RootTable extends Table {
             previewProperties.clear();
 
             Table t = new Table();
-            previewPropertiesTable.add(t).center().expand();
+            previewPropertiesTable.add(t).grow();
             t.defaults().pad(3.0f);
             
             if (previewBgColor == null) {
@@ -1131,7 +1131,7 @@ public class RootTable extends Table {
             previewProperties.put("bgcolor", previewBgColor);
 
             if (classSelectBox.getSelectedIndex() >= 0 && classSelectBox.getSelectedIndex() < Main.BASIC_CLASSES.length) {
-                t.add(new Label("Stage Color: ", getSkin()));
+                t.add(new Label("Stage Color: ", getSkin())).right();
                 BrowseField browseField = new BrowseField(null, null, getSkin(), "color");
                 browseField.addListener(new ChangeListener() {
                     @Override
@@ -1194,7 +1194,7 @@ public class RootTable extends Table {
                     t.add(disabledCheckBox).left();
 
                     t.row();
-                    t.add(new Label("Text: ", getSkin()));
+                    t.add(new Label("Text: ", getSkin())).right();
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
                     previewTextField.addListener(main.getIbeamListener());
@@ -1238,7 +1238,7 @@ public class RootTable extends Table {
                     t.add(disabledCheckBox).left();
 
                     t.row();
-                    t.add(new Label("Text: ", getSkin()));
+                    t.add(new Label("Text: ", getSkin())).right();
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
                     previewTextField.addListener(main.getIbeamListener());
@@ -1254,7 +1254,7 @@ public class RootTable extends Table {
 
                 } else if (clazz.equals(Label.class)) {
                     t.row();
-                    t.add(new Label("Text: ", getSkin()));
+                    t.add(new Label("Text: ", getSkin())).right();
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
                     previewTextField.addListener(main.getIbeamListener());
@@ -1828,7 +1828,7 @@ public class RootTable extends Table {
                     t.add(disabledCheckBox).left();
 
                     t.row();
-                    t.add(new Label("Text: ", getSkin()));
+                    t.add(new Label("Text: ", getSkin())).right();
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
                     previewTextField.addListener(main.getIbeamListener());
@@ -1912,7 +1912,7 @@ public class RootTable extends Table {
                     previewProperties.put("alignment", Align.left);
 
                     t.row();
-                    t.add(new Label("Text: ", getSkin()));
+                    t.add(new Label("Text: ", getSkin())).right();
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
                     previewTextField.addListener(main.getIbeamListener());
@@ -1927,7 +1927,7 @@ public class RootTable extends Table {
                     t.add(previewTextField).growX();
 
                     t.row();
-                    t.add(new Label("Message Text: ", getSkin()));
+                    t.add(new Label("Message Text: ", getSkin())).right();
                     TextField messageTextField = new TextField(TEXT_SAMPLE, getSkin());
                     messageTextField.setFocusTraversal(false);
                     messageTextField.addListener(main.getIbeamListener());
@@ -1943,7 +1943,7 @@ public class RootTable extends Table {
 
                 } else if (clazz.equals(TextTooltip.class)) {
                     t.row();
-                    t.add(new Label("Text: ", getSkin()));
+                    t.add(new Label("Text: ", getSkin())).right();
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
                     previewTextField.addListener(main.getIbeamListener());
@@ -1982,7 +1982,7 @@ public class RootTable extends Table {
 
                 } else if (clazz.equals(Window.class)) {
                     t.row();
-                    t.add(new Label("Title Text: ", getSkin()));
+                    t.add(new Label("Title Text: ", getSkin())).right();
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
                     previewTextField.addListener(main.getIbeamListener());
@@ -2032,8 +2032,28 @@ public class RootTable extends Table {
 
                 refreshPreview();
             } else {
-                Label label = new Label("No preview properties available for custom classes!", getSkin());
-                t.add(label);
+                t.add(new Label("Stage Color: ", getSkin())).right();
+                BrowseField browseField = new BrowseField(null, null, getSkin(), "color");
+                browseField.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        main.getDialogFactory().showDialogColorPicker((Color) previewProperties.get("bgcolor"), new DialogColorPicker.ColorListener() {
+                            @Override
+                            public void selected(Color color) {
+                                if (color != null) {
+                                    browseField.getTextButton().setText((int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
+                                    previewProperties.put("bgcolor", color);
+                                    previewBgColor.set(color);
+                                    refreshPreview();
+                                }
+                            }
+                        });
+                    }
+                });
+                
+                browseField.addListener(main.getHandListener());
+                t.add(browseField).growX();
+                browseField.getTextButton().setText((int) (previewBgColor.r * 255) + "," + (int) (previewBgColor.g * 255) + "," + (int) (previewBgColor.b * 255) + "," + (int) (previewBgColor.a * 255));
             }
         }
     }
