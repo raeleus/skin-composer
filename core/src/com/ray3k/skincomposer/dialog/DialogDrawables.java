@@ -81,6 +81,7 @@ public class DialogDrawables extends Dialog {
     public static DialogDrawables instance;
     private final static int[] sizes = {125, 150, 200, 250};
     private static float scrollPosition = 0.0f;
+    private static int sortSelection = 0;
     private SelectBox sortSelectBox;
     private ScrollPane scrollPane;
     private Slider zoomSlider;
@@ -217,9 +218,11 @@ public class DialogDrawables extends Dialog {
         
         sortSelectBox = new SelectBox(getSkin());
         sortSelectBox.setItems("A-Z", "Z-A", "Oldest", "Newest");
+        sortSelectBox.setSelectedIndex(sortSelection);
         sortSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                sortSelection = sortSelectBox.getSelectedIndex();
                 sortBySelectedMode();
             }
         });
