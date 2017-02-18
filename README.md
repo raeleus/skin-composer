@@ -11,7 +11,9 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 
 *Added a pseudo preview for custom classes. Drawables, fonts, colors, etc. are laid out one after the other.
 *Solved dialog file filter issue on OSX affecting Open and Import.
-*Various bug fixes in relation to custom classes.
+*Can import existing VisUI skins without crashing.
+*Sort selection is persistent in Drawables dialog.
+*Various bug fixes.
 
 ### Contact ###
 
