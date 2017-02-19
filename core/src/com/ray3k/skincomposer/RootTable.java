@@ -116,16 +116,19 @@ public class RootTable extends Table {
     private SelectBox<String> previewSizeSelectBox;
     private static final String[] DEFAULT_SIZES = {"small", "default", "large", "growX", "growY", "grow", "custom"};
     private static final String TEXT_SAMPLE = "Lorem ipsum dolor sit";
-    private static final String PARAGRAPH_SAMPLE = "Lorem ipsum dolor sit"
-            + "amet, consectetur adipiscing elit, sed do eiusmod"
-            + "tempor incididunt ut labore et dolore magna aliqua.\n"
-            + "Ut enim ad minim veniam, quis nostrud exercitation"
-            + "ullamco laboris nisi ut aliquip ex ea commodo"
-            + "consequat.\nDuis aute irure dolor in reprehenderit in"
-            + "voluptate velit esse cillum dolore eu fugiat nulla"
-            + "pariatur.\nExcepteur sint occaecat cupidatat non"
-            + "proident, sunt in culpa qui officia deserunt mollit"
-            + "anim id est laborum.";
+    private static final String PARAGRAPH_SAMPLE = 
+            "Lorem ipsum dolor sit amet, consectetur\n"
+            + "adipiscing elit, sed do eiusmod tempor\n"
+            + "incididunt ut labore et dolore magna\n"
+            + "aliqua. Ut enim ad minim veniam, quis\n"
+            + "nostrud exercitation ullamco laboris\n"
+            + "nisi ut aliquip ex ea commodo\n"
+            + "consequat. Duis aute irure dolor in\n"
+            + "reprehenderit in voluptate velit esse\n"
+            + "cillum dolore eu fugiat nulla pariatur.\n"
+            + "Excepteur sint occaecat cupidatat non\n"
+            + "proident, sunt in culpa qui officia\n"
+            + "deserunt mollit anim id est laborum.\n";
     private static final String PARAGRAPH_SAMPLE_EXT = PARAGRAPH_SAMPLE
             + "\n\n\n" + PARAGRAPH_SAMPLE + "\n\n\n" + PARAGRAPH_SAMPLE + "\n\n\n"
             + PARAGRAPH_SAMPLE;
@@ -2059,6 +2062,7 @@ public class RootTable extends Table {
     public void refreshPreview() {        
         if (previewTable != null) {
             previewTable.clear();
+            previewTable.setBackground((Drawable)null);
             previewTable.setColor((Color) previewProperties.get("bgcolor"));
 
             for (BitmapFont font : previewFonts) {
@@ -2223,6 +2227,11 @@ public class RootTable extends Table {
                         widget.addListener(main.getHandListener());
                     } else if (clazz.equals(Window.class))  {
                         Window.WindowStyle style = createPreviewStyle(Window.WindowStyle.class, styleData);
+                        
+                        if (style.stageBackground != null) {
+                            previewTable.setBackground(style.stageBackground);
+                            style.stageBackground = null;
+                        }
 
                         Label sampleText = new Label("", getSkin());
                         sampleText.setText((String) previewProperties.get("text"));
