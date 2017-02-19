@@ -332,6 +332,7 @@ public class DialogFonts extends Dialog {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         fonts.removeValue(deleteFont, true);
+                        main.getProjectData().setChangesSaved(false);
                         BitmapFontData bitmapFontData = new BitmapFontData(deleteFont.file, false);
                         for (String path : bitmapFontData.imagePaths) {
                             FileHandle imagefile = new FileHandle(path);

@@ -648,6 +648,8 @@ public class DialogDrawables extends Dialog {
             main.getRootTable().refreshPreview();
 
             main.getUndoableManager().clearUndoables();
+            
+            main.getProjectData().setChangesSaved(false);
 
             gatherDrawables();
             sortBySelectedMode();
@@ -665,6 +667,7 @@ public class DialogDrawables extends Dialog {
             @Override
             protected void result(Object object) {
                 if ((boolean) object) {
+                    main.getProjectData().setChangesSaved(false);
                     removeDuplicateDrawables(drawable.file);
                     gatherDrawables();
                     sortBySelectedMode();

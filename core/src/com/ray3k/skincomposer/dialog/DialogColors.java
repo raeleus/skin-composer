@@ -375,6 +375,7 @@ public class DialogColors extends Dialog {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         colors.removeValue(deleteColor, true);
+                        main.getProjectData().setChangesSaved(false);
                         
                         //clear style properties that use this color.
                         for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
