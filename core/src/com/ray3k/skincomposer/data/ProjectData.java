@@ -144,6 +144,15 @@ public class ProjectData implements Json.Serializable {
         return (int) preferences.get("maxUndos", 30);
     }
     
+    public void setAllowingWelcome(boolean allow) {
+        generalPref.putBoolean("allowingWelcome", allow);
+        generalPref.flush();
+    }
+    
+    public boolean isAllowingWelcome() {
+        return generalPref.getBoolean("allowingWelcome", true);
+    }
+    
     public FileHandle getSaveFile() {
         return saveFile;
     }
@@ -315,6 +324,7 @@ public class ProjectData implements Json.Serializable {
 
         randomizeId();
         setMaxUndos(30);
+        setAllowingWelcome(true);
         
         jsonData.clear();
         atlasData.clear();

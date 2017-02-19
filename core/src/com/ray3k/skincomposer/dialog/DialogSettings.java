@@ -25,7 +25,6 @@ package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -47,6 +46,7 @@ public class DialogSettings extends Dialog {
     private final SpinnerStyle spinnerStyle;
     private Integer maxUndos;
     private boolean resourcesRelative;
+    private boolean allowingWelcome;
     private final Main main;
 
     public DialogSettings(String title, String windowStyleName, Main main) {
@@ -56,6 +56,7 @@ public class DialogSettings extends Dialog {
 
         maxUndos = main.getProjectData().getMaxUndos();
         resourcesRelative = main.getProjectData().areResourcesRelative();
+        allowingWelcome = main.getProjectData().isAllowingWelcome();
         setFillParent(true);
 
         populate();
@@ -69,6 +70,7 @@ public class DialogSettings extends Dialog {
             main.getProjectData().setChangesSaved(false);
             main.getProjectData().setMaxUndos(maxUndos);
             main.getProjectData().setResourcesRelative(resourcesRelative);
+            main.getProjectData().setAllowingWelcome(allowingWelcome);
             main.getUndoableManager().clearUndoables();
         }
     }
@@ -202,7 +204,7 @@ public class DialogSettings extends Dialog {
         t.add(spinner3).minWidth(150.0f).left().padTop(10.0f);
         
         t.row();
-        ImageTextButton checkBox = new ImageTextButton("Keep resources relative?", getSkin(), "checkbox");
+        final ImageTextButton checkBox = new ImageTextButton("Keep resources relative?", getSkin(), "checkbox");
         checkBox.setChecked(resourcesRelative);
         checkBox.addListener(new ChangeListener() {
             @Override
@@ -211,6 +213,44 @@ public class DialogSettings extends Dialog {
             }
         });
         t.add(checkBox).padTop(10.0f).colspan(2);
+        
+        t.row();
+        final ImageTextButton welcomeCheckBox = new ImageTextButton("Show welcome screen?", getSkin(), "checkbox");
+        welcomeCheckBox.setChecked(allowingWelcome);
+        welcomeCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                allowingWelcome = welcomeCheckBox.isChecked();
+            }
+        });
+        t.add(welcomeCheckBox).padTop(10.0f).colspan(2);
+        
+        t.row();
+        textButton = new TextButton("Open Welcome Screen", main.getSkin());
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                main.getDialogFactory().yesNoCancelDialog("Save settings?", "Do you want to apply settings changes before proceeding?", new DialogFactory.ConfirmationListener() {
+                    @Override
+                    public void selected(int selection) {
+                        switch (selection) {
+                            case 0:
+                                result(true);
+                                hide();
+                                main.getDialogFactory().showWelcomeDialog(main.getMainListener().getWelcomeListener());
+                                break;
+                            case 1:
+                                result(false);
+                                hide();
+                                main.getDialogFactory().showWelcomeDialog(main.getMainListener().getWelcomeListener());
+                            break;
+                        }
+                    }
+                });
+            }
+        });
+        textButton.addListener(main.getHandListener());
+        t.add(textButton).colspan(2);
 
         button("OK", true);
         button("Cancel", false);

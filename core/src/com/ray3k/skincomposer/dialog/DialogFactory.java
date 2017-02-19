@@ -55,6 +55,7 @@ import com.ray3k.skincomposer.dialog.DialogColors.DialogColorsListener;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
 import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyListener;
 import com.ray3k.skincomposer.dialog.DialogCustomStyle.CustomStyleListener;
+import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
 
 public class DialogFactory {
     private static DialogFactory instance;
@@ -615,6 +616,12 @@ public class DialogFactory {
     
     public void showDuplicateStylePropertyDialog(String propertyName, PropertyType propertyType, CustomStylePropertyListener listener) {
         DialogCustomProperty dialog = new DialogCustomProperty(main, "Duplicate Custom Property", propertyName, propertyType, false);
+        dialog.addListener(listener);
+        dialog.show(main.getStage());
+    }
+    
+    public void showWelcomeDialog(WelcomeListener listener) {
+        DialogWelcome dialog = new DialogWelcome(main);
         dialog.addListener(listener);
         dialog.show(main.getStage());
     }

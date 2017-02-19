@@ -231,6 +231,42 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
 		down: button-pressed
 		over: button-over
 	}
+	thumb-neon: {
+		imageUp: thumb-neon
+		up: welcome-frame
+		down: welcome-frame-pressed
+		over: welcome-frame-over
+	}
+	thumb-neutralizer: {
+		imageUp: thumb-neutralizer
+		up: welcome-frame
+		down: welcome-frame-pressed
+		over: welcome-frame-over
+	}
+	thumb-plain-james: {
+		imageUp: thumb-plain-james
+		up: welcome-frame
+		down: welcome-frame-pressed
+		over: welcome-frame-over
+	}
+	thumb-scene2d: {
+		imageUp: thumb-scene2d
+		up: welcome-frame
+		down: welcome-frame-pressed
+		over: welcome-frame-over
+	}
+	thumb-video: {
+		imageUp: thumb-video
+		up: welcome-frame
+		down: welcome-frame-pressed
+		over: welcome-frame-over
+	}
+	thumb-vis-ui: {
+		imageUp: thumb-vis-ui
+		up: welcome-frame
+		down: welcome-frame-pressed
+		over: welcome-frame-over
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
 	default: {
@@ -284,6 +320,14 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	disabled: {
 		font: font
 		fontColor: disabled
+	}
+	title-no-line: {
+		font: title
+		fontColor: button
+	}
+	black: {
+		font: font
+		fontColor: black
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
@@ -427,6 +471,12 @@ com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 	}
 	bg: {
 		background: window
+		titleFont: font
+		titleFontColor: white
+		stageBackground: stage-background
+	}
+	welcome: {
+		background: window2
 		titleFont: font
 		titleFontColor: white
 		stageBackground: stage-background

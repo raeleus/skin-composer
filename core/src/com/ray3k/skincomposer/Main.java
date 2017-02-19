@@ -168,6 +168,7 @@ public class Main extends ApplicationAdapter {
         rootTable.populate();
         stage.addActor(rootTable);
         rootTable.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
+        mainListener.createWelcomeListener();
     }
     
     @Override
@@ -183,6 +184,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
+        rootTable.fire(new StageResizeEvent(width, height));
     }
 
     @Override

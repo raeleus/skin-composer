@@ -23,6 +23,7 @@
  ******************************************************************************/
 package com.ray3k.skincomposer;
 
+import com.badlogic.gdx.Files;
 import com.ray3k.skincomposer.data.CustomStyle;
 import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.badlogic.gdx.Gdx;
@@ -54,6 +55,7 @@ import com.ray3k.skincomposer.UndoableManager.NewCustomClassUndoable;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
 import com.ray3k.skincomposer.dialog.DialogCustomStyle;
+import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
 
@@ -64,6 +66,7 @@ public class MainListener extends RootTableListener {
     private final ProjectData projectData;
     private final JsonData jsonData;
     private final Main main;
+    private WelcomeDialogListener welcomeListener;
     
     public MainListener(Main main) {
         this.root = main.getRootTable();
@@ -72,6 +75,13 @@ public class MainListener extends RootTableListener {
         this.projectData = main.getProjectData();
         this.jsonData = main.getProjectData().getJsonData();
         this.main = main;
+    }
+    
+    public void createWelcomeListener() {
+        welcomeListener = new WelcomeDialogListener();
+        if (main.getProjectData().isAllowingWelcome()) {
+            dialogFactory.showWelcomeDialog(welcomeListener);
+        }
     }
     
     @Override
@@ -297,8 +307,41 @@ public class MainListener extends RootTableListener {
         }
     }
     
+    public void openFile(FileHandle fileHandle) {
+        Runnable runnable = () -> {
+            String defaultPath = projectData.getLastOpenSavePath();
+
+            String[] filterPatterns = null;
+            if (!Utils.isMac()) {
+                filterPatterns = new String[] {"*.scmp"};
+            }
+
+            if (fileHandle != null) {
+                projectData.load(fileHandle);
+                projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
+                root.populate();
+                root.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
+            }
+        };
+        
+        if (!projectData.areChangesSaved() && !projectData.isNewProject()) {
+            dialogFactory.yesNoCancelDialog("Save Changes?",
+                    "Do you want to save changes to the existing project?"
+                    + "\nAll unsaved changes will be lost.",
+                    (int selection) -> {
+                        if (selection == 0) {
+                            saveFile(runnable);
+                        } else if (selection == 1) {
+                            dialogFactory.showDialogLoading(runnable);
+                        }
+                    });
+        } else {
+            dialogFactory.showDialogLoading(runnable);
+        }
+    }
+    
     public void saveFile(Runnable runnable) {
-        if (projectData.getSaveFile() != null) {
+        if (projectData.getSaveFile() != null && projectData.getSaveFile().type() != Files.FileType.Internal) {
             
             dialogFactory.showDialogLoading(() -> {
                 projectData.save();
@@ -549,5 +592,50 @@ public class MainListener extends RootTableListener {
             default:
                 break;
         }  
+    }
+    
+    public WelcomeListener getWelcomeListener() {
+        return welcomeListener;
+    }
+    
+    private class WelcomeDialogListener extends WelcomeListener {
+        @Override
+        public void cancelled() {
+        }
+
+        @Override
+        public void videoClicked() {
+            Gdx.net.openURI("https://www.youtube.com/watch?v=78amAV0_e24&list=PLl-_-0fPSXFfHiRAFpmLCuQup10MUJwcA");
+        }
+
+        @Override
+        public void blankClicked() {
+            newFile();
+        }
+
+        @Override
+        public void visUIclicked() {
+            openFile(Gdx.files.internal("templates/vis-ui/vis-ui.scmp"));
+        }
+
+        @Override
+        public void plainJamesClicked() {
+            openFile(Gdx.files.internal("templates/plain-james-ui/plain-james-ui.scmp"));
+        }
+
+        @Override
+        public void neonClicked() {
+            openFile(Gdx.files.internal("templates/neon-ui/neon-ui.scmp"));
+        }
+
+        @Override
+        public void neutralizerClicked() {
+            openFile(Gdx.files.internal("templates/neutralizer-ui/neutralizer-ui.scmp"));
+        }
+
+        @Override
+        public void dontShowClicked(boolean value) {
+            main.getProjectData().setAllowingWelcome(!value);
+        }
     }
 }
