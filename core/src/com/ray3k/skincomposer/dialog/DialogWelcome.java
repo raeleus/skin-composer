@@ -129,7 +129,7 @@ public class DialogWelcome extends Dialog {
         subTable.add(imageButton).size(125.0f, 140.0f);
         
         subTable.row();
-        label = new Label("Blank Project", getSkin(), "black");
+        label = new Label("Empty Project", getSkin(), "black");
         subTable.add(label);
         
         subTable = new Table();
