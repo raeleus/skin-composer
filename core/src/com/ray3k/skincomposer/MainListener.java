@@ -341,7 +341,7 @@ public class MainListener extends RootTableListener {
     }
     
     public void saveFile(Runnable runnable) {
-        if (projectData.getSaveFile() != null && projectData.getSaveFile().type() != Files.FileType.Internal) {
+        if (projectData.getSaveFile() != null && projectData.getSaveFile().type() != Files.FileType.Local) {
             
             dialogFactory.showDialogLoading(() -> {
                 projectData.save();
@@ -615,22 +615,26 @@ public class MainListener extends RootTableListener {
 
         @Override
         public void visUIclicked() {
-            openFile(Gdx.files.internal("templates/vis-ui/vis-ui.scmp"));
+            Gdx.files.internal("templates/vis-ui/").copyTo(Gdx.files.local("temp/"));
+            openFile(Gdx.files.local("temp/vis-ui.scmp"));
         }
 
         @Override
         public void plainJamesClicked() {
-            openFile(Gdx.files.internal("templates/plain-james-ui/plain-james-ui.scmp"));
+            Gdx.files.internal("templates/plain-james-ui/").copyTo(Gdx.files.local("temp/"));
+            openFile(Gdx.files.local("temp/plain-james-ui.scmp"));
         }
 
         @Override
         public void neonClicked() {
-            openFile(Gdx.files.internal("templates/neon-ui/neon-ui.scmp"));
+            Gdx.files.internal("templates/neon-ui/").copyTo(Gdx.files.local("temp/"));
+            openFile(Gdx.files.local("temp/neon-ui.scmp"));
         }
 
         @Override
         public void neutralizerClicked() {
-            openFile(Gdx.files.internal("templates/neutralizer-ui/neutralizer-ui.scmp"));
+            Gdx.files.internal("templates/neutralizer-ui/").copyTo(Gdx.files.local("temp/"));
+            openFile(Gdx.files.local("temp/neutralizer-ui.scmp"));
         }
 
         @Override
