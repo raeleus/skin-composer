@@ -54,6 +54,7 @@ public class ProjectData implements Json.Serializable {
         newProject = true;
         preferences = new ObjectMap<>();
         generalPref = Gdx.app.getPreferences("com.ray3k.skincomposer");
+        clear();
     }
 
     public void setMain(Main main) {
@@ -324,13 +325,16 @@ public class ProjectData implements Json.Serializable {
 
         randomizeId();
         setMaxUndos(30);
+        setResourcesRelative(false);
         setAllowingWelcome(true);
         
         jsonData.clear();
         atlasData.clear();
         saveFile = null;
-        main.getRootTable().produceAtlas();
-        main.getRootTable().populate();
+        if (main != null) {
+            main.getRootTable().produceAtlas();
+            main.getRootTable().populate();
+        }
         setChangesSaved(false);
         newProject = true;
     }
