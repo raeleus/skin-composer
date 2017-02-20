@@ -112,6 +112,8 @@ public class Main extends ApplicationAdapter {
     private void initDefaults() {
         if (Utils.isMac()) System.setProperty("java.awt.headless", "true");
         
+        skin.getFont("font").getData().markupEnabled = true;
+        
         //copy defaults.json to temp folder if it doesn't exist
         FileHandle fileHandle = Gdx.files.local("texturepacker/defaults.json");
         if (!fileHandle.exists()) {

@@ -82,6 +82,10 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 		name: link
 		color: link-pressed
 	}
+	class-bar-black: {
+		name: class-bar
+		color: black
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 	default: {
@@ -328,6 +332,11 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	black: {
 		font: font
 		fontColor: black
+	}
+	black-underline: {
+		font: font
+		fontColor: black
+		background: class-bar-black
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {

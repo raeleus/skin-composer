@@ -625,4 +625,9 @@ public class DialogFactory {
         dialog.addListener(listener);
         dialog.show(main.getStage());
     }
+    
+    public void showWarningDialog(Array<String> warnings) {
+        DialogWarnings dialog = new DialogWarnings(main, warnings);
+        dialog.show(main.getStage());
+    }
 }

@@ -390,7 +390,9 @@ public class JsonData implements Json.Serializable {
         return returnValue;
     }
 
-    public void writeFile(FileHandle fileHandle) {
+    public Array<String> writeFile(FileHandle fileHandle) {
+        Array<String> warnings = new Array<>();
+        
         StringWriter stringWriter = new StringWriter();
         JsonWriter jsonWriter = new JsonWriter(stringWriter);
         jsonWriter.setOutputType(OutputType.minimal);
@@ -480,78 +482,106 @@ public class JsonData implements Json.Serializable {
                             }
                         }
                         json.writeObjectEnd();
+                    } else {
+                        if (style.hasAllNullFields()) {
+                            warnings.add("Did not export style [BLACK]" + style.name + "[] for class [BLACK]" + clazz.getSimpleName() + " (All fields null)");
+                        } else if (!style.hasMandatoryFields()) {
+                            warnings.add("Did not export style [BLACK]" + style.name + "[] for class [BLACK]" + clazz.getSimpleName() + " (All fields null)");
+                        }
                     }
                 }
                 json.writeObjectEnd();
+            } else {
+                warnings.add("Did not export class [BLACK]" + clazz.getSimpleName() + "[] (No valid styles)");
             }
         }
         
         //custom classes
         for (CustomClass customClass : customClasses) {
-            
             if (customClassHasFields(customClass)) {
                 json.writeObjectStart(customClass.getFullyQualifiedName());
                 for (CustomStyle customStyle : customClass.getStyles()) {
-                    json.writeObjectStart(customStyle.getName());
-                    for (CustomProperty customProperty : customStyle.getProperties()) {
-                        //only write value if it is valid
-                        boolean writeValue = false;
-                        if (customProperty.getValue() instanceof Float && customProperty.getType() == PropertyType.NUMBER
-                                || customProperty.getValue() instanceof Double && customProperty.getType() == PropertyType.NUMBER
-                                || customProperty.getValue() instanceof Boolean && customProperty.getType() == PropertyType.BOOL) {
-                            writeValue = true;
-                        } else if (customProperty.getValue() instanceof String && !((String) customProperty.getValue()).equals("")) {
-                            if (customProperty.getType() == PropertyType.TEXT) {
-                                writeValue = true;
-                            } else if (customProperty.getType() == PropertyType.COLOR) {
-                                for (ColorData data : getColors()) {
-                                    if (data.getName().equals(customProperty.getValue())) {
-                                        writeValue = true;
-                                        break;
-                                    }
-                                }
-                            } else if (customProperty.getType() == PropertyType.DRAWABLE) {
-                                for (DrawableData data : main.getAtlasData().getDrawables()) {
-                                    if (data.name.equals(customProperty.getValue())) {
-                                        writeValue = true;
-                                        break;
-                                    }
-                                }
-                            } else if (customProperty.getType() == PropertyType.FONT) {
-                                for (FontData data : getFonts()) {
-                                    if (data.getName().equals(customProperty.getValue())) {
-                                        writeValue = true;
-                                        break;
-                                    }
-                                }
+                    if (customStyleHasFields(customStyle)) {
+                        json.writeObjectStart(customStyle.getName());
+
+                        for (CustomProperty customProperty : customStyle.getProperties()) {
+                            //only write value if it is valid
+                            if (customPropertyIsNotNull(customProperty)) {
+                                json.writeValue(customProperty.getName(), customProperty.getValue());
                             }
                         }
-                        if (writeValue) {
-                            json.writeValue(customProperty.getName(), customProperty.getValue());
-                        }
+                        json.writeObjectEnd();
+                    } else {
+                        warnings.add("Did not export custom style [BLACK]" + customStyle.getName() + "[] for class [BLACK]" + customClass.getDisplayName() + "[] (All fields null)");
                     }
-                    json.writeObjectEnd();
                 }
                 json.writeObjectEnd();
+            } else {
+                warnings.add("Did not export custom class [BLACK]" + customClass.getDisplayName() + "[] (No valid styles)");
             }
         }
 
         json.writeObjectEnd();
         fileHandle.writeString(json.prettyPrint(stringWriter.toString()), false);
+        
+        return warnings;
+    }
+    
+    private boolean customPropertyIsNotNull(CustomProperty customProperty) {
+        boolean returnValue = false;
+        if (customProperty.getValue() instanceof Float && customProperty.getType() == PropertyType.NUMBER
+                || customProperty.getValue() instanceof Double && customProperty.getType() == PropertyType.NUMBER
+                || customProperty.getValue() instanceof Boolean && customProperty.getType() == PropertyType.BOOL) {
+            returnValue = true;
+        } else if (customProperty.getValue() instanceof String && !((String) customProperty.getValue()).equals("")) {
+            if (null != customProperty.getType()) switch (customProperty.getType()) {
+                case TEXT:
+                    returnValue = true;
+                    break;
+                case COLOR:
+                    for (ColorData data : getColors()) {
+                        if (data.getName().equals(customProperty.getValue())) {
+                            returnValue = true;
+                            break;
+                        }
+                    }   break;
+                case DRAWABLE:
+                    for (DrawableData data : main.getAtlasData().getDrawables()) {
+                        if (data.name.equals(customProperty.getValue())) {
+                            returnValue = true;
+                            break;
+                        }
+                    }   break;
+                case FONT:
+                    for (FontData data : getFonts()) {
+                        if (data.getName().equals(customProperty.getValue())) {
+                            returnValue = true;
+                            break;
+                        }
+                    }   break;
+            }
+        }
+        
+        return returnValue;
+    }
+    
+    private boolean customStyleHasFields(CustomStyle customStyle) {
+        boolean returnValue = false;
+        
+        for (CustomProperty customProperty : customStyle.getProperties()) {
+            if (customPropertyIsNotNull(customProperty)) {
+                returnValue = true;
+                break;
+            }
+        }
+        
+        return returnValue;
     }
 
     private boolean customClassHasFields(CustomClass customClass) {
         for (CustomStyle style : customClass.getStyles()) {
-            for (CustomProperty property : style.getProperties()) {
-                if (property.getValue() != null) {
-                    if (!(property.getValue() instanceof String)) {
-                        return true;
-                    } else {
-                        if (!((String)property.getValue()).equals("")) {
-                            return true;
-                        }
-                    }
-                }
+            if (customStyleHasFields(style)) {
+                return true;
             }
         }
         

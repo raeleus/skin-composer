@@ -33,20 +33,20 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.StageResizeListener;
 
-public class DialogWelcome extends Dialog {
+public class DialogWarnings extends Dialog {
     private final Main main;
     private float resetWidth, resetHeight;
-    private ScrollPane scrollPane;
+    private final ScrollPane scrollPane;
+    private Array<String> warnings;
 
     @Override
     protected void result(Object object) {
@@ -56,9 +56,10 @@ public class DialogWelcome extends Dialog {
         }
     }
 
-    public DialogWelcome(Main main) {
+    public DialogWarnings(Main main, Array<String> warnings) {
         super("", main.getSkin(), "welcome");
         this.main = main;
+        this.warnings = warnings;
         
         setMovable(false);
         
@@ -74,6 +75,10 @@ public class DialogWelcome extends Dialog {
         getContentTable().add(button).expandX().right().pad(0.0f).space(0.0f).padTop(5.0f).padRight(5.0f);
         
         getContentTable().row();
+        Label label = new Label("Warnings:", getSkin(), "black-underline");
+        getContentTable().add(label);
+        
+        getContentTable().row();
         Table table = new Table();
         table.pad(10.0f).padTop(0.0f);
         table.defaults().space(10.0f);
@@ -83,158 +88,15 @@ public class DialogWelcome extends Dialog {
         scrollPane.setScrollingDisabled(true, false);
         getContentTable().add(scrollPane).grow();
         
-        Table subTable = new Table();
-        table.add(subTable);
+        for (String warning : warnings) {
+            table.row();
+            label = new Label(warning, getSkin());
+            table.add(label);
+        }
         
-        Label label = new Label("Watch a video tutorial:", getSkin(), "black");
-        subTable.add(label).space(10.0f);
-        
-        subTable.row();
-        ImageButton imageButton = new ImageButton(getSkin(), "thumb-video");
-        imageButton.addListener(main.getHandListener());
-        imageButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                fire(new WelcomeEvent(WelcomeValue.VIDEO));
-                hide();
-            }
-        });
-        subTable.add(imageButton).size(160.0f, 95.0f);
-        
-        table.row();
-        Table separator = new Table(getSkin());
-        separator.setBackground("welcome-separator");
-        table.add(separator).size(240.0f, 2.0f).padTop(15.0f);
-        
-        table.row();
-        label = new Label("Create New Project:", getSkin(), "black");
-        table.add(label);
-        
-        table.row();
-        Table organizerTable = new Table();
-        organizerTable.defaults().space(10.0f);
-        table.add(organizerTable);
-        
-        subTable = new Table();
-        organizerTable.add(subTable);
-        
-        imageButton = new ImageButton(getSkin(), "thumb-scene2d");
-        imageButton.addListener(main.getHandListener());
-        imageButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                fire(new WelcomeEvent(WelcomeValue.BLANK));
-                hide();
-            }
-        });
-        subTable.add(imageButton).size(125.0f, 140.0f);
-        
-        subTable.row();
-        label = new Label("Empty Project", getSkin(), "black");
-        subTable.add(label);
-        
-        subTable = new Table();
-        organizerTable.add(subTable);
-        
-        imageButton = new ImageButton(getSkin(), "thumb-vis-ui");
-        imageButton.addListener(main.getHandListener());
-        imageButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                fire(new WelcomeEvent(WelcomeValue.VISUI));
-                hide();
-            }
-        });
-        subTable.add(imageButton).size(125.0f, 140.0f);
-        
-        subTable.row();
-        label = new Label("VisUI Template", getSkin(), "black");
-        subTable.add(label);
-        
-        table.row();
-        separator = new Table(getSkin());
-        separator.setBackground("welcome-separator");
-        table.add(separator).size(240.0f, 2.0f).padTop(15.0f);
-        
-        table.row();
-        label = new Label("Open Sample Project:", getSkin(), "black");
-        table.add(label);
-        
-        table.row();
-        organizerTable = new Table();
-        organizerTable.defaults().space(10.0f);
-        table.add(organizerTable);
-        
-        subTable = new Table();
-        organizerTable.add(subTable);
-        
-        imageButton = new ImageButton(getSkin(), "thumb-plain-james");
-        imageButton.addListener(main.getHandListener());
-        imageButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                fire(new WelcomeEvent(WelcomeValue.PLAIN_JAMES));
-                hide();
-            }
-        });
-        subTable.add(imageButton).size(125.0f, 140.0f);
-        
-        subTable.row();
-        label = new Label("Plain James UI\nTutorial Project", getSkin(), "black");
-        label.setAlignment(Align.center);
-        subTable.add(label);
-        
-        subTable = new Table();
-        organizerTable.add(subTable);
-        
-        imageButton = new ImageButton(getSkin(), "thumb-neon");
-        imageButton.addListener(main.getHandListener());
-        imageButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                fire(new WelcomeEvent(WelcomeValue.NEON));
-                hide();
-            }
-        });
-        subTable.add(imageButton).size(125.0f, 140.0f);
-        
-        subTable.row();
-        label = new Label("Neon UI\nScene2D.UI Skin", getSkin(), "black");
-        label.setAlignment(Align.center);
-        subTable.add(label);
-        
-        subTable = new Table();
-        organizerTable.add(subTable);
-        
-        imageButton = new ImageButton(getSkin(), "thumb-neutralizer");
-        imageButton.addListener(main.getHandListener());
-        imageButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                fire(new WelcomeEvent(WelcomeValue.NEUTRALIZER));
-                hide();
-            }
-        });
-        subTable.add(imageButton).size(125.0f, 140.0f);
-        
-        subTable.row();
-        label = new Label("Neutralizer UI\nVisUI Skin", getSkin(), "black");
-        label.setAlignment(Align.center);
-        subTable.add(label);
-        
-        getContentTable().row();
-        final ImageTextButton checkBox = new ImageTextButton("Do not show again", main.getSkin(), "checkbox");
-        checkBox.setChecked(!main.getProjectData().isAllowingWelcome());
-        checkBox.addListener(main.getHandListener());
-        checkBox.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                fire(new DontShowEvent(checkBox.isChecked()));
-            }
-        });
-        getContentTable().add(checkBox).right().padRight(10.0f).expandX();
-        
-        key(Keys.ESCAPE, true);
+        getButtonTable().defaults().minWidth(100.0f).pad(10.0f);
+        button("OK", true).key(Keys.ESCAPE, true).key(Keys.ENTER, true);
+        getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
         
         main.getRootTable().addListener(new StageResizeListener() {
             @Override
@@ -256,7 +118,6 @@ public class DialogWelcome extends Dialog {
     @Override
     public Dialog show(Stage stage) {
         Dialog dialog = super.show(stage);
-        
         if (getWidth() > Gdx.graphics.getWidth()) {
             setWidth(Gdx.graphics.getWidth());
             setPosition(getWidth() / 2.0f, getHeight() / 2.0f, Align.center);

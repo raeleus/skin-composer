@@ -404,6 +404,7 @@ public class MainListener extends RootTableListener {
     
     public void exportFile() {
         dialogFactory.showDialogLoading(() -> {
+            Array<String> warnings = new Array<>();
             String defaultPath = projectData.getLastImportExportPath();
 
             String[] filterPatterns = {"*.json"};
@@ -415,10 +416,12 @@ public class MainListener extends RootTableListener {
                     fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".json");
                 }
                 projectData.setLastImportExportPath(fileHandle.parent().path() + "/");
-                main.getProjectData().getJsonData().writeFile(fileHandle);
+                Array<String> newWarnings = main.getProjectData().getJsonData().writeFile(fileHandle);
+                warnings.addAll(newWarnings);
                 
                 try {
                     main.getProjectData().getAtlasData().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
+                    warnings.addAll(newWarnings);
                 } catch (Exception ex) {
                     Gdx.app.error(getClass().getName(), "Error while writing texture atlas", ex);
                     dialogFactory.showDialogError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
@@ -429,6 +432,10 @@ public class MainListener extends RootTableListener {
                         font.file.copyTo(fileHandle.parent());
                     }
                 }
+            }
+            
+            if (warnings.size > 0) {
+                main.getDialogFactory().showWarningDialog(warnings);
             }
         });
     }
