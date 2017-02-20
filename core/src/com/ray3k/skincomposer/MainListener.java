@@ -377,6 +377,7 @@ public class MainListener extends RootTableListener {
     
     public void importFile() {
         dialogFactory.showDialogLoading(() -> {
+            Array<String> warnings = new Array<>();
             String defaultPath = projectData.getLastImportExportPath();
 
             String[] filterPatterns = null;
@@ -389,7 +390,8 @@ public class MainListener extends RootTableListener {
                 FileHandle fileHandle = new FileHandle(file);
                 projectData.setLastImportExportPath(fileHandle.parent().path() + "/");
                 try {
-                    jsonData.readFile(fileHandle);
+                    Array<String> newWarnings = jsonData.readFile(fileHandle);
+                    warnings.addAll(newWarnings);
                     main.getProjectData().getAtlasData().atlasCurrent = false;
                     jsonData.checkForPropertyConsistency();
                     main.getRootTable().produceAtlas();
@@ -398,6 +400,10 @@ public class MainListener extends RootTableListener {
                     Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
                     dialogFactory.showDialogError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
                 }
+            }
+            
+            if (warnings.size > 0) {
+                main.getDialogFactory().showWarningDialog(warnings);
             }
         });
     }

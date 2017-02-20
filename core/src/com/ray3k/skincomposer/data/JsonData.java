@@ -77,13 +77,18 @@ public class JsonData implements Json.Serializable {
         customClasses.clear();
     }
 
-    public void readFile(FileHandle fileHandle) throws Exception {
+    public Array<String> readFile(FileHandle fileHandle) throws Exception {
+        Array<String> warnings = new Array<>();
+        
         main.getProjectData().setChangesSaved(false);
         
         //read drawables from texture atlas file
         FileHandle atlasHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".atlas");
         if (atlasHandle.exists()) {
             main.getProjectData().getAtlasData().readAtlas(atlasHandle);
+        } else {
+            warnings.add("[RED]ERROR:[] Atlas file [BLACK]" + atlasHandle.name() + "[] does not exist.");
+            return warnings;
         }
 
         //folder for critical files to be copied to
@@ -105,11 +110,16 @@ public class JsonData implements Json.Serializable {
                 for (JsonValue font : child.iterator()) {
                     if (font.get("file") != null) {
                         FileHandle fontFile = fileHandle.sibling(font.getString("file"));
+                        if (!fontFile.exists()) {
+                            warnings.add("[RED]ERROR:[] Font file [BLACK]" + fontFile.name() + "[] does not exist.");
+                            return warnings;
+                        }
                         FileHandle fontCopy = targetDirectory.child(font.getString("file"));
                         if (!fontCopy.parent().equals(fontFile.parent())) {
                             fontFile.copyTo(fontCopy);
                         }
                         FontData fontData = new FontData(font.name(), fontCopy);
+                        
 
                         //delete fonts with the same name
                         for (FontData originalData : new Array<>(fonts)) {
@@ -189,12 +199,14 @@ public class JsonData implements Json.Serializable {
                                     styleProperty.value = property.asString();
                                 } else {
                                     Gdx.app.error(getClass().getName(), "Can't import JSON files that do not use predefined colors.");
+                                    warnings.add("Property [BLACK]" + styleProperty.name + "[] value cleared for [BLACK]" + clazz.getSimpleName() + ": " + data.name + "[] (Unsupported color definition)");
                                 }
                             } else {
                                 if (property.isString()) {
                                     styleProperty.value = property.asString();
                                 } else {
                                     Gdx.app.error(getClass().getName(), "Can't import JSON files that do not use String names for field values.");
+                                    warnings.add("Property [BLACK]" + styleProperty.name + "[] value cleared for [BLACK]" + clazz.getSimpleName() + ": " + data.name + "[] (Unsupported propety value)");
                                 }
                             }
                         }
@@ -243,6 +255,25 @@ public class JsonData implements Json.Serializable {
                             } else if (property.isString()) {
                                 customProperty.setType(PropertyType.TEXT);
                                 customProperty.setValue(property.asString());
+                            } else if (property.isBoolean()) {
+                                customProperty.setType(PropertyType.BOOL);
+                                customProperty.setValue(property.asBoolean());
+                            } else if (property.isObject()) {
+                                //todo: can object line be read as a String and put into text field?
+                                warnings.add("Custom property [BLACK]" + customProperty.getName() + "[] value converted to text for [BLACK]" + customClass.getDisplayName() + ": " + customStyle.getName() + "[] (Object property value)");
+                                customProperty.setType(PropertyType.TEXT);
+                                String value = "{";
+                                int index = 0;
+                                for (Object object : property.iterator()) {
+                                    if (index > 0) value += ", ";
+                                    value += object.toString();
+                                    index++;
+                                }
+                                value += "}";
+                                customProperty.setValue(value);
+                            } else if (property.isArray()) {
+                                warnings.add("Custom property [BLACK]" + customProperty.getName() + "[] value cleared for [BLACK]" + customClass.getDisplayName() + ": " + customStyle.getName() + "[] (Array property value)");
+                                customProperty.setType(PropertyType.TEXT);
                             } else {
                                 customProperty = null;
                             }
@@ -283,6 +314,8 @@ public class JsonData implements Json.Serializable {
                 }
             }
         }
+        
+        return warnings;
     }
     
     public void checkForPropertyConsistency() {
