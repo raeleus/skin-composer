@@ -191,7 +191,8 @@ public class AtlasData implements Json.Serializable {
         main.getDesktopWorker().texturePack(files, main.getProjectData().getSaveFile(), targetFile);
     }
     
-    public void writeAtlas(FileHandle targetFile) throws Exception {
+    public Array<String> writeAtlas(FileHandle targetFile) throws Exception {
+        Array<String> warnings = new Array<>();
         targetFile.parent().mkdirs();
         FileHandle[] oldFiles = targetFile.parent().list(new FilenameFilter() {
             @Override
@@ -209,9 +210,14 @@ public class AtlasData implements Json.Serializable {
             if (!files.contains(drawable.file, false)) {
                 files.add(drawable.file);
             }
+            
+            if (!drawable.file.exists()) {
+                warnings.add("[RED]ERROR:[] Drawable file [BLACK]" + drawable.file + "[] does not exist.");
+            }
         }
         
         main.getDesktopWorker().texturePack(files, main.getProjectData().getSaveFile(), targetFile);
+        return warnings;
     }
     
     public TextureAtlas getAtlas() {

@@ -420,7 +420,7 @@ public class MainListener extends RootTableListener {
                 warnings.addAll(newWarnings);
                 
                 try {
-                    main.getProjectData().getAtlasData().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
+                    newWarnings = main.getProjectData().getAtlasData().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
                     warnings.addAll(newWarnings);
                 } catch (Exception ex) {
                     Gdx.app.error(getClass().getName(), "Error while writing texture atlas", ex);
