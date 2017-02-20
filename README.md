@@ -5,14 +5,13 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 9
+* Version 10
 
 ### Changes ###
 
-*Added a pseudo preview for custom classes. Drawables, fonts, colors, etc. are laid out one after the other.
-*Solved dialog file filter issue on OSX affecting Open and Import.
-*Can import existing VisUI skins without crashing.
-*Sort selection is persistent in Drawables dialog.
+*Added Welcome Screen with templates and sample files to load.
+*Added a warnings dialog to alert the user with what failed to load in import/export. Can be exported to text file.
+*stageBackground for Window class is now properly previewed in the preview pane.
 *Various bug fixes.
 
 ### Contact ###
