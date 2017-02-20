@@ -27,8 +27,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.utils.Array;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
@@ -263,5 +263,12 @@ public class Utils {
             Gdx.app.error(Utils.class.getName(), "No reader available to check image dimensions");
         }
         return result;
+    }
+    
+    public static void writeWarningsToFile(Array<String> warnings, FileHandle file) {
+        for (String warning : warnings) {
+            String formatted = warning.replaceAll("(?<!\\[)\\[(?!\\[).*?\\]", "") + "\n";
+            file.writeString(formatted, true);
+        }
     }
 }
