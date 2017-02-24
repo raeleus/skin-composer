@@ -2062,7 +2062,7 @@ public class RootTable extends Table {
     public void refreshPreview() {        
         if (previewTable != null) {
             previewTable.clear();
-            previewTable.setBackground((Drawable)null);
+            previewTable.setBackground("white");
             previewTable.setColor((Color) previewProperties.get("bgcolor"));
 
             for (BitmapFont font : previewFonts) {
@@ -2230,6 +2230,7 @@ public class RootTable extends Table {
                         
                         if (style.stageBackground != null) {
                             previewTable.setBackground(style.stageBackground);
+                            previewTable.setColor(Color.WHITE);
                             style.stageBackground = null;
                         }
 
