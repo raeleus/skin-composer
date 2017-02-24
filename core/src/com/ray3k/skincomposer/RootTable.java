@@ -2299,6 +2299,8 @@ public class RootTable extends Table {
                                 dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
                                 dialog.button("OK", true);
                                 dialog.button("Cancel", false);
+                                dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+                                dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
                                 dialog.key(Input.Keys.ESCAPE, false);
                                 dialog.key(Input.Keys.ENTER, true);
                                 dialog.show(stage);
