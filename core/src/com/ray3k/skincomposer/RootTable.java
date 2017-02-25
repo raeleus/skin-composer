@@ -26,6 +26,7 @@ package com.ray3k.skincomposer;
 import com.ray3k.skincomposer.data.CustomProperty;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -2269,8 +2270,10 @@ public class RootTable extends Table {
                                 break;
                             case (6):
                                 Actor addWidget = widget;
-                                TextField widthField = new TextField("", getSkin());
-                                TextField heightField = new TextField("", getSkin());
+                                TraversalTextField widthField = new TraversalTextField("", getSkin());
+                                TraversalTextField heightField = new TraversalTextField("", getSkin());
+                                widthField.setNextFocus(heightField);
+                                heightField.setNextFocus(widthField);
                                 Dialog dialog = new Dialog("Enter dimensions...", getSkin()) {
                                     @Override
                                     protected void result(Object object) {
@@ -2299,10 +2302,36 @@ public class RootTable extends Table {
                                 dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
                                 dialog.button("OK", true);
                                 dialog.button("Cancel", false);
-                                dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+                                TextButton okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
+                                okButton.setDisabled(true);
+                                okButton.addListener(main.getHandListener());
+                                widthField.addListener(new ChangeListener() {
+                                    @Override
+                                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                                        okButton.setDisabled(!widthField.getText().matches("^\\d+$") || !heightField.getText().matches("^\\d+$"));
+                                    }
+                                });
+                                heightField.addListener(new ChangeListener() {
+                                    @Override
+                                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                                        okButton.setDisabled(!widthField.getText().matches("^\\d+$") || !heightField.getText().matches("^\\d+$"));
+                                    }
+                                });
                                 dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
                                 dialog.key(Input.Keys.ESCAPE, false);
-                                dialog.key(Input.Keys.ENTER, true);
+                                dialog.addListener(new InputListener() {
+                                    @Override
+                                    public boolean keyDown(InputEvent event, int keycode) {
+                                        if (keycode == Keys.ENTER && !okButton.isDisabled()) {
+//                                            result(true);
+//                                            hide();
+                                            System.out.println("test");
+                                        }
+                                        return super.keyDown(event, keycode);
+                                    }
+
+                                });
+//                                dialog.key(Input.Keys.ENTER, true);
                                 dialog.show(stage);
                                 stage.setKeyboardFocus(widthField);
                                 break;
