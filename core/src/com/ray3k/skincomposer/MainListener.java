@@ -102,6 +102,9 @@ public class MainListener extends RootTableListener {
             case SAVE_AS:
                 saveAsFile(null);
                 break;
+            case WELCOME:
+                main.getDialogFactory().showWelcomeDialog(getWelcomeListener());
+                break;
             case IMPORT:
                 importFile();
                 break;
@@ -628,26 +631,44 @@ public class MainListener extends RootTableListener {
 
         @Override
         public void visUIclicked() {
-            Gdx.files.internal("templates/vis-ui/").copyTo(Gdx.files.local("temp/"));
+            Gdx.files.internal("templates/vis-ui.scmp").copyTo(Gdx.files.local("temp/"));
             openFile(Gdx.files.local("temp/vis-ui.scmp"));
         }
 
         @Override
         public void plainJamesClicked() {
-            Gdx.files.internal("templates/plain-james-ui/").copyTo(Gdx.files.local("temp/"));
-            openFile(Gdx.files.local("temp/plain-james-ui.scmp"));
+            Gdx.files.internal("templates/plain-james-ui.zip").copyTo(Gdx.files.local("temp/"));
+            try {
+                Utils.unzip(Gdx.files.local("temp/plain-james-ui.zip"), Gdx.files.local("temp/"));
+                openFile(Gdx.files.local("temp/plain-james-ui.scmp"));
+            } catch (Exception e) {
+                Gdx.app.error(getClass().getName(), "Error attempting to open template Plain-James.", e);
+                dialogFactory.showDialogError("Template Error...", "Error attempting to open template Plain-James.\n\nOpen log?");
+            }
         }
 
         @Override
         public void neonClicked() {
-            Gdx.files.internal("templates/neon-ui/").copyTo(Gdx.files.local("temp/"));
-            openFile(Gdx.files.local("temp/neon-ui.scmp"));
+            Gdx.files.internal("templates/neon-ui.zip").copyTo(Gdx.files.local("temp/"));
+            try {
+                Utils.unzip(Gdx.files.local("temp/neon-ui.zip"), Gdx.files.local("temp/"));
+                openFile(Gdx.files.local("temp/neon-ui.scmp"));
+            } catch (Exception e) {
+                Gdx.app.error(getClass().getName(), "Error attempting to open template Neon.", e);
+                dialogFactory.showDialogError("Template Error...", "Error attempting to open template Neon.\n\nOpen log?");
+            }
         }
 
         @Override
         public void neutralizerClicked() {
-            Gdx.files.internal("templates/neutralizer-ui/").copyTo(Gdx.files.local("temp/"));
-            openFile(Gdx.files.local("temp/neutralizer-ui.scmp"));
+            Gdx.files.internal("templates/neutralizer-ui.zip").copyTo(Gdx.files.local("temp/"));
+            try {
+                Utils.unzip(Gdx.files.local("temp/neutralizer-ui.zip"), Gdx.files.local("temp/"));
+                openFile(Gdx.files.local("temp/neutralizer-ui.scmp"));
+            } catch (Exception e) {
+                Gdx.app.error(getClass().getName(), "Error attempting to open template Neutralizer.", e);
+                dialogFactory.showDialogError("Template Error...", "Error attempting to open template Neutralizer.\n\nOpen log?");
+            }
         }
 
         @Override

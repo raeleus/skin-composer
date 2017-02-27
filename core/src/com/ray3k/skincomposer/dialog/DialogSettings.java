@@ -224,33 +224,6 @@ public class DialogSettings extends Dialog {
             }
         });
         t.add(welcomeCheckBox).padTop(10.0f).colspan(2);
-        
-        t.row();
-        textButton = new TextButton("Open Welcome Screen", main.getSkin());
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                main.getDialogFactory().yesNoCancelDialog("Save settings?", "Do you want to apply settings changes before proceeding?", new DialogFactory.ConfirmationListener() {
-                    @Override
-                    public void selected(int selection) {
-                        switch (selection) {
-                            case 0:
-                                result(true);
-                                hide();
-                                main.getDialogFactory().showWelcomeDialog(main.getMainListener().getWelcomeListener());
-                                break;
-                            case 1:
-                                result(false);
-                                hide();
-                                main.getDialogFactory().showWelcomeDialog(main.getMainListener().getWelcomeListener());
-                            break;
-                        }
-                    }
-                });
-            }
-        });
-        textButton.addListener(main.getHandListener());
-        t.add(textButton).colspan(2);
 
         button("OK", true);
         button("Cancel", false);

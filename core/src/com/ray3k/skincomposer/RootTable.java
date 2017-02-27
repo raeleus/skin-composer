@@ -279,13 +279,14 @@ public class RootTable extends Table {
                 recentFilesButton,
                 new MenuItem("Save", RootTableEnum.SAVE),
                 new MenuItem("Save As...", RootTableEnum.SAVE_AS),
+                new MenuItem("Welcome Screen...", RootTableEnum.WELCOME),
                 new MenuItem("Import...", RootTableEnum.IMPORT),
                 new MenuItem("Export...", RootTableEnum.EXPORT),
                 new MenuItem("Exit", RootTableEnum.EXIT));
         if (Utils.isMac()) {
-            fileMenu.setShortcuts("⌘+N", "⌘+O", "⌘+S", null, "Shift+⌘+S");
+            fileMenu.setShortcuts("⌘+N", "⌘+O", null, "⌘+S", "Shift+⌘+S");
         } else {
-            fileMenu.setShortcuts("Ctrl+N", "Ctrl+O", "Ctrl+S", null, "Shift+Ctrl+S");
+            fileMenu.setShortcuts("Ctrl+N", "Ctrl+O", null, "Ctrl+S", "Shift+Ctrl+S");
         }
         fileMenu.addListener(new MenuBarListener(fileMenu));
 
@@ -2719,7 +2720,8 @@ public class RootTable extends Table {
         NEW, OPEN, RECENT_FILES, SAVE, SAVE_AS, IMPORT, EXPORT, EXIT, UNDO,
         REDO, SETTINGS, COLORS, FONTS, DRAWABLES, ABOUT, CLASS_SELECTED,
         NEW_CLASS, DUPLICATE_CLASS, DELETE_CLASS, RENAME_CLASS, STYLE_SELECTED,
-        NEW_STYLE, DUPLICATE_STYLE, DELETE_STYLE, RENAME_STYLE, PREVIEW_PROPERTY
+        NEW_STYLE, DUPLICATE_STYLE, DELETE_STYLE, RENAME_STYLE, PREVIEW_PROPERTY,
+        WELCOME
     }
 
     public static class RootTableEvent extends Event {
