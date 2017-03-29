@@ -326,7 +326,6 @@ public class ProjectData implements Json.Serializable {
         randomizeId();
         setMaxUndos(30);
         setResourcesRelative(false);
-        setAllowingWelcome(true);
         
         jsonData.clear();
         atlasData.clear();
