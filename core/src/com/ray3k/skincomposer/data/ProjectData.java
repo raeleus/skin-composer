@@ -295,9 +295,11 @@ public class ProjectData implements Json.Serializable {
     private void correctFilePaths() {
         FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
         
+        boolean resourcesRelative = main.getProjectData().areResourcesRelative();
+        
         if (targetFolder.exists()) {
             for (DrawableData drawableData : atlasData.getDrawables()) {
-                if (!drawableData.file.exists()) {
+                if (resourcesRelative || !drawableData.file.exists()) {
                     FileHandle newFile = targetFolder.child(drawableData.file.name());
                     if (newFile.exists()) {
                         drawableData.file = newFile;
@@ -306,7 +308,7 @@ public class ProjectData implements Json.Serializable {
             }
             
             for (FontData fontData : jsonData.getFonts()) {
-                if (!fontData.file.exists()) {
+                if (resourcesRelative || !fontData.file.exists()) {
                     FileHandle newFile = targetFolder.child(fontData.file.name());
                     if (newFile.exists()) {
                         fontData.file = newFile;
