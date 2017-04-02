@@ -552,4 +552,11 @@ com.ray3k.skincomposer.MenuButton$MenuButtonStyle: {
 		checkedOffsetY: 0
 	}
 }
+com.ray3k.skincomposer.Spinner$SpinnerStyle: {
+	default: {
+		buttonMinusStyle: spinner-minus-h
+		buttonPlusStyle: spinner-plus-h
+		textFieldStyle: spinner
+	}
+}
 }

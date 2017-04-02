@@ -62,7 +62,6 @@ public class DialogColorPicker extends Dialog {
     private Skin skin;
     private ColorListener listener;
     private Table content;
-    private SpinnerStyle spinnerStyle;
     private GradientDrawable gradientS, gradientB, gradientAlpha;
     private Array<GradientDrawable> hueGradient;
     private CheckerDrawable checker;
@@ -86,8 +85,6 @@ public class DialogColorPicker extends Dialog {
         this.skin = main.getSkin();
         this.main = main;
         this.listener = listener;
-        
-        spinnerStyle = new Spinner.SpinnerStyle(skin.get("spinner-minus-h", Button.ButtonStyle.class), skin.get("spinner-plus-h", Button.ButtonStyle.class), skin.get("default", TextField.TextFieldStyle.class));
         
         gradientAlpha = new GradientDrawable(new Color(1.0f, 0, 0, 0), new Color(1.0f, 0, 0, 0), Color.RED, Color.RED);
         Vector3 v = rgbToHsb(selectedColor.r, selectedColor.g, selectedColor.b);
@@ -239,49 +236,49 @@ public class DialogColorPicker extends Dialog {
         
         Spinner greenSpinner, blueSpinner, alphaSpinner, hueSpinner, saturationSpinner, brightnessSpinner;
         
-        hueSpinner = new Spinner(v.x * 359.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
+        hueSpinner = new Spinner(v.x * 359.0f, 1.0, true, Orientation.HORIZONTAL, skin);
         hueSpinner.setMinimum(0.0);
         hueSpinner.setMaximum(359.0);
         hueSpinner.getTextField().addListener(main.getIbeamListener());
         hueSpinner.getButtonMinus().addListener(main.getHandListener());
         hueSpinner.getButtonPlus().addListener(main.getHandListener());
         
-        saturationSpinner = new Spinner(v.y * 100.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
+        saturationSpinner = new Spinner(v.y * 100.0f, 1.0, true, Orientation.HORIZONTAL, skin);
         saturationSpinner.setMinimum(0.0);
         saturationSpinner.setMaximum(100.0);
         saturationSpinner.getTextField().addListener(main.getIbeamListener());
         saturationSpinner.getButtonMinus().addListener(main.getHandListener());
         saturationSpinner.getButtonPlus().addListener(main.getHandListener());
         
-        brightnessSpinner = new Spinner(v.z * 100.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
+        brightnessSpinner = new Spinner(v.z * 100.0f, 1.0, true, Orientation.HORIZONTAL, skin);
         brightnessSpinner.setMinimum(0.0);
         brightnessSpinner.setMaximum(100.0);
         brightnessSpinner.getTextField().addListener(main.getIbeamListener());
         brightnessSpinner.getButtonMinus().addListener(main.getHandListener());
         brightnessSpinner.getButtonPlus().addListener(main.getHandListener());
         
-        redSpinner = new Spinner(selectedColor.r * 255.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
+        redSpinner = new Spinner(selectedColor.r * 255.0f, 1.0, true, Orientation.HORIZONTAL, skin);
         redSpinner.setMinimum(0.0);
         redSpinner.setMaximum(255.0);
         redSpinner.getTextField().addListener(main.getIbeamListener());
         redSpinner.getButtonMinus().addListener(main.getHandListener());
         redSpinner.getButtonPlus().addListener(main.getHandListener());
         
-        greenSpinner = new Spinner(selectedColor.g * 255.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
+        greenSpinner = new Spinner(selectedColor.g * 255.0f, 1.0, true, Orientation.HORIZONTAL, skin);
         greenSpinner.setMinimum(0.0);
         greenSpinner.setMaximum(255.0);
         greenSpinner.getTextField().addListener(main.getIbeamListener());
         greenSpinner.getButtonMinus().addListener(main.getHandListener());
         greenSpinner.getButtonPlus().addListener(main.getHandListener());
         
-        blueSpinner = new Spinner(selectedColor.b * 255.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
+        blueSpinner = new Spinner(selectedColor.b * 255.0f, 1.0, true, Orientation.HORIZONTAL, skin);
         blueSpinner.setMinimum(0.0);
         blueSpinner.setMaximum(255.0);
         blueSpinner.getTextField().addListener(main.getIbeamListener());
         blueSpinner.getButtonMinus().addListener(main.getHandListener());
         blueSpinner.getButtonPlus().addListener(main.getHandListener());
         
-        alphaSpinner = new Spinner(selectedColor.a * 255.0f, 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
+        alphaSpinner = new Spinner(selectedColor.a * 255.0f, 1.0, true, Orientation.HORIZONTAL, skin);
         alphaSpinner.setMinimum(0.0);
         alphaSpinner.setMaximum(255.0);
         alphaSpinner.getTextField().addListener(main.getIbeamListener());

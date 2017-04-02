@@ -106,7 +106,6 @@ public class RootTable extends Table {
     private SelectBox styleSelectBox;
     private Array<StyleProperty> styleProperties;
     private Array<CustomProperty> customProperties;
-    private final SpinnerStyle spinnerStyle;
     private Table stylePropertiesTable;
     private Table previewPropertiesTable;
     private Table previewTable;
@@ -159,11 +158,6 @@ public class RootTable extends Table {
         
         previewProperties = new ObjectMap<>();
         previewBgColor = new Color(Color.WHITE);
-
-        spinnerStyle = new Spinner.SpinnerStyle(
-                getSkin().get("spinner-minus-h", Button.ButtonStyle.class),
-                getSkin().get("spinner-plus-h", Button.ButtonStyle.class),
-                getSkin().get("spinner", TextField.TextFieldStyle.class));
 
         hSplitPaneDragListener = new DragListener() {
             @Override
@@ -740,7 +734,7 @@ public class RootTable extends Table {
                     table.add(label).padTop(20.0f).fill(false).expand(false, false);
 
                     table.row();
-                    Spinner spinner = new Spinner((Double) styleProperty.value, 1.0, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
+                    Spinner spinner = new Spinner((Double) styleProperty.value, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     spinner.getTextField().addListener(main.getIbeamListener());
                     spinner.getButtonMinus().addListener(main.getHandListener());
                     spinner.getButtonPlus().addListener(main.getHandListener());
@@ -905,7 +899,7 @@ public class RootTable extends Table {
                     if (styleProperty.getValue() instanceof Double) {
                         value = (Double) styleProperty.getValue();
                     }
-                    Spinner spinner = new Spinner(value, 1.0, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
+                    Spinner spinner = new Spinner(value, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     spinner.getTextField().addListener(main.getIbeamListener());
                     spinner.getButtonMinus().addListener(main.getHandListener());
                     spinner.getButtonPlus().addListener(main.getHandListener());
@@ -1305,7 +1299,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Value: ", getSkin())).right();
-                    Spinner valueSpinner = new Spinner(0.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
+                    Spinner valueSpinner = new Spinner(0.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     valueSpinner.getTextField().setFocusTraversal(false);
                     valueSpinner.addListener(new ChangeListener() {
                         @Override
@@ -1322,7 +1316,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Minimum: ", getSkin())).right();
-                    Spinner minimumSpinner = new Spinner(0.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
+                    Spinner minimumSpinner = new Spinner(0.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     minimumSpinner.getTextField().setFocusTraversal(false);
                     minimumSpinner.getTextField().addListener(main.getIbeamListener());
                     minimumSpinner.getButtonMinus().addListener(main.getHandListener());
@@ -1332,7 +1326,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Maximum: ", getSkin())).right();
-                    Spinner maximumSpinner = new Spinner(100.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
+                    Spinner maximumSpinner = new Spinner(100.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     maximumSpinner.getTextField().setFocusTraversal(false);
                     maximumSpinner.getTextField().addListener(main.getIbeamListener());
                     maximumSpinner.getButtonMinus().addListener(main.getHandListener());
@@ -1361,7 +1355,7 @@ public class RootTable extends Table {
                     
                     t.row();
                     t.add(new Label("Increment: ", getSkin())).right();
-                    Spinner incrementSpinner = new Spinner(1.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
+                    Spinner incrementSpinner = new Spinner(1.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     incrementSpinner.getTextField().setFocusTraversal(false);
                     incrementSpinner.setMinimum(1);
                     incrementSpinner.addListener(new ChangeListener() {
@@ -1653,7 +1647,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Max List Count: ", getSkin())).right();
-                    Spinner spinner = new Spinner(3, 1, true, Spinner.Orientation.HORIZONTAL, spinnerStyle);
+                    Spinner spinner = new Spinner(3, 1, true, Spinner.Orientation.HORIZONTAL, getSkin());
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(1);
                     spinner.getTextField().addListener(main.getIbeamListener());
@@ -1694,7 +1688,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Minimum: ", getSkin())).right();
-                    Spinner minimumSpinner = new Spinner(0.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
+                    Spinner minimumSpinner = new Spinner(0.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     minimumSpinner.getTextField().setFocusTraversal(false);
                     minimumSpinner.getTextField().addListener(main.getIbeamListener());
                     t.add(minimumSpinner).growX();
@@ -1704,7 +1698,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Maximum: ", getSkin())).right();
-                    Spinner maximumSpinner = new Spinner(100.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
+                    Spinner maximumSpinner = new Spinner(100.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     maximumSpinner.getTextField().setFocusTraversal(false);
                     maximumSpinner.getTextField().addListener(main.getIbeamListener());
                     t.add(maximumSpinner).growX();
@@ -1733,7 +1727,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Increment: ", getSkin())).right();
-                    Spinner incrementSpinner = new Spinner(1.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
+                    Spinner incrementSpinner = new Spinner(1.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     incrementSpinner.getTextField().setFocusTraversal(false);
                     incrementSpinner.addListener(new ChangeListener() {
                         @Override
@@ -1966,7 +1960,7 @@ public class RootTable extends Table {
                 } else if (clazz.equals(Tree.class)) {
                     t.row();
                     t.add(new Label("Icon Spacing: ", getSkin())).right();
-                    Spinner spinner = new Spinner(0.0, 1.0, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
+                    Spinner spinner = new Spinner(0.0, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(1);
                     spinner.getTextField().addListener(main.getIbeamListener());
@@ -1976,7 +1970,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Y Spacing: ", getSkin())).right();
-                    spinner = new Spinner(0.0, 1.0, false, Spinner.Orientation.HORIZONTAL, spinnerStyle);
+                    spinner = new Spinner(0.0, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(1);
                     spinner.getTextField().addListener(main.getIbeamListener());

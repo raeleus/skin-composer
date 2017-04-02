@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
@@ -55,7 +56,7 @@ public class Spinner extends Table {
     }
     private Orientation orientation;
     private SpinnerStyle style;
-
+    
     public Spinner(double value, double increment, boolean round, Orientation orientation, SpinnerStyle style) {
         this.value = BigDecimal.valueOf(value);
         rounding = round;
@@ -66,6 +67,14 @@ public class Spinner extends Table {
         this.style = style;
         
         addWidgets();
+    }
+    
+    public Spinner(double value, double increment, boolean round, Orientation orientation, Skin skin, String style) {
+        this(value, increment, round, orientation, skin.get(style, SpinnerStyle.class));
+    }
+    
+    public Spinner(double value, double increment, boolean round, Orientation orientation, Skin skin) {
+        this(value, increment, round, orientation, skin, "default");
     }
     
     private void addWidgets() {
@@ -113,19 +122,22 @@ public class Spinner extends Table {
             }
         });
         
-        textField.setTextFieldFilter((TextField textField1, char c) -> {
-            boolean returnValue = false;
-            if ((c >= 48 && c <= 57) || c == 45 || (!rounding && c == 46)) {
-                String text = textField1.getText();
-                if (textField1.getCursorPosition() <= text.length()) {
-                    text = text.substring(0, textField1.getCursorPosition());
-                    text += c + textField1.getText().substring(textField1.getCursorPosition());
+        textField.setTextFieldFilter(new TextField.TextFieldFilter() {
+            @Override
+            public boolean acceptChar(TextField textField1, char c) {
+                boolean returnValue = false;
+                if ((c >= 48 && c <= 57) || c == 45 || (!rounding && c == 46)) {
+                    String text = textField1.getText();
+                    if (textField1.getCursorPosition() <= text.length()) {
+                        text = text.substring(0, textField1.getCursorPosition());
+                        text += c + textField1.getText().substring(textField1.getCursorPosition());
+                    }
+                    if (text.matches("-?\\d*\\.?\\d*")) {
+                        returnValue = true;
+                    }
                 }
-                if (text.matches("-?\\d*\\.?\\d*")) {
-                    returnValue = true;
-                }
+                return returnValue;
             }
-            return returnValue;
         });
         updateText();
         
@@ -311,6 +323,10 @@ public class Spinner extends Table {
         public ButtonStyle buttonMinusStyle, buttonPlusStyle;
         public TextFieldStyle textFieldStyle;
 
+        public SpinnerStyle() {
+            
+        }
+        
         public SpinnerStyle(ButtonStyle buttonMinusStyle, ButtonStyle buttonPlusStyle, TextFieldStyle textFieldStyle) {
             this.buttonMinusStyle = buttonMinusStyle;
             this.buttonPlusStyle = buttonPlusStyle;

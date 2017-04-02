@@ -42,8 +42,6 @@ import com.ray3k.skincomposer.Spinner.SpinnerStyle;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class DialogSettings extends Dialog {
-
-    private final SpinnerStyle spinnerStyle;
     private Integer maxUndos;
     private boolean resourcesRelative;
     private boolean allowingWelcome;
@@ -52,7 +50,6 @@ public class DialogSettings extends Dialog {
     public DialogSettings(String title, String windowStyleName, Main main) {
         super(title, main.getSkin(), windowStyleName);
         this.main = main;
-        spinnerStyle = new Spinner.SpinnerStyle(main.getSkin().get("spinner-minus-h", Button.ButtonStyle.class), main.getSkin().get("spinner-plus-h", Button.ButtonStyle.class), main.getSkin().get("default", TextField.TextFieldStyle.class));
 
         maxUndos = main.getProjectData().getMaxUndos();
         resourcesRelative = main.getProjectData().areResourcesRelative();
@@ -181,7 +178,7 @@ public class DialogSettings extends Dialog {
         t.row();
         label = new Label("Max Number of Undos: ", main.getSkin());
         t.add(label).right().padTop(10.0f);
-        Spinner spinner3 = new Spinner(main.getProjectData().getMaxUndos(), 1.0, true, Orientation.HORIZONTAL, spinnerStyle);
+        Spinner spinner3 = new Spinner(main.getProjectData().getMaxUndos(), 1.0, true, Orientation.HORIZONTAL, getSkin());
         spinner3.setMinimum(1.0);
         spinner3.setMaximum(100.0);
         spinner3.addListener(new ChangeListener() {
