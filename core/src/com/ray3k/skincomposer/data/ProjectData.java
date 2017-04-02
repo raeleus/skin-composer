@@ -440,4 +440,24 @@ public class ProjectData implements Json.Serializable {
     public void setResourcesRelative(boolean resourcesRelative) {
         preferences.put("resources-relative", resourcesRelative);
     }
+    
+    /**
+     * Returns true if file exists and depending on the state of relative resources
+     * and save file state.
+     * @param file
+     * @return 
+     */
+    public boolean resourceExists(FileHandle file) {
+        FileHandle targetDirectory = (saveFile != null) ? saveFile.sibling(saveFile.nameWithoutExtension() + "_data/") : Gdx.files.local("temp/" + getId() + "_data/");
+        if (!areResourcesRelative()) {
+            if (!file.exists() && !targetDirectory.child(file.name()).exists()) {
+                return false;
+            }
+        } else {
+            if (targetDirectory == null || !targetDirectory.child(file.name()).exists()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

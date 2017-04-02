@@ -211,7 +211,7 @@ public class AtlasData implements Json.Serializable {
                 files.add(drawable.file);
             }
             
-            if (!drawable.file.exists()) {
+            if (!main.getProjectData().resourceExists(drawable.file)) {
                 warnings.add("[RED]ERROR:[] Drawable file [BLACK]" + drawable.file + "[] does not exist.");
             }
         }
