@@ -93,8 +93,9 @@ public class AtlasData implements Json.Serializable {
                 if (!texture.getTextureData().isPrepared()) {
                     texture.getTextureData().prepare();
                 }
-                Pixmap.setBlending(Pixmap.Blending.None);
+                
                 Pixmap pixmap = texture.getTextureData().consumePixmap();
+                pixmap.setBlending(Pixmap.Blending.None);
                 Pixmap savePixmap;
                 String name;
                 
