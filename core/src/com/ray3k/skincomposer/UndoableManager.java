@@ -718,7 +718,9 @@ public class UndoableManager {
                     }
                 }
             }
-            main.getRootTable().refreshStyles(true);
+            
+            main.getRootTable().refreshStyles(false);
+            main.getRootTable().getStyleSelectBox().setSelected(styleData);
         }
 
         @Override
@@ -734,7 +736,10 @@ public class UndoableManager {
                     }
                 }
             }
-            main.getRootTable().refreshStyles(true);
+            
+            main.getRootTable().refreshStyles(false);
+            main.getRootTable().getStyleSelectBox().setSelected(styleData);
+            
         }
 
         @Override
