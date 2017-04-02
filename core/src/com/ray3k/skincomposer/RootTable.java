@@ -1907,6 +1907,7 @@ public class RootTable extends Table {
                                     previewProperties.put("alignment", Align.right);
                                     break;
                             }
+                            refreshPreview();
                         }
                     });
                     t.add(selectBox).growX();
