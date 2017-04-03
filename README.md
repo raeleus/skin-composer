@@ -5,14 +5,16 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 10A
+* Version 11
 
 ### Changes ###
 
-*Fixed incorrect shortcut labels.
-*Moved Welcome Screen button to File menu.
-*Fixed templates not opening.
-*Fixed project files on Neon-UI template.
+*Fixed unable to hide welcome screen setting
+*Enforce using "_data" folder when "Keep resources relative" is selected. Solves #20
+*Fixed alignment property of the TextField preview having no effect.
+*Fixed renaming a style selects a different style afterwards
+*Fixed wrong warnings when exporting imported skins
+*Updated to LibGDX 1.9.6
 
 ### Contact ###
 
