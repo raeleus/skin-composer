@@ -819,6 +819,7 @@ public class DialogFonts extends Dialog {
     private void showAddFontSizeError(String name) {
         Dialog dialog = new Dialog("", getSkin(), "bg");
         
+        dialog.getContentTable().defaults().pad(10.0f);
         Label label = new Label("Error adding font...", getSkin(), "title");
         dialog.getContentTable().add(label);
         
@@ -827,7 +828,10 @@ public class DialogFonts extends Dialog {
                 "\". Ensure image dimensions\nare less than max texture dimensions (" +
                 maxTextureWidth + "x" + 
                 maxTextureHeight + ").\nSee project settings.");
+        
+        dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("Ok");
+        dialog.key(Keys.ENTER, null).key(Keys.ESCAPE, null);
         dialog.show(getStage());
     }
 }
