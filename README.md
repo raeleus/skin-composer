@@ -5,16 +5,12 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 11
+* Version 12
 
 ### Changes ###
 
-*Fixed unable to hide welcome screen setting
-*Enforce using "_data" folder when "Keep resources relative" is selected. Solves #20
-*Fixed alignment property of the TextField preview having no effect.
-*Fixed renaming a style selects a different style afterwards
-*Fixed wrong warnings when exporting imported skins
-*Updated to LibGDX 1.9.6
+*Fixed font dialog not allowing import of fonts larger than 1024x1024
+*Possible fix for Mac version
 
 ### Contact ###
 
