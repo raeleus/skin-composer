@@ -93,7 +93,7 @@ public class DialogFonts extends Dialog {
         maxTextureHeight = 1024;
         
         //extract max texture dimensions from defaults.json
-        FileHandle defaultsFile = Gdx.files.internal("defaults.json");
+        FileHandle defaultsFile = Gdx.files.local("texturepacker/defaults.json");
         if (defaultsFile.exists()) {
             JsonReader reader = new JsonReader();
             JsonValue val = reader.parse(defaultsFile);
