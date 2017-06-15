@@ -27,6 +27,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
@@ -287,9 +288,69 @@ public class ProjectData implements Json.Serializable {
         
         correctFilePaths();
         
-        main.getRootTable().produceAtlas();
-        main.getRootTable().populate();
+        if (verifyDrawablePaths().size == 0 && verifyFontPaths().size == 0) {
+            main.getRootTable().produceAtlas();
+            main.getRootTable().populate();
+        }
         setChangesSaved(true);
+    }
+    
+    /**
+     * Checks every drawable path for existence. Errors are reported as a list
+     * of DrawableDatas.
+     * @return A list of all DrawableDatas that must have their paths resolved.
+     * Returns an empty list if there are no errors.
+     */
+    public Array<DrawableData> verifyDrawablePaths() {
+        Array<DrawableData> errors = new Array<>();
+        
+        if (!areResourcesRelative()) {
+            for (DrawableData drawable : atlasData.getDrawables()) {
+                if (drawable.file == null || !drawable.file.exists()) {
+                    errors.add(drawable);
+                }
+            }
+        } else {
+            FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
+            
+            for (DrawableData drawable : atlasData.getDrawables()) {
+                if (drawable.file == null) {
+                    errors.add(drawable);
+                } else {
+                    FileHandle localFile = targetFolder.child(drawable.file.name());
+                    if (!localFile.exists()) {
+                        errors.add(drawable);
+                    }
+                }
+            }
+        }
+        return errors;
+    }
+    
+    public Array<FontData> verifyFontPaths() {
+        Array<FontData> errors = new Array<>();
+        
+        if (!areResourcesRelative()) {
+            for (FontData font : jsonData.getFonts()) {
+                if (font.file == null || !font.file.exists()) {
+                    errors.add(font);
+                }
+            }
+        } else {
+            FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
+            
+            for (FontData font : jsonData.getFonts()) {
+                if (font.file == null) {
+                    errors.add(font);
+                } else {
+                    FileHandle localFile = targetFolder.child(font.file.name());
+                    if (!localFile.exists()) {
+                        errors.add(font);
+                    }
+                }
+            }
+        }
+        return errors;
     }
     
     private void correctFilePaths() {
