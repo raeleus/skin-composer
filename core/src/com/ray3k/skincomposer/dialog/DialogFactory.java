@@ -48,6 +48,8 @@ import com.ray3k.skincomposer.data.CustomClass;
 import com.ray3k.skincomposer.data.CustomProperty;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.CustomStyle;
+import com.ray3k.skincomposer.data.DrawableData;
+import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.ProjectData.RecentFile;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
@@ -628,6 +630,11 @@ public class DialogFactory {
     
     public void showWarningDialog(Array<String> warnings) {
         DialogWarnings dialog = new DialogWarnings(main, warnings);
+        dialog.show(main.getStage());
+    }
+    
+    public void showDialogPathErrors(Array<DrawableData> drawableErrors, Array<FontData> fontErrors) {
+        DialogPathErrors dialog = new DialogPathErrors(main, main.getSkin(), "dialog", drawableErrors, fontErrors);
         dialog.show(main.getStage());
     }
 }

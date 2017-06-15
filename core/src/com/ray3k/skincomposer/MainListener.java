@@ -53,6 +53,7 @@ import com.ray3k.skincomposer.data.CustomClass;
 import com.ray3k.skincomposer.data.CustomProperty;
 import com.ray3k.skincomposer.UndoableManager.NewCustomClassUndoable;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
+import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
 import com.ray3k.skincomposer.dialog.DialogCustomStyle;
 import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
@@ -288,6 +289,20 @@ public class MainListener extends RootTableListener {
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
                 projectData.load(fileHandle);
+//                for (DrawableData drawable : projectData.verifyDrawablePaths()) {
+//                    System.out.println(drawable.file.path());
+//                }
+//                for (FontData drawable : projectData.verifyFontPaths()) {
+//                    System.out.println(drawable.file.path());
+//                }
+//                
+                Array<DrawableData> drawableErrors = projectData.verifyDrawablePaths();
+                System.out.println(drawableErrors.size);
+                Array<FontData> fontErrors = projectData.verifyFontPaths();
+                if (drawableErrors.size > 0 || fontErrors.size > 0) {
+                    System.out.println("cyst");
+                    dialogFactory.showDialogPathErrors(drawableErrors, fontErrors);
+                }
                 projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
                 root.populate();
                 root.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
