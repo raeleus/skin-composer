@@ -24,27 +24,38 @@
 package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.ray3k.skincomposer.DesktopWorker;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.FontData;
+import com.ray3k.skincomposer.utils.Utils;
+import java.io.File;
 
 public class DialogPathErrors extends Dialog {
     private Array<DrawableData> foundDrawables;
+    private Array<FontData> foundFonts;
+    private Table dataTable;
     
     public DialogPathErrors(Main main, Skin skin, String windowStyleName, Array<DrawableData> drawables, Array<FontData> fonts) {
         super("", skin, windowStyleName);
     
         foundDrawables = new Array<>();
+        foundFonts = new Array<>();
+        
+        setFillParent(true);
         
         key(Keys.ENTER, true);
         key(Keys.ESCAPE, false);
@@ -60,49 +71,13 @@ public class DialogPathErrors extends Dialog {
         table.add(label).padBottom(0);
         
         table.row();
-        Table left = new Table();
-        Table middle = new Table();
-        Table right = new Table();
-        SplitPane rightSP = new SplitPane(middle, right, false, skin);
-        SplitPane leftSP = new SplitPane(left, rightSP, false, skin);
-        ScrollPane scrollPane = new ScrollPane(leftSP, skin);
+        dataTable = new Table();
+        ScrollPane scrollPane = new ScrollPane(dataTable, skin);
         scrollPane.setFlickScroll(false);
         scrollPane.setFadeScrollBars(false);
         table.add(scrollPane).grow();
         
-        label = new Label("Drawable Name", skin, "black");
-        left.add(label);
-        
-        label = new Label("Path", skin, "black");
-        middle.add(label);
-        
-        label = new Label("Found?", skin, "black");
-        right.add(label);
-        
-        
-        for (DrawableData drawable : drawables) {
-            left.row();
-            label = new Label(drawable.name, skin);
-            left.add(label);
-            
-            middle.row();
-            label = new Label(drawable.file.path(), skin);
-            middle.add(label);
-            
-            TextButton textButton = new TextButton("browse...", skin);
-            middle.add(textButton);
-            
-            right.row();
-            if (foundDrawables.contains(drawable, true)) {
-                label = new Label("YES", skin, "white");
-                label.setColor(Color.GREEN);
-                right.add(label);
-            } else {
-                label = new Label("NO", skin, "white");
-                label.setColor(Color.RED);
-                right.add(label);
-            }
-        }
+        resetDrawableTable(main, skin, drawables, fonts);
         
         button("Apply");
         getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
@@ -113,6 +88,147 @@ public class DialogPathErrors extends Dialog {
         getCell(getButtonTable()).padBottom(20.0f);
         
         table.setWidth(200);
+    }
+    
+    private void resetDrawableTable(Main main, Skin skin, Array<DrawableData> drawables, Array<FontData> fonts) {
+        dataTable.clear();
+        
+        if (drawables.size > 0) {
+            Label label = new Label("Drawable Name", skin, "black");
+            dataTable.add(label);
+
+            label = new Label("Path", skin, "black");
+            dataTable.add(label);
+
+            dataTable.add();
+
+            label = new Label("Found?", skin, "black");
+            dataTable.add(label);
+
+            dataTable.row();
+            Image image = new Image(skin, "welcome-separator");
+            dataTable.add(image).colspan(4).pad(5.0f).padLeft(0.0f).padRight(0.0f).growX();
+
+
+            for (DrawableData drawable : drawables) {
+                dataTable.row();
+                label = new Label(drawable.name, skin);
+                dataTable.add(label);
+
+                label = new Label(drawable.file.path(), skin);
+                label.setWrap(true);
+                label.setAlignment(Align.center);
+                dataTable.add(label).growX();
+
+                TextButton textButton = new TextButton("browse...", skin);
+                textButton.addListener(main.getHandListener());
+                dataTable.add(textButton);
+
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event,
+                            Actor actor) {
+                        DesktopWorker desktopWorker = main.getDesktopWorker();
+                        String[] filterPatterns = null;
+                        if (!Utils.isMac()) {
+                            filterPatterns = new String[] {"*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif"};
+                        }
+
+                        File file = desktopWorker.openDialog("Locate " + drawable.file.name() + "...", drawable.file.path(), filterPatterns, "Image files");
+                        if (file != null) {
+                            FileHandle fileHandle = new FileHandle(file);
+                            drawable.file = fileHandle;
+                            foundDrawables.add(drawable);
+                            resetDrawableTable(main, skin, drawables, fonts);
+                        }
+                    }
+                });
+
+                if (foundDrawables.contains(drawable, true)) {
+                    label = new Label("YES", skin, "white");
+                    label.setColor(Color.GREEN);
+                    dataTable.add(label);
+                } else {
+                    label = new Label("NO", skin, "white");
+                    label.setColor(Color.RED);
+                    dataTable.add(label);
+                }
+
+                dataTable.row();
+                image = new Image(skin, "welcome-separator");
+                dataTable.add(image).colspan(4).pad(5.0f).padLeft(0.0f).padRight(0.0f).growX();
+            }
+        }
+        
+        if (fonts.size > 0) {
+            dataTable.row();
+            dataTable.defaults().padTop(20.0f);
+            Label label = new Label("Font Name", skin, "black");
+            dataTable.add(label);
+
+            label = new Label("Path", skin, "black");
+            dataTable.add(label);
+
+            dataTable.add();
+
+            label = new Label("Found?", skin, "black");
+            dataTable.add(label);
+
+            dataTable.defaults().reset();
+            dataTable.row();
+            Image image = new Image(skin, "welcome-separator");
+            dataTable.add(image).colspan(4).pad(5.0f).padLeft(0.0f).padRight(0.0f).growX();
+
+
+            for (FontData font : fonts) {
+                dataTable.row();
+                label = new Label(font.getName(), skin);
+                dataTable.add(label);
+
+                label = new Label(font.file.path(), skin);
+                label.setWrap(true);
+                label.setAlignment(Align.center);
+                dataTable.add(label).growX();
+
+                TextButton textButton = new TextButton("browse...", skin);
+                textButton.addListener(main.getHandListener());
+                dataTable.add(textButton);
+
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event,
+                            Actor actor) {
+                        DesktopWorker desktopWorker = main.getDesktopWorker();
+                        String[] filterPatterns = null;
+                        if (!Utils.isMac()) {
+                            filterPatterns = new String[] {"*.fnt"};
+                        }
+
+                        File file = desktopWorker.openDialog("Locate " + font.file.name() + "...", font.file.path(), filterPatterns, "Font files");
+                        if (file != null) {
+                            FileHandle fileHandle = new FileHandle(file);
+                            font.file = fileHandle;
+                            foundFonts.add(font);
+                            resetDrawableTable(main, skin, drawables, fonts);
+                        }
+                    }
+                });
+
+                if (foundFonts.contains(font, true)) {
+                    label = new Label("YES", skin, "white");
+                    label.setColor(Color.GREEN);
+                    dataTable.add(label);
+                } else {
+                    label = new Label("NO", skin, "white");
+                    label.setColor(Color.RED);
+                    dataTable.add(label);
+                }
+
+                dataTable.row();
+                image = new Image(skin, "welcome-separator");
+                dataTable.add(image).colspan(4).pad(5.0f).padLeft(0.0f).padRight(0.0f).growX();
+            }
+        }
     }
 
     @Override

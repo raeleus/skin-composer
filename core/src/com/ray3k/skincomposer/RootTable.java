@@ -2314,19 +2314,6 @@ public class RootTable extends Table {
                                 });
                                 dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
                                 dialog.key(Input.Keys.ESCAPE, false);
-                                dialog.addListener(new InputListener() {
-                                    @Override
-                                    public boolean keyDown(InputEvent event, int keycode) {
-                                        if (keycode == Keys.ENTER && !okButton.isDisabled()) {
-//                                            result(true);
-//                                            hide();
-                                            System.out.println("test");
-                                        }
-                                        return super.keyDown(event, keycode);
-                                    }
-
-                                });
-//                                dialog.key(Input.Keys.ENTER, true);
                                 dialog.show(stage);
                                 stage.setKeyboardFocus(widthField);
                                 break;

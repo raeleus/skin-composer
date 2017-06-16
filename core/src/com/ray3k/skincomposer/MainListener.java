@@ -289,18 +289,9 @@ public class MainListener extends RootTableListener {
             if (file != null) {
                 FileHandle fileHandle = new FileHandle(file);
                 projectData.load(fileHandle);
-//                for (DrawableData drawable : projectData.verifyDrawablePaths()) {
-//                    System.out.println(drawable.file.path());
-//                }
-//                for (FontData drawable : projectData.verifyFontPaths()) {
-//                    System.out.println(drawable.file.path());
-//                }
-//                
                 Array<DrawableData> drawableErrors = projectData.verifyDrawablePaths();
-                System.out.println(drawableErrors.size);
                 Array<FontData> fontErrors = projectData.verifyFontPaths();
                 if (drawableErrors.size > 0 || fontErrors.size > 0) {
-                    System.out.println("cyst");
                     dialogFactory.showDialogPathErrors(drawableErrors, fontErrors);
                 }
                 projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
