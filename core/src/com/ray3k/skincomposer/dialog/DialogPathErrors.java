@@ -23,10 +23,12 @@
  ******************************************************************************/
 package com.ray3k.skincomposer.dialog;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -48,6 +50,7 @@ public class DialogPathErrors extends Dialog {
     private Array<DrawableData> foundDrawables;
     private Array<FontData> foundFonts;
     private Table dataTable;
+    private ScrollPane scrollPane;
     
     public DialogPathErrors(Main main, Skin skin, String windowStyleName, Array<DrawableData> drawables, Array<FontData> fonts) {
         super("", skin, windowStyleName);
@@ -72,7 +75,7 @@ public class DialogPathErrors extends Dialog {
         
         table.row();
         dataTable = new Table();
-        ScrollPane scrollPane = new ScrollPane(dataTable, skin);
+        scrollPane = new ScrollPane(dataTable, skin);
         scrollPane.setFlickScroll(false);
         scrollPane.setFadeScrollBars(false);
         table.add(scrollPane).grow();
@@ -117,12 +120,12 @@ public class DialogPathErrors extends Dialog {
 
                 label = new Label(drawable.file.path(), skin);
                 label.setWrap(true);
-                label.setAlignment(Align.center);
+                label.setAlignment(Align.left);
                 dataTable.add(label).growX();
 
                 TextButton textButton = new TextButton("browse...", skin);
                 textButton.addListener(main.getHandListener());
-                dataTable.add(textButton);
+                dataTable.add(textButton).padLeft(10.0f);
 
                 textButton.addListener(new ChangeListener() {
                     @Override
@@ -139,6 +142,7 @@ public class DialogPathErrors extends Dialog {
                             FileHandle fileHandle = new FileHandle(file);
                             drawable.file = fileHandle;
                             foundDrawables.add(drawable);
+                            resolveAssetsFromFolder(fileHandle.parent(), drawables, fonts);
                             resetDrawableTable(main, skin, drawables, fonts);
                         }
                     }
@@ -209,6 +213,7 @@ public class DialogPathErrors extends Dialog {
                             FileHandle fileHandle = new FileHandle(file);
                             font.file = fileHandle;
                             foundFonts.add(font);
+                            resolveAssetsFromFolder(fileHandle.parent(), drawables, fonts);
                             resetDrawableTable(main, skin, drawables, fonts);
                         }
                     }
@@ -231,8 +236,44 @@ public class DialogPathErrors extends Dialog {
         }
     }
 
+    private void resolveAssetsFromFolder(FileHandle folder, Array<DrawableData> drawables, Array<FontData> fonts) {
+        if (folder.isDirectory()) {
+            for (DrawableData drawable : drawables) {
+                if (!foundDrawables.contains(drawable, true)) {
+                    if (folder.child(drawable.file.name()).exists()) {
+                        foundDrawables.add(drawable);
+                    }
+                }
+            }
+            
+            for (FontData font : fonts) {
+                if (!foundFonts.contains(font, true)) {
+                    if (folder.child(font.file.name()).exists()) {
+                        foundFonts.add(font);
+                    }
+                }
+            }
+        }
+    }
+    
     @Override
     public boolean remove() {
         return super.remove();
     }
+
+    @Override
+    public Dialog show(Stage stage) {
+        super.show(stage);
+        
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                stage.setScrollFocus(scrollPane);
+            }
+        });
+        
+        return this;
+    }
+
+    
 }
