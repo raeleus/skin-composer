@@ -240,7 +240,9 @@ public class DialogPathErrors extends Dialog {
         if (folder.isDirectory()) {
             for (DrawableData drawable : drawables) {
                 if (!foundDrawables.contains(drawable, true)) {
-                    if (folder.child(drawable.file.name()).exists()) {
+                    FileHandle file = folder.child(drawable.file.name());
+                    if (file.exists()) {
+                        drawable.file = file;
                         foundDrawables.add(drawable);
                     }
                 }
@@ -248,7 +250,9 @@ public class DialogPathErrors extends Dialog {
             
             for (FontData font : fonts) {
                 if (!foundFonts.contains(font, true)) {
-                    if (folder.child(font.file.name()).exists()) {
+                    FileHandle file = folder.child(font.file.name());
+                    if (file.exists()) {
+                        font.file = file;
                         foundFonts.add(font);
                     }
                 }
