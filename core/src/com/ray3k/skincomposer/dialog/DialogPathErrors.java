@@ -51,9 +51,12 @@ public class DialogPathErrors extends Dialog {
     private Array<FontData> foundFonts;
     private Table dataTable;
     private ScrollPane scrollPane;
+    private Main main;
     
     public DialogPathErrors(Main main, Skin skin, String windowStyleName, Array<DrawableData> drawables, Array<FontData> fonts) {
         super("", skin, windowStyleName);
+        
+        this.main = main;
     
         foundDrawables = new Array<>();
         foundFonts = new Array<>();
@@ -82,10 +85,10 @@ public class DialogPathErrors extends Dialog {
         
         resetDrawableTable(main, skin, drawables, fonts);
         
-        button("Apply");
+        button("Apply", true);
         getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
         
-        button("Cancel");
+        button("Cancel", false);
         getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         
         getCell(getButtonTable()).padBottom(20.0f);
@@ -277,6 +280,16 @@ public class DialogPathErrors extends Dialog {
         });
         
         return this;
+    }
+
+    @Override
+    protected void result(Object object) {
+        if ((boolean) object == true) {
+            main.getRootTable().produceAtlas();
+            main.getRootTable().populate();
+        } else {
+            main.getMainListener().newFile();
+        }
     }
 
     
