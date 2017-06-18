@@ -525,6 +525,11 @@ public class DialogFactory {
                         FileHandle file = selectBox.getSelected().getFileHandle();
                         if (file.exists()) {
                             main.getProjectData().load(file);
+                            Array<DrawableData> drawableErrors = main.getProjectData().verifyDrawablePaths();
+                            Array<FontData> fontErrors = main.getProjectData().verifyFontPaths();
+                            if (drawableErrors.size > 0 || fontErrors.size > 0) {
+                                main.getDialogFactory().showDialogPathErrors(drawableErrors, fontErrors);
+                            }
                         }
                     }
                 }

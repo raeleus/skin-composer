@@ -327,6 +327,11 @@ public class MainListener extends RootTableListener {
 
             if (fileHandle != null) {
                 projectData.load(fileHandle);
+                Array<DrawableData> drawableErrors = projectData.verifyDrawablePaths();
+                Array<FontData> fontErrors = projectData.verifyFontPaths();
+                if (drawableErrors.size > 0 || fontErrors.size > 0) {
+                    dialogFactory.showDialogPathErrors(drawableErrors, fontErrors);
+                }
                 projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
                 root.populate();
                 root.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
