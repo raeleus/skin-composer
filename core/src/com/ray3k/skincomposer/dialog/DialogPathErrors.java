@@ -285,6 +285,7 @@ public class DialogPathErrors extends Dialog {
     @Override
     protected void result(Object object) {
         if ((boolean) object == true) {
+            main.getProjectData().setChangesSaved(false);
             main.getRootTable().produceAtlas();
             main.getRootTable().populate();
         } else {
