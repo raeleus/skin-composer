@@ -52,6 +52,7 @@ public class DialogPathErrors extends Dialog {
     private Table dataTable;
     private ScrollPane scrollPane;
     private Main main;
+    private TextButton applyButton;
     
     public DialogPathErrors(Main main, Skin skin, String windowStyleName, Array<DrawableData> drawables, Array<FontData> fonts) {
         super("", skin, windowStyleName);
@@ -86,7 +87,9 @@ public class DialogPathErrors extends Dialog {
         resetDrawableTable(main, skin, drawables, fonts);
         
         button("Apply", true);
-        getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+        applyButton = (TextButton) getButtonTable().getCells().first().getActor();
+        applyButton.addListener(main.getHandListener());
+        applyButton.setDisabled(true);
         
         button("Cancel", false);
         getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
@@ -144,7 +147,9 @@ public class DialogPathErrors extends Dialog {
                         if (file != null) {
                             FileHandle fileHandle = new FileHandle(file);
                             drawable.file = fileHandle;
-                            foundDrawables.add(drawable);
+                            if (!foundDrawables.contains(drawable, true)) {
+                                foundDrawables.add(drawable);
+                            }
                             resolveAssetsFromFolder(fileHandle.parent(), drawables, fonts);
                             resetDrawableTable(main, skin, drawables, fonts);
                         }
@@ -194,7 +199,7 @@ public class DialogPathErrors extends Dialog {
 
                 label = new Label(font.file.path(), skin);
                 label.setWrap(true);
-                label.setAlignment(Align.center);
+                label.setAlignment(Align.left);
                 dataTable.add(label).growX();
 
                 TextButton textButton = new TextButton("browse...", skin);
@@ -215,7 +220,9 @@ public class DialogPathErrors extends Dialog {
                         if (file != null) {
                             FileHandle fileHandle = new FileHandle(file);
                             font.file = fileHandle;
-                            foundFonts.add(font);
+                            if (!foundFonts.contains(font, true)) {
+                                foundFonts.add(font);
+                            }
                             resolveAssetsFromFolder(fileHandle.parent(), drawables, fonts);
                             resetDrawableTable(main, skin, drawables, fonts);
                         }
@@ -261,6 +268,8 @@ public class DialogPathErrors extends Dialog {
                 }
             }
         }
+        
+        applyButton.setDisabled(foundDrawables.size != drawables.size || foundFonts.size != fonts.size);
     }
     
     @Override
