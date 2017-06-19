@@ -1738,6 +1738,7 @@ public class RootTable extends Table {
                     t.add(incrementSpinner).growX();
                     incrementSpinner.getButtonMinus().addListener(main.getHandListener());
                     incrementSpinner.getButtonPlus().addListener(main.getHandListener());
+                    incrementSpinner.setMinimum(1.0f);
                     previewProperties.put("increment", incrementSpinner.getValue());
 
                     t.row();

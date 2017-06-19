@@ -214,9 +214,14 @@ public class Spinner extends Table {
                 
                 if (text.matches("-?\\d+\\.?\\d*")) {
                     double value = Double.parseDouble(text);
+                    if (usingMinimum && value < parent.minimum) {
+                        value = parent.minimum;
+                    } else if (usingMaximum && value > parent.maximum) {
+                        value = parent.maximum;
+                    }
                     parent.value = BigDecimal.valueOf(value);
                 } else {
-                    parent.value = BigDecimal.valueOf(0);
+                    parent.value = BigDecimal.valueOf(usingMinimum ? parent.minimum : 0);
                 }
             }
         });
@@ -316,7 +321,7 @@ public class Spinner extends Table {
         int length = textField.getText().length();
         
         pos += length - startLength;
-        textField.setCursorPosition(Math.min(pos, length));
+        textField.setCursorPosition(Math.max(Math.min(pos, length), 0));
     }
     
     static public class SpinnerStyle {
