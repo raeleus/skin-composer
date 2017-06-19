@@ -5,12 +5,12 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 12
+* Version 13
 
 ### Changes ###
 
-*Fixed font dialog not allowing import of fonts larger than 1024x1024
-*Possible fix for Mac version
+*Fixed crashes in Progress Bar and Slider when changing spinner values to invalid values.
+*Added prompt for user to browse for missing files when opening a project.
 
 ### Contact ###
 
