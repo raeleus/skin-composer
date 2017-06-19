@@ -27,7 +27,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
@@ -274,6 +273,7 @@ public class ProjectData implements Json.Serializable {
         newProject = instance.newProject;
         jsonData.set(instance.jsonData);
         atlasData.set(instance.atlasData);
+        preferences.clear();
         preferences.putAll(instance.preferences);
         
         //set main for custom classes, styles, and properties
