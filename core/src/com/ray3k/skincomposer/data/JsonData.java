@@ -49,6 +49,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
+import com.ray3k.skincomposer.dialog.DialogFactory;
 import java.io.StringWriter;
 
 public class JsonData implements Json.Serializable {
@@ -540,7 +541,15 @@ public class JsonData implements Json.Serializable {
                         for (CustomProperty customProperty : customStyle.getProperties()) {
                             //only write value if it is valid
                             if (customPropertyIsNotNull(customProperty)) {
-                                json.writeValue(customProperty.getName(), customProperty.getValue());
+                                if (customProperty.getType().equals(CustomProperty.PropertyType.RAW_TEXT)) {
+                                    try {
+                                        json.getWriter().json(customProperty.getName(), (String)customProperty.getValue());
+                                    } catch (Exception e) {
+                                        DialogFactory.showDialogErrorStatic("Error writing custom property.", "Error writing custom property " + customProperty.getName() + " for custom class " + customClass.getDisplayName() + ".");
+                                    }
+                                } else {
+                                    json.writeValue(customProperty.getName(), customProperty.getValue());
+                                }
                             }
                         }
                         json.writeObjectEnd();
@@ -569,6 +578,7 @@ public class JsonData implements Json.Serializable {
         } else if (customProperty.getValue() instanceof String && !((String) customProperty.getValue()).equals("")) {
             if (null != customProperty.getType()) switch (customProperty.getType()) {
                 case TEXT:
+                case RAW_TEXT:
                     returnValue = true;
                     break;
                 case COLOR:

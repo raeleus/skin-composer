@@ -35,7 +35,7 @@ public class CustomProperty implements Json.Serializable {
     private Main main;
     
     public static enum PropertyType {
-        NONE("None"), NUMBER("Number"), TEXT("Text"), DRAWABLE("Drawable"), FONT("Font"), COLOR("Color"), BOOL("Boolean");
+        NONE("None"), NUMBER("Number"), TEXT("Text"), RAW_TEXT("Raw Text"), DRAWABLE("Drawable"), FONT("Font"), COLOR("Color"), BOOL("Boolean");
 
         String name;
         PropertyType(String name) {
@@ -58,6 +58,9 @@ public class CustomProperty implements Json.Serializable {
         
         switch (type) {
             case TEXT:
+                value = "";
+                break;
+            case RAW_TEXT:
                 value = "";
                 break;
             case NUMBER:
@@ -135,7 +138,7 @@ public class CustomProperty implements Json.Serializable {
                 || value instanceof Boolean && type == PropertyType.BOOL) {
             writeValue = true;
         } else if (value instanceof String) {
-            if (type == PropertyType.TEXT) {
+            if (type == PropertyType.TEXT || type == PropertyType.RAW_TEXT) {
                 writeValue = true;
             } else if (type == PropertyType.COLOR) {
                 for (ColorData data : main.getJsonData().getColors()) {

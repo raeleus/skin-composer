@@ -904,7 +904,7 @@ public class RootTable extends Table {
                     table.add(spinner);
 
                     spinner.addListener(new CustomPropertyChangeListener(styleProperty, spinner));
-                } else if (styleProperty.getType() == PropertyType.TEXT) {
+                } else if (styleProperty.getType() == PropertyType.TEXT || styleProperty.getType() == PropertyType.RAW_TEXT) {
                     label = new Label(styleProperty.getName(), getSkin());
                     table.add(label).padTop(20.0f).fill(false).expand(false, false);
                     
@@ -2365,6 +2365,7 @@ public class RootTable extends Table {
                             
                             switch (customProperty.getType()) {
                                 case TEXT:
+                                case RAW_TEXT:
                                     Label labelText = new Label((String) customProperty.getValue(), getSkin());
                                     container.setActor(labelText);
                                     break;

@@ -611,6 +611,7 @@ public class MainListener extends RootTableListener {
                 main.getUndoableManager().addUndoable(new UndoableManager.CustomDoubleUndoable(main, customProperty, ((Spinner) styleActor).getValue()), false);
                 break;
             case TEXT:
+            case RAW_TEXT:
                 main.getUndoableManager().addUndoable(new UndoableManager.CustomTextUndoable(main, customProperty, ((TextField) styleActor).getText()), false);
                 break;
             case BOOL:
