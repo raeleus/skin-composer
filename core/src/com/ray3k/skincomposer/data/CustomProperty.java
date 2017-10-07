@@ -35,7 +35,7 @@ public class CustomProperty implements Json.Serializable {
     private Main main;
     
     public static enum PropertyType {
-        NONE("None"), NUMBER("Number"), TEXT("Text"), RAW_TEXT("Raw Text"), DRAWABLE("Drawable"), FONT("Font"), COLOR("Color"), BOOL("Boolean");
+        NONE("None"), NUMBER("Number"), TEXT("Text"), RAW_TEXT("Raw Text (JSON)"), DRAWABLE("Drawable"), FONT("Font"), COLOR("Color"), BOOL("Boolean");
 
         String name;
         PropertyType(String name) {
