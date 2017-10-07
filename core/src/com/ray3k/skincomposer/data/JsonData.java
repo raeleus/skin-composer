@@ -212,7 +212,7 @@ public class JsonData implements Json.Serializable {
                             }
                         }
                     }
-                } else {
+                } else { //custom classes
                     CustomClass customClass = new CustomClass(child.name, child.name.replaceFirst(".*(\\.|\\$)", ""));
                     customClass.setMain(main);
                     
@@ -260,21 +260,11 @@ public class JsonData implements Json.Serializable {
                                 customProperty.setType(PropertyType.BOOL);
                                 customProperty.setValue(property.asBoolean());
                             } else if (property.isObject()) {
-                                //todo: can object line be read as a String and put into text field?
-                                warnings.add("Custom property [BLACK]" + customProperty.getName() + "[] value converted to text for [BLACK]" + customClass.getDisplayName() + ": " + customStyle.getName() + "[] (Object property value)");
-                                customProperty.setType(PropertyType.TEXT);
-                                String value = "{";
-                                int index = 0;
-                                for (Object object : property.iterator()) {
-                                    if (index > 0) value += ", ";
-                                    value += object.toString();
-                                    index++;
-                                }
-                                value += "}";
-                                customProperty.setValue(value);
+                                customProperty.setType(PropertyType.RAW_TEXT);
+                                customProperty.setValue(property.toJson(OutputType.minimal));
                             } else if (property.isArray()) {
-                                warnings.add("Custom property [BLACK]" + customProperty.getName() + "[] value cleared for [BLACK]" + customClass.getDisplayName() + ": " + customStyle.getName() + "[] (Array property value)");
-                                customProperty.setType(PropertyType.TEXT);
+                                customProperty.setType(PropertyType.RAW_TEXT);
+                                customProperty.setValue(property.toJson(OutputType.minimal));
                             } else {
                                 customProperty = null;
                             }
