@@ -11,8 +11,9 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 
 * Added "Raw Text" type for custom class properties to allow manual typing of arrays and objects in JSON format. Ex. ["banana", "strawberry", "grape"]
 * Allow import of objects and arrays in custom classes as "Raw Text" types.
-* Added Splash Screen.
+* Added a splash screen to show while java is loading.
 * Added support for spanish characters: ñ, ¿, ¡, á, é, í, ó, ú, ü.
+* All JSON exports are now encoded in UTF-8.
 
 ### Contact ###
 
