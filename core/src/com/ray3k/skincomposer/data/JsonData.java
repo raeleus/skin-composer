@@ -103,7 +103,7 @@ public class JsonData implements Json.Serializable {
 
         //read json file and create styles
         JsonReader reader = new JsonReader();
-        JsonValue val = reader.parse(fileHandle);
+        JsonValue val = reader.parse(fileHandle.reader("UTF-8"));
 
         for (JsonValue child : val.iterator()) {
             //fonts
@@ -554,7 +554,7 @@ public class JsonData implements Json.Serializable {
         }
 
         json.writeObjectEnd();
-        fileHandle.writeString(json.prettyPrint(stringWriter.toString()), false);
+        fileHandle.writeString(json.prettyPrint(stringWriter.toString()), false, "UTF-8");
         
         return warnings;
     }
