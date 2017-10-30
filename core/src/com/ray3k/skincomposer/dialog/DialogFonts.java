@@ -690,9 +690,7 @@ public class DialogFonts extends Dialog {
             filterPatterns = new String[] {"*.fnt"};
         }
         
-        System.out.println("choose fonts");
         List<File> files = main.getDesktopWorker().openMultipleDialog("Choose font file(s)...", defaultPath, filterPatterns, "Font files (*.fnt)");
-        System.out.println("work" + files);
         if (files != null && files.size() > 0) {
             FileHandle fileHandle = new FileHandle(files.get(0).getParentFile());
             main.getProjectData().setLastFontPath(fileHandle.path() + "/");

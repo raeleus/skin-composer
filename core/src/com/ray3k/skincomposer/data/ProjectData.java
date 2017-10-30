@@ -259,7 +259,7 @@ public class ProjectData implements Json.Serializable {
         putRecentFile(file.path());
         Json json = new Json(JsonWriter.OutputType.minimal);
         json.setUsePrototypes(false);
-        file.writeString(json.prettyPrint(this), false);
+        file.writeString(json.prettyPrint(this), false, "UTF8");
         setChangesSaved(true);
     }
     
@@ -269,7 +269,7 @@ public class ProjectData implements Json.Serializable {
     
     public void load(FileHandle file) {
         Json json = new Json(JsonWriter.OutputType.minimal);
-        ProjectData instance = json.fromJson(ProjectData.class, file);
+        ProjectData instance = json.fromJson(ProjectData.class, file.reader("UTF8"));
         newProject = instance.newProject;
         jsonData.set(instance.jsonData);
         atlasData.set(instance.atlasData);
