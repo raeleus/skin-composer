@@ -84,13 +84,13 @@ public class FontData implements Json.Serializable {
     }
     
     public static boolean validate(String name) {
-        return name != null && !name.matches("^\\d.*|^-.*|.*\\s.*|.*[^a-zA-Z\\d\\s-_].*|^$");
+        return name != null && !name.matches("^\\d.*|^-.*|.*\\s.*|.*[^a-zA-Z\\d\\s-_ñáéíóúüÑÁÉÍÓÚÜ].*|^$");
     }
     
     public static String filter(String input) {
         input = input.replaceFirst("^\\d+", "");
         input = input.replaceAll("\\s", "_");
-        input = input.replaceAll("[^a-zA-Z\\d\\s-_]+", "");
+        input = input.replaceAll("[^a-zA-Z\\d\\s-_ñáéíóúüÑÁÉÍÓÚÜ]+", "");
         return input;
     }
 

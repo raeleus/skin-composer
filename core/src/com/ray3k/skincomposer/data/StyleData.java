@@ -219,7 +219,7 @@ public class StyleData implements Json.Serializable {
     }
     
     public static boolean validate(String name) {
-        return name != null && !name.matches("^\\d.*|^-.*|.*\\s.*|.*[^a-zA-Z\\d\\s-_].*|^$");
+        return name != null && !name.matches("^\\d.*|^-.*|.*\\s.*|.*[^a-zA-Z\\d\\s-_ñáéíóúüÑÁÉÍÓÚÜ].*|^$");
     }
 
     @Override

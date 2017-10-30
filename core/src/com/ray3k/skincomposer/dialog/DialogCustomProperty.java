@@ -193,6 +193,6 @@ public class DialogCustomProperty extends Dialog {
     }
     
     public static boolean validate(String name) {
-        return name != null && !name.matches("^\\d.*|.*[^a-zA-Z\\d_$].*|^$");
+        return name != null && !name.matches("^\\d.*|.*[^a-zA-Z\\d_$ñáéíóúüÑÁÉÍÓÚÜ].*|^$");
     }
 }
