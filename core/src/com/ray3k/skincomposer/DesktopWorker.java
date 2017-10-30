@@ -40,4 +40,5 @@ public interface DesktopWorker {
     public List<File> openMultipleDialog(String title, String defaultPath, String[] filterPatterns, String filterDescription);
     public File openDialog(String title, String defaultPath, String[] filterPatterns, String filterDescription);
     public File saveDialog(String title, String defaultPath, String[] filterPatterns, String filterDescription);
+    public void closeSplashScreen();
 }

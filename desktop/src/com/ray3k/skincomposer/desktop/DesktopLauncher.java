@@ -18,6 +18,7 @@ import com.ray3k.skincomposer.DesktopWorker;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.TextFileApplicationLogger;
 import com.ray3k.skincomposer.utils.Utils;
+import java.awt.SplashScreen;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -44,6 +45,9 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         config.setWindowIcon("logo-16.png", "logo-32.png", "logo-48.png", "logo.png");
         Main main = new Main();
         main.setDesktopWorker(desktopLauncher);
+        if (!Utils.isWindows()) {
+            desktopLauncher.closeSplashScreen();
+        }
         
         try {
             new Lwjgl3Application(main, config);
@@ -291,6 +295,14 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
             return new File(result);
         } else {
             return null;
+        }
+    }
+
+    @Override
+    public void closeSplashScreen() {
+        SplashScreen splash = SplashScreen.getSplashScreen();
+        if (splash != null) {
+            splash.close();
         }
     }
 }

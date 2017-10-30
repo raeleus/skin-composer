@@ -71,6 +71,7 @@ import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.Utils;
 import java.awt.SplashScreen;
+import javax.swing.SwingUtilities;
 
 public class Main extends ApplicationAdapter {
     public final static String VERSION = "14";
@@ -101,9 +102,8 @@ public class Main extends ApplicationAdapter {
     
     @Override
     public void create() {
-        SplashScreen splash = SplashScreen.getSplashScreen();
-        if (splash != null) {
-            splash.close();
+        if (Utils.isWindows()) {
+            desktopWorker.closeSplashScreen();
         }
         
         skin = new Skin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
