@@ -11,6 +11,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 
 * Added "Raw Text" type for custom class properties to allow manual typing of arrays and objects in JSON format. Ex. ["banana", "strawberry", "grape"]
 * Allow import of objects and arrays in custom classes as "Raw Text" types.
+* Added Splash Screen.
 
 ### Contact ###
 
