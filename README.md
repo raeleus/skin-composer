@@ -5,15 +5,11 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 14
+* Version 15
 
 ### Changes ###
 
-* Added "Raw Text" type for custom class properties to allow manual typing of arrays and objects in JSON format. Ex. ["banana", "strawberry", "grape"]
-* Allow import of objects and arrays in custom classes as "Raw Text" types.
-* Added a splash screen to show while java is loading.
-* Added support for spanish characters: ñ, ¿, ¡, á, é, í, ó, ú, ü.
-* All JSON exports are now encoded in UTF-8.
+* Added Export Format option to allow the user to select between Minimal, JavaScript, and JSON output types when exporting a skin JSON. See Project >> Settings.
 
 ### Contact ###
 

@@ -70,11 +70,9 @@ import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.Utils;
-import java.awt.SplashScreen;
-import javax.swing.SwingUtilities;
 
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "14";
+    public final static String VERSION = "15";
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,
         ProgressBar.class, ScrollPane.class, SelectBox.class, Slider.class,
