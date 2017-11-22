@@ -33,6 +33,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.dialog.DialogSettings.ExportFormat;
 import java.util.Iterator;
 
 public class ProjectData implements Json.Serializable {
@@ -152,6 +153,26 @@ public class ProjectData implements Json.Serializable {
     
     public boolean isAllowingWelcome() {
         return generalPref.getBoolean("allowingWelcome", true);
+    }
+    
+    public void setExportFormat(ExportFormat exportFormat) {
+        generalPref.putString("exportFormat", exportFormat.toString());
+    }
+    
+    public ExportFormat getExportFormat() {
+        ExportFormat returnValue = ExportFormat.MINIMAL;
+        String name = generalPref.getString("exportFormat");
+        
+        if (name != null) {
+            for (ExportFormat exportFormat : ExportFormat.values()) {
+                if (exportFormat.toString().equals(name)) {
+                    returnValue = exportFormat;
+                    break;
+                }
+            }
+        }
+        
+        return returnValue;
     }
     
     public FileHandle getSaveFile() {

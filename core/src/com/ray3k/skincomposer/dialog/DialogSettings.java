@@ -29,10 +29,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
+import com.badlogic.gdx.utils.JsonWriter;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.Spinner.Orientation;
@@ -43,6 +46,28 @@ public class DialogSettings extends Dialog {
     private boolean resourcesRelative;
     private boolean allowingWelcome;
     private final Main main;
+    private ExportFormat exportFormat;
+    
+    public static enum ExportFormat {
+        MINIMAL("Minimal", OutputType.minimal), JAVASCRIPT("JavaScript", JsonWriter.OutputType.javascript), JSON("JSON", JsonWriter.OutputType.json);
+        
+        private final String name;
+        private final OutputType outputType;
+        
+        ExportFormat(String name, OutputType outputType) {
+            this.name = name;
+            this.outputType = outputType;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        public OutputType getOutputType() {
+            return outputType;
+        }
+    }
 
     public DialogSettings(String title, String windowStyleName, Main main) {
         super(title, main.getSkin(), windowStyleName);
@@ -51,6 +76,7 @@ public class DialogSettings extends Dialog {
         maxUndos = main.getProjectData().getMaxUndos();
         resourcesRelative = main.getProjectData().areResourcesRelative();
         allowingWelcome = main.getProjectData().isAllowingWelcome();
+        exportFormat = main.getProjectData().getExportFormat();
         setFillParent(true);
 
         populate();
@@ -65,6 +91,7 @@ public class DialogSettings extends Dialog {
             main.getProjectData().setMaxUndos(maxUndos);
             main.getProjectData().setResourcesRelative(resourcesRelative);
             main.getProjectData().setAllowingWelcome(allowingWelcome);
+            main.getProjectData().setExportFormat(exportFormat);
             main.getUndoableManager().clearUndoables();
         }
     }
@@ -218,6 +245,21 @@ public class DialogSettings extends Dialog {
             }
         });
         t.add(welcomeCheckBox).padTop(10.0f).colspan(2);
+        
+        t.row();
+        label = new Label("Exported JSON Format:", getSkin());
+        t.add(label).right().padTop(10.0f);
+        
+        final SelectBox<ExportFormat> exportFormatSelectBox = new SelectBox(getSkin());
+        exportFormatSelectBox.setItems(ExportFormat.MINIMAL, ExportFormat.JAVASCRIPT, ExportFormat.JSON);
+        exportFormatSelectBox.setSelected(exportFormat);
+        exportFormatSelectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                exportFormat = exportFormatSelectBox.getSelected();
+            }
+        });
+        t.add(exportFormatSelectBox).left().padTop(10.0f);;
 
         button("OK", true);
         button("Cancel", false);

@@ -419,8 +419,9 @@ public class JsonData implements Json.Serializable {
         
         StringWriter stringWriter = new StringWriter();
         JsonWriter jsonWriter = new JsonWriter(stringWriter);
-        jsonWriter.setOutputType(OutputType.minimal);
-        Json json = new Json();
+        jsonWriter.setOutputType(main.getProjectData().getExportFormat().getOutputType());
+        
+        Json json = new Json(main.getProjectData().getExportFormat().getOutputType());
         json.setWriter(jsonWriter);
         json.writeObjectStart();
 
