@@ -106,6 +106,6 @@ public class DrawableData implements Json.Serializable {
         tint = json.readValue("tint", Color.class, jsonData);
         tintName = json.readValue("tintName", String.class, jsonData);
         name = json.readValue("name", String.class, jsonData);
-//        tiled = json.readValue("tiled", Boolean.class, false, jsonData);
+        tiled = json.readValue("tiled", Boolean.class, false, jsonData);
     }
 }

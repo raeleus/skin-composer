@@ -276,9 +276,9 @@ public class RootTable extends Table {
                 new MenuItem("Export...", RootTableEnum.EXPORT),
                 new MenuItem("Exit", RootTableEnum.EXIT));
         if (Utils.isMac()) {
-            fileMenu.setShortcuts("⌘+N", "⌘+O", null, "⌘+S", "Shift+⌘+S");
+            fileMenu.setShortcuts("⌘+N", "⌘+O", null, "⌘+S", "Shift+⌘+S", null, null, "⌘+E");
         } else {
-            fileMenu.setShortcuts("Ctrl+N", "Ctrl+O", null, "Ctrl+S", "Shift+Ctrl+S");
+            fileMenu.setShortcuts("Ctrl+N", "Ctrl+O", null, "Ctrl+S", "Shift+Ctrl+S", null, null, "Ctrl+E");
         }
         fileMenu.addListener(new MenuBarListener(fileMenu));
 
@@ -2857,6 +2857,9 @@ public class RootTable extends Table {
                             } else {
                                 rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.SAVE));
                             }
+                            break;
+                        case Input.Keys.E:
+                            rootTable.fire(new RootTable.RootTableEvent(RootTableEnum.EXPORT));
                             break;
                         default:
                             break;
