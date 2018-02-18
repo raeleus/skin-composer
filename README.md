@@ -9,7 +9,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 
 ### Changes ###
 
-* 
+* Added Ctrl+E shortcut for export.
 
 ### Contact ###
 
