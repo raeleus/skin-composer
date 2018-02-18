@@ -254,6 +254,9 @@ public class MainListener extends RootTableListener {
                 break;
             case PREVIEW_PROPERTY:
                 break;
+            case REFRESH_ATLAS:
+                refreshTextureAtlas();
+                break;
         }
     }
     
@@ -620,6 +623,21 @@ public class MainListener extends RootTableListener {
             default:
                 break;
         }  
+    }
+    
+    public void refreshTextureAtlas() {
+        main.getDialogFactory().showDialogLoading(() -> {
+            try {
+                main.getProjectData().getAtlasData().writeAtlas();
+                main.getProjectData().getAtlasData().atlasCurrent = true;
+                main.getRootTable().produceAtlas();
+                main.getRootTable().refreshPreview();
+            } catch (Exception e) {
+                main.getDialogFactory().showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
+                Gdx.app.error(getClass().getName(), "Unable to write texture atlas to temporary storage!", e);
+                main.getDialogFactory().showDialogError("Atlas Error...", "Unable to write texture atlas to temporary storage.\n\nOpen log?");
+            }
+        });
     }
     
     public WelcomeListener getWelcomeListener() {

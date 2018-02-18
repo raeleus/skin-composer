@@ -310,7 +310,9 @@ public class RootTable extends Table {
         menuButton.setItems(new MenuItem("Settings...", RootTableEnum.SETTINGS),
                 new MenuItem("Colors...", RootTableEnum.COLORS),
                 new MenuItem("Fonts...", RootTableEnum.FONTS),
-                new MenuItem("Drawables...", RootTableEnum.DRAWABLES));
+                new MenuItem("Drawables...", RootTableEnum.DRAWABLES),
+                new MenuItem("Refresh Atlas", RootTableEnum.REFRESH_ATLAS));
+        menuButton.setShortcuts(null, null, null, null, "F5");
 
         menuButton.addListener(new MenuBarListener(menuButton));
 
@@ -2703,7 +2705,7 @@ public class RootTable extends Table {
         REDO, SETTINGS, COLORS, FONTS, DRAWABLES, ABOUT, CLASS_SELECTED,
         NEW_CLASS, DUPLICATE_CLASS, DELETE_CLASS, RENAME_CLASS, STYLE_SELECTED,
         NEW_STYLE, DUPLICATE_STYLE, DELETE_STYLE, RENAME_STYLE, PREVIEW_PROPERTY,
-        WELCOME
+        WELCOME, REFRESH_ATLAS
     }
 
     public static class RootTableEvent extends Event {
@@ -2828,16 +2830,17 @@ public class RootTable extends Table {
 
         @Override
         public boolean keyDown(InputEvent event, int keycode) {
-            if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
-                //trigger shortcuts only if no dialogs are open.
-                boolean listenForShortcuts = true;
-                for (Actor actor : rootTable.getStage().getActors()) {
-                    if (actor instanceof Dialog) {
-                        listenForShortcuts = false;
-                        break;
-                    }
+            boolean listenForShortcuts = true;
+            for (Actor actor : rootTable.getStage().getActors()) {
+                if (actor instanceof Dialog) {
+                    listenForShortcuts = false;
+                    break;
                 }
-                if (listenForShortcuts) {
+            }
+            
+            //trigger shortcuts only if no dialogs are open.
+            if (listenForShortcuts) {
+                if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
                     switch (keycode) {
                         case Input.Keys.Z:
                             rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.UNDO));
@@ -2864,6 +2867,12 @@ public class RootTable extends Table {
                         default:
                             break;
                     }
+                }
+                
+                switch (keycode) {
+                    case Input.Keys.F5:
+                        rootTable.fire(new RootTable.RootTableEvent(RootTableEnum.REFRESH_ATLAS));
+                        break;
                 }
             }
             return false;

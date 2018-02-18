@@ -178,28 +178,6 @@ public class DialogSettings extends Dialog {
         t.add(textButton).colspan(2);
 
         t.row();
-        textButton = new TextButton("Repack Texture Atlas", main.getSkin());
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogLoading(() -> {
-                    try {
-                        main.getProjectData().getAtlasData().writeAtlas();
-                        main.getProjectData().getAtlasData().atlasCurrent = true;
-                        main.getRootTable().produceAtlas();
-                        main.getRootTable().refreshPreview();
-                    } catch (Exception e) {
-                        main.getDialogFactory().showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
-                        Gdx.app.error(getClass().getName(), "Unable to write texture atlas to temporary storage!", e);
-                        main.getDialogFactory().showDialogError("Atlas Error...", "Unable to write texture atlas to temporary storage.\n\nOpen log?");
-                    }
-                });
-            }
-        });
-        textButton.addListener(main.getHandListener());
-        t.add(textButton).colspan(2);
-
-        t.row();
         label = new Label("Max Number of Undos: ", main.getSkin());
         t.add(label).right().padTop(10.0f);
         Spinner spinner3 = new Spinner(main.getProjectData().getMaxUndos(), 1.0, true, Orientation.HORIZONTAL, getSkin());

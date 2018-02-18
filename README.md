@@ -10,6 +10,8 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Changes ###
 
 * Added Ctrl+E shortcut for export.
+* Added F5 shortcut for refreshing the texture atlas.
+* Moved refresh texture atlas option to project menu.
 
 ### Contact ###
 
