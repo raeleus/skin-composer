@@ -1,7 +1,7 @@
 /** *****************************************************************************
  * MIT License
  *
- * Copyright (c) 2017 Raymond Buckley
+ * Copyright (c) 2018 Raymond Buckley
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -2563,7 +2563,7 @@ public class RootTable extends Table {
         statusLabel.setColor(1.0f, 1.0f, 1.0f, 0.0f);
         table.add(statusLabel).padLeft(10.0f);
         
-        Label label = new Label("ver. " + Main.VERSION + "    RAY3K.WORDPRESS.COM    © 2017 Raymond \"Raeleus\" Buckley", getSkin());
+        Label label = new Label("ver. " + Main.VERSION + "    RAY3K.WORDPRESS.COM    © 2018 Raymond \"Raeleus\" Buckley", getSkin());
         table.add(label).expandX().right().padRight(25.0f);
     }
     

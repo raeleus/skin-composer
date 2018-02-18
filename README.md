@@ -5,11 +5,11 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 15
+* Version 16
 
 ### Changes ###
 
-* Added Export Format option to allow the user to select between Minimal, JavaScript, and JSON output types when exporting a skin JSON. See Project >> Settings.
+* 
 
 ### Contact ###
 
@@ -32,7 +32,7 @@ These will remain as issues until I can get my hands a proper Mac to do testing.
 ### License ###
 MIT License
 
-Copyright (c) 2017 Raymond Buckley
+Copyright (c) 2018 Raymond Buckley
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

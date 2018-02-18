@@ -1,7 +1,7 @@
 /*******************************************************************************
  * MIT License
  * 
- * Copyright (c) 2017 Raymond Buckley
+ * Copyright (c) 2018 Raymond Buckley
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.ray3k.skincomposer.utils.Utils;
 
-public class DrawableData implements Json.Serializable{
+public class DrawableData implements Json.Serializable {
 
     public static String proper(String name) {
         return name.replaceFirst("(\\.9)?\\.[a-zA-Z0-9]*$", "");
@@ -45,6 +45,7 @@ public class DrawableData implements Json.Serializable{
     public Color tint;
     public String tintName;
     public String name;
+    public boolean tiled;
 
     public DrawableData(FileHandle file) {
         this.file = file;
@@ -92,6 +93,7 @@ public class DrawableData implements Json.Serializable{
         json.writeValue("tint", tint);
         json.writeValue("tintName", tintName);
         json.writeValue("name", name);
+        json.writeValue("tiled", tiled);
     }
 
     @Override
@@ -104,5 +106,6 @@ public class DrawableData implements Json.Serializable{
         tint = json.readValue("tint", Color.class, jsonData);
         tintName = json.readValue("tintName", String.class, jsonData);
         name = json.readValue("name", String.class, jsonData);
+//        tiled = json.readValue("tiled", Boolean.class, false, jsonData);
     }
 }

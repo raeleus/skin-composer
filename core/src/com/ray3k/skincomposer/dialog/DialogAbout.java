@@ -1,7 +1,7 @@
 /*******************************************************************************
  * MIT License
  * 
- * Copyright (c) 2017 Raymond Buckley
+ * Copyright (c) 2018 Raymond Buckley
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,7 @@ public class DialogAbout extends Dialog {
         table.add(label);
         
         table.row();
-        label = new Label("Skin Composer is developed by Raeleus for the LibGDX community.\nVersion " + Main.VERSION + "\nCopyright © Raymond \"Raeleus\" Buckley 2017", skin);
+        label = new Label("Skin Composer is developed by Raeleus for the LibGDX community.\nVersion " + Main.VERSION + "\nCopyright © Raymond \"Raeleus\" Buckley 2018", skin);
         label.setAlignment(Align.center);
         table.add(label).padBottom(0);
         table.row();
