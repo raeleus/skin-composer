@@ -214,7 +214,7 @@ public class DialogDrawables extends Dialog {
         if (property == null && customProperty == null) {
             getContentTable().add(new Label("Drawables", getSkin(), "title"));
         } else {
-            getContentTable().add(new Label("Select a Drawables", getSkin(), "title"));
+            getContentTable().add(new Label("Select a Drawable", getSkin(), "title"));
         }
         
         getContentTable().row();
