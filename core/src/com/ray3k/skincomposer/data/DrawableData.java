@@ -46,6 +46,8 @@ public class DrawableData implements Json.Serializable {
     public String tintName;
     public String name;
     public boolean tiled;
+    public float minWidth;
+    public float minHeight;
 
     public DrawableData(FileHandle file) {
         this.file = file;
@@ -94,6 +96,8 @@ public class DrawableData implements Json.Serializable {
         json.writeValue("tintName", tintName);
         json.writeValue("name", name);
         json.writeValue("tiled", tiled);
+        json.writeValue("minWidth", minWidth);
+        json.writeValue("minHeight", minHeight);
     }
 
     @Override
@@ -107,5 +111,7 @@ public class DrawableData implements Json.Serializable {
         tintName = json.readValue("tintName", String.class, jsonData);
         name = json.readValue("name", String.class, jsonData);
         tiled = json.readValue("tiled", Boolean.class, false, jsonData);
+        minWidth = json.readValue("minWidth", Float.class, 0.0f, jsonData);
+        minHeight = json.readValue("minHeight", Float.class, 0.0f, jsonData);
     }
 }

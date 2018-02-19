@@ -78,6 +78,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -2530,7 +2531,12 @@ public class RootTable extends Table {
                 name = DrawableData.proper(name);
                 
                 Drawable drawable;
-                if (data.file.name().matches(".*\\.9\\.[a-zA-Z0-9]*$")) {
+                if (data.tiled) {
+                    drawable = new TiledDrawable(atlas.findRegion(name));
+                    drawable.setMinWidth(data.minWidth);
+                    drawable.setMinHeight(data.minHeight);
+                    ((TiledDrawable) drawable).getColor().set(main.getJsonData().getColorByName(data.tintName).color);
+                } else if (data.file.name().matches(".*\\.9\\.[a-zA-Z0-9]*$")) {
                     drawable = new NinePatchDrawable(atlas.createPatch(name));
                     if (data.tint != null) {
                         drawable = ((NinePatchDrawable) drawable).tint(data.tint);

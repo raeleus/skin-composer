@@ -27,6 +27,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import java.awt.Desktop;
 import java.io.BufferedOutputStream;
@@ -93,6 +95,19 @@ public class Utils {
         Color returnValue = averageEdgeColor(pixmap, file.name().matches("(?i).*\\.9\\.png$"));
         pixmap.dispose();
         return returnValue;
+    }
+    
+    public static Vector2 imageDimensions(FileHandle file) {
+        Vector2 vector = new Vector2();
+        Pixmap pixmap = new Pixmap(file);
+        vector.x = pixmap.getWidth();
+        vector.y = pixmap.getHeight();
+        if (file.name().matches("(?i).*\\.9\\.png$")) {
+            vector.x = MathUtils.clamp(vector.x - 2, 0.0f, vector.x);
+            vector.y = MathUtils.clamp(vector.y - 2, 0.0f, vector.y);
+        }
+        pixmap.dispose();
+        return vector;
     }
     
     /**

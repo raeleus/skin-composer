@@ -38,6 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
@@ -50,6 +51,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.dialog.DialogFactory;
+import com.ray3k.skincomposer.utils.Utils;
 import java.io.StringWriter;
 
 public class JsonData implements Json.Serializable {
@@ -151,6 +153,27 @@ public class JsonData implements Json.Serializable {
                     }
                     
                     colors.add(colorData);
+                }
+            }
+            else if (child.name().equals(TiledDrawable.class.getName())) {
+                for (JsonValue tiledDrawable : child.iterator()) {
+                    DrawableData drawableData = new DrawableData(main.getProjectData().getAtlasData().getDrawable(tiledDrawable.getString("region")).file);
+                    drawableData.name = tiledDrawable.name;
+                    
+                    drawableData.tiled = true;
+                    drawableData.visible = true;
+                    drawableData.tintName = tiledDrawable.getString("color");
+                    drawableData.minWidth = tiledDrawable.getFloat("minWidth", 0.0f);
+                    drawableData.minHeight = tiledDrawable.getFloat("minHeight", 0.0f);
+   
+                    //delete drawables with the same name
+                    for (DrawableData originalData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {
+                        if (originalData.name.equals(drawableData.name)) {
+                            main.getProjectData().getAtlasData().getDrawables().removeValue(originalData, true);
+                        }
+                    }
+                    
+                    main.getProjectData().getAtlasData().getDrawables().add(drawableData);
                 }
             } //tinted drawables
             else if (child.name().equals(TintedDrawable.class.getName())) {
@@ -450,13 +473,17 @@ public class JsonData implements Json.Serializable {
             json.writeObjectEnd();
         }
         
-        //tinted drawables
         Array<DrawableData> tintedDrawables = new Array<>();
+        Array<DrawableData> tiledDrawables = new Array<>();
         for (DrawableData drawable : main.getProjectData().getAtlasData().getDrawables()) {
-            if (drawable.tint != null || drawable.tintName != null) {
+            if (drawable.tiled) {
+                tiledDrawables.add(drawable);
+            } else if (drawable.tint != null || drawable.tintName != null) {
                 tintedDrawables.add(drawable);
             }
         }
+        
+        //tinted drawables
         if (tintedDrawables.size > 0) {
             json.writeObjectStart(TintedDrawable.class.getName());
             for (DrawableData drawable : tintedDrawables) {
@@ -472,6 +499,20 @@ public class JsonData implements Json.Serializable {
                 } else if (drawable.tintName != null) {
                     json.writeValue("color", drawable.tintName);
                 }
+                json.writeObjectEnd();
+            }
+            json.writeObjectEnd();
+        }
+        
+        //tiled drawables
+        if (tiledDrawables.size > 0) {
+            json.writeObjectStart(TiledDrawable.class.getName());
+            for (DrawableData drawable : tiledDrawables) {
+                json.writeObjectStart(drawable.name);
+                json.writeValue("region", DrawableData.proper(drawable.file.name()));
+                json.writeValue("color", drawable.tintName);
+                json.writeValue("minWidth", drawable.minWidth);
+                json.writeValue("minHeight", drawable.minHeight);
                 json.writeObjectEnd();
             }
             json.writeObjectEnd();

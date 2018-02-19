@@ -191,6 +191,11 @@ com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 	color-base-static: {
 		up: button-color-base
 	}
+	tiles: {
+		up: button-tiles
+		down: button-tiles-pressed
+		over: button-tiles-over
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
 	default: {
