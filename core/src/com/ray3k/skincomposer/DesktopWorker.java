@@ -41,4 +41,5 @@ public interface DesktopWorker {
     public File openDialog(String title, String defaultPath, String[] filterPatterns, String filterDescription);
     public File saveDialog(String title, String defaultPath, String[] filterPatterns, String filterDescription);
     public void closeSplashScreen();
+    public char getKeyName(int keyCode);
 }

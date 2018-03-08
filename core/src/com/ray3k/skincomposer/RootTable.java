@@ -2847,27 +2847,28 @@ public class RootTable extends Table {
             //trigger shortcuts only if no dialogs are open.
             if (listenForShortcuts) {
                 if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
-                    switch (keycode) {
-                        case Input.Keys.Z:
+                    char character = rootTable.main.getDesktopWorker().getKeyName(keycode);
+                    switch (character) {
+                        case 'z':
                             rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.UNDO));
                             break;
-                        case Input.Keys.Y:
+                        case 'y':
                             rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.REDO));
                             break;
-                        case Input.Keys.N:
+                        case 'n':
                             rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.NEW));
                             break;
-                        case Input.Keys.O:
+                        case 'o':
                             rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.OPEN));
                             break;
-                        case Input.Keys.S:
+                        case 's':
                             if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
                                 rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.SAVE_AS));
                             } else {
                                 rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.SAVE));
                             }
                             break;
-                        case Input.Keys.E:
+                        case 'e':
                             rootTable.fire(new RootTable.RootTableEvent(RootTableEnum.EXPORT));
                             break;
                         default:

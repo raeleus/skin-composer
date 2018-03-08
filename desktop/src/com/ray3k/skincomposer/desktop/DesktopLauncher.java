@@ -6,6 +6,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Input;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
@@ -304,5 +305,12 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         if (splash != null) {
             splash.close();
         }
+    }
+
+    @Override
+    public char getKeyName(int keyCode) {
+        int glfwKeyCode = Lwjgl3Input.getGlfwKeyCode(keyCode);
+        String output = org.lwjgl.glfw.GLFW.glfwGetKeyName(glfwKeyCode, 0);
+        return (output == null) ? ' ' : output.toLowerCase().charAt(0);
     }
 }
