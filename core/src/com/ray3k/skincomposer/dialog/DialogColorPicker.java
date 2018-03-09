@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -282,6 +283,16 @@ public class DialogColorPicker extends Dialog {
         alphaSpinner.getButtonMinus().addListener(main.getHandListener());
         alphaSpinner.getButtonPlus().addListener(main.getHandListener());
         
+        final TextField hexField = new TextField(colorToHex(selectedColor), skin);
+        hexField.setMaxLength(6);
+        hexField.setTextFieldFilter(new TextField.TextFieldFilter() {
+            @Override
+            public boolean acceptChar(TextField textField, char c) {
+                return c >= '0' && c <= '9' || c >= 'A' && c <= 'F' || c >= 'a' && c <= 'f';
+            }
+        });
+        hexField.addListener(main.getIbeamListener());
+        
         redSpinner.setTransversalNext(greenSpinner.getTextField());
         greenSpinner.setTransversalNext(blueSpinner.getTextField());
         blueSpinner.setTransversalNext(alphaSpinner.getTextField());
@@ -322,6 +333,8 @@ public class DialogColorPicker extends Dialog {
                 cursor.setY(v.z * SIZE - cursor.getHeight() / 2.0f);
                 hueKnob.setY(v.x * SIZE - hueKnob.getHeight() / 2.0f);
                 hueKnob2.setY(hueKnob.getY());
+                
+                hexField.setText(colorToHex(selectedColor));
             }
         };
         redSpinner.addListener(rgbListener);
@@ -353,11 +366,49 @@ public class DialogColorPicker extends Dialog {
                 cursor.setY((float) brightnessSpinner.getValue() / 100.0f * SIZE - cursor.getHeight() / 2.0f);
                 hueKnob.setY((float) hueSpinner.getValue() / 359.0f * SIZE - hueKnob.getHeight() / 2.0f);
                 hueKnob2.setY(hueKnob.getY());
+                
+                hexField.setText(colorToHex(selectedColor));
             }
         };
         hueSpinner.addListener(hsbListener);
         saturationSpinner.addListener(hsbListener);
         brightnessSpinner.addListener(hsbListener);
+        
+        ChangeListener hexListener = new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                if (hexField.getText().length() == 6) {
+                    Color color = Color.valueOf(hexField.getText());
+
+                    redSpinner.setValue(color.r * 255);
+                    greenSpinner.setValue(color.g * 255);
+                    blueSpinner.setValue(color.b * 255);
+
+                    selectedColor.set(color.r, color.g, color.b, (float) alphaSpinner.getValue() / 255.0f);
+                    Vector3 v = rgbToHsb(selectedColor.r, selectedColor.g, selectedColor.b);
+                    hueSpinner.setValue(v.x * 359.0f);
+                    saturationSpinner.setValue(v.y * 100.0f);
+                    brightnessSpinner.setValue(v.z * 100.0f);
+                    selectedColorCont.setColor(selectedColor);
+
+                    color = hsbToRgb((float) hueSpinner.getValue(), 1.0f, 1.0f);
+                    gradientS.setCol2(color);
+                    gradientS.setCol3(color);
+                    gradientAlpha.setCol3(color);
+                    gradientAlpha.setCol4(color);
+                    color = new Color(color);
+                    color.a = 0.0f;
+                    gradientAlpha.setCol1(color);
+                    gradientAlpha.setCol2(color);
+
+                    cursor.setX(v.y * SIZE - cursor.getWidth() / 2.0f);
+                    cursor.setY(v.z * SIZE - cursor.getHeight() / 2.0f);
+                    hueKnob.setY(v.x * SIZE - hueKnob.getHeight() / 2.0f);
+                    hueKnob2.setY(hueKnob.getY());
+                }
+            }
+        };
+        hexField.addListener(hexListener);
         
         alphaSpinner.addListener(new ChangeListener() {
             @Override
@@ -509,6 +560,8 @@ public class DialogColorPicker extends Dialog {
         }
         
         table = new Table();
+        table.setName("confirmTable");
+        table.defaults().space(10.0f).minWidth(80.0f);
         TextButton textButton = new TextButton("OK", skin);
         textButton.addListener(main.getHandListener());
         textButton.addListener(new ChangeListener() {
@@ -520,8 +573,7 @@ public class DialogColorPicker extends Dialog {
                 hide();
             }
         });
-        table.add(textButton).growX();
-        table.row();
+        table.add(textButton);
         textButton = new TextButton("Cancel", skin);
         textButton.addListener(main.getHandListener());
         textButton.addListener(new ChangeListener() {
@@ -533,8 +585,18 @@ public class DialogColorPicker extends Dialog {
                 hide();
             }
         });
-        table.add(textButton).growX().padTop(10.0f);
+        table.add(textButton);
         t.add(table);
+        
+        table.row();
+        table = new Table();
+        ((Table) t.findActor("confirmTable")).add(table).colspan(2);
+        
+        table.defaults().space(10.0f);
+        label = new Label("#", skin, "required");
+        table.add(label);
+        
+        table.add(hexField).width(75.0f);
         
         t.row();
         table = new Table();
@@ -586,6 +648,10 @@ public class DialogColorPicker extends Dialog {
 
     public Color getSelectedColor() {
         return selectedColor;
+    }
+    
+    private String colorToHex(Color color) {
+        return color.toString().substring(0, 5);
     }
     
     public static abstract class ColorListener implements EventListener {
