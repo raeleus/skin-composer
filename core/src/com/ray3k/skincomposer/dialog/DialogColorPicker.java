@@ -283,8 +283,8 @@ public class DialogColorPicker extends Dialog {
         alphaSpinner.getButtonMinus().addListener(main.getHandListener());
         alphaSpinner.getButtonPlus().addListener(main.getHandListener());
         
-        final TextField hexField = new TextField(colorToHex(selectedColor), skin);
-        hexField.setMaxLength(6);
+        final TextField hexField = new TextField(selectedColor.toString(), skin);
+        hexField.setMaxLength(8);
         hexField.setTextFieldFilter(new TextField.TextFieldFilter() {
             @Override
             public boolean acceptChar(TextField textField, char c) {
@@ -334,7 +334,7 @@ public class DialogColorPicker extends Dialog {
                 hueKnob.setY(v.x * SIZE - hueKnob.getHeight() / 2.0f);
                 hueKnob2.setY(hueKnob.getY());
                 
-                hexField.setText(colorToHex(selectedColor));
+                hexField.setText(selectedColor.toString());
             }
         };
         redSpinner.addListener(rgbListener);
@@ -367,7 +367,7 @@ public class DialogColorPicker extends Dialog {
                 hueKnob.setY((float) hueSpinner.getValue() / 359.0f * SIZE - hueKnob.getHeight() / 2.0f);
                 hueKnob2.setY(hueKnob.getY());
                 
-                hexField.setText(colorToHex(selectedColor));
+                hexField.setText(selectedColor.toString());
             }
         };
         hueSpinner.addListener(hsbListener);
@@ -377,14 +377,19 @@ public class DialogColorPicker extends Dialog {
         ChangeListener hexListener = new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                if (hexField.getText().length() == 6) {
+                if (hexField.getText().length() == 6 || hexField.getText().length() == 8) {
                     Color color = Color.valueOf(hexField.getText());
 
                     redSpinner.setValue(color.r * 255);
                     greenSpinner.setValue(color.g * 255);
                     blueSpinner.setValue(color.b * 255);
+                    alphaSpinner.setValue(color.a * 255);
 
-                    selectedColor.set(color.r, color.g, color.b, (float) alphaSpinner.getValue() / 255.0f);
+                    if (hexField.getText().length() == 6) {
+                        selectedColor.set(color.r, color.g, color.b, (float) alphaSpinner.getValue() / 255.0f);
+                    } else {
+                        selectedColor.set(color.r, color.g, color.b, color.a);
+                    }
                     Vector3 v = rgbToHsb(selectedColor.r, selectedColor.g, selectedColor.b);
                     hueSpinner.setValue(v.x * 359.0f);
                     saturationSpinner.setValue(v.y * 100.0f);
@@ -418,6 +423,8 @@ public class DialogColorPicker extends Dialog {
                 
                 alphaKnob.setY(selectedColor.a * SIZE - alphaKnob.getHeight() / 2.0f);
                 alphaKnob2.setY(alphaKnob.getY());
+                
+                hexField.setText(selectedColor.toString());
             }
         });
         
@@ -648,10 +655,6 @@ public class DialogColorPicker extends Dialog {
 
     public Color getSelectedColor() {
         return selectedColor;
-    }
-    
-    private String colorToHex(Color color) {
-        return color.toString().substring(0, 5);
     }
     
     public static abstract class ColorListener implements EventListener {
