@@ -84,7 +84,12 @@ public class DialogColorPicker extends Dialog {
         this.main = main;
         this.listener = listener;
         
-        gradientAlpha = new GradientDrawable(new Color(1.0f, 0, 0, 0), new Color(1.0f, 0, 0, 0), Color.RED, Color.RED);
+        gradientAlpha = new GradientDrawable(selectedColor, selectedColor, selectedColor, selectedColor);
+        gradientAlpha.getCol1().a = 0;
+        gradientAlpha.getCol2().a = 0;
+        gradientAlpha.getCol3().a = 1;
+        gradientAlpha.getCol4().a = 1;
+        
         Vector3 v = rgbToHsb(selectedColor.r, selectedColor.g, selectedColor.b);
         Color temp = hsbToRgb(v.x * 360.0f, 1.0f, 1.0f);
         gradientS = new GradientDrawable(Color.WHITE, temp, temp, Color.WHITE);
