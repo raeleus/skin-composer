@@ -415,6 +415,9 @@ public class DialogColorPicker extends Dialog {
                     cursor.setY(v.z * SIZE - cursor.getHeight() / 2.0f);
                     hueKnob.setY(v.x * SIZE - hueKnob.getHeight() / 2.0f);
                     hueKnob2.setY(hueKnob.getY());
+                    
+                    alphaKnob.setY(selectedColor.a * SIZE - alphaKnob.getHeight() / 2.0f);
+                    alphaKnob2.setY(alphaKnob.getY());
                 }
             }
         };
