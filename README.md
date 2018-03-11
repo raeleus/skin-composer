@@ -5,14 +5,13 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 16
+* Version 17
 
 ### Changes ###
 
-* Added Ctrl+E shortcut for export.
-* Added F5 shortcut for refreshing the texture atlas.
-* Moved refresh texture atlas option to project menu.
-* Added TiledDrawable functionality. See Project >> Drawables.
+* Added a hexadecimal field to the color picker.
+* Fixed alpha slider being initialized with the incorrect color in color picker.
+* Fixed keyboard shortcuts being incorrectly configured on alternative keyboard layouts.
 
 ### Contact ###
 
