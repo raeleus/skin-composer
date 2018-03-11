@@ -48,6 +48,7 @@ public class DrawableData implements Json.Serializable {
     public boolean tiled;
     public float minWidth;
     public float minHeight;
+    public boolean customized;
 
     public DrawableData(FileHandle file) {
         this.file = file;
@@ -59,6 +60,15 @@ public class DrawableData implements Json.Serializable {
         }
         visible = true;
         this.name = proper(file.name());
+        customized = false;
+    }
+    
+    public DrawableData(String customName) {
+        name = customName;
+        customized = true;
+        visible = true;
+        bgColor = Color.WHITE;
+        tiled = false;
     }
     
     public DrawableData() {
@@ -76,7 +86,7 @@ public class DrawableData implements Json.Serializable {
         if (obj instanceof DrawableData) {
             DrawableData dd = (DrawableData) obj;
 
-            if (dd.file.equals(file) && ((tint == null && dd.tint == null) || (tint != null && tint.equals(dd.tint))) && ((tintName == null && dd.tintName == null) || (tintName != null && tintName.equals(dd.tintName)))) {
+            if (dd.customized && name.equals(dd.name) || dd.file.equals(file) && ((tint == null && dd.tint == null) || (tint != null && tint.equals(dd.tint))) && ((tintName == null && dd.tintName == null) || (tintName != null && tintName.equals(dd.tintName)))) {
                 returnValue = true;
             }
         }
@@ -98,6 +108,7 @@ public class DrawableData implements Json.Serializable {
         json.writeValue("tiled", tiled);
         json.writeValue("minWidth", minWidth);
         json.writeValue("minHeight", minHeight);
+        json.writeValue("customized", customized);
     }
 
     @Override
@@ -113,5 +124,6 @@ public class DrawableData implements Json.Serializable {
         tiled = json.readValue("tiled", Boolean.class, false, jsonData);
         minWidth = json.readValue("minWidth", Float.class, 0.0f, jsonData);
         minHeight = json.readValue("minHeight", Float.class, 0.0f, jsonData);
+        customized = json.readValue("customized", Boolean.class, false, jsonData);
     }
 }

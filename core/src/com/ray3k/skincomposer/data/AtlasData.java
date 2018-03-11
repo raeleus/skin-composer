@@ -184,7 +184,7 @@ public class AtlasData implements Json.Serializable {
         
         Array<FileHandle> files = new Array<>();
         for (DrawableData drawable : drawables) {
-            if (!files.contains(drawable.file, false)) {
+            if (!drawable.customized && !files.contains(drawable.file, false)) {
                 files.add(drawable.file);
             }
         }
@@ -208,12 +208,14 @@ public class AtlasData implements Json.Serializable {
         
         Array<FileHandle> files = new Array<>();
         for (DrawableData drawable : drawables) {
-            if (!files.contains(drawable.file, false)) {
-                files.add(drawable.file);
-            }
-            
-            if (!main.getProjectData().resourceExists(drawable.file)) {
-                warnings.add("[RED]ERROR:[] Drawable file [BLACK]" + drawable.file + "[] does not exist.");
+            if (!drawable.customized) {
+                if (!files.contains(drawable.file, false)) {
+                    files.add(drawable.file);
+                }
+
+                if (!main.getProjectData().resourceExists(drawable.file)) {
+                    warnings.add("[RED]ERROR:[] Drawable file [BLACK]" + drawable.file + "[] does not exist.");
+                }
             }
         }
         

@@ -29,6 +29,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -171,16 +172,19 @@ public class DialogDrawables extends Dialog {
             atlas = main.getAtlasData().getAtlas();
 
             for (DrawableData data : main.getAtlasData().getDrawables()) {
-                String name = data.file.name();
-                name = DrawableData.proper(name);
-                
                 Drawable drawable;
-                if (data.tiled) {
+                if (data.customized) {
+                    drawable = getSkin().getDrawable("custom-drawable-skincomposer-image");
+                } else if (data.tiled) {
+                    String name = data.file.name();
+                    name = DrawableData.proper(name);
                     drawable = new TiledDrawable(atlas.findRegion(name));
                     drawable.setMinWidth(data.minWidth);
                     drawable.setMinHeight(data.minHeight);
                     ((TiledDrawable) drawable).getColor().set(main.getJsonData().getColorByName(data.tintName).color);
                 } else if (data.file.name().matches(".*\\.9\\.[a-zA-Z0-9]*$")) {
+                    String name = data.file.name();
+                    name = DrawableData.proper(name);
                     drawable = new NinePatchDrawable(atlas.createPatch(name));
                     if (data.tint != null) {
                         drawable = ((NinePatchDrawable) drawable).tint(data.tint);
@@ -188,6 +192,8 @@ public class DialogDrawables extends Dialog {
                         drawable = ((NinePatchDrawable) drawable).tint(main.getJsonData().getColorByName(data.tintName).color);
                     }
                 } else {
+                    String name = data.file.name();
+                    name = DrawableData.proper(name);
                     drawable = new SpriteDrawable(atlas.createSprite(name));
                     if (data.tint != null) {
                         drawable = ((SpriteDrawable) drawable).tint(data.tint);
@@ -244,6 +250,17 @@ public class DialogDrawables extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                 newDrawableDialog();
+            }
+        });
+        textButton.addListener(main.getHandListener());
+        table.add(textButton);
+        
+        textButton = new TextButton("Custom Drawable", getSkin(), "new");
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                customDrawableDialog();
             }
         });
         textButton.addListener(main.getHandListener());
@@ -328,7 +345,7 @@ public class DialogDrawables extends Dialog {
             };
             
             //color wheel
-            if (!drawable.tiled) {
+            if (!drawable.customized && !drawable.tiled) {
                 Button button = new Button(getSkin(), "colorwheel");
                 button.addListener(new ChangeListener() {
                     @Override
@@ -350,7 +367,7 @@ public class DialogDrawables extends Dialog {
             }
 
             //swatches
-            if (!drawable.tiled) {
+            if (!drawable.customized && !drawable.tiled) {
                 Button button = new Button(getSkin(), "swatches");
                 button.addListener(new ChangeListener() {
                     @Override
@@ -371,8 +388,8 @@ public class DialogDrawables extends Dialog {
                 table.add();
             }
             
-            //tiles button (NOT FOR TINTS)
-            if (drawable.tint == null && drawable.tintName == null) {
+            //tiles button (NOT FOR TINTS OR CUSTOM DRAWABLES)
+            if (!drawable.customized && drawable.tint == null && drawable.tintName == null) {;
                 Button button = new Button(getSkin(), "tiles");
                 button.addListener(new ChangeListener() {
                     @Override
@@ -430,6 +447,25 @@ public class DialogDrawables extends Dialog {
                 table.add(button);
                 
                 TextTooltip toolTip = new TextTooltip("Rename Tinted Drawable", main.getTooltipManager(), getSkin());
+                button.addListener(toolTip);
+            }
+            //settings for custom drawables
+            else if (drawable.customized) {
+                Button button = new Button(getSkin(), "settings-small");
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        renameCustomDrawableDialog(drawable);
+                        event.setBubbles(false);
+                    }
+                });
+                button.addListener(fixDuplicateTouchListener);
+                if (property == null && customProperty == null) {
+                    button.addListener(main.getHandListener());
+                }
+                table.add(button);
+                
+                TextTooltip toolTip = new TextTooltip("Rename Custom Drawable", main.getTooltipManager(), getSkin());
                 button.addListener(toolTip);
             } else {
                 table.add();
@@ -968,7 +1004,7 @@ public class DialogDrawables extends Dialog {
     }
     
     private void deleteDrawable(DrawableData drawable) {
-        if (drawable.tint == null && drawable.tintName == null && checkDuplicateDrawables(drawable.file, 1)) {
+        if (!drawable.customized && drawable.tint == null && drawable.tintName == null && checkDuplicateDrawables(drawable.file, 1)) {
             showConfirmDeleteDialog(drawable);
         } else {
             main.getAtlasData().getDrawables().removeValue(drawable, true);
@@ -1190,6 +1226,52 @@ public class DialogDrawables extends Dialog {
         if (files != null && files.size() > 0) {
             drawablesSelected(files);
         }
+    }
+    
+    private void customDrawableDialog() {
+        Array<DrawableData> backup = new Array<>();
+        
+        main.getDialogFactory().showCustomDrawableDialog(getSkin(), getStage(), new DialogFactory.CustomDrawableListener() {
+            @Override
+            public void run(String name) {
+                DrawableData drawable = new DrawableData(name);
+                main.getAtlasData().getDrawables().add(drawable);
+                
+                gatherDrawables();
+
+                main.getDialogFactory().showDialogLoading(() -> {
+                    if (!produceAtlas()) {
+                        showDrawableError();
+                        Gdx.app.log(getClass().getName(), "Attempting to reload drawables backup...");
+                        main.getAtlasData().getDrawables().clear();
+                        main.getAtlasData().getDrawables().addAll(backup);
+                        gatherDrawables();
+                        if (produceAtlas()) {
+                            Gdx.app.log(getClass().getName(), "Successfully rolled back changes to drawables");
+                        } else {
+                            Gdx.app.error(getClass().getName(), "Critical failure, could not roll back changes to drawables");
+                        }
+                    } else {
+                        if (main.getProjectData().areResourcesRelative()) {
+                            main.getProjectData().makeResourcesRelative();
+                        }
+
+                        main.getProjectData().setChangesSaved(false);
+                    }
+
+                    sortBySelectedMode();
+                });
+            }
+        });
+    }
+    
+    private void renameCustomDrawableDialog(DrawableData drawableData) {
+        main.getDialogFactory().showCustomDrawableDialog(main.getSkin(), main.getStage(), drawableData, new DialogFactory.CustomDrawableListener() {
+            @Override
+            public void run(String name) {
+                renameDrawable(drawableData, name);
+            }
+        });
     }
 
     /**

@@ -12,6 +12,8 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * Added a hexadecimal field to the color picker.
 * Fixed alpha slider being initialized with the incorrect color in color picker.
 * Fixed keyboard shortcuts being incorrectly configured on alternative keyboard layouts.
+* Fixed crash bug on Mac.
+* Added custom drawable button to drawables dialog. Use this to refer to your classes that inherit from Drawable specified in the new custom class dialog.
 
 ### Contact ###
 
@@ -21,7 +23,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 
 ### Notes ###
 
-To run Skin Composer on OSX, download the .jar version of the app and run it via terminal with the following command: **java -jar -XstartOnFirstThread skin_composer.jar**
+To run Skin Composer on OSX, download the skin_composer_mac.jar version of the app and run it via terminal with the following command: **java -jar -XstartOnFirstThread skin_composer_mac.jar**
 
 Contributer RaimundWege has shared the following information for anyone who is working from source in Android Studio on Mac.
 

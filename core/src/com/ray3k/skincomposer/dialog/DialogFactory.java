@@ -390,6 +390,80 @@ public class DialogFactory {
         textField.selectAll();
         textField.setFocusTraversal(false);
     }
+    
+    public static interface CustomDrawableListener {
+        public void run(String name);
+    }
+    
+    public void showCustomDrawableDialog(Skin skin, Stage stage, CustomDrawableListener customDrawableListener) {
+        showCustomDrawableDialog(skin, stage, null, customDrawableListener);
+    }
+    
+    public void showCustomDrawableDialog(Skin skin, Stage stage, DrawableData modifyDrawable, CustomDrawableListener customDrawableListener) {
+        final TextField textField = new TextField("", skin);
+        Dialog dialog = new Dialog("New Custom Drawable", skin, "bg") {
+            @Override
+            protected void result(Object object) {
+                if ((Boolean) object) {
+                    customDrawableListener.run(textField.getText());
+                }
+            }
+        };
+        dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
+        dialog.button("OK", true).button("Cancel", false);
+        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        final TextButton okButton = (TextButton) dialog.getButtonTable().getCells().get(0).getActor();
+
+        textField.setTextFieldListener((TextField textField1, char c) -> {
+            if (c == '\n') {
+                if (!okButton.isDisabled()) {
+                    customDrawableListener.run(textField.getText());
+                    
+                    dialog.hide();
+                }
+                main.getStage().setKeyboardFocus(textField1);
+            }
+        });
+
+        textField.addListener(main.getIbeamListener());
+        if (modifyDrawable != null) {
+            textField.setText(modifyDrawable.name);
+        }
+
+        dialog.getTitleLabel().setAlignment(Align.center);
+        dialog.getContentTable().defaults().padLeft(10.0f).padRight(10.0f);
+        if (modifyDrawable == null) {
+            dialog.text("Enter the name for the custom drawable.\nUse to reference custom classes that inherit from Drawable.");
+        } else {
+            dialog.text("Enter the new name for the custom drawable.\nUse to reference custom classes that inherit from Drawable.");
+        }
+        ((Label)dialog.getContentTable().getCells().first().getActor()).setAlignment(Align.center);
+        dialog.getContentTable().getCells().first().pad(10.0f);
+        dialog.getContentTable().row();
+        dialog.getContentTable().add(textField).growX();
+        okButton.setDisabled(true);
+
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                boolean disable = !StyleData.validate(textField.getText());
+
+                if (main.getAtlasData().getDrawable(textField.getText()) != null) {
+                    disable = true;
+                }
+
+                okButton.setDisabled(disable);
+            }
+        });
+
+        dialog.key(Input.Keys.ESCAPE, false);
+
+        dialog.show(stage);
+        stage.setKeyboardFocus(textField);
+        textField.selectAll();
+        textField.setFocusTraversal(false);
+    }
 
     public void showCloseDialog() {
         if (main.getProjectData().areChangesSaved() || main.getProjectData().isNewProject()) {

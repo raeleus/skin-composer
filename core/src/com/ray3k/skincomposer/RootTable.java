@@ -28,6 +28,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -2527,16 +2528,19 @@ public class RootTable extends Table {
             atlas = main.getProjectData().getAtlasData().getAtlas();
 
             for (DrawableData data : main.getProjectData().getAtlasData().getDrawables()) {
-                String name = data.file.name();
-                name = DrawableData.proper(name);
-                
                 Drawable drawable;
-                if (data.tiled) {
+                if (data.customized) {
+                    drawable = getSkin().getDrawable("custom-drawable-skincomposer-image");
+                } else if (data.tiled) {
+                    String name = data.file.name();
+                    name = DrawableData.proper(name);
                     drawable = new TiledDrawable(atlas.findRegion(name));
                     drawable.setMinWidth(data.minWidth);
                     drawable.setMinHeight(data.minHeight);
                     ((TiledDrawable) drawable).getColor().set(main.getJsonData().getColorByName(data.tintName).color);
                 } else if (data.file.name().matches(".*\\.9\\.[a-zA-Z0-9]*$")) {
+                    String name = data.file.name();
+                    name = DrawableData.proper(name);
                     drawable = new NinePatchDrawable(atlas.createPatch(name));
                     if (data.tint != null) {
                         drawable = ((NinePatchDrawable) drawable).tint(data.tint);
@@ -2544,6 +2548,8 @@ public class RootTable extends Table {
                         drawable = ((NinePatchDrawable) drawable).tint(main.getProjectData().getJsonData().getColorByName(data.tintName).color);
                     }
                 } else {
+                    String name = data.file.name();
+                    name = DrawableData.proper(name);
                     drawable = new SpriteDrawable(atlas.createSprite(name));
                     if (data.tint != null) {
                         drawable = ((SpriteDrawable) drawable).tint(data.tint);

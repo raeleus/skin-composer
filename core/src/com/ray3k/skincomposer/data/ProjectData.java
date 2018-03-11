@@ -213,7 +213,7 @@ public class ProjectData implements Json.Serializable {
         FileHandle targetFolder = newSave.sibling(newSave.nameWithoutExtension() + "_data/");
         
         for (DrawableData drawableData : atlasData.getDrawables()) {
-            if (drawableData.file.exists()) {
+            if (drawableData.file != null && drawableData.file.exists()) {
                 targetFolder.mkdirs();
                 //drawable files in the temp folder
                 if (drawableData.file.parent().equals(tempImportFolder)) {
@@ -327,7 +327,7 @@ public class ProjectData implements Json.Serializable {
         
         if (!areResourcesRelative()) {
             for (DrawableData drawable : atlasData.getDrawables()) {
-                if (drawable.file == null || !drawable.file.exists()) {
+                if (!drawable.customized && (drawable.file == null || !drawable.file.exists())) {
                     errors.add(drawable);
                 }
             }
@@ -335,12 +335,14 @@ public class ProjectData implements Json.Serializable {
             FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
             
             for (DrawableData drawable : atlasData.getDrawables()) {
-                if (drawable.file == null) {
-                    errors.add(drawable);
-                } else {
-                    FileHandle localFile = targetFolder.child(drawable.file.name());
-                    if (!localFile.exists()) {
+                if (!drawable.customized) {
+                    if (drawable.file == null) {
                         errors.add(drawable);
+                    } else {
+                        FileHandle localFile = targetFolder.child(drawable.file.name());
+                        if (!localFile.exists()) {
+                            errors.add(drawable);
+                        }
                     }
                 }
             }

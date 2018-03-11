@@ -359,6 +359,12 @@ public class JsonData implements Json.Serializable {
                                     break;
                                 }
                             }
+                            
+                            if (!keep) {
+                                keep = true;
+                                DrawableData customDrawable = new DrawableData((String) property.value);
+                                main.getAtlasData().getDrawables().add(customDrawable);
+                            }
                         } else {
                             keep = true;
                         }
