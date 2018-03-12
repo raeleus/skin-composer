@@ -313,4 +313,9 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         String output = org.lwjgl.glfw.GLFW.glfwGetKeyName(glfwKeyCode, 0);
         return (output == null) ? ' ' : output.toLowerCase().charAt(0);
     }
+
+    @Override
+    public void created(Lwjgl3Window lw) {
+        
+    }
 }
