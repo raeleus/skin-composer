@@ -1083,9 +1083,10 @@ public class UndoableManager {
         
         @Override
         public void redo() {
-            customClass.getTemplateStyle().getProperties().removeValue(customProperty, true);
+            Array<CustomStyle> styles = new Array<>(customClass.getStyles());
+            styles.add(customClass.getTemplateStyle());
 
-            for (com.ray3k.skincomposer.data.CustomStyle style : customClass.getStyles()) {
+            for (com.ray3k.skincomposer.data.CustomStyle style : styles) {
                 Iterator<CustomProperty> iter = style.getProperties().iterator();
                 while (iter.hasNext()) {
                     CustomProperty property = iter.next();
