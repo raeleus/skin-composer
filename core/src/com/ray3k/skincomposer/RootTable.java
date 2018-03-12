@@ -902,6 +902,7 @@ public class RootTable extends Table {
                         value = (Double) styleProperty.getValue();
                     }
                     Spinner spinner = new Spinner(value, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
+                    spinner.setRound(false);
                     spinner.getTextField().addListener(main.getIbeamListener());
                     spinner.getButtonMinus().addListener(main.getHandListener());
                     spinner.getButtonPlus().addListener(main.getHandListener());

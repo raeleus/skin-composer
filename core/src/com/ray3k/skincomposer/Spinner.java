@@ -212,7 +212,7 @@ public class Spinner extends Table {
                 Spinner parent = (Spinner) actor;
                 String text = textField.getText();
                 
-                if (text.matches("-?\\d+\\.?\\d*")) {
+                if (text.matches("\\-?(\\d+\\.?\\d*)|(\\.\\d+)")) {
                     double value = Double.parseDouble(text);
                     if (usingMinimum && value < parent.minimum) {
                         value = parent.minimum;

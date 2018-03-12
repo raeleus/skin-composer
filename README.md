@@ -13,6 +13,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * Fixed alpha slider being initialized with the incorrect color in color picker.
 * Fixed keyboard shortcuts being incorrectly configured on alternative keyboard layouts.
 * Fixed crash bug on Mac.
+* Fixed spinner not accepting numbers starting with a decimal point.
 * Added custom drawable button to drawables dialog. Use this to refer to your classes that inherit from Drawable specified in the new custom class dialog.
 
 ### Contact ###
