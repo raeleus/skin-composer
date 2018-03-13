@@ -10,12 +10,13 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Changes ###
 
 * Added a hexadecimal field to the color picker.
+* Added custom drawable button to drawables dialog. Use this to refer to your classes that inherit from Drawable specified in the new custom class dialog.
 * Fixed alpha slider being initialized with the incorrect color in color picker.
 * Fixed keyboard shortcuts being incorrectly configured on alternative keyboard layouts.
 * Fixed crash bug on Mac.
 * Fixed spinner not accepting numbers starting with a decimal point.
 * Fixed removing a custom property does not remove it from new custom styles.
-* Added custom drawable button to drawables dialog. Use this to refer to your classes that inherit from Drawable specified in the new custom class dialog.
+* Reordered JSON export so that custom classes can be implemented by styles.
 
 ### Contact ###
 
