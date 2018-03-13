@@ -82,15 +82,16 @@ public class DrawableData implements Json.Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        boolean returnValue = false;
         if (obj instanceof DrawableData) {
             DrawableData dd = (DrawableData) obj;
-
-            if (dd.customized && name.equals(dd.name) || dd.file.equals(file) && ((tint == null && dd.tint == null) || (tint != null && tint.equals(dd.tint))) && ((tintName == null && dd.tintName == null) || (tintName != null && tintName.equals(dd.tintName)))) {
-                returnValue = true;
-            }
+            
+            return name.equals(dd.name) && 
+                    customized == dd.customized && 
+                    (file == null && dd.file == null || file != null && file.equals(dd.file)) &&
+                    (tint == null && dd.tint == null || tint != null && tint.equals(dd.tint)) &&
+                    (tintName == null && dd.tintName == null || tintName != null && tintName.equals(dd.tintName));
         }
-        return returnValue;
+        return false;
     }
 
     @Override

@@ -495,6 +495,7 @@ public class DialogDrawables extends Dialog {
             bg.setClip(true);
             bg.setBackground(getSkin().getDrawable("white"));
             bg.setColor(drawable.bgColor);
+            
             Image image = new Image(drawablePairs.get(drawable));
             if (MathUtils.isZero(zoomSlider.getValue())) {
                 image.setScaling(Scaling.fit);
