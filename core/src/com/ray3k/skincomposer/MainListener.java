@@ -125,7 +125,7 @@ public class MainListener extends RootTableListener {
                 dialogFactory.showSettings();
                 break;
             case COLORS:
-                dialogFactory.showColors();
+                dialogFactory.showDialogColors();
                 break;
             case FONTS:
                 dialogFactory.showFonts();

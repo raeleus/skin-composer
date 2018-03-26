@@ -459,6 +459,13 @@ com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 		cursor: black
 		selection: button-color
 	}
+	free-type-preview: {
+		font: font
+		fontColor: pressed
+		background: white
+		cursor: black
+		selection: button-color
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
 	default: {

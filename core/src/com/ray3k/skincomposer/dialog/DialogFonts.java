@@ -158,8 +158,9 @@ public class DialogFonts extends Dialog {
         }
 
         Table table = new Table();
-        table.defaults().pad(2.0f);
+        table.pad(2.0f);
 
+        table.defaults().space(15.0f);
         table.add(new Label("Sort by: ", getSkin())).padLeft(20.0f);
         selectBox = new SelectBox<>(getSkin());
         selectBox.setItems(new String[]{"A-Z", "Z-A", "Oldest", "Newest"});
@@ -179,6 +180,17 @@ public class DialogFonts extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                 newFontDialog();
+            }
+        });
+        imageButton.addListener(main.getHandListener());
+        table.add(imageButton).expandX();
+        
+        imageButton = new TextButton("FreeType Font", getSkin(), "new");
+        imageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                newFreeTypeFontDialog();
             }
         });
         imageButton.addListener(main.getHandListener());
@@ -696,6 +708,10 @@ public class DialogFonts extends Dialog {
             main.getProjectData().setLastFontPath(fileHandle.path() + "/");
             fontNameDialog(files, 0);
         }
+    }
+    
+    private void newFreeTypeFontDialog() {
+        main.getDialogFactory().showDialogFreeTypeFront(DialogFreeTypeFont.Mode.NEW);
     }
     
     private void fontNameDialog(List<File> files, int index) {

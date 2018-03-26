@@ -74,7 +74,7 @@ public class DialogFactory {
         DialogAbout dialog = new DialogAbout(main, main.getSkin(), "dialog");
         dialog.show(main.getStage());
     }
-
+    
     public void showDialogColors(StyleProperty styleProperty,
             DialogColors.DialogColorsListener listener) {
         DialogColors dialog = new DialogColors(main, styleProperty, listener);
@@ -91,15 +91,19 @@ public class DialogFactory {
     }
     
     public void showDialogColors(StyleProperty styleProperty) {
-        showDialogColors(styleProperty, null);
+        DialogFactory.this.showDialogColors(styleProperty, null);
     }
     
     public void showDialogColors(CustomProperty styleProperty) {
-        showDialogColors(styleProperty, null);
+        DialogFactory.this.showDialogColors(styleProperty, null);
     }
 
-    public void showColors() {
-        showDialogColors((StyleProperty)null);
+    public void showDialogColors() {
+        DialogFactory.this.showDialogColors((StyleProperty)null);
+    }
+    
+    public void showDialogColors(DialogColorsListener listener) {
+        DialogFactory.this.showDialogColors((StyleProperty)null, listener);
     }
 
     public void showDialogDrawables(StyleProperty property,
@@ -715,5 +719,13 @@ public class DialogFactory {
     public void showDialogPathErrors(Array<DrawableData> drawableErrors, Array<FontData> fontErrors) {
         DialogPathErrors dialog = new DialogPathErrors(main, main.getSkin(), "dialog", drawableErrors, fontErrors);
         dialog.show(main.getStage());
+    }
+    
+    public void showDialogFreeTypeFront(DialogFreeTypeFont.Mode mode) {
+        DialogFreeTypeFont dialog = new DialogFreeTypeFont(main);
+        dialog.setFillParent(true);
+        dialog.show(main.getStage());
+        main.getStage().setKeyboardFocus(dialog.findActor("fontName"));
+        main.getStage().setScrollFocus(dialog.findActor("scrollPane"));
     }
 }
