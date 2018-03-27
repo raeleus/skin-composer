@@ -50,6 +50,7 @@ import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.CustomStyle;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.FontData;
+import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.data.ProjectData.RecentFile;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
@@ -57,6 +58,7 @@ import com.ray3k.skincomposer.dialog.DialogColors.DialogColorsListener;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
 import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyListener;
 import com.ray3k.skincomposer.dialog.DialogCustomStyle.CustomStyleListener;
+import com.ray3k.skincomposer.dialog.DialogFreeTypeFont.DialogFreeTypeFontListener;
 import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
 
 public class DialogFactory {
@@ -721,8 +723,18 @@ public class DialogFactory {
         dialog.show(main.getStage());
     }
     
-    public void showDialogFreeTypeFront(DialogFreeTypeFont.Mode mode) {
+    public void showDialogFreeTypeFont(DialogFreeTypeFontListener listener) {
         DialogFreeTypeFont dialog = new DialogFreeTypeFont(main);
+        dialog.addListener(listener);
+        dialog.setFillParent(true);
+        dialog.show(main.getStage());
+        main.getStage().setKeyboardFocus(dialog.findActor("fontName"));
+        main.getStage().setScrollFocus(dialog.findActor("scrollPane"));
+    }
+    
+    public void showDialogFreeTypeFont(FreeTypeFontData data, DialogFreeTypeFontListener listener) {
+        DialogFreeTypeFont dialog = new DialogFreeTypeFont(main, data);
+        dialog.addListener(listener);
         dialog.setFillParent(true);
         dialog.show(main.getStage());
         main.getStage().setKeyboardFocus(dialog.findActor("fontName"));

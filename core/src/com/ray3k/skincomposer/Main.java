@@ -124,6 +124,27 @@ public class Main extends ApplicationAdapter {
             Gdx.files.internal("defaults.json").copyTo(fileHandle);
         }
         
+        //copy preview fonts to preview fonts folder if they do not exist
+        fileHandle = Gdx.files.local("preview fonts/IBMPlexSerif-Medium.ttf");
+        if (!fileHandle.exists()) {
+            Gdx.files.internal("preview fonts/IBMPlexSerif-Medium.ttf").copyTo(fileHandle);
+        }
+        
+        fileHandle = Gdx.files.local("preview fonts/Pacifico-Regular.ttf");
+        if (!fileHandle.exists()) {
+            Gdx.files.internal("preview fonts/Pacifico-Regular.ttf").copyTo(fileHandle);
+        }
+        
+        fileHandle = Gdx.files.local("preview fonts/PressStart2P-Regular.ttf");
+        if (!fileHandle.exists()) {
+            Gdx.files.internal("preview fonts/PressStart2P-Regular.ttf").copyTo(fileHandle);
+        }
+        
+        fileHandle = Gdx.files.local("preview fonts/SourceSansPro-Regular.ttf");
+        if (!fileHandle.exists()) {
+            Gdx.files.internal("preview fonts/SourceSansPro-Regular.ttf").copyTo(fileHandle);
+        }
+        
         ibeamListener = new IbeamListener();
         
         projectData = new ProjectData();

@@ -63,6 +63,7 @@ import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.CustomProperty;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.FontData;
+import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
@@ -74,6 +75,7 @@ public class DialogFonts extends Dialog {
     private StyleProperty styleProperty;
     private CustomProperty customProperty;
     private Array<FontData> fonts;
+    private Array<FreeTypeFontData> freeTypeFonts;
     private Array<DrawableData> drawables;
     private Table fontsTable;
     private SelectBox<String> selectBox;
@@ -110,6 +112,7 @@ public class DialogFonts extends Dialog {
         this.listener = listener;
         
         fonts = main.getJsonData().getFonts();
+        freeTypeFonts = main.getJsonData().getFreeTypeFonts();
         drawables = main.getAtlasData().getDrawables();
 
         fontMap = new ObjectMap<>();
@@ -283,9 +286,17 @@ public class DialogFonts extends Dialog {
         fontsTable.clear();
         fontsTable.defaults().growX().pad(5.0f);
 
-        if (fonts.size == 0) {
+        if (fonts.size == 0 && freeTypeFonts.size == 0) {
             fontsTable.add(new Label("No fonts have been set!", getSkin()));
         } else {
+            
+            if (fonts.size > 0) {
+                Label label = new Label("Bitmap Fonts", getSkin(), "required");
+                label.setAlignment(Align.center);
+                fontsTable.add(label);
+                fontsTable.row();
+            }
+            
             for (FontData font : fonts) {
                 Button button = new Button(getSkin(), "color-base");
                 Label label = new Label(font.getName(), getSkin());
@@ -399,7 +410,118 @@ public class DialogFonts extends Dialog {
                 fontsTable.add(button);
                 fontsTable.row();
             }
+            
+            if (freeTypeFonts.size > 0) {
+                Label label = new Label("FreeType Fonts", getSkin(), "required");
+                label.setAlignment(Align.center);
+                fontsTable.add(label).spaceTop(20.0f);
+                fontsTable.row();
+            }
+            
+            for (FreeTypeFontData font : freeTypeFonts) {
+                Button button = new Button(getSkin(), "color-base");
+                Label label = new Label(font.name, getSkin());
+                label.setTouchable(Touchable.disabled);
+                button.add(label).left();
+                button.addListener(main.getHandListener());
+                
+                Button renameButton = new Button(getSkin(), "settings-small");
+                renameButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        freeTypeSettingsDialog(font);
+                        
+                        event.setBubbles(false);
+                    }
+                });
+                renameButton.addListener(new InputListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        event.setBubbles(false);
+                        return true;
+                    }
+                    
+                });
+                button.add(renameButton).padLeft(15.0f);
+                
+                TextTooltip toolTip = new TextTooltip("Rename Font", main.getTooltipManager(), getSkin());
+                renameButton.addListener(toolTip);
+                
+                LabelStyle style = new LabelStyle();
+                style.font = font.bitmapFont;
+                style.fontColor = Color.WHITE;
+                label = new Label("Lorem Ipsum", style);
+                label.setAlignment(Align.center);
+                label.setTouchable(Touchable.disabled);
+                Table bg = new Table(getSkin());
+                bg.setBackground("white");
+                bg.add(label).pad(5.0f).grow();
+                button.add(bg).padLeft(15).growX();
+
+                Button closeButton = new Button(getSkin(), "delete-small");
+                final FreeTypeFontData deleteFont = font;
+                closeButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        freeTypeFonts.removeValue(deleteFont, true);
+                        main.getProjectData().setChangesSaved(false);
+                        
+                        for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
+                            for (StyleData data : datas) {
+                                for (StyleProperty property : data.properties.values()) {
+                                    if (property != null && property.type.equals(BitmapFont.class) && property.value != null && property.value.equals(deleteFont.name)) {
+                                        property.value = null;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        main.getUndoableManager().clearUndoables();
+                        
+                        main.getRootTable().refreshStyleProperties(true);
+                        main.getRootTable().refreshPreview();
+                        
+                        event.setBubbles(false);
+                        refreshTable();
+                    }
+                });
+                closeButton.addListener(new InputListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        event.setBubbles(false);
+                        return true;
+                    }
+
+                });
+                button.add(closeButton).padLeft(5.0f).right();
+                
+                toolTip = new TextTooltip("Delete Font", main.getTooltipManager(), getSkin());
+                closeButton.addListener(toolTip);
+
+                if (styleProperty == null && customProperty == null) {
+                    button.setTouchable(Touchable.childrenOnly);
+                } else {
+                    final FreeTypeFontData fontResult = font;
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                            result(fontResult);
+                            hide();
+                        }
+                    });
+                }
+
+                fontsTable.add(button);
+                fontsTable.row();
+            }
         }
+    }
+    
+    private void freeTypeSettingsDialog(FreeTypeFontData font) {
+        main.getDialogFactory().showDialogFreeTypeFont(font, (FreeTypeFontData font1) -> {
+            sortBySelectedMode();
+            refreshTable();
+        });
     }
     
     private void renameDialog(FontData font) {
@@ -603,16 +725,28 @@ public class DialogFonts extends Dialog {
 
     private void sortFontsAZ() {
         Sort.instance().sort(fonts, (FontData o1, FontData o2) -> o1.toString().compareToIgnoreCase(o2.toString()));
+        Sort.instance().sort(freeTypeFonts, (FreeTypeFontData o1, FreeTypeFontData o2) -> o1.name.compareToIgnoreCase(o2.name));
         refreshTable();
     }
 
     private void sortFontsZA() {
         Sort.instance().sort(fonts, (FontData o1, FontData o2) -> o1.toString().compareToIgnoreCase(o2.toString()) * -1);
+        Sort.instance().sort(freeTypeFonts, (FreeTypeFontData o1, FreeTypeFontData o2) -> o1.name.compareToIgnoreCase(o2.name) * -1);
         refreshTable();
     }
 
     private void sortFontsOldest() {
         Sort.instance().sort(fonts, (FontData o1, FontData o2) -> {
+            if (o1.file.lastModified() < o2.file.lastModified()) {
+                return -1;
+            } else if (o1.file.lastModified() > o2.file.lastModified()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+        
+        Sort.instance().sort(freeTypeFonts, (FreeTypeFontData o1, FreeTypeFontData o2) -> {
             if (o1.file.lastModified() < o2.file.lastModified()) {
                 return -1;
             } else if (o1.file.lastModified() > o2.file.lastModified()) {
@@ -635,6 +769,17 @@ public class DialogFonts extends Dialog {
                 return 0;
             }
         });
+        
+        Sort.instance().sort(freeTypeFonts, (FreeTypeFontData o1, FreeTypeFontData o2) -> {
+            if (o1.file.lastModified() < o2.file.lastModified()) {
+                return 1;
+            } else if (o1.file.lastModified() > o2.file.lastModified()) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+        
         refreshTable();
     }
 
@@ -711,7 +856,13 @@ public class DialogFonts extends Dialog {
     }
     
     private void newFreeTypeFontDialog() {
-        main.getDialogFactory().showDialogFreeTypeFront(DialogFreeTypeFont.Mode.NEW);
+        main.getDialogFactory().showDialogFreeTypeFont(new DialogFreeTypeFont.DialogFreeTypeFontListener() {
+            @Override
+            public void fontAdded(FreeTypeFontData font) {
+                sortBySelectedMode();
+                refreshTable();
+            }
+        });
     }
     
     private void fontNameDialog(List<File> files, int index) {

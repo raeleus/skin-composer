@@ -461,7 +461,7 @@ com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 	}
 	free-type-preview: {
 		font: font
-		fontColor: pressed
+		fontColor: white
 		background: white
 		cursor: black
 		selection: button-color

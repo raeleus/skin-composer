@@ -27,6 +27,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
@@ -56,6 +57,7 @@ import java.io.StringWriter;
 public class JsonData implements Json.Serializable {
     private Array<ColorData> colors;
     private Array<FontData> fonts;
+    private Array<FreeTypeFontData> freeTypeFonts;
     private OrderedMap<Class, Array<StyleData>> classStyleMap;
     private Array<CustomClass> customClasses;
     private Main main;
@@ -63,6 +65,7 @@ public class JsonData implements Json.Serializable {
     public JsonData() {
         colors = new Array<>();
         fonts = new Array<>();
+        freeTypeFonts = new Array<>();
 
         initializeClassStyleMap();
         customClasses = new Array<>();
@@ -75,6 +78,10 @@ public class JsonData implements Json.Serializable {
     public void clear() {
         colors.clear();
         fonts.clear();
+        for (FreeTypeFontData font : freeTypeFonts) {
+            font.bitmapFont.dispose();
+        }
+        freeTypeFonts.clear();
         initializeClassStyleMap();
         customClasses.clear();
     }
@@ -463,6 +470,48 @@ public class JsonData implements Json.Serializable {
             }
             json.writeObjectEnd();
         }
+        
+        boolean exportFreeType = false;
+        for (FreeTypeFontData font : freeTypeFonts) {
+            if (font.useCustomSerializer) {
+                exportFreeType = true;
+                break;
+            }
+        }
+
+        if (exportFreeType) {
+            json.writeObjectStart(FreeTypeFontGenerator.class.getName());
+            for (FreeTypeFontData font : freeTypeFonts) {
+                if (font.useCustomSerializer) {
+                    json.writeObjectStart(font.name);
+                    json.writeValue("font", font.file.name());
+                    json.writeValue("size", font.size);
+                    json.writeValue("mono", font.mono);
+                    if (font.color != null) json.writeValue("color", font.color);
+                    json.writeValue("gamma", font.gamma);
+                    json.writeValue("renderCount", font.renderCount);
+                    json.writeValue("borderWidth", font.borderWidth);
+                    if (font.borderColor != null) json.writeValue("borderColor", font.borderColor);
+                    json.writeValue("borderStraight", font.borderStraight);
+                    json.writeValue("borderGamma", font.borderGamma);
+                    json.writeValue("shadowOffsetX", font.shadowOffsetX);
+                    json.writeValue("shadowOffsetY", font.shadowOffsetY);
+                    if (font.shadowColor != null) json.writeValue("shadowColor", font.shadowColor);
+                    json.writeValue("spaceX", font.spaceX);
+                    json.writeValue("spaceY", font.spaceY);
+                    json.writeValue("kerning", font.kerning);
+                    json.writeValue("flip", font.flip);
+                    json.writeValue("genMipMaps", font.genMipMaps);
+                    json.writeValue("incremental", font.incremental);
+                    json.writeValue("hinting", font.hinting);
+                    json.writeValue("minFilter", font.minFilter);
+                    json.writeValue("magFilter", font.magFilter);
+                    json.writeValue("characters", font.characters.equals("") ? FreeTypeFontGenerator.DEFAULT_CHARS : font.characters);
+                    json.writeObjectEnd();
+                }
+            }
+            json.writeObjectEnd();
+        }
 
         //colors
         if (colors.size > 0) {
@@ -689,6 +738,10 @@ public class JsonData implements Json.Serializable {
         return fonts;
     }
 
+    public Array<FreeTypeFontData> getFreeTypeFonts() {
+        return freeTypeFonts;
+    }
+
     public OrderedMap<Class, Array<StyleData>> getClassStyleMap() {
         return classStyleMap;
     }
@@ -720,6 +773,7 @@ public class JsonData implements Json.Serializable {
     public void write(Json json) {
         json.writeValue("colors", colors);
         json.writeValue("fonts", fonts);
+        json.writeValue("freeTypeFonts", freeTypeFonts);
         json.writeValue("classStyleMap", classStyleMap);
         json.writeValue("customClasses", customClasses, Array.class, CustomClass.class);
     }
@@ -729,15 +783,20 @@ public class JsonData implements Json.Serializable {
         try {
             colors = json.readValue("colors", Array.class, jsonData);
             fonts = json.readValue("fonts", Array.class, jsonData);
+            
+            freeTypeFonts = json.readValue("freeTypeFonts", Array.class, new Array<FreeTypeFontData>(),jsonData);
+            
             classStyleMap = new OrderedMap<>();
             for (JsonValue data : jsonData.get("classStyleMap").iterator()) {
                 classStyleMap.put(ClassReflection.forName(data.name), json.readValue(Array.class, data));
             }
+            
             for (Array<StyleData> styleDatas : classStyleMap.values()) {
                 for (StyleData styleData : styleDatas) {
                     styleData.jsonData = this;
                 }
             }
+            
             customClasses = json.readValue("customClasses", Array.class, CustomClass.class, new Array<>(), jsonData);
             for (CustomClass customClass : customClasses) {
                 customClass.setMain(main);
@@ -826,6 +885,12 @@ public class JsonData implements Json.Serializable {
         
         customClasses.clear();
         customClasses.addAll(jsonData.customClasses);
+        
+        for (FreeTypeFontData font : freeTypeFonts) {
+            font.bitmapFont.dispose();
+        }
+        freeTypeFonts.clear();
+        freeTypeFonts.addAll(jsonData.freeTypeFonts);
     }
 
     public Array<CustomClass> getCustomClasses() {

@@ -293,6 +293,9 @@ public class ProjectData implements Json.Serializable {
         ProjectData instance = json.fromJson(ProjectData.class, file.reader("UTF8"));
         newProject = instance.newProject;
         jsonData.set(instance.jsonData);
+        for (FreeTypeFontData font : jsonData.getFreeTypeFonts()) {
+            font.createBitmapFont(main);
+        }
         atlasData.set(instance.atlasData);
         preferences.clear();
         preferences.putAll(instance.preferences);
