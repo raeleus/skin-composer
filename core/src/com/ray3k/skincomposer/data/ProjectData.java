@@ -244,6 +244,23 @@ public class ProjectData implements Json.Serializable {
                 }
             }
         }
+        
+        for (FreeTypeFontData fontData : jsonData.getFreeTypeFonts()) {
+            if (fontData.file.exists()) {
+                targetFolder.mkdirs();
+                
+                //font files in the temp folder
+                if (fontData.file.parent().equals(tempImportFolder)) {
+                    fontData.file.moveTo(targetFolder);
+                    fontData.file = targetFolder.child(fontData.file.name());
+                }
+                //font files in the data folder next to the old save
+                else if (localImportFolder != null && !localImportFolder.equals(targetFolder) && fontData.file.parent().equals(localImportFolder)) {
+                    fontData.file.copyTo(targetFolder);
+                    fontData.file = targetFolder.child(fontData.file.name());
+                }
+            }
+        }
     }
     
     public void makeResourcesRelative(FileHandle saveFile) {
@@ -258,6 +275,13 @@ public class ProjectData implements Json.Serializable {
         }
         
         for (FontData fontData : main.getJsonData().getFonts()) {
+            if (fontData.file.exists() && !targetFolder.equals(fontData.file.parent())) {
+                fontData.file.copyTo(targetFolder);
+                fontData.file = targetFolder.child(fontData.file.name());
+            }
+        }
+        
+        for (FreeTypeFontData fontData : main.getJsonData().getFreeTypeFonts()) {
             if (fontData.file.exists() && !targetFolder.equals(fontData.file.parent())) {
                 fontData.file.copyTo(targetFolder);
                 fontData.file = targetFolder.child(fontData.file.name());

@@ -54,6 +54,7 @@ import com.ray3k.skincomposer.data.CustomProperty;
 import com.ray3k.skincomposer.UndoableManager.NewCustomClassUndoable;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.DrawableData;
+import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
 import com.ray3k.skincomposer.dialog.DialogCustomStyle;
 import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
@@ -451,6 +452,12 @@ public class MainListener extends RootTableListener {
                 }
                 
                 for (FontData font : main.getProjectData().getJsonData().getFonts()) {
+                    if (!font.file.parent().equals(fileHandle.parent())) {
+                        font.file.copyTo(fileHandle.parent());
+                    }
+                }
+                
+                for (FreeTypeFontData font : main.getProjectData().getJsonData().getFreeTypeFonts()) {
                     if (!font.file.parent().equals(fileHandle.parent())) {
                         font.file.copyTo(fileHandle.parent());
                     }

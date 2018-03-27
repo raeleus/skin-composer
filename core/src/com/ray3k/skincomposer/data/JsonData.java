@@ -146,6 +146,67 @@ public class JsonData implements Json.Serializable {
                         }
                     }
                 }
+            } //FreeType fonts
+            else if (child.name().equals(FreeTypeFontGenerator.class.getName())) {
+                for (JsonValue font : child.iterator()) {
+                    if (font.get("font") != null) {
+                        FreeTypeFontData data = new FreeTypeFontData();
+                        data.name = font.name;
+                        data.previewTTF = font.getString("previewTTF", null);
+                        data.useCustomSerializer= font.getBoolean("useCustomSerializer", false);
+                        data.size = font.getInt("size", 16);
+                        data.mono = font.getBoolean("mono", false);
+                        data.hinting = font.getString("hinting", "AutoMedium");
+                        data.color = font.getString("color", null);
+                        data.gamma = font.getFloat("gamma", 1.8f);
+                        data.renderCount = font.getInt("renderCount", 2);
+                        data.borderWidth = font.getFloat("borderWidth", 0);
+                        data.borderColor = font.getString("borderColor", null);
+                        data.borderStraight = font.getBoolean("borderStraight", false);
+                        data.borderGamma = font.getFloat("borderGamma", 1.8f);
+                        data.shadowOffsetX = font.getInt("shadowOffsetX", 0);
+                        data.shadowOffsetY = font.getInt("shadowOffsetY", 0);
+                        data.shadowColor = font.getString("shadowColor", null);
+                        data.spaceX = font.getInt("spaceX", 0);
+                        data.spaceY = font.getInt("spaceY", 0);
+                        data.characters = font.getString("characters", "");
+                        data.kerning = font.getBoolean("kerning", true);
+                        data.flip = font.getBoolean("flip", false);
+                        data.genMipMaps = font.getBoolean("genMipMaps", false);
+                        data.minFilter = font.getString("minFilter", "Nearest");
+                        data.magFilter = font.getString("magFilter", "Nearest");
+                        data.incremental = font.getBoolean("bitmapFont", false);
+
+                        FileHandle fontFile = fileHandle.sibling(font.getString("font"));
+                        if (!fontFile.exists()) {
+                            warnings.add("[RED]ERROR:[] Font file [BLACK]" + fontFile.name() + "[] does not exist.");
+                            return warnings;
+                        }
+                        FileHandle fontCopy = targetDirectory.child(font.getString("font"));
+                        if (!fontCopy.parent().equals(fontFile.parent())) {
+                            fontFile.copyTo(fontCopy);
+                        }
+                        data.file = fontCopy;
+                        data.createBitmapFont(main);
+
+                        if (data.bitmapFont != null) {
+                            //delete fonts with the same name
+                            for (FontData duplicate : new Array<>(fonts)) {
+                                if (duplicate.getName().equals(data.name)) {
+                                    fonts.removeValue(duplicate, false);
+                                }
+                            }
+
+                            for (FreeTypeFontData duplicate : new Array<>(freeTypeFonts)) {
+                                if (duplicate.name.equals(data.name)) {
+                                    freeTypeFonts.removeValue(duplicate, false);
+                                }
+                            }
+
+                            freeTypeFonts.add(data);
+                        }
+                    }
+                }
             } //colors
             else if (child.name().equals(Color.class.getName())) {
                 for (JsonValue color : child.iterator()) {
@@ -470,7 +531,22 @@ public class JsonData implements Json.Serializable {
             }
             json.writeObjectEnd();
         }
+
+        //colors
+        if (colors.size > 0) {
+            json.writeObjectStart(Color.class.getName());
+            for (ColorData color : colors) {
+                json.writeObjectStart(color.getName());
+                json.writeValue("r", color.color.r);
+                json.writeValue("g", color.color.g);
+                json.writeValue("b", color.color.b);
+                json.writeValue("a", color.color.a);
+                json.writeObjectEnd();
+            }
+            json.writeObjectEnd();
+        }
         
+        //FreeType fonts
         boolean exportFreeType = false;
         for (FreeTypeFontData font : freeTypeFonts) {
             if (font.useCustomSerializer) {
@@ -509,20 +585,6 @@ public class JsonData implements Json.Serializable {
                     json.writeValue("characters", font.characters.equals("") ? FreeTypeFontGenerator.DEFAULT_CHARS : font.characters);
                     json.writeObjectEnd();
                 }
-            }
-            json.writeObjectEnd();
-        }
-
-        //colors
-        if (colors.size > 0) {
-            json.writeObjectStart(Color.class.getName());
-            for (ColorData color : colors) {
-                json.writeObjectStart(color.getName());
-                json.writeValue("r", color.color.r);
-                json.writeValue("g", color.color.g);
-                json.writeValue("b", color.color.b);
-                json.writeValue("a", color.color.a);
-                json.writeObjectEnd();
             }
             json.writeObjectEnd();
         }
