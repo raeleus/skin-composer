@@ -33,6 +33,7 @@ import com.ray3k.skincomposer.data.CustomProperty;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.CustomStyle;
 import com.ray3k.skincomposer.data.FontData;
+import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
@@ -488,6 +489,13 @@ public class UndoableManager {
                         break;
                     }
                 }
+                
+                for (FreeTypeFontData font : jsonData.getFreeTypeFonts()) {
+                    if (font.name.equals((String) oldValue)) {
+                        property.value = oldValue;
+                        break;
+                    }
+                }
             }
             rootTable.setStatusBarMessage("Selected Font: " + oldValue);
             rootTable.refreshStyleProperties(true);
@@ -501,6 +509,13 @@ public class UndoableManager {
             } else {
                 for (FontData font : jsonData.getFonts()) {
                     if (font.getName().equals((String) newValue)) {
+                        property.value = newValue;
+                        break;
+                    }
+                }
+                
+                for (FreeTypeFontData font : jsonData.getFreeTypeFonts()) {
+                    if (font.name.equals((String) newValue)) {
                         property.value = newValue;
                         break;
                     }

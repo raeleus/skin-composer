@@ -91,6 +91,7 @@ import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.CustomStyle;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.FontData;
+import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
@@ -2467,6 +2468,13 @@ public class RootTable extends Table {
                                 BitmapFont font = new BitmapFont(data.file);
                                 previewFonts.add(font);
                                 field.set(returnValue, font);
+                            }
+                        }
+                        
+                        for (FreeTypeFontData data : main.getJsonData().getFreeTypeFonts()) {
+                            if (value.equals(data.name)) {
+//                                previewFonts.add(data.bitmapFont);
+                                field.set(returnValue, data.bitmapFont);
                             }
                         }
                     } else if (field.getType().equals(Float.TYPE)) {

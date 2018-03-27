@@ -644,6 +644,12 @@ public class DialogFonts extends Dialog {
                 FontUndoable undoable = new FontUndoable(main.getRootTable(),
                         main.getJsonData(), styleProperty, styleProperty.value, font.getName());
                 main.getUndoableManager().addUndoable(undoable, true);
+            } else if (object instanceof FreeTypeFontData) {
+                main.getProjectData().setChangesSaved(false);
+                FreeTypeFontData font = (FreeTypeFontData) object;
+                FontUndoable undoable = new FontUndoable(main.getRootTable(),
+                        main.getJsonData(), styleProperty, styleProperty.value, font.name);
+                main.getUndoableManager().addUndoable(undoable, true);
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
                     FontUndoable undoable = new FontUndoable(main.getRootTable(),
@@ -656,6 +662,13 @@ public class DialogFonts extends Dialog {
                     boolean hasFont = false;
                     for (FontData font : main.getJsonData().getFonts()) {
                         if (font.getName().equals(styleProperty.value)) {
+                            hasFont = true;
+                            break;
+                        }
+                    }
+                    
+                    for (FreeTypeFontData font : main.getJsonData().getFreeTypeFonts()) {
+                        if (font.name.equals(styleProperty.value)) {
                             hasFont = true;
                             break;
                         }
@@ -704,6 +717,8 @@ public class DialogFonts extends Dialog {
         if (listener != null) {
             listener.handle(null);
         }
+        
+        main.getRootTable().refreshPreview();
     }
 
     private void sortBySelectedMode() {
