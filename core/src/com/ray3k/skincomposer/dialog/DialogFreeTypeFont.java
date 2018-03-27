@@ -27,6 +27,7 @@ package com.ray3k.skincomposer.dialog;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -117,11 +118,25 @@ public class DialogFreeTypeFont extends Dialog {
         if ((Boolean) object) {
             if (mode == Mode.EDIT) {
                 if (!originalData.name.equals(data.name)) {
-                    //todo: rename all styles using this font
+                    for (Array<StyleData> styleDatas : main.getJsonData().getClassStyleMap().values()) {
+                        for (StyleData styleData : styleDatas) {
+                            for (StyleProperty property : styleData.properties.values()) {
+                                if (property != null && property.type.equals(BitmapFont.class) && property.value != null && property.value.equals(originalData.name)) {
+                                    property.value = data.name;
+                                }
+                            }
+                        }
+                    }
                 }
                 
                 originalData.bitmapFont.dispose();
                 main.getJsonData().getFreeTypeFonts().removeValue(originalData, false);
+                
+                main.getUndoableManager().clearUndoables();
+
+                main.getRootTable().refreshStyleProperties(true);
+
+                main.getProjectData().setChangesSaved(false);
             }
             
             data.createBitmapFont(main);

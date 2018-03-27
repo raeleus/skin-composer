@@ -2473,7 +2473,6 @@ public class RootTable extends Table {
                         
                         for (FreeTypeFontData data : main.getJsonData().getFreeTypeFonts()) {
                             if (value.equals(data.name)) {
-//                                previewFonts.add(data.bitmapFont);
                                 field.set(returnValue, data.bitmapFont);
                             }
                         }
