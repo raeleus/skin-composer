@@ -26,9 +26,11 @@ package com.ray3k.skincomposer.data;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.Hinting;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
@@ -69,7 +71,7 @@ public class FreeTypeFontData implements Json.Serializable {
     
     public FreeTypeFontData(FreeTypeFontData original) {
         name = original.name;
-        file = new FileHandle(original.file.path());
+        file = original.file != null ? new FileHandle(original.file.path()) : null;
         previewTTF = original.previewTTF;
         useCustomSerializer = original.useCustomSerializer;
         size = original.size;
@@ -102,56 +104,69 @@ public class FreeTypeFontData implements Json.Serializable {
             bitmapFont = null;
         }
         
-        if (file == null) return;
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(file);
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        
-        if (borderColor != null) for (ColorData colorData : main.getJsonData().getColors()) {
-            if (colorData.getName().equals(borderColor)) {
-                parameter.borderColor = colorData.color;
-                break;
+        if (!useCustomSerializer) {
+            if (previewTTF == null) return;
+            FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+            parameter.color = Color.BLACK;
+            
+            FileHandle previewFontPath = Gdx.files.local("preview fonts/" + previewTTF + ".ttf");
+            if (previewFontPath.exists()) {
+                FreeTypeFontGenerator generator = new FreeTypeFontGenerator(previewFontPath);
+                bitmapFont = generator.generateFont(parameter);
+                generator.dispose();
             }
-        }
-        parameter.borderGamma = borderGamma;
-        parameter.borderStraight = borderStraight;
-        parameter.borderWidth = borderWidth;
-        parameter.characters = characters.equals("") ? FreeTypeFontGenerator.DEFAULT_CHARS : characters;
-        if (color != null) for (ColorData colorData : main.getJsonData().getColors()) {
-            if (colorData.getName().equals(color)) {
-                parameter.color = colorData.color;
-                break;
+        } else {
+            if (file == null) return;
+            FreeTypeFontGenerator generator = new FreeTypeFontGenerator(file);
+            FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+
+            if (borderColor != null) for (ColorData colorData : main.getJsonData().getColors()) {
+                if (colorData.getName().equals(borderColor)) {
+                    parameter.borderColor = colorData.color;
+                    break;
+                }
             }
-        }
-        parameter.flip = flip;
-        parameter.gamma = gamma;
-        parameter.genMipMaps = genMipMaps;
-        parameter.hinting = hinting == null ? Hinting.AutoMedium : Hinting.valueOf(hinting);
-        parameter.incremental = false;
-        parameter.kerning = kerning;
-        parameter.magFilter = magFilter == null ? TextureFilter.Nearest : TextureFilter.valueOf(magFilter);
-        parameter.minFilter = minFilter == null ? TextureFilter.Nearest : TextureFilter.valueOf(minFilter);
-        parameter.mono = mono;
-        parameter.renderCount = renderCount;
-        if (shadowColor != null) for (ColorData colorData : main.getJsonData().getColors()) {
-            if (colorData.getName().equals(shadowColor)) {
-                parameter.shadowColor = colorData.color;
-                break;
+            parameter.borderGamma = borderGamma;
+            parameter.borderStraight = borderStraight;
+            parameter.borderWidth = borderWidth;
+            parameter.characters = characters.equals("") ? FreeTypeFontGenerator.DEFAULT_CHARS : characters;
+            if (color != null) for (ColorData colorData : main.getJsonData().getColors()) {
+                if (colorData.getName().equals(color)) {
+                    parameter.color = colorData.color;
+                    break;
+                }
             }
+            parameter.flip = flip;
+            parameter.gamma = gamma;
+            parameter.genMipMaps = genMipMaps;
+            parameter.hinting = hinting == null ? Hinting.AutoMedium : Hinting.valueOf(hinting);
+            parameter.incremental = false;
+            parameter.kerning = kerning;
+            parameter.magFilter = magFilter == null ? TextureFilter.Nearest : TextureFilter.valueOf(magFilter);
+            parameter.minFilter = minFilter == null ? TextureFilter.Nearest : TextureFilter.valueOf(minFilter);
+            parameter.mono = mono;
+            parameter.renderCount = renderCount;
+            if (shadowColor != null) for (ColorData colorData : main.getJsonData().getColors()) {
+                if (colorData.getName().equals(shadowColor)) {
+                    parameter.shadowColor = colorData.color;
+                    break;
+                }
+            }
+            parameter.shadowOffsetX = shadowOffsetX;
+            parameter.shadowOffsetY = shadowOffsetY;
+            parameter.size = size;
+            parameter.spaceX = spaceX;
+            parameter.spaceY = spaceY;
+
+            bitmapFont = generator.generateFont(parameter);
+            generator.dispose();
         }
-        parameter.shadowOffsetX = shadowOffsetX;
-        parameter.shadowOffsetY = shadowOffsetY;
-        parameter.size = size;
-        parameter.spaceX = spaceX;
-        parameter.spaceY = spaceY;
-        
-        bitmapFont = generator.generateFont(parameter);
-        generator.dispose();
     }
 
     @Override
     public void write(Json json) {
         json.writeValue("name", name);
-        json.writeValue("file", file.path());
+        if (file != null) json.writeValue("file", file.path());
         json.writeValue("previewTTF", previewTTF);
         json.writeValue("useCustomSerializer", useCustomSerializer);
         json.writeValue("size", size);
@@ -181,7 +196,7 @@ public class FreeTypeFontData implements Json.Serializable {
     @Override
     public void read(Json json, JsonValue jsonData) {
         name = jsonData.getString("name");
-        file = Gdx.files.absolute(jsonData.getString("file"));
+        file = jsonData.has("file") ? Gdx.files.absolute(jsonData.getString("file")) : null;
         previewTTF = jsonData.getString("previewTTF");
         useCustomSerializer = jsonData.getBoolean("useCustomSerialized", false);
         size = jsonData.getInt("size", 16);

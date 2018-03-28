@@ -458,7 +458,7 @@ public class MainListener extends RootTableListener {
                 }
                 
                 for (FreeTypeFontData font : main.getProjectData().getJsonData().getFreeTypeFonts()) {
-                    if (!font.file.parent().equals(fileHandle.parent())) {
+                    if (font.useCustomSerializer && !font.file.parent().equals(fileHandle.parent())) {
                         font.file.copyTo(fileHandle.parent());
                     }
                 }

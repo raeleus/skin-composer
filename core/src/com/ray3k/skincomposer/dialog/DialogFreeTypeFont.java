@@ -83,6 +83,14 @@ public class DialogFreeTypeFont extends Dialog {
         if (freeTypeFontData == null) {
             mode = Mode.NEW;
             this.data = new FreeTypeFontData();
+            
+            FileHandle previewFontsPath = Gdx.files.local("preview fonts");
+            if (previewFontsPath.exists()) {
+                FileHandle[] files = previewFontsPath.list("ttf");
+                if (files.length > 0) {
+                    data.previewTTF = files[0].nameWithoutExtension();
+                }
+            }
         } else {
             mode = Mode.EDIT;
             this.data = new FreeTypeFontData(freeTypeFontData);
@@ -190,7 +198,21 @@ public class DialogFreeTypeFont extends Dialog {
         
         SelectBox<String> selectBox = new SelectBox(skin);
         selectBox.setName("previewSelectBox");
-        selectBox.setItems("Roboto", "Century", "Comic Sans");
+        
+        Array<String> previewFontNames = new Array<>();
+        
+        FileHandle previewFontsPath = Gdx.files.local("preview fonts");
+        if (previewFontsPath.exists()) {
+            Array<FileHandle> files = new Array<>(previewFontsPath.list("ttf"));
+            
+            for (FileHandle file : files) {
+                previewFontNames.add(file.nameWithoutExtension());
+            }
+        }
+        
+        selectBox.setItems(previewFontNames);
+        
+        selectBox.setSelected(data.previewTTF);
         table.add(selectBox);
         
         toolTip = new TextTooltip("The TTF font for preview use in Skin Composer only", main.getTooltipManager(), getSkin());
@@ -203,6 +225,7 @@ public class DialogFreeTypeFont extends Dialog {
                 SelectBox<String> selectBox = (SelectBox) actor;
                 
                 data.previewTTF = selectBox.getSelected();
+                updateDisabledFields();
             }
         });
         

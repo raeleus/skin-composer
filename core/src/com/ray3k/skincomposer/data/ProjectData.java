@@ -246,7 +246,7 @@ public class ProjectData implements Json.Serializable {
         }
         
         for (FreeTypeFontData fontData : jsonData.getFreeTypeFonts()) {
-            if (fontData.file.exists()) {
+            if (fontData.file != null && fontData.file.exists()) {
                 targetFolder.mkdirs();
                 
                 //font files in the temp folder
