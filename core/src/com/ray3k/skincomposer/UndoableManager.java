@@ -555,6 +555,13 @@ public class UndoableManager {
                         break;
                     }
                 }
+                
+                for (FreeTypeFontData font : main.getJsonData().getFreeTypeFonts()) {
+                    if (font.name.equals((String) oldValue)) {
+                        property.setValue(oldValue);
+                        break;
+                    }
+                }
             }
             main.getRootTable().setStatusBarMessage("Selected Font: " + oldValue);
             main.getRootTable().refreshStyleProperties(true);
@@ -568,6 +575,13 @@ public class UndoableManager {
             } else {
                 for (FontData font : main.getJsonData().getFonts()) {
                     if (font.getName().equals((String) newValue)) {
+                        property.setValue(newValue);
+                        break;
+                    }
+                }
+                
+                for (FreeTypeFontData font : main.getJsonData().getFreeTypeFonts()) {
+                    if (font.name.equals((String) newValue)) {
                         property.setValue(newValue);
                         break;
                     }

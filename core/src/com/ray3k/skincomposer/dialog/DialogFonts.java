@@ -688,6 +688,11 @@ public class DialogFonts extends Dialog {
                 FontData font = (FontData) object;
                 CustomFontUndoable undoable = new CustomFontUndoable(main, customProperty, font.getName());
                 main.getUndoableManager().addUndoable(undoable, true);
+            } else if (object instanceof FreeTypeFontData) {
+                main.getProjectData().setChangesSaved(false);
+                FreeTypeFontData font = (FreeTypeFontData) object;
+                CustomFontUndoable undoable = new CustomFontUndoable(main, customProperty, font.name);
+                main.getUndoableManager().addUndoable(undoable, true);
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
                     CustomFontUndoable undoable = new CustomFontUndoable(main, customProperty, null);

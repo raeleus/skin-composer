@@ -868,6 +868,13 @@ public class RootTable extends Table {
                                 break;
                             }
                         }
+                        
+                        for (FreeTypeFontData font : main.getJsonData().getFreeTypeFonts()) {
+                            System.out.println("hit");
+                            if (font.name.equals(styleProperty.getValue())) {
+                                value = (String) styleProperty.getValue();
+                            }
+                        }
                     }
                     BrowseField browseField = new BrowseField(value, styleProperty.getName(), getSkin(), "font");
                     browseField.addListener(main.getHandListener());
@@ -2415,11 +2422,25 @@ public class RootTable extends Table {
                                             break;
                                         }
                                     }
-
+                                    
                                     if (font != null) {
                                         Label labelFont = new Label(fontData.getName(), new LabelStyle(font, Color.WHITE));
                                         container.setActor(labelFont);
                                     }
+                                    
+                                    FreeTypeFontData freeTypeFontData = null;
+                                    for (FreeTypeFontData fd : main.getJsonData().getFreeTypeFonts()) {
+                                        if (fd.name.equals(fontName)) {
+                                            freeTypeFontData = fd;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if (freeTypeFontData.bitmapFont != null) {
+                                        Label labelFont = new Label(freeTypeFontData.name, new LabelStyle(freeTypeFontData.bitmapFont, Color.WHITE));
+                                        container.setActor(labelFont);
+                                    }
+                                    
                                     break;
                                 case DRAWABLE:
                                     DrawableData drawable = null;
