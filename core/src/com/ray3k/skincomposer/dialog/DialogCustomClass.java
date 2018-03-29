@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -49,10 +50,10 @@ public class DialogCustomClass extends Dialog {
     private String originalFullyQualifiedName, originalDisplayName;
     
     public DialogCustomClass(Main main, String title, boolean allowSameName) {
-        this(main, title, allowSameName, null, null);
+        this(main, title, allowSameName, null, null, false);
     }
     
-    public DialogCustomClass(Main main, String title, boolean allowSameName, String fullyQualifiedName, String displayName) {
+    public DialogCustomClass(Main main, String title, boolean allowSameName, String fullyQualifiedName, String displayName, boolean declareAfterUIclasses) {
         super(title, main.getSkin(), "bg");
         getTitleLabel().setAlignment(Align.center);
         
@@ -125,6 +126,12 @@ public class DialogCustomClass extends Dialog {
         displayField.addListener(main.getIbeamListener());
         getContentTable().add(displayField).growX().padLeft(10.0f).padRight(10.0f);
         
+        getContentTable().row();
+        CheckBox checkBox = new CheckBox("Declare after UI classes", getSkin());
+        checkBox.setChecked(declareAfterUIclasses);
+        checkBox.setName("declareAfterUIcheckBox");
+        getContentTable().add(checkBox).padLeft(10.0f).padRight(10.0f).left().padTop(10.0f);
+        
         getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         button("OK", true);
         button("Cancel", false).key(Keys.ESCAPE, false);
@@ -170,8 +177,7 @@ public class DialogCustomClass extends Dialog {
     @Override
     protected void result(Object object) {
         super.result(object);
-        
-        fire(new CustomClassEvent((boolean) object, classField.getText(), displayField.getText()));
+        fire(new CustomClassEvent((boolean) object, classField.getText(), displayField.getText(), ((CheckBox) findActor("declareAfterUIcheckBox")).isChecked()));
     }
     
     private void updateOkButton() {
@@ -226,11 +232,13 @@ public class DialogCustomClass extends Dialog {
         boolean result;
         String fullyQualifiedName;
         String displayName;
+        boolean declareAfterUIclasses;
         
-        public CustomClassEvent(boolean result, String fullyQualifiedName, String displayName) {
+        public CustomClassEvent(boolean result, String fullyQualifiedName, String displayName, boolean declareAfterUIclasses) {
             this.result = result;
             this.fullyQualifiedName = fullyQualifiedName;
             this.displayName = displayName;
+            this.declareAfterUIclasses = declareAfterUIclasses;
         }
     }
     
@@ -240,7 +248,7 @@ public class DialogCustomClass extends Dialog {
             if (event instanceof CustomClassEvent) {
                 CustomClassEvent newClassEvent = (CustomClassEvent) event;
                 if (newClassEvent.result) {
-                    newClassEntered(newClassEvent.fullyQualifiedName, newClassEvent.displayName);
+                    newClassEntered(newClassEvent.fullyQualifiedName, newClassEvent.displayName, newClassEvent.declareAfterUIclasses);
                 } else {
                     cancelled();
                 }
@@ -248,7 +256,7 @@ public class DialogCustomClass extends Dialog {
             return false;
         }
         
-        public abstract void newClassEntered(String fullyQualifiedName, String displayName);
+        public abstract void newClassEntered(String fullyQualifiedName, String displayName, boolean declareAfterUIclasses);
         
         public abstract void cancelled();
     }

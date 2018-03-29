@@ -783,10 +783,11 @@ public class UndoableManager {
         private final Main main;
         private final CustomClass customClass;
 
-        public NewCustomClassUndoable(String fullyQualifiedName, String displayName, Main main) {
+        public NewCustomClassUndoable(String fullyQualifiedName, String displayName, boolean declareAfterUIclasses, Main main) {
             this.displayName = displayName;
             this.main = main;
             customClass = new CustomClass(fullyQualifiedName, displayName);
+            customClass.setDeclareAfterUIclasses(declareAfterUIclasses);
             customClass.setMain(main);
         }
         
@@ -813,23 +814,28 @@ public class UndoableManager {
         private final Main main;
         private final String displayName;
         private final String fullyQualifiedName;
+        private final boolean declareAfterUIclasses;
         private final String oldName;
         private final String oldFullyQualifiedName;
+        private final boolean oldDeclareAfterUIclasses;
         private final CustomClass customClass;
 
-        public RenameCustomClassUndoable(Main main, String displayName, String fullyQualifiedName) {
+        public RenameCustomClassUndoable(Main main, String displayName, String fullyQualifiedName, boolean declareAfterUIclasses) {
             this.main = main;
             this.displayName = displayName;
             this.fullyQualifiedName = fullyQualifiedName;
+            this.declareAfterUIclasses = declareAfterUIclasses;
             customClass = (CustomClass) main.getRootTable().getClassSelectBox().getSelected();
             oldName = customClass.getDisplayName();
             oldFullyQualifiedName = customClass.getFullyQualifiedName();
+            oldDeclareAfterUIclasses = customClass.isDeclareAfterUIclasses();
         }
 
         @Override
         public void undo() {
             customClass.setDisplayName(oldName);
             customClass.setFullyQualifiedName(oldFullyQualifiedName);
+            customClass.setDeclareAfterUIclasses(oldDeclareAfterUIclasses);
             main.getRootTable().refreshClasses(false);
             main.getRootTable().refreshPreview();
         }
@@ -838,6 +844,7 @@ public class UndoableManager {
         public void redo() {
             customClass.setDisplayName(displayName);
             customClass.setFullyQualifiedName(fullyQualifiedName);
+            customClass.setDeclareAfterUIclasses(declareAfterUIclasses);
             main.getRootTable().refreshClasses(false);
             main.getRootTable().refreshPreview();
         }
@@ -883,7 +890,7 @@ public class UndoableManager {
         private Main main;
         private CustomClass customClass;
 
-        public DuplicateCustomClassUndoable(Main main, String displayName, String fullyQualifiedName) {
+        public DuplicateCustomClassUndoable(Main main, String displayName, String fullyQualifiedName, boolean declareAfterUIclasses) {
             this.main = main;
             
             Object selected = main.getRootTable().getClassSelectBox().getSelected();
@@ -892,6 +899,7 @@ public class UndoableManager {
                 customClass = ((CustomClass) selected).copy();
                 customClass.setDisplayName(displayName);
                 customClass.setFullyQualifiedName(fullyQualifiedName);
+                customClass.setDeclareAfterUIclasses(declareAfterUIclasses);
             }
         }
         

@@ -10,6 +10,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Changes ###
 
 * Added FreeType font option. Users can generate their own fonts or build their fonts in the editor.
+* Added option to export custom classes before or after the standard UI classes are defined.
 
 ### Contact ###
 

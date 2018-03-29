@@ -144,9 +144,9 @@ public class MainListener extends RootTableListener {
                 dialogFactory.showNewClassDialog(new DialogCustomClass.CustomClassListener() {
                     @Override
                     public void newClassEntered(String fullyQualifiedName,
-                            String displayName) {
+                            String displayName, boolean declareAfterUIclasses) {
                         main.getUndoableManager().addUndoable(
-                                new NewCustomClassUndoable(fullyQualifiedName,displayName, main), true);
+                                new NewCustomClassUndoable(fullyQualifiedName, displayName, declareAfterUIclasses, main), true);
                     }
 
                     @Override
@@ -159,8 +159,8 @@ public class MainListener extends RootTableListener {
                 dialogFactory.showDuplicateClassDialog(new CustomClassListener() {
                     @Override
                     public void newClassEntered(String fullyQualifiedName,
-                            String displayName) {
-                        main.getUndoableManager().addUndoable(new DuplicateCustomClassUndoable(main, displayName, fullyQualifiedName), true);
+                            String displayName, boolean declareAfterUIclasses) {
+                        main.getUndoableManager().addUndoable(new DuplicateCustomClassUndoable(main, displayName, fullyQualifiedName, declareAfterUIclasses), true);
                     }
 
                     @Override
@@ -176,8 +176,8 @@ public class MainListener extends RootTableListener {
                 dialogFactory.showRenameClassDialog(new DialogCustomClass.CustomClassListener() {
                     @Override
                     public void newClassEntered(String fullyQualifiedName,
-                            String displayName) {
-                        main.getUndoableManager().addUndoable(new UndoableManager.RenameCustomClassUndoable(main, displayName, fullyQualifiedName), true);
+                            String displayName, boolean declareAfterUIclasses) {
+                        main.getUndoableManager().addUndoable(new UndoableManager.RenameCustomClassUndoable(main, displayName, fullyQualifiedName, declareAfterUIclasses), true);
                     }
 
                     @Override

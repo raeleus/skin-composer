@@ -634,36 +634,38 @@ public class JsonData implements Json.Serializable {
             json.writeObjectEnd();
         }
         
-        //custom classes
+        //custom classes declared before UI classes
         for (CustomClass customClass : customClasses) {
-            if (customClassHasFields(customClass)) {
-                json.writeObjectStart(customClass.getFullyQualifiedName());
-                for (CustomStyle customStyle : customClass.getStyles()) {
-                    if (customStyleHasFields(customStyle)) {
-                        json.writeObjectStart(customStyle.getName());
+            if (!customClass.isDeclareAfterUIclasses()) {
+                if (customClassHasFields(customClass)) {
+                    json.writeObjectStart(customClass.getFullyQualifiedName());
+                    for (CustomStyle customStyle : customClass.getStyles()) {
+                        if (customStyleHasFields(customStyle)) {
+                            json.writeObjectStart(customStyle.getName());
 
-                        for (CustomProperty customProperty : customStyle.getProperties()) {
-                            //only write value if it is valid
-                            if (customPropertyIsNotNull(customProperty)) {
-                                if (customProperty.getType().equals(CustomProperty.PropertyType.RAW_TEXT)) {
-                                    try {
-                                        json.getWriter().json(customProperty.getName(), (String)customProperty.getValue());
-                                    } catch (Exception e) {
-                                        DialogFactory.showDialogErrorStatic("Error writing custom property.", "Error writing custom property " + customProperty.getName() + " for custom class " + customClass.getDisplayName() + ".");
+                            for (CustomProperty customProperty : customStyle.getProperties()) {
+                                //only write value if it is valid
+                                if (customPropertyIsNotNull(customProperty)) {
+                                    if (customProperty.getType().equals(CustomProperty.PropertyType.RAW_TEXT)) {
+                                        try {
+                                            json.getWriter().json(customProperty.getName(), (String)customProperty.getValue());
+                                        } catch (Exception e) {
+                                            DialogFactory.showDialogErrorStatic("Error writing custom property.", "Error writing custom property " + customProperty.getName() + " for custom class " + customClass.getDisplayName() + ".");
+                                        }
+                                    } else {
+                                        json.writeValue(customProperty.getName(), customProperty.getValue());
                                     }
-                                } else {
-                                    json.writeValue(customProperty.getName(), customProperty.getValue());
                                 }
                             }
+                            json.writeObjectEnd();
+                        } else {
+                            warnings.add("Did not export custom style [BLACK]" + customStyle.getName() + "[] for class [BLACK]" + customClass.getDisplayName() + "[] (All fields null)");
                         }
-                        json.writeObjectEnd();
-                    } else {
-                        warnings.add("Did not export custom style [BLACK]" + customStyle.getName() + "[] for class [BLACK]" + customClass.getDisplayName() + "[] (All fields null)");
                     }
+                    json.writeObjectEnd();
+                } else {
+                    warnings.add("Did not export custom class [BLACK]" + customClass.getDisplayName() + "[] (No valid styles)");
                 }
-                json.writeObjectEnd();
-            } else {
-                warnings.add("Did not export custom class [BLACK]" + customClass.getDisplayName() + "[] (No valid styles)");
             }
         }
 
@@ -708,6 +710,41 @@ public class JsonData implements Json.Serializable {
                 json.writeObjectEnd();
             } else {
                 warnings.add("Did not export class [BLACK]" + clazz.getSimpleName() + "[] (No valid styles)");
+            }
+        }
+        
+        //custom classes declared after UI classes
+        for (CustomClass customClass : customClasses) {
+            if (customClass.isDeclareAfterUIclasses()) {
+                if (customClassHasFields(customClass)) {
+                    json.writeObjectStart(customClass.getFullyQualifiedName());
+                    for (CustomStyle customStyle : customClass.getStyles()) {
+                        if (customStyleHasFields(customStyle)) {
+                            json.writeObjectStart(customStyle.getName());
+
+                            for (CustomProperty customProperty : customStyle.getProperties()) {
+                                //only write value if it is valid
+                                if (customPropertyIsNotNull(customProperty)) {
+                                    if (customProperty.getType().equals(CustomProperty.PropertyType.RAW_TEXT)) {
+                                        try {
+                                            json.getWriter().json(customProperty.getName(), (String)customProperty.getValue());
+                                        } catch (Exception e) {
+                                            DialogFactory.showDialogErrorStatic("Error writing custom property.", "Error writing custom property " + customProperty.getName() + " for custom class " + customClass.getDisplayName() + ".");
+                                        }
+                                    } else {
+                                        json.writeValue(customProperty.getName(), customProperty.getValue());
+                                    }
+                                }
+                            }
+                            json.writeObjectEnd();
+                        } else {
+                            warnings.add("Did not export custom style [BLACK]" + customStyle.getName() + "[] for class [BLACK]" + customClass.getDisplayName() + "[] (All fields null)");
+                        }
+                    }
+                    json.writeObjectEnd();
+                } else {
+                    warnings.add("Did not export custom class [BLACK]" + customClass.getDisplayName() + "[] (No valid styles)");
+                }
             }
         }
 

@@ -31,6 +31,7 @@ import com.ray3k.skincomposer.Main;
 public class CustomClass implements Json.Serializable {
     private String fullyQualifiedName;
     private String displayName;
+    private boolean declareAfterUIclasses;
     private Array<CustomStyle> styles;
     private CustomStyle templateStyle;
     private Main main;
@@ -42,6 +43,7 @@ public class CustomClass implements Json.Serializable {
     public CustomClass(String fullyQualifiedName, String displayName) {
         this.fullyQualifiedName = fullyQualifiedName;
         this.displayName = displayName;
+        declareAfterUIclasses = false;
         styles = new Array<>();
         CustomStyle defaultStyle = new CustomStyle("default");
         defaultStyle.setDeletable(false);
@@ -97,6 +99,14 @@ public class CustomClass implements Json.Serializable {
         templateStyle.setMain(main);
     }
 
+    public boolean isDeclareAfterUIclasses() {
+        return declareAfterUIclasses;
+    }
+
+    public void setDeclareAfterUIclasses(boolean declareAfterUIclasses) {
+        this.declareAfterUIclasses = declareAfterUIclasses;
+    }
+
     @Override
     public String toString() {
         return displayName;
@@ -108,6 +118,7 @@ public class CustomClass implements Json.Serializable {
         json.writeValue("displayName", displayName);
         json.writeValue("styles", styles, Array.class, CustomStyle.class);
         json.writeValue("templateStyle", templateStyle);
+        json.writeValue("declareAfterUIclasses", declareAfterUIclasses);
     }
 
     @Override
@@ -120,6 +131,7 @@ public class CustomClass implements Json.Serializable {
         }
         templateStyle = json.readValue("templateStyle", CustomStyle.class, jsonData);
         templateStyle.setParentClass(this);
+        declareAfterUIclasses = jsonData.getBoolean("declareAfterUIclasses", false);
     }
     
     public CustomClass copy() {
@@ -132,6 +144,8 @@ public class CustomClass implements Json.Serializable {
         if (templateStyle != null) {
             returnValue.templateStyle = templateStyle.copy();
         }
+        
+        returnValue.declareAfterUIclasses = declareAfterUIclasses;
         
         returnValue.main = main;
         

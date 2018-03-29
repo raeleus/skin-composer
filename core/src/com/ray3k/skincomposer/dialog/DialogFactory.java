@@ -645,7 +645,7 @@ public class DialogFactory {
         if (selected instanceof CustomClass) {
             DialogCustomClass dialog = new DialogCustomClass(main, "Rename Custom Class", true, 
                     ((CustomClass) selected).getFullyQualifiedName(), 
-                    ((CustomClass) selected).getDisplayName());
+                    ((CustomClass) selected).getDisplayName(), ((CustomClass) selected).isDeclareAfterUIclasses());
             dialog.addListener(listener);
             dialog.show(main.getStage());
         }
@@ -656,7 +656,7 @@ public class DialogFactory {
         if (selected instanceof CustomClass) {
             DialogCustomClass dialog = new DialogCustomClass(main, "Duplicate Class", false,
                     ((CustomClass) selected).getFullyQualifiedName(), 
-                    ((CustomClass) selected).getDisplayName());
+                    ((CustomClass) selected).getDisplayName(), ((CustomClass) selected).isDeclareAfterUIclasses());
             dialog.addListener(listener);
             dialog.show(main.getStage());
         }
