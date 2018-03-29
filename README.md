@@ -5,18 +5,11 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 17
+* Version 18
 
 ### Changes ###
 
-* Added a hexadecimal field to the color picker.
-* Added custom drawable button to drawables dialog. Use this to refer to your classes that inherit from Drawable specified in the new custom class dialog.
-* Fixed alpha slider being initialized with the incorrect color in color picker.
-* Fixed keyboard shortcuts being incorrectly configured on alternative keyboard layouts.
-* Fixed crash bug on Mac.
-* Fixed spinner not accepting numbers starting with a decimal point.
-* Fixed removing a custom property does not remove it from new custom styles.
-* Reordered JSON export so that custom classes can be implemented by styles.
+* Added FreeType font option. Users can generate their own fonts or build their fonts in the editor.
 
 ### Contact ###
 
