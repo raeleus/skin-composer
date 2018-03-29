@@ -86,6 +86,10 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 		name: class-bar
 		color: black
 	}
+	selectbox-disabled: {
+		name: selectbox
+		color: disabled
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 	default: {
@@ -370,6 +374,7 @@ com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 		listStyle: default
 		backgroundOver: selectbox-over
 		backgroundOpen: selectbox-pressed
+		backgroundDisabled: selectbox-disabled
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {

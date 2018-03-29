@@ -76,6 +76,51 @@ public class DialogFreeTypeFont extends Dialog {
     private Array<DialogFreeTypeFontListener> listeners;
     private TextFieldStyle previewStyle;
     private String previewText;
+    private static final String SERIALIZER_TEXT = "skin = new Skin(Gdx.files.internal(\"skin-name.json\")) {\n" +
+"            //Override json loader to process FreeType fonts from skin JSON\n" +
+"            @Override\n" +
+"            protected Json getJsonLoader(final FileHandle skinFile) {\n" +
+"                Json json = super.getJsonLoader(skinFile);\n" +
+"                final Skin skin = this;\n" +
+"\n" +
+"                json.setSerializer(FreeTypeFontGenerator.class, new Json.ReadOnlySerializer<FreeTypeFontGenerator>() {\n" +
+"                    @Override\n" +
+"                    public FreeTypeFontGenerator read(Json json,\n" +
+"                            JsonValue jsonData, Class type) {\n" +
+"                        String path = json.readValue(\"font\", String.class, jsonData);\n" +
+"                        jsonData.remove(\"font\");\n" +
+"\n" +
+"                        Hinting hinting = Hinting.valueOf(json.readValue(\"hinting\", \n" +
+"                                String.class, \"AutoMedium\", jsonData));\n" +
+"                        jsonData.remove(\"hinting\");\n" +
+"\n" +
+"                        TextureFilter minFilter = TextureFilter.valueOf(\n" +
+"                                json.readValue(\"minFilter\", String.class, \"Nearest\", jsonData));\n" +
+"                        jsonData.remove(\"minFilter\");\n" +
+"\n" +
+"                        TextureFilter magFilter = TextureFilter.valueOf(\n" +
+"                                json.readValue(\"magFilter\", String.class, \"Nearest\", jsonData));\n" +
+"                        jsonData.remove(\"magFilter\");\n" +
+"\n" +
+"                        FreeTypeFontParameter parameter = json.readValue(FreeTypeFontParameter.class, jsonData);\n" +
+"                        parameter.hinting = hinting;\n" +
+"                        parameter.minFilter = minFilter;\n" +
+"                        parameter.magFilter = magFilter;\n" +
+"                        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(skinFile.parent().child(path));\n" +
+"                        BitmapFont font = generator.generateFont(parameter);\n" +
+"                        skin.add(jsonData.name, font);\n" +
+"                        if (parameter.incremental) {\n" +
+"                            generator.dispose();\n" +
+"                            return null;\n" +
+"                        } else {\n" +
+"                            return generator;\n" +
+"                        }\n" +
+"                    }\n" +
+"                });\n" +
+"\n" +
+"                return json;\n" +
+"            }\n" +
+"        };";
     
     public DialogFreeTypeFont(Main main, FreeTypeFontData freeTypeFontData) {
         super(freeTypeFontData == null ? "Create new FreeType Font" : "Edit FreeType Font", main.getSkin(), "bg");
@@ -999,7 +1044,8 @@ public class DialogFreeTypeFont extends Dialog {
     }
     
     private void showMoreInfoDialog() {
-        Dialog dialog = new Dialog("Custom serializer for FreeType Fonts", skin, "dialog");
+        Dialog dialog = new Dialog("Custom serializer for FreeType Fonts", skin, "bg");
+        dialog.setFillParent(true);
         
         dialog.getTitleLabel().setAlignment(Align.center);
         dialog.getContentTable().pad(15.0f);
@@ -1010,13 +1056,18 @@ public class DialogFreeTypeFont extends Dialog {
         dialog.getContentTable().add(label).growX();
         
         dialog.getContentTable().row();
+        Image image = new Image(skin, "code-sample");
+        image.setScaling(Scaling.fit);
+        dialog.getContentTable().add(image);
+        
+        dialog.getContentTable().row();
         TextButton textButton = new TextButton("Copy sample code to clipboard", skin);
         dialog.getContentTable().add(textButton);
         
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Gdx.app.getClipboard().setContents("Test content");
+                Gdx.app.getClipboard().setContents(SERIALIZER_TEXT);
             }
         });
 
@@ -1024,8 +1075,6 @@ public class DialogFreeTypeFont extends Dialog {
         dialog.getButtonTable().defaults().minWidth(100.0f);
         dialog.button("OK", true);
         dialog.show(main.getStage());
-        dialog.setSize(400, 400);
-        dialog.setPosition(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, Align.center);
     }
     
     public static interface DialogFreeTypeFontListener {
