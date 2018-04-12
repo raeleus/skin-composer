@@ -60,6 +60,8 @@ import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 public class DialogFreeTypeFont extends Dialog {
     private Main main;
@@ -72,7 +74,7 @@ public class DialogFreeTypeFont extends Dialog {
     }
     private FreeTypeFontData data;
     private FreeTypeFontData originalData;
-    private static final DecimalFormat df = new DecimalFormat("#.#");
+    private static DecimalFormat df;
     private Array<DialogFreeTypeFontListener> listeners;
     private TextFieldStyle previewStyle;
     private String previewText;
@@ -124,6 +126,9 @@ public class DialogFreeTypeFont extends Dialog {
     
     public DialogFreeTypeFont(Main main, FreeTypeFontData freeTypeFontData) {
         super(freeTypeFontData == null ? "Create new FreeType Font" : "Edit FreeType Font", main.getSkin(), "bg");
+        
+        DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols(Locale.US);
+        df = new DecimalFormat("#.#", decimalFormatSymbols);
         
         if (freeTypeFontData == null) {
             mode = Mode.NEW;
