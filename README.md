@@ -5,12 +5,11 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 18
+* Version 19
 
 ### Changes ###
 
-* Added FreeType font option. Users can generate their own fonts or build their fonts in the editor.
-* Added option to export custom classes before or after the standard UI classes are defined.
+* Fixed locale error causing crash bug in the FreeType dialog.
 
 ### Contact ###
 
