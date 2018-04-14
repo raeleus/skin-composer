@@ -870,7 +870,6 @@ public class RootTable extends Table {
                         }
                         
                         for (FreeTypeFontData font : main.getJsonData().getFreeTypeFonts()) {
-                            System.out.println("hit");
                             if (font.name.equals(styleProperty.getValue())) {
                                 value = (String) styleProperty.getValue();
                             }
@@ -2436,7 +2435,7 @@ public class RootTable extends Table {
                                         }
                                     }
                                     
-                                    if (freeTypeFontData.bitmapFont != null) {
+                                    if (freeTypeFontData != null && freeTypeFontData.bitmapFont != null) {
                                         Label labelFont = new Label(freeTypeFontData.name, new LabelStyle(freeTypeFontData.bitmapFont, Color.WHITE));
                                         container.setActor(labelFont);
                                     }

@@ -10,6 +10,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Changes ###
 
 * Fixed locale error causing crash bug in the FreeType dialog.
+* Fixed crash with font in custom class when rendering table.
 
 ### Contact ###
 
