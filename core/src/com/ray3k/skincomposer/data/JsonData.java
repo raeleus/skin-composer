@@ -786,10 +786,16 @@ public class JsonData implements Json.Serializable {
                             returnValue = true;
                             break;
                         }
-                    }   break;
+                    }
+                    
+                    for (FreeTypeFontData data : freeTypeFonts) {
+                        if (data.name.equals(customProperty.getValue())) {
+                            returnValue = true;
+                            break;
+                        }
+                    }    break;
             }
         }
-        
         return returnValue;
     }
     
