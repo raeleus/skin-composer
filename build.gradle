@@ -12,7 +12,7 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-    version = '19'
+    version = '20'
     ext {
         appName = "SkinComposer"
         gdxVersion = '1.9.8'

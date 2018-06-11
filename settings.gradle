@@ -1,1 +1,2 @@
 include 'desktop', 'core'
+rootProject.name = 'Skin Composer'
