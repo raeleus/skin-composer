@@ -276,6 +276,10 @@ public class Spinner extends Table {
         return value.doubleValue();
     }
     
+    public int getValueAsInt() {
+        return value.intValue();
+    }
+    
     public void setValue(double value) {
         setValue(value, true);
     }

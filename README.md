@@ -9,7 +9,8 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 
 ### Changes ###
 
-* 
+* Switched to JDK 10
+* Added ImageFont dialog to create Bitmap Fonts from images designed in an image editing software.
 
 ### Contact ###
 

@@ -36,7 +36,9 @@ public class IbeamListener extends ClickListener {
     
     @Override
     public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-        Gdx.graphics.setSystemCursor(SystemCursor.Arrow);
+        if (pointer == -1) {
+            Gdx.graphics.setSystemCursor(SystemCursor.Arrow);
+        }
     }
 
     @Override

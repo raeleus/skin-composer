@@ -59,6 +59,7 @@ import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
 import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyListener;
 import com.ray3k.skincomposer.dialog.DialogCustomStyle.CustomStyleListener;
 import com.ray3k.skincomposer.dialog.DialogFreeTypeFont.DialogFreeTypeFontListener;
+import com.ray3k.skincomposer.dialog.DialogImageFont.ImageFontListener;
 import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
 
 public class DialogFactory {
@@ -739,5 +740,13 @@ public class DialogFactory {
         dialog.show(main.getStage());
         main.getStage().setKeyboardFocus(dialog.findActor("fontName"));
         main.getStage().setScrollFocus(dialog.findActor("scrollPane"));
+    }
+    
+    public void showDialogImageFont(ImageFontListener imageFontListener) {
+        DialogImageFont dialog = new DialogImageFont(main, imageFontListener);
+        dialog.setFillParent(true);
+        dialog.show(main.getStage());
+        main.getStage().setKeyboardFocus(dialog.findActor("characters"));
+        main.getStage().setScrollFocus(dialog.findActor("scroll"));
     }
 }

@@ -64,3 +64,4 @@ build/
 .DS_Store
 /.nb-gradle/
 core/assets/temp/
+core/assets/imagefont/

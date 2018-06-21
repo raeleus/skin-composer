@@ -9,6 +9,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Input;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
@@ -105,6 +106,31 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
             }
         }
         p.pack(targetFile.parent().file(), targetFile.nameWithoutExtension());
+    }
+
+    @Override
+    public void packFontImages(Array<FileHandle> files, FileHandle saveFile) {
+        var settings = new Settings();
+        settings.pot = false;
+        settings.duplicatePadding = true;
+        settings.filterMin = Texture.TextureFilter.Linear;
+        settings.filterMag = Texture.TextureFilter.Linear;
+        settings.ignoreBlankImages = false;
+        settings.useIndexes = false;
+        settings.limitMemory = false;
+        settings.maxWidth = 2048;
+        settings.maxHeight = 2048;
+        settings.flattenPaths = true;
+        settings.silent = true;
+        var texturePacker = new TexturePacker(settings);
+
+        for (var file : files) {
+            if (file.exists()) {
+                texturePacker.addImage(file.file());
+            }
+        }
+
+        texturePacker.pack(saveFile.parent().file(), saveFile.nameWithoutExtension());
     }
     
     @Override

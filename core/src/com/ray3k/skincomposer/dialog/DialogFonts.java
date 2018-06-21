@@ -198,6 +198,18 @@ public class DialogFonts extends Dialog {
         });
         imageButton.addListener(main.getHandListener());
         table.add(imageButton).expandX();
+        
+        imageButton = new TextButton("Create from Image", getSkin(), "new");
+        imageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                newImageFontDialog();
+            }
+        });
+        imageButton.addListener(main.getHandListener());
+        table.add(imageButton).expandX();
+        
         getContentTable().add(table).expandX().left();
         getContentTable().row();
 
@@ -882,6 +894,16 @@ public class DialogFonts extends Dialog {
                 sortBySelectedMode();
                 refreshTable();
             }
+        });
+    }
+    
+    private void newImageFontDialog() {
+        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        main.getDialogFactory().showDialogImageFont((FileHandle file) -> {
+            var files = new Array<FileHandle>();
+            files.add(file);
+            fontNameDialog(files, 0);
+            main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
         });
     }
     
