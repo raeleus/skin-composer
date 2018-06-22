@@ -629,7 +629,8 @@ public class DialogImageFont extends Dialog {
                 main.getDialogFactory().showDialogColors(new StyleProperty(), (ColorData colorData) -> {
                     if (colorData != null) {
                         var textArea = (TextArea) findActor("preview");
-                        textArea.getStyle().fontColor = colorData.color;
+                        previewStyle.fontColor = colorData.color;
+                        settings.previewColor = colorData.color;
                     }
                 });
             }
@@ -760,6 +761,7 @@ public class DialogImageFont extends Dialog {
         boolean kerningPairsActivated;
         int kerningPairsOffset;
         String preview;
+        Color previewColor;
         
         public ImageFontSettings() {
             characters = ALL;
@@ -773,6 +775,7 @@ public class DialogImageFont extends Dialog {
             spaceWidth = 4;
             tabSpace = 8;
             preview = SAMPLE_TEXT;
+            previewColor = Color.WHITE;
         }
     }
     
@@ -806,6 +809,7 @@ public class DialogImageFont extends Dialog {
         json.setOutputType(JsonWriter.OutputType.json);
         settings = json.fromJson(ImageFontSettings.class, file);
         refreshTable();
+        previewStyle.fontColor = settings.previewColor;
         
         if (targetPath != null && !targetPath.equals("")) {
             processSaveFile(targetPath);
