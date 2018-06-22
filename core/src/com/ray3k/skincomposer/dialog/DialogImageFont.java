@@ -1342,6 +1342,7 @@ public class DialogImageFont extends Dialog {
 
         var oldTextArea = (TextArea) findActor("preview");
         var textArea = new TextArea(oldTextArea.getText(), previewStyle);
+        textArea.setCursorPosition(oldTextArea.getCursorPosition());
         textArea.setName("preview");
         ((Table) oldTextArea.getParent()).getCell(oldTextArea).setActor(textArea);
         textArea.addListener(main.getIbeamListener());
