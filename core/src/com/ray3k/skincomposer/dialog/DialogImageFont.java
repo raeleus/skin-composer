@@ -1336,6 +1336,9 @@ public class DialogImageFont extends Dialog {
         }
         previewFont = new BitmapFont(file);
         ((TextArea) findActor("preview")).getStyle().font = previewFont;
+        if (((TextArea) findActor("preview")).getStyle().fontColor.equals(skin.get(TextFieldStyle.class).fontColor)) {
+            ((TextArea) findActor("preview")).getStyle().fontColor = new Color(Color.WHITE);
+        }
 
         var oldTextArea = (TextArea) findActor("preview");
         var textArea = new TextArea(oldTextArea.getText(), previewStyle);
