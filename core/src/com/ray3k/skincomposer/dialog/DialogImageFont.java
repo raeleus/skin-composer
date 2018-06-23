@@ -32,6 +32,7 @@ import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -905,11 +906,11 @@ public class DialogImageFont extends Dialog {
         
         dialog.key(Keys.ESCAPE, false).key(Keys.ENTER, true);
         
-        textButton = new TextButton("Turn ON Auto Kern", skin);
+        textButton = new TextButton("Turn ON Kern Pairs", skin);
         dialog.button(textButton, true);
         textButton.addListener(main.getHandListener());
         
-        textButton = new TextButton("Turn OFF Auto Kern", skin);
+        textButton = new TextButton("Turn OFF Kern Pairs", skin);
         dialog.button(textButton, false);
         textButton.addListener(main.getHandListener());
         
@@ -937,6 +938,7 @@ public class DialogImageFont extends Dialog {
             gapSize = 0;
             findGapSize = true;
         }
+        var averageWidth = 0;
         
         boolean failure;
         do {
@@ -983,7 +985,7 @@ public class DialogImageFont extends Dialog {
             }
 
             int nameCounter = 0;
-
+            
             //find characters for each row
             for (int i = 0; i < yBreaks.size && !failure; i += 2) {
                 BitmapCharacter bitmapCharacter = null;
@@ -1026,6 +1028,7 @@ public class DialogImageFont extends Dialog {
 
                             if (gapCounter > gapSize) {
                                 lookingForBreak = false;
+                                averageWidth += bitmapCharacter.width;
                                 bitmapCharacters.add(bitmapCharacter);
                                 nameCounter++;
                                 gapCounter = 0;
@@ -1039,11 +1042,14 @@ public class DialogImageFont extends Dialog {
                 if (!failure && lookingForBreak) {
                     lookingForBreak = false;
                     bitmapCharacter.width = fontPixmap.getWidth() - 1 - bitmapCharacter.x;
+                    averageWidth += bitmapCharacter.width;
                     bitmapCharacters.add(bitmapCharacter);
                     nameCounter++;
                 }
             }
         } while (findGapSize && failure && ++gapSize <= AUTO_GAP_LIMIT);
+        
+        averageWidth /= bitmapCharacters.size;
         
         //find crop y and crop height
         for (var character : bitmapCharacters) {
@@ -1215,6 +1221,9 @@ public class DialogImageFont extends Dialog {
             }
             ((Spinner) findActor("baseline")).setValue(baseline);
             settings.baseline = baseline;
+            
+            ((Spinner) findActor("space width")).setValue(MathUtils.round(averageWidth * .28f));
+            settings.spaceWidth = MathUtils.round(averageWidth * .28f);
         }
         
         fontPixmap.dispose();
