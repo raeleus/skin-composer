@@ -582,7 +582,7 @@ public class JsonData implements Json.Serializable {
                     json.writeValue("hinting", font.hinting);
                     json.writeValue("minFilter", font.minFilter);
                     json.writeValue("magFilter", font.magFilter);
-                    json.writeValue("characters", font.characters.equals("") ? FreeTypeFontGenerator.DEFAULT_CHARS : font.characters);
+                    json.writeValue("characters", font.characters.equals("") ? FreeTypeFontData.DEFAULT_CHARS : font.characters);
                     json.writeObjectEnd();
                 }
             }
