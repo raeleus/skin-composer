@@ -13,6 +13,8 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * Added ImageFont dialog to create Bitmap Fonts from images designed in an image editing software.
 * Updated UI to use FreeType font.
 * Fixed FreeType fonts not loading correctly from SCMP file.
+* Fixed FreeType font selections in custom classes not saving with SCMP file.
+* Fixed editing FreeType fonts removes them from custom classes.
 
 ### Contact ###
 

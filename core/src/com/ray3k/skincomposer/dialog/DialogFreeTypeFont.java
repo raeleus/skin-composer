@@ -192,8 +192,6 @@ public class DialogFreeTypeFont extends Dialog {
                 
                 main.getUndoableManager().clearUndoables();
 
-                main.getRootTable().refreshStyleProperties(true);
-
                 main.getProjectData().setChangesSaved(false);
             }
             
@@ -202,6 +200,10 @@ public class DialogFreeTypeFont extends Dialog {
 
             for (DialogFreeTypeFontListener listener : listeners) {
                 listener.fontAdded(data);
+            }
+            
+            if (mode == Mode.EDIT) {
+                main.getRootTable().refreshStyleProperties(true);
             }
         }
     }
