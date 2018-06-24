@@ -65,7 +65,6 @@ import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.util.stream.Stream;
 
@@ -250,6 +249,13 @@ public class DialogImageFont extends Dialog {
         table.add(textField).growX();
         textField.addListener(new TextTooltip("Characters to be included in font", main.getTooltipManager(), skin));
         textField.addListener(main.getIbeamListener());
+        textField.setTextFieldFilter(new TextField.TextFieldFilter() {
+            @Override
+            public boolean acceptChar(TextField textField, char c) {
+                return textField.getText().indexOf(c) == -1;
+            }
+        });
+        
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -304,7 +310,7 @@ public class DialogImageFont extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                var text = ((TextField) findActor("characters")).getText();
+                var text = settings.characters;
                 var append = "    ";
                 for (int i = text.length() - 1; i > 0; i--) {
                     text = text.substring(0, i) + append + text.substring(i);
@@ -943,7 +949,6 @@ public class DialogImageFont extends Dialog {
         
         boolean failure;
         do {
-            System.out.println("start");
             failure = false;
             bitmapCharacters.clear();
             yBreaks.clear();
