@@ -198,7 +198,7 @@ public class FreeTypeFontData implements Json.Serializable {
         name = jsonData.getString("name");
         file = jsonData.has("file") ? Gdx.files.absolute(jsonData.getString("file")) : null;
         previewTTF = jsonData.getString("previewTTF");
-        useCustomSerializer = jsonData.getBoolean("useCustomSerialized", false);
+        useCustomSerializer = jsonData.getBoolean("useCustomSerializer", false);
         size = jsonData.getInt("size", 16);
         mono = jsonData.getBoolean("mono");
         hinting = jsonData.getString("hinting", "AutoMedium");

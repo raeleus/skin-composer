@@ -11,6 +11,8 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 
 * Switched to JDK 10
 * Added ImageFont dialog to create Bitmap Fonts from images designed in an image editing software.
+* Updated UI to use FreeType font.
+* Fixed FreeType fonts not loading correctly from SCMP file.
 
 ### Contact ###
 
