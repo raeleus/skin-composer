@@ -161,6 +161,13 @@ public class CustomProperty implements Json.Serializable {
                         break;
                     }
                 }
+                
+                for (var data : main.getJsonData().getFreeTypeFonts()) {
+                    if (data.name.equals(value)) {
+                        writeValue = true;
+                        break;
+                    }
+                }
             }
         }
         
