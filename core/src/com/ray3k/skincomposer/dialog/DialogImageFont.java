@@ -66,6 +66,8 @@ import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Stream;
 
 /**
@@ -79,8 +81,8 @@ public class DialogImageFont extends Dialog {
     private static final String NUMBERS = "0123456789";
     private static final String ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String ALPHA_NUMERIC = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private static final String ALL = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~`!@#$%^&*()_-+=[{]}\\|;:'\",<.>/?•©";//98
-    private static final String SAMPLE_TEXT = "abcdefghijklmnopqrstuvwxyz\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n0123456789\n~`!@#$%^&*()_-+=[{]}\\|;:'\",<.>/?•©\n\nThe most merciful thing in the world, I think, is the inability of the human mind to correlate all its contents.\n\n\"That is not dead which can eternal lie, And with strange aeons even death may die.\"\n\nIn his house at R'lyeh dead Cthulhu waits dreaming.\n\nThe Thing cannot be described - there is no language for such abysms of shrieking and immemorial lunacy, such eldritch contradictions of all matter, force, and cosmic order. A mountain walked or stumbled.\n\nWe live on a placid island of ignorance in the midst of black seas of infinity, and it was not meant that we should voyage far.";
+    private static final String ALL = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~`!@#$%^&*()_-+=[{]}\\|;:'\",<.>/?•©ñ¿¡áéíóúüÑÁÉÍÓÚÜ";
+    private static final String SAMPLE_TEXT = "abcdefghijklmnopqrstuvwxyz\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n0123456789\n~`!@#$%^&*()_-+=[{]}\\|;:'\",<.>/?•©\nñ¿¡áéíóúüÑÁÉÍÓÚÜ\n\nThe most merciful thing in the world, I think, is the inability of the human mind to correlate all its contents.\n\n\"That is not dead which can eternal lie, And with strange aeons even death may die.\"\n\nIn his house at R'lyeh dead Cthulhu waits dreaming.\n\nThe Thing cannot be described - there is no language for such abysms of shrieking and immemorial lunacy, such eldritch contradictions of all matter, force, and cosmic order. A mountain walked or stumbled.\n\nWe live on a placid island of ignorance in the midst of black seas of infinity, and it was not meant that we should voyage far.";
     private static final String KERNING_DEFAULTS = "A' AC AG AO AQ AT AU AV AW AY BA BE BL BP BR BU BV BW BY CA CO CR DA DD DE DI DL DM DN DO DP DR DU DV DW DY EC EO FA FC FG FO F. F, GE GO GR GU HO IC IG IO JA JO KO L' LC LT LV LW LY LG LO LU M MG MO NC NG NO OA OB OD OE OF OH OI OK OL OM ON OP OR OT OU OV OW OX OY PA PE PL PO PP PU PY P. P, P; P: QU RC RG RY RT RU RV RW RY SI SM ST SU TA TC TO UA UC UG UO US VA VC VG VO VS WA WC WG WO YA YC YO YS ZO Ac Ad Ae Ag Ao Ap Aq At Au Av Aw Ay Bb Bi Bk Bl Br Bu By B. B, Ca Cr C. C, Da D. D, Eu Ev Fa Fe Fi Fo Fr Ft Fu Fy F. F, F; F: Gu He Ho Hu Hy Ic Id Iq Io It Ja Je Jo Ju J. J, Ke Ko Ku Lu Ly Ma Mc Md Me Mo Nu Na Ne Ni No Nu N. N, Oa Ob Oh Ok Ol O. O, Pa Pe Po Rd Re Ro Rt Ru Si Sp Su S. S, Ta Tc Te Ti To Tr Ts Tu Tw Ty T. T, T; T: Ua Ug Um Un Up Us U. U, Va Ve Vi Vo Vr Vu V. V, V; V: Wd Wi Wm Wr Wt Wu Wy W. W, W; W: Xa Xe Xo Xu Xy Yd Ye Yi Yp Yu Yv Y. Y, Y; Y: ac ad ae ag ap af at au av aw ay ap bl br bu by b. b, ca ch ck da dc de dg do dt du dv dw dy d. d, ea ei el em en ep er et eu ev ew ey e. e, fa fe ff fi fl fo f. f, ga ge gh gl go gg g. g, hc hd he hg ho hp ht hu hv hw hy ic id ie ig io ip it iu iv ja je jo ju j. j, ka kc kd ke kg ko la lc ld le lf lg lo lp lq lu lv lw ly ma mc md me mg mn mo mp mt mu mv my nc nd ne ng no np nt nu nv nw ny ob of oh oj ok ol om on op or ou ov ow ox oy o. o, pa ph pi pl pp pu p. p, qu t. ra rd re rg rk rl rm rn ro rq rr rt rv ry r. r, sh st su s. s, td ta te to t. t, ua uc ud ue ug uo up uq ut uv uw uy va vb vc vd ve vg vo vv vy v. v, wa wx wd we wg wh wo w. w, xa xe xo y. y, ya yc yd ye yo 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99";
     private static final CharArray BASELINE_EXCLUSION = new CharArray(new char[] {'C', 'G', 'J', 'O', 'Q', 'U', '0', '3', '4', '5', '6', '7', '8', '9', 'c', 'o', 'g', 'j', 'p', 'q', 'y'});
     private Array<BitmapCharacter> bitmapCharacters;
@@ -973,7 +975,7 @@ public class DialogImageFont extends Dialog {
                     }
                 } else {
                     if (!foundLine) {
-                        yBreaks.add(y-1);
+                        yBreaks.add(y);
                         lookingForBreak = false;
                     }
                 }
@@ -1291,16 +1293,21 @@ public class DialogImageFont extends Dialog {
 
             //texturepack images
             main.getDesktopWorker().packFontImages(new Array<>(Gdx.files.local("imagefont/characters").list()), saveFile);
-
+            
             var atlas = new TextureAtlas(saveFile.sibling(saveFile.nameWithoutExtension() + ".atlas"));
 
             for (var bitmapCharacter : bitmapCharacters) {
-                var region = atlas.findRegion(bitmapCharacter.name);
-                if (region != null) {
-                    bitmapCharacter.x = region.getRegionX();
-                    bitmapCharacter.y = region.getRegionY();
-                    bitmapCharacter.width = region.getRegionWidth();
-                    bitmapCharacter.height = region.getRegionHeight();
+                var number = (int) bitmapCharacter.character;
+
+                for (  var testRegion : atlas.getRegions()) {
+                    if (testRegion.name.matches(".* " + number + "$")) {
+                        var region = testRegion;
+                        bitmapCharacter.x = region.getRegionX();
+                        bitmapCharacter.y = region.getRegionY();
+                        bitmapCharacter.width = region.getRegionWidth();
+                        bitmapCharacter.height = region.getRegionHeight();
+                        break;
+                    }
                 }
             }
             
