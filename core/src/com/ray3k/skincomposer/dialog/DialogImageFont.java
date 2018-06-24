@@ -65,6 +65,7 @@ import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.util.stream.Stream;
 
@@ -942,6 +943,7 @@ public class DialogImageFont extends Dialog {
         
         boolean failure;
         do {
+            System.out.println("start");
             failure = false;
             bitmapCharacters.clear();
             yBreaks.clear();
@@ -976,7 +978,7 @@ public class DialogImageFont extends Dialog {
                 throw new InvalidFontImageException();
             }
             
-            for (int i = 1; i + 1< yBreaks.size; i += 2) {
+            for (int i = 1; i + 1 < yBreaks.size; i += 2) {
                 if (yBreaks.get(i + 1) - yBreaks.get(i) < gapSize) {
                     yBreaks.removeIndex(i + 1);
                     yBreaks.removeIndex(i);
@@ -1047,9 +1049,17 @@ public class DialogImageFont extends Dialog {
                     nameCounter++;
                 }
             }
+            
+            if (bitmapCharacters.size == 0) {
+                failure = true;
+            }
         } while (findGapSize && failure && ++gapSize <= AUTO_GAP_LIMIT);
         
-        averageWidth /= bitmapCharacters.size;
+        if (bitmapCharacters.size > 0) {
+            averageWidth /= bitmapCharacters.size;
+        } else {
+            averageWidth = 1;
+        }
         
         //find crop y and crop height
         for (var character : bitmapCharacters) {
@@ -1341,24 +1351,31 @@ public class DialogImageFont extends Dialog {
     
     private void preview(boolean texturePack) {
         var file = Gdx.files.local("imagefont/preview/preview.fnt");
-        if (texturePack) file.parent().emptyDirectory();
-        writeFNT(file, texturePack);
         
-        if (previewFont != null) {
-            previewFont.dispose();
-        }
-        previewFont = new BitmapFont(file);
-        ((TextArea) findActor("preview")).getStyle().font = previewFont;
-        if (((TextArea) findActor("preview")).getStyle().fontColor.equals(skin.get(TextFieldStyle.class).fontColor)) {
-            ((TextArea) findActor("preview")).getStyle().fontColor = new Color(Color.WHITE);
-        }
+        try {
+            if (texturePack) {
+                file.parent().emptyDirectory();
+            }
+            writeFNT(file, texturePack);
+            if (previewFont != null) {
+                previewFont.dispose();
+            }
+            previewFont = new BitmapFont(file);
+            ((TextArea) findActor("preview")).getStyle().font = previewFont;
+            if (((TextArea) findActor("preview")).getStyle().fontColor.equals(skin.get(TextFieldStyle.class).fontColor)) {
+                ((TextArea) findActor("preview")).getStyle().fontColor = new Color(Color.WHITE);
+            }
 
-        var oldTextArea = (TextArea) findActor("preview");
-        var textArea = new TextArea(oldTextArea.getText(), previewStyle);
-        textArea.setCursorPosition(oldTextArea.getCursorPosition());
-        textArea.setName("preview");
-        ((Table) oldTextArea.getParent()).getCell(oldTextArea).setActor(textArea);
-        textArea.addListener(main.getIbeamListener());
+            var oldTextArea = (TextArea) findActor("preview");
+            var textArea = new TextArea(oldTextArea.getText(), previewStyle);
+            textArea.setCursorPosition(oldTextArea.getCursorPosition());
+            textArea.setName("preview");
+            ((Table) oldTextArea.getParent()).getCell(oldTextArea).setActor(textArea);
+            textArea.addListener(main.getIbeamListener());
+        } catch (Exception e) {
+            Gdx.app.error(getClass().getName(), "Error generating preview...", e);
+            main.getDialogFactory().showDialogError("Error generating preview...", "Error generating preview\nOpen log?");
+        }
     }
     
     private String sanitizeFileName(String name) {
