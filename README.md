@@ -9,12 +9,13 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 
 ### Changes ###
 
-* Switched to JDK 10
+* Upgraded to JDK 10
 * Added ImageFont dialog to create Bitmap Fonts from images designed in an image editing software.
 * Updated UI to use FreeType font.
 * Fixed FreeType fonts not loading correctly from SCMP file.
 * Fixed FreeType font selections in custom classes not saving with SCMP file.
 * Fixed editing FreeType fonts removes them from custom classes.
+* New executable releases are packaged by JavaPackager and JLink
 
 ### Contact ###
 
@@ -24,15 +25,14 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 
 ### Notes ###
 
-To run Skin Composer on OSX, download the skin_composer_mac.jar version of the app and run it via terminal with the following command: **java -jar -XstartOnFirstThread skin_composer_mac.jar**
+To run Skin Composer on OSX, use the executable Mac release. If that fails, download the skin_composer_mac.jar version of the app and run it via terminal with the following command: **java -XstartOnFirstThread -jar skin_composer_mac.jar**
 
-Contributer RaimundWege has shared the following information for anyone who is working from source in Android Studio on Mac.
+To run/build the project in Idea/Android Studio, do the following:
 
-* You have to go to 'File/Project Structure...' and set the project language level to '8 - Lambdas, type annotations etc.'
-* The line: 'config.setWindowSizeLimits(675, 400, -1, -1);' in DesktopLauncher throws NoSuchMethodError (no idea why). So this line needs to be commented out.
-* You have to start the project with the vm option: -XstartOnFirstThread
+* In 'File/Project Structure...' set the project language level to 10
+* Update run configuration with the following VM Option: -XstartOnFirstThread
 
-These will remain as issues until I can get my hands a proper Mac to do testing. AFAIK, the compiled version should work fine on Mac systems.
+Thanks to contributer RaimundWege for this information.
 
 ### License ###
 MIT License

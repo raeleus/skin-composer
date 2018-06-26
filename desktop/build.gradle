@@ -44,6 +44,7 @@ def icnsPath = "${project.projectDir}/logo.icns"
 // creates application bundle (executable + runtime)
 task javaPackager(type: Exec, dependsOn: dist) {
     def iconPath
+    def startOnFirst = ""
     def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
     if (osName.contains('windows')) {
         iconPath = icoPath
@@ -51,6 +52,7 @@ task javaPackager(type: Exec, dependsOn: dist) {
         iconPath = pngPath
     } else if (osName.contains('mac')) {
         iconPath = icnsPath
+        startOnFirst = "-BjvmOptions=-XstartOnFirstThread"
     }
 
     workingDir project.projectDir
@@ -59,6 +61,7 @@ task javaPackager(type: Exec, dependsOn: dist) {
         '-deploy',
         '-nosign',
         "-Bicon=${iconPath}",
+        startOnFirst,
         '-outdir', "${buildDir}/distribution",
         '-srcdir', "${buildDir}/libs",
         '-native', 'image',
