@@ -37,10 +37,21 @@ task dist(type: Jar) {
 dist.dependsOn classes
 
 def jdk = System.getProperty("java.home")
-def iconPath = "${project.projectDir}/logo.ico"
+def icoPath = "${project.projectDir}/logo.ico"
+def pngPath = "${project.projectDir}/logo.png"
+def icnsPath = "${project.projectDir}/logo.icns"
 
 // creates application bundle (executable + runtime)
 task javaPackager(type: Exec, dependsOn: dist) {
+    def iconPath
+    def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
+    if (osName.contains('windows')) {
+        iconPath = icoPath
+    } else if (osName.contains('linux')) {
+        iconPath = pngPath
+    } else if (osName.contains('mac')) {
+        iconPath = icnsPath
+    }
 
     workingDir project.projectDir
     commandLine = [
