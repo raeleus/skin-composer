@@ -36,38 +36,31 @@ task dist(type: Jar) {
 
 dist.dependsOn classes
 
-def jdk = System.getProperty("java.home")
-def icoPath = "${project.projectDir}/logo.ico"
-def pngPath = "${project.projectDir}/logo.png"
-def icnsPath = "${project.projectDir}/logo.icns"
-
 // creates application bundle (executable + runtime)
 task javaPackager(type: Exec, dependsOn: dist) {
-    def iconPath
-    def startOnFirst = ""
-    def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
-    if (osName.contains('windows')) {
-        iconPath = icoPath
-    } else if (osName.contains('linux')) {
-        iconPath = pngPath
-    } else if (osName.contains('mac')) {
-        iconPath = icnsPath
-        startOnFirst = "-BjvmOptions=-XstartOnFirstThread"
-    }
-
     workingDir project.projectDir
-    commandLine = [
+    def commands = [
         'javapackager',
         '-deploy',
         '-nosign',
-        "-Bicon=${iconPath}",
-        startOnFirst,
         '-outdir', "${buildDir}/distribution",
         '-srcdir', "${buildDir}/libs",
         '-native', 'image',
         '-name', project.appName,
         '-appclass', project.mainClassName
     ]
+    
+    def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
+    if (osName.contains('windows')) {
+        commands << "-Bicon=${project.projectDir}/logo.ico"
+    } else if (osName.contains('linux')) {
+        commands << "-Bicon=${project.projectDir}/logo.png"
+    } else if (osName.contains('mac')) {
+        commands << "-Bicon=${project.projectDir}/logo.icns"
+        commands << "-BjvmOptions=-XstartOnFirstThread"
+    }
+    
+    commandLine = commands
 }
 
 // removes bloated runtime created by javapackager
@@ -81,6 +74,7 @@ task cleanPackagerRuntime(dependsOn: javaPackager) {
 
 // creates a replacement runtime via jlink command (much smaller than jpackager)
 task createFinalAppBundle(type: Exec, dependsOn: [cleanPackagerRuntime]) {
+    def jdk = System.getProperty("java.home")
 
     workingDir project.projectDir
     commandLine = [
