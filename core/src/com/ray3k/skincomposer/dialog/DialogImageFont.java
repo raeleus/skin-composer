@@ -682,6 +682,10 @@ public class DialogImageFont extends Dialog {
             textField.setText(fileHandle.path());
             textField.setCursorPosition(textField.getText().length() - 1);
             
+            textField = (TextField) findActor("targetpath");
+            textField.setText(fileHandle.parent() + fileHandle.nameWithoutExtension() + " export." + fileHandle.extension());
+            textField.setCursorPosition(textField.getText().length() - 1);
+            
             for (var fadable : fadables) {
                 fadable.addAction(Actions.fadeIn(1.0f, Interpolation.fade));
                 fadable.setTouchable(Touchable.enabled);
