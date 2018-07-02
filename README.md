@@ -5,17 +5,12 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 20
+* Version 21
 
 ### Changes ###
 
-* Upgraded to JDK 10
-* Added ImageFont dialog to create Bitmap Fonts from images designed in an image editing software.
-* Updated UI to use FreeType font.
-* Fixed FreeType fonts not loading correctly from SCMP file.
-* Fixed FreeType font selections in custom classes not saving with SCMP file.
-* Fixed editing FreeType fonts removes them from custom classes.
-* New executable releases are packaged by JavaPackager and JLink
+* Fixed blending issue causing white fonts to have dark outlines in Image Font.
+* Automatically suggest target file name in Image Font.
 
 ### Contact ###
 
