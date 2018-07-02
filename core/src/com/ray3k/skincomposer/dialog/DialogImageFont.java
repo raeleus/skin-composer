@@ -683,8 +683,10 @@ public class DialogImageFont extends Dialog {
             textField.setCursorPosition(textField.getText().length() - 1);
             
             textField = (TextField) findActor("targetpath");
-            textField.setText(fileHandle.parent() + fileHandle.nameWithoutExtension() + " export." + fileHandle.extension());
+            textField.setText(fileHandle.parent() + "/" + fileHandle.nameWithoutExtension() + " export.fnt");
             textField.setCursorPosition(textField.getText().length() - 1);
+            
+            ((TextButton) findActor("generate")).setDisabled(false);
             
             for (var fadable : fadables) {
                 fadable.addAction(Actions.fadeIn(1.0f, Interpolation.fade));
