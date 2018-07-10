@@ -53,14 +53,20 @@ task javaPackager(type: Exec, dependsOn: dist) {
     def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
     if (osName.contains('windows')) {
         commands << "-Bicon=${project.projectDir}/logo.ico"
+        commands << "-BjvmOptions=-splash:splash.png"
     } else if (osName.contains('linux')) {
         commands << "-Bicon=${project.projectDir}/logo.png"
+        commands << "-BjvmOptions=-splash:splash.png"
     } else if (osName.contains('mac')) {
         commands << "-Bicon=${project.projectDir}/logo.icns"
         commands << "-BjvmOptions=-XstartOnFirstThread"
     }
     
     commandLine = commands
+    
+    doLast() {
+        copySplashImage.execute();
+    }
 }
 
 // removes bloated runtime created by javapackager
@@ -70,6 +76,11 @@ task cleanPackagerRuntime(dependsOn: javaPackager) {
         runtimeFile.deleteDir()
         System.out.println("deleting bloated runtime in " + runtimeFile)
     }
+}
+
+task copySplashImage(type: Copy) {
+    from file("${project.projectDir}/splash.png");
+    into file("${buildDir}/distribution/${project.appName}/app");
 }
 
 // creates a replacement runtime via jlink command (much smaller than jpackager)
@@ -91,9 +102,14 @@ task createFinalAppBundle(type: Exec, dependsOn: [cleanPackagerRuntime]) {
     ]
 
     doLast{
-        System.out.println("Application '${project.name}' packaged.")
-        System.out.println(" -> location: ${buildDir}/distribution/${project.name}/")
+        System.out.println("Application '${project.appName}' packaged.")
+        System.out.println(" -> location: ${buildDir}/distribution/${project.appName}/")
     }
+}
+
+task updateDistribution(type: Copy, dependsOn: [dist]) {
+    from "${buildDir}/libs"
+    into "${buildDir}/distribution/${project.appName}/app"
 }
 
 eclipse {
