@@ -5,13 +5,11 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 21
+* Version 22
 
 ### Changes ###
 
-* Fixed blending issue causing white fonts to have dark outlines in Image Font.
-* Automatically suggest target file name in Image Font.
-* Fixed SplashScreen.
+* 
 
 ### Contact ###
 
