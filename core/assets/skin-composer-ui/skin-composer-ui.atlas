@@ -149,21 +149,21 @@ button-delete-small-pressed
   index: -1
 button-download
   rotate: false
-  xy: 720, 650
+  xy: 720, 614
   size: 34, 34
   orig: 34, 34
   offset: 0, 0
   index: -1
 button-download-over
   rotate: false
-  xy: 720, 614
+  xy: 756, 909
   size: 34, 34
   orig: 34, 34
   offset: 0, 0
   index: -1
 button-download-pressed
   rotate: false
-  xy: 756, 909
+  xy: 720, 650
   size: 34, 34
   orig: 34, 34
   offset: 0, 0

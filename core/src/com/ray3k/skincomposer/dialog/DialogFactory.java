@@ -25,6 +25,7 @@ package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -34,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -748,5 +750,36 @@ public class DialogFactory {
         dialog.show(main.getStage());
         main.getStage().setKeyboardFocus(dialog.findActor("characters"));
         main.getStage().setScrollFocus(dialog.findActor("scroll"));
+    }
+    
+    public void showDialogUpdate(Skin skin, Stage stage) {
+        Dialog dialog = new Dialog("Download Update", skin, "bg");
+        dialog.getContentTable().pad(10.0f);
+        dialog.getButtonTable().pad(10.0f).padTop(0);
+        
+        Table table = dialog.getContentTable();
+        
+        Label label = new Label("Version " + Main.newVersion + " available for download.", skin);
+        table.add(label);
+        
+        table.row();
+        TextButton textButton = new TextButton("Download Here", skin, "link");
+        table.add(textButton);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                Gdx.net.openURI("https://github.com/raeleus/skin-composer/releases");
+            }
+        });
+        
+        dialog.getButtonTable().defaults().minWidth(80.0f);
+        textButton = new TextButton("OK", skin);
+        dialog.button(textButton);
+        textButton.addListener(main.getHandListener());
+        
+        dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
+        
+        dialog.show(stage);
     }
 }

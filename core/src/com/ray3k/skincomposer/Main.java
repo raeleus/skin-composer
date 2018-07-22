@@ -26,6 +26,9 @@ package com.ray3k.skincomposer;
 import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Net.HttpMethods;
+import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -33,6 +36,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.Hinting;
+import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
@@ -80,6 +84,7 @@ import com.ray3k.skincomposer.utils.Utils;
 
 public class Main extends ApplicationAdapter {
     public final static String VERSION = "22";
+    public static String newVersion;
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,
         ProgressBar.class, ScrollPane.class, SelectBox.class, Slider.class,
@@ -202,6 +207,11 @@ public class Main extends ApplicationAdapter {
         projectData.setMain(this);
         projectData.randomizeId();
         projectData.setMaxUndos(30);
+        
+        newVersion = VERSION;
+        if (projectData.isCheckingForUpdates()) {
+            checkForUpdates(this);
+        }
         
         dialogFactory = new DialogFactory(this);
         undoableManager = new UndoableManager(this);
@@ -345,5 +355,39 @@ public class Main extends ApplicationAdapter {
             }
         }
         return STYLE_CLASSES[i];
+    }
+
+    public static void checkForUpdates(Main main) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
+                HttpRequest httpRequest = requestBuilder.newRequest().method(HttpMethods.GET).url("https://raw.githubusercontent.com/raeleus/skin-composer/master/version").build();
+                Gdx.net.sendHttpRequest(httpRequest, new Net.HttpResponseListener() {
+                    @Override
+                    public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                        newVersion = httpResponse.getResultAsString();
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                main.rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.CHECK_FOR_UPDATES_COMPLETE));
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void failed(Throwable t) {
+                        newVersion = VERSION;
+                    }
+
+                    @Override
+                    public void cancelled() {
+                        newVersion = VERSION;
+                    }
+                });
+            }
+        });
+        
+        thread.start();
     }
 }

@@ -258,6 +258,12 @@ public class MainListener extends RootTableListener {
             case REFRESH_ATLAS:
                 refreshTextureAtlas();
                 break;
+            case DOWNLOAD_UPDATE:
+                downloadUpdate();
+                break;
+            case CHECK_FOR_UPDATES_COMPLETE:
+                root.findActor("downloadButton").setVisible(!Main.VERSION.equals(Main.newVersion));
+                break;
         }
     }
     
@@ -645,6 +651,10 @@ public class MainListener extends RootTableListener {
                 main.getDialogFactory().showDialogError("Atlas Error...", "Unable to write texture atlas to temporary storage.\n\nOpen log?");
             }
         });
+    }
+    
+    public void downloadUpdate() {
+        main.getDialogFactory().showDialogUpdate(main.getSkin(), main.getStage());
     }
     
     public WelcomeListener getWelcomeListener() {
