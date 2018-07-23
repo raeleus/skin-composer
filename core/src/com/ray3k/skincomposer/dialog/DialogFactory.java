@@ -56,6 +56,7 @@ import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.data.ProjectData.RecentFile;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
+import com.ray3k.skincomposer.dialog.DialogBitmapFont.DialogBitmapFontListener;
 import com.ray3k.skincomposer.dialog.DialogColors.DialogColorsListener;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
 import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyListener;
@@ -750,6 +751,14 @@ public class DialogFactory {
         dialog.show(main.getStage());
         main.getStage().setKeyboardFocus(dialog.findActor("characters"));
         main.getStage().setScrollFocus(dialog.findActor("scroll"));
+    }
+    
+    public void showDialogBitmapFont(DialogBitmapFontListener listener) {
+        DialogBitmapFont dialog = new DialogBitmapFont(main);
+        dialog.addListener(listener);
+        dialog.setFillParent(true);
+        dialog.show(main.getStage());
+        main.getStage().setScrollFocus(dialog.findActor("scrollPane"));
     }
     
     public void showDialogUpdate(Skin skin, Stage stage) {

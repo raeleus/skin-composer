@@ -10,6 +10,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Changes ###
 
 * Added setting to check for updates. Update button appears on top right of main screen.
+* Added dialog to create Bitmap Fonts as an alternative to Hiero.
 
 ### Contact ###
 

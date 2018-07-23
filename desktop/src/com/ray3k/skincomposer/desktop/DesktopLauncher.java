@@ -2,33 +2,32 @@ package com.ray3k.skincomposer.desktop;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Input;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
+import com.badlogic.gdx.backends.lwjgl3.*;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.PixmapPacker;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.tools.bmfont.BitmapFontWriter;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import com.ray3k.skincomposer.CloseListener;
-import com.ray3k.skincomposer.Main;
-import com.ray3k.skincomposer.DesktopWorker;
-import com.ray3k.skincomposer.FilesDroppedListener;
-import com.ray3k.skincomposer.TextFileApplicationLogger;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.PixmapIO;
+import com.ray3k.skincomposer.*;
 import com.ray3k.skincomposer.utils.Utils;
-import java.awt.SplashScreen;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.system.MemoryStack;
+
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
-import org.lwjgl.PointerBuffer;
-import org.lwjgl.system.MemoryStack;
+
 import static org.lwjgl.system.MemoryStack.stackPush;
 
 public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
@@ -344,6 +343,54 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         }
     }
 
+    @Override
+    public void writeFont(FreeTypeFontGenerator.FreeTypeBitmapFontData data, Array<PixmapPacker.Page> pages, FileHandle target) {
+        var pngTarget = target.sibling(target.nameWithoutExtension() + ".png");
+        
+        BitmapFontWriter.FontInfo info = new BitmapFontWriter.FontInfo();
+        info.face = target.nameWithoutExtension();
+        info.padding = new BitmapFontWriter.Padding(1, 1, 1, 1);
+
+        BitmapFontWriter.writePixmaps(pages, target.parent(), target.nameWithoutExtension());
+        
+        var pixmap = new Pixmap(pngTarget);
+        var color = new Color();
+        var newHeight = pixmap.getHeight();
+        var foundOpaquePixel = false;
+        for (var y = pixmap.getHeight() - 1; y >= 0 && !foundOpaquePixel; y--) {
+            for (var x = 0; x < pixmap.getWidth(); x++) {
+                color.set(pixmap.getPixel(x, y));
+                if (color.a > 0) {
+                    //add padding to new height
+                    newHeight = y + 2;
+                    foundOpaquePixel = true;
+                    break;
+                }
+            }
+        }
+        
+        foundOpaquePixel = false;
+        var newWidth = pixmap.getWidth();
+        for (var x = pixmap.getWidth() - 1; x >= 0 && !foundOpaquePixel; x--) {
+            for (var y = 0; y < pixmap.getHeight(); y++) {
+                color.set(pixmap.getPixel(x, y));
+                if (color.a > 0) {
+                    //add padding to new height
+                    newWidth = x + 2;
+                    foundOpaquePixel = true;
+                    break;
+                }
+            }
+        }
+        
+        var fixedPixmap = new Pixmap(newWidth, newHeight, Pixmap.Format.RGBA8888);
+        fixedPixmap.setBlending(Pixmap.Blending.None);
+        fixedPixmap.drawPixmap(pixmap, 0, 0);
+        PixmapIO.writePNG(pngTarget, fixedPixmap);
+        
+        BitmapFontWriter.writeFont(data, new String[]{target.nameWithoutExtension() + ".png"}, target, info, newWidth, newHeight);
+        pixmap.dispose();
+        fixedPixmap.dispose();
     }
 
     @Override
