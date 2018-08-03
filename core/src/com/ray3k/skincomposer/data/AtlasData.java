@@ -102,6 +102,7 @@ public class AtlasData implements Json.Serializable {
                 if (region.splits == null && region.pads == null) {
                     name = region.name + ".png";
                     savePixmap = new Pixmap(region.getRegionWidth(), region.getRegionHeight(), Pixmap.Format.RGBA8888);
+                    savePixmap.setBlending(Pixmap.Blending.None);
                     for (int x = 0; x < region.getRegionWidth(); x++) {
                         for (int y = 0; y < region.getRegionHeight(); y++) {
                             int colorInt = pixmap.getPixel(region.getRegionX() + x, region.getRegionY() + y);
@@ -111,6 +112,7 @@ public class AtlasData implements Json.Serializable {
                 } else {
                     name = region.name + ".9.png";
                     savePixmap = new Pixmap(region.getRegionWidth() + 2, region.getRegionHeight() + 2, pixmap.getFormat());
+                    savePixmap.setBlending(Pixmap.Blending.None);
                     int x;
                     int y;
                     
