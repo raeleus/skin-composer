@@ -127,7 +127,7 @@ public class DialogSettings extends Dialog {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 try {
-                    Utils.openFileExplorer(Gdx.files.local("temp/"));
+                    Utils.openFileExplorer(Main.appFolder.child("temp/"));
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error opening temp folder", e);
                     main.getDialogFactory().showDialogError("Folder Error...", "Error opening temp folder.\n\nOpen log?");
@@ -178,7 +178,7 @@ public class DialogSettings extends Dialog {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 try {
-                    Utils.openFileExplorer(Gdx.files.local("texturepacker/defaults.json"));
+                    Utils.openFileExplorer(Main.appFolder.child("texturepacker/defaults.json"));
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error opening defaults.json", e);
                     main.getDialogFactory().showDialogError("File Error...", "Error opening defaults.json\n\nOpen log?");

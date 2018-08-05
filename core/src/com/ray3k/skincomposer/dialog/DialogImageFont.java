@@ -609,7 +609,7 @@ public class DialogImageFont extends Dialog {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 try {
-                    Utils.openFileExplorer(Gdx.files.local("imagefont/characters/"));
+                    Utils.openFileExplorer(Main.appFolder.child("imagefont/characters/"));
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error opening characters folder", e);
                     main.getDialogFactory().showDialogError("Folder Error...", "Error opening characters folder.\n\nOpen log?");
@@ -1134,12 +1134,12 @@ public class DialogImageFont extends Dialog {
         }
         
         //write characters to temporary PNGs
-        Gdx.files.local("imagefont/characters").emptyDirectory();
+        Main.appFolder.child("imagefont/characters").emptyDirectory();
         for (var character : bitmapCharacters) {
             var pixmap = new Pixmap(character.width, character.cropHeight, Pixmap.Format.RGBA8888);
             pixmap.setBlending(Pixmap.Blending.None);
             pixmap.drawPixmap(fontPixmap, 0, 0, character.x, character.cropY, character.width, character.cropHeight);
-            PixmapIO.writePNG(Gdx.files.local("imagefont/characters/" + character.name + ".png"), pixmap);
+            PixmapIO.writePNG(Main.appFolder.child("imagefont/characters/" + character.name + ".png"), pixmap);
             pixmap.dispose();
         }
         
@@ -1150,7 +1150,7 @@ public class DialogImageFont extends Dialog {
                 return t.length() == 2;
             }).toArray(String[]::new);
             
-            var charFolder = Gdx.files.local("imagefont/characters");
+            var charFolder = Main.appFolder.child("imagefont/characters");
             var pixmaps = new Array<Pixmap>();
             var testColor = new Color();
             kerningPairValues.clear();
@@ -1321,7 +1321,7 @@ public class DialogImageFont extends Dialog {
 
 
             //texturepack images
-            main.getDesktopWorker().packFontImages(new Array<>(Gdx.files.local("imagefont/characters").list()), saveFile);
+            main.getDesktopWorker().packFontImages(new Array<>(Main.appFolder.child("imagefont/characters").list()), saveFile);
             
             var atlas = new TextureAtlas(saveFile.sibling(saveFile.nameWithoutExtension() + ".atlas"));
 
@@ -1391,7 +1391,7 @@ public class DialogImageFont extends Dialog {
     }
     
     private void preview(boolean texturePack) {
-        var file = Gdx.files.local("imagefont/preview/preview.fnt");
+        var file = Main.appFolder.child("imagefont/preview/preview.fnt");
         
         try {
             if (texturePack) {

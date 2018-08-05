@@ -80,7 +80,7 @@ public class AtlasData implements Json.Serializable {
             if (saveFile != null) {
                 targetDirectory = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
             } else {
-                targetDirectory = Gdx.files.local("temp/" + main.getProjectData().getId() + "_data/");
+                targetDirectory = Main.appFolder.child("temp/" + main.getProjectData().getId() + "_data/");
             }
             
             targetDirectory.mkdirs();
@@ -171,7 +171,7 @@ public class AtlasData implements Json.Serializable {
     }
     
     public void writeAtlas() throws Exception {
-        FileHandle targetFile = Gdx.files.local("temp/" + main.getProjectData().getId() + ".atlas");
+        FileHandle targetFile = Main.appFolder.child("temp/" + main.getProjectData().getId() + ".atlas");
         targetFile.parent().mkdirs();
         FileHandle[] oldFiles = targetFile.parent().list(new FilenameFilter() {
             @Override
@@ -227,7 +227,7 @@ public class AtlasData implements Json.Serializable {
     
     public TextureAtlas getAtlas() {
         TextureAtlas atlas = null;
-        FileHandle atlasFile = Gdx.files.local("temp/" + main.getProjectData().getId() + ".atlas");
+        FileHandle atlasFile = Main.appFolder.child("temp/" + main.getProjectData().getId() + ".atlas");
         if (atlasFile.exists()) {
             atlas = new TextureAtlas(atlasFile);
         }
@@ -235,7 +235,7 @@ public class AtlasData implements Json.Serializable {
     }
     
     public void clearTempData() {
-        FileHandle tempFolder = Gdx.files.local("temp/");
+        FileHandle tempFolder = Main.appFolder.child("temp/");
         tempFolder.deleteDirectory();
     }
     

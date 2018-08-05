@@ -134,7 +134,7 @@ public class DialogFreeTypeFont extends Dialog {
             mode = Mode.NEW;
             this.data = new FreeTypeFontData();
             
-            FileHandle previewFontsPath = Gdx.files.local("preview fonts");
+            FileHandle previewFontsPath = Main.appFolder.child("preview fonts");
             if (previewFontsPath.exists()) {
                 FileHandle[] files = previewFontsPath.list("ttf");
                 if (files.length > 0) {
@@ -253,7 +253,7 @@ public class DialogFreeTypeFont extends Dialog {
         
         Array<String> previewFontNames = new Array<>();
         
-        FileHandle previewFontsPath = Gdx.files.local("preview fonts");
+        FileHandle previewFontsPath = Main.appFolder.child("preview fonts");
         if (previewFontsPath.exists()) {
             Array<FileHandle> files = new Array<>(previewFontsPath.list("ttf"));
             
@@ -292,7 +292,7 @@ public class DialogFreeTypeFont extends Dialog {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 try {
-                    Utils.openFileExplorer(Gdx.files.local("preview fonts/"));
+                    Utils.openFileExplorer(Main.appFolder.child("preview fonts/"));
                 } catch (Exception e) {
                     
                 }

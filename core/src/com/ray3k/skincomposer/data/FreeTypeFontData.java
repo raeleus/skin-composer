@@ -111,7 +111,7 @@ public class FreeTypeFontData implements Json.Serializable {
             FreeTypeFontParameter parameter = new FreeTypeFontParameter();
             parameter.color = Color.BLACK;
             
-            FileHandle previewFontPath = Gdx.files.local("preview fonts/" + previewTTF + ".ttf");
+            FileHandle previewFontPath = Main.appFolder.child("preview fonts/" + previewTTF + ".ttf");
             if (previewFontPath.exists()) {
                 FreeTypeFontGenerator generator = new FreeTypeFontGenerator(previewFontPath);
                 bitmapFont = generator.generateFont(parameter);
@@ -176,7 +176,7 @@ public class FreeTypeFontData implements Json.Serializable {
             FreeTypeFontParameter parameter = new FreeTypeFontParameter();
             parameter.color = Color.BLACK;
             
-            FileHandle previewFontPath = Gdx.files.local("preview fonts/" + previewTTF + ".ttf");
+            FileHandle previewFontPath = Main.appFolder.child("preview fonts/" + previewTTF + ".ttf");
             if (previewFontPath.exists()) {
                 FreeTypeFontGenerator generator = new FreeTypeFontGenerator(previewFontPath);
                 bitmapFont = generator.generateFont(parameter);

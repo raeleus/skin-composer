@@ -109,12 +109,15 @@ public class Main extends ApplicationAdapter {
     private MainListener mainListener;
     private HandListener handListener;
     private TooltipManager tooltipManager;
+    public static FileHandle appFolder;
     
     @Override
     public void create() {
         if (Utils.isWindows()) {
             desktopWorker.closeSplashScreen();
         }
+        
+        appFolder = Gdx.files.local("/");
         
         skin = new Skin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json")) {
             //Override json loader to process FreeType fonts from skin JSON
@@ -175,28 +178,28 @@ public class Main extends ApplicationAdapter {
         skin.getFont("font").getData().markupEnabled = true;
         
         //copy defaults.json to temp folder if it doesn't exist
-        FileHandle fileHandle = Gdx.files.local("texturepacker/defaults.json");
+        var fileHandle = appFolder.child("texturepacker/defaults.json");
         if (!fileHandle.exists()) {
             Gdx.files.internal("defaults.json").copyTo(fileHandle);
         }
         
         //copy preview fonts to preview fonts folder if they do not exist
-        fileHandle = Gdx.files.local("preview fonts/IBMPlexSerif-Medium.ttf");
+        fileHandle = appFolder.child("preview fonts/IBMPlexSerif-Medium.ttf");
         if (!fileHandle.exists()) {
             Gdx.files.internal("preview fonts/IBMPlexSerif-Medium.ttf").copyTo(fileHandle);
         }
         
-        fileHandle = Gdx.files.local("preview fonts/Pacifico-Regular.ttf");
+        fileHandle = appFolder.child("preview fonts/Pacifico-Regular.ttf");
         if (!fileHandle.exists()) {
             Gdx.files.internal("preview fonts/Pacifico-Regular.ttf").copyTo(fileHandle);
         }
         
-        fileHandle = Gdx.files.local("preview fonts/PressStart2P-Regular.ttf");
+        fileHandle = appFolder.child("preview fonts/PressStart2P-Regular.ttf");
         if (!fileHandle.exists()) {
             Gdx.files.internal("preview fonts/PressStart2P-Regular.ttf").copyTo(fileHandle);
         }
         
-        fileHandle = Gdx.files.local("preview fonts/SourceSansPro-Regular.ttf");
+        fileHandle = appFolder.child("preview fonts/SourceSansPro-Regular.ttf");
         if (!fileHandle.exists()) {
             Gdx.files.internal("preview fonts/SourceSansPro-Regular.ttf").copyTo(fileHandle);
         }

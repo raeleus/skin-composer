@@ -106,7 +106,7 @@ public class JsonData implements Json.Serializable {
         if (saveFile != null) {
             targetDirectory = saveFile.sibling(saveFile.nameWithoutExtension() + "_data");
         } else {
-            targetDirectory = Gdx.files.local("temp/" + main.getProjectData().getId() + "_data");
+            targetDirectory = Main.appFolder.child("temp/" + main.getProjectData().getId() + "_data");
         }
 
         //read json file and create styles

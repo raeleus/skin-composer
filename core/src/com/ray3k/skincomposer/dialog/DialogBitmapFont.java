@@ -80,7 +80,7 @@ public class DialogBitmapFont extends Dialog {
         this.data = new FreeTypeFontData();
         this.data.useCustomSerializer = true;
 
-        FileHandle previewFontsPath = Gdx.files.local("preview fonts");
+        FileHandle previewFontsPath = Main.appFolder.child("preview fonts");
         if (previewFontsPath.exists()) {
             FileHandle[] files = previewFontsPath.list("ttf");
             if (files.length > 0) {

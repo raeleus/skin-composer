@@ -56,7 +56,7 @@ public class DialogWarnings extends Dialog {
         super.result(object);
         if (object instanceof Boolean) {
             if ((Boolean) object) {
-                FileHandle file = Gdx.files.local("temp/warnings.txt");
+                FileHandle file = Main.appFolder.child("temp/warnings.txt");
                 Utils.writeWarningsToFile(warnings, file);
                 try {
                     Utils.openFileExplorer(file);
