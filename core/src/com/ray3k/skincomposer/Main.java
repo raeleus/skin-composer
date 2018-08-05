@@ -117,7 +117,7 @@ public class Main extends ApplicationAdapter {
             desktopWorker.closeSplashScreen();
         }
         
-        appFolder = Gdx.files.local("/");
+        appFolder = Gdx.files.external(".skincomposer/");
         
         skin = new Skin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json")) {
             //Override json loader to process FreeType fonts from skin JSON

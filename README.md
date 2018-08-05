@@ -13,6 +13,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * Added dialog to create Bitmap Fonts as an alternative to Hiero.
 * Fixed imported skin files having darkened transparent images.
 * Added preview bg color setting for Image Font dialog.
+* Temporary files and program settings are now saved in folder ".skincomposer" of the user's home directory.
 
 ### Contact ###
 
