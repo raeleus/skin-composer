@@ -19,7 +19,6 @@ import com.ray3k.skincomposer.*;
 import com.ray3k.skincomposer.utils.Utils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -34,7 +33,11 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     private Array<FilesDroppedListener> filesDroppedListeners;
     private CloseListener closeListener;
     
-    public static void main(String[] arg) {
+    public static void main(String[] args) {
+        for (var arg : args) {
+            JOptionPane.showMessageDialog(null, arg);
+        }
+        
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setResizable(true);
         config.useVsync(true);
@@ -57,14 +60,14 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
             
             FileWriter fw = null;
             try {
-                fw = new FileWriter(Gdx.files.local("temp/java-stacktrace.txt").file(), true);
+                fw = new FileWriter(Gdx.files.external(".skincomposer/temp/java-stacktrace.txt").file(), true);
                 PrintWriter pw = new PrintWriter(fw);
                 e.printStackTrace(pw);
                 pw.close();
                 fw.close();
                 int choice = JOptionPane.showConfirmDialog(null, "Exception occurred. See error log?", "Skin Composer Exception!", JOptionPane.YES_NO_OPTION);
                 if (choice == 0) {
-                    Utils.openFileExplorer(Gdx.files.local("temp/java-stacktrace.txt"));
+                    Utils.openFileExplorer(Gdx.files.external(".skincomposer/temp/java-stacktrace.txt"));
                 }
             } catch (Exception ex) {
 
@@ -79,7 +82,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     @Override
     public void texturePack(Array<FileHandle> handles, FileHandle localFile, FileHandle targetFile) {
         //copy defaults.json to temp folder if it doesn't exist
-        FileHandle fileHandle = Gdx.files.local("texturepacker/defaults.json");
+        FileHandle fileHandle = Gdx.files.external(".skincomposer/texturepacker/defaults.json");
         if (!fileHandle.exists()) {
             Gdx.files.internal("defaults.json").copyTo(fileHandle);
         }
