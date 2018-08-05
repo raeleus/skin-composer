@@ -53,6 +53,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.CharArray;
 import com.badlogic.gdx.utils.IntArray;
@@ -645,6 +646,24 @@ public class DialogImageFont extends Dialog {
                 });
             }
         });
+        
+        imageButton = new ImageButton(skin, "color-bg");
+        table.add(imageButton);
+        imageButton.addListener(new TextTooltip("Change background color", main.getTooltipManager(), skin));
+        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (ColorData colorData) -> {
+                    if (colorData != null) {
+                        var textArea = (TextArea) findActor("preview");
+                        previewStyle.background = ((NinePatchDrawable) previewStyle.background).tint(colorData.color);
+                        settings.previewBackgroundColor = colorData.color;
+                    }
+                });
+            }
+        });
+        
     }
  
     private void sourceFileBrowse() {
@@ -778,6 +797,7 @@ public class DialogImageFont extends Dialog {
         int kerningPairsOffset;
         String preview;
         Color previewColor;
+        Color previewBackgroundColor;
         
         public ImageFontSettings() {
             characters = ALL;
@@ -792,6 +812,7 @@ public class DialogImageFont extends Dialog {
             tabSpace = 8;
             preview = SAMPLE_TEXT;
             previewColor = Color.WHITE;
+            previewBackgroundColor = Color.WHITE;
         }
     }
     
@@ -826,6 +847,7 @@ public class DialogImageFont extends Dialog {
         settings = json.fromJson(ImageFontSettings.class, file);
         refreshTable();
         previewStyle.fontColor = settings.previewColor;
+        previewStyle.background = ((NinePatchDrawable) previewStyle.background).tint(settings.previewBackgroundColor);
         
         if (targetPath != null && !targetPath.equals("")) {
             processSaveFile(targetPath);
