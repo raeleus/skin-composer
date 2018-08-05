@@ -14,6 +14,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * Fixed imported skin files having darkened transparent images.
 * Added preview bg color setting for Image Font dialog.
 * Temporary files and program settings are now saved in folder ".skincomposer" of the user's home directory.
+* Added Windows installer and file associations for ".scmp" files.
 
 ### Contact ###
 

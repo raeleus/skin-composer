@@ -60,6 +60,7 @@ import com.ray3k.skincomposer.dialog.DialogCustomStyle;
 import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
+import java.util.Locale;
 
 public class MainListener extends RootTableListener {
     private final RootTable root;
@@ -659,6 +660,19 @@ public class MainListener extends RootTableListener {
     
     public WelcomeListener getWelcomeListener() {
         return welcomeListener;
+    }
+
+    public boolean argumentsPassed(String[] args) {
+        var validArgument = false;
+        if (args != null && args.length > 0) {
+            var fileHandle = Gdx.files.absolute(args[0]);
+            if (fileHandle.exists() && fileHandle.extension().toLowerCase(Locale.ROOT).equals("scmp")) {
+                validArgument = true;
+                openFile(fileHandle);
+            }
+        }
+        
+        return validArgument;
     }
     
     private class WelcomeDialogListener extends WelcomeListener {

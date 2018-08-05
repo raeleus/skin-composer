@@ -34,10 +34,6 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     private CloseListener closeListener;
     
     public static void main(String[] args) {
-        for (var arg : args) {
-            JOptionPane.showMessageDialog(null, arg);
-        }
-        
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setResizable(true);
         config.useVsync(true);
@@ -47,12 +43,12 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         config.setTitle("Skin Composer - New Project*");
         config.setWindowSizeLimits(675, 400, -1, -1);
         config.setWindowIcon("logo-16.png", "logo-32.png", "logo-48.png", "logo.png");
-        Main main = new Main();
+        Main main = new Main(args);
         main.setDesktopWorker(desktopLauncher);
         if (!Utils.isWindows()) {
             desktopLauncher.closeSplashScreen();
         }
-        
+
         try {
             new Lwjgl3Application(main, config);
         } catch (Exception e) {

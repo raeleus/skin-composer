@@ -110,6 +110,11 @@ public class Main extends ApplicationAdapter {
     private HandListener handListener;
     private TooltipManager tooltipManager;
     public static FileHandle appFolder;
+    private String[] args;
+    
+    public Main (String[] args) {
+        this.args = args;
+    }
     
     @Override
     public void create() {
@@ -259,7 +264,12 @@ public class Main extends ApplicationAdapter {
         rootTable.populate();
         stage.addActor(rootTable);
         rootTable.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
-        mainListener.createWelcomeListener();
+        
+        //pass arguments
+        if (!mainListener.argumentsPassed(args)) {
+            //show welcome screen if there are no valid arguments
+            mainListener.createWelcomeListener();
+        }
     }
     
     @Override
