@@ -24,7 +24,6 @@
 
 package com.ray3k.skincomposer.dialog;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
@@ -167,7 +166,7 @@ public class DialogBitmapFont extends Dialog {
         
         table.defaults().space(5.0f);
         label = new Label("Source TTF Path:", skin);
-        table.add(label);
+        table.add(label).right();
         
         textField = new TextField(data.file == null ? "" : data.file.path(), skin);
         textField.setName("sourceFileField");
@@ -175,7 +174,7 @@ public class DialogBitmapFont extends Dialog {
         table.add(textField).growX();
         
         var textButton = new TextButton("Browse...", skin);
-        table.add(textButton);
+        table.add(textButton).fillX();
         
         textField.addListener(new ClickListener() {
             @Override
@@ -186,9 +185,11 @@ public class DialogBitmapFont extends Dialog {
         
         //todo: add this change to free type dialog
         var toolTip = new TextTooltip("Path to source TTF file to be read", main.getTooltipManager(), getSkin());
-        table.addListener(toolTip);
-        table.addListener(main.getHandListener());
-        table.addListener(new ChangeListener() {
+        textField.addListener(toolTip);
+        textButton.addListener(toolTip);
+        textField.addListener(main.getHandListener());
+        textButton.addListener(main.getHandListener());
+        var sourceChangeListener = new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 Runnable runnable = () -> {
@@ -202,7 +203,6 @@ public class DialogBitmapFont extends Dialog {
                     File file = main.getDesktopWorker().openDialog("Select TTF file...", defaultPath, filterPatterns, "True Type Font files");
                     if (file != null) {
                         data.file = new FileHandle(file);
-                        updatePreviewAndOK();
                         
                         var textField = (TextField)DialogBitmapFont.this.findActor("sourceFileField");
                         textField.setText(data.file.path());
@@ -215,20 +215,21 @@ public class DialogBitmapFont extends Dialog {
                             textField.setText(target.path());
                             textField.setCursorPosition(textField.getText().length() - 1);
                         }
+                        
+                        updatePreviewAndOK();
                     }
                 };
                 
                 main.getDialogFactory().showDialogLoading(runnable);
             }
-        });
+        };
+        textField.addListener(sourceChangeListener);
+        textButton.addListener(sourceChangeListener);
         
-        bottom.row();
-        table = new Table();
-        bottom.add(table).growX().colspan(5).spaceBottom(15.0f);
-        
+        table.row();
         table.defaults().space(5.0f);
         label = new Label("Target FNT Path:", skin);
-        table.add(label);
+        table.add(label).right();
         
         textField = new TextField(target == null ? "" : data.file.path(), skin);
         textField.setName("targetFileField");
@@ -236,7 +237,7 @@ public class DialogBitmapFont extends Dialog {
         table.add(textField).growX();
         
         textButton = new TextButton("Browse...", skin);
-        table.add(textButton);
+        table.add(textButton).fillX();
         
         textField.addListener(new ClickListener() {
             @Override
@@ -247,9 +248,11 @@ public class DialogBitmapFont extends Dialog {
         
         //todo: add this change to free type dialog
         toolTip = new TextTooltip("Path to target FNT file to be saved", main.getTooltipManager(), getSkin());
-        table.addListener(toolTip);
-        table.addListener(main.getHandListener());
-        table.addListener(new ChangeListener() {
+        textField.addListener(toolTip);
+        textButton.addListener(toolTip);
+        textField.addListener(main.getHandListener());
+        textButton.addListener(main.getHandListener());
+        var targetChangeListener = new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 Runnable runnable = () -> {
@@ -266,16 +269,77 @@ public class DialogBitmapFont extends Dialog {
                         if (!target.extension().equalsIgnoreCase("fnt")) {
                             target = target.sibling(target.name() + ".fnt");
                         }
-                        updatePreviewAndOK();
                         
                         var textField = (TextField)DialogBitmapFont.this.findActor("targetFileField");
-                        textField.setText(data.file.path());
+                        textField.setText(target.path());
                         textField.setCursorPosition(textField.getText().length() - 1);
+                        
                         main.getProjectData().setLastFontPath(target.parent().path() + "/");
+                        
+                        updatePreviewAndOK();
                     }
                 };
                 
                 main.getDialogFactory().showDialogLoading(runnable);
+            }
+        };
+        textField.addListener(targetChangeListener);
+        textButton.addListener(targetChangeListener);
+        
+        table.row();
+        
+        table.defaults().space(5.0f);
+        label = new Label("Characters:", skin);
+        table.add(label).right();
+        
+        final var charactersTextField = new TextField(data.characters, skin);
+        table.add(charactersTextField).growX();
+        
+        charactersTextField.addListener(main.getIbeamListener());
+        toolTip = new TextTooltip("The characters the font should contain. Leave blank for defaults.", main.getTooltipManager(), getSkin());
+        charactersTextField.addListener(toolTip);
+        
+        var characterSelectBox = new SelectBox<String>(skin);
+        characterSelectBox.setItems("default", "0-9", "a-zA-Z", "a-zA-Z0-9", "custom");
+        table.add(characterSelectBox).fillX();
+        
+        characterSelectBox.addListener(main.getHandListener());
+        toolTip = new TextTooltip("Character preset list", main.getTooltipManager(), getSkin());
+        characterSelectBox.addListener(toolTip);
+        characterSelectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                switch (characterSelectBox.getSelected()) {
+                    case "default":
+                        charactersTextField.setText("");
+                        break;
+                    case "0-9":
+                        charactersTextField.setText("0123456789");
+                        break;
+                    case "a-zA-Z":
+                        charactersTextField.setText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+                        break;
+                    case "a-zA-Z0-9":
+                        charactersTextField.setText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+                        break;
+                }
+                
+                data.characters = charactersTextField.getText();
+                updatePreviewAndOK();
+            }
+        });
+        
+        charactersTextField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                data.characters = charactersTextField.getText();
+                updatePreviewAndOK();
+                
+                if ("".equals(charactersTextField.getText())) {
+                    characterSelectBox.setSelected("default");
+                } else {
+                    characterSelectBox.setSelected("custom");
+                }
             }
         });
         
@@ -678,27 +742,6 @@ public class DialogBitmapFont extends Dialog {
         });
         
         bottom.row();
-        
-        label = new Label("Characters:", skin);
-        bottom.add(label).right();
-        
-        textField = new TextField(data.characters, skin);
-        bottom.add(textField).left().fillX();
-        
-        toolTip = new TextTooltip("The characters the font should contain. Leave blank for defaults.", main.getTooltipManager(), getSkin());
-        textField.addListener(toolTip);
-        
-        textField.addListener(main.getIbeamListener());
-        textField.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                TextField textField = (TextField) actor;
-                
-                data.characters = textField.getText();
-                updatePreviewAndOK();
-            }
-        });
-        
         label = new Label("Kerning:", skin);
         bottom.add(label).right();
         
