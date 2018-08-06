@@ -183,7 +183,6 @@ public class DialogBitmapFont extends Dialog {
             }
         });
         
-        //todo: add this change to free type dialog
         var toolTip = new TextTooltip("Path to source TTF file to be read", main.getTooltipManager(), getSkin());
         textField.addListener(toolTip);
         textButton.addListener(toolTip);
@@ -246,7 +245,6 @@ public class DialogBitmapFont extends Dialog {
             }
         });
         
-        //todo: add this change to free type dialog
         toolTip = new TextTooltip("Path to target FNT file to be saved", main.getTooltipManager(), getSkin());
         textField.addListener(toolTip);
         textButton.addListener(toolTip);
@@ -387,7 +385,6 @@ public class DialogBitmapFont extends Dialog {
             }
         });
         
-        //todo: add formatting changes to freetype dialog
         bottom.add().growX();
         
         bottom.row();
@@ -910,7 +907,6 @@ public class DialogBitmapFont extends Dialog {
             textField.setAlignment(Align.center);
             cell.setActor(textField);
             
-            //todo: add this fix to free type dialog
             textField.addListener(main.getIbeamListener());
             textField.addListener(new ChangeListener() {
                 @Override
@@ -929,7 +925,6 @@ public class DialogBitmapFont extends Dialog {
                 textField.setAlignment(Align.center);
                 cell.setActor(textField);
 
-                //todo: add this fix to free type dialog
                 textField.addListener(main.getIbeamListener());
                 textField.addListener(new ChangeListener() {
                     @Override

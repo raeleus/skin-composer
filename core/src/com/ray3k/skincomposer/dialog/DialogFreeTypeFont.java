@@ -30,6 +30,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -47,6 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
@@ -59,6 +61,7 @@ import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -293,8 +296,8 @@ public class DialogFreeTypeFont extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 try {
                     Utils.openFileExplorer(Main.appFolder.child("preview fonts/"));
-                } catch (Exception e) {
-                    
+                } catch (IOException e) {
+                    Gdx.app.error(getClass().getName(), "Error while selecting preview font.", e);
                 }
             }
         });
@@ -372,7 +375,7 @@ public class DialogFreeTypeFont extends Dialog {
         scrollPane.setName("scrollPane");
         scrollPane.setFadeScrollBars(false);
         scrollPane.setFlickScroll(false);
-        root.add(scrollPane).padTop(10.0f);
+        root.add(scrollPane).padTop(10.0f).grow();
         
         if (!data.useCustomSerializer) {
             scrollPane.setColor(1, 1, 1, .25f);
@@ -384,25 +387,34 @@ public class DialogFreeTypeFont extends Dialog {
         
         bottom.defaults().space(5.0f);
         table = new Table();
-        bottom.add(table).growX().colspan(4).spaceBottom(15.0f);
+        bottom.add(table).growX().colspan(5).spaceBottom(15.0f);
         
         table.defaults().space(5.0f);
         label = new Label("TTF Path:", skin);
-        table.add(label);
+        table.add(label).right();
         
         textField = new TextField(data.file == null ? "" : data.file.path(), skin);
         textField.setName("fileField");
         textField.setDisabled(true);
         table.add(textField).growX();
         
-        toolTip = new TextTooltip("Path to TTF font to be distributed with skin", main.getTooltipManager(), getSkin());
-        textField.addListener(toolTip);
+        textField.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                var textField = findActor("fileField");
+                textField.fire(new ChangeListener.ChangeEvent());
+            }
+        });
         
         textButton = new TextButton("Browse...", skin);
-        table.add(textButton);
+        table.add(textButton).fillX();
         
+        toolTip = new TextTooltip("Path to TTF font to be distributed with skin", main.getTooltipManager(), getSkin());
+        textField.addListener(toolTip);
+        textButton.addListener(toolTip);
+        textField.addListener(main.getHandListener());
         textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
+        var changeListener = new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 Runnable runnable = () -> {
@@ -424,6 +436,65 @@ public class DialogFreeTypeFont extends Dialog {
                 };
                 
                 main.getDialogFactory().showDialogLoading(runnable);
+            }
+        };
+        textButton.addListener(changeListener);
+        textField.addListener(changeListener);
+        
+        table.row();
+        
+        label = new Label("Characters:", skin);
+        table.add(label).right();
+        
+        textField = new TextField(data.characters, skin);
+        textField.setName("characters");
+        table.add(textField).growX();
+        
+        toolTip = new TextTooltip("The characters the font should contain. Leave blank for defaults.", main.getTooltipManager(), getSkin());
+        textField.addListener(toolTip);
+        
+        textField.addListener(main.getIbeamListener());
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                TextField textField = (TextField) actor;
+                
+                data.characters = textField.getText();
+                updateDisabledFields();
+                
+                var selectBox = (SelectBox<String>) findActor("character-select-box");
+                selectBox.setSelected("custom");
+            }
+        });
+        
+        selectBox = new SelectBox<>(skin);
+        selectBox.setName("character-select-box");
+        selectBox.setItems("default", "0-9", "a-zA-Z", "a-zA-Z0-9", "custom");
+        table.add(selectBox);
+        
+        selectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                var selectBox = (SelectBox<String>) findActor("character-select-box");
+                var textField = (TextField) findActor("characters");
+                
+                switch (selectBox.getSelected()) {
+                    case "default":
+                        textField.setText("");
+                        break;
+                    case "0-9":
+                        textField.setText("0123456789");
+                        break;
+                    case "a-zA-Z":
+                        textField.setText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+                        break;
+                    case "a-zA-Z0-9":
+                        textField.setText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+                        break;
+                }
+                
+                data.characters = textField.getText();
+                updateDisabledFields();
             }
         });
         
@@ -470,6 +541,8 @@ public class DialogFreeTypeFont extends Dialog {
                 updateDisabledFields();
             }
         });
+        
+        bottom.add().growX();
         
         bottom.row();
         label = new Label("Hinting:", skin);
@@ -824,26 +897,6 @@ public class DialogFreeTypeFont extends Dialog {
         
         bottom.row();
         
-        label = new Label("Characters:", skin);
-        bottom.add(label).right();
-        
-        textField = new TextField(data.characters, skin);
-        bottom.add(textField).left().growX();
-        
-        toolTip = new TextTooltip("The characters the font should contain. Leave blank for defaults.", main.getTooltipManager(), getSkin());
-        textField.addListener(toolTip);
-        
-        textField.addListener(main.getIbeamListener());
-        textField.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                TextField textField = (TextField) actor;
-                
-                data.characters = textField.getText();
-                updateDisabledFields();
-            }
-        });
-        
         label = new Label("Kerning:", skin);
         bottom.add(label).right();
         
@@ -953,6 +1006,9 @@ public class DialogFreeTypeFont extends Dialog {
             }
         });
         
+        bottom.row();
+        bottom.add().growY();
+        
         buttons.pad(10.0f);
         buttons.defaults().minWidth(75.0f).space(25.0f);
         textButton = new TextButton("OK", skin);
@@ -1017,6 +1073,14 @@ public class DialogFreeTypeFont extends Dialog {
             textField.setName("previewField");
             textField.setAlignment(Align.center);
             cell.setActor(textField);
+            
+            textField.addListener(main.getIbeamListener());
+            textField.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                    previewText = ((TextField) actor).getText();
+                }
+            });
         } else {
             data.createBitmapFont(main);
             if (data.bitmapFont != null) {
@@ -1027,6 +1091,14 @@ public class DialogFreeTypeFont extends Dialog {
                 textField.setName("previewField");
                 textField.setAlignment(Align.center);
                 cell.setActor(textField);
+                
+                textField.addListener(main.getIbeamListener());
+                textField.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        previewText = ((TextField) actor).getText();
+                    }
+                });
             }
         }
         
