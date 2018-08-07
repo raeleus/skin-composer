@@ -155,6 +155,15 @@ public class ProjectData implements Json.Serializable {
         return generalPref.getBoolean("allowingWelcome", true);
     }
     
+    public void setCheckingForUpdates(boolean allow) {
+        generalPref.putBoolean("checkForUpdates", allow);
+        generalPref.flush();
+    }
+    
+    public boolean isCheckingForUpdates() {
+        return generalPref.getBoolean("checkForUpdates", true);
+    }
+    
     public void setExportFormat(ExportFormat exportFormat) {
         generalPref.putString("exportFormat", exportFormat.toString());
     }
@@ -203,7 +212,7 @@ public class ProjectData implements Json.Serializable {
     }
     
     private void moveImportedFiles(FileHandle oldSave, FileHandle newSave) {
-        FileHandle tempImportFolder = Gdx.files.local("temp/" + getId() + "_data/");
+        FileHandle tempImportFolder = Main.appFolder.child("temp/" + getId() + "_data/");
         FileHandle localImportFolder;
         if (oldSave != null) {
             localImportFolder = oldSave.sibling(oldSave.nameWithoutExtension() + "_data/");
@@ -559,7 +568,7 @@ public class ProjectData implements Json.Serializable {
      * @return 
      */
     public boolean resourceExists(FileHandle file) {
-        FileHandle targetDirectory = (saveFile != null) ? saveFile.sibling(saveFile.nameWithoutExtension() + "_data/") : Gdx.files.local("temp/" + getId() + "_data/");
+        FileHandle targetDirectory = (saveFile != null) ? saveFile.sibling(saveFile.nameWithoutExtension() + "_data/") : Main.appFolder.child("temp/" + getId() + "_data/");
         if (!areResourcesRelative()) {
             if (!file.exists() && !targetDirectory.child(file.name()).exists()) {
                 return false;

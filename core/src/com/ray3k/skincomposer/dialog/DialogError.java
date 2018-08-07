@@ -54,7 +54,7 @@ public class DialogError extends Dialog {
         
         if ((boolean) object) {
             try {
-                Utils.openFileExplorer(Gdx.files.local("temp/log.txt"));
+                Utils.openFileExplorer(Main.appFolder.child("temp/log.txt"));
             } catch (IOException e) {
                 e.printStackTrace();
             }

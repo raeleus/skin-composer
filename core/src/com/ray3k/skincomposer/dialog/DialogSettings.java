@@ -37,6 +37,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.RootTable;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.Spinner.Orientation;
 import com.ray3k.skincomposer.utils.Utils;
@@ -45,6 +46,7 @@ public class DialogSettings extends Dialog {
     private Integer maxUndos;
     private boolean resourcesRelative;
     private boolean allowingWelcome;
+    private boolean allowingUpdates;
     private final Main main;
     private ExportFormat exportFormat;
     
@@ -76,6 +78,7 @@ public class DialogSettings extends Dialog {
         maxUndos = main.getProjectData().getMaxUndos();
         resourcesRelative = main.getProjectData().areResourcesRelative();
         allowingWelcome = main.getProjectData().isAllowingWelcome();
+        allowingUpdates = main.getProjectData().isCheckingForUpdates();
         exportFormat = main.getProjectData().getExportFormat();
         setFillParent(true);
 
@@ -91,8 +94,16 @@ public class DialogSettings extends Dialog {
             main.getProjectData().setMaxUndos(maxUndos);
             main.getProjectData().setResourcesRelative(resourcesRelative);
             main.getProjectData().setAllowingWelcome(allowingWelcome);
+            main.getProjectData().setCheckingForUpdates(allowingUpdates);
             main.getProjectData().setExportFormat(exportFormat);
             main.getUndoableManager().clearUndoables();
+            
+            if (allowingUpdates) {
+                Main.checkForUpdates(main);
+            } else {
+                Main.newVersion = Main.VERSION;
+                main.getRootTable().fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.CHECK_FOR_UPDATES_COMPLETE));
+            }
         }
     }
 
@@ -116,7 +127,7 @@ public class DialogSettings extends Dialog {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 try {
-                    Utils.openFileExplorer(Gdx.files.local("temp/"));
+                    Utils.openFileExplorer(Main.appFolder.child("temp/"));
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error opening temp folder", e);
                     main.getDialogFactory().showDialogError("Folder Error...", "Error opening temp folder.\n\nOpen log?");
@@ -167,7 +178,7 @@ public class DialogSettings extends Dialog {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 try {
-                    Utils.openFileExplorer(Gdx.files.local("texturepacker/defaults.json"));
+                    Utils.openFileExplorer(Main.appFolder.child("texturepacker/defaults.json"));
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error opening defaults.json", e);
                     main.getDialogFactory().showDialogError("File Error...", "Error opening defaults.json\n\nOpen log?");
@@ -223,6 +234,17 @@ public class DialogSettings extends Dialog {
             }
         });
         t.add(welcomeCheckBox).padTop(10.0f).colspan(2);
+        
+        t.row();
+        final ImageTextButton updatesCheckBox = new ImageTextButton("Check for updates?", getSkin(), "checkbox");
+        updatesCheckBox.setChecked(allowingUpdates);
+        updatesCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                allowingUpdates = updatesCheckBox.isChecked();
+            }
+        });
+        t.add(updatesCheckBox).padTop(10.0f).colspan(2);
         
         t.row();
         label = new Label("Exported JSON Format:", getSkin());

@@ -26,6 +26,9 @@ package com.ray3k.skincomposer;
 import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Net.HttpMethods;
+import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -33,6 +36,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.Hinting;
+import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
@@ -79,7 +83,8 @@ import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "21";
+    public final static String VERSION = "22";
+    public static String newVersion;
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,
         ProgressBar.class, ScrollPane.class, SelectBox.class, Slider.class,
@@ -104,12 +109,20 @@ public class Main extends ApplicationAdapter {
     private MainListener mainListener;
     private HandListener handListener;
     private TooltipManager tooltipManager;
+    public static FileHandle appFolder;
+    private String[] args;
+    
+    public Main (String[] args) {
+        this.args = args;
+    }
     
     @Override
     public void create() {
         if (Utils.isWindows()) {
             desktopWorker.closeSplashScreen();
         }
+        
+        appFolder = Gdx.files.external(".skincomposer/");
         
         skin = new Skin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json")) {
             //Override json loader to process FreeType fonts from skin JSON
@@ -170,28 +183,28 @@ public class Main extends ApplicationAdapter {
         skin.getFont("font").getData().markupEnabled = true;
         
         //copy defaults.json to temp folder if it doesn't exist
-        FileHandle fileHandle = Gdx.files.local("texturepacker/defaults.json");
+        var fileHandle = appFolder.child("texturepacker/defaults.json");
         if (!fileHandle.exists()) {
             Gdx.files.internal("defaults.json").copyTo(fileHandle);
         }
         
         //copy preview fonts to preview fonts folder if they do not exist
-        fileHandle = Gdx.files.local("preview fonts/IBMPlexSerif-Medium.ttf");
+        fileHandle = appFolder.child("preview fonts/IBMPlexSerif-Medium.ttf");
         if (!fileHandle.exists()) {
             Gdx.files.internal("preview fonts/IBMPlexSerif-Medium.ttf").copyTo(fileHandle);
         }
         
-        fileHandle = Gdx.files.local("preview fonts/Pacifico-Regular.ttf");
+        fileHandle = appFolder.child("preview fonts/Pacifico-Regular.ttf");
         if (!fileHandle.exists()) {
             Gdx.files.internal("preview fonts/Pacifico-Regular.ttf").copyTo(fileHandle);
         }
         
-        fileHandle = Gdx.files.local("preview fonts/PressStart2P-Regular.ttf");
+        fileHandle = appFolder.child("preview fonts/PressStart2P-Regular.ttf");
         if (!fileHandle.exists()) {
             Gdx.files.internal("preview fonts/PressStart2P-Regular.ttf").copyTo(fileHandle);
         }
         
-        fileHandle = Gdx.files.local("preview fonts/SourceSansPro-Regular.ttf");
+        fileHandle = appFolder.child("preview fonts/SourceSansPro-Regular.ttf");
         if (!fileHandle.exists()) {
             Gdx.files.internal("preview fonts/SourceSansPro-Regular.ttf").copyTo(fileHandle);
         }
@@ -202,6 +215,11 @@ public class Main extends ApplicationAdapter {
         projectData.setMain(this);
         projectData.randomizeId();
         projectData.setMaxUndos(30);
+        
+        newVersion = VERSION;
+        if (projectData.isCheckingForUpdates()) {
+            checkForUpdates(this);
+        }
         
         dialogFactory = new DialogFactory(this);
         undoableManager = new UndoableManager(this);
@@ -246,7 +264,12 @@ public class Main extends ApplicationAdapter {
         rootTable.populate();
         stage.addActor(rootTable);
         rootTable.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
-        mainListener.createWelcomeListener();
+        
+        //pass arguments
+        if (!mainListener.argumentsPassed(args)) {
+            //show welcome screen if there are no valid arguments
+            mainListener.createWelcomeListener();
+        }
     }
     
     @Override
@@ -345,5 +368,39 @@ public class Main extends ApplicationAdapter {
             }
         }
         return STYLE_CLASSES[i];
+    }
+
+    public static void checkForUpdates(Main main) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
+                HttpRequest httpRequest = requestBuilder.newRequest().method(HttpMethods.GET).url("https://raw.githubusercontent.com/raeleus/skin-composer/master/version").build();
+                Gdx.net.sendHttpRequest(httpRequest, new Net.HttpResponseListener() {
+                    @Override
+                    public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                        newVersion = httpResponse.getResultAsString();
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                main.rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.CHECK_FOR_UPDATES_COMPLETE));
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void failed(Throwable t) {
+                        newVersion = VERSION;
+                    }
+
+                    @Override
+                    public void cancelled() {
+                        newVersion = VERSION;
+                    }
+                });
+            }
+        });
+        
+        thread.start();
     }
 }

@@ -25,7 +25,10 @@ package com.ray3k.skincomposer;
 
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.PixmapPacker;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData;
 import com.badlogic.gdx.utils.Array;
+
 import java.io.File;
 import java.util.List;
 
@@ -43,4 +46,5 @@ public interface DesktopWorker {
     public File saveDialog(String title, String defaultPath, String[] filterPatterns, String filterDescription);
     public void closeSplashScreen();
     public char getKeyName(int keyCode);
+    public void writeFont(FreeTypeBitmapFontData data, Array<PixmapPacker.Page> pages, FileHandle target);
 }

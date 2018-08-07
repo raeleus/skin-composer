@@ -95,7 +95,7 @@ public class DialogFonts extends Dialog {
         maxTextureHeight = 1024;
         
         //extract max texture dimensions from defaults.json
-        FileHandle defaultsFile = Gdx.files.local("texturepacker/defaults.json");
+        FileHandle defaultsFile = Main.appFolder.child("texturepacker/defaults.json");
         if (defaultsFile.exists()) {
             JsonReader reader = new JsonReader();
             JsonValue val = reader.parse(defaultsFile);
@@ -177,12 +177,23 @@ public class DialogFonts extends Dialog {
         selectBox.getList().addListener(main.getHandListener());
         table.add(selectBox);
 
-        TextButton imageButton = new TextButton("New Font", getSkin(), "new");
+        TextButton imageButton = new TextButton("Open FNT", getSkin(), "new");
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                 newFontDialog();
+            }
+        });
+        imageButton.addListener(main.getHandListener());
+        table.add(imageButton).expandX();
+        
+        imageButton = new TextButton("Create FNT", getSkin(), "new");
+        imageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                newBitmapFontDialog();
             }
         });
         imageButton.addListener(main.getHandListener());
@@ -885,6 +896,17 @@ public class DialogFonts extends Dialog {
             main.getProjectData().setLastFontPath(fileHandle.path() + "/");
             fontNameDialog(files, 0);
         }
+    }
+    
+    private void newBitmapFontDialog() {
+        main.getDialogFactory().showDialogBitmapFont((FileHandle file) -> {
+            //todo: find out why image is in use after process
+            var files = new Array<FileHandle>();
+            files.add(file);
+            fontNameDialog(files, 0);
+            
+            main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+        });
     }
     
     private void newFreeTypeFontDialog() {

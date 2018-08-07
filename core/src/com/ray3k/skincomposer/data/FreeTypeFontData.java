@@ -27,8 +27,10 @@ package com.ray3k.skincomposer.data;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.Hinting;
@@ -109,7 +111,7 @@ public class FreeTypeFontData implements Json.Serializable {
             FreeTypeFontParameter parameter = new FreeTypeFontParameter();
             parameter.color = Color.BLACK;
             
-            FileHandle previewFontPath = Gdx.files.local("preview fonts/" + previewTTF + ".ttf");
+            FileHandle previewFontPath = Main.appFolder.child("preview fonts/" + previewTTF + ".ttf");
             if (previewFontPath.exists()) {
                 FreeTypeFontGenerator generator = new FreeTypeFontGenerator(previewFontPath);
                 bitmapFont = generator.generateFont(parameter);
@@ -159,6 +161,74 @@ public class FreeTypeFontData implements Json.Serializable {
             parameter.spaceY = spaceY;
 
             bitmapFont = generator.generateFont(parameter);
+            generator.dispose();
+        }
+    }
+    
+    public void writeFontToFile(Main main, FileHandle target) {
+        if (bitmapFont != null) {
+            bitmapFont.dispose();
+            bitmapFont = null;
+        }
+        
+        if (!useCustomSerializer) {
+            if (previewTTF == null) return;
+            FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+            parameter.color = Color.BLACK;
+            
+            FileHandle previewFontPath = Main.appFolder.child("preview fonts/" + previewTTF + ".ttf");
+            if (previewFontPath.exists()) {
+                FreeTypeFontGenerator generator = new FreeTypeFontGenerator(previewFontPath);
+                bitmapFont = generator.generateFont(parameter);
+                generator.dispose();
+            }
+        } else {
+            if (file == null) return;
+            FreeTypeFontGenerator generator = new FreeTypeFontGenerator(file);
+            FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+
+            if (borderColor != null) for (ColorData colorData : main.getJsonData().getColors()) {
+                if (colorData.getName().equals(borderColor)) {
+                    parameter.borderColor = colorData.color;
+                    break;
+                }
+            }
+            parameter.borderGamma = borderGamma;
+            parameter.borderStraight = borderStraight;
+            parameter.borderWidth = borderWidth;
+            parameter.characters = characters.equals("") ? DEFAULT_CHARS : characters;
+            if (color != null) for (ColorData colorData : main.getJsonData().getColors()) {
+                if (colorData.getName().equals(color)) {
+                    parameter.color = colorData.color;
+                    break;
+                }
+            }
+            parameter.flip = flip;
+            parameter.gamma = gamma;
+            parameter.genMipMaps = genMipMaps;
+            parameter.hinting = hinting == null ? Hinting.AutoMedium : Hinting.valueOf(hinting);
+            parameter.incremental = false;
+            parameter.kerning = kerning;
+            parameter.magFilter = magFilter == null ? TextureFilter.Nearest : TextureFilter.valueOf(magFilter);
+            parameter.minFilter = minFilter == null ? TextureFilter.Nearest : TextureFilter.valueOf(minFilter);
+            parameter.mono = mono;
+            parameter.renderCount = renderCount;
+            if (shadowColor != null) for (ColorData colorData : main.getJsonData().getColors()) {
+                if (colorData.getName().equals(shadowColor)) {
+                    parameter.shadowColor = colorData.color;
+                    break;
+                }
+            }
+            parameter.shadowOffsetX = shadowOffsetX;
+            parameter.shadowOffsetY = shadowOffsetY;
+            parameter.size = size;
+            parameter.spaceX = spaceX;
+            parameter.spaceY = spaceY;
+            parameter.packer = new PixmapPacker(512, 512, Pixmap.Format.RGBA8888, 2, false, new PixmapPacker.SkylineStrategy());
+
+            var data = generator.generateData(parameter);
+            
+            main.getDesktopWorker().writeFont(data, parameter.packer.getPages(), target);
             generator.dispose();
         }
     }

@@ -53,6 +53,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.CharArray;
 import com.badlogic.gdx.utils.IntArray;
@@ -608,7 +609,7 @@ public class DialogImageFont extends Dialog {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 try {
-                    Utils.openFileExplorer(Gdx.files.local("imagefont/characters/"));
+                    Utils.openFileExplorer(Main.appFolder.child("imagefont/characters/"));
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error opening characters folder", e);
                     main.getDialogFactory().showDialogError("Folder Error...", "Error opening characters folder.\n\nOpen log?");
@@ -645,6 +646,24 @@ public class DialogImageFont extends Dialog {
                 });
             }
         });
+        
+        imageButton = new ImageButton(skin, "color-bg");
+        table.add(imageButton);
+        imageButton.addListener(new TextTooltip("Change background color", main.getTooltipManager(), skin));
+        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (ColorData colorData) -> {
+                    if (colorData != null) {
+                        var textArea = (TextArea) findActor("preview");
+                        previewStyle.background = ((NinePatchDrawable) previewStyle.background).tint(colorData.color);
+                        settings.previewBackgroundColor = colorData.color;
+                    }
+                });
+            }
+        });
+        
     }
  
     private void sourceFileBrowse() {
@@ -778,6 +797,7 @@ public class DialogImageFont extends Dialog {
         int kerningPairsOffset;
         String preview;
         Color previewColor;
+        Color previewBackgroundColor;
         
         public ImageFontSettings() {
             characters = ALL;
@@ -792,6 +812,7 @@ public class DialogImageFont extends Dialog {
             tabSpace = 8;
             preview = SAMPLE_TEXT;
             previewColor = Color.WHITE;
+            previewBackgroundColor = Color.WHITE;
         }
     }
     
@@ -826,6 +847,7 @@ public class DialogImageFont extends Dialog {
         settings = json.fromJson(ImageFontSettings.class, file);
         refreshTable();
         previewStyle.fontColor = settings.previewColor;
+        previewStyle.background = ((NinePatchDrawable) previewStyle.background).tint(settings.previewBackgroundColor);
         
         if (targetPath != null && !targetPath.equals("")) {
             processSaveFile(targetPath);
@@ -1112,12 +1134,12 @@ public class DialogImageFont extends Dialog {
         }
         
         //write characters to temporary PNGs
-        Gdx.files.local("imagefont/characters").emptyDirectory();
+        Main.appFolder.child("imagefont/characters").emptyDirectory();
         for (var character : bitmapCharacters) {
             var pixmap = new Pixmap(character.width, character.cropHeight, Pixmap.Format.RGBA8888);
             pixmap.setBlending(Pixmap.Blending.None);
             pixmap.drawPixmap(fontPixmap, 0, 0, character.x, character.cropY, character.width, character.cropHeight);
-            PixmapIO.writePNG(Gdx.files.local("imagefont/characters/" + character.name + ".png"), pixmap);
+            PixmapIO.writePNG(Main.appFolder.child("imagefont/characters/" + character.name + ".png"), pixmap);
             pixmap.dispose();
         }
         
@@ -1128,7 +1150,7 @@ public class DialogImageFont extends Dialog {
                 return t.length() == 2;
             }).toArray(String[]::new);
             
-            var charFolder = Gdx.files.local("imagefont/characters");
+            var charFolder = Main.appFolder.child("imagefont/characters");
             var pixmaps = new Array<Pixmap>();
             var testColor = new Color();
             kerningPairValues.clear();
@@ -1299,7 +1321,7 @@ public class DialogImageFont extends Dialog {
 
 
             //texturepack images
-            main.getDesktopWorker().packFontImages(new Array<>(Gdx.files.local("imagefont/characters").list()), saveFile);
+            main.getDesktopWorker().packFontImages(new Array<>(Main.appFolder.child("imagefont/characters").list()), saveFile);
             
             var atlas = new TextureAtlas(saveFile.sibling(saveFile.nameWithoutExtension() + ".atlas"));
 
@@ -1369,7 +1391,7 @@ public class DialogImageFont extends Dialog {
     }
     
     private void preview(boolean texturePack) {
-        var file = Gdx.files.local("imagefont/preview/preview.fnt");
+        var file = Main.appFolder.child("imagefont/preview/preview.fnt");
         
         try {
             if (texturePack) {

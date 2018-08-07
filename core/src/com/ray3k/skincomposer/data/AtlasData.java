@@ -80,7 +80,7 @@ public class AtlasData implements Json.Serializable {
             if (saveFile != null) {
                 targetDirectory = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
             } else {
-                targetDirectory = Gdx.files.local("temp/" + main.getProjectData().getId() + "_data/");
+                targetDirectory = Main.appFolder.child("temp/" + main.getProjectData().getId() + "_data/");
             }
             
             targetDirectory.mkdirs();
@@ -102,6 +102,7 @@ public class AtlasData implements Json.Serializable {
                 if (region.splits == null && region.pads == null) {
                     name = region.name + ".png";
                     savePixmap = new Pixmap(region.getRegionWidth(), region.getRegionHeight(), Pixmap.Format.RGBA8888);
+                    savePixmap.setBlending(Pixmap.Blending.None);
                     for (int x = 0; x < region.getRegionWidth(); x++) {
                         for (int y = 0; y < region.getRegionHeight(); y++) {
                             int colorInt = pixmap.getPixel(region.getRegionX() + x, region.getRegionY() + y);
@@ -111,6 +112,7 @@ public class AtlasData implements Json.Serializable {
                 } else {
                     name = region.name + ".9.png";
                     savePixmap = new Pixmap(region.getRegionWidth() + 2, region.getRegionHeight() + 2, pixmap.getFormat());
+                    savePixmap.setBlending(Pixmap.Blending.None);
                     int x;
                     int y;
                     
@@ -169,7 +171,7 @@ public class AtlasData implements Json.Serializable {
     }
     
     public void writeAtlas() throws Exception {
-        FileHandle targetFile = Gdx.files.local("temp/" + main.getProjectData().getId() + ".atlas");
+        FileHandle targetFile = Main.appFolder.child("temp/" + main.getProjectData().getId() + ".atlas");
         targetFile.parent().mkdirs();
         FileHandle[] oldFiles = targetFile.parent().list(new FilenameFilter() {
             @Override
@@ -225,7 +227,7 @@ public class AtlasData implements Json.Serializable {
     
     public TextureAtlas getAtlas() {
         TextureAtlas atlas = null;
-        FileHandle atlasFile = Gdx.files.local("temp/" + main.getProjectData().getId() + ".atlas");
+        FileHandle atlasFile = Main.appFolder.child("temp/" + main.getProjectData().getId() + ".atlas");
         if (atlasFile.exists()) {
             atlas = new TextureAtlas(atlasFile);
         }
@@ -233,7 +235,7 @@ public class AtlasData implements Json.Serializable {
     }
     
     public void clearTempData() {
-        FileHandle tempFolder = Gdx.files.local("temp/");
+        FileHandle tempFolder = Main.appFolder.child("temp/");
         tempFolder.deleteDirectory();
     }
     

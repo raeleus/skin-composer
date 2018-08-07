@@ -60,6 +60,7 @@ import com.ray3k.skincomposer.dialog.DialogCustomStyle;
 import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
+import java.util.Locale;
 
 public class MainListener extends RootTableListener {
     private final RootTable root;
@@ -257,6 +258,12 @@ public class MainListener extends RootTableListener {
                 break;
             case REFRESH_ATLAS:
                 refreshTextureAtlas();
+                break;
+            case DOWNLOAD_UPDATE:
+                downloadUpdate();
+                break;
+            case CHECK_FOR_UPDATES_COMPLETE:
+                root.findActor("downloadButton").setVisible(!Main.VERSION.equals(Main.newVersion));
                 break;
         }
     }
@@ -647,8 +654,25 @@ public class MainListener extends RootTableListener {
         });
     }
     
+    public void downloadUpdate() {
+        main.getDialogFactory().showDialogUpdate(main.getSkin(), main.getStage());
+    }
+    
     public WelcomeListener getWelcomeListener() {
         return welcomeListener;
+    }
+
+    public boolean argumentsPassed(String[] args) {
+        var validArgument = false;
+        if (args != null && args.length > 0) {
+            var fileHandle = Gdx.files.absolute(args[0]);
+            if (fileHandle.exists() && fileHandle.extension().toLowerCase(Locale.ROOT).equals("scmp")) {
+                validArgument = true;
+                openFile(fileHandle);
+            }
+        }
+        
+        return validArgument;
     }
     
     private class WelcomeDialogListener extends WelcomeListener {
@@ -668,16 +692,16 @@ public class MainListener extends RootTableListener {
 
         @Override
         public void visUIclicked() {
-            Gdx.files.internal("templates/vis-ui.scmp").copyTo(Gdx.files.local("temp/"));
-            openFile(Gdx.files.local("temp/vis-ui.scmp"));
+            Gdx.files.internal("templates/vis-ui.scmp").copyTo(Main.appFolder.child("temp/"));
+            openFile(Main.appFolder.child("temp/vis-ui.scmp"));
         }
 
         @Override
         public void plainJamesClicked() {
-            Gdx.files.internal("templates/plain-james-ui.zip").copyTo(Gdx.files.local("temp/"));
+            Gdx.files.internal("templates/plain-james-ui.zip").copyTo(Main.appFolder.child("temp/"));
             try {
-                Utils.unzip(Gdx.files.local("temp/plain-james-ui.zip"), Gdx.files.local("temp/"));
-                openFile(Gdx.files.local("temp/plain-james-ui.scmp"));
+                Utils.unzip(Main.appFolder.child("temp/plain-james-ui.zip"), Main.appFolder.child("temp/"));
+                openFile(Main.appFolder.child("temp/plain-james-ui.scmp"));
             } catch (Exception e) {
                 Gdx.app.error(getClass().getName(), "Error attempting to open template Plain-James.", e);
                 dialogFactory.showDialogError("Template Error...", "Error attempting to open template Plain-James.\n\nOpen log?");
@@ -686,10 +710,10 @@ public class MainListener extends RootTableListener {
 
         @Override
         public void neonClicked() {
-            Gdx.files.internal("templates/neon-ui.zip").copyTo(Gdx.files.local("temp/"));
+            Gdx.files.internal("templates/neon-ui.zip").copyTo(Main.appFolder.child("temp/"));
             try {
-                Utils.unzip(Gdx.files.local("temp/neon-ui.zip"), Gdx.files.local("temp/"));
-                openFile(Gdx.files.local("temp/neon-ui.scmp"));
+                Utils.unzip(Main.appFolder.child("temp/neon-ui.zip"), Main.appFolder.child("temp/"));
+                openFile(Main.appFolder.child("temp/neon-ui.scmp"));
             } catch (Exception e) {
                 Gdx.app.error(getClass().getName(), "Error attempting to open template Neon.", e);
                 dialogFactory.showDialogError("Template Error...", "Error attempting to open template Neon.\n\nOpen log?");
@@ -698,10 +722,10 @@ public class MainListener extends RootTableListener {
 
         @Override
         public void neutralizerClicked() {
-            Gdx.files.internal("templates/neutralizer-ui.zip").copyTo(Gdx.files.local("temp/"));
+            Gdx.files.internal("templates/neutralizer-ui.zip").copyTo(Main.appFolder.child("temp/"));
             try {
-                Utils.unzip(Gdx.files.local("temp/neutralizer-ui.zip"), Gdx.files.local("temp/"));
-                openFile(Gdx.files.local("temp/neutralizer-ui.scmp"));
+                Utils.unzip(Main.appFolder.child("temp/neutralizer-ui.zip"), Main.appFolder.child("temp/"));
+                openFile(Main.appFolder.child("temp/neutralizer-ui.scmp"));
             } catch (Exception e) {
                 Gdx.app.error(getClass().getName(), "Error attempting to open template Neutralizer.", e);
                 dialogFactory.showDialogError("Template Error...", "Error attempting to open template Neutralizer.\n\nOpen log?");

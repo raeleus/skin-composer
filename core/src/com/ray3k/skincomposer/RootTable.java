@@ -256,7 +256,7 @@ public class RootTable extends Table {
     private void addFileMenu() {
         Table table = new Table();
         table.defaults().padRight(2.0f);
-        add(table).expandX().left().padTop(2.0f);
+        add(table).growX().padTop(2.0f);
 
         MenuButtonGroup menuButtonGroup = new MenuButtonGroup();
 
@@ -326,6 +326,19 @@ public class RootTable extends Table {
 
         menuButton.setItems(new MenuItem("About...", RootTableEnum.ABOUT));
         menuButton.addListener(new MenuBarListener(menuButton));
+        
+        Button button = new Button(getSkin(), "download");
+        button.setName("downloadButton");
+        table.add(button).expandX().right();
+        button.addListener(new TextTooltip("Update Available", main.getTooltipManager(), getSkin()));
+        button.addListener(main.getHandListener());
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                fire(new RootTableEvent(RootTableEnum.DOWNLOAD_UPDATE));
+            }
+        });
+        button.setVisible(false);
     }
     
     public void setRecentFilesDisabled(boolean disabled) {
@@ -2744,7 +2757,7 @@ public class RootTable extends Table {
         REDO, SETTINGS, COLORS, FONTS, DRAWABLES, ABOUT, CLASS_SELECTED,
         NEW_CLASS, DUPLICATE_CLASS, DELETE_CLASS, RENAME_CLASS, STYLE_SELECTED,
         NEW_STYLE, DUPLICATE_STYLE, DELETE_STYLE, RENAME_STYLE, PREVIEW_PROPERTY,
-        WELCOME, REFRESH_ATLAS
+        WELCOME, REFRESH_ATLAS, DOWNLOAD_UPDATE, CHECK_FOR_UPDATES_COMPLETE;
     }
 
     public static class RootTableEvent extends Event {

@@ -25,7 +25,6 @@
 package com.ray3k.skincomposer;
 
 import com.badlogic.gdx.ApplicationLogger;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import java.io.PrintStream;
 
@@ -33,7 +32,7 @@ public class TextFileApplicationLogger implements ApplicationLogger {
     private final FileHandle log;
 
     public TextFileApplicationLogger() {
-        log = Gdx.files.local("temp/log.txt");
+        log = Main.appFolder.child("temp/log.txt");
     }
     
     @Override

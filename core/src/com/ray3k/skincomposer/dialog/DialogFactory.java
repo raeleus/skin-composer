@@ -25,6 +25,7 @@ package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -34,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -54,6 +56,7 @@ import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.data.ProjectData.RecentFile;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
+import com.ray3k.skincomposer.dialog.DialogBitmapFont.DialogBitmapFontListener;
 import com.ray3k.skincomposer.dialog.DialogColors.DialogColorsListener;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
 import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyListener;
@@ -748,5 +751,44 @@ public class DialogFactory {
         dialog.show(main.getStage());
         main.getStage().setKeyboardFocus(dialog.findActor("characters"));
         main.getStage().setScrollFocus(dialog.findActor("scroll"));
+    }
+    
+    public void showDialogBitmapFont(DialogBitmapFontListener listener) {
+        DialogBitmapFont dialog = new DialogBitmapFont(main);
+        dialog.addListener(listener);
+        dialog.setFillParent(true);
+        dialog.show(main.getStage());
+        main.getStage().setScrollFocus(dialog.findActor("scrollPane"));
+    }
+    
+    public void showDialogUpdate(Skin skin, Stage stage) {
+        Dialog dialog = new Dialog("Download Update", skin, "bg");
+        dialog.getContentTable().pad(10.0f);
+        dialog.getButtonTable().pad(10.0f).padTop(0);
+        
+        Table table = dialog.getContentTable();
+        
+        Label label = new Label("Version " + Main.newVersion + " available for download.", skin);
+        table.add(label);
+        
+        table.row();
+        TextButton textButton = new TextButton("Download Here", skin, "link");
+        table.add(textButton);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                Gdx.net.openURI("https://github.com/raeleus/skin-composer/releases");
+            }
+        });
+        
+        dialog.getButtonTable().defaults().minWidth(80.0f);
+        textButton = new TextButton("OK", skin);
+        dialog.button(textButton);
+        textButton.addListener(main.getHandListener());
+        
+        dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
+        
+        dialog.show(stage);
     }
 }
