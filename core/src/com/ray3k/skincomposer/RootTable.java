@@ -101,7 +101,6 @@ public class RootTable extends Table {
 
     private final Stage stage;
     private final Main main;
-    private boolean draggingCursor;
     private SelectBox classSelectBox;
     private SelectBox styleSelectBox;
     private Array<StyleProperty> styleProperties;
@@ -146,10 +145,6 @@ public class RootTable extends Table {
     private Button classRenameButton;
     private Button styleDeleteButton;
     private Button styleRenameButton;
-    private final DragListener hSplitPaneDragListener;
-    private final DragListener vSplitPaneDragListener;
-    private final InputListener hSplitPaneInputListener;
-    private final InputListener vSplitPaneInputListener;
 
     public RootTable(Main main) {
         super(main.getSkin());
@@ -158,77 +153,6 @@ public class RootTable extends Table {
         
         previewProperties = new ObjectMap<>();
         previewBgColor = new Color(Color.WHITE);
-
-        hSplitPaneDragListener = new DragListener() {
-            @Override
-            public void dragStop(InputEvent event, float x, float y, int pointer) {
-                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                draggingCursor = false;
-            }
-
-            @Override
-            public void dragStart(InputEvent event, float x, float y,
-                    int pointer) {
-                if (!draggingCursor && event.getListenerActor().equals(event.getTarget())) {
-                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.HorizontalResize);
-                    draggingCursor = true;
-                }
-            }
-        };
-        
-        vSplitPaneDragListener = new DragListener() {
-            @Override
-            public void dragStop(InputEvent event, float x, float y, int pointer) {
-                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                draggingCursor = false;
-            }
-
-            @Override
-            public void dragStart(InputEvent event, float x, float y,
-                    int pointer) {
-                if (!draggingCursor && event.getListenerActor().equals(event.getTarget())) {
-                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.VerticalResize);
-                    draggingCursor = true;
-                }
-            }
-
-        };
-        
-        hSplitPaneInputListener = new InputListener() {
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer,
-                    Actor toActor) {
-                if (!draggingCursor && event.getListenerActor().equals(event.getTarget())) {
-                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                }
-            }
-
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer,
-                    Actor fromActor) {
-                if (!draggingCursor && event.getListenerActor().equals(event.getTarget())) {
-                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.HorizontalResize);
-                }
-            }
-        };
-        
-        vSplitPaneInputListener = new InputListener() {
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer,
-                    Actor toActor) {
-                if (!draggingCursor && event.getListenerActor().equals(event.getTarget())) {
-                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                }
-            }
-
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer,
-                    Actor fromActor) {
-                if (!draggingCursor && event.getListenerActor().equals(event.getTarget())) {
-                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.VerticalResize);
-                }
-            }
-        };
         
         scrollPaneListener = new ScrollPaneListener();
         previewFonts = new Array<>();
@@ -596,42 +520,7 @@ public class RootTable extends Table {
         SplitPane splitPane = new SplitPane(stylePropertiesTable, right, false, getSkin());
         add(splitPane).grow();
 
-        splitPane.addListener(new InputListener() {
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer,
-                    Actor toActor) {
-                if (!draggingCursor && event.getListenerActor().equals(event.getTarget())) {
-                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                }
-            }
-
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer,
-                    Actor fromActor) {
-                if (!draggingCursor && event.getListenerActor().equals(event.getTarget())) {
-                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.HorizontalResize);
-                }
-            }
-
-        });
-
-        splitPane.addListener(new DragListener() {
-            @Override
-            public void dragStop(InputEvent event, float x, float y, int pointer) {
-                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                draggingCursor = false;
-            }
-
-            @Override
-            public void dragStart(InputEvent event, float x, float y,
-                    int pointer) {
-                if (!draggingCursor && event.getListenerActor().equals(event.getTarget())) {
-                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.HorizontalResize);
-                    draggingCursor = true;
-                }
-            }
-
-        });
+        splitPane.addListener(main.getHorizontalResizeArrowListener());
     }
 
     public void refreshStyleProperties(boolean preserveScroll) {
@@ -1065,41 +954,7 @@ public class RootTable extends Table {
         SplitPane splitPane = new SplitPane(top, bottom, true, getSkin());
         right.add(splitPane).grow();
 
-        splitPane.addListener(new InputListener() {
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer,
-                    Actor toActor) {
-                if (!draggingCursor && event.getListenerActor().equals(event.getTarget())) {
-                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                }
-            }
-
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer,
-                    Actor fromActor) {
-                if (!draggingCursor && event.getListenerActor().equals(event.getTarget())) {
-                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.VerticalResize);
-                }
-            }
-        });
-
-        splitPane.addListener(new DragListener() {
-            @Override
-            public void dragStop(InputEvent event, float x, float y, int pointer) {
-                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                draggingCursor = false;
-            }
-
-            @Override
-            public void dragStart(InputEvent event, float x, float y,
-                    int pointer) {
-                if (!draggingCursor && event.getListenerActor().equals(event.getTarget())) {
-                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.VerticalResize);
-                    draggingCursor = true;
-                }
-            }
-
-        });
+        splitPane.addListener(main.getVerticalResizeArrowListener());
     }
 
     private void addPreview(Table top, InputListener scrollPaneListener) {
@@ -2185,11 +2040,9 @@ public class RootTable extends Table {
                         label2.setText((String) previewProperties.get("text"));
                         
                         if ((boolean) previewProperties.get("orientation")) {
-                            widget.addListener(vSplitPaneDragListener);
-                            widget.addListener(vSplitPaneInputListener);
+                            widget.addListener(main.getVerticalResizeArrowListener());
                         } else {
-                            widget.addListener(hSplitPaneDragListener);
-                            widget.addListener(hSplitPaneInputListener);
+                            widget.addListener(main.getHorizontalResizeArrowListener());
                         }
                     } else if (clazz.equals(TextButton.class)) {
                         TextButtonStyle style = createPreviewStyle(TextButtonStyle.class, styleData);
