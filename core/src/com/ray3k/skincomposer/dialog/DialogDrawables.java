@@ -1147,6 +1147,7 @@ public class DialogDrawables extends Dialog {
         for (int i = 0; i < main.getAtlasData().getDrawables().size; i++) {
             DrawableData data = main.getAtlasData().getDrawables().get(i);
             if (name.equals(DrawableData.proper(data.file.name()))) {
+            if (data.file != null && name.equals(DrawableData.proper(data.file.name()))) {
                 count++;
             }
         }
