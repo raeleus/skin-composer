@@ -10,6 +10,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Changes ###
 
 * Added 9-Patch Editor. See Project >> Drawables >> Create 9-Patch.
+* Fixed crash bug when adding a drawable after creating a custom drawable.
 
 ### Contact ###
 
