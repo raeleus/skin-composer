@@ -254,7 +254,6 @@ public class JsonData implements Json.Serializable {
                         drawableData.tintName = tintedDrawable.getString("color");
                     }
                     
-                    //todo:test overwriting a base drawable that is depended on by another tint
                     //delete drawables with the same name
                     for (DrawableData originalData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {
                         if (originalData.name.equals(drawableData.name)) {

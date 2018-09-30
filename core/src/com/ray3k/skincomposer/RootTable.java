@@ -2784,4 +2784,8 @@ public class RootTable extends Table {
             return false;
         }
     }
+
+    public ObjectMap<String, Drawable> getDrawablePairs() {
+        return drawablePairs;
+    }
 }

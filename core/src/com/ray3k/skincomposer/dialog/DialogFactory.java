@@ -56,11 +56,13 @@ import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.data.ProjectData.RecentFile;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
+import com.ray3k.skincomposer.dialog.Dialog9Patch.Dialog9PatchListener;
 import com.ray3k.skincomposer.dialog.DialogBitmapFont.DialogBitmapFontListener;
 import com.ray3k.skincomposer.dialog.DialogColors.DialogColorsListener;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
 import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyListener;
 import com.ray3k.skincomposer.dialog.DialogCustomStyle.CustomStyleListener;
+import com.ray3k.skincomposer.dialog.DialogDrawables.DialogDrawablesListener;
 import com.ray3k.skincomposer.dialog.DialogFreeTypeFont.DialogFreeTypeFontListener;
 import com.ray3k.skincomposer.dialog.DialogImageFont.ImageFontListener;
 import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
@@ -112,30 +114,44 @@ public class DialogFactory {
         DialogFactory.this.showDialogColors((StyleProperty)null, listener);
     }
 
-    public void showDialogDrawables(StyleProperty property,
-            EventListener listener) {
+    public DialogDrawables showDialogDrawables(StyleProperty property,
+            DialogDrawablesListener listener) {
         DialogDrawables dialog = new DialogDrawables(main, property, listener);
         dialog.setFillParent(true);
         dialog.show(main.getStage());
+        return dialog;
     }
     
-    public void showDialogDrawables(CustomProperty property,
-            EventListener listener) {
+    public DialogDrawables showDialogDrawables(CustomProperty property,
+            DialogDrawablesListener listener) {
         DialogDrawables dialog = new DialogDrawables(main, property, listener);
         dialog.setFillParent(true);
         dialog.show(main.getStage());
+        return dialog;
     }
 
-    public void showDialogDrawables(StyleProperty property) {
-        showDialogDrawables(property, null);
+    public DialogDrawables showDialogDrawables(StyleProperty property) {
+        return showDialogDrawables(property, null);
     }
     
-    public void showDialogDrawables(CustomProperty property) {
-        showDialogDrawables(property, null);
+    public DialogDrawables showDialogDrawables(CustomProperty property) {
+        return showDialogDrawables(property, null);
     }
 
-    public void showDrawables() {
-        showDialogDrawables((StyleProperty)null);
+    public DialogDrawables showDialogDrawables() {
+        return showDialogDrawables((StyleProperty) null);
+    }
+    
+    public DialogDrawables showDialogDrawables(DialogDrawablesListener listener) {
+        return showDialogDrawables((StyleProperty) null, listener);
+    }
+    
+    public DialogDrawables showDialogDrawables(boolean allowSelection, DialogDrawablesListener listener) {
+        if (allowSelection) {
+            return showDialogDrawables(new StyleProperty(), listener);
+        } else {
+            return showDialogDrawables(listener);
+        }
     }
 
     public void showDialogFonts(StyleProperty styleProperty, EventListener listener) {
@@ -563,6 +579,56 @@ public class DialogFactory {
         dialog.key(Input.Keys.ESCAPE, 2);
         dialog.show(main.getStage());
     }
+    
+    public void showInputDialog(String title, String message, String defaultText, InputDialogListener listener) {
+        var dialog = new Dialog(title, main.getSkin(), "bg") {
+            @Override
+            protected void result(Object object) {
+                if ((Boolean) object) {
+                    listener.confirmed(((TextField) findActor("textField")).getText());
+                } else {
+                    listener.cancelled();
+                }
+            }
+        };
+        
+        dialog.getTitleTable().getCells().first().padLeft(5.0f);
+        
+        var root = dialog.getContentTable();
+        root.pad(5);
+        
+        root.defaults().space(5.0f);
+        var label = new Label(message, main.getSkin());
+        root.add(label);
+        
+        root.row();
+        var textField = new TextField(defaultText, main.getSkin());
+        textField.setName("textField");
+        textField.setSelection(0, textField.getText().length());
+        root.add(textField).growX();
+        textField.addListener(main.getIbeamListener());
+        
+        dialog.getButtonTable().pad(5);
+        dialog.getButtonTable().defaults().space(5).minWidth(100);
+        
+        var button = new TextButton("OK", main.getSkin());
+        dialog.button(button, true);
+        button.addListener(main.getHandListener());
+        
+        button = new TextButton("Cancel", main.getSkin());
+        dialog.button(button, false);
+        button.addListener(main.getHandListener());
+        
+        dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
+        
+        dialog.show(main.getStage());
+        main.getStage().setKeyboardFocus(textField);
+    }
+    
+    public static interface InputDialogListener {
+        public void confirmed(String text);
+        public void cancelled();
+    }
 
     public void showDialogError(String title, String message, Runnable runnable) {
         Dialog dialog = new Dialog(title, main.getSkin(), "bg") {
@@ -790,5 +856,12 @@ public class DialogFactory {
         dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
         
         dialog.show(stage);
+    }
+    
+    public void showDialog9Patch(Dialog9PatchListener listener) {
+        Dialog9Patch dialog = new Dialog9Patch(main);
+        dialog.addDialog9PatchListener(listener);
+        dialog.setFillParent(true);
+        dialog.show(main.getStage());
     }
 }

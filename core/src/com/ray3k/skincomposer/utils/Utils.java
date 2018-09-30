@@ -26,7 +26,9 @@ package com.ray3k.skincomposer.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -339,5 +341,31 @@ public class Utils {
             bos.write(bytesIn, 0, read);
         }
         bos.close();
+    }
+    
+    public static Pixmap textureRegionToPixmap(TextureRegion textureRegion) {
+        var texture = textureRegion.getTexture();
+        if (!texture.getTextureData().isPrepared()) {
+            texture.getTextureData().prepare();
+        }
+        
+        var pixmap = texture.getTextureData().consumePixmap();
+        var returnValue = new Pixmap(textureRegion.getRegionWidth(), textureRegion.getRegionHeight(), Pixmap.Format.RGBA8888);
+        returnValue.setBlending(Pixmap.Blending.None);
+        
+        for (int x = 0; x < textureRegion.getRegionWidth(); x++) {
+            for (int y = 0; y < textureRegion.getRegionHeight(); y++) {
+                int colorInt = pixmap.getPixel(textureRegion.getRegionX() + x, textureRegion.getRegionY() + y);
+                returnValue.drawPixel(x, y, colorInt);
+            }
+        }
+        
+        pixmap.dispose();
+        
+        return returnValue;
+    }
+    
+    public static Cursor textureRegionToCursor(TextureRegion textureRegion, int xHotspot, int yHotspot) {
+        return Gdx.graphics.newCursor(textureRegionToPixmap(textureRegion), xHotspot, yHotspot);
     }
 }
