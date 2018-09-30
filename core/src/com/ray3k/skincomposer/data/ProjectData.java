@@ -291,7 +291,7 @@ public class ProjectData implements Json.Serializable {
         }
         
         for (FreeTypeFontData fontData : main.getJsonData().getFreeTypeFonts()) {
-            if (fontData.file.exists() && !targetFolder.equals(fontData.file.parent())) {
+            if (fontData.file != null && fontData.file.exists() && !targetFolder.equals(fontData.file.parent())) {
                 fontData.file.copyTo(targetFolder);
                 fontData.file = targetFolder.child(fontData.file.name());
             }
