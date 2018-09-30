@@ -861,6 +861,7 @@ public class RootTable extends Table {
                 
                 TextTooltip toolTip = new TextTooltip("Duplicate Style Property", main.getTooltipManager(), getSkin());
                 duplicateButton.addListener(toolTip);
+                duplicateButton.addListener(main.getHandListener());
                 
                 Button deleteButton = new Button(getSkin(), "delete");
                 table.add(deleteButton).fill(false).expand(false, false).pad(0).bottom();
@@ -874,6 +875,7 @@ public class RootTable extends Table {
                 
                 toolTip = new TextTooltip("Delete Style Property", main.getTooltipManager(), getSkin());
                 deleteButton.addListener(toolTip);
+                deleteButton.addListener(main.getHandListener());
                 
                 Button renameButton = new Button(getSkin(), "settings");
                 table.add(renameButton).fill(false).expand(false, false).pad(0).bottom();
@@ -887,6 +889,7 @@ public class RootTable extends Table {
                 
                 toolTip = new TextTooltip("Rename Style Property", main.getTooltipManager(), getSkin());
                 renameButton.addListener(toolTip);
+                renameButton.addListener(main.getHandListener());
                 
                 table.row();
             }
