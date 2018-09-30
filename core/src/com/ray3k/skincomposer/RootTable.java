@@ -905,6 +905,7 @@ public class RootTable extends Table {
             
             TextTooltip toolTip = new TextTooltip("New Style Property", main.getTooltipManager(), getSkin());
             button.addListener(toolTip);
+            button.addListener(main.getHandListener());
         }
     }
 
