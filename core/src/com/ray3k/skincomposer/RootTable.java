@@ -846,6 +846,7 @@ public class RootTable extends Table {
                     table.add(button).fill(false);
                     
                     button.addListener(new CustomPropertyChangeListener(styleProperty, button));
+                    button.addListener(main.getHandListener());
                 }
                 
                 Button duplicateButton = new Button(getSkin(), "duplicate");
