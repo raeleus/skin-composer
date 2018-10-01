@@ -731,7 +731,7 @@ public class NinePatchWidget extends Stack {
                     drawable.draw(batch, x, y + drawY * widget.zoom + offsetY, width, 1);
                 }
                 
-                for (var drawX = 0; drawX <= widget.getRegionHeight(); drawX++) {
+                for (var drawX = 0; drawX <= widget.getRegionWidth(); drawX++) {
                     drawable.draw(batch, x + drawX * widget.zoom + offsetX, y, 1, height);
                 }
             }
