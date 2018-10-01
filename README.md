@@ -5,17 +5,13 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 22
+* Version 23
 
 ### Changes ###
 
-* Added setting to check for updates. Update button appears on top right of main screen.
-* Added dialog to create Bitmap Fonts as an alternative to Hiero.
-* Fixed imported skin files having darkened transparent images.
-* Added preview bg color setting for Image Font dialog.
-* Temporary files and program settings are now saved in folder ".skincomposer" of the user's home directory.
-* Added Windows installer and file associations for ".scmp" files.
-* Improved layout and applied fixes to FreeType dialog.
+* Added 9-Patch Editor. See Project >> Drawables >> Create 9-Patch.
+* Fixed crash bug when adding a drawable after creating a custom drawable.
+* Fixed crash bug when saving a project with relative paths and a FreeType font with no custom serializer.
 
 ### Contact ###
 

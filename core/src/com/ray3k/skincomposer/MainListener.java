@@ -133,7 +133,7 @@ public class MainListener extends RootTableListener {
                 dialogFactory.showFonts();
                 break;
             case DRAWABLES:
-                dialogFactory.showDrawables();
+                dialogFactory.showDialogDrawables();
                 break;
             case ABOUT:
                 dialogFactory.showAbout();

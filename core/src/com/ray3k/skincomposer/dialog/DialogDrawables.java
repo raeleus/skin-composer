@@ -29,7 +29,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -96,22 +95,30 @@ public class DialogDrawables extends Dialog {
     private TextureAtlas atlas;
     private HorizontalGroup contentGroup;
     private FilesDroppedListener filesDroppedListener;
-    private EventListener listener;
+    private DialogDrawablesListener listener;
     private Main main;
+    private boolean showing9patchButton;
     
-    public DialogDrawables(Main main, StyleProperty property, EventListener listener) {
+    public static interface DialogDrawablesListener {
+        public void confirmed(DrawableData drawable);
+        public void emptied();
+        public void cancelled();
+    }
+    
+    public DialogDrawables(Main main, StyleProperty property, DialogDrawablesListener listener) {
         super("", main.getSkin(), "dialog");
         this.property = property;
         initialize(main, listener);
     }
     
-    public DialogDrawables(Main main, CustomProperty property, EventListener listener) {
+    public DialogDrawables(Main main, CustomProperty property, DialogDrawablesListener listener) {
         super("", main.getSkin(), "dialog");
         this.customProperty = property;
         initialize(main, listener);
     }
     
-    public void initialize(Main main, EventListener listener) {
+    public void initialize(Main main, DialogDrawablesListener listener) {
+        showing9patchButton = true;
         this.main = main;
         
         instance = this;
@@ -214,6 +221,7 @@ public class DialogDrawables extends Dialog {
     
     public void populate() {
         getContentTable().clear();
+        getButtonTable().clearChildren();
         
         getButtonTable().padBottom(15.0f);
         
@@ -244,7 +252,7 @@ public class DialogDrawables extends Dialog {
         sortSelectBox.getList().addListener(main.getHandListener());
         table.add(sortSelectBox);
         
-        TextButton textButton = new TextButton("Add Drawable", getSkin(), "new");
+        TextButton textButton = new TextButton("Add", getSkin(), "new");
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -255,7 +263,7 @@ public class DialogDrawables extends Dialog {
         textButton.addListener(main.getHandListener());
         table.add(textButton);
         
-        textButton = new TextButton("Custom Drawable", getSkin(), "new");
+        textButton = new TextButton("Custom", getSkin(), "new");
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -265,6 +273,33 @@ public class DialogDrawables extends Dialog {
         });
         textButton.addListener(main.getHandListener());
         table.add(textButton);
+        
+        if (showing9patchButton) {
+            textButton = new TextButton("Create 9-Patch", getSkin(), "new");
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                    main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+                    main.getDialogFactory().showDialog9Patch(new Dialog9Patch.Dialog9PatchListener() {
+                        @Override
+                        public void fileSaved(FileHandle fileHandle) {
+                            if (fileHandle.exists()) {
+                                drawablesSelected(new Array<>(new FileHandle[] {fileHandle}));
+                                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+                            }
+                        }
+
+                        @Override
+                        public void cancelled() {
+                            main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+                        }
+                    });
+                }
+            });
+            textButton.addListener(main.getHandListener());
+            table.add(textButton);
+        }
         
         table.add(new Label("Zoom:", getSkin())).right().expandX();
         zoomSlider = new Slider(0, 3, 1, false, getSkin());
@@ -1146,7 +1181,7 @@ public class DialogDrawables extends Dialog {
         String name = DrawableData.proper(handle.name());
         for (int i = 0; i < main.getAtlasData().getDrawables().size; i++) {
             DrawableData data = main.getAtlasData().getDrawables().get(i);
-            if (name.equals(DrawableData.proper(data.file.name()))) {
+            if (data.file != null && name.equals(DrawableData.proper(data.file.name()))) {
                 count++;
             }
         }
@@ -1551,6 +1586,10 @@ public class DialogDrawables extends Dialog {
                     undoable = new UndoableManager.CustomDrawableUndoable(main, customProperty, drawable.name);
                 }
                 main.getUndoableManager().addUndoable(undoable, true);
+                
+                if (listener != null) {
+                    listener.confirmed(drawable);
+                }
             } else if (object instanceof Boolean) {
                 if (property != null) {
                     if ((boolean) object) {
@@ -1560,6 +1599,10 @@ public class DialogDrawables extends Dialog {
                                         property, property.value, null);
                         main.getUndoableManager().addUndoable(undoable, true);
                         main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + property.name + "\"");
+                        
+                        if (listener != null) {
+                            listener.emptied();
+                        }
                     } else {
                         boolean hasDrawable = false;
                         for (DrawableData drawable : main.getAtlasData().getDrawables()) {
@@ -1576,6 +1619,10 @@ public class DialogDrawables extends Dialog {
                             main.getRootTable().setStatusBarMessage("Drawable deleted for \"" + property.name + "\"");
                             main.getRootTable().refreshStyleProperties(true);
                         }
+                        
+                        if (listener != null) {
+                            listener.cancelled();
+                        }
                     }
                 } else if (customProperty != null) {
                     if ((boolean) object) {
@@ -1583,6 +1630,10 @@ public class DialogDrawables extends Dialog {
                         CustomDrawableUndoable undoable = new CustomDrawableUndoable(main, customProperty, null);
                         main.getUndoableManager().addUndoable(undoable, true);
                         main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + customProperty.getName() + "\"");
+                        
+                        if (listener != null) {
+                            listener.emptied();
+                        }
                     } else {
                         boolean hasDrawable = false;
                         for (DrawableData drawable : main.getAtlasData().getDrawables()) {
@@ -1599,15 +1650,30 @@ public class DialogDrawables extends Dialog {
                             main.getRootTable().setStatusBarMessage("Drawable deleted for \"" + customProperty.getName() + "\"");
                             main.getRootTable().refreshStyleProperties(true);
                         }
+                        
+                        if (listener != null) {
+                            listener.cancelled();
+                        }
+                    }
+                } else {
+                    if (listener != null) {
+                        listener.cancelled();
                     }
                 }
             }
+        } else {
+            if (listener != null) {
+                listener.cancelled();
+            }
         }
-        
-        //todo: do proper implementation of event handling with fire(), etc.
-        if (listener != null) {
-            listener.handle(null);
-            listener = null;
-        }
+    }
+
+    public boolean isShowing9patchButton() {
+        return showing9patchButton;
+    }
+
+    public void setShowing9patchButton(boolean showing9patchButton) {
+        this.showing9patchButton = showing9patchButton;
+        populate();
     }
 }

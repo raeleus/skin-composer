@@ -900,7 +900,6 @@ public class DialogFonts extends Dialog {
     
     private void newBitmapFontDialog() {
         main.getDialogFactory().showDialogBitmapFont((FileHandle file) -> {
-            //todo: find out why image is in use after process
             var files = new Array<FileHandle>();
             files.add(file);
             fontNameDialog(files, 0);

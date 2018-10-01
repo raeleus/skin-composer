@@ -144,31 +144,31 @@ public class Spinner extends Table {
         if (null != orientation) switch (orientation) {
             case HORIZONTAL:
                 add(buttonMinus);
-                add(textField).prefWidth(35.0f).minWidth(35.0f).growX();
+                add(textField).prefWidth(style.textFieldStyle.background.getMinWidth()).minWidth(style.textFieldStyle.background.getMinWidth()).growX();
                 add(buttonPlus);
                 break;
             case HORIZONTAL_FLIPPED:
                 add(buttonPlus);
-                add(textField).prefWidth(35.0f).minWidth(35.0f).growX();
+                add(textField).prefWidth(style.textFieldStyle.background.getMinWidth()).minWidth(style.textFieldStyle.background.getMinWidth()).growX();
                 add(buttonMinus);
                 break;
             case VERTICAL:
                 add(buttonPlus);
                 row();
-                add(textField).prefWidth(35.0f).minWidth(35.0f).growX();
+                add(textField).prefWidth(style.textFieldStyle.background.getMinWidth()).minWidth(style.textFieldStyle.background.getMinWidth()).growX();
                 row();
                 add(buttonMinus);
                 break;
             case VERTICAL_FLIPPED:
                 add(buttonMinus);
                 row();
-                add(textField).prefWidth(35.0f).minWidth(35.0f).growX();
+                add(textField).prefWidth(style.textFieldStyle.background.getMinWidth()).minWidth(style.textFieldStyle.background.getMinWidth()).growX();
                 row();
                 add(buttonPlus);
                 break;
             case RIGHT_STACK:
             {
-                add(textField).prefWidth(35.0f).minWidth(35.0f).growX();
+                add(textField).prefWidth(style.textFieldStyle.background.getMinWidth()).minWidth(style.textFieldStyle.background.getMinWidth()).growX();
                 
                 VerticalGroup group = new VerticalGroup();
                 add(group);

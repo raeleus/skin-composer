@@ -67,8 +67,6 @@ import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 import java.util.stream.Stream;
 
 /**

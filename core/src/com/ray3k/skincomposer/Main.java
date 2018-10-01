@@ -23,10 +23,8 @@
  ******************************************************************************/
 package com.ray3k.skincomposer;
 
+import com.badlogic.gdx.*;
 import com.ray3k.skincomposer.dialog.DialogFactory;
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.files.FileHandle;
@@ -83,7 +81,7 @@ import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "22";
+    public final static String VERSION = "23";
     public static String newVersion;
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,
@@ -108,6 +106,8 @@ public class Main extends ApplicationAdapter {
     private IbeamListener ibeamListener;
     private MainListener mainListener;
     private HandListener handListener;
+    private ResizeArrowListener verticalResizeArrowListener;
+    private ResizeArrowListener horizontalResizeArrowListener;
     private TooltipManager tooltipManager;
     public static FileHandle appFolder;
     private String[] args;
@@ -245,6 +245,9 @@ public class Main extends ApplicationAdapter {
         projectData.getAtlasData().clearTempData();
         handListener = new HandListener();
         
+        verticalResizeArrowListener = new ResizeArrowListener(true);
+        horizontalResizeArrowListener = new ResizeArrowListener(false);
+        
         tooltipManager = new TooltipManager();
         tooltipManager.animations = false;
         tooltipManager.initialTime = .4f;
@@ -352,6 +355,14 @@ public class Main extends ApplicationAdapter {
 
     public HandListener getHandListener() {
         return handListener;
+    }
+
+    public ResizeArrowListener getVerticalResizeArrowListener() {
+        return verticalResizeArrowListener;
+    }
+
+    public ResizeArrowListener getHorizontalResizeArrowListener() {
+        return horizontalResizeArrowListener;
     }
 
     public TooltipManager getTooltipManager() {
