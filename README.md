@@ -9,8 +9,9 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 
 ### Changes ###
 
-* Resolved issue with Bitmap Font dialog creating fonts with incorrect baseline values.
-* Resolved drag and drop broken after using Bitmap Font Dialog.
+* Resolved issue with Create Bitmap Font dialog creating fonts with incorrect baseline values.
+* Resolved drag and drop broken after using Create Bitmap Font dialog.
+* Added drag and drop to Create Bitmap Font dialog.
 * Fixed SplitPane preview not allowing for adjustments.
 * Added indent spacing and tied missing properties to the Tree preview.
 * Prioritized nine patches over standard graphics when images of the same name are dragged into the drawables dialog.

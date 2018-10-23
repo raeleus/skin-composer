@@ -47,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
+import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.data.ColorData;
@@ -69,6 +70,7 @@ public class DialogBitmapFont extends Dialog {
     private Array<DialogBitmapFontListener> listeners;
     private TextFieldStyle previewStyle;
     private String previewText;
+    private FilesDroppedListener filesDroppedListener;
     
     public DialogBitmapFont(Main main) {
         super("Create new Bitmap Font", main.getSkin(), "bg");
@@ -105,6 +107,18 @@ public class DialogBitmapFont extends Dialog {
         key(Keys.ESCAPE, false).key(Keys.ENTER, true);
         
         listeners = new Array<>();
+        
+        filesDroppedListener = (Array<FileHandle> files) -> {
+            if (files.size > 0 && files.first().extension().toLowerCase(Locale.ROOT).equals("ttf")) {
+                Runnable runnable = () -> {
+                    loadTTFsource(files.first());
+                };
+                
+                main.getDialogFactory().showDialogLoading(runnable);
+            }
+        };
+        
+        main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
     }
 
     @Override
@@ -116,6 +130,12 @@ public class DialogBitmapFont extends Dialog {
                 listener.fontAdded(target);
             }
         }
+    }
+    
+    @Override
+    public boolean remove() {
+        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        return super.remove();
     }
     
     public void addListener(DialogBitmapFontListener listener) {
@@ -201,21 +221,7 @@ public class DialogBitmapFont extends Dialog {
 
                     File file = main.getDesktopWorker().openDialog("Select TTF file...", defaultPath, filterPatterns, "True Type Font files");
                     if (file != null) {
-                        data.file = new FileHandle(file);
-                        
-                        var textField = (TextField)DialogBitmapFont.this.findActor("sourceFileField");
-                        textField.setText(data.file.path());
-                        textField.setCursorPosition(textField.getText().length() - 1);
-                        main.getProjectData().setLastFontPath(data.file.parent().path() + "/");
-                        
-                        if (target == null) {
-                            target = data.file.sibling(data.file.nameWithoutExtension() + ".fnt");
-                            textField = (TextField)DialogBitmapFont.this.findActor("targetFileField");
-                            textField.setText(target.path());
-                            textField.setCursorPosition(textField.getText().length() - 1);
-                        }
-                        
-                        updatePreviewAndOK();
+                        loadTTFsource(new FileHandle(file));
                     }
                 };
                 
@@ -859,6 +865,24 @@ public class DialogBitmapFont extends Dialog {
         textButton.setName("cancelButton");
         textButton.addListener(main.getHandListener());
         button(textButton, false);
+    }
+    
+    private void loadTTFsource(FileHandle file) {
+        data.file = file;
+
+        var textField = (TextField) DialogBitmapFont.this.findActor("sourceFileField");
+        textField.setText(data.file.path());
+        textField.setCursorPosition(textField.getText().length() - 1);
+        main.getProjectData().setLastFontPath(data.file.parent().path() + "/");
+
+        if (target == null) {
+            target = data.file.sibling(data.file.nameWithoutExtension() + ".fnt");
+            textField = (TextField) DialogBitmapFont.this.findActor("targetFileField");
+            textField.setText(target.path());
+            textField.setCursorPosition(textField.getText().length() - 1);
+        }
+
+        updatePreviewAndOK();
     }
     
     private void updateColors() {

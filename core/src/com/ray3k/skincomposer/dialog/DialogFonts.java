@@ -899,13 +899,15 @@ public class DialogFonts extends Dialog {
     }
     
     private void newBitmapFontDialog() {
+        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        
         main.getDialogFactory().showDialogBitmapFont((FileHandle file) -> {
             var files = new Array<FileHandle>();
             files.add(file);
             fontNameDialog(files, 0);
         
-            //todo:Add the following when a files dropped listener is developed for BitmapFontDialog
-//            main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+
+            main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
         });
     }
     
