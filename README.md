@@ -9,6 +9,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 
 ### Changes ###
 
+* Updated to LibGDX 1.9.9.
 * Resolved issue with Create Bitmap Font dialog creating fonts with incorrect baseline values.
 * Resolved drag and drop broken after using Create Bitmap Font dialog.
 * Added drag and drop to Create Bitmap Font dialog.
