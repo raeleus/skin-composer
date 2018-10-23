@@ -2038,9 +2038,18 @@ public class RootTable extends Table {
                         widget.addListener(main.getHandListener());
                     } else if (clazz.equals(SplitPane.class)) {
                         SplitPane.SplitPaneStyle style = createPreviewStyle(SplitPane.SplitPaneStyle.class, styleData);
+                        
+                        var table1 = new Table();
                         Label label1 = new Label("", getSkin());
+                        table1.add(label1).minSize(0);
+                        
+                        var table2 = new Table();
                         Label label2 = new Label("", getSkin());
-                        widget = new SplitPane(label1, label2, (boolean) previewProperties.get("orientation"), style);
+                        table2.add(label2).minSize(0);
+                        
+                        widget = new SplitPane(table1, table2, (boolean) previewProperties.get("orientation"), style);
+                        ((SplitPane) widget).setMinSplitAmount(0);
+                        ((SplitPane) widget).setMaxSplitAmount(1);
                         label1.setText((String) previewProperties.get("text"));
                         label2.setText((String) previewProperties.get("text"));
                         
