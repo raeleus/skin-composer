@@ -1229,9 +1229,13 @@ public class Dialog9Patch extends Dialog {
 
     private void zoomAndRecenter() {
         pack();
-          var widget = (NinePatchWidget) findActor("ninePatchWidget");
-          var slider = (Slider) findActor("top-zoom");
-        slider.setValue(MathUtils.floor(widget.getHeight() / (widget.getRegionHeight() + 4)));
+        var widget = (NinePatchWidget) findActor("ninePatchWidget");
+        var slider = (Slider) findActor("top-zoom");
+        
+        var widthRatio = MathUtils.floor(widget.getWidth() / (widget.getRegionWidth() + 4));
+        var heightRatio = MathUtils.floor(widget.getHeight() / (widget.getRegionHeight() + 4));
+        slider.setValue(Math.min(widthRatio, heightRatio));
+        
         widget.setPositionX(-widget.getRegionWidth() / 2.0f);
         widget.setPositionY(-widget.getRegionHeight() / 2.0f);
     }
