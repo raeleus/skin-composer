@@ -10,6 +10,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Changes ###
 
 * Resolved issue with Bitmap Font dialog creating fonts with incorrect baseline values.
+* Resolved drag and drop broken after using Bitmap Font Dialog.
 
 ### Contact ###
 

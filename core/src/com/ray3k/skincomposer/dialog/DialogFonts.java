@@ -903,8 +903,9 @@ public class DialogFonts extends Dialog {
             var files = new Array<FileHandle>();
             files.add(file);
             fontNameDialog(files, 0);
-            
-            main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+        
+            //todo:Add the following when a files dropped listener is developed for BitmapFontDialog
+//            main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
         });
     }
     
