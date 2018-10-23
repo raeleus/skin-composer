@@ -347,6 +347,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         var pngTarget = target.sibling(target.nameWithoutExtension() + ".png");
         
         BitmapFontWriter.FontInfo info = new BitmapFontWriter.FontInfo();
+        data.capHeight--;
         info.face = target.nameWithoutExtension();
         info.padding = new BitmapFontWriter.Padding(1, 1, 1, 1);
 
