@@ -79,6 +79,7 @@ import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 public class DialogDrawables extends Dialog {
     public static DialogDrawables instance;
@@ -133,8 +134,20 @@ public class DialogDrawables extends Dialog {
                     iter.remove();
                 }
             }
-            if (files.size > 0) {
-                drawablesSelected(files);
+            
+            var filesLimited = new Array<FileHandle>(files);
+            iter = filesLimited.iterator();
+            while (iter.hasNext()) {
+                var file = iter.next();
+                if (!file.name().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
+                    if (files.contains(file.sibling(file.nameWithoutExtension() + ".9.png"), false)) {
+                        iter.remove();
+                    }
+                }
+            }
+            
+            if (filesLimited.size > 0) {
+                drawablesSelected(filesLimited);
             }
         };
         
