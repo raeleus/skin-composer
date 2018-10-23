@@ -11,6 +11,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 
 * Resolved issue with Bitmap Font dialog creating fonts with incorrect baseline values.
 * Resolved drag and drop broken after using Bitmap Font Dialog.
+* Fixed SplitPane preview not allowing for adjustments.
 
 ### Contact ###
 
