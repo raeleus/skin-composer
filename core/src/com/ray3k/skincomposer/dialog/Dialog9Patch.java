@@ -1313,7 +1313,7 @@ public class Dialog9Patch extends Dialog {
             }
         }
         if (!foundBreak) {
-            ninePatchRight = originalImage.getWidth() - 1;
+            ninePatchRight = 0;
         }
         spinnerItem = (Spinner) findActor("spinner-padding-right");
         spinnerItem.setValue(ninePatchRight);
@@ -1364,7 +1364,7 @@ public class Dialog9Patch extends Dialog {
             }
         }
         if (!foundBreak) {
-            ninePatchBottom = originalImage.getHeight() - 1;
+            ninePatchBottom = 0;
         }
         spinnerItem = (Spinner) findActor("spinner-padding-bottom");
         spinnerItem.setValue(ninePatchBottom);
