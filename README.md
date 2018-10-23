@@ -13,6 +13,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * Resolved drag and drop broken after using Bitmap Font Dialog.
 * Fixed SplitPane preview not allowing for adjustments.
 * Added indent spacing and tied missing properties to the Tree preview.
+* Prioritized nine patches over standard graphics when images of the same name are dragged into the drawables dialog.
 
 ### Contact ###
 
