@@ -1842,23 +1842,75 @@ public class RootTable extends Table {
 
                 } else if (clazz.equals(Tree.class)) {
                     t.row();
-                    t.add(new Label("Icon Spacing: ", getSkin())).right();
-                    Spinner spinner = new Spinner(0.0, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
+                    t.add(new Label("Icon Spacing Left: ", getSkin())).right();
+                    Spinner spinner = new Spinner(2, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(1);
                     spinner.getTextField().addListener(main.getIbeamListener());
                     spinner.getButtonMinus().addListener(main.getHandListener());
                     spinner.getButtonPlus().addListener(main.getHandListener());
+                    spinner.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent changeEvent, Actor actor) {
+                            previewProperties.put("icon-spacing-left", ((Spinner) actor).getValueAsInt());
+                            refreshPreview();
+                        }
+                    });
+                    previewProperties.put("icon-spacing-left", spinner.getValueAsInt());
+                    t.add(spinner).growX();
+                    
+                    t.row();
+                    t.add(new Label("Icon Spacing Right: ", getSkin())).right();
+                    spinner = new Spinner(2, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
+                    spinner.getTextField().setFocusTraversal(false);
+                    spinner.setMinimum(1);
+                    spinner.getTextField().addListener(main.getIbeamListener());
+                    spinner.getButtonMinus().addListener(main.getHandListener());
+                    spinner.getButtonPlus().addListener(main.getHandListener());
+                    spinner.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent changeEvent, Actor actor) {
+                            previewProperties.put("icon-spacing-right", ((Spinner) actor).getValueAsInt());
+                            refreshPreview();
+                        }
+                    });
+                    previewProperties.put("icon-spacing-right", spinner.getValueAsInt());
+                    t.add(spinner).growX();
+                    
+                    t.row();
+                    t.add(new Label("Indent Spacing: ", getSkin())).right();
+                    spinner = new Spinner(0, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
+                    spinner.getTextField().setFocusTraversal(false);
+                    spinner.setMinimum(0);
+                    spinner.getTextField().addListener(main.getIbeamListener());
+                    spinner.getButtonMinus().addListener(main.getHandListener());
+                    spinner.getButtonPlus().addListener(main.getHandListener());
+                    spinner.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent changeEvent, Actor actor) {
+                            previewProperties.put("indent-spacing", ((Spinner) actor).getValueAsInt());
+                            refreshPreview();
+                        }
+                    });
+                    previewProperties.put("indent-spacing", spinner.getValueAsInt());
                     t.add(spinner).growX();
 
                     t.row();
                     t.add(new Label("Y Spacing: ", getSkin())).right();
-                    spinner = new Spinner(0.0, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
+                    spinner = new Spinner(4, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(1);
                     spinner.getTextField().addListener(main.getIbeamListener());
                     spinner.getButtonMinus().addListener(main.getHandListener());
                     spinner.getButtonPlus().addListener(main.getHandListener());
+                    spinner.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent changeEvent, Actor actor) {
+                            previewProperties.put("y-spacing", ((Spinner) actor).getValueAsInt());
+                            refreshPreview();
+                        }
+                    });
+                    previewProperties.put("y-spacing", spinner.getValueAsInt());
                     t.add(spinner).growX();
 
                 } else if (clazz.equals(Window.class)) {
@@ -2099,6 +2151,9 @@ public class RootTable extends Table {
                     } else if (clazz.equals(Tree.class)) {
                         Tree.TreeStyle style = createPreviewStyle(Tree.TreeStyle.class, styleData);
                         widget = new Tree(style);
+                        ((Tree) widget).setIconSpacing((int) previewProperties.get("icon-spacing-left"), (int) previewProperties.get("icon-spacing-right"));
+                        ((Tree) widget).setIndentSpacing((int) previewProperties.get("indent-spacing"));
+                        ((Tree) widget).setYSpacing((int) previewProperties.get("y-spacing"));
                         String[] lines = {"this", "is", "a", "test"};
                         Tree.Node parentNode = null;
                         for (String line: lines) {
