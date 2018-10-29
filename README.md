@@ -18,6 +18,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * Prioritized nine patches over standard graphics when images of the same name are dragged into the Drawables dialog.
 * Auto zoom and recenter in Nine Patch Editor now considers width in addition to height.
 * Resolved auto patches not functioning correctly for fully opaque, single-colored images in Nine Patch Editor.
+* Added save/load settings for bitmap font and freetype font dialogs.
 
 ### Contact ###
 

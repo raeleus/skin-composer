@@ -368,4 +368,8 @@ public class Utils {
     public static Cursor textureRegionToCursor(TextureRegion textureRegion, int xHotspot, int yHotspot) {
         return Gdx.graphics.newCursor(textureRegionToPixmap(textureRegion), xHotspot, yHotspot);
     }
+    
+    public static int colorToInt(Color color) {
+        return ((int)(255 * color.r) << 24) | ((int)(255 * color.g) << 16) | ((int)(255 * color.b) << 8) | ((int)(255 * color.a));
+    }
 }
