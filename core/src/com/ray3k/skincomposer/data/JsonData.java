@@ -889,6 +889,25 @@ public class JsonData implements Json.Serializable {
             fonts = json.readValue("fonts", Array.class, jsonData);
             
             freeTypeFonts = json.readValue("freeTypeFonts", Array.class, new Array<FreeTypeFontData>(),jsonData);
+            FileHandle previewFontsPath = Main.appFolder.child("preview fonts");
+            var fontsList = previewFontsPath.list();
+            
+            for (var freeTypeFont : freeTypeFonts) {
+                if (freeTypeFont.previewTTF != null) {
+                    
+                    boolean foundMatch = false;
+                    for (var previewFile : fontsList) {
+                        if (freeTypeFont.previewTTF.equals(previewFile.nameWithoutExtension())) {
+                            foundMatch = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!foundMatch) {
+                        freeTypeFont.previewTTF = previewFontsPath.list()[0].nameWithoutExtension();
+                    }
+                }
+            }
             
             classStyleMap = new OrderedMap<>();
             for (JsonValue data : jsonData.get("classStyleMap").iterator()) {
