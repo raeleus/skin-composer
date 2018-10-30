@@ -20,8 +20,9 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * Resolved auto patches not functioning correctly for fully opaque, single-colored images in Nine Patch Editor.
 * Added save/load settings for bitmap font and freetype font dialogs.
 * Added check for preview fonts upon project load.
-* Added option to change preview background color in nine patch dialog.
+* Added option to change preview background color in Nine Patch Editor.
 * Added option to change preview background to bitmap font and FreeType font dialogs.
+* Improved appearance of handles in Nine Patch Editor when zoomed out.
 
 ### Contact ###
 
