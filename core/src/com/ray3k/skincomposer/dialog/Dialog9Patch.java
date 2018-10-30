@@ -49,6 +49,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
@@ -90,9 +91,11 @@ public class Dialog9Patch extends Dialog {
     private FileHandle loadedFile;
     private Array<Dialog9PatchListener> listeners;
     private FilesDroppedListener filesDroppedListener;
+    private Color previewBGcolor;
 
     public Dialog9Patch(Main main) {
         super("", main.getSkin(), "dialog");
+        previewBGcolor = new Color(Color.WHITE);
         listeners = new Array<>();
         this.main = main;
 
@@ -232,14 +235,15 @@ public class Dialog9Patch extends Dialog {
         });
 
         root.row();
-          var image = new Image(getSkin(), "welcome-separator");
+        var image = new Image(getSkin(), "welcome-separator");
         root.add(image).growX().space(15.0f);
         image.setScaling(Scaling.stretch);
 
-          var top = new Table();
+        var top = new Table();
         top.setTouchable(Touchable.enabled);
 
-          var bottom = new Table();
+        var bottom = new Table();
+        bottom.setBackground(getSkin().getDrawable("white"));
         bottom.setTouchable(Touchable.enabled);
 
         root.row();
@@ -729,7 +733,7 @@ public class Dialog9Patch extends Dialog {
         label = new Label("Content:", getSkin());
         table.add(label);
 
-          var selectBox = new SelectBox<String>(getSkin());
+        var selectBox = new SelectBox<String>(getSkin());
         selectBox.setName("contentSelectBox");
         table.add(selectBox);
         selectBox.setItems("None", "Text", "Color", "Drawable");
@@ -812,6 +816,24 @@ public class Dialog9Patch extends Dialog {
                 }
             }
         });
+        
+        imageButton = new ImageButton(getSkin(), "color");
+        table.add(imageButton);
+        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                main.getDialogFactory().showDialogColorPicker(previewBGcolor, new DialogColorPicker.ColorListener() {
+                    @Override
+                    public void selected(Color color) {
+                        previewBGcolor.set(color);
+                        bottom.setColor(color);
+                    }
+                });
+            }
+        });
+        var toolTip = new TextTooltip("Background color for preview pane.", main.getTooltipManager(), getSkin());
+        imageButton.addListener(toolTip);
 
         slider = new Slider(1.0f, 100.0f, 1.0f, false, getSkin(), "zoom-horizontal");
         slider.setName("bottom-zoom");
