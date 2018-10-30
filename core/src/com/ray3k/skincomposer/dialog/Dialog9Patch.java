@@ -960,13 +960,15 @@ public class Dialog9Patch extends Dialog {
     }
 
     private void updatePreviewSplits() {
-        preview = new NinePatch(preview.getTexture(), ninePatchLeft, ninePatchRight, ninePatchTop, ninePatchBottom);
-        preview.setPadding(ninePatchContentLeft, ninePatchContentRight, ninePatchContentTop, ninePatchContentBottom);
-        previewZoomed = new NinePatch(preview);
+        if (preview != null) {
+            preview = new NinePatch(preview.getTexture(), ninePatchLeft, ninePatchRight, ninePatchTop, ninePatchBottom);
+            preview.setPadding(ninePatchContentLeft, ninePatchContentRight, ninePatchContentTop, ninePatchContentBottom);
+            previewZoomed = new NinePatch(preview);
 
-          var resizer = (ResizeWidget) findActor("resizer");
-          var table = (Table) resizer.getActor();
-        table.setBackground(new NinePatchDrawable(previewZoomed));
+            var resizer = (ResizeWidget) findActor("resizer");
+            var table = (Table) resizer.getActor();
+            table.setBackground(new NinePatchDrawable(previewZoomed));
+        }
     }
 
     private void updatePreviewContentActor(Actor actor) {
