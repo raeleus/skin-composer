@@ -121,9 +121,11 @@ public class DialogFreeTypeFont extends Dialog {
         GENERATE, SAVE_SETTINGS, LOAD_SETTINGS, CANCEL
     }
     private Json json;
+    private Color previewBGcolor;
     
     public DialogFreeTypeFont(Main main, FreeTypeFontData freeTypeFontData) {
         super(freeTypeFontData == null ? "Create new FreeType Font" : "Edit FreeType Font", main.getSkin(), "bg");
+        previewBGcolor = new Color(Color.WHITE);
         
         json = new Json(JsonWriter.OutputType.json);
         
@@ -315,10 +317,14 @@ public class DialogFreeTypeFont extends Dialog {
         root.add(image).growX().space(15.0f);
         
         root.row();
+        final var previewTable = new Table();
+        previewTable.setBackground(getSkin().getDrawable("white"));
+        root.add(previewTable).growX();
+        
         textField = new TextField(previewText, previewStyle);
         textField.setName("previewField");
         textField.setAlignment(Align.center);
-        root.add(textField).growX();
+        previewTable.add(textField).growX();
         
         textField.addListener(main.getIbeamListener());
         textField.addListener(new ChangeListener() {
@@ -327,6 +333,27 @@ public class DialogFreeTypeFont extends Dialog {
                 previewText = ((TextField) actor).getText();
             }
         });
+        
+        root.row();
+        var imageButton = new ImageButton(getSkin(), "color");
+        root.add(imageButton).expandX().right();
+        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                main.getDialogFactory().showDialogColorPicker(previewBGcolor, new DialogColorPicker.ColorListener() {
+                    @Override
+                    public void selected(Color color) {
+                        if (color != null) {
+                            previewBGcolor.set(color);
+                            previewTable.setColor(color);
+                        }
+                    }
+                });
+            }
+        });
+        toolTip = new TextTooltip("Background color for preview text.", main.getTooltipManager(), getSkin());
+        imageButton.addListener(toolTip);
         
         root.row();
         image = new Image(skin, "welcome-separator");

@@ -826,7 +826,7 @@ public class Dialog9Patch extends Dialog {
                 main.getDialogFactory().showDialogColorPicker(previewBGcolor, new DialogColorPicker.ColorListener() {
                     @Override
                     public void selected(Color color) {
-                        if (previewBGcolor != null) {
+                        if (color != null) {
                             previewBGcolor.set(color);
                             bottom.setColor(color);
                         }

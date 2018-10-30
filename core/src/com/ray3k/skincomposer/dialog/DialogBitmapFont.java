@@ -30,19 +30,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -78,9 +67,11 @@ public class DialogBitmapFont extends Dialog {
         GENERATE, SAVE_SETTINGS, LOAD_SETTINGS, CANCEL
     }
     private Json json;
+    private Color previewBGcolor;
 
     public DialogBitmapFont(Main main) {
         super("Create new Bitmap Font", main.getSkin(), "bg");
+        previewBGcolor = new Color(Color.WHITE);
 
         json = new Json(JsonWriter.OutputType.json);
 
@@ -173,10 +164,14 @@ public class DialogBitmapFont extends Dialog {
         root.add(image).growX().space(15.0f);
 
         root.row();
+        final var previewTable = new Table();
+        previewTable.setBackground(getSkin().getDrawable("white"));
+        root.add(previewTable).growX();
+        
         var textField = new TextField(previewText, previewStyle);
         textField.setName("previewField");
         textField.setAlignment(Align.center);
-        root.add(textField).growX();
+        previewTable.add(textField).growX();
 
         textField.addListener(main.getIbeamListener());
         textField.addListener(new ChangeListener() {
@@ -185,6 +180,27 @@ public class DialogBitmapFont extends Dialog {
                 previewText = ((TextField) actor).getText();
             }
         });
+        
+        root.row();
+        var imageButton = new ImageButton(getSkin(), "color");
+        root.add(imageButton).expandX().right();
+        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                main.getDialogFactory().showDialogColorPicker(previewBGcolor, new DialogColorPicker.ColorListener() {
+                    @Override
+                    public void selected(Color color) {
+                        if (color != null) {
+                            previewBGcolor.set(color);
+                            previewTable.setColor(color);
+                        }
+                    }
+                });
+            }
+        });
+        var toolTip = new TextTooltip("Background color for preview text.", main.getTooltipManager(), getSkin());
+        imageButton.addListener(toolTip);
 
         root.row();
         image = new Image(skin, "welcome-separator");
@@ -222,7 +238,7 @@ public class DialogBitmapFont extends Dialog {
             }
         });
 
-        var toolTip = new TextTooltip("Path to source TTF file to be read", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Path to source TTF file to be read", main.getTooltipManager(), getSkin());
         textField.addListener(toolTip);
         textButton.addListener(toolTip);
         textField.addListener(main.getHandListener());

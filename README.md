@@ -21,6 +21,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * Added save/load settings for bitmap font and freetype font dialogs.
 * Added check for preview fonts upon project load.
 * Added option to change preview background color in nine patch dialog.
+* Added option to change preview background to bitmap font and FreeType font dialogs.
 
 ### Contact ###
 
