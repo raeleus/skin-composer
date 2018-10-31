@@ -109,12 +109,17 @@ public class DialogBitmapFont extends Dialog {
         listeners = new Array<>();
 
         filesDroppedListener = (Array<FileHandle> files) -> {
-            if (files.size > 0 && files.first().extension().toLowerCase(Locale.ROOT).equals("ttf")) {
-                Runnable runnable = () -> {
-                    loadTTFsource(files.first());
-                };
+            if (files.size > 0) {
+                var extension = files.first().extension().toLowerCase(Locale.ROOT);
+                if (extension.equals("ttf")) {
+                    Runnable runnable = () -> {
+                        loadTTFsource(files.first());
+                    };
 
-                main.getDialogFactory().showDialogLoading(runnable);
+                    main.getDialogFactory().showDialogLoading(runnable);
+                } else if (extension.equals("scmp-font")) {
+                    loadSettings(files.first());
+                }
             }
         };
 
