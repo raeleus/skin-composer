@@ -164,6 +164,9 @@ public class RootTable extends Table {
     }
 
     public void populate() {
+        Button button = (Button) findActor("downloadButton");
+        var updateAvailable = button == null ? false : button.isVisible();
+        
         clearChildren();
         addFileMenu();
 
@@ -175,6 +178,8 @@ public class RootTable extends Table {
 
         row();
         addStatusBar();
+        
+        ((Button) findActor("downloadButton")).setVisible(updateAvailable);
     }
 
     private void addFileMenu() {

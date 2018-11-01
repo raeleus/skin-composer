@@ -24,6 +24,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * Added option to change preview background to bitmap font and Freetype font dialogs.
 * Improved appearance of handles in Nine Patch Editor when zoomed out.
 * Fixed crash when trying to move handles in Nine Patch Editor when no image is loaded.
+* Resolved update button disappearing when a new project is started.
 
 ### Contact ###
 
