@@ -43,6 +43,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.Scaling;
+import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.data.ColorData;
@@ -122,6 +123,7 @@ public class DialogFreeTypeFont extends Dialog {
     }
     private Json json;
     private Color previewBGcolor;
+    private FilesDroppedListener filesDroppedListener;
     
     public DialogFreeTypeFont(Main main, FreeTypeFontData freeTypeFontData) {
         super(freeTypeFontData == null ? "Create new FreeType Font" : "Edit FreeType Font", main.getSkin(), "bg");
@@ -167,6 +169,33 @@ public class DialogFreeTypeFont extends Dialog {
         key(Keys.ESCAPE, false).key(Keys.ENTER, true);
         
         listeners = new Array<>();
+        
+        filesDroppedListener = (Array<FileHandle> files) -> {
+            if (files.size > 0) {
+                CheckBox checkBox = (CheckBox) findActor("serializerCheckBox");
+                
+                var extension = files.first().extension().toLowerCase(Locale.ROOT);
+                if (extension.equals("ttf")) {
+                    checkBox.setChecked(true);
+                    loadTTF(files.first());
+                } else if (extension.equals("scmp-font")) {
+                    checkBox.setChecked(true);
+                    loadSettings(files.first());
+                }
+            }
+        };
+        
+        main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+    }
+
+    @Override
+    public boolean remove() {
+        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        
+        for (var listener : listeners) {
+            listener.cancelled();
+        }
+        return super.remove();
     }
     
     public DialogFreeTypeFont(Main main) {
@@ -462,10 +491,7 @@ public class DialogFreeTypeFont extends Dialog {
                     File file = main.getDesktopWorker().openDialog("Select TTF file...", defaultPath, filterPatterns, "True Type Font files");
                     if (file != null) {
                         FileHandle fileHandle = new FileHandle(file);
-                        data.file = fileHandle;
-                        updateDisabledFields();
-                        ((TextField)DialogFreeTypeFont.this.findActor("fileField")).setText(fileHandle.path());
-                        main.getProjectData().setLastFontPath(fileHandle.parent().path() + "/");
+                        loadTTF(fileHandle);
                     }
                 };
                 
@@ -1230,8 +1256,16 @@ public class DialogFreeTypeFont extends Dialog {
         dialog.show(main.getStage());
     }
     
+    private void loadTTF(FileHandle fileHandle) {
+        data.file = fileHandle;
+        updateDisabledFields();
+        ((TextField) DialogFreeTypeFont.this.findActor("fileField")).setText(fileHandle.path());
+        main.getProjectData().setLastFontPath(fileHandle.parent().path() + "/");
+    }
+    
     public static interface DialogFreeTypeFontListener {
         public void fontAdded(FreeTypeFontData font);
+        public void cancelled();
     }
     
     private void saveSettings() {

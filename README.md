@@ -12,16 +12,16 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * Updated to LibGDX 1.9.9.
 * Resolved issue with Create Bitmap Font dialog creating fonts with incorrect baseline values.
 * Resolved drag and drop broken after using Create Bitmap Font dialog.
-* Added drag and drop to Create Bitmap Font dialog.
+* Added drag and drop to Create Bitmap Font and Freetype Font dialogs.
 * Fixed SplitPane preview not allowing for adjustments.
 * Added indent spacing and tied missing properties to the Tree preview.
 * Prioritized nine patches over standard graphics when images of the same name are dragged into the Drawables dialog.
 * Auto zoom and recenter in Nine Patch Editor now considers width in addition to height.
 * Resolved auto patches not functioning correctly for fully opaque, single-colored images in Nine Patch Editor.
-* Added save/load settings for bitmap font and freetype font dialogs.
+* Added save/load settings for bitmap font and Freetype Font dialogs.
 * Added check for preview fonts upon project load.
 * Added option to change preview background color in Nine Patch Editor.
-* Added option to change preview background to bitmap font and FreeType font dialogs.
+* Added option to change preview background to bitmap font and Freetype font dialogs.
 * Improved appearance of handles in Nine Patch Editor when zoomed out.
 * Fixed crash when trying to move handles in Nine Patch Editor when no image is loaded.
 

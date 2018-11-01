@@ -541,9 +541,17 @@ public class DialogFonts extends Dialog {
     }
     
     private void freeTypeSettingsDialog(FreeTypeFontData font) {
-        main.getDialogFactory().showDialogFreeTypeFont(font, (FreeTypeFontData font1) -> {
-            sortBySelectedMode();
-            refreshTable();
+        main.getDialogFactory().showDialogFreeTypeFont(font, new DialogFreeTypeFont.DialogFreeTypeFontListener() {
+            @Override
+            public void fontAdded(FreeTypeFontData font) {
+                sortBySelectedMode();
+                refreshTable();
+            }
+
+            @Override
+            public void cancelled() {
+                
+            }
         });
     }
     
@@ -912,11 +920,20 @@ public class DialogFonts extends Dialog {
     }
     
     private void newFreeTypeFontDialog() {
+        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        
         main.getDialogFactory().showDialogFreeTypeFont(new DialogFreeTypeFont.DialogFreeTypeFontListener() {
             @Override
             public void fontAdded(FreeTypeFontData font) {
                 sortBySelectedMode();
                 refreshTable();
+                
+                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+            }
+
+            @Override
+            public void cancelled() {
+                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
             }
         });
     }
