@@ -25,6 +25,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * Improved appearance of handles in Nine Patch Editor when zoomed out.
 * Fixed crash when trying to move handles in Nine Patch Editor when no image is loaded.
 * Resolved update button disappearing when a new project is started.
+* Replacing a drawable with a new drawable no longer breaks the link with styles using the original.
 
 ### Contact ###
 

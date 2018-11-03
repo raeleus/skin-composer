@@ -1205,10 +1205,20 @@ public class DialogDrawables extends Dialog {
     /**
      * Removes any duplicate drawables that share the same file name. This
      * ignores the file extension and also deletes TintedDrawables from the
-     * same file.
+     * same file. Calls removeDuplicateDrawables(handle, true).
      * @param handle 
      */
     private void removeDuplicateDrawables(FileHandle handle) {
+        removeDuplicateDrawables(handle, true);
+    }
+    
+    /**
+     * Removes any duplicate drawables that share the same file name. This
+     * ignores the file extension and also deletes TintedDrawables from the
+     * same file.
+     * @param handle 
+     */
+    private void removeDuplicateDrawables(FileHandle handle, boolean deleteStyleValues) {
         boolean refreshDrawables = false;
         String name = DrawableData.proper(handle.name());
         for (int i = 0; i < main.getAtlasData().getDrawables().size; i++) {
@@ -1216,11 +1226,13 @@ public class DialogDrawables extends Dialog {
             if (name.equals(DrawableData.proper(data.file.name()))) {
                 main.getAtlasData().getDrawables().removeValue(data, true);
                 
-                for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
-                    for (StyleData tempData : datas) {
-                        for (StyleProperty prop : tempData.properties.values()) {
-                            if (prop != null && prop.type.equals(Drawable.class) && prop.value != null && prop.value.equals(data.toString())) {
-                                prop.value = null;
+                if (deleteStyleValues) {
+                    for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
+                        for (StyleData tempData : datas) {
+                            for (StyleProperty prop : tempData.properties.values()) {
+                                if (prop != null && prop.type.equals(Drawable.class) && prop.value != null && prop.value.equals(data.toString())) {
+                                    prop.value = null;
+                                }
                             }
                         }
                     }
@@ -1363,6 +1375,7 @@ public class DialogDrawables extends Dialog {
     /**
      * Shows a dialog to confirm removal of duplicate drawables that have the
      * same name without extension. This is called after selecting new drawables.
+     * Does not delete existing style values that point to this drawable.
      * @param unhandledFiles
      * @param backup
      * @param filesToProcess 
@@ -1373,11 +1386,13 @@ public class DialogDrawables extends Dialog {
             protected void result(Object object) {
                 if ((boolean) object) {
                     for (FileHandle fileHandle : unhandledFiles) {
-                        removeDuplicateDrawables(fileHandle);
+                        removeDuplicateDrawables(fileHandle, false);
                         filesToProcess.add(fileHandle);
                     }
                 }
                 finalizeDrawables(backup, filesToProcess);
+                main.getRootTable().produceAtlas();
+                main.getRootTable().refreshPreview();
             }
         };
         
