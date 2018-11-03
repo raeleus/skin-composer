@@ -1202,6 +1202,18 @@ public class DialogDrawables extends Dialog {
         return count > minimum;
     }
     
+    private boolean checkDuplicateDrawables(String name, int minimum) {
+        int count = 0;
+        for (int i = 0; i < main.getAtlasData().getDrawables().size; i++) {
+            DrawableData data = main.getAtlasData().getDrawables().get(i);
+            if (data.name != null && name.equals(data.name)) {
+                count++;
+            }
+        }
+        
+        return count > minimum;
+    }
+    
     /**
      * Removes any duplicate drawables that share the same file name. This
      * ignores the file extension and also deletes TintedDrawables from the
@@ -1224,6 +1236,43 @@ public class DialogDrawables extends Dialog {
         for (int i = 0; i < main.getAtlasData().getDrawables().size; i++) {
             DrawableData data = main.getAtlasData().getDrawables().get(i);
             if (name.equals(DrawableData.proper(data.file.name()))) {
+                main.getAtlasData().getDrawables().removeValue(data, true);
+                
+                if (deleteStyleValues) {
+                    for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
+                        for (StyleData tempData : datas) {
+                            for (StyleProperty prop : tempData.properties.values()) {
+                                if (prop != null && prop.type.equals(Drawable.class) && prop.value != null && prop.value.equals(data.toString())) {
+                                    prop.value = null;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                refreshDrawables = true;
+                i--;
+            }
+        }
+        
+        main.getRootTable().refreshStyleProperties(true);
+        main.getRootTable().refreshPreview();
+        
+        if (refreshDrawables) {
+            gatherDrawables();
+        }
+    }
+    
+    /**
+     * Removes any duplicate drawables that share the same name. This does not
+     * delete TintedDrawables from the same file.
+     * @param handle 
+     */
+    private void removeDuplicateDrawables(String name, boolean deleteStyleValues) {
+        boolean refreshDrawables = false;
+        for (int i = 0; i < main.getAtlasData().getDrawables().size; i++) {
+            DrawableData data = main.getAtlasData().getDrawables().get(i);
+            if (data.name != null && name.equals(data.name)) {
                 main.getAtlasData().getDrawables().removeValue(data, true);
                 
                 if (deleteStyleValues) {
@@ -1358,7 +1407,7 @@ public class DialogDrawables extends Dialog {
         
         main.getProjectData().setLastDrawablePath(files.get(0).parent().path() + "/");
         for (FileHandle fileHandle : files) {
-            if (checkDuplicateDrawables(fileHandle, 0)) {
+            if (checkDuplicateDrawables(DrawableData.proper(fileHandle.name()), 0)) {
                 unhandledFiles.add(fileHandle);
             } else {
                 filesToProcess.add(fileHandle);
@@ -1386,7 +1435,7 @@ public class DialogDrawables extends Dialog {
             protected void result(Object object) {
                 if ((boolean) object) {
                     for (FileHandle fileHandle : unhandledFiles) {
-                        removeDuplicateDrawables(fileHandle, false);
+                        removeDuplicateDrawables(DrawableData.proper(fileHandle.name()), false);
                         filesToProcess.add(fileHandle);
                     }
                 }

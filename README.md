@@ -26,6 +26,8 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * Fixed crash when trying to move handles in Nine Patch Editor when no image is loaded.
 * Resolved update button disappearing when a new project is started.
 * Replacing a drawable with a new drawable no longer breaks the link with styles using the original.
+* Proper replacement of custom drawables with a standard drawable.
+* Replacing a drawable no longer deletes tinted drawables based on that file.
 
 ### Contact ###
 
