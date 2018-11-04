@@ -28,6 +28,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * Replacing a drawable with a new drawable no longer breaks the link with styles using the original.
 * Proper replacement of custom drawables with a standard drawable.
 * Replacing a drawable no longer deletes tinted drawables based on that file.
+* Fixed crash when viewing fonts with multiple images after importing skin on an unsaved, new project.
 
 ### Contact ###
 

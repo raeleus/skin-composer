@@ -106,7 +106,7 @@ public class JsonData implements Json.Serializable {
         if (saveFile != null) {
             targetDirectory = saveFile.sibling(saveFile.nameWithoutExtension() + "_data");
         } else {
-            targetDirectory = Main.appFolder.child("temp/" + main.getProjectData().getId() + "_data");
+            targetDirectory = new FileHandle(Main.appFolder.child("temp/" + main.getProjectData().getId() + "_data").file());
         }
 
         //read json file and create styles
@@ -128,7 +128,6 @@ public class JsonData implements Json.Serializable {
                             fontFile.copyTo(fontCopy);
                         }
                         FontData fontData = new FontData(font.name(), fontCopy);
-                        
 
                         //delete fonts with the same name
                         for (FontData originalData : new Array<>(fonts)) {
