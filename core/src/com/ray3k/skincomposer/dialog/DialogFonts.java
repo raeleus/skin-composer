@@ -467,7 +467,7 @@ public class DialogFonts extends Dialog {
                 });
                 button.add(renameButton).padLeft(15.0f);
                 
-                TextTooltip toolTip = new TextTooltip("Rename Font", main.getTooltipManager(), getSkin());
+                TextTooltip toolTip = new TextTooltip("Change Freetype Settings", main.getTooltipManager(), getSkin());
                 renameButton.addListener(toolTip);
                 
                 LabelStyle style = new LabelStyle();
