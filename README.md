@@ -30,6 +30,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * Replacing a drawable no longer deletes tinted drawables based on that file.
 * Fixed crash when viewing fonts with multiple images after importing skin on an unsaved, new project.
 * Added UI support for ISO-8859-1: Western European and ISO-8859-2: Central European.
+* Fixed characters select box value incorrectly set when editing a Freetype font.
 
 ### Contact ###
 

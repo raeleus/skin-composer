@@ -532,6 +532,9 @@ public class DialogFreeTypeFont extends Dialog {
         selectBox.setName("character-select-box");
         selectBox.setItems("default", "0-9", "a-zA-Z", "a-zA-Z0-9", "custom");
         table.add(selectBox);
+        if (!data.characters.equals("")) {
+            selectBox.setSelected("custom");
+        }
         
         selectBox.addListener(new ChangeListener() {
             @Override
