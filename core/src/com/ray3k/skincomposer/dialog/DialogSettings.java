@@ -45,6 +45,7 @@ import com.ray3k.skincomposer.utils.Utils;
 public class DialogSettings extends Dialog {
     private Integer maxUndos;
     private boolean resourcesRelative;
+    private boolean simpleNames;
     private boolean allowingWelcome;
     private boolean allowingUpdates;
     private final Main main;
@@ -77,6 +78,7 @@ public class DialogSettings extends Dialog {
 
         maxUndos = main.getProjectData().getMaxUndos();
         resourcesRelative = main.getProjectData().areResourcesRelative();
+        simpleNames = main.getProjectData().isUsingSimpleNames();
         allowingWelcome = main.getProjectData().isAllowingWelcome();
         allowingUpdates = main.getProjectData().isCheckingForUpdates();
         exportFormat = main.getProjectData().getExportFormat();
@@ -93,6 +95,7 @@ public class DialogSettings extends Dialog {
             main.getProjectData().setChangesSaved(false);
             main.getProjectData().setMaxUndos(maxUndos);
             main.getProjectData().setResourcesRelative(resourcesRelative);
+            main.getProjectData().setUsingSimpleNames(simpleNames);
             main.getProjectData().setAllowingWelcome(allowingWelcome);
             main.getProjectData().setCheckingForUpdates(allowingUpdates);
             main.getProjectData().setExportFormat(exportFormat);
@@ -223,6 +226,17 @@ public class DialogSettings extends Dialog {
             }
         });
         t.add(checkBox).padTop(10.0f).colspan(2);
+        
+        t.row();
+        final ImageTextButton simpleNameCheckBox = new ImageTextButton("Export with simple names?", getSkin(), "checkbox");
+        simpleNameCheckBox.setChecked(simpleNames);
+        simpleNameCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                simpleNames = simpleNameCheckBox.isChecked();
+            }
+        });
+        t.add(simpleNameCheckBox).padTop(10.0f).colspan(2);
         
         t.row();
         final ImageTextButton welcomeCheckBox = new ImageTextButton("Show welcome screen?", getSkin(), "checkbox");

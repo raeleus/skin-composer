@@ -86,6 +86,12 @@ public class JsonData implements Json.Serializable {
         customClasses.clear();
     }
 
+    /**
+     * Imports skin data from a JSON file. Supports skins from LibGDX 1.9.8
+     * @param fileHandle
+     * @return
+     * @throws Exception 
+     */
     public Array<String> readFile(FileHandle fileHandle) throws Exception {
         Array<String> warnings = new Array<>();
         
@@ -508,6 +514,11 @@ public class JsonData implements Json.Serializable {
         return returnValue;
     }
 
+    /**
+     * Exports skin data to a JSON file to be loaded by LibGDX.
+     * @param fileHandle
+     * @return 
+     */
     public Array<String> writeFile(FileHandle fileHandle) {
         Array<String> warnings = new Array<>();
         
@@ -521,7 +532,8 @@ public class JsonData implements Json.Serializable {
 
         //fonts
         if (fonts.size > 0) {
-            json.writeObjectStart(BitmapFont.class.getName());
+            String className = main.getProjectData().isUsingSimpleNames() ? BitmapFont.class.getSimpleName() : BitmapFont.class.getName();
+            json.writeObjectStart(className);
             for (FontData font : fonts) {
                 json.writeObjectStart(font.getName());
                 json.writeValue("file", font.file.name());
@@ -532,7 +544,8 @@ public class JsonData implements Json.Serializable {
 
         //colors
         if (colors.size > 0) {
-            json.writeObjectStart(Color.class.getName());
+            String className = main.getProjectData().isUsingSimpleNames() ? Color.class.getSimpleName() : Color.class.getName();
+            json.writeObjectStart(className);
             for (ColorData color : colors) {
                 json.writeObjectStart(color.getName());
                 json.writeValue("r", color.color.r);
@@ -599,7 +612,8 @@ public class JsonData implements Json.Serializable {
         
         //tinted drawables
         if (tintedDrawables.size > 0) {
-            json.writeObjectStart(TintedDrawable.class.getName());
+            String className = main.getProjectData().isUsingSimpleNames() ? TintedDrawable.class.getSimpleName() : TintedDrawable.class.getName();
+            json.writeObjectStart(className);
             for (DrawableData drawable : tintedDrawables) {
                 json.writeObjectStart(drawable.name);
                 json.writeValue("name", DrawableData.proper(drawable.file.name()));
@@ -620,7 +634,8 @@ public class JsonData implements Json.Serializable {
         
         //tiled drawables
         if (tiledDrawables.size > 0) {
-            json.writeObjectStart(TiledDrawable.class.getName());
+            String className = main.getProjectData().isUsingSimpleNames() ? TiledDrawable.class.getSimpleName() : TiledDrawable.class.getName();
+            json.writeObjectStart(className);
             for (DrawableData drawable : tiledDrawables) {
                 json.writeObjectStart(drawable.name);
                 json.writeValue("region", DrawableData.proper(drawable.file.name()));
@@ -683,7 +698,8 @@ public class JsonData implements Json.Serializable {
             }
 
             if (hasMandatoryStyles) {
-                json.writeObjectStart(clazz.getName());
+                String className = main.getProjectData().isUsingSimpleNames() ? clazz.getSimpleName() : clazz.getName();
+                json.writeObjectStart(className);
                 for (StyleData style : styles) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
                         json.writeObjectStart(style.name);

@@ -561,6 +561,14 @@ public class ProjectData implements Json.Serializable {
         preferences.put("resources-relative", resourcesRelative);
     }
     
+    public boolean isUsingSimpleNames() {
+        return (boolean) preferences.get("simple-names", false);
+    }
+    
+    public void setUsingSimpleNames(boolean useSimpleNames) {
+        preferences.put("simple-names", useSimpleNames);
+    }
+    
     /**
      * Returns true if file exists and depending on the state of relative resources
      * and save file state.
