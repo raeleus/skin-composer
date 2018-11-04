@@ -520,6 +520,7 @@ public class DialogFreeTypeFont extends Dialog {
                 TextField textField = (TextField) actor;
                 
                 data.characters = textField.getText();
+                data.characters = !data.characters.equals("") && !data.characters.contains("\u0000") ? "\u0000" + data.characters : data.characters;
                 updateDisabledFields();
                 
                 var selectBox = (SelectBox<String>) findActor("character-select-box");
@@ -554,6 +555,7 @@ public class DialogFreeTypeFont extends Dialog {
                 }
                 
                 data.characters = textField.getText();
+                data.characters = !data.characters.equals("") && !data.characters.contains("\u0000") ? "\u0000" + data.characters : data.characters;
                 updateDisabledFields();
             }
         });

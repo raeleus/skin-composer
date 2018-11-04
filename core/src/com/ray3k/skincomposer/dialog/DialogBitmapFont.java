@@ -370,6 +370,7 @@ public class DialogBitmapFont extends Dialog {
                 }
 
                 data.characters = charactersTextField.getText();
+                data.characters = !data.characters.equals("") && !data.characters.contains("\u0000") ? "\u0000" + data.characters : data.characters;
                 updatePreviewAndOK();
             }
         });
@@ -378,6 +379,7 @@ public class DialogBitmapFont extends Dialog {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 data.characters = charactersTextField.getText();
+                data.characters = !data.characters.equals("") && !data.characters.contains("\u0000") ? "\u0000" + data.characters : data.characters;
                 updatePreviewAndOK();
 
                 if ("".equals(charactersTextField.getText())) {
