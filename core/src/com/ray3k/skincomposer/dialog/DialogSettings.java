@@ -219,6 +219,7 @@ public class DialogSettings extends Dialog {
         t.row();
         final ImageTextButton checkBox = new ImageTextButton("Keep resources relative?", getSkin(), "checkbox");
         checkBox.setChecked(resourcesRelative);
+        checkBox.addListener(main.getHandListener());
         checkBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -230,6 +231,7 @@ public class DialogSettings extends Dialog {
         t.row();
         final ImageTextButton simpleNameCheckBox = new ImageTextButton("Export with simple names?", getSkin(), "checkbox");
         simpleNameCheckBox.setChecked(simpleNames);
+        simpleNameCheckBox.addListener(main.getHandListener());
         simpleNameCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -241,6 +243,7 @@ public class DialogSettings extends Dialog {
         t.row();
         final ImageTextButton welcomeCheckBox = new ImageTextButton("Show welcome screen?", getSkin(), "checkbox");
         welcomeCheckBox.setChecked(allowingWelcome);
+        welcomeCheckBox.addListener(main.getHandListener());
         welcomeCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -252,6 +255,7 @@ public class DialogSettings extends Dialog {
         t.row();
         final ImageTextButton updatesCheckBox = new ImageTextButton("Check for updates?", getSkin(), "checkbox");
         updatesCheckBox.setChecked(allowingUpdates);
+        updatesCheckBox.addListener(main.getHandListener());
         updatesCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -267,6 +271,7 @@ public class DialogSettings extends Dialog {
         final SelectBox<ExportFormat> exportFormatSelectBox = new SelectBox(getSkin());
         exportFormatSelectBox.setItems(ExportFormat.MINIMAL, ExportFormat.JAVASCRIPT, ExportFormat.JSON);
         exportFormatSelectBox.setSelected(exportFormat);
+        exportFormatSelectBox.addListener(main.getHandListener());
         exportFormatSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
