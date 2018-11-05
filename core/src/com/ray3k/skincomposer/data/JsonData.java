@@ -87,7 +87,7 @@ public class JsonData implements Json.Serializable {
     }
 
     /**
-     * Imports skin data from a JSON file. Supports skins from LibGDX 1.9.8
+     * Imports skin data from a JSON file. Supports skins from LibGDX 1.9.9
      * @param fileHandle
      * @return
      * @throws Exception 
@@ -121,7 +121,7 @@ public class JsonData implements Json.Serializable {
 
         for (JsonValue child : val.iterator()) {
             //fonts
-            if (child.name().equals(BitmapFont.class.getName())) {
+            if (child.name().equals(BitmapFont.class.getName()) || child.name().equals(BitmapFont.class.getSimpleName())) {
                 for (JsonValue font : child.iterator()) {
                     if (font.get("file") != null) {
                         FileHandle fontFile = fileHandle.sibling(font.getString("file"));
@@ -213,7 +213,7 @@ public class JsonData implements Json.Serializable {
                     }
                 }
             } //colors
-            else if (child.name().equals(Color.class.getName())) {
+            else if (child.name().equals(Color.class.getName()) || child.name().equals(Color.class.getSimpleName())) {
                 for (JsonValue color : child.iterator()) {
                     ColorData colorData = new ColorData(color.name, new Color(color.getFloat("r", 0.0f), color.getFloat("g", 0.0f), color.getFloat("b", 0.0f), color.getFloat("a", 0.0f)));
                     
@@ -226,8 +226,8 @@ public class JsonData implements Json.Serializable {
                     
                     colors.add(colorData);
                 }
-            }
-            else if (child.name().equals(TiledDrawable.class.getName())) {
+            } //tiled drawables
+            else if (child.name().equals(TiledDrawable.class.getName()) || child.name().equals(TiledDrawable.class.getSimpleName())) {
                 for (JsonValue tiledDrawable : child.iterator()) {
                     DrawableData drawableData = new DrawableData(main.getProjectData().getAtlasData().getDrawable(tiledDrawable.getString("region")).file);
                     drawableData.name = tiledDrawable.name;
@@ -248,7 +248,7 @@ public class JsonData implements Json.Serializable {
                     main.getProjectData().getAtlasData().getDrawables().add(drawableData);
                 }
             } //tinted drawables
-            else if (child.name().equals(TintedDrawable.class.getName())) {
+            else if (child.name().equals(TintedDrawable.class.getName()) || child.name().equals(TintedDrawable.class.getSimpleName())) {
                 for (JsonValue tintedDrawable : child.iterator()) {
                     DrawableData drawableData = new DrawableData(main.getProjectData().getAtlasData().getDrawable(tintedDrawable.getString("name")).file);
                     drawableData.name = tintedDrawable.name;
@@ -272,8 +272,9 @@ public class JsonData implements Json.Serializable {
             else {
                 int classIndex = 0;
                 
-                if (testClassString(child.name)) {
-                    Class matchClass = ClassReflection.forName(child.name);
+                Class matchClass = findStyleClassByName(child.name);
+                
+                if (matchClass != null) {
                     for (Class clazz : Main.STYLE_CLASSES) {
                         if (clazz.equals(matchClass)) {
                             break;
@@ -501,12 +502,17 @@ public class JsonData implements Json.Serializable {
         return null;
     }
     
-    private boolean testClassString(String fullyQualifiedName) {
-        boolean returnValue = false;
+    /**
+     * Will take a fully qualified class name or simple name and return true if it matches a style class.
+     * @param name
+     * @return 
+     */
+    private Class findStyleClassByName(String name) {
+        Class returnValue = null;
         
         for (Class clazz : Main.STYLE_CLASSES) {
-            if (fullyQualifiedName.equals(clazz.getName())) {
-                returnValue = true;
+            if (name.equals(clazz.getName()) || name.equals(clazz.getSimpleName())) {
+                returnValue = clazz;
                 break;
             }
         }
