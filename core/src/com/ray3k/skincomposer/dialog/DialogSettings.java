@@ -278,7 +278,7 @@ public class DialogSettings extends Dialog {
                 exportFormat = exportFormatSelectBox.getSelected();
             }
         });
-        t.add(exportFormatSelectBox).left().padTop(10.0f);;
+        t.add(exportFormatSelectBox).left().padTop(10.0f);
 
         button("OK", true);
         button("Cancel", false);
