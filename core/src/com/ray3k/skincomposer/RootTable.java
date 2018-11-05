@@ -27,7 +27,6 @@ import com.ray3k.skincomposer.data.CustomProperty;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -74,7 +73,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -96,6 +94,7 @@ import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
 import com.ray3k.skincomposer.utils.Utils;
+import java.util.Arrays;
 
 public class RootTable extends Table {
 
@@ -598,6 +597,35 @@ public class RootTable extends Table {
         Array<StyleData> labelStyles = main.getProjectData().getJsonData().getClassStyleMap().get(Label.class);
 
         if (styleProperties != null) {
+            //add parent selection box
+            label = new Label("parent", getSkin());
+            table.add(label).padTop(20.0f).fill(false).expand(false, false);
+            
+            table.row();
+            var parentNames = new Array<String>();
+            parentNames.add("None");
+            
+            Class recursiveClass = getSelectedClass();
+            Class recursiveStyleClass = Main.basicToStyleClass(recursiveClass);
+            while (recursiveStyleClass != null && Arrays.asList(Main.STYLE_CLASSES).contains(recursiveStyleClass)) {
+                for (var style : main.getJsonData().getClassStyleMap().get(recursiveClass)) {
+                    if (style != null && !(style.parent != null && style.parent.equals(getSelectedStyle().name)) && !(parentNames.contains(style.name, false) || style.equals(getSelectedStyle()) && recursiveClass.equals(getSelectedClass()))) {
+                        parentNames.add(style.name);
+                    }
+                }
+                
+                recursiveClass = recursiveClass.getSuperclass();
+                recursiveStyleClass = Main.basicToStyleClass(recursiveClass);
+            }
+            
+            var parentSelectBox = new SelectBox<String>(getSkin());
+            parentSelectBox.setItems(parentNames);
+            parentSelectBox.setSelected(getSelectedStyle().parent);
+            table.add(parentSelectBox);
+            parentSelectBox.addListener(main.getHandListener());
+            parentSelectBox.addListener(new StyleParentChangeListener(getSelectedStyle(), parentSelectBox));
+            //make preview respect parent
+            
             for (StyleProperty styleProperty : styleProperties) {
 
                 table.row();
@@ -931,6 +959,21 @@ public class RootTable extends Table {
         @Override
         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
             fire(new StylePropertyEvent(styleProp, styleActor));
+        }
+    }
+    
+    private class StyleParentChangeListener extends ChangeListener {
+        private final StyleData style;
+        private final SelectBox<String> selectBox;
+        
+        public StyleParentChangeListener(StyleData style, SelectBox<String> selectBox) {
+            this.style = style;
+            this.selectBox = selectBox;
+        }
+
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+            fire(new StyleParentEvent(style, selectBox));
         }
     }
     
@@ -2411,7 +2454,7 @@ public class RootTable extends Table {
             returnValue = ClassReflection.newInstance(clazz);
             Field[] fields = ClassReflection.getFields(clazz);
             for (Field field : fields) {
-                Object value = styleData.properties.get(field.getName()).value;
+                Object value = styleData.getInheritedValue(field.getName());
                 if (value != null) {
                     if (field.getType().equals(Drawable.class)) {
                         field.set(returnValue, drawablePairs.get((String) value));
@@ -2726,6 +2769,16 @@ public class RootTable extends Table {
             this.styleActor = styleActor;
         }
     }
+    
+    private static class StyleParentEvent extends Event {
+        StyleData style;
+        SelectBox<String> selectBox;
+        
+        public StyleParentEvent(StyleData style, SelectBox<String> selectBox) {
+            this.style = style;
+            this.selectBox = selectBox;
+        }
+    }
 
     private static enum CustomPropertyEnum {
         NEW, DUPLICATE, DELETE, RENAME, CHANGE_VALUE;
@@ -2755,6 +2808,8 @@ public class RootTable extends Table {
                 loadStyles(((LoadStylesEvent) event).classSelectBox, ((LoadStylesEvent) event).styleSelectBox);
             } else if (event instanceof StylePropertyEvent) {
                 stylePropertyChanged(((StylePropertyEvent) event).styleProperty, ((StylePropertyEvent) event).styleActor);
+            } else if (event instanceof StyleParentEvent) {
+                styleParentChanged(((StyleParentEvent) event).style, ((StyleParentEvent) event).selectBox);
             } else if (event instanceof CustomPropertyEvent) {
                 CustomPropertyEvent propertyEvent = (CustomPropertyEvent) event;
                 if (null != propertyEvent.customPropertyEnum) switch (propertyEvent.customPropertyEnum) {
@@ -2784,6 +2839,8 @@ public class RootTable extends Table {
 
         public abstract void stylePropertyChanged(StyleProperty styleProperty, Actor styleActor);
 
+        public abstract void styleParentChanged(StyleData style, SelectBox<String> selectBox);
+        
         public abstract void loadClasses(SelectBox classSelectBox);
 
         public abstract void loadStyles(SelectBox classSelectBox, SelectBox styleSelectBox);

@@ -10,8 +10,9 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Changes ###
 
 * Updated to LibGDX 1.9.9.
-* Added setting for export with simple names per 1.9.9.
+* Added setting for export with simple names per 1.9.9. See Project > Settings.
 * Allows import of 1.9.9 skins with simple names.
+* Added a parent setting to each style to support 1.9.9 cascading styles. Selectable parent options respects class inheritance.
 * Resolved issue with Create Bitmap Font dialog creating fonts with incorrect baseline values.
 * Resolved drag and drop broken after using Create Bitmap Font dialog.
 * Added drag and drop to Create Bitmap Font and Freetype Font dialogs.

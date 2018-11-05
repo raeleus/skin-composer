@@ -63,16 +63,13 @@ public class JsonData implements Json.Serializable {
     private Main main;
 
     public JsonData() {
+        this.main = Main.main;
         colors = new Array<>();
         fonts = new Array<>();
         freeTypeFonts = new Array<>();
 
         initializeClassStyleMap();
         customClasses = new Array<>();
-    }
-
-    public void setMain(Main main) {
-        this.main = main;
     }
 
     public void clear() {
@@ -287,22 +284,26 @@ public class JsonData implements Json.Serializable {
                     for (JsonValue style : child.iterator()) {
                         StyleData data = newStyle(clazz, style.name);
                         for (JsonValue property : style.iterator()) {
-                            StyleProperty styleProperty = data.properties.get(property.name);
-                            if (styleProperty.type.equals(Float.TYPE)) {
-                                styleProperty.value = (double) property.asFloat();
-                            } else if (styleProperty.type.equals(Color.class)) {
-                                if (property.isString()) {
-                                    styleProperty.value = property.asString();
-                                } else {
-                                    Gdx.app.error(getClass().getName(), "Can't import JSON files that do not use predefined colors.");
-                                    warnings.add("Property [BLACK]" + styleProperty.name + "[] value cleared for [BLACK]" + clazz.getSimpleName() + ": " + data.name + "[] (Unsupported color definition)");
-                                }
+                            if (property.name.equals("parent")) {
+                                data.parent = property.asString();
                             } else {
-                                if (property.isString()) {
-                                    styleProperty.value = property.asString();
+                                StyleProperty styleProperty = data.properties.get(property.name);
+                                if (styleProperty.type.equals(Float.TYPE)) {
+                                    styleProperty.value = (double) property.asFloat();
+                                } else if (styleProperty.type.equals(Color.class)) {
+                                    if (property.isString()) {
+                                        styleProperty.value = property.asString();
+                                    } else {
+                                        Gdx.app.error(getClass().getName(), "Can't import JSON files that do not use predefined colors.");
+                                        warnings.add("Property [BLACK]" + styleProperty.name + "[] value cleared for [BLACK]" + clazz.getSimpleName() + ": " + data.name + "[] (Unsupported color definition)");
+                                    }
                                 } else {
-                                    Gdx.app.error(getClass().getName(), "Can't import JSON files that do not use String names for field values.");
-                                    warnings.add("Property [BLACK]" + styleProperty.name + "[] value cleared for [BLACK]" + clazz.getSimpleName() + ": " + data.name + "[] (Unsupported propety value)");
+                                    if (property.isString()) {
+                                        styleProperty.value = property.asString();
+                                    } else {
+                                        Gdx.app.error(getClass().getName(), "Can't import JSON files that do not use String names for field values.");
+                                        warnings.add("Property [BLACK]" + styleProperty.name + "[] value cleared for [BLACK]" + clazz.getSimpleName() + ": " + data.name + "[] (Unsupported propety value)");
+                                    }
                                 }
                             }
                         }
@@ -709,6 +710,9 @@ public class JsonData implements Json.Serializable {
                 for (StyleData style : styles) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
                         json.writeObjectStart(style.name);
+                        if (style.parent != null) {
+                            json.writeValue("parent", style.parent);
+                        }
                         for (StyleProperty property : style.properties.values()) {
 
                             //if not optional, null, or zero

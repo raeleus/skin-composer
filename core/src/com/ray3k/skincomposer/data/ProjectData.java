@@ -61,7 +61,6 @@ public class ProjectData implements Json.Serializable {
     public void setMain(Main main) {
         this.main = main;
         atlasData.setMain(main);
-        jsonData.setMain(main);
     }
     
     public int getId() {

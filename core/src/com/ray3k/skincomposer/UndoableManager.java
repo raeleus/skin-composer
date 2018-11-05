@@ -632,6 +632,44 @@ public class UndoableManager {
             return "Change Style Property " + property.name;
         }
     }
+    
+    public static class ParentUndoable implements Undoable {
+        private RootTable rootTable;
+        private StyleData style;
+        private SelectBox<String> selectBox;
+        private String oldValue, newValue;
+
+        public ParentUndoable(RootTable rootTable, StyleData style, SelectBox<String> selectBox) {
+            this.rootTable = rootTable;
+            this.style = style;
+            this.selectBox = selectBox;
+            oldValue = style.parent;
+            if (selectBox.getSelectedIndex() == 0) {
+                newValue = null;
+            } else {
+                newValue = selectBox.getSelected();
+            }
+        }
+
+        @Override
+        public void undo() {
+            style.parent = oldValue;
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
+        }
+
+        @Override
+        public void redo() {
+            style.parent = newValue;
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Change Style Parent";
+        }
+    }
 
     public static class NewStyleUndoable implements Undoable {
         private StyleData styleData;
