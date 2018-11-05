@@ -234,7 +234,7 @@ public class StyleData implements Json.Serializable {
                 var styles = main.getJsonData().getClassStyleMap().get(recursiveClass);
                 for (int i = 0; i < styles.size; i++) {
                     var style = styles.get(i);
-                    if (parent.equals(style.name)) {
+                    if (parent.equals(style.name) && !(clazz.equals(recursiveClass) && name.equals(style.name))) {
                         returnValue = style;
                         break loop;
                     }
