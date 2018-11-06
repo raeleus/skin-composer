@@ -7,35 +7,6 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 * Use Skin Composer to create skins for scene2d.ui
 * Version 24
 
-### Changes ###
-
-* Updated to LibGDX 1.9.9.
-* Added setting for export with simple names per 1.9.9. See Project > Settings.
-* Allows import of 1.9.9 skins with simple names.
-* Added a parent setting to each style to support 1.9.9 cascading styles. Selectable parent options respects class inheritance.
-* Resolved issue with Create Bitmap Font dialog creating fonts with incorrect baseline values.
-* Resolved drag and drop broken after using Create Bitmap Font dialog.
-* Added drag and drop to Create Bitmap Font and Freetype Font dialogs.
-* Fixed SplitPane preview not allowing for adjustments.
-* Added indent spacing and tied missing properties to the Tree preview.
-* Prioritized nine patches over standard graphics when images of the same name are dragged into the Drawables dialog.
-* Auto zoom and recenter in Nine Patch Editor now considers width in addition to height.
-* Resolved auto patches not functioning correctly for fully opaque, single-colored images in Nine Patch Editor.
-* Added save/load settings for bitmap font and Freetype Font dialogs.
-* Added check for preview fonts upon project load.
-* Added option to change preview background color in Nine Patch Editor.
-* Added option to change preview background to bitmap font and Freetype font dialogs.
-* Improved appearance of handles in Nine Patch Editor when zoomed out.
-* Fixed crash when trying to move handles in Nine Patch Editor when no image is loaded.
-* Resolved update button disappearing when a new project is started.
-* Replacing a drawable with a new drawable no longer breaks the link with styles using the original.
-* Proper replacement of custom drawables with a standard drawable.
-* Replacing a drawable no longer deletes tinted drawables based on that file.
-* Fixed crash when viewing fonts with multiple images after importing skin on an unsaved, new project.
-* Added UI support for ISO-8859-1: Western European and ISO-8859-2: Central European.
-* Fixed characters select box value incorrectly set when editing a Freetype font.
-* Minor UI fixes.
-
 ### Contact ###
 
 * This project is maintained by Raymond "Raeleus" Buckley
