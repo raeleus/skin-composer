@@ -49,7 +49,7 @@ public class BrowseField extends Table {
         
         if (labelText != null && !labelText.equals("")) {
             label = new Label(labelText, style.labelStyle);
-            add(label);
+            add(label).colspan(2);
         }
         
         row();
