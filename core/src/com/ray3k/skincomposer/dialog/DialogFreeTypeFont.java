@@ -1424,12 +1424,12 @@ public class DialogFreeTypeFont extends Dialog {
                 main.getJsonData().getColors().add(color);
             }
             ((TextButton) findActor("borderColorTextButton")).setUserObject(color);
-
-            ((Button) findActor("borderStraight")).setChecked(fontSettings.borderStraight);
-            ((Spinner) findActor("borderGamma")).setValue(fontSettings.borderGamma);
-            ((Spinner) findActor("shadowOffsetX")).setValue(fontSettings.shadowOffsetX);
-            ((Spinner) findActor("shadowOffsetY")).setValue(fontSettings.shadowOffsetY);
         }
+        
+        ((Button) findActor("borderStraight")).setChecked(fontSettings.borderStraight);
+        ((Spinner) findActor("borderGamma")).setValue(fontSettings.borderGamma);
+        ((Spinner) findActor("shadowOffsetX")).setValue(fontSettings.shadowOffsetX);
+        ((Spinner) findActor("shadowOffsetY")).setValue(fontSettings.shadowOffsetY);
         
         if (fontSettings.shadowColor != null) {
             var color = main.getJsonData().getColorByName(fontSettings.shadowColor);
