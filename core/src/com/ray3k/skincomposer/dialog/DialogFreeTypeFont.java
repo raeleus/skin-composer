@@ -192,9 +192,6 @@ public class DialogFreeTypeFont extends Dialog {
     public boolean remove() {
         main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
         
-        for (var listener : listeners) {
-            listener.cancelled();
-        }
         return super.remove();
     }
     
@@ -245,6 +242,9 @@ public class DialogFreeTypeFont extends Dialog {
                 loadSettings();
                 break;
             case CANCEL:
+                for (var listener : listeners) {
+                    listener.cancelled();
+                }
                 break;
         }
     }
