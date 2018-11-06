@@ -112,7 +112,6 @@ public class DialogSettings extends Dialog {
 
     @Override
     public boolean remove() {
-        main.getRootTable().setStatusBarMessage("Settings Updated");
         return super.remove();
     }
 

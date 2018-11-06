@@ -642,7 +642,6 @@ public class DialogColors extends Dialog {
                     if (!hasColor) {
                         main.getProjectData().setChangesSaved(false);
                         styleProperty.value = null;
-                        main.getRootTable().setStatusBarMessage("Deleted color for \"" + styleProperty.name + "\"");
                         main.getRootTable().refreshStyleProperties(true);
                     }
                 }
@@ -659,7 +658,6 @@ public class DialogColors extends Dialog {
 
                     CustomColorUndoable undoable = new UndoableManager.CustomColorUndoable(main, customProperty, null);
                     main.getUndoableManager().addUndoable(undoable, true);
-                    main.getRootTable().setStatusBarMessage("Emptied color for \"" + customProperty.getName() + "\"");
                     main.getRootTable().refreshStyleProperties(true);
                 } else {
                     boolean hasColor = false;
@@ -673,7 +671,6 @@ public class DialogColors extends Dialog {
                     if (!hasColor) {
                         main.getProjectData().setChangesSaved(false);
                         customProperty.setValue(null);
-                        main.getRootTable().setStatusBarMessage("Deleted color for \"" + customProperty.getName() + "\"");
                         main.getRootTable().refreshStyleProperties(true);
                     }
                 }

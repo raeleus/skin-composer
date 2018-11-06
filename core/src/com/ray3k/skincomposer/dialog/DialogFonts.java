@@ -687,7 +687,6 @@ public class DialogFonts extends Dialog {
                             main.getJsonData(), styleProperty, styleProperty.value, null);
                     main.getUndoableManager().addUndoable(undoable, true);
                     main.getProjectData().setChangesSaved(false);
-                    main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + styleProperty.name + "\"");
                     main.getRootTable().refreshStyleProperties(true);
                 } else {
                     boolean hasFont = false;
@@ -708,7 +707,6 @@ public class DialogFonts extends Dialog {
                     if (!hasFont) {
                         styleProperty.value = null;
                         main.getProjectData().setChangesSaved(false);
-                        main.getRootTable().setStatusBarMessage("Drawable deleted for \"" + styleProperty.name + "\"");
                         main.getRootTable().refreshStyleProperties(true);
                     }
                 }
@@ -729,7 +727,6 @@ public class DialogFonts extends Dialog {
                     CustomFontUndoable undoable = new CustomFontUndoable(main, customProperty, null);
                     main.getUndoableManager().addUndoable(undoable, true);
                     main.getProjectData().setChangesSaved(false);
-                    main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + customProperty.getName() + "\"");
                     main.getRootTable().refreshStyleProperties(true);
                 } else {
                     boolean hasFont = false;
@@ -743,7 +740,6 @@ public class DialogFonts extends Dialog {
                     if (!hasFont) {
                         customProperty.setValue(null);
                         main.getProjectData().setChangesSaved(false);
-                        main.getRootTable().setStatusBarMessage("Drawable deleted for \"" + customProperty.getName() + "\"");
                         main.getRootTable().refreshStyleProperties(true);
                     }
                 }

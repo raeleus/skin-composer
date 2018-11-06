@@ -138,7 +138,6 @@ public class RootTable extends Table {
     private MenuItem recentFilesButton;
     private MenuButton fileMenu;
     private MenuButton editMenu;
-    private Label statusLabel;
     private Button classDuplicateButton;
     private Button classDeleteButton;
     private Button classRenameButton;
@@ -2582,72 +2581,9 @@ public class RootTable extends Table {
         Table table = new Table();
         table.setBackground(getSkin().getDrawable("status-bar"));
         add(table).growX();
-
-        statusLabel = new Label("", getSkin());
-        statusLabel.setColor(1.0f, 1.0f, 1.0f, 0.0f);
-        table.add(statusLabel).padLeft(10.0f);
         
         Label label = new Label("ver. " + Main.VERSION + "    RAY3K.WORDPRESS.COM    © 2018 Raymond \"Raeleus\" Buckley", getSkin());
         table.add(label).expandX().right().padRight(25.0f);
-    }
-    
-    private void display(final String text) {
-        SequenceAction sequenceAction = new SequenceAction();
-        if (statusLabel.isVisible()) {
-            statusLabel.clearActions();
-            AlphaAction alphaAction = new AlphaAction();
-            alphaAction.setAlpha(0.0f);
-            alphaAction.setDuration(.25f);
-            sequenceAction.addAction(alphaAction);
-            RunnableAction runnableAction = new RunnableAction();
-            runnableAction.setRunnable(() -> {
-                statusLabel.setText(text);
-            });
-            sequenceAction.addAction(runnableAction);
-            alphaAction = new AlphaAction();
-            alphaAction.setAlpha(1.0f);
-            alphaAction.setDuration(.25f);
-            sequenceAction.addAction(alphaAction);
-            DelayAction delayAction = new DelayAction();
-            delayAction.setDuration(3.0f);
-            sequenceAction.addAction(delayAction);
-            alphaAction = new AlphaAction();
-            alphaAction.setAlpha(0.0f);
-            alphaAction.setDuration(1.5f);
-            sequenceAction.addAction(alphaAction);
-            VisibleAction visibleAction = new VisibleAction();
-            visibleAction.setVisible(false);
-            sequenceAction.addAction(visibleAction);
-        } else {
-            statusLabel.setText(text);
-            statusLabel.clearActions();
-            statusLabel.setVisible(true);
-            AlphaAction alphaAction = new AlphaAction();
-            alphaAction.setAlpha(1.0f);
-            alphaAction.setDuration(.5f);
-            sequenceAction.addAction(alphaAction);
-            DelayAction delayAction = new DelayAction();
-            delayAction.setDuration(3.0f);
-            sequenceAction.addAction(delayAction);
-            alphaAction = new AlphaAction();
-            alphaAction.setAlpha(0.0f);
-            alphaAction.setDuration(1.5f);
-            sequenceAction.addAction(alphaAction);
-            VisibleAction visibleAction = new VisibleAction();
-            visibleAction.setVisible(false);
-            sequenceAction.addAction(visibleAction);
-        }
-        statusLabel.addAction(sequenceAction);
-    }
-    
-    public void setStatusBarMessage(String text) {
-        statusLabel.setColor(new Color(1.0f, 1.0f, 1.0f, statusLabel.getColor().a));
-        display(text);
-    }
-    
-    public void setStatusBarError(String text) {
-        statusLabel.setColor(new Color(1.0f, 0.0f, 0.0f, statusLabel.getColor().a));
-        display(text);
     }
 
     public SelectBox getClassSelectBox() {

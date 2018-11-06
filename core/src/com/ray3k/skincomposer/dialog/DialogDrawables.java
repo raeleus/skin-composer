@@ -1675,7 +1675,6 @@ public class DialogDrawables extends Dialog {
                                 new DrawableUndoable(main.getRootTable(), main.getAtlasData(),
                                         property, property.value, null);
                         main.getUndoableManager().addUndoable(undoable, true);
-                        main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + property.name + "\"");
                         
                         if (listener != null) {
                             listener.emptied();
@@ -1693,7 +1692,6 @@ public class DialogDrawables extends Dialog {
                             main.getProjectData().setChangesSaved(false);
                             main.getUndoableManager().clearUndoables();
                             property.value = null;
-                            main.getRootTable().setStatusBarMessage("Drawable deleted for \"" + property.name + "\"");
                             main.getRootTable().refreshStyleProperties(true);
                         }
                         
@@ -1706,7 +1704,6 @@ public class DialogDrawables extends Dialog {
                         main.getProjectData().setChangesSaved(false);
                         CustomDrawableUndoable undoable = new CustomDrawableUndoable(main, customProperty, null);
                         main.getUndoableManager().addUndoable(undoable, true);
-                        main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + customProperty.getName() + "\"");
                         
                         if (listener != null) {
                             listener.emptied();
@@ -1724,7 +1721,6 @@ public class DialogDrawables extends Dialog {
                             main.getProjectData().setChangesSaved(false);
                             main.getUndoableManager().clearUndoables();
                             customProperty.setValue(null);
-                            main.getRootTable().setStatusBarMessage("Drawable deleted for \"" + customProperty.getName() + "\"");
                             main.getRootTable().refreshStyleProperties(true);
                         }
                         
