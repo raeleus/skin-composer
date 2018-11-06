@@ -723,7 +723,11 @@ public class NinePatchWidget extends Stack {
                         style.contentHandleOver.draw(batch, x, y + offsetY + (widget.regionHeight - widget.contentTop) * widget.zoom, width, widget.zoom);
                     }
                 } else {
-                    style.contentHandle.draw(batch, x, y + offsetY + (widget.regionHeight - widget.contentTop) * widget.zoom, width, widget.zoom);
+                    if (widget.zoom > ZOOMED_OUT_STYLE_RANGE) {
+                        style.contentHandle.draw(batch, x, y + offsetY + (widget.regionHeight - widget.contentTop) * widget.zoom, width, widget.zoom);
+                    } else {
+                        style.zoomedOutContentHandle.draw(batch, x, y + offsetY + (widget.regionHeight - widget.contentTop) * widget.zoom, width, widget.zoom);
+                    }
                 }
                 
                 if (widget.currentHandle == HandleType.CONTENT_RIGHT) {
