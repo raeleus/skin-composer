@@ -1175,9 +1175,16 @@ public class DialogBitmapFont extends Dialog {
         var fontSettings = json.fromJson(FontSettings.class, fileHandle);
 
         ((TextField) findActor("characters")).setText(fontSettings.characters);
+        data.characters = fontSettings.characters;
+        
         ((Spinner) findActor("size")).setValue(fontSettings.size);
+        data.size = fontSettings.size;
+        
         ((Button) findActor("mono")).setChecked(fontSettings.mono);
+        data.mono = fontSettings.mono;
+        
         ((SelectBox<String>) findActor("hinting")).setSelected(fontSettings.hinting);
+        data.hinting = fontSettings.hinting;
         
         if (fontSettings.color != null) {
             var color = main.getJsonData().getColorByName(fontSettings.color);
@@ -1190,11 +1197,17 @@ public class DialogBitmapFont extends Dialog {
                 main.getJsonData().getColors().add(color);
             }
             ((TextButton) findActor("colorTextButton")).setUserObject(color);
+            data.color = fontSettings.color;
         }
         
         ((Spinner) findActor("gamma")).setValue(fontSettings.gamma);
+        data.gamma = fontSettings.gamma;
+        
         ((Spinner) findActor("renderCount")).setValue(fontSettings.renderCount);
+        data.renderCount = fontSettings.renderCount;
+        
         ((Spinner) findActor("borderWidth")).setValue(fontSettings.borderWidth);
+        data.borderWidth = fontSettings.borderWidth;
         
         if (fontSettings.borderColor != null) {
             var color = main.getJsonData().getColorByName(fontSettings.borderColor);
@@ -1207,12 +1220,20 @@ public class DialogBitmapFont extends Dialog {
                 main.getJsonData().getColors().add(color);
             }
             ((TextButton) findActor("borderColorTextButton")).setUserObject(color);
+            data.borderColor = fontSettings.borderColor;
         }
         
         ((Button) findActor("borderStraight")).setChecked(fontSettings.borderStraight);
+        data.borderStraight = fontSettings.borderStraight;
+        
         ((Spinner) findActor("borderGamma")).setValue(fontSettings.borderGamma);
+        data.borderGamma = fontSettings.borderGamma;
+        
         ((Spinner) findActor("shadowOffsetX")).setValue(fontSettings.shadowOffsetX);
+        data.shadowOffsetX = fontSettings.shadowOffsetX;
+        
         ((Spinner) findActor("shadowOffsetY")).setValue(fontSettings.shadowOffsetY);
+        data.shadowOffsetY = fontSettings.shadowOffsetY;
         
         if (fontSettings.shadowColor != null) {
             var color = main.getJsonData().getColorByName(fontSettings.shadowColor);
@@ -1225,17 +1246,34 @@ public class DialogBitmapFont extends Dialog {
                 main.getJsonData().getColors().add(color);
             }
             ((TextButton) findActor("shadowColorTextButton")).setUserObject(color);
+            data.shadowColor = fontSettings.shadowColor;
         }
         
         ((Button) findActor("incremental")).setChecked(fontSettings.incremental);
+        data.incremental = fontSettings.incremental;
+        
         ((Spinner) findActor("spaceX")).setValue(fontSettings.spaceX);
+        data.spaceX = fontSettings.spaceX;
+        
         ((Spinner) findActor("spaceY")).setValue(fontSettings.spaceY);
+        data.spaceY = fontSettings.spaceY;
+        
         ((Button) findActor("kerning")).setChecked(fontSettings.kerning);
+        data.kerning = fontSettings.kerning;
+        
         ((Button) findActor("flip")).setChecked(fontSettings.flip);
+        data.flip = fontSettings.flip;
+        
         ((Button) findActor("genMipMaps")).setChecked(fontSettings.genMipMaps);
+        data.genMipMaps = fontSettings.genMipMaps;
+        
         ((SelectBox<String>) findActor("minFilter")).setSelected(fontSettings.minFilter);
+        data.minFilter = fontSettings.minFilter;
+        
         ((SelectBox<String>) findActor("magFilter")).setSelected(fontSettings.magFilter);
+        data.magFilter = fontSettings.magFilter;
 
         updateColors();
+        updatePreviewAndOK();
     }
 }
