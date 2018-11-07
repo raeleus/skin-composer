@@ -113,7 +113,7 @@ public class StyleData implements Json.Serializable {
     }
     
     public StyleData() {
-        
+        this.main = Main.main;
     }
     
     private void newStyleProperties(Class clazz) {
