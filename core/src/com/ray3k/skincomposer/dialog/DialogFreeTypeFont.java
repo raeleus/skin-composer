@@ -54,6 +54,7 @@ import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -1387,7 +1388,6 @@ public class DialogFreeTypeFont extends Dialog {
         main.getDialogFactory().showDialogLoading(runnable);
     }
     
-    //todo: chop gamma and border gamma so that it doesn't look so ugly
     private void loadSettings(FileHandle fileHandle) {
         var fontSettings = json.fromJson(FontSettings.class, fileHandle);
 
@@ -1417,7 +1417,7 @@ public class DialogFreeTypeFont extends Dialog {
             data.color = fontSettings.color;
         }
         
-        ((Spinner) findActor("gamma")).setValue(fontSettings.gamma);
+        ((Spinner) findActor("gamma")).setValue(new BigDecimal(df.format(fontSettings.gamma)));
         data.gamma = fontSettings.gamma;
         
         ((Spinner) findActor("renderCount")).setValue(fontSettings.renderCount);
@@ -1443,7 +1443,7 @@ public class DialogFreeTypeFont extends Dialog {
         ((Button) findActor("borderStraight")).setChecked(fontSettings.borderStraight);
         data.borderStraight = fontSettings.borderStraight;
         
-        ((Spinner) findActor("borderGamma")).setValue(fontSettings.borderGamma);
+        ((Spinner) findActor("borderGamma")).setValue(new BigDecimal(df.format(fontSettings.borderGamma)));
         data.borderGamma = fontSettings.borderGamma;
         
         ((Spinner) findActor("shadowOffsetX")).setValue(fontSettings.shadowOffsetX);

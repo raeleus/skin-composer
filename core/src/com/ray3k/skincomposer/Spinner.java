@@ -281,7 +281,18 @@ public class Spinner extends Table {
     }
     
     public void setValue(double value) {
+        setValue(BigDecimal.valueOf(value));
+    }
+    
+    public void setValue(BigDecimal value) {
         setValue(value, true);
+    }
+    
+    private void setValue(BigDecimal value, boolean updateText) {
+        this.value = value;
+        if (updateText) {
+            updateText();
+        }
     }
 
     public double getMinimum() {
@@ -305,13 +316,6 @@ public class Spinner extends Table {
     public void clearMinMax() {
         usingMinimum = false;
         usingMaximum = false;
-    }
-    
-    private void setValue(double value, boolean updateText) {
-        this.value = BigDecimal.valueOf(value);
-        if (updateText) {
-            updateText();
-        }
     }
     
     private void updateText() {
