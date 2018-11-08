@@ -24,6 +24,7 @@
 * Fixed crash when viewing fonts with multiple images after importing skin on an unsaved, new project.
 * Added UI support for ISO-8859-1: Western European and ISO-8859-2: Central European.
 * Fixed characters select box value incorrectly set when editing a Freetype font.
+* Fixed "duplicate custom class" creating an extra default style.
 * Minor UI fixes.
 
 ### Skin Composer Version 23 ###
