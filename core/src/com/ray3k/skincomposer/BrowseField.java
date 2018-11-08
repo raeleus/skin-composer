@@ -38,6 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 
 public class BrowseField extends Table {
     private TextButton textButton;
@@ -49,13 +50,15 @@ public class BrowseField extends Table {
         
         if (labelText != null && !labelText.equals("")) {
             label = new Label(labelText, style.labelStyle);
-            add(label);
+            add(label).colspan(2);
         }
         
         row();
         if (valueText == null) valueText = "";
         textButton = new TextButton(valueText, style.mainButtonStyle);
         textButton.setTouchable(Touchable.disabled);
+        textButton.getLabel().setAlignment(Align.left);
+        textButton.getLabelCell().padLeft(5).padRight(5);
         add(textButton).minWidth(35.0f).prefWidth(35.0f).growX();
         
         button = new ImageButton(style.rightButtonStyle);

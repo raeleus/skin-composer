@@ -27,7 +27,6 @@ import com.ray3k.skincomposer.data.CustomProperty;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -74,7 +73,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -96,6 +94,7 @@ import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
 import com.ray3k.skincomposer.utils.Utils;
+import java.util.Arrays;
 
 public class RootTable extends Table {
 
@@ -139,7 +138,6 @@ public class RootTable extends Table {
     private MenuItem recentFilesButton;
     private MenuButton fileMenu;
     private MenuButton editMenu;
-    private Label statusLabel;
     private Button classDuplicateButton;
     private Button classDeleteButton;
     private Button classRenameButton;
@@ -164,6 +162,9 @@ public class RootTable extends Table {
     }
 
     public void populate() {
+        Button button = (Button) findActor("downloadButton");
+        var updateAvailable = button == null ? false : button.isVisible();
+        
         clearChildren();
         addFileMenu();
 
@@ -175,6 +176,8 @@ public class RootTable extends Table {
 
         row();
         addStatusBar();
+        
+        ((Button) findActor("downloadButton")).setVisible(updateAvailable);
     }
 
     private void addFileMenu() {
@@ -593,6 +596,35 @@ public class RootTable extends Table {
         Array<StyleData> labelStyles = main.getProjectData().getJsonData().getClassStyleMap().get(Label.class);
 
         if (styleProperties != null) {
+            //add parent selection box
+            label = new Label("parent", getSkin());
+            table.add(label).padTop(20.0f).fill(false).expand(false, false);
+            
+            table.row();
+            var parentNames = new Array<String>();
+            parentNames.add("None");
+            
+            Class recursiveClass = getSelectedClass();
+            Class recursiveStyleClass = Main.basicToStyleClass(recursiveClass);
+            while (recursiveStyleClass != null && Arrays.asList(Main.STYLE_CLASSES).contains(recursiveStyleClass)) {
+                for (var style : main.getJsonData().getClassStyleMap().get(recursiveClass)) {
+                    if (style != null && !(style.parent != null && style.parent.equals(getSelectedStyle().name)) && !(parentNames.contains(style.name, false) || style.equals(getSelectedStyle()) && recursiveClass.equals(getSelectedClass()))) {
+                        parentNames.add(style.name);
+                    }
+                }
+                
+                recursiveClass = recursiveClass.getSuperclass();
+                recursiveStyleClass = Main.basicToStyleClass(recursiveClass);
+            }
+            
+            var parentSelectBox = new SelectBox<String>(getSkin());
+            parentSelectBox.setItems(parentNames);
+            parentSelectBox.setSelected(getSelectedStyle().parent);
+            table.add(parentSelectBox);
+            parentSelectBox.addListener(main.getHandListener());
+            parentSelectBox.addListener(new StyleParentChangeListener(getSelectedStyle(), parentSelectBox));
+            //make preview respect parent
+            
             for (StyleProperty styleProperty : styleProperties) {
 
                 table.row();
@@ -926,6 +958,21 @@ public class RootTable extends Table {
         @Override
         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
             fire(new StylePropertyEvent(styleProp, styleActor));
+        }
+    }
+    
+    private class StyleParentChangeListener extends ChangeListener {
+        private final StyleData style;
+        private final SelectBox<String> selectBox;
+        
+        public StyleParentChangeListener(StyleData style, SelectBox<String> selectBox) {
+            this.style = style;
+            this.selectBox = selectBox;
+        }
+
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+            fire(new StyleParentEvent(style, selectBox));
         }
     }
     
@@ -1842,23 +1889,75 @@ public class RootTable extends Table {
 
                 } else if (clazz.equals(Tree.class)) {
                     t.row();
-                    t.add(new Label("Icon Spacing: ", getSkin())).right();
-                    Spinner spinner = new Spinner(0.0, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
+                    t.add(new Label("Icon Spacing Left: ", getSkin())).right();
+                    Spinner spinner = new Spinner(2, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(1);
                     spinner.getTextField().addListener(main.getIbeamListener());
                     spinner.getButtonMinus().addListener(main.getHandListener());
                     spinner.getButtonPlus().addListener(main.getHandListener());
+                    spinner.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent changeEvent, Actor actor) {
+                            previewProperties.put("icon-spacing-left", ((Spinner) actor).getValueAsInt());
+                            refreshPreview();
+                        }
+                    });
+                    previewProperties.put("icon-spacing-left", spinner.getValueAsInt());
+                    t.add(spinner).growX();
+                    
+                    t.row();
+                    t.add(new Label("Icon Spacing Right: ", getSkin())).right();
+                    spinner = new Spinner(2, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
+                    spinner.getTextField().setFocusTraversal(false);
+                    spinner.setMinimum(1);
+                    spinner.getTextField().addListener(main.getIbeamListener());
+                    spinner.getButtonMinus().addListener(main.getHandListener());
+                    spinner.getButtonPlus().addListener(main.getHandListener());
+                    spinner.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent changeEvent, Actor actor) {
+                            previewProperties.put("icon-spacing-right", ((Spinner) actor).getValueAsInt());
+                            refreshPreview();
+                        }
+                    });
+                    previewProperties.put("icon-spacing-right", spinner.getValueAsInt());
+                    t.add(spinner).growX();
+                    
+                    t.row();
+                    t.add(new Label("Indent Spacing: ", getSkin())).right();
+                    spinner = new Spinner(0, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
+                    spinner.getTextField().setFocusTraversal(false);
+                    spinner.setMinimum(0);
+                    spinner.getTextField().addListener(main.getIbeamListener());
+                    spinner.getButtonMinus().addListener(main.getHandListener());
+                    spinner.getButtonPlus().addListener(main.getHandListener());
+                    spinner.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent changeEvent, Actor actor) {
+                            previewProperties.put("indent-spacing", ((Spinner) actor).getValueAsInt());
+                            refreshPreview();
+                        }
+                    });
+                    previewProperties.put("indent-spacing", spinner.getValueAsInt());
                     t.add(spinner).growX();
 
                     t.row();
                     t.add(new Label("Y Spacing: ", getSkin())).right();
-                    spinner = new Spinner(0.0, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
+                    spinner = new Spinner(4, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(1);
                     spinner.getTextField().addListener(main.getIbeamListener());
                     spinner.getButtonMinus().addListener(main.getHandListener());
                     spinner.getButtonPlus().addListener(main.getHandListener());
+                    spinner.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent changeEvent, Actor actor) {
+                            previewProperties.put("y-spacing", ((Spinner) actor).getValueAsInt());
+                            refreshPreview();
+                        }
+                    });
+                    previewProperties.put("y-spacing", spinner.getValueAsInt());
                     t.add(spinner).growX();
 
                 } else if (clazz.equals(Window.class)) {
@@ -2038,9 +2137,18 @@ public class RootTable extends Table {
                         widget.addListener(main.getHandListener());
                     } else if (clazz.equals(SplitPane.class)) {
                         SplitPane.SplitPaneStyle style = createPreviewStyle(SplitPane.SplitPaneStyle.class, styleData);
+                        
+                        var table1 = new Table();
                         Label label1 = new Label("", getSkin());
+                        table1.add(label1).minSize(0);
+                        
+                        var table2 = new Table();
                         Label label2 = new Label("", getSkin());
-                        widget = new SplitPane(label1, label2, (boolean) previewProperties.get("orientation"), style);
+                        table2.add(label2).minSize(0);
+                        
+                        widget = new SplitPane(table1, table2, (boolean) previewProperties.get("orientation"), style);
+                        ((SplitPane) widget).setMinSplitAmount(0);
+                        ((SplitPane) widget).setMaxSplitAmount(1);
                         label1.setText((String) previewProperties.get("text"));
                         label2.setText((String) previewProperties.get("text"));
                         
@@ -2090,6 +2198,9 @@ public class RootTable extends Table {
                     } else if (clazz.equals(Tree.class)) {
                         Tree.TreeStyle style = createPreviewStyle(Tree.TreeStyle.class, styleData);
                         widget = new Tree(style);
+                        ((Tree) widget).setIconSpacing((int) previewProperties.get("icon-spacing-left"), (int) previewProperties.get("icon-spacing-right"));
+                        ((Tree) widget).setIndentSpacing((int) previewProperties.get("indent-spacing"));
+                        ((Tree) widget).setYSpacing((int) previewProperties.get("y-spacing"));
                         String[] lines = {"this", "is", "a", "test"};
                         Tree.Node parentNode = null;
                         for (String line: lines) {
@@ -2342,7 +2453,7 @@ public class RootTable extends Table {
             returnValue = ClassReflection.newInstance(clazz);
             Field[] fields = ClassReflection.getFields(clazz);
             for (Field field : fields) {
-                Object value = styleData.properties.get(field.getName()).value;
+                Object value = styleData.getInheritedValue(field.getName());
                 if (value != null) {
                     if (field.getType().equals(Drawable.class)) {
                         field.set(returnValue, drawablePairs.get((String) value));
@@ -2470,72 +2581,9 @@ public class RootTable extends Table {
         Table table = new Table();
         table.setBackground(getSkin().getDrawable("status-bar"));
         add(table).growX();
-
-        statusLabel = new Label("", getSkin());
-        statusLabel.setColor(1.0f, 1.0f, 1.0f, 0.0f);
-        table.add(statusLabel).padLeft(10.0f);
         
         Label label = new Label("ver. " + Main.VERSION + "    RAY3K.WORDPRESS.COM    © 2018 Raymond \"Raeleus\" Buckley", getSkin());
         table.add(label).expandX().right().padRight(25.0f);
-    }
-    
-    private void display(final String text) {
-        SequenceAction sequenceAction = new SequenceAction();
-        if (statusLabel.isVisible()) {
-            statusLabel.clearActions();
-            AlphaAction alphaAction = new AlphaAction();
-            alphaAction.setAlpha(0.0f);
-            alphaAction.setDuration(.25f);
-            sequenceAction.addAction(alphaAction);
-            RunnableAction runnableAction = new RunnableAction();
-            runnableAction.setRunnable(() -> {
-                statusLabel.setText(text);
-            });
-            sequenceAction.addAction(runnableAction);
-            alphaAction = new AlphaAction();
-            alphaAction.setAlpha(1.0f);
-            alphaAction.setDuration(.25f);
-            sequenceAction.addAction(alphaAction);
-            DelayAction delayAction = new DelayAction();
-            delayAction.setDuration(3.0f);
-            sequenceAction.addAction(delayAction);
-            alphaAction = new AlphaAction();
-            alphaAction.setAlpha(0.0f);
-            alphaAction.setDuration(1.5f);
-            sequenceAction.addAction(alphaAction);
-            VisibleAction visibleAction = new VisibleAction();
-            visibleAction.setVisible(false);
-            sequenceAction.addAction(visibleAction);
-        } else {
-            statusLabel.setText(text);
-            statusLabel.clearActions();
-            statusLabel.setVisible(true);
-            AlphaAction alphaAction = new AlphaAction();
-            alphaAction.setAlpha(1.0f);
-            alphaAction.setDuration(.5f);
-            sequenceAction.addAction(alphaAction);
-            DelayAction delayAction = new DelayAction();
-            delayAction.setDuration(3.0f);
-            sequenceAction.addAction(delayAction);
-            alphaAction = new AlphaAction();
-            alphaAction.setAlpha(0.0f);
-            alphaAction.setDuration(1.5f);
-            sequenceAction.addAction(alphaAction);
-            VisibleAction visibleAction = new VisibleAction();
-            visibleAction.setVisible(false);
-            sequenceAction.addAction(visibleAction);
-        }
-        statusLabel.addAction(sequenceAction);
-    }
-    
-    public void setStatusBarMessage(String text) {
-        statusLabel.setColor(new Color(1.0f, 1.0f, 1.0f, statusLabel.getColor().a));
-        display(text);
-    }
-    
-    public void setStatusBarError(String text) {
-        statusLabel.setColor(new Color(1.0f, 0.0f, 0.0f, statusLabel.getColor().a));
-        display(text);
     }
 
     public SelectBox getClassSelectBox() {
@@ -2657,6 +2705,16 @@ public class RootTable extends Table {
             this.styleActor = styleActor;
         }
     }
+    
+    private static class StyleParentEvent extends Event {
+        StyleData style;
+        SelectBox<String> selectBox;
+        
+        public StyleParentEvent(StyleData style, SelectBox<String> selectBox) {
+            this.style = style;
+            this.selectBox = selectBox;
+        }
+    }
 
     private static enum CustomPropertyEnum {
         NEW, DUPLICATE, DELETE, RENAME, CHANGE_VALUE;
@@ -2686,6 +2744,8 @@ public class RootTable extends Table {
                 loadStyles(((LoadStylesEvent) event).classSelectBox, ((LoadStylesEvent) event).styleSelectBox);
             } else if (event instanceof StylePropertyEvent) {
                 stylePropertyChanged(((StylePropertyEvent) event).styleProperty, ((StylePropertyEvent) event).styleActor);
+            } else if (event instanceof StyleParentEvent) {
+                styleParentChanged(((StyleParentEvent) event).style, ((StyleParentEvent) event).selectBox);
             } else if (event instanceof CustomPropertyEvent) {
                 CustomPropertyEvent propertyEvent = (CustomPropertyEvent) event;
                 if (null != propertyEvent.customPropertyEnum) switch (propertyEvent.customPropertyEnum) {
@@ -2715,6 +2775,8 @@ public class RootTable extends Table {
 
         public abstract void stylePropertyChanged(StyleProperty styleProperty, Actor styleActor);
 
+        public abstract void styleParentChanged(StyleData style, SelectBox<String> selectBox);
+        
         public abstract void loadClasses(SelectBox classSelectBox);
 
         public abstract void loadStyles(SelectBox classSelectBox, SelectBox styleSelectBox);

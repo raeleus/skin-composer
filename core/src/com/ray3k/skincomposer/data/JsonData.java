@@ -63,16 +63,13 @@ public class JsonData implements Json.Serializable {
     private Main main;
 
     public JsonData() {
+        this.main = Main.main;
         colors = new Array<>();
         fonts = new Array<>();
         freeTypeFonts = new Array<>();
 
         initializeClassStyleMap();
         customClasses = new Array<>();
-    }
-
-    public void setMain(Main main) {
-        this.main = main;
     }
 
     public void clear() {
@@ -86,6 +83,12 @@ public class JsonData implements Json.Serializable {
         customClasses.clear();
     }
 
+    /**
+     * Imports skin data from a JSON file. Supports skins from LibGDX 1.9.9
+     * @param fileHandle
+     * @return
+     * @throws Exception 
+     */
     public Array<String> readFile(FileHandle fileHandle) throws Exception {
         Array<String> warnings = new Array<>();
         
@@ -106,7 +109,7 @@ public class JsonData implements Json.Serializable {
         if (saveFile != null) {
             targetDirectory = saveFile.sibling(saveFile.nameWithoutExtension() + "_data");
         } else {
-            targetDirectory = Main.appFolder.child("temp/" + main.getProjectData().getId() + "_data");
+            targetDirectory = new FileHandle(Main.appFolder.child("temp/" + main.getProjectData().getId() + "_data").file());
         }
 
         //read json file and create styles
@@ -115,7 +118,7 @@ public class JsonData implements Json.Serializable {
 
         for (JsonValue child : val.iterator()) {
             //fonts
-            if (child.name().equals(BitmapFont.class.getName())) {
+            if (child.name().equals(BitmapFont.class.getName()) || child.name().equals(BitmapFont.class.getSimpleName())) {
                 for (JsonValue font : child.iterator()) {
                     if (font.get("file") != null) {
                         FileHandle fontFile = fileHandle.sibling(font.getString("file"));
@@ -128,7 +131,6 @@ public class JsonData implements Json.Serializable {
                             fontFile.copyTo(fontCopy);
                         }
                         FontData fontData = new FontData(font.name(), fontCopy);
-                        
 
                         //delete fonts with the same name
                         for (FontData originalData : new Array<>(fonts)) {
@@ -208,7 +210,7 @@ public class JsonData implements Json.Serializable {
                     }
                 }
             } //colors
-            else if (child.name().equals(Color.class.getName())) {
+            else if (child.name().equals(Color.class.getName()) || child.name().equals(Color.class.getSimpleName())) {
                 for (JsonValue color : child.iterator()) {
                     ColorData colorData = new ColorData(color.name, new Color(color.getFloat("r", 0.0f), color.getFloat("g", 0.0f), color.getFloat("b", 0.0f), color.getFloat("a", 0.0f)));
                     
@@ -221,8 +223,8 @@ public class JsonData implements Json.Serializable {
                     
                     colors.add(colorData);
                 }
-            }
-            else if (child.name().equals(TiledDrawable.class.getName())) {
+            } //tiled drawables
+            else if (child.name().equals(TiledDrawable.class.getName()) || child.name().equals(TiledDrawable.class.getSimpleName())) {
                 for (JsonValue tiledDrawable : child.iterator()) {
                     DrawableData drawableData = new DrawableData(main.getProjectData().getAtlasData().getDrawable(tiledDrawable.getString("region")).file);
                     drawableData.name = tiledDrawable.name;
@@ -243,7 +245,7 @@ public class JsonData implements Json.Serializable {
                     main.getProjectData().getAtlasData().getDrawables().add(drawableData);
                 }
             } //tinted drawables
-            else if (child.name().equals(TintedDrawable.class.getName())) {
+            else if (child.name().equals(TintedDrawable.class.getName()) || child.name().equals(TintedDrawable.class.getSimpleName())) {
                 for (JsonValue tintedDrawable : child.iterator()) {
                     DrawableData drawableData = new DrawableData(main.getProjectData().getAtlasData().getDrawable(tintedDrawable.getString("name")).file);
                     drawableData.name = tintedDrawable.name;
@@ -267,8 +269,9 @@ public class JsonData implements Json.Serializable {
             else {
                 int classIndex = 0;
                 
-                if (testClassString(child.name)) {
-                    Class matchClass = ClassReflection.forName(child.name);
+                Class matchClass = findStyleClassByName(child.name);
+                
+                if (matchClass != null) {
                     for (Class clazz : Main.STYLE_CLASSES) {
                         if (clazz.equals(matchClass)) {
                             break;
@@ -281,22 +284,26 @@ public class JsonData implements Json.Serializable {
                     for (JsonValue style : child.iterator()) {
                         StyleData data = newStyle(clazz, style.name);
                         for (JsonValue property : style.iterator()) {
-                            StyleProperty styleProperty = data.properties.get(property.name);
-                            if (styleProperty.type.equals(Float.TYPE)) {
-                                styleProperty.value = (double) property.asFloat();
-                            } else if (styleProperty.type.equals(Color.class)) {
-                                if (property.isString()) {
-                                    styleProperty.value = property.asString();
-                                } else {
-                                    Gdx.app.error(getClass().getName(), "Can't import JSON files that do not use predefined colors.");
-                                    warnings.add("Property [BLACK]" + styleProperty.name + "[] value cleared for [BLACK]" + clazz.getSimpleName() + ": " + data.name + "[] (Unsupported color definition)");
-                                }
+                            if (property.name.equals("parent")) {
+                                data.parent = property.asString();
                             } else {
-                                if (property.isString()) {
-                                    styleProperty.value = property.asString();
+                                StyleProperty styleProperty = data.properties.get(property.name);
+                                if (styleProperty.type.equals(Float.TYPE)) {
+                                    styleProperty.value = (double) property.asFloat();
+                                } else if (styleProperty.type.equals(Color.class)) {
+                                    if (property.isString()) {
+                                        styleProperty.value = property.asString();
+                                    } else {
+                                        Gdx.app.error(getClass().getName(), "Can't import JSON files that do not use predefined colors.");
+                                        warnings.add("Property [BLACK]" + styleProperty.name + "[] value cleared for [BLACK]" + clazz.getSimpleName() + ": " + data.name + "[] (Unsupported color definition)");
+                                    }
                                 } else {
-                                    Gdx.app.error(getClass().getName(), "Can't import JSON files that do not use String names for field values.");
-                                    warnings.add("Property [BLACK]" + styleProperty.name + "[] value cleared for [BLACK]" + clazz.getSimpleName() + ": " + data.name + "[] (Unsupported propety value)");
+                                    if (property.isString()) {
+                                        styleProperty.value = property.asString();
+                                    } else {
+                                        Gdx.app.error(getClass().getName(), "Can't import JSON files that do not use String names for field values.");
+                                        warnings.add("Property [BLACK]" + styleProperty.name + "[] value cleared for [BLACK]" + clazz.getSimpleName() + ": " + data.name + "[] (Unsupported propety value)");
+                                    }
                                 }
                             }
                         }
@@ -496,12 +503,17 @@ public class JsonData implements Json.Serializable {
         return null;
     }
     
-    private boolean testClassString(String fullyQualifiedName) {
-        boolean returnValue = false;
+    /**
+     * Will take a fully qualified class name or simple name and return true if it matches a style class.
+     * @param name
+     * @return 
+     */
+    private Class findStyleClassByName(String name) {
+        Class returnValue = null;
         
         for (Class clazz : Main.STYLE_CLASSES) {
-            if (fullyQualifiedName.equals(clazz.getName())) {
-                returnValue = true;
+            if (name.equals(clazz.getName()) || name.equals(clazz.getSimpleName())) {
+                returnValue = clazz;
                 break;
             }
         }
@@ -509,6 +521,11 @@ public class JsonData implements Json.Serializable {
         return returnValue;
     }
 
+    /**
+     * Exports skin data to a JSON file to be loaded by LibGDX.
+     * @param fileHandle
+     * @return 
+     */
     public Array<String> writeFile(FileHandle fileHandle) {
         Array<String> warnings = new Array<>();
         
@@ -522,7 +539,8 @@ public class JsonData implements Json.Serializable {
 
         //fonts
         if (fonts.size > 0) {
-            json.writeObjectStart(BitmapFont.class.getName());
+            String className = main.getProjectData().isUsingSimpleNames() ? BitmapFont.class.getSimpleName() : BitmapFont.class.getName();
+            json.writeObjectStart(className);
             for (FontData font : fonts) {
                 json.writeObjectStart(font.getName());
                 json.writeValue("file", font.file.name());
@@ -533,7 +551,8 @@ public class JsonData implements Json.Serializable {
 
         //colors
         if (colors.size > 0) {
-            json.writeObjectStart(Color.class.getName());
+            String className = main.getProjectData().isUsingSimpleNames() ? Color.class.getSimpleName() : Color.class.getName();
+            json.writeObjectStart(className);
             for (ColorData color : colors) {
                 json.writeObjectStart(color.getName());
                 json.writeValue("r", color.color.r);
@@ -600,7 +619,8 @@ public class JsonData implements Json.Serializable {
         
         //tinted drawables
         if (tintedDrawables.size > 0) {
-            json.writeObjectStart(TintedDrawable.class.getName());
+            String className = main.getProjectData().isUsingSimpleNames() ? TintedDrawable.class.getSimpleName() : TintedDrawable.class.getName();
+            json.writeObjectStart(className);
             for (DrawableData drawable : tintedDrawables) {
                 json.writeObjectStart(drawable.name);
                 json.writeValue("name", DrawableData.proper(drawable.file.name()));
@@ -621,7 +641,8 @@ public class JsonData implements Json.Serializable {
         
         //tiled drawables
         if (tiledDrawables.size > 0) {
-            json.writeObjectStart(TiledDrawable.class.getName());
+            String className = main.getProjectData().isUsingSimpleNames() ? TiledDrawable.class.getSimpleName() : TiledDrawable.class.getName();
+            json.writeObjectStart(className);
             for (DrawableData drawable : tiledDrawables) {
                 json.writeObjectStart(drawable.name);
                 json.writeValue("region", DrawableData.proper(drawable.file.name()));
@@ -684,10 +705,14 @@ public class JsonData implements Json.Serializable {
             }
 
             if (hasMandatoryStyles) {
-                json.writeObjectStart(clazz.getName());
+                String className = main.getProjectData().isUsingSimpleNames() ? clazz.getSimpleName() : clazz.getName();
+                json.writeObjectStart(className);
                 for (StyleData style : styles) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
                         json.writeObjectStart(style.name);
+                        if (style.parent != null) {
+                            json.writeValue("parent", style.parent);
+                        }
                         for (StyleProperty property : style.properties.values()) {
 
                             //if not optional, null, or zero
@@ -889,6 +914,25 @@ public class JsonData implements Json.Serializable {
             fonts = json.readValue("fonts", Array.class, jsonData);
             
             freeTypeFonts = json.readValue("freeTypeFonts", Array.class, new Array<FreeTypeFontData>(),jsonData);
+            FileHandle previewFontsPath = Main.appFolder.child("preview fonts");
+            var fontsList = previewFontsPath.list();
+            
+            for (var freeTypeFont : freeTypeFonts) {
+                if (freeTypeFont.previewTTF != null) {
+                    
+                    boolean foundMatch = false;
+                    for (var previewFile : fontsList) {
+                        if (freeTypeFont.previewTTF.equals(previewFile.nameWithoutExtension())) {
+                            foundMatch = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!foundMatch) {
+                        freeTypeFont.previewTTF = previewFontsPath.list()[0].nameWithoutExtension();
+                    }
+                }
+            }
             
             classStyleMap = new OrderedMap<>();
             for (JsonValue data : jsonData.get("classStyleMap").iterator()) {

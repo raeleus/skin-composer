@@ -467,7 +467,7 @@ public class DialogFonts extends Dialog {
                 });
                 button.add(renameButton).padLeft(15.0f);
                 
-                TextTooltip toolTip = new TextTooltip("Rename Font", main.getTooltipManager(), getSkin());
+                TextTooltip toolTip = new TextTooltip("Change Freetype Settings", main.getTooltipManager(), getSkin());
                 renameButton.addListener(toolTip);
                 
                 LabelStyle style = new LabelStyle();
@@ -541,9 +541,17 @@ public class DialogFonts extends Dialog {
     }
     
     private void freeTypeSettingsDialog(FreeTypeFontData font) {
-        main.getDialogFactory().showDialogFreeTypeFont(font, (FreeTypeFontData font1) -> {
-            sortBySelectedMode();
-            refreshTable();
+        main.getDialogFactory().showDialogFreeTypeFont(font, new DialogFreeTypeFont.DialogFreeTypeFontListener() {
+            @Override
+            public void fontAdded(FreeTypeFontData font) {
+                sortBySelectedMode();
+                refreshTable();
+            }
+
+            @Override
+            public void cancelled() {
+                
+            }
         });
     }
     
@@ -679,7 +687,6 @@ public class DialogFonts extends Dialog {
                             main.getJsonData(), styleProperty, styleProperty.value, null);
                     main.getUndoableManager().addUndoable(undoable, true);
                     main.getProjectData().setChangesSaved(false);
-                    main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + styleProperty.name + "\"");
                     main.getRootTable().refreshStyleProperties(true);
                 } else {
                     boolean hasFont = false;
@@ -700,7 +707,6 @@ public class DialogFonts extends Dialog {
                     if (!hasFont) {
                         styleProperty.value = null;
                         main.getProjectData().setChangesSaved(false);
-                        main.getRootTable().setStatusBarMessage("Drawable deleted for \"" + styleProperty.name + "\"");
                         main.getRootTable().refreshStyleProperties(true);
                     }
                 }
@@ -721,7 +727,6 @@ public class DialogFonts extends Dialog {
                     CustomFontUndoable undoable = new CustomFontUndoable(main, customProperty, null);
                     main.getUndoableManager().addUndoable(undoable, true);
                     main.getProjectData().setChangesSaved(false);
-                    main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + customProperty.getName() + "\"");
                     main.getRootTable().refreshStyleProperties(true);
                 } else {
                     boolean hasFont = false;
@@ -735,7 +740,6 @@ public class DialogFonts extends Dialog {
                     if (!hasFont) {
                         customProperty.setValue(null);
                         main.getProjectData().setChangesSaved(false);
-                        main.getRootTable().setStatusBarMessage("Drawable deleted for \"" + customProperty.getName() + "\"");
                         main.getRootTable().refreshStyleProperties(true);
                     }
                 }
@@ -899,21 +903,33 @@ public class DialogFonts extends Dialog {
     }
     
     private void newBitmapFontDialog() {
+        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        
         main.getDialogFactory().showDialogBitmapFont((FileHandle file) -> {
             var files = new Array<FileHandle>();
             files.add(file);
             fontNameDialog(files, 0);
-            
+        
+
             main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
         });
     }
     
     private void newFreeTypeFontDialog() {
+        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        
         main.getDialogFactory().showDialogFreeTypeFont(new DialogFreeTypeFont.DialogFreeTypeFontListener() {
             @Override
             public void fontAdded(FreeTypeFontData font) {
                 sortBySelectedMode();
                 refreshTable();
+                
+                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+            }
+
+            @Override
+            public void cancelled() {
+                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
             }
         });
     }

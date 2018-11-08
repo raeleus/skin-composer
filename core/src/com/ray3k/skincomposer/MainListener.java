@@ -521,6 +521,11 @@ public class MainListener extends RootTableListener {
             main.getUndoableManager().addUndoable(new UndoableManager.SelectBoxUndoable(root, styleProperty, (SelectBox) styleActor), true);
         }
     }
+
+    @Override
+    public void styleParentChanged(StyleData style, SelectBox<String> selectBox) {
+        main.getUndoableManager().addUndoable(new UndoableManager.ParentUndoable(root, style, selectBox), true);
+    }
     
     private void updateStyleProperties() {
         int classIndex = root.getClassSelectBox().getSelectedIndex();

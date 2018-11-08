@@ -45,6 +45,7 @@ import com.ray3k.skincomposer.utils.Utils;
 public class DialogSettings extends Dialog {
     private Integer maxUndos;
     private boolean resourcesRelative;
+    private boolean simpleNames;
     private boolean allowingWelcome;
     private boolean allowingUpdates;
     private final Main main;
@@ -77,6 +78,7 @@ public class DialogSettings extends Dialog {
 
         maxUndos = main.getProjectData().getMaxUndos();
         resourcesRelative = main.getProjectData().areResourcesRelative();
+        simpleNames = main.getProjectData().isUsingSimpleNames();
         allowingWelcome = main.getProjectData().isAllowingWelcome();
         allowingUpdates = main.getProjectData().isCheckingForUpdates();
         exportFormat = main.getProjectData().getExportFormat();
@@ -93,6 +95,7 @@ public class DialogSettings extends Dialog {
             main.getProjectData().setChangesSaved(false);
             main.getProjectData().setMaxUndos(maxUndos);
             main.getProjectData().setResourcesRelative(resourcesRelative);
+            main.getProjectData().setUsingSimpleNames(simpleNames);
             main.getProjectData().setAllowingWelcome(allowingWelcome);
             main.getProjectData().setCheckingForUpdates(allowingUpdates);
             main.getProjectData().setExportFormat(exportFormat);
@@ -109,7 +112,6 @@ public class DialogSettings extends Dialog {
 
     @Override
     public boolean remove() {
-        main.getRootTable().setStatusBarMessage("Settings Updated");
         return super.remove();
     }
 
@@ -216,6 +218,7 @@ public class DialogSettings extends Dialog {
         t.row();
         final ImageTextButton checkBox = new ImageTextButton("Keep resources relative?", getSkin(), "checkbox");
         checkBox.setChecked(resourcesRelative);
+        checkBox.addListener(main.getHandListener());
         checkBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -225,8 +228,21 @@ public class DialogSettings extends Dialog {
         t.add(checkBox).padTop(10.0f).colspan(2);
         
         t.row();
+        final ImageTextButton simpleNameCheckBox = new ImageTextButton("Export with simple names?", getSkin(), "checkbox");
+        simpleNameCheckBox.setChecked(simpleNames);
+        simpleNameCheckBox.addListener(main.getHandListener());
+        simpleNameCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                simpleNames = simpleNameCheckBox.isChecked();
+            }
+        });
+        t.add(simpleNameCheckBox).padTop(10.0f).colspan(2);
+        
+        t.row();
         final ImageTextButton welcomeCheckBox = new ImageTextButton("Show welcome screen?", getSkin(), "checkbox");
         welcomeCheckBox.setChecked(allowingWelcome);
+        welcomeCheckBox.addListener(main.getHandListener());
         welcomeCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -238,6 +254,7 @@ public class DialogSettings extends Dialog {
         t.row();
         final ImageTextButton updatesCheckBox = new ImageTextButton("Check for updates?", getSkin(), "checkbox");
         updatesCheckBox.setChecked(allowingUpdates);
+        updatesCheckBox.addListener(main.getHandListener());
         updatesCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -253,13 +270,14 @@ public class DialogSettings extends Dialog {
         final SelectBox<ExportFormat> exportFormatSelectBox = new SelectBox(getSkin());
         exportFormatSelectBox.setItems(ExportFormat.MINIMAL, ExportFormat.JAVASCRIPT, ExportFormat.JSON);
         exportFormatSelectBox.setSelected(exportFormat);
+        exportFormatSelectBox.addListener(main.getHandListener());
         exportFormatSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 exportFormat = exportFormatSelectBox.getSelected();
             }
         });
-        t.add(exportFormatSelectBox).left().padTop(10.0f);;
+        t.add(exportFormatSelectBox).left().padTop(10.0f);
 
         button("OK", true);
         button("Cancel", false);

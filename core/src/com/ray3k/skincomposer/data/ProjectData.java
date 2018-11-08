@@ -61,7 +61,6 @@ public class ProjectData implements Json.Serializable {
     public void setMain(Main main) {
         this.main = main;
         atlasData.setMain(main);
-        jsonData.setMain(main);
     }
     
     public int getId() {
@@ -559,6 +558,14 @@ public class ProjectData implements Json.Serializable {
     
     public void setResourcesRelative(boolean resourcesRelative) {
         preferences.put("resources-relative", resourcesRelative);
+    }
+    
+    public boolean isUsingSimpleNames() {
+        return (boolean) preferences.get("simple-names", false);
+    }
+    
+    public void setUsingSimpleNames(boolean useSimpleNames) {
+        preferences.put("simple-names", useSimpleNames);
     }
     
     /**

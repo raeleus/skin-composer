@@ -81,7 +81,7 @@ import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "23";
+    public final static String VERSION = "24";
     public static String newVersion;
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,
@@ -111,9 +111,11 @@ public class Main extends ApplicationAdapter {
     private TooltipManager tooltipManager;
     public static FileHandle appFolder;
     private String[] args;
+    public static Main main;
     
     public Main (String[] args) {
         this.args = args;
+        main = this;
     }
     
     @Override
@@ -378,7 +380,19 @@ public class Main extends ApplicationAdapter {
                 i++;
             }
         }
-        return STYLE_CLASSES[i];
+        return i < STYLE_CLASSES.length ? STYLE_CLASSES[i] : null;
+    }
+    
+    public static Class styleToBasicClass(Class clazz) {
+        int i = 0;
+        for (Class styleClass : STYLE_CLASSES) {
+            if (clazz.equals(styleClass)) {
+                break;
+            } else {
+                i++;
+            }
+        }
+        return BASIC_CLASSES[i];
     }
 
     public static void checkForUpdates(Main main) {

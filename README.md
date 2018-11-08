@@ -5,13 +5,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 23
-
-### Changes ###
-
-* Added 9-Patch Editor. See Project >> Drawables >> Create 9-Patch.
-* Fixed crash bug when adding a drawable after creating a custom drawable.
-* Fixed crash bug when saving a project with relative paths and a FreeType font with no custom serializer.
+* Version 24
 
 ### Contact ###
 

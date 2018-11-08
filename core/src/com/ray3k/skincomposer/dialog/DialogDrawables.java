@@ -79,6 +79,7 @@ import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 public class DialogDrawables extends Dialog {
     public static DialogDrawables instance;
@@ -133,8 +134,20 @@ public class DialogDrawables extends Dialog {
                     iter.remove();
                 }
             }
-            if (files.size > 0) {
-                drawablesSelected(files);
+            
+            var filesLimited = new Array<FileHandle>(files);
+            iter = filesLimited.iterator();
+            while (iter.hasNext()) {
+                var file = iter.next();
+                if (!file.name().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
+                    if (files.contains(file.sibling(file.nameWithoutExtension() + ".9.png"), false)) {
+                        iter.remove();
+                    }
+                }
+            }
+            
+            if (filesLimited.size > 0) {
+                drawablesSelected(filesLimited);
             }
         };
         
@@ -1189,13 +1202,35 @@ public class DialogDrawables extends Dialog {
         return count > minimum;
     }
     
+    private boolean checkDuplicateDrawables(String name, int minimum) {
+        int count = 0;
+        for (int i = 0; i < main.getAtlasData().getDrawables().size; i++) {
+            DrawableData data = main.getAtlasData().getDrawables().get(i);
+            if (data.name != null && name.equals(data.name)) {
+                count++;
+            }
+        }
+        
+        return count > minimum;
+    }
+    
+    /**
+     * Removes any duplicate drawables that share the same file name. This
+     * ignores the file extension and also deletes TintedDrawables from the
+     * same file. Calls removeDuplicateDrawables(handle, true).
+     * @param handle 
+     */
+    private void removeDuplicateDrawables(FileHandle handle) {
+        removeDuplicateDrawables(handle, true);
+    }
+    
     /**
      * Removes any duplicate drawables that share the same file name. This
      * ignores the file extension and also deletes TintedDrawables from the
      * same file.
      * @param handle 
      */
-    private void removeDuplicateDrawables(FileHandle handle) {
+    private void removeDuplicateDrawables(FileHandle handle, boolean deleteStyleValues) {
         boolean refreshDrawables = false;
         String name = DrawableData.proper(handle.name());
         for (int i = 0; i < main.getAtlasData().getDrawables().size; i++) {
@@ -1203,11 +1238,50 @@ public class DialogDrawables extends Dialog {
             if (name.equals(DrawableData.proper(data.file.name()))) {
                 main.getAtlasData().getDrawables().removeValue(data, true);
                 
-                for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
-                    for (StyleData tempData : datas) {
-                        for (StyleProperty prop : tempData.properties.values()) {
-                            if (prop != null && prop.type.equals(Drawable.class) && prop.value != null && prop.value.equals(data.toString())) {
-                                prop.value = null;
+                if (deleteStyleValues) {
+                    for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
+                        for (StyleData tempData : datas) {
+                            for (StyleProperty prop : tempData.properties.values()) {
+                                if (prop != null && prop.type.equals(Drawable.class) && prop.value != null && prop.value.equals(data.toString())) {
+                                    prop.value = null;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                refreshDrawables = true;
+                i--;
+            }
+        }
+        
+        main.getRootTable().refreshStyleProperties(true);
+        main.getRootTable().refreshPreview();
+        
+        if (refreshDrawables) {
+            gatherDrawables();
+        }
+    }
+    
+    /**
+     * Removes any duplicate drawables that share the same name. This does not
+     * delete TintedDrawables from the same file.
+     * @param handle 
+     */
+    private void removeDuplicateDrawables(String name, boolean deleteStyleValues) {
+        boolean refreshDrawables = false;
+        for (int i = 0; i < main.getAtlasData().getDrawables().size; i++) {
+            DrawableData data = main.getAtlasData().getDrawables().get(i);
+            if (data.name != null && name.equals(data.name)) {
+                main.getAtlasData().getDrawables().removeValue(data, true);
+                
+                if (deleteStyleValues) {
+                    for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
+                        for (StyleData tempData : datas) {
+                            for (StyleProperty prop : tempData.properties.values()) {
+                                if (prop != null && prop.type.equals(Drawable.class) && prop.value != null && prop.value.equals(data.toString())) {
+                                    prop.value = null;
+                                }
                             }
                         }
                     }
@@ -1333,7 +1407,7 @@ public class DialogDrawables extends Dialog {
         
         main.getProjectData().setLastDrawablePath(files.get(0).parent().path() + "/");
         for (FileHandle fileHandle : files) {
-            if (checkDuplicateDrawables(fileHandle, 0)) {
+            if (checkDuplicateDrawables(DrawableData.proper(fileHandle.name()), 0)) {
                 unhandledFiles.add(fileHandle);
             } else {
                 filesToProcess.add(fileHandle);
@@ -1350,6 +1424,7 @@ public class DialogDrawables extends Dialog {
     /**
      * Shows a dialog to confirm removal of duplicate drawables that have the
      * same name without extension. This is called after selecting new drawables.
+     * Does not delete existing style values that point to this drawable.
      * @param unhandledFiles
      * @param backup
      * @param filesToProcess 
@@ -1360,11 +1435,13 @@ public class DialogDrawables extends Dialog {
             protected void result(Object object) {
                 if ((boolean) object) {
                     for (FileHandle fileHandle : unhandledFiles) {
-                        removeDuplicateDrawables(fileHandle);
+                        removeDuplicateDrawables(DrawableData.proper(fileHandle.name()), false);
                         filesToProcess.add(fileHandle);
                     }
                 }
                 finalizeDrawables(backup, filesToProcess);
+                main.getRootTable().produceAtlas();
+                main.getRootTable().refreshPreview();
             }
         };
         
@@ -1598,7 +1675,6 @@ public class DialogDrawables extends Dialog {
                                 new DrawableUndoable(main.getRootTable(), main.getAtlasData(),
                                         property, property.value, null);
                         main.getUndoableManager().addUndoable(undoable, true);
-                        main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + property.name + "\"");
                         
                         if (listener != null) {
                             listener.emptied();
@@ -1616,7 +1692,6 @@ public class DialogDrawables extends Dialog {
                             main.getProjectData().setChangesSaved(false);
                             main.getUndoableManager().clearUndoables();
                             property.value = null;
-                            main.getRootTable().setStatusBarMessage("Drawable deleted for \"" + property.name + "\"");
                             main.getRootTable().refreshStyleProperties(true);
                         }
                         
@@ -1629,7 +1704,6 @@ public class DialogDrawables extends Dialog {
                         main.getProjectData().setChangesSaved(false);
                         CustomDrawableUndoable undoable = new CustomDrawableUndoable(main, customProperty, null);
                         main.getUndoableManager().addUndoable(undoable, true);
-                        main.getRootTable().setStatusBarMessage("Drawable emptied for \"" + customProperty.getName() + "\"");
                         
                         if (listener != null) {
                             listener.emptied();
@@ -1647,7 +1721,6 @@ public class DialogDrawables extends Dialog {
                             main.getProjectData().setChangesSaved(false);
                             main.getUndoableManager().clearUndoables();
                             customProperty.setValue(null);
-                            main.getRootTable().setStatusBarMessage("Drawable deleted for \"" + customProperty.getName() + "\"");
                             main.getRootTable().refreshStyleProperties(true);
                         }
                         

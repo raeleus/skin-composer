@@ -65,6 +65,7 @@ public class NinePatchWidget extends Stack {
         NONE, LIGHT, DARK
     }
     private GridType gridType;
+    private static final int ZOOMED_OUT_STYLE_RANGE = 2;
     
     public NinePatchWidget(NinePatchWidgetStyle style) {
         listeners = new Array<>();
@@ -511,6 +512,8 @@ public class NinePatchWidget extends Stack {
         public Drawable black;
         public Drawable gridLight;
         public Drawable gridDark;
+        public Drawable zoomedOutPaddingHandle;
+        public Drawable zoomedOutContentHandle;
     }
     
     public static class TilePatternDrawable extends BaseDrawable {
@@ -636,7 +639,11 @@ public class NinePatchWidget extends Stack {
                         style.paddingHandleOver.draw(batch, x, y + offsetY + (widget.paddingBottom - 1) * widget.zoom, width, widget.zoom);
                     }
                 } else {
-                    style.paddingHandle.draw(batch, x, y + offsetY + (widget.paddingBottom - 1) * widget.zoom, width, widget.zoom);
+                    if (widget.zoom > ZOOMED_OUT_STYLE_RANGE) {
+                        style.paddingHandle.draw(batch, x, y + offsetY + (widget.paddingBottom - 1) * widget.zoom, width, widget.zoom);
+                    } else {
+                        style.zoomedOutPaddingHandle.draw(batch, x, y + offsetY + (widget.paddingBottom - 1) * widget.zoom, width, widget.zoom);
+                    }
                 }
                 
                 if (widget.currentHandle == HandleType.PADDING_LEFT) {
@@ -646,7 +653,11 @@ public class NinePatchWidget extends Stack {
                         style.paddingHandleOver.draw(batch, x + offsetX + (widget.paddingLeft - 1) * widget.zoom, y, widget.zoom, height);
                     }
                 } else {
-                    style.paddingHandle.draw(batch, x + offsetX + (widget.paddingLeft - 1) * widget.zoom, y, widget.zoom, height);
+                    if (widget.zoom > ZOOMED_OUT_STYLE_RANGE) {
+                        style.paddingHandle.draw(batch, x + offsetX + (widget.paddingLeft - 1) * widget.zoom, y, widget.zoom, height);
+                    } else {
+                        style.zoomedOutPaddingHandle.draw(batch, x + offsetX + (widget.paddingLeft - 1) * widget.zoom, y, widget.zoom, height);
+                    }
                 }
                 
                 if (widget.currentHandle == HandleType.PADDING_TOP) {
@@ -656,7 +667,11 @@ public class NinePatchWidget extends Stack {
                         style.paddingHandleOver.draw(batch, x, y + offsetY + (widget.regionHeight - widget.paddingTop) * widget.zoom, width, widget.zoom);
                     }
                 } else {
-                    style.paddingHandle.draw(batch, x, y + offsetY + (widget.regionHeight - widget.paddingTop) * widget.zoom, width, widget.zoom);
+                    if (widget.zoom > ZOOMED_OUT_STYLE_RANGE) {
+                        style.paddingHandle.draw(batch, x, y + offsetY + (widget.regionHeight - widget.paddingTop) * widget.zoom, width, widget.zoom);
+                    } else {
+                        style.zoomedOutPaddingHandle.draw(batch, x, y + offsetY + (widget.regionHeight - widget.paddingTop) * widget.zoom, width, widget.zoom);
+                    }
                 }
                 
                 if (widget.currentHandle == HandleType.PADDING_RIGHT) {
@@ -666,7 +681,11 @@ public class NinePatchWidget extends Stack {
                         style.paddingHandleOver.draw(batch, x + offsetX + (widget.regionWidth - widget.paddingRight) * widget.zoom, y, widget.zoom, height);
                     }
                 } else {
-                    style.paddingHandle.draw(batch, x + offsetX + (widget.regionWidth - widget.paddingRight) * widget.zoom, y, widget.zoom, height);
+                    if (widget.zoom > ZOOMED_OUT_STYLE_RANGE) {
+                        style.paddingHandle.draw(batch, x + offsetX + (widget.regionWidth - widget.paddingRight) * widget.zoom, y, widget.zoom, height);
+                    } else {
+                        style.zoomedOutPaddingHandle.draw(batch, x + offsetX + (widget.regionWidth - widget.paddingRight) * widget.zoom, y, widget.zoom, height);
+                    }
                 }
             } else {
                 if (widget.currentHandle == HandleType.CONTENT_BOTTOM) {
@@ -676,7 +695,11 @@ public class NinePatchWidget extends Stack {
                         style.contentHandleOver.draw(batch, x, y + offsetY + (widget.contentBottom - 1) * widget.zoom, width, widget.zoom);
                     }
                 } else {
-                    style.contentHandle.draw(batch, x, y + offsetY + (widget.contentBottom - 1) * widget.zoom, width, widget.zoom);
+                    if (widget.zoom > ZOOMED_OUT_STYLE_RANGE) {
+                        style.contentHandle.draw(batch, x, y + offsetY + (widget.contentBottom - 1) * widget.zoom, width, widget.zoom);
+                    } else {
+                        style.zoomedOutContentHandle.draw(batch, x, y + offsetY + (widget.contentBottom - 1) * widget.zoom, width, widget.zoom);
+                    }
                 }
                 
                 if (widget.currentHandle == HandleType.CONTENT_LEFT) {
@@ -686,7 +709,11 @@ public class NinePatchWidget extends Stack {
                         style.contentHandleOver.draw(batch, x + offsetX + (widget.contentLeft - 1) * widget.zoom, y, widget.zoom, height);
                     }
                 } else {
-                    style.contentHandle.draw(batch, x + offsetX + (widget.contentLeft - 1) * widget.zoom, y, widget.zoom, height);
+                    if (widget.zoom > ZOOMED_OUT_STYLE_RANGE) {
+                        style.contentHandle.draw(batch, x + offsetX + (widget.contentLeft - 1) * widget.zoom, y, widget.zoom, height);
+                    } else {
+                        style.zoomedOutContentHandle.draw(batch, x + offsetX + (widget.contentLeft - 1) * widget.zoom, y, widget.zoom, height);
+                    }
                 }
                 
                 if (widget.currentHandle == HandleType.CONTENT_TOP) {
@@ -696,7 +723,11 @@ public class NinePatchWidget extends Stack {
                         style.contentHandleOver.draw(batch, x, y + offsetY + (widget.regionHeight - widget.contentTop) * widget.zoom, width, widget.zoom);
                     }
                 } else {
-                    style.contentHandle.draw(batch, x, y + offsetY + (widget.regionHeight - widget.contentTop) * widget.zoom, width, widget.zoom);
+                    if (widget.zoom > ZOOMED_OUT_STYLE_RANGE) {
+                        style.contentHandle.draw(batch, x, y + offsetY + (widget.regionHeight - widget.contentTop) * widget.zoom, width, widget.zoom);
+                    } else {
+                        style.zoomedOutContentHandle.draw(batch, x, y + offsetY + (widget.regionHeight - widget.contentTop) * widget.zoom, width, widget.zoom);
+                    }
                 }
                 
                 if (widget.currentHandle == HandleType.CONTENT_RIGHT) {
@@ -706,7 +737,11 @@ public class NinePatchWidget extends Stack {
                         style.contentHandleOver.draw(batch, x + offsetX + (widget.regionWidth - widget.contentRight) * widget.zoom, y, widget.zoom, height);
                     }
                 } else {
-                    style.contentHandle.draw(batch, x + offsetX + (widget.regionWidth - widget.contentRight) * widget.zoom, y, widget.zoom, height);
+                    if (widget.zoom > ZOOMED_OUT_STYLE_RANGE) {
+                        style.contentHandle.draw(batch, x + offsetX + (widget.regionWidth - widget.contentRight) * widget.zoom, y, widget.zoom, height);
+                    } else {
+                        style.zoomedOutContentHandle.draw(batch, x + offsetX + (widget.regionWidth - widget.contentRight) * widget.zoom, y, widget.zoom, height);
+                    }
                 }
             }
         }

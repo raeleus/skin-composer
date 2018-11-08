@@ -68,12 +68,14 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.ray3k.skincomposer.Main;
+import java.util.Arrays;
 
 public class StyleData implements Json.Serializable {
     public String name = "";
     public Class clazz;
     public OrderedMap<String,StyleProperty> properties;
     public boolean deletable;
+    public String parent;
     public JsonData jsonData;
     private Main main;
 
@@ -111,7 +113,7 @@ public class StyleData implements Json.Serializable {
     }
     
     public StyleData() {
-        
+        this.main = Main.main;
     }
     
     private void newStyleProperties(Class clazz) {
@@ -144,13 +146,16 @@ public class StyleData implements Json.Serializable {
             }
         }
         
-        return returnValue;
+        var parentStyle = findParentStyle();
+        return returnValue && (parentStyle == null || parentStyle.hasAllNullFields());
     }
     
     public boolean hasMandatoryFields() {
         boolean returnValue = true;
-        for (StyleProperty property : this.properties.values()) {
-            if (!property.optional && property.value == null) {
+        var propertiesList = this.properties.values().toArray();
+        for (int i = 0; i < propertiesList.size; i++) {
+            var property = propertiesList.get(i);
+            if (!property.optional && !hasField(property)) {
                 returnValue = false;
                 break;
             } else if (property.type == ListStyle.class) {
@@ -218,6 +223,65 @@ public class StyleData implements Json.Serializable {
         return returnValue;
     }
     
+    public StyleData findParentStyle() {
+        StyleData returnValue = null;
+        
+        if (parent != null) {
+            Class recursiveClass = clazz;
+            Class recursiveStyleClass = Main.basicToStyleClass(recursiveClass);
+            loop:
+            while (recursiveStyleClass != null && Arrays.asList(Main.STYLE_CLASSES).contains(recursiveStyleClass)) {
+                var styles = main.getJsonData().getClassStyleMap().get(recursiveClass);
+                for (int i = 0; i < styles.size; i++) {
+                    var style = styles.get(i);
+                    if (parent.equals(style.name) && !(clazz.equals(recursiveClass) && name.equals(style.name))) {
+                        returnValue = style;
+                        break loop;
+                    }
+                }
+
+                recursiveClass = recursiveClass.getSuperclass();
+                recursiveStyleClass = Main.basicToStyleClass(recursiveClass);
+            }
+        }
+
+        return returnValue;
+    }
+    
+    public boolean hasField(StyleProperty property) {
+        var style = this;
+        
+        while (style != null) {
+            var propertiesList = style.properties.values().toArray();
+            for (int i = 0; i < propertiesList.size; i++) {
+                var current = propertiesList.get(i);
+                if (current.name.equals(property.name) && current.value != null) {
+                    return true;
+                }
+            }
+            
+            style = style.findParentStyle();
+        }
+        return false;
+    }
+    
+    public Object getInheritedValue(String name) {
+        var style = this;
+        
+        while (style != null) {
+            var propertiesList = style.properties.values().toArray();
+            for (int i = 0; i < propertiesList.size; i++) {
+                var current = propertiesList.get(i);
+                if (current.name.equals(name) && current.value != null) {
+                    return current.value;
+                }
+            }
+            
+            style = style.findParentStyle();
+        }
+        return null;
+    }
+    
     public static boolean validate(String name) {
         return name != null && !name.matches("^\\d.*|^-.*|.*\\s.*|.*[^a-zA-Z\\d\\s-_ñáéíóúüÑÁÉÍÓÚÜ].*|^$");
     }
@@ -228,6 +292,7 @@ public class StyleData implements Json.Serializable {
         json.writeValue("clazz", clazz.getName());
         json.writeValue("properties", properties);
         json.writeValue("deletable", deletable);
+        json.writeValue("parent", parent);
     }
 
     @Override
@@ -241,10 +306,12 @@ public class StyleData implements Json.Serializable {
             Gdx.app.error(getClass().toString(), "Error reading from serialized object" , ex);
             main.getDialogFactory().showDialogError("Read Error...","Error reading from serialized object.\n\nOpen log?");
         }
+        parent = jsonData.getString("parent");
     }
 
     public void resetProperties() {
         properties.clear();
+        parent = null;
         
         if (clazz.equals(Button.class)) {
             newStyleProperties(ButtonStyle.class);

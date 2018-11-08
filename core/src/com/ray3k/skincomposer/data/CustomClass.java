@@ -136,6 +136,7 @@ public class CustomClass implements Json.Serializable {
     
     public CustomClass copy() {
         CustomClass returnValue = new CustomClass(fullyQualifiedName, displayName);
+        returnValue.styles.clear();
         
         for (CustomStyle style : styles) {
             returnValue.styles.add(style.copy());

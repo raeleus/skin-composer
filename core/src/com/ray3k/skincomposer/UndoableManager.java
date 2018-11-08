@@ -294,7 +294,6 @@ public class UndoableManager {
             if (oldValue == null || atlasData.getDrawable((String) oldValue) != null) {
                 property.value = oldValue;
             }
-            rootTable.setStatusBarMessage("Drawable selected: " + oldValue);
             rootTable.refreshStyleProperties(true);
             rootTable.refreshPreview();
         }
@@ -305,7 +304,6 @@ public class UndoableManager {
             if (newValue == null || atlasData.getDrawable((String) newValue) != null) {
                 property.value = newValue;
             }
-            rootTable.setStatusBarMessage("Drawable selected: " + newValue);
             rootTable.refreshStyleProperties(true);
             rootTable.refreshPreview();
         }
@@ -335,7 +333,6 @@ public class UndoableManager {
             if (oldValue == null || main.getAtlasData().getDrawable(oldValue) != null) {
                 property.setValue(oldValue);
             }
-            main.getRootTable().setStatusBarMessage("Drawable selected: " + oldValue);
             main.getRootTable().refreshStyleProperties(true);
             main.getRootTable().refreshPreview();
         }
@@ -346,7 +343,6 @@ public class UndoableManager {
             if (newValue == null || main.getAtlasData().getDrawable(newValue) != null) {
                 property.setValue(newValue);
             }
-            main.getRootTable().setStatusBarMessage("Drawable selected: " + newValue);
             main.getRootTable().refreshStyleProperties(true);
             main.getRootTable().refreshPreview();
         }
@@ -384,7 +380,6 @@ public class UndoableManager {
                     }
                 }
             }
-            rootTable.setStatusBarMessage("Selected color: " + oldValue);
             rootTable.refreshStyleProperties(true);
             rootTable.refreshPreview();
         }
@@ -401,7 +396,6 @@ public class UndoableManager {
                     }
                 }
             }
-            rootTable.setStatusBarMessage("Selected color: " + newValue);
             rootTable.refreshStyleProperties(true);
             rootTable.refreshPreview();
         }
@@ -436,7 +430,6 @@ public class UndoableManager {
                     }
                 }
             }
-            main.getRootTable().setStatusBarMessage("Selected color: " + oldValue);
             main.getRootTable().refreshStyleProperties(true);
             main.getRootTable().refreshPreview();
         }
@@ -453,7 +446,6 @@ public class UndoableManager {
                     }
                 }
             }
-            main.getRootTable().setStatusBarMessage("Selected color: " + newValue);
             main.getRootTable().refreshStyleProperties(true);
             main.getRootTable().refreshPreview();
         }
@@ -497,7 +489,6 @@ public class UndoableManager {
                     }
                 }
             }
-            rootTable.setStatusBarMessage("Selected Font: " + oldValue);
             rootTable.refreshStyleProperties(true);
             rootTable.refreshPreview();
         }
@@ -521,7 +512,6 @@ public class UndoableManager {
                     }
                 }
             }
-            rootTable.setStatusBarMessage("Selected Font: " + newValue);
             rootTable.refreshStyleProperties(true);
             rootTable.refreshPreview();
         }
@@ -563,7 +553,6 @@ public class UndoableManager {
                     }
                 }
             }
-            main.getRootTable().setStatusBarMessage("Selected Font: " + oldValue);
             main.getRootTable().refreshStyleProperties(true);
             main.getRootTable().refreshPreview();
         }
@@ -587,7 +576,6 @@ public class UndoableManager {
                     }
                 }
             }
-            main.getRootTable().setStatusBarMessage("Selected Font: " + newValue);
             main.getRootTable().refreshStyleProperties(true);
             main.getRootTable().refreshPreview();
         }
@@ -630,6 +618,44 @@ public class UndoableManager {
         @Override
         public String getUndoText() {
             return "Change Style Property " + property.name;
+        }
+    }
+    
+    public static class ParentUndoable implements Undoable {
+        private RootTable rootTable;
+        private StyleData style;
+        private SelectBox<String> selectBox;
+        private String oldValue, newValue;
+
+        public ParentUndoable(RootTable rootTable, StyleData style, SelectBox<String> selectBox) {
+            this.rootTable = rootTable;
+            this.style = style;
+            this.selectBox = selectBox;
+            oldValue = style.parent;
+            if (selectBox.getSelectedIndex() == 0) {
+                newValue = null;
+            } else {
+                newValue = selectBox.getSelected();
+            }
+        }
+
+        @Override
+        public void undo() {
+            style.parent = oldValue;
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
+        }
+
+        @Override
+        public void redo() {
+            style.parent = newValue;
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Change Style Parent";
         }
     }
 

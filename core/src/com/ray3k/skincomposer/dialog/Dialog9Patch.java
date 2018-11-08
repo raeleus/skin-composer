@@ -49,6 +49,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
@@ -90,9 +91,11 @@ public class Dialog9Patch extends Dialog {
     private FileHandle loadedFile;
     private Array<Dialog9PatchListener> listeners;
     private FilesDroppedListener filesDroppedListener;
+    private Color previewBGcolor;
 
     public Dialog9Patch(Main main) {
         super("", main.getSkin(), "dialog");
+        previewBGcolor = new Color(Color.WHITE);
         listeners = new Array<>();
         this.main = main;
 
@@ -232,14 +235,15 @@ public class Dialog9Patch extends Dialog {
         });
 
         root.row();
-          var image = new Image(getSkin(), "welcome-separator");
+        var image = new Image(getSkin(), "welcome-separator");
         root.add(image).growX().space(15.0f);
         image.setScaling(Scaling.stretch);
 
-          var top = new Table();
+        var top = new Table();
         top.setTouchable(Touchable.enabled);
 
-          var bottom = new Table();
+        var bottom = new Table();
+        bottom.setBackground(getSkin().getDrawable("white"));
         bottom.setTouchable(Touchable.enabled);
 
         root.row();
@@ -729,7 +733,7 @@ public class Dialog9Patch extends Dialog {
         label = new Label("Content:", getSkin());
         table.add(label);
 
-          var selectBox = new SelectBox<String>(getSkin());
+        var selectBox = new SelectBox<String>(getSkin());
         selectBox.setName("contentSelectBox");
         table.add(selectBox);
         selectBox.setItems("None", "Text", "Color", "Drawable");
@@ -812,6 +816,26 @@ public class Dialog9Patch extends Dialog {
                 }
             }
         });
+        
+        imageButton = new ImageButton(getSkin(), "color");
+        table.add(imageButton);
+        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                main.getDialogFactory().showDialogColorPicker(previewBGcolor, new DialogColorPicker.ColorListener() {
+                    @Override
+                    public void selected(Color color) {
+                        if (color != null) {
+                            previewBGcolor.set(color);
+                            bottom.setColor(color);
+                        }
+                    }
+                });
+            }
+        });
+        var toolTip = new TextTooltip("Background color for preview pane.", main.getTooltipManager(), getSkin());
+        imageButton.addListener(toolTip);
 
         slider = new Slider(1.0f, 100.0f, 1.0f, false, getSkin(), "zoom-horizontal");
         slider.setName("bottom-zoom");
@@ -936,13 +960,15 @@ public class Dialog9Patch extends Dialog {
     }
 
     private void updatePreviewSplits() {
-        preview = new NinePatch(preview.getTexture(), ninePatchLeft, ninePatchRight, ninePatchTop, ninePatchBottom);
-        preview.setPadding(ninePatchContentLeft, ninePatchContentRight, ninePatchContentTop, ninePatchContentBottom);
-        previewZoomed = new NinePatch(preview);
+        if (preview != null) {
+            preview = new NinePatch(preview.getTexture(), ninePatchLeft, ninePatchRight, ninePatchTop, ninePatchBottom);
+            preview.setPadding(ninePatchContentLeft, ninePatchContentRight, ninePatchContentTop, ninePatchContentBottom);
+            previewZoomed = new NinePatch(preview);
 
-          var resizer = (ResizeWidget) findActor("resizer");
-          var table = (Table) resizer.getActor();
-        table.setBackground(new NinePatchDrawable(previewZoomed));
+            var resizer = (ResizeWidget) findActor("resizer");
+            var table = (Table) resizer.getActor();
+            table.setBackground(new NinePatchDrawable(previewZoomed));
+        }
     }
 
     private void updatePreviewContentActor(Actor actor) {
@@ -1229,9 +1255,13 @@ public class Dialog9Patch extends Dialog {
 
     private void zoomAndRecenter() {
         pack();
-          var widget = (NinePatchWidget) findActor("ninePatchWidget");
-          var slider = (Slider) findActor("top-zoom");
-        slider.setValue(MathUtils.floor(widget.getHeight() / (widget.getRegionHeight() + 4)));
+        var widget = (NinePatchWidget) findActor("ninePatchWidget");
+        var slider = (Slider) findActor("top-zoom");
+        
+        var widthRatio = MathUtils.floor(widget.getWidth() / (widget.getRegionWidth() + 4));
+        var heightRatio = MathUtils.floor(widget.getHeight() / (widget.getRegionHeight() + 4));
+        slider.setValue(Math.min(widthRatio, heightRatio));
+        
         widget.setPositionX(-widget.getRegionWidth() / 2.0f);
         widget.setPositionY(-widget.getRegionHeight() / 2.0f);
     }
@@ -1309,7 +1339,7 @@ public class Dialog9Patch extends Dialog {
             }
         }
         if (!foundBreak) {
-            ninePatchRight = originalImage.getWidth() - 1;
+            ninePatchRight = 0;
         }
         spinnerItem = (Spinner) findActor("spinner-padding-right");
         spinnerItem.setValue(ninePatchRight);
@@ -1360,7 +1390,7 @@ public class Dialog9Patch extends Dialog {
             }
         }
         if (!foundBreak) {
-            ninePatchBottom = originalImage.getHeight() - 1;
+            ninePatchBottom = 0;
         }
         spinnerItem = (Spinner) findActor("spinner-padding-bottom");
         spinnerItem.setValue(ninePatchBottom);
