@@ -1073,7 +1073,7 @@ public class DialogFonts extends Dialog {
         dialog.text("Unable to add font \"" + name +
                 "\". Ensure image dimensions\nare less than max texture dimensions (" +
                 maxTextureWidth + "x" + 
-                maxTextureHeight + ").\nSee project settings.");
+                maxTextureHeight + ").\nSee Project > Settings > Texture Packer Settings.");
         
         dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("Ok");
