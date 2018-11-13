@@ -1,3 +1,6 @@
+### Skin Composer Version 26 ###
+* Fixed export creating JSON with null values for Styles that have parents
+
 ### Skin Composer Version 25 ###
 * Fixed exception when opening an old project.
 * Improved error message when trying to add a font that is too large for the texture settings.

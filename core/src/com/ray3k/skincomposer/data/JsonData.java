@@ -719,7 +719,9 @@ public class JsonData implements Json.Serializable {
                             if (!property.optional || property.value != null
                                     && !(property.value instanceof Number
                                     && MathUtils.isZero((float) (double) property.value))) {
-                                json.writeValue(property.name, property.value);
+                                if (property.value != null) {
+                                    json.writeValue(property.name, property.value);
+                                }
                             }
                         }
                         json.writeObjectEnd();
