@@ -66,7 +66,10 @@ task javaPackager(type: Exec, dependsOn: dist) {
     commandLine = commands
     
     doLast() {
-        copySplashImage.execute();
+        copy {
+            from file("${project.projectDir}/splash.png");
+            into file("${buildDir}/distribution/${project.appName}/app");
+        }
     }
 }
 
@@ -82,11 +85,6 @@ task cleanPackagerRuntime(dependsOn: javaPackager) {
         }
         System.out.println("deleting bloated runtime in " + runtimeFile)
     }
-}
-
-task copySplashImage(type: Copy) {
-    from file("${project.projectDir}/splash.png");
-    into file("${buildDir}/distribution/${project.appName}/app");
 }
 
 // creates a replacement runtime via jlink command (much smaller than jpackager)
