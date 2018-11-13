@@ -5,7 +5,7 @@ This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
 ### Skin Composer ###
 
 * Use Skin Composer to create skins for scene2d.ui
-* Version 25
+* Version 26
 
 ### Contact ###
 
