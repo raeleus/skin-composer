@@ -24,6 +24,7 @@ task debug(dependsOn: classes, type: JavaExec) {
 }
 
 task dist(type: Jar) {
+    archiveName = "skin_composer.jar";
     from files(sourceSets.main.output.classesDir)
     from files(sourceSets.main.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}
@@ -65,7 +66,10 @@ task javaPackager(type: Exec, dependsOn: dist) {
     commandLine = commands
     
     doLast() {
-        copySplashImage.execute();
+        copy {
+            from file("${project.projectDir}/splash.png");
+            into file("${buildDir}/distribution/${project.appName}/app");
+        }
     }
 }
 
@@ -74,13 +78,13 @@ task cleanPackagerRuntime(dependsOn: javaPackager) {
     doLast() {
         File runtimeFile = new File("${buildDir}/distribution/${project.appName}/runtime")
         runtimeFile.deleteDir()
+        delete {
+            delete fileTree("${buildDir}/distribution/${project.appName}").matching {
+                include "api*.dll"
+            }
+        }
         System.out.println("deleting bloated runtime in " + runtimeFile)
     }
-}
-
-task copySplashImage(type: Copy) {
-    from file("${project.projectDir}/splash.png");
-    into file("${buildDir}/distribution/${project.appName}/app");
 }
 
 // creates a replacement runtime via jlink command (much smaller than jpackager)
@@ -107,9 +111,22 @@ task createFinalAppBundle(type: Exec, dependsOn: [cleanPackagerRuntime]) {
     }
 }
 
-task updateDistribution(type: Copy, dependsOn: [dist]) {
-    from "${buildDir}/libs"
-    into "${buildDir}/distribution/${project.appName}/app"
+task updateAndCreateZip(type: Zip, dependsOn: [dist]) {
+    doFirst {
+        copy {
+            from "${buildDir}/libs"
+            into "${buildDir}/distribution/${project.appName}/app"
+        }
+        
+        copy {
+            from '../README.md'
+            into "${buildDir}/distribution/${project.appName}"
+        }
+    }
+    
+    archiveName "skin-composer-${org.gradle.internal.os.OperatingSystem.current().getFamilyName()}.zip"
+    from "${buildDir}/distribution/${project.appName}"
+    destinationDir = file("${buildDir}/distribution/")
 }
 
 eclipse {

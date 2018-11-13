@@ -1,3 +1,7 @@
+### Skin Composer Version 25 ###
+* Fixed exception when opening an old project.
+* Improved error message when trying to add a font that is too large for the texture settings.
+
 ### Skin Composer Version 24 ###
 * Updated to LibGDX 1.9.9.
 * Added setting for export with simple names per 1.9.9. See Project > Settings.

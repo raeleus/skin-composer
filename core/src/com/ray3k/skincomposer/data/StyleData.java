@@ -306,7 +306,7 @@ public class StyleData implements Json.Serializable {
             Gdx.app.error(getClass().toString(), "Error reading from serialized object" , ex);
             main.getDialogFactory().showDialogError("Read Error...","Error reading from serialized object.\n\nOpen log?");
         }
-        parent = jsonData.getString("parent");
+        parent = jsonData.getString("parent", null);
     }
 
     public void resetProperties() {
