@@ -494,7 +494,7 @@ public class DialogBitmapFont extends Dialog {
 
                     updateColors();
                     updatePreviewAndOK();
-                });
+                }, null);
             }
         });
 
@@ -599,7 +599,7 @@ public class DialogBitmapFont extends Dialog {
                     }
                     updateColors();
                     updatePreviewAndOK();
-                });
+                }, null);
             }
         });
 
@@ -727,7 +727,7 @@ public class DialogBitmapFont extends Dialog {
                     }
                     updateColors();
                     updatePreviewAndOK();
-                });
+                }, null);
             }
         });
 

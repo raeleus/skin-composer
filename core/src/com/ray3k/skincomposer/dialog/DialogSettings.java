@@ -25,7 +25,9 @@ package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -111,7 +113,14 @@ public class DialogSettings extends Dialog {
     }
 
     @Override
+    public Dialog show(Stage stage, Action action) {
+        fire(new DialogEvent(DialogEvent.Type.OPEN));
+        return super.show(stage, action);
+    }
+
+    @Override
     public boolean remove() {
+        fire(new DialogEvent(DialogEvent.Type.CLOSE));
         return super.remove();
     }
 

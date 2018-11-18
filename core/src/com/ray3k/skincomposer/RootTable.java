@@ -26,6 +26,7 @@ package com.ray3k.skincomposer;
 import com.ray3k.skincomposer.data.CustomProperty;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -37,11 +38,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
-import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
-import com.badlogic.gdx.scenes.scene2d.actions.VisibleAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
@@ -95,6 +93,7 @@ import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
 import com.ray3k.skincomposer.utils.Utils;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class RootTable extends Table {
 
@@ -143,6 +142,7 @@ public class RootTable extends Table {
     private Button classRenameButton;
     private Button styleDeleteButton;
     private Button styleRenameButton;
+    private FilesDroppedListener filesDroppedListener;
 
     public RootTable(Main main) {
         super(main.getSkin());
@@ -159,6 +159,17 @@ public class RootTable extends Table {
         produceAtlas();
         
         main.getStage().addListener(new ShortcutListener(this));
+        
+        filesDroppedListener = (Array<FileHandle> files) -> {
+            for (FileHandle fileHandle : files) {
+                if (fileHandle.extension().toLowerCase(Locale.ROOT).equals("scmp")) {
+                    fire(new ScmpDroppedEvent(fileHandle));
+                    break;
+                }
+            }
+        };
+        
+        main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
     }
 
     public void populate() {
@@ -2613,6 +2624,10 @@ public class RootTable extends Table {
         customProperties = styleProperties;
     }
 
+    public FilesDroppedListener getFilesDroppedListener() {
+        return filesDroppedListener;
+    }
+
     private class ScrollPaneListener extends InputListener {
 
         @Override
@@ -2720,6 +2735,14 @@ public class RootTable extends Table {
         NEW, DUPLICATE, DELETE, RENAME, CHANGE_VALUE;
     }
     
+    private static class ScmpDroppedEvent extends Event {
+        FileHandle fileHandle;
+        
+        public ScmpDroppedEvent(FileHandle fileHandle) {
+            this.fileHandle = fileHandle;
+        }
+    }
+    
     private static class CustomPropertyEvent extends Event {
         private CustomProperty customProperty;
         private CustomPropertyEnum customPropertyEnum;
@@ -2767,6 +2790,8 @@ public class RootTable extends Table {
                     default:
                         break;
                 }
+            } else if (event instanceof ScmpDroppedEvent) {
+                droppedScmpFile(((ScmpDroppedEvent) event).fileHandle);
             }
             return false;
         }
@@ -2790,6 +2815,8 @@ public class RootTable extends Table {
         public abstract void customPropertyValueChanged(CustomProperty customProperty, Actor styleActor);
         
         public abstract void renameCustomProperty(CustomProperty customProperty);
+    
+        public abstract void droppedScmpFile(FileHandle fileHandle);
     }
 
     public static class ShortcutListener extends InputListener {

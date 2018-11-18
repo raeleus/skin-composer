@@ -250,6 +250,8 @@ public class DialogFonts extends Dialog {
     public Dialog show(Stage stage) {
         Dialog dialog = super.show(stage);
         stage.setScrollFocus(scrollPane);
+        
+        fire(new DialogEvent(DialogEvent.Type.OPEN));
         return dialog;
     }
 
@@ -840,6 +842,8 @@ public class DialogFonts extends Dialog {
             font.dispose();
         }
         fontMap.clear();
+        
+        fire(new DialogEvent(DialogEvent.Type.CLOSE));
         return super.remove();
     }
 

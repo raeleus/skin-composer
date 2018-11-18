@@ -641,7 +641,7 @@ public class DialogImageFont extends Dialog {
                         previewStyle.fontColor = colorData.color;
                         settings.previewColor = colorData.color;
                     }
-                });
+                }, null);
             }
         });
         
@@ -658,7 +658,7 @@ public class DialogImageFont extends Dialog {
                         previewStyle.background = ((NinePatchDrawable) previewStyle.background).tint(colorData.color);
                         settings.previewBackgroundColor = colorData.color;
                     }
-                });
+                }, null);
             }
         });
         

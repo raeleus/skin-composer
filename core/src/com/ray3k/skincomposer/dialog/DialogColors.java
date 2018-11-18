@@ -27,6 +27,7 @@ import com.ray3k.skincomposer.data.ColorData;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -719,5 +720,17 @@ public class DialogColors extends Dialog {
     
     public static interface DialogColorsListener {
         public void handle(ColorData colorData);
+    }
+
+    @Override
+    public Dialog show(Stage stage, Action action) {
+        fire(new DialogEvent(DialogEvent.Type.OPEN));
+        return super.show(stage, action);
+    }
+
+    @Override
+    public boolean remove() {
+        fire(new DialogEvent(DialogEvent.Type.CLOSE));
+        return super.remove();
     }
 }
