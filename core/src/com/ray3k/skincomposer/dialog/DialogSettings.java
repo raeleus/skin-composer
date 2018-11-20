@@ -31,7 +31,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -57,7 +56,6 @@ public class DialogSettings extends Dialog {
         resourcesRelative = main.getProjectData().areResourcesRelative();
         allowingWelcome = main.getProjectData().isAllowingWelcome();
         allowingUpdates = main.getProjectData().isCheckingForUpdates();
-        setFillParent(true);
 
         populate();
     }
@@ -96,15 +94,20 @@ public class DialogSettings extends Dialog {
     }
 
     public void populate() {
-        Table t = getContentTable();
+        getContentTable().pad(5);
+        
+        var t = getContentTable();
 
-        getButtonTable().padBottom(15.0f);
-
-        Label label = new Label("Settings", main.getSkin(), "title");
-        t.add(label).colspan(2);
-
+        t.defaults().space(15);
+        var label = new Label("Settings", main.getSkin(), "title");
+        t.add(label);
+        
         t.row();
-        TextButton textButton = new TextButton("Open temp/log directory", main.getSkin());
+        var table = new Table();
+        t.add(table);
+        
+        table.defaults().growX().space(5);
+        var textButton = new TextButton("Open temp/log directory", main.getSkin());
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -117,9 +120,9 @@ public class DialogSettings extends Dialog {
             }
         });
         textButton.addListener(main.getHandListener());
-        t.add(textButton).colspan(2).padTop(15.0f);
+        table.add(textButton);
 
-        t.row();
+        table.row();
         textButton = new TextButton("Open preferences directory", main.getSkin());
         textButton.addListener(new ChangeListener() {
             @Override
@@ -133,10 +136,10 @@ public class DialogSettings extends Dialog {
             }
         });
         textButton.addListener(main.getHandListener());
-        t.add(textButton).colspan(2);
+        table.add(textButton);
 
         if (main.getProjectData().areChangesSaved() && main.getProjectData().getSaveFile().exists()) {
-            t.row();
+            table.row();
             textButton = new TextButton("Open project/import directory", main.getSkin());
             textButton.addListener(new ChangeListener() {
                 @Override
@@ -151,10 +154,10 @@ public class DialogSettings extends Dialog {
                 }
             });
             textButton.addListener(main.getHandListener());
-            t.add(textButton).colspan(2);
+            table.add(textButton);
         }
 
-        t.row();
+        table.row();
         textButton = new TextButton("Open texture packer settings file", main.getSkin());
         textButton.addListener(new ChangeListener() {
             @Override
@@ -168,47 +171,56 @@ public class DialogSettings extends Dialog {
             }
         });
         textButton.addListener(main.getHandListener());
-        t.add(textButton).colspan(2);
+        table.add(textButton);
 
         t.row();
+        table = new Table();
+        t.add(table);
+        
+        table.defaults().space(5);
         label = new Label("Max Number of Undos: ", main.getSkin());
-        t.add(label).right().padTop(10.0f);
-        Spinner spinner3 = new Spinner(main.getProjectData().getMaxUndos(), 1.0, true, Orientation.HORIZONTAL, getSkin());
-        spinner3.setMinimum(1.0);
-        spinner3.setMaximum(100.0);
-        spinner3.addListener(new ChangeListener() {
+        table.add(label);
+        
+        var spinner = new Spinner(main.getProjectData().getMaxUndos(), 1.0, true, Orientation.HORIZONTAL, getSkin());
+        spinner.setMinimum(1.0);
+        spinner.setMaximum(100.0);
+        spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                maxUndos = (int) spinner3.getValue();
+                maxUndos = (int) spinner.getValue();
             }
         });
-        spinner3.addListener(new FocusListener() {
+        spinner.addListener(new FocusListener() {
             @Override
             public void keyboardFocusChanged(FocusListener.FocusEvent event,
                     Actor actor, boolean focused) {
-                maxUndos = (int) spinner3.getValue();
+                maxUndos = (int) spinner.getValue();
             }
 
         });
-        spinner3.getTextField().addListener(main.getIbeamListener());
-        spinner3.getButtonMinus().addListener(main.getHandListener());
-        spinner3.getButtonPlus().addListener(main.getHandListener());
-        t.add(spinner3).minWidth(150.0f).left().padTop(10.0f);
+        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(main.getHandListener());
+        spinner.getButtonPlus().addListener(main.getHandListener());
+        table.add(spinner).minWidth(100.0f);
         
         t.row();
-        final ImageTextButton checkBox = new ImageTextButton("Keep resources relative?", getSkin(), "checkbox");
-        checkBox.setChecked(resourcesRelative);
-        checkBox.addListener(main.getHandListener());
-        checkBox.addListener(new ChangeListener() {
+        table = new Table();
+        t.add(table);
+        
+        table.defaults().expandX().left().space(5);
+        var relativeCheckBox = new ImageTextButton("Keep resources relative?", getSkin(), "checkbox");
+        relativeCheckBox.setChecked(resourcesRelative);
+        relativeCheckBox.addListener(main.getHandListener());
+        relativeCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                resourcesRelative = checkBox.isChecked();
+                resourcesRelative = relativeCheckBox.isChecked();
             }
         });
-        t.add(checkBox).padTop(10.0f).colspan(2);
+        table.add(relativeCheckBox);
         
-        t.row();
-        final ImageTextButton welcomeCheckBox = new ImageTextButton("Show welcome screen?", getSkin(), "checkbox");
+        table.row();
+        var welcomeCheckBox = new ImageTextButton("Show welcome screen?", getSkin(), "checkbox");
         welcomeCheckBox.setChecked(allowingWelcome);
         welcomeCheckBox.addListener(main.getHandListener());
         welcomeCheckBox.addListener(new ChangeListener() {
@@ -217,10 +229,10 @@ public class DialogSettings extends Dialog {
                 allowingWelcome = welcomeCheckBox.isChecked();
             }
         });
-        t.add(welcomeCheckBox).padTop(10.0f).colspan(2);
+        table.add(welcomeCheckBox);
         
-        t.row();
-        final ImageTextButton updatesCheckBox = new ImageTextButton("Check for updates?", getSkin(), "checkbox");
+        table.row();
+        var updatesCheckBox = new ImageTextButton("Check for updates?", getSkin(), "checkbox");
         updatesCheckBox.setChecked(allowingUpdates);
         updatesCheckBox.addListener(main.getHandListener());
         updatesCheckBox.addListener(new ChangeListener() {
@@ -229,16 +241,19 @@ public class DialogSettings extends Dialog {
                 allowingUpdates = updatesCheckBox.isChecked();
             }
         });
-        t.add(updatesCheckBox).padTop(10.0f).colspan(2);
-        
-        t.row();
-        label = new Label("Exported JSON Format:", getSkin());
-        t.add(label).right().padTop(10.0f);
+        table.add(updatesCheckBox);
 
-        button("OK", true);
-        button("Cancel", false);
-        getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
-        getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
-        key(Keys.ESCAPE, false);
+        getButtonTable().pad(5);
+        
+        getButtonTable().defaults().minWidth(75).space(5);
+        textButton = new TextButton("OK", getSkin());
+        textButton.addListener(main.getHandListener());
+        button(textButton, true);
+
+        textButton = new TextButton("CANCEL", getSkin());
+        textButton.addListener(main.getHandListener());
+        button(textButton, false);
+        
+        key(Keys.ENTER, true).key(Keys.ESCAPE, false);
     }
 }
