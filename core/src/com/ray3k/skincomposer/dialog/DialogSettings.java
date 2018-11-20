@@ -36,8 +36,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
-import com.badlogic.gdx.utils.JsonWriter;
-import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.RootTable;
 import com.ray3k.skincomposer.Spinner;
@@ -47,32 +45,9 @@ import com.ray3k.skincomposer.utils.Utils;
 public class DialogSettings extends Dialog {
     private Integer maxUndos;
     private boolean resourcesRelative;
-    private boolean simpleNames;
     private boolean allowingWelcome;
     private boolean allowingUpdates;
     private final Main main;
-    private ExportFormat exportFormat;
-    
-    public static enum ExportFormat {
-        MINIMAL("Minimal", OutputType.minimal), JAVASCRIPT("JavaScript", JsonWriter.OutputType.javascript), JSON("JSON", JsonWriter.OutputType.json);
-        
-        private final String name;
-        private final OutputType outputType;
-        
-        ExportFormat(String name, OutputType outputType) {
-            this.name = name;
-            this.outputType = outputType;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-
-        public OutputType getOutputType() {
-            return outputType;
-        }
-    }
 
     public DialogSettings(String title, String windowStyleName, Main main) {
         super(title, main.getSkin(), windowStyleName);
@@ -80,10 +55,8 @@ public class DialogSettings extends Dialog {
 
         maxUndos = main.getProjectData().getMaxUndos();
         resourcesRelative = main.getProjectData().areResourcesRelative();
-        simpleNames = main.getProjectData().isUsingSimpleNames();
         allowingWelcome = main.getProjectData().isAllowingWelcome();
         allowingUpdates = main.getProjectData().isCheckingForUpdates();
-        exportFormat = main.getProjectData().getExportFormat();
         setFillParent(true);
 
         populate();
@@ -97,10 +70,8 @@ public class DialogSettings extends Dialog {
             main.getProjectData().setChangesSaved(false);
             main.getProjectData().setMaxUndos(maxUndos);
             main.getProjectData().setResourcesRelative(resourcesRelative);
-            main.getProjectData().setUsingSimpleNames(simpleNames);
             main.getProjectData().setAllowingWelcome(allowingWelcome);
             main.getProjectData().setCheckingForUpdates(allowingUpdates);
-            main.getProjectData().setExportFormat(exportFormat);
             main.getUndoableManager().clearUndoables();
             
             if (allowingUpdates) {
@@ -237,18 +208,6 @@ public class DialogSettings extends Dialog {
         t.add(checkBox).padTop(10.0f).colspan(2);
         
         t.row();
-        final ImageTextButton simpleNameCheckBox = new ImageTextButton("Export with simple names?", getSkin(), "checkbox");
-        simpleNameCheckBox.setChecked(simpleNames);
-        simpleNameCheckBox.addListener(main.getHandListener());
-        simpleNameCheckBox.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                simpleNames = simpleNameCheckBox.isChecked();
-            }
-        });
-        t.add(simpleNameCheckBox).padTop(10.0f).colspan(2);
-        
-        t.row();
         final ImageTextButton welcomeCheckBox = new ImageTextButton("Show welcome screen?", getSkin(), "checkbox");
         welcomeCheckBox.setChecked(allowingWelcome);
         welcomeCheckBox.addListener(main.getHandListener());
@@ -275,18 +234,6 @@ public class DialogSettings extends Dialog {
         t.row();
         label = new Label("Exported JSON Format:", getSkin());
         t.add(label).right().padTop(10.0f);
-        
-        final SelectBox<ExportFormat> exportFormatSelectBox = new SelectBox(getSkin());
-        exportFormatSelectBox.setItems(ExportFormat.MINIMAL, ExportFormat.JAVASCRIPT, ExportFormat.JSON);
-        exportFormatSelectBox.setSelected(exportFormat);
-        exportFormatSelectBox.addListener(main.getHandListener());
-        exportFormatSelectBox.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                exportFormat = exportFormatSelectBox.getSelected();
-            }
-        });
-        t.add(exportFormatSelectBox).left().padTop(10.0f);
 
         button("OK", true);
         button("Cancel", false);

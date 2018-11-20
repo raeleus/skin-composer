@@ -33,7 +33,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.Main;
-import com.ray3k.skincomposer.dialog.DialogSettings.ExportFormat;
+import com.ray3k.skincomposer.data.JsonData.ExportFormat;
 import java.util.Iterator;
 
 public class ProjectData implements Json.Serializable {

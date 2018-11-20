@@ -126,7 +126,8 @@ public class MainListener extends RootTableListener {
                 importFile();
                 break;
             case EXPORT:
-                exportFile();
+//                exportFile();
+                main.getDialogFactory().showDialogExport(dialogListener);
                 break;
             case EXIT:
                 dialogFactory.showCloseDialog(dialogListener);
@@ -473,50 +474,6 @@ public class MainListener extends RootTableListener {
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
                     dialogFactory.showDialogError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
-                }
-            }
-            
-            if (warnings.size > 0) {
-                main.getDialogFactory().showWarningDialog(warnings);
-            }
-        });
-    }
-    
-    public void exportFile() {
-        dialogFactory.showDialogLoading(() -> {
-            Array<String> warnings = new Array<>();
-            String defaultPath = projectData.getLastImportExportPath();
-
-            String[] filterPatterns = {"*.json"};
-
-            File file = desktopWorker.saveDialog("Export skin...", defaultPath, filterPatterns, "Json files");
-            if (file != null) {
-                FileHandle fileHandle = new FileHandle(file);
-                if (fileHandle.extension() == null || !fileHandle.extension().equals(".json")) {
-                    fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".json");
-                }
-                projectData.setLastImportExportPath(fileHandle.parent().path() + "/");
-                Array<String> newWarnings = main.getProjectData().getJsonData().writeFile(fileHandle);
-                warnings.addAll(newWarnings);
-                
-                try {
-                    newWarnings = main.getProjectData().getAtlasData().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
-                    warnings.addAll(newWarnings);
-                } catch (Exception ex) {
-                    Gdx.app.error(getClass().getName(), "Error while writing texture atlas", ex);
-                    dialogFactory.showDialogError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
-                }
-                
-                for (FontData font : main.getProjectData().getJsonData().getFonts()) {
-                    if (!font.file.parent().equals(fileHandle.parent())) {
-                        font.file.copyTo(fileHandle.parent());
-                    }
-                }
-                
-                for (FreeTypeFontData font : main.getProjectData().getJsonData().getFreeTypeFonts()) {
-                    if (font.useCustomSerializer && !font.file.parent().equals(fileHandle.parent())) {
-                        font.file.copyTo(fileHandle.parent());
-                    }
                 }
             }
             
