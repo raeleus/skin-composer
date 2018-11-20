@@ -3,6 +3,7 @@
 * Allow drag and drop of SCMP files into main screen to load project.
 * Created export dialog and moved export settings to this window.
 * Improved appearance of Settings dialog.
+* Updated Tiny File Dialogs to 3.2.0. Resolves #45
 
 ### Skin Composer Version 25 ###
 * Fixed exception when opening an old project.
