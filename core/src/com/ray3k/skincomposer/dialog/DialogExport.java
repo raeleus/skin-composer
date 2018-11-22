@@ -78,7 +78,7 @@ public class DialogExport extends Dialog {
         textField.setName("path");
         textField.setText(main.getProjectData().getLastImportExportPath());
         textField.setCursorPosition(textField.getText().length() - 1);
-        table.add(textField);
+        table.add(textField).minWidth(400);
         textField.addListener(main.getIbeamListener());
         textField.addListener(new ChangeListener() {
             @Override
