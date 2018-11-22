@@ -2381,22 +2381,35 @@ public class RootTable extends Table {
                             switch (customProperty.getType()) {
                                 case TEXT:
                                 case RAW_TEXT:
+                                case STYLE:
+                                    if (!(customProperty.getValue() instanceof String)) {
+                                        customProperty.setValue("");
+                                    }
+
                                     Label labelText = new Label((String) customProperty.getValue(), getSkin());
                                     container.setActor(labelText);
                                     break;
-                                case STYLE:
-                                    labelText = new Label((String) customProperty.getValue(), getSkin());
-                                    container.setActor(labelText);
-                                    break;
                                 case NUMBER:
+                                    if (!(customProperty.getValue() instanceof Double)) {
+                                        customProperty.setValue(0.0);
+                                    }
+
                                     Label labelNumber = new Label(Double.toString((double) customProperty.getValue()), getSkin());
                                     container.setActor(labelNumber);
                                     break;
                                 case BOOL:
+                                    if (!(customProperty.getValue() instanceof Boolean)) {
+                                        customProperty.setValue(false);
+                                    }
+
                                     Label labelBoolean = new Label(Boolean.toString((boolean) customProperty.getValue()), getSkin());
                                     container.setActor(labelBoolean);
                                     break;
                                 case COLOR:
+                                    if (!(customProperty.getValue() instanceof String)) {
+                                        customProperty.setValue("");
+                                    }
+
                                     ColorData colorData = null;
 
                                     String colorName = (String) customProperty.getValue();
@@ -2417,6 +2430,10 @@ public class RootTable extends Table {
                                     }
                                     break;
                                 case FONT:
+                                    if (!(customProperty.getValue() instanceof String)) {
+                                        customProperty.setValue("");
+                                    }
+
                                     BitmapFont font = null;
                                     FontData fontData = null;
 
@@ -2429,12 +2446,12 @@ public class RootTable extends Table {
                                             break;
                                         }
                                     }
-                                    
+
                                     if (font != null) {
                                         Label labelFont = new Label(fontData.getName(), new LabelStyle(font, Color.WHITE));
                                         container.setActor(labelFont);
                                     }
-                                    
+
                                     FreeTypeFontData freeTypeFontData = null;
                                     for (FreeTypeFontData fd : main.getJsonData().getFreeTypeFonts()) {
                                         if (fd.name.equals(fontName)) {
@@ -2442,14 +2459,18 @@ public class RootTable extends Table {
                                             break;
                                         }
                                     }
-                                    
+
                                     if (freeTypeFontData != null && freeTypeFontData.bitmapFont != null) {
                                         Label labelFont = new Label(freeTypeFontData.name, new LabelStyle(freeTypeFontData.bitmapFont, Color.WHITE));
                                         container.setActor(labelFont);
                                     }
-                                    
+
                                     break;
                                 case DRAWABLE:
+                                    if (!(customProperty.getValue() instanceof String)) {
+                                        customProperty.setValue("");
+                                    }
+
                                     DrawableData drawable = null;
 
                                     String drawableName = (String) customProperty.getValue();

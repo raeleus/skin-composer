@@ -5,6 +5,7 @@
 * Improved appearance of Settings dialog.
 * Updated Tiny File Dialogs to 3.2.0. Resolves #45
 * Added Style property type to Custom Classes. Resolves #46
+* Fixed crashes when changing a custom style property's type.
 
 ### Skin Composer Version 25 ###
 * Fixed exception when opening an old project.
