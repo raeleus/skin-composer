@@ -274,6 +274,38 @@ public class UndoableManager {
         }
     }
     
+    public static class CustomStyleSelectionUndoable implements Undoable {
+        private final CustomProperty property;
+        private final Object oldValue, newValue;
+        private final Main main;
+    
+        public CustomStyleSelectionUndoable(Main main, CustomProperty property, Object newValue) {
+            this.property = property;
+            this.oldValue = property.getValue();
+            this.newValue = newValue;
+            this.main = main;
+        }
+    
+        @Override
+        public void undo() {
+            property.setValue(oldValue);
+            main.getRootTable().refreshStyleProperties(true);
+            main.getRootTable().refreshPreview();
+        }
+    
+        @Override
+        public void redo() {
+            property.setValue(newValue);
+            main.getRootTable().refreshStyleProperties(true);
+            main.getRootTable().refreshPreview();
+        }
+
+        @Override
+        public String getUndoText() {
+            return "Change Style Property " + property.getName();
+        }
+    }
+    
     public static class DrawableUndoable implements Undoable {
         private StyleProperty property;
         private Object oldValue, newValue;

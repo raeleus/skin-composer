@@ -961,4 +961,22 @@ public class DialogFactory {
         dialog.setFillParent(true);
         dialog.show(main.getStage());
     }
+    
+    public DialogCustomStyleSelection showDialogCustomStyleSelection(CustomProperty customProperty, DialogListener dialogListener) {
+        var dialog = new DialogCustomStyleSelection(main);
+        dialog.addListener(dialogListener);
+        dialog.show(main.getStage());
+        dialog.addListener(new DialogCustomStyleSelection.DialogCustomStyleSelectionListener() {
+            @Override
+            public void confirmed(String style) {
+                main.getUndoableManager().addUndoable(new UndoableManager.CustomStyleSelectionUndoable(main, customProperty, style), true);
+            }
+
+            @Override
+            public void cancelled() {
+                
+            }
+        });
+        return dialog;
+    }
 }

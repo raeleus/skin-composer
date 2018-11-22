@@ -811,6 +811,7 @@ public class JsonData implements Json.Serializable {
             if (null != customProperty.getType()) switch (customProperty.getType()) {
                 case TEXT:
                 case RAW_TEXT:
+                case STYLE:
                     returnValue = true;
                     break;
                 case COLOR:

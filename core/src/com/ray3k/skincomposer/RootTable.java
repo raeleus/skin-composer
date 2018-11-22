@@ -890,6 +890,16 @@ public class RootTable extends Table {
                     
                     button.addListener(new CustomPropertyChangeListener(styleProperty, button));
                     button.addListener(main.getHandListener());
+                } else if (styleProperty.getType() == PropertyType.STYLE) {
+                    String value = "";
+                    if (styleProperty.getValue() instanceof String) {
+                        value = (String) styleProperty.getValue();
+                    }
+                    BrowseField browseField = new BrowseField(value, styleProperty.getName(), getSkin(), "style");
+                    browseField.addListener(main.getHandListener());
+                    table.add(browseField).padTop(20.0f);
+
+                    browseField.addListener(new CustomPropertyChangeListener(styleProperty, browseField));
                 }
                 
                 Button duplicateButton = new Button(getSkin(), "duplicate");
@@ -2355,6 +2365,7 @@ public class RootTable extends Table {
                 if (!showMessage) {
                     HorizontalGroup horizontalGroup = new HorizontalGroup();
                     horizontalGroup.wrap();
+                    //todo: resolve the following crash line
                     //the following causes a crash. LibGDX bug.
 //                    horizontalGroup.space(10.0f);
                     horizontalGroup.wrapSpace(10.0f);
@@ -2371,6 +2382,10 @@ public class RootTable extends Table {
                                 case TEXT:
                                 case RAW_TEXT:
                                     Label labelText = new Label((String) customProperty.getValue(), getSkin());
+                                    container.setActor(labelText);
+                                    break;
+                                case STYLE:
+                                    labelText = new Label((String) customProperty.getValue(), getSkin());
                                     container.setActor(labelText);
                                     break;
                                 case NUMBER:

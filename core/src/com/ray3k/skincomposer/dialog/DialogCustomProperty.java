@@ -83,7 +83,7 @@ public class DialogCustomProperty extends Dialog {
 
         getContentTable().row();
         propertyTypeBox = new SelectBox<>(getSkin());
-        propertyTypeBox.setItems(PropertyType.TEXT, PropertyType.RAW_TEXT, PropertyType.NUMBER, PropertyType.BOOL, PropertyType.FONT, PropertyType.DRAWABLE, PropertyType.COLOR);
+        propertyTypeBox.setItems(PropertyType.TEXT, PropertyType.RAW_TEXT, PropertyType.STYLE, PropertyType.NUMBER, PropertyType.BOOL, PropertyType.FONT, PropertyType.DRAWABLE, PropertyType.COLOR);
         propertyTypeBox.addListener(main.getHandListener());
         propertyTypeBox.getList().addListener(main.getHandListener());
         if (propertyType != null && propertyType != PropertyType.NONE) {

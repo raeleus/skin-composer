@@ -54,7 +54,6 @@ import com.ray3k.skincomposer.data.CustomProperty;
 import com.ray3k.skincomposer.UndoableManager.NewCustomClassUndoable;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.DrawableData;
-import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
 import com.ray3k.skincomposer.dialog.DialogCustomStyle;
 import com.ray3k.skincomposer.dialog.DialogListener;
@@ -644,6 +643,9 @@ public class MainListener extends RootTableListener {
                 break;
             case BOOL:
                 main.getUndoableManager().addUndoable(new UndoableManager.CustomBoolUndoable(main, customProperty, ((Button) styleActor).isChecked()), false);
+                break;
+            case STYLE:
+                dialogFactory.showDialogCustomStyleSelection(customProperty, dialogListener);
                 break;
             default:
                 break;
