@@ -125,7 +125,6 @@ public class MainListener extends RootTableListener {
                 importFile();
                 break;
             case EXPORT:
-//                exportFile();
                 main.getDialogFactory().showDialogExport(dialogListener);
                 break;
             case EXIT:

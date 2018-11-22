@@ -568,6 +568,22 @@ public class ProjectData implements Json.Serializable {
         preferences.put("simple-names", useSimpleNames);
     }
     
+    public boolean isExportingAtlas() {
+        return (boolean) preferences.get("export-atlas", true);
+    }
+    
+    public void setExportingAtlas(boolean exportAtlas) {
+        preferences.put("export-atlas", exportAtlas);
+    }
+    
+    public boolean isExportingFonts() {
+        return (boolean) preferences.get("export-fonts", true);
+    }
+    
+    public void setExportingFonts(boolean exportAtlas) {
+        preferences.put("export-fonts", exportAtlas);
+    }
+    
     /**
      * Returns true if file exists and depending on the state of relative resources
      * and save file state.

@@ -99,14 +99,38 @@ public class DialogExport extends Dialog {
         });
         
         getContentTable().row();
-        var checkBox = new CheckBox("Export with simple names?", main.getSkin());
-        checkBox.setChecked(main.getProjectData().isUsingSimpleNames());
-        getContentTable().add(checkBox);
-        checkBox.addListener(main.getHandListener());
-        checkBox.addListener(new ChangeListener() {
+        var textureAtlasCheckBox = new CheckBox("Generate texture atlas", main.getSkin());
+        textureAtlasCheckBox.setChecked(main.getProjectData().isExportingAtlas());
+        getContentTable().add(textureAtlasCheckBox);
+        textureAtlasCheckBox.addListener(main.getHandListener());
+        textureAtlasCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                main.getProjectData().setUsingSimpleNames(checkBox.isChecked());
+                main.getProjectData().setExportingAtlas(textureAtlasCheckBox.isChecked());
+            }
+        });
+        
+        getContentTable().row();
+        var fontCheckBox = new CheckBox("Copy font files to destination", main.getSkin());
+        fontCheckBox.setChecked(main.getProjectData().isExportingFonts());
+        getContentTable().add(fontCheckBox);
+        fontCheckBox.addListener(main.getHandListener());
+        fontCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                main.getProjectData().setExportingFonts(fontCheckBox.isChecked());
+            }
+        });
+        
+        getContentTable().row();
+        var simpleNamesCheckBox = new CheckBox("Export with simple names", main.getSkin());
+        simpleNamesCheckBox.setChecked(main.getProjectData().isUsingSimpleNames());
+        getContentTable().add(simpleNamesCheckBox);
+        simpleNamesCheckBox.addListener(main.getHandListener());
+        simpleNamesCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                main.getProjectData().setUsingSimpleNames(simpleNamesCheckBox.isChecked());
             }
         });
         
@@ -186,23 +210,27 @@ public class DialogExport extends Dialog {
             Array<String> newWarnings = main.getProjectData().getJsonData().writeFile(fileHandle);
             warnings.addAll(newWarnings);
 
-            try {
-                newWarnings = main.getProjectData().getAtlasData().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
-                warnings.addAll(newWarnings);
-            } catch (Exception ex) {
-                Gdx.app.error(getClass().getName(), "Error while writing texture atlas", ex);
-                main.getDialogFactory().showDialogError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
-            }
-
-            for (FontData font : main.getProjectData().getJsonData().getFonts()) {
-                if (!font.file.parent().equals(fileHandle.parent())) {
-                    font.file.copyTo(fileHandle.parent());
+            if (main.getProjectData().isExportingAtlas()) {
+                try {
+                    newWarnings = main.getProjectData().getAtlasData().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
+                    warnings.addAll(newWarnings);
+                } catch (Exception ex) {
+                    Gdx.app.error(getClass().getName(), "Error while writing texture atlas", ex);
+                    main.getDialogFactory().showDialogError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
                 }
             }
 
-            for (FreeTypeFontData font : main.getProjectData().getJsonData().getFreeTypeFonts()) {
-                if (font.useCustomSerializer && !font.file.parent().equals(fileHandle.parent())) {
-                    font.file.copyTo(fileHandle.parent());
+            if (main.getProjectData().isExportingFonts()) {
+                for (FontData font : main.getProjectData().getJsonData().getFonts()) {
+                    if (!font.file.parent().equals(fileHandle.parent())) {
+                        font.file.copyTo(fileHandle.parent());
+                    }
+                }
+
+                for (FreeTypeFontData font : main.getProjectData().getJsonData().getFreeTypeFonts()) {
+                    if (font.useCustomSerializer && !font.file.parent().equals(fileHandle.parent())) {
+                        font.file.copyTo(fileHandle.parent());
+                    }
                 }
             }
 
