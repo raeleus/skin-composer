@@ -97,6 +97,15 @@ public class DialogFactory {
         return dialog;
     }
     
+    public DialogImport showDialogImport(DialogListener listener) {
+        var dialog = new DialogImport(main);
+        if (listener != null) {
+            dialog.addListener(listener);
+        }
+        dialog.show(main.getStage());
+        return dialog;
+    }
+    
     public DialogColors showDialogColors(StyleProperty styleProperty,
         DialogColors.DialogColorsListener listener, DialogListener dialogListener) {
         DialogColors dialog = new DialogColors(main, styleProperty, listener);

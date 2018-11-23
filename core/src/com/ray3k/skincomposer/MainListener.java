@@ -122,7 +122,7 @@ public class MainListener extends RootTableListener {
                 main.getDialogFactory().showWelcomeDialog(getWelcomeListener(), dialogListener);
                 break;
             case IMPORT:
-                importFile();
+                main.getDialogFactory().showDialogImport(dialogListener);
                 break;
             case EXPORT:
                 main.getDialogFactory().showDialogExport(dialogListener);
@@ -444,39 +444,6 @@ public class MainListener extends RootTableListener {
                 if (runnable != null) {
                     runnable.run();
                 }
-            }
-        });
-    }
-    
-    public void importFile() {
-        dialogFactory.showDialogLoading(() -> {
-            Array<String> warnings = new Array<>();
-            String defaultPath = projectData.getLastImportExportPath();
-
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[] {"*.json"};
-            }
-
-            File file = desktopWorker.openDialog("Import skin...", defaultPath, filterPatterns, "Json files");
-            if (file != null) {
-                FileHandle fileHandle = new FileHandle(file);
-                projectData.setLastImportExportPath(fileHandle.parent().path() + "/");
-                try {
-                    Array<String> newWarnings = jsonData.readFile(fileHandle);
-                    warnings.addAll(newWarnings);
-                    main.getProjectData().getAtlasData().atlasCurrent = false;
-                    jsonData.checkForPropertyConsistency();
-                    main.getRootTable().produceAtlas();
-                    main.getRootTable().populate();
-                } catch (Exception e) {
-                    Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
-                    dialogFactory.showDialogError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
-                }
-            }
-            
-            if (warnings.size > 0) {
-                main.getDialogFactory().showWarningDialog(warnings);
             }
         });
     }

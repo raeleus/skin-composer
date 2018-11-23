@@ -2,6 +2,7 @@
 * Fixed export creating JSON with null values for Styles that have parents
 * Allow drag and drop of SCMP files into main screen to load project.
 * Created export dialog and moved export settings to this window.
+* Created import dialog with options to import into a new project or the current one.
 * Added options to not generate a texture atlas and to not copy font FNT/TTF files on export.
 * Improved appearance of Settings dialog.
 * Updated Tiny File Dialogs to 3.2.0. Resolves #45
