@@ -42,8 +42,6 @@ import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.data.JsonData.ExportFormat;
-import java.io.File;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -58,8 +56,6 @@ public class DialogExport extends Dialog {
         this.main = main;
         
         populate();
-        
-        key(Keys.ENTER, true).key(Keys.ESCAPE, false);
     }
     
     public void populate() {
@@ -77,7 +73,7 @@ public class DialogExport extends Dialog {
         var textField = new TextField("", main.getSkin());
         textField.setName("path");
         textField.setText(main.getProjectData().getLastImportExportPath());
-        textField.setCursorPosition(textField.getText().length() - 1);
+        textField.setCursorPosition(Math.max(0, textField.getText().length() - 1));
         table.add(textField).minWidth(400);
         textField.addListener(main.getIbeamListener());
         textField.addListener(new ChangeListener() {
@@ -167,6 +163,8 @@ public class DialogExport extends Dialog {
         textButton = new TextButton("Cancel", main.getSkin());
         button(textButton, false);
         textButton.addListener(main.getHandListener());
+        
+        key(Keys.ENTER, true).key(Keys.ESCAPE, false);
     }
     
     private void showFileBrowser() {
@@ -180,7 +178,7 @@ public class DialogExport extends Dialog {
                 fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".json");
             }
             textField.setText(fileHandle.path());
-            textField.setCursorPosition(textField.getText().length() - 1);
+            textField.setCursorPosition(Math.max(0, textField.getText().length() - 1));
             TextButton textButton = findActor("export");
             textButton.setDisabled(!checkPath());
         }
