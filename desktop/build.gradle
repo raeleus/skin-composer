@@ -122,6 +122,16 @@ task updateAndCreateZip(type: Zip, dependsOn: [dist]) {
             from '../README.md'
             into "${buildDir}/distribution/${project.appName}"
         }
+
+        copy {
+            from '../CHANGES.md'
+            into "${buildDir}/distribution/${project.appName}"
+        }
+
+        copy {
+            from '../core/assets/splash.png'
+            into "${buildDir}/distribution/${project.appName}/app"
+        }
     }
     
     archiveName "skin-composer-${org.gradle.internal.os.OperatingSystem.current().getFamilyName()}.zip"
