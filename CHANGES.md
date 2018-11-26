@@ -1,3 +1,14 @@
+### Skin Composer Version 26 ###
+* Fixed export creating JSON with null values for Styles that have parents
+* Allow drag and drop of SCMP files into main screen to load project.
+* Created export dialog and moved export settings to this window.
+* Created import dialog with options to import into a new project or the current one.
+* Added options to not generate a texture atlas and to not copy font FNT/TTF files on export.
+* Improved appearance of Settings dialog.
+* Updated Tiny File Dialogs to 3.2.0. Resolves #45
+* Added Style property type to Custom Classes. Resolves #46
+* Fixed crashes when changing a custom style property's type.
+
 ### Skin Composer Version 25 ###
 * Fixed exception when opening an old project.
 * Improved error message when trying to add a font that is too large for the texture settings.

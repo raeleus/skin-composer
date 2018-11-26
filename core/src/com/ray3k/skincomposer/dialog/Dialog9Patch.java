@@ -766,7 +766,7 @@ public class Dialog9Patch extends Dialog {
 
                                         updatePreviewContentActor(label);
                                     }
-                                });
+                                }, null);
                             }
 
                             @Override
@@ -787,7 +787,7 @@ public class Dialog9Patch extends Dialog {
 
                                 updatePreviewContentActor(image);
                             }
-                        });
+                        }, null);
                         break;
                     case "Drawable":
                           var dialog = main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
@@ -809,7 +809,7 @@ public class Dialog9Patch extends Dialog {
                             public void cancelled() {
                                 selectBox.setSelected("None");
                             }
-                        });
+                        }, null);
 
                         dialog.setShowing9patchButton(false);
                         break;

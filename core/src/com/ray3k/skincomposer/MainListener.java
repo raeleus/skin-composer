@@ -54,9 +54,9 @@ import com.ray3k.skincomposer.data.CustomProperty;
 import com.ray3k.skincomposer.UndoableManager.NewCustomClassUndoable;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.DrawableData;
-import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
 import com.ray3k.skincomposer.dialog.DialogCustomStyle;
+import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
@@ -70,6 +70,7 @@ public class MainListener extends RootTableListener {
     private final JsonData jsonData;
     private final Main main;
     private WelcomeDialogListener welcomeListener;
+    private DialogListener dialogListener;
     
     public MainListener(Main main) {
         this.root = main.getRootTable();
@@ -78,12 +79,24 @@ public class MainListener extends RootTableListener {
         this.projectData = main.getProjectData();
         this.jsonData = main.getProjectData().getJsonData();
         this.main = main;
+        
+        dialogListener = new DialogListener() {
+            @Override
+            public void opened() {
+                main.getDesktopWorker().removeFilesDroppedListener(main.getRootTable().getFilesDroppedListener());
+            }
+
+            @Override
+            public void closed() {
+                main.getDesktopWorker().addFilesDroppedListener(main.getRootTable().getFilesDroppedListener());
+            }
+        };
     }
     
     public void createWelcomeListener() {
         welcomeListener = new WelcomeDialogListener();
         if (main.getProjectData().isAllowingWelcome()) {
-            dialogFactory.showWelcomeDialog(welcomeListener);
+            dialogFactory.showWelcomeDialog(welcomeListener, dialogListener);
         }
     }
     
@@ -97,7 +110,7 @@ public class MainListener extends RootTableListener {
                 openFile();
                 break;
             case RECENT_FILES:
-                dialogFactory.recentFiles();
+                dialogFactory.recentFiles(dialogListener);
                 break;
             case SAVE:
                 saveFile(null);
@@ -106,16 +119,16 @@ public class MainListener extends RootTableListener {
                 saveAsFile(null);
                 break;
             case WELCOME:
-                main.getDialogFactory().showWelcomeDialog(getWelcomeListener());
+                main.getDialogFactory().showWelcomeDialog(getWelcomeListener(), dialogListener);
                 break;
             case IMPORT:
-                importFile();
+                main.getDialogFactory().showDialogImport(dialogListener);
                 break;
             case EXPORT:
-                exportFile();
+                main.getDialogFactory().showDialogExport(dialogListener);
                 break;
             case EXIT:
-                dialogFactory.showCloseDialog();
+                dialogFactory.showCloseDialog(dialogListener);
                 break;
             case UNDO:
                 main.getUndoableManager().undo();
@@ -124,19 +137,19 @@ public class MainListener extends RootTableListener {
                 main.getUndoableManager().redo();
                 break;
             case SETTINGS:
-                dialogFactory.showSettings();
+                dialogFactory.showSettings(dialogListener);
                 break;
             case COLORS:
-                dialogFactory.showDialogColors();
+                dialogFactory.showDialogColors(dialogListener);
                 break;
             case FONTS:
-                dialogFactory.showFonts();
+                dialogFactory.showFonts(dialogListener);
                 break;
             case DRAWABLES:
-                dialogFactory.showDialogDrawables();
+                dialogFactory.showDialogDrawables(dialogListener);
                 break;
             case ABOUT:
-                dialogFactory.showAbout();
+                dialogFactory.showAbout(dialogListener);
                 break;
             case CLASS_SELECTED:
                 updateStyleProperties();
@@ -270,7 +283,7 @@ public class MainListener extends RootTableListener {
     
     public void newFile() {
         if (!projectData.areChangesSaved() && !projectData.isNewProject()) {
-            dialogFactory.yesNoCancelDialog("Save Changes?",
+            var dialog = dialogFactory.yesNoCancelDialog("Save Changes?",
                     "Do you want to save changes to the existing project?"
                             + "\nAll unsaved changes will be lost.",
                     (int selection) -> {
@@ -281,7 +294,18 @@ public class MainListener extends RootTableListener {
                         } else if (selection == 1) {
                             projectData.clear();
                         }
-                    });
+                    }, dialogListener);
+            dialog.addListener(new DialogListener() {
+                @Override
+                public void opened() {
+                    main.getDesktopWorker().removeFilesDroppedListener(main.getRootTable().getFilesDroppedListener());
+                }
+
+                @Override
+                public void closed() {
+                    main.getDesktopWorker().addFilesDroppedListener(main.getRootTable().getFilesDroppedListener());
+                }
+            });
         } else {
             projectData.clear();
         }
@@ -312,7 +336,7 @@ public class MainListener extends RootTableListener {
         };
         
         if (!projectData.areChangesSaved() && !projectData.isNewProject()) {
-            dialogFactory.yesNoCancelDialog("Save Changes?",
+            var dialog = dialogFactory.yesNoCancelDialog("Save Changes?",
                     "Do you want to save changes to the existing project?"
                     + "\nAll unsaved changes will be lost.",
                     (int selection) -> {
@@ -321,7 +345,19 @@ public class MainListener extends RootTableListener {
                         } else if (selection == 1) {
                             dialogFactory.showDialogLoading(runnable);
                         }
-                    });
+                    }, dialogListener);
+            
+            dialog.addListener(new DialogListener() {
+                @Override
+                public void opened() {
+                    main.getDesktopWorker().removeFilesDroppedListener(main.getRootTable().getFilesDroppedListener());
+                }
+
+                @Override
+                public void closed() {
+                    main.getDesktopWorker().addFilesDroppedListener(main.getRootTable().getFilesDroppedListener());
+                }
+            });
         } else {
             dialogFactory.showDialogLoading(runnable);
         }
@@ -350,7 +386,7 @@ public class MainListener extends RootTableListener {
         };
         
         if (!projectData.areChangesSaved() && !projectData.isNewProject()) {
-            dialogFactory.yesNoCancelDialog("Save Changes?",
+            var dialog = dialogFactory.yesNoCancelDialog("Save Changes?",
                     "Do you want to save changes to the existing project?"
                     + "\nAll unsaved changes will be lost.",
                     (int selection) -> {
@@ -359,7 +395,19 @@ public class MainListener extends RootTableListener {
                         } else if (selection == 1) {
                             dialogFactory.showDialogLoading(runnable);
                         }
-                    });
+                    }, dialogListener);
+            
+            dialog.addListener(new DialogListener() {
+                @Override
+                public void opened() {
+                    main.getDesktopWorker().removeFilesDroppedListener(main.getRootTable().getFilesDroppedListener());
+                }
+
+                @Override
+                public void closed() {
+                    main.getDesktopWorker().addFilesDroppedListener(main.getRootTable().getFilesDroppedListener());
+                }
+            });
         } else {
             dialogFactory.showDialogLoading(runnable);
         }
@@ -400,83 +448,6 @@ public class MainListener extends RootTableListener {
         });
     }
     
-    public void importFile() {
-        dialogFactory.showDialogLoading(() -> {
-            Array<String> warnings = new Array<>();
-            String defaultPath = projectData.getLastImportExportPath();
-
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[] {"*.json"};
-            }
-
-            File file = desktopWorker.openDialog("Import skin...", defaultPath, filterPatterns, "Json files");
-            if (file != null) {
-                FileHandle fileHandle = new FileHandle(file);
-                projectData.setLastImportExportPath(fileHandle.parent().path() + "/");
-                try {
-                    Array<String> newWarnings = jsonData.readFile(fileHandle);
-                    warnings.addAll(newWarnings);
-                    main.getProjectData().getAtlasData().atlasCurrent = false;
-                    jsonData.checkForPropertyConsistency();
-                    main.getRootTable().produceAtlas();
-                    main.getRootTable().populate();
-                } catch (Exception e) {
-                    Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
-                    dialogFactory.showDialogError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
-                }
-            }
-            
-            if (warnings.size > 0) {
-                main.getDialogFactory().showWarningDialog(warnings);
-            }
-        });
-    }
-    
-    public void exportFile() {
-        dialogFactory.showDialogLoading(() -> {
-            Array<String> warnings = new Array<>();
-            String defaultPath = projectData.getLastImportExportPath();
-
-            String[] filterPatterns = {"*.json"};
-
-            File file = desktopWorker.saveDialog("Export skin...", defaultPath, filterPatterns, "Json files");
-            if (file != null) {
-                FileHandle fileHandle = new FileHandle(file);
-                if (fileHandle.extension() == null || !fileHandle.extension().equals(".json")) {
-                    fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".json");
-                }
-                projectData.setLastImportExportPath(fileHandle.parent().path() + "/");
-                Array<String> newWarnings = main.getProjectData().getJsonData().writeFile(fileHandle);
-                warnings.addAll(newWarnings);
-                
-                try {
-                    newWarnings = main.getProjectData().getAtlasData().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
-                    warnings.addAll(newWarnings);
-                } catch (Exception ex) {
-                    Gdx.app.error(getClass().getName(), "Error while writing texture atlas", ex);
-                    dialogFactory.showDialogError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
-                }
-                
-                for (FontData font : main.getProjectData().getJsonData().getFonts()) {
-                    if (!font.file.parent().equals(fileHandle.parent())) {
-                        font.file.copyTo(fileHandle.parent());
-                    }
-                }
-                
-                for (FreeTypeFontData font : main.getProjectData().getJsonData().getFreeTypeFonts()) {
-                    if (font.useCustomSerializer && !font.file.parent().equals(fileHandle.parent())) {
-                        font.file.copyTo(fileHandle.parent());
-                    }
-                }
-            }
-            
-            if (warnings.size > 0) {
-                main.getDialogFactory().showWarningDialog(warnings);
-            }
-        });
-    }
-    
     @Override
     public void loadClasses(SelectBox classSelectBox) {
         Array names = new Array<>();
@@ -506,11 +477,11 @@ public class MainListener extends RootTableListener {
     public void stylePropertyChanged(StyleProperty styleProperty,
             Actor styleActor) {
         if (styleProperty.type == Drawable.class) {
-            dialogFactory.showDialogDrawables(styleProperty);
+            dialogFactory.showDialogDrawables(styleProperty, dialogListener);
         } else if (styleProperty.type == Color.class) {
-            dialogFactory.showDialogColors(styleProperty);
+            dialogFactory.showDialogColors(styleProperty, dialogListener);
         } else if (styleProperty.type == BitmapFont.class) {
-            dialogFactory.showDialogFonts(styleProperty);
+            dialogFactory.showDialogFonts(styleProperty, dialogListener);
         } else if (styleProperty.type == Float.TYPE) {
             main.getUndoableManager().addUndoable(new UndoableManager.DoubleUndoable(main, styleProperty, ((Spinner) styleActor).getValue()), false);
         } else if (styleProperty.type == ScrollPaneStyle.class) {
@@ -621,13 +592,13 @@ public class MainListener extends RootTableListener {
             Actor styleActor) {
         if (null != customProperty.getType()) switch (customProperty.getType()) {
             case DRAWABLE:
-                dialogFactory.showDialogDrawables(customProperty);
+                dialogFactory.showDialogDrawables(customProperty, dialogListener);
                 break;
             case COLOR:
-                dialogFactory.showDialogColors(customProperty);
+                dialogFactory.showDialogColors(customProperty, dialogListener);
                 break;
             case FONT:
-                dialogFactory.showDialogFonts(customProperty);
+                dialogFactory.showDialogFonts(customProperty, dialogListener);
                 break;
             case NUMBER:
                 main.getUndoableManager().addUndoable(new UndoableManager.CustomDoubleUndoable(main, customProperty, ((Spinner) styleActor).getValue()), false);
@@ -639,9 +610,17 @@ public class MainListener extends RootTableListener {
             case BOOL:
                 main.getUndoableManager().addUndoable(new UndoableManager.CustomBoolUndoable(main, customProperty, ((Button) styleActor).isChecked()), false);
                 break;
+            case STYLE:
+                dialogFactory.showDialogCustomStyleSelection(customProperty, dialogListener);
+                break;
             default:
                 break;
         }  
+    }
+
+    @Override
+    public void droppedScmpFile(FileHandle fileHandle) {
+        openFile(fileHandle);
     }
     
     public void refreshTextureAtlas() {

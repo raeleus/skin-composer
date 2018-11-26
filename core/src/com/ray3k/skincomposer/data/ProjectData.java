@@ -33,7 +33,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.Main;
-import com.ray3k.skincomposer.dialog.DialogSettings.ExportFormat;
+import com.ray3k.skincomposer.data.JsonData.ExportFormat;
 import java.util.Iterator;
 
 public class ProjectData implements Json.Serializable {
@@ -566,6 +566,22 @@ public class ProjectData implements Json.Serializable {
     
     public void setUsingSimpleNames(boolean useSimpleNames) {
         preferences.put("simple-names", useSimpleNames);
+    }
+    
+    public boolean isExportingAtlas() {
+        return (boolean) preferences.get("export-atlas", true);
+    }
+    
+    public void setExportingAtlas(boolean exportAtlas) {
+        preferences.put("export-atlas", exportAtlas);
+    }
+    
+    public boolean isExportingFonts() {
+        return (boolean) preferences.get("export-fonts", true);
+    }
+    
+    public void setExportingFonts(boolean exportAtlas) {
+        preferences.put("export-fonts", exportAtlas);
     }
     
     /**

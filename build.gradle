@@ -12,7 +12,7 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-    version = '25'
+    version = '26'
     ext {
         appName = "SkinComposer"
         gdxVersion = '1.9.9-SNAPSHOT'
@@ -34,10 +34,10 @@ project(":desktop") {
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        compile "org.lwjgl:lwjgl-tinyfd:3.1.6"
-        compile "org.lwjgl:lwjgl-tinyfd:3.1.6:natives-windows"
-        compile "org.lwjgl:lwjgl-tinyfd:3.1.6:natives-linux"
-        compile "org.lwjgl:lwjgl-tinyfd:3.1.6:natives-macos"
+        compile "org.lwjgl:lwjgl-tinyfd:3.2.0"
+        compile "org.lwjgl:lwjgl-tinyfd:3.2.0:natives-windows"
+        compile "org.lwjgl:lwjgl-tinyfd:3.2.0:natives-linux"
+        compile "org.lwjgl:lwjgl-tinyfd:3.2.0:natives-macos"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
         compile ("com.badlogicgames.gdx:gdx-tools:$gdxVersion") {
             exclude group: 'com.badlogicgames.gdx', module: 'gdx-backend-lwjgl'

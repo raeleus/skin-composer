@@ -352,6 +352,8 @@ public class DialogDrawables extends Dialog {
         stage.setScrollFocus(scrollPane);
         validate();
         scrollPane.setScrollY(scrollPosition);
+        
+        fire(new DialogEvent(DialogEvent.Type.OPEN));
         return dialog;
     }
     
@@ -1644,6 +1646,8 @@ public class DialogDrawables extends Dialog {
             atlas.dispose();
             atlas = null;
         }
+        
+        fire(new DialogEvent(DialogEvent.Type.CLOSE));
         return super.remove();
     }
     

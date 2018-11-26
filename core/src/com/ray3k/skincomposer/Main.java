@@ -78,10 +78,11 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
+import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "25";
+    public final static String VERSION = "26";
     public static String newVersion;
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,
@@ -230,7 +231,17 @@ public class Main extends ApplicationAdapter {
         desktopWorker.sizeWindowToFit(800, 800, 50, Gdx.graphics);
         desktopWorker.centerWindow(Gdx.graphics);
         desktopWorker.setCloseListener(() -> {
-            dialogFactory.showCloseDialog();
+            dialogFactory.showCloseDialog(new DialogListener() {
+                @Override
+                public void opened() {
+                    desktopWorker.removeFilesDroppedListener(rootTable.getFilesDroppedListener());
+                }
+
+                @Override
+                public void closed() {
+                    desktopWorker.addFilesDroppedListener(rootTable.getFilesDroppedListener());
+                }
+            });
             return false;
         });
         

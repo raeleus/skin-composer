@@ -272,6 +272,7 @@ public class DialogWelcome extends Dialog {
         resetWidth = getWidth();
         resetHeight = getHeight();
         main.getStage().setScrollFocus(scrollPane);
+        fire(new DialogEvent(DialogEvent.Type.OPEN));
         return dialog;
     }
 
@@ -294,7 +295,14 @@ public class DialogWelcome extends Dialog {
         resetWidth = getWidth();
         resetHeight = getHeight();
         main.getStage().setScrollFocus(scrollPane);
+        fire(new DialogEvent(DialogEvent.Type.OPEN));
         return dialog;
+    }
+
+    @Override
+    public boolean remove() {
+        fire(new DialogEvent(DialogEvent.Type.CLOSE));
+        return super.remove();
     }
     
     public static enum WelcomeValue {

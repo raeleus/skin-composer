@@ -26,6 +26,7 @@ package com.ray3k.skincomposer;
 import com.ray3k.skincomposer.data.CustomProperty;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -37,11 +38,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
-import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
-import com.badlogic.gdx.scenes.scene2d.actions.VisibleAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
@@ -95,6 +93,7 @@ import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
 import com.ray3k.skincomposer.utils.Utils;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class RootTable extends Table {
 
@@ -143,6 +142,7 @@ public class RootTable extends Table {
     private Button classRenameButton;
     private Button styleDeleteButton;
     private Button styleRenameButton;
+    private FilesDroppedListener filesDroppedListener;
 
     public RootTable(Main main) {
         super(main.getSkin());
@@ -159,6 +159,17 @@ public class RootTable extends Table {
         produceAtlas();
         
         main.getStage().addListener(new ShortcutListener(this));
+        
+        filesDroppedListener = (Array<FileHandle> files) -> {
+            for (FileHandle fileHandle : files) {
+                if (fileHandle.extension().toLowerCase(Locale.ROOT).equals("scmp")) {
+                    fire(new ScmpDroppedEvent(fileHandle));
+                    break;
+                }
+            }
+        };
+        
+        main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
     }
 
     public void populate() {
@@ -879,6 +890,16 @@ public class RootTable extends Table {
                     
                     button.addListener(new CustomPropertyChangeListener(styleProperty, button));
                     button.addListener(main.getHandListener());
+                } else if (styleProperty.getType() == PropertyType.STYLE) {
+                    String value = "";
+                    if (styleProperty.getValue() instanceof String) {
+                        value = (String) styleProperty.getValue();
+                    }
+                    BrowseField browseField = new BrowseField(value, styleProperty.getName(), getSkin(), "style");
+                    browseField.addListener(main.getHandListener());
+                    table.add(browseField).padTop(20.0f);
+
+                    browseField.addListener(new CustomPropertyChangeListener(styleProperty, browseField));
                 }
                 
                 Button duplicateButton = new Button(getSkin(), "duplicate");
@@ -2344,6 +2365,7 @@ public class RootTable extends Table {
                 if (!showMessage) {
                     HorizontalGroup horizontalGroup = new HorizontalGroup();
                     horizontalGroup.wrap();
+                    //todo: resolve the following crash line
                     //the following causes a crash. LibGDX bug.
 //                    horizontalGroup.space(10.0f);
                     horizontalGroup.wrapSpace(10.0f);
@@ -2359,18 +2381,35 @@ public class RootTable extends Table {
                             switch (customProperty.getType()) {
                                 case TEXT:
                                 case RAW_TEXT:
+                                case STYLE:
+                                    if (!(customProperty.getValue() instanceof String)) {
+                                        customProperty.setValue("");
+                                    }
+
                                     Label labelText = new Label((String) customProperty.getValue(), getSkin());
                                     container.setActor(labelText);
                                     break;
                                 case NUMBER:
+                                    if (!(customProperty.getValue() instanceof Double)) {
+                                        customProperty.setValue(0.0);
+                                    }
+
                                     Label labelNumber = new Label(Double.toString((double) customProperty.getValue()), getSkin());
                                     container.setActor(labelNumber);
                                     break;
                                 case BOOL:
+                                    if (!(customProperty.getValue() instanceof Boolean)) {
+                                        customProperty.setValue(false);
+                                    }
+
                                     Label labelBoolean = new Label(Boolean.toString((boolean) customProperty.getValue()), getSkin());
                                     container.setActor(labelBoolean);
                                     break;
                                 case COLOR:
+                                    if (!(customProperty.getValue() instanceof String)) {
+                                        customProperty.setValue("");
+                                    }
+
                                     ColorData colorData = null;
 
                                     String colorName = (String) customProperty.getValue();
@@ -2391,6 +2430,10 @@ public class RootTable extends Table {
                                     }
                                     break;
                                 case FONT:
+                                    if (!(customProperty.getValue() instanceof String)) {
+                                        customProperty.setValue("");
+                                    }
+
                                     BitmapFont font = null;
                                     FontData fontData = null;
 
@@ -2403,12 +2446,12 @@ public class RootTable extends Table {
                                             break;
                                         }
                                     }
-                                    
+
                                     if (font != null) {
                                         Label labelFont = new Label(fontData.getName(), new LabelStyle(font, Color.WHITE));
                                         container.setActor(labelFont);
                                     }
-                                    
+
                                     FreeTypeFontData freeTypeFontData = null;
                                     for (FreeTypeFontData fd : main.getJsonData().getFreeTypeFonts()) {
                                         if (fd.name.equals(fontName)) {
@@ -2416,14 +2459,18 @@ public class RootTable extends Table {
                                             break;
                                         }
                                     }
-                                    
+
                                     if (freeTypeFontData != null && freeTypeFontData.bitmapFont != null) {
                                         Label labelFont = new Label(freeTypeFontData.name, new LabelStyle(freeTypeFontData.bitmapFont, Color.WHITE));
                                         container.setActor(labelFont);
                                     }
-                                    
+
                                     break;
                                 case DRAWABLE:
+                                    if (!(customProperty.getValue() instanceof String)) {
+                                        customProperty.setValue("");
+                                    }
+
                                     DrawableData drawable = null;
 
                                     String drawableName = (String) customProperty.getValue();
@@ -2613,6 +2660,10 @@ public class RootTable extends Table {
         customProperties = styleProperties;
     }
 
+    public FilesDroppedListener getFilesDroppedListener() {
+        return filesDroppedListener;
+    }
+
     private class ScrollPaneListener extends InputListener {
 
         @Override
@@ -2720,6 +2771,14 @@ public class RootTable extends Table {
         NEW, DUPLICATE, DELETE, RENAME, CHANGE_VALUE;
     }
     
+    private static class ScmpDroppedEvent extends Event {
+        FileHandle fileHandle;
+        
+        public ScmpDroppedEvent(FileHandle fileHandle) {
+            this.fileHandle = fileHandle;
+        }
+    }
+    
     private static class CustomPropertyEvent extends Event {
         private CustomProperty customProperty;
         private CustomPropertyEnum customPropertyEnum;
@@ -2767,6 +2826,8 @@ public class RootTable extends Table {
                     default:
                         break;
                 }
+            } else if (event instanceof ScmpDroppedEvent) {
+                droppedScmpFile(((ScmpDroppedEvent) event).fileHandle);
             }
             return false;
         }
@@ -2790,6 +2851,8 @@ public class RootTable extends Table {
         public abstract void customPropertyValueChanged(CustomProperty customProperty, Actor styleActor);
         
         public abstract void renameCustomProperty(CustomProperty customProperty);
+    
+        public abstract void droppedScmpFile(FileHandle fileHandle);
     }
 
     public static class ShortcutListener extends InputListener {

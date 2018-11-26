@@ -26,6 +26,7 @@ package com.ray3k.skincomposer.dialog;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -35,7 +36,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.Main;
 
-public class DialogAbout extends Dialog {    
+public class DialogAbout extends Dialog {
     public DialogAbout(Main main, Skin skin, String windowStyleName) {
         super("", skin, windowStyleName);
         
@@ -70,7 +71,14 @@ public class DialogAbout extends Dialog {
     }
 
     @Override
+    public Dialog show(Stage stage) {
+        fire(new DialogEvent(DialogEvent.Type.OPEN));
+        return super.show(stage);
+    }
+
+    @Override
     public boolean remove() {
+        fire(new DialogEvent(DialogEvent.Type.CLOSE));
         return super.remove();
     }
 }

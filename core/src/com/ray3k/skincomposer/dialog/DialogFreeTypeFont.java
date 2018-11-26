@@ -667,7 +667,7 @@ public class DialogFreeTypeFont extends Dialog {
                     
                     updateColors();
                     updateDisabledFields();
-                });
+                }, null);
             }
         });
         
@@ -772,7 +772,7 @@ public class DialogFreeTypeFont extends Dialog {
                     }
                     updateColors();
                     updateDisabledFields();
-                });
+                }, null);
             }
         });
         
@@ -900,7 +900,7 @@ public class DialogFreeTypeFont extends Dialog {
                     }
                     updateColors();
                     updateDisabledFields();
-                });
+                }, null);
             }
         });
         
