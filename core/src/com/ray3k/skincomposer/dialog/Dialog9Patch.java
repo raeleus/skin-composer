@@ -973,11 +973,11 @@ public class Dialog9Patch extends Dialog {
 
     private void updatePreviewContentActor(Actor actor) {
         previewContentActor = actor;
-          var resizer = (ResizeWidget) findActor("resizer");
-          var table = (Table) resizer.getActor();
+        var resizer = (ResizeWidget) findActor("resizer");
+        var table = (Table) resizer.getActor();
         table.clearChildren();
 
-        if (actor != null) {
+        if (actor != null && preview != null) {
             table.add(actor).grow();
             resizer.getStack().pack();
             resizer.setMinWidth(actor.getWidth() + previewZoomed.getTotalWidth() + previewZoomed.getPadLeft() + preview.getPadRight());

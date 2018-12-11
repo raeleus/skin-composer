@@ -1,5 +1,5 @@
 ### Skin Composer Version 27 ###
-* 
+* Fixed crash bug when editing the preview in Nine Patch Editor without an image loaded.
 
 ### Skin Composer Version 26 ###
 * Fixed export creating JSON with null values for Styles that have parents
