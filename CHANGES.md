@@ -1,3 +1,6 @@
+### Skin Composer Version 27 ###
+* 
+
 ### Skin Composer Version 26 ###
 * Fixed export creating JSON with null values for Styles that have parents
 * Allow drag and drop of SCMP files into main screen to load project.
