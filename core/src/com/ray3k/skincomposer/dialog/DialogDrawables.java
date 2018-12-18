@@ -824,6 +824,9 @@ public class DialogDrawables extends Dialog {
                 table.add(label);
                 minWidthSpinner.setValue(dimensions.x);
                 minWidthSpinner.setMinimum(0.0f);
+                minWidthSpinner.getButtonMinus().addListener(main.getHandListener());
+                minWidthSpinner.getButtonPlus().addListener(main.getHandListener());
+                minWidthSpinner.getTextField().addListener(main.getIbeamListener());
                 table.add(minWidthSpinner).minWidth(150.0f);
                 minWidthSpinner.setTransversalPrevious(textField);
                 minWidthSpinner.setTransversalNext(minHeightSpinner.getTextField());
@@ -834,6 +837,9 @@ public class DialogDrawables extends Dialog {
                 minHeightSpinner.setValue(dimensions.y);
                 minHeightSpinner.setMinimum(0.0f);
                 table.add(minHeightSpinner).minWidth(150.0f);
+                minHeightSpinner.getButtonMinus().addListener(main.getHandListener());
+                minHeightSpinner.getButtonPlus().addListener(main.getHandListener());
+                minHeightSpinner.getTextField().addListener(main.getIbeamListener());
                 minHeightSpinner.setTransversalPrevious(minWidthSpinner.getTextField());
                 minHeightSpinner.setTransversalNext(textField);
 
