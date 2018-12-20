@@ -232,6 +232,27 @@ button-menu-pressed
   orig: 27, 27
   offset: 0, 0
   index: -1
+button-filter
+  rotate: false
+  xy: 858, 799
+  size: 21, 26
+  orig: 21, 26
+  offset: 0, 0
+  index: -1
+button-filter-over
+  rotate: false
+  xy: 881, 798
+  size: 21, 26
+  orig: 21, 26
+  offset: 0, 0
+  index: -1
+button-filter-pressed
+  rotate: false
+  xy: 908, 936
+  size: 21, 26
+  orig: 21, 26
+  offset: 0, 0
+  index: -1
 button-maximize
   rotate: false
   xy: 756, 596
@@ -654,28 +675,28 @@ checkbox-off-over
   index: -1
 checkbox-off-pressed
   rotate: false
-  xy: 908, 859
+  xy: 292, 270
   size: 19, 15
   orig: 19, 15
   offset: 0, 0
   index: -1
 checkbox-on
   rotate: false
-  xy: 880, 809
+  xy: 313, 270
   size: 19, 15
   orig: 19, 15
   offset: 0, 0
   index: -1
 checkbox-on-over
   rotate: false
-  xy: 270, 276
+  xy: 334, 270
   size: 19, 15
   orig: 19, 15
   offset: 0, 0
   index: -1
 checkbox-on-pressed
   rotate: false
-  xy: 291, 270
+  xy: 355, 270
   size: 19, 15
   orig: 19, 15
   offset: 0, 0
@@ -698,7 +719,7 @@ code-sample
   index: -1
 color-box
   rotate: false
-  xy: 398, 273
+  xy: 462, 275
   size: 12, 12
   split: 2, 2, 2, 2
   orig: 12, 12
@@ -799,14 +820,14 @@ icon-colorwheel-over
   index: -1
 icon-grid-dark
   rotate: false
-  xy: 908, 876
+  xy: 270, 271
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 icon-grid-light
   rotate: false
-  xy: 908, 898
+  xy: 908, 856
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -827,14 +848,14 @@ icon-portrait-over
   index: -1
 icon-resize
   rotate: false
-  xy: 908, 942
+  xy: 908, 900
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 icon-resize-over
   rotate: false
-  xy: 908, 920
+  xy: 908, 878
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -887,7 +908,7 @@ link-empty
   index: -1
 list
   rotate: false
-  xy: 350, 271
+  xy: 414, 271
   size: 14, 14
   split: 2, 2, 2, 2
   pad: 3, 3, 3, 3
@@ -960,7 +981,7 @@ nine-patch-black
   index: -1
 nine-patch-border
   rotate: false
-  xy: 333, 270
+  xy: 397, 270
   size: 15, 15
   split: 1, 1, 1, 1
   orig: 15, 15
@@ -1066,28 +1087,28 @@ resizer-handle-over
   index: -1
 resizer-handle-pressed
   rotate: false
-  xy: 777, 536
+  xy: 518, 278
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
 resizer-minor-handle
   rotate: false
-  xy: 777, 500
+  xy: 777, 511
   size: 7, 7
   orig: 7, 7
   offset: 0, 0
   index: -1
 resizer-minor-handle-over
   rotate: false
-  xy: 777, 491
+  xy: 777, 502
   size: 7, 7
   orig: 7, 7
   offset: 0, 0
   index: -1
 resizer-minor-handle-pressed
   rotate: false
-  xy: 777, 482
+  xy: 777, 493
   size: 7, 7
   orig: 7, 7
   offset: 0, 0
@@ -1102,14 +1123,14 @@ resizer.foreground
   index: -1
 scrollpane
   rotate: false
-  xy: 366, 271
+  xy: 430, 271
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 scrollpane-knob
   rotate: false
-  xy: 382, 271
+  xy: 446, 271
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
@@ -1143,7 +1164,7 @@ selectbox-pressed
   index: -1
 slider-horizontal
   rotate: false
-  xy: 858, 813
+  xy: 908, 922
   size: 20, 12
   split: 2, 2, 4, 4
   pad: 0, 0, 0, 0
@@ -1152,21 +1173,21 @@ slider-horizontal
   index: -1
 slider-knob
   rotate: false
-  xy: 412, 273
+  xy: 476, 275
   size: 12, 12
   orig: 12, 12
   offset: 0, 0
   index: -1
 slider-knob-over
   rotate: false
-  xy: 426, 273
+  xy: 490, 275
   size: 12, 12
   orig: 12, 12
   offset: 0, 0
   index: -1
 slider-knob-pressed
   rotate: false
-  xy: 440, 273
+  xy: 504, 275
   size: 12, 12
   orig: 12, 12
   offset: 0, 0
@@ -1220,7 +1241,7 @@ splitpane
   index: -1
 status-bar
   rotate: false
-  xy: 312, 266
+  xy: 376, 266
   size: 19, 19
   orig: 19, 19
   offset: 0, 0
@@ -1365,7 +1386,7 @@ toggle-on-pressed
   index: -1
 welcome-frame
   rotate: false
-  xy: 777, 518
+  xy: 777, 529
   size: 7, 7
   split: 2, 2, 2, 2
   pad: 1, 1, 1, 1
@@ -1374,7 +1395,7 @@ welcome-frame
   index: -1
 welcome-frame-over
   rotate: false
-  xy: 777, 527
+  xy: 777, 538
   size: 7, 7
   split: 2, 2, 2, 2
   pad: 1, 1, 1, 1
@@ -1383,7 +1404,7 @@ welcome-frame-over
   index: -1
 welcome-frame-pressed
   rotate: false
-  xy: 777, 509
+  xy: 777, 520
   size: 7, 7
   split: 2, 2, 2, 2
   pad: 1, 1, 1, 1

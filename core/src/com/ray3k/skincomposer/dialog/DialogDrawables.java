@@ -34,7 +34,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -56,6 +55,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -99,6 +99,7 @@ public class DialogDrawables extends Dialog {
     private DialogDrawablesListener listener;
     private Main main;
     private boolean showing9patchButton;
+    private FilterOptions filterOptions;
     
     public static interface DialogDrawablesListener {
         public void confirmed(DrawableData drawable);
@@ -119,6 +120,7 @@ public class DialogDrawables extends Dialog {
     }
     
     public void initialize(Main main, DialogDrawablesListener listener) {
+        filterOptions = new FilterOptions();
         showing9patchButton = true;
         this.main = main;
         
@@ -246,10 +248,41 @@ public class DialogDrawables extends Dialog {
         
         getContentTable().row();
         Table table = new Table(getSkin());
-        table.defaults().pad(10.0f);
+        table.defaults().pad(6.0f);
         getContentTable().add(table).growX();
         
-        table.add("Sort by:");
+        var button = new Button(getSkin(), "filter");
+        button.setProgrammaticChangeEvents(false);
+        table.add(button);
+        button.addListener(main.getHandListener());
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                var button = (Button) actor;
+                button.setChecked(true);
+                main.getDialogFactory().showDialogDrawablesFilter(filterOptions, new DialogDrawablesFilter.FilterListener() {
+                    @Override
+                    public void applied() {
+                        button.setChecked(filterOptions.applied);
+                        sortBySelectedMode();
+                    }
+                    
+                    @Override
+                    public void disabled() {
+                        button.setChecked(filterOptions.applied);
+                        sortBySelectedMode();
+                    }
+
+                    @Override
+                    public void cancelled() {
+                        button.setChecked(filterOptions.applied);
+                        sortBySelectedMode();
+                    }
+                });
+            }
+        });
+        
+        table.add("Sort:");
         
         sortSelectBox = new SelectBox(getSkin());
         sortSelectBox.setItems("A-Z", "Z-A", "Oldest", "Newest");
@@ -362,6 +395,9 @@ public class DialogDrawables extends Dialog {
         
         if (drawables.size == 0) {
             Label label = new Label("No drawables have been added!", getSkin());
+            if (filterOptions.applied) {
+                label.setText("No drawables match filter!");
+            }
             contentGroup.addActor(label);
         }
         
@@ -1126,6 +1162,9 @@ public class DialogDrawables extends Dialog {
      * Sorts by selected sort order and populates the list.
      */
     private void sortBySelectedMode() {
+        gatherDrawables();
+        applyFilterOptions();
+        
         switch (sortSelectBox.getSelectedIndex()) {
             case 0:
                 sortDrawablesAZ();
@@ -1139,6 +1178,61 @@ public class DialogDrawables extends Dialog {
             case 3:
                 sortDrawablesNewest();
                 break;
+        }
+    }
+    
+    private void applyFilterOptions() {
+        if (filterOptions.applied) {
+            var iter = drawables.iterator();
+            while (iter.hasNext()) {
+                var drawable = iter.next();
+                
+                if (!filterOptions.regularExpression) {
+                    if (!filterOptions.name.equals("") && !drawable.name.contains(filterOptions.name)) {
+                        iter.remove();
+                        continue;
+                    }
+                } else {
+                    if (!drawable.name.matches(filterOptions.name)) {
+                        iter.remove();
+                    }
+                }
+                
+                if (!filterOptions.custom) {
+                    if (drawable.customized) {
+                        iter.remove();
+                        continue;
+                    }
+                }
+                
+                if (!filterOptions.ninePatch) {
+                    if (drawablePairs.get(drawable) instanceof NinePatchDrawable && !drawable.customized && drawable.tint == null && drawable.tintName == null) {
+                        iter.remove();
+                        continue;
+                    }
+                }
+                
+                if (!filterOptions.texture) {
+                    if (drawablePairs.get(drawable) instanceof SpriteDrawable && drawable.tint == null && drawable.tintName == null) {
+                        iter.remove();
+                        continue;
+                    }
+                }
+                
+                if (!filterOptions.tiled) {
+                    if (drawable.tiled) {
+                        iter.remove();
+                        continue;
+                    }
+                }
+                
+                if (!filterOptions.tinted) {
+                    if (drawable.tint != null || drawable.tintName != null && !drawable.tiled) {
+                        iter.remove();
+                        continue;
+                    }
+                }
+            }
         }
     }
     
@@ -1622,7 +1716,7 @@ public class DialogDrawables extends Dialog {
     private boolean checkIfNameExists(String name) {
         boolean returnValue = false;
         
-        for (DrawableData drawable : drawables) {
+        for (DrawableData drawable : main.getAtlasData().getDrawables()) {
             if (drawable.name.equals(name)) {
                 returnValue = true;
                 break;
@@ -1758,5 +1852,27 @@ public class DialogDrawables extends Dialog {
     public void setShowing9patchButton(boolean showing9patchButton) {
         this.showing9patchButton = showing9patchButton;
         populate();
+    }
+    
+    public static class FilterOptions {
+        public boolean texture = true;
+        public boolean ninePatch = true;
+        public boolean tinted = true;
+        public boolean tiled = true;
+        public boolean custom = true;
+        public boolean regularExpression = false;
+        public boolean applied = false;
+        public String name = "";
+
+        void set(FilterOptions filterOptions) {
+            texture = filterOptions.texture;
+            ninePatch = filterOptions.ninePatch;
+            tinted = filterOptions.tinted;
+            tiled = filterOptions.tiled;
+            custom = filterOptions.custom;
+            regularExpression = filterOptions.regularExpression;
+            applied = filterOptions.applied;
+            name = filterOptions.name;
+        }
     }
 }

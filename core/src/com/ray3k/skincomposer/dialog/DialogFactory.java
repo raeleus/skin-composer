@@ -988,4 +988,10 @@ public class DialogFactory {
         });
         return dialog;
     }
+    
+    public void showDialogDrawablesFilter(DialogDrawables.FilterOptions filterOptions, EventListener listener) {
+        var dialog = new DialogDrawablesFilter(filterOptions, main);
+        dialog.addListener(listener);
+        dialog.show(main.getStage());
+    }
 }
