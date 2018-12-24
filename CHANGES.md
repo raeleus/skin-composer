@@ -4,6 +4,7 @@
 * Fixed crash bug when editing the preview in Nine Patch Editor without an image loaded.
 * Fixed crash when erasing a value in the Nine Patch Editor.
 * Fixed preview properties for SelectBox: alignment and max items count.
+* Fixed issue with TextField messageFontColor not working.
 * Various formatting fixes.
 
 ### Skin Composer Version 26 ###

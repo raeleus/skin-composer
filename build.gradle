@@ -15,7 +15,7 @@ allprojects {
     version = '27'
     ext {
         appName = "SkinComposer"
-        gdxVersion = '1.9.9-SNAPSHOT'
+        gdxVersion = '1.9.10-SNAPSHOT'
     }
 
     repositories {
