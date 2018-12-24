@@ -1,5 +1,5 @@
 ### Skin Composer Version 27 ###
-* Added filter option for Drawables dialog.
+* Added filter option for Drawables dialog. Click the filter button or type text directly in the dialog.
 * Fixed crash bug when editing the preview in Nine Patch Editor without an image loaded.
 * Fixed crash when erasing a value in the Nine Patch Editor.
 * Various formatting fixes.

@@ -37,6 +37,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -55,7 +57,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -100,6 +101,7 @@ public class DialogDrawables extends Dialog {
     private Main main;
     private boolean showing9patchButton;
     private FilterOptions filterOptions;
+    private FilterInputListener filterInputListener;
     
     public static interface DialogDrawablesListener {
         public void confirmed(DrawableData drawable);
@@ -120,7 +122,19 @@ public class DialogDrawables extends Dialog {
     }
     
     public void initialize(Main main, DialogDrawablesListener listener) {
+        Table table = new Table();
+        table.setFillParent(true);
+        table.setTouchable(Touchable.disabled);
+        addActor(table);
+        
+        Label label = new Label("", getSkin(), "filter");
+        label.setName("filter-label");
+        label.setColor(1, 1, 1, 0);
+        table.add(label).bottom().right().expand().pad(50).padBottom(20);
+        
         filterOptions = new FilterOptions();
+        filterInputListener = new FilterInputListener(this);
+        addListener(filterInputListener);
         showing9patchButton = true;
         this.main = main;
         
@@ -252,6 +266,7 @@ public class DialogDrawables extends Dialog {
         getContentTable().add(table).growX();
         
         var button = new Button(getSkin(), "filter");
+        button.setName("filter");
         button.setProgrammaticChangeEvents(false);
         table.add(button);
         button.addListener(main.getHandListener());
@@ -1188,7 +1203,7 @@ public class DialogDrawables extends Dialog {
                 var drawable = iter.next();
                 
                 if (!filterOptions.regularExpression) {
-                    if (!filterOptions.name.equals("") && !drawable.name.contains(filterOptions.name)) {
+                    if (!filterOptions.name.equals("") && !drawable.name.contains(filterOptions.name.toLowerCase(Locale.ROOT))) {
                         iter.remove();
                         continue;
                     }
@@ -1874,5 +1889,48 @@ public class DialogDrawables extends Dialog {
             applied = filterOptions.applied;
             name = filterOptions.name;
         }
+    }
+    
+    private static class FilterInputListener extends InputListener {
+        private DialogDrawables dialog;
+        private String name;
+        
+        public FilterInputListener(DialogDrawables dialog) {
+            super();
+            
+            this.dialog = dialog;
+            name = "";
+        }
+
+        @Override
+        public boolean keyTyped(InputEvent event, char character) {
+            Label label = dialog.findActor("filter-label");
+            if (!label.isVisible()) {
+                name = "";
+            }
+            
+            var filterOptions = dialog.filterOptions;
+            filterOptions.regularExpression = false;
+            filterOptions.applied = true;
+            if (character == 8) {
+                if (name.length() > 0) {
+                    name = name.substring(0, name.length() - 1);
+                }
+            } else {
+                name += character;
+            }
+            filterOptions.name = name;
+            
+            Button button = dialog.findActor("filter");
+            button.setChecked(true);
+            
+            label.setText(name);
+            label.clearActions();
+            label.addAction(Actions.sequence(Actions.visible(true), Actions.fadeIn(.25f), Actions.delay(2.0f), Actions.fadeOut(.25f), Actions.visible(false)));
+            
+            dialog.sortBySelectedMode();
+            return super.keyTyped(event, character);
+        }
+        
     }
 }

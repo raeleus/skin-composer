@@ -193,6 +193,7 @@ public class DialogDrawablesFilter extends Dialog {
         
         
         stage.setKeyboardFocus(findActor("text"));
+        ((TextField) findActor("text")).selectAll();
         
         return this;
     }
