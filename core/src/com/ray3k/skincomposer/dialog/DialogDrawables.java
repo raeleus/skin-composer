@@ -146,7 +146,10 @@ public class DialogDrawables extends Dialog {
             Iterator<FileHandle> iter = files.iterator();
             while (iter.hasNext()) {
                 FileHandle file = iter.next();
-                if (file.isDirectory() || !(file.name().toLowerCase().endsWith(".png") || file.name().toLowerCase().endsWith(".jpg") || file.name().toLowerCase().endsWith(".jpeg") || file.name().toLowerCase().endsWith(".bmp") || file.name().toLowerCase().endsWith(".gif"))) {
+                if (file.isDirectory()) {
+                    files.addAll(file.list());
+                    iter.remove();
+                } else if (!(file.name().toLowerCase().endsWith(".png") || file.name().toLowerCase().endsWith(".jpg") || file.name().toLowerCase().endsWith(".jpeg") || file.name().toLowerCase().endsWith(".bmp") || file.name().toLowerCase().endsWith(".gif"))) {
                     iter.remove();
                 }
             }
