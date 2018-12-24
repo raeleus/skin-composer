@@ -2,6 +2,7 @@
 * Added filter option for Drawables dialog. Click the filter button or type text directly in the dialog.
 * Fixed crash bug when editing the preview in Nine Patch Editor without an image loaded.
 * Fixed crash when erasing a value in the Nine Patch Editor.
+* Fixed preview properties for SelectBox: alignment and max items count.
 * Various formatting fixes.
 
 ### Skin Composer Version 26 ###
