@@ -499,7 +499,15 @@ public class DialogDrawables extends Dialog {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event,
                             Actor actor) {
-                        tiledDrawableDialog(drawable);
+                        DrawableData tiledDrawable = new DrawableData();
+                        tiledDrawable.name = drawable.name;
+                        tiledDrawable.file = drawable.file;
+                        tiledDrawable.tiled = true;
+                        tiledDrawable.visible = true;
+                        Vector2 dimensions = Utils.imageDimensions(drawable.file);
+                        tiledDrawable.minWidth = dimensions.x;
+                        tiledDrawable.minHeight = dimensions.y;
+                        tiledDrawableSettingsDialog("New Tiled Drawable", tiledDrawable);
                         event.setBubbles(false);
                     }
                 });
@@ -521,7 +529,7 @@ public class DialogDrawables extends Dialog {
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        tiledDrawableSettingsDialog(drawable);
+                        tiledDrawableSettingsDialog("Tiled Drawable Settings", drawable);
                         event.setBubbles(false);
                     }
                 });
@@ -813,267 +821,170 @@ public class DialogDrawables extends Dialog {
         sortBySelectedMode();
     }
     
-    private void tiledDrawableDialog(DrawableData drawable) {
-        DialogColors dialog = new DialogColors(main, (StyleProperty) null, true, (ColorData colorData) -> {
-            if (colorData != null) {
-                final Spinner minWidthSpinner = new Spinner(0.0f, 1.0f, true, Spinner.Orientation.HORIZONTAL, getSkin());
-                final Spinner minHeightSpinner = new Spinner(0.0f, 1.0f, true, Spinner.Orientation.HORIZONTAL, getSkin());
-                TextField textField = new TextField("", getSkin()) {
-                    @Override
-                    public void next(boolean up) {
-                        if (up) {
-                            getStage().setKeyboardFocus(minHeightSpinner.getTextField());
-                            minHeightSpinner.getTextField().selectAll();
+    private void tiledDrawableSettingsDialog(String title, DrawableData drawable) {
+        final Spinner minWidthSpinner = new Spinner(0.0f, 1.0f, true, Spinner.Orientation.HORIZONTAL, getSkin());
+        final Spinner minHeightSpinner = new Spinner(0.0f, 1.0f, true, Spinner.Orientation.HORIZONTAL, getSkin());
+        TextField textField = new TextField("", getSkin()) {
+            @Override
+            public void next(boolean up) {
+                if (up) {
+                    getStage().setKeyboardFocus(minHeightSpinner.getTextField());
+                    minHeightSpinner.getTextField().selectAll();
+                } else {
+                    getStage().setKeyboardFocus(minWidthSpinner.getTextField());
+                    minWidthSpinner.getTextField().selectAll();
+                }
+            }
+
+        };
+        Dialog tileDialog = new Dialog(title, getSkin(), "bg") {
+            @Override
+            protected void result(Object object) {
+                super.result(object);
+
+                if (object instanceof Boolean && (boolean) object == true) {
+                    Button button = this.findActor("color-selector");
+                    tiledDrawableSettings(drawable, (ColorData) button.getUserObject(), (float) minWidthSpinner.getValue(), (float) minHeightSpinner.getValue(), textField.getText());
+                }
+                getStage().setScrollFocus(scrollPane);
+            }
+
+            @Override
+            public Dialog show(Stage stage) {
+                Dialog dialog = super.show(stage);
+                stage.setKeyboardFocus(textField);
+                return dialog;
+            }
+        };
+
+        tileDialog.getTitleTable().padLeft(5.0f);
+        tileDialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
+        tileDialog.getButtonTable().padBottom(15.0f);
+
+        tileDialog.getContentTable().add(new Label("Please enter a name for the TiledDrawable: ", getSkin()));
+
+        tileDialog.button("OK", true);
+        tileDialog.button("Cancel", false).key(Keys.ESCAPE, false);
+        TextButton okButton = (TextButton) tileDialog.getButtonTable().getCells().first().getActor();
+        okButton.addListener(main.getHandListener());
+        tileDialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        
+        tileDialog.getContentTable().row();
+        var table = new Table();
+        table.defaults().space(10.0f);
+        tileDialog.getContentTable().add(table);
+        
+        textField.setText(drawable.name);
+        textField.selectAll();
+        table.add(textField).growX().colspan(2);
+        
+        table.row();
+        var label = new Label("Color:", getSkin());
+        table.add(label).right();
+        
+        var subTable = new Table();
+        subTable.setBackground(getSkin().getDrawable("dark-gray"));
+        table.add(subTable).growX().height(35);
+
+        var button = new Button(getSkin(), "color-selector");
+        button.setName("color-selector");
+        if (drawable.tintName != null) {
+            button.setColor(main.getJsonData().getColorByName(drawable.tintName).color);
+        } else {
+            label = new Label("none", getSkin());
+            button.add(label);
+        }
+        button.setUserObject(main.getJsonData().getColorByName(drawable.tintName));
+        subTable.add(button).grow().pad(3);
+        button.addListener(main.getHandListener());
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent ce, Actor actor) {
+                DialogColors dialog = new DialogColors(main, (StyleProperty) null, true, (ColorData colorData) -> {
+                    Button button = tileDialog.findActor("color-selector");
+                    if (colorData != null) {
+                        button.setColor(colorData.color);
+                        button.setUserObject(colorData);
+                        button.clearChildren();
+                    } else {
+                        if (button.getUserObject() != null) {
+                            button.setColor(((ColorData) button.getUserObject()).color);
                         } else {
-                            getStage().setKeyboardFocus(minWidthSpinner.getTextField());
-                            minWidthSpinner.getTextField().selectAll();
+                            button.setColor(Color.WHITE);
                         }
                     }
-                    
-                };
-                Dialog tileDialog = new Dialog("New Tiled Drawable", getSkin(), "bg") {
-                    @Override
-                    protected void result(Object object) {
-                        super.result(object);
-
-                        if (object instanceof Boolean && (boolean) object == true) {
-                            tiledDrawable(drawable, colorData, (float) minWidthSpinner.getValue(), (float) minHeightSpinner.getValue(), textField.getText());
-                        }
-                        getStage().setScrollFocus(scrollPane);
-                    }
-
-                    @Override
-                    public Dialog show(Stage stage) {
-                        Dialog dialog = super.show(stage);
-                        stage.setKeyboardFocus(textField);
-                        return dialog;
-                    }
-                };
-
-                tileDialog.getTitleTable().padLeft(5.0f);
-                tileDialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
-                tileDialog.getButtonTable().padBottom(15.0f);
-
-                tileDialog.getContentTable().add(new Label("Please enter a name for the TiledDrawable: ", getSkin()));
-
-                tileDialog.button("OK", true);
-                tileDialog.button("Cancel", false).key(Keys.ESCAPE, false);
-                TextButton okButton = (TextButton) tileDialog.getButtonTable().getCells().first().getActor();
-                okButton.setDisabled(true);
-                okButton.addListener(main.getHandListener());
-                tileDialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
-
-                tileDialog.getContentTable().row();
-                textField.setText(drawable.name);
-                textField.selectAll();
-                tileDialog.getContentTable().add(textField);
-                
-                Vector2 dimensions = Utils.imageDimensions(drawable.file);
-                
-                tileDialog.getContentTable().row();
-                Table table = new Table();
-                table.defaults().space(10.0f);
-                tileDialog.getContentTable().add(table);
-                Label label = new Label("MinWidth:", getSkin());
-                table.add(label);
-                minWidthSpinner.setValue(dimensions.x);
-                minWidthSpinner.setMinimum(0.0f);
-                minWidthSpinner.getButtonMinus().addListener(main.getHandListener());
-                minWidthSpinner.getButtonPlus().addListener(main.getHandListener());
-                minWidthSpinner.getTextField().addListener(main.getIbeamListener());
-                table.add(minWidthSpinner).minWidth(150.0f);
-                minWidthSpinner.setTransversalPrevious(textField);
-                minWidthSpinner.setTransversalNext(minHeightSpinner.getTextField());
-                
-                table.row();
-                label = new Label("MinHeight:", getSkin());
-                table.add(label);
-                minHeightSpinner.setValue(dimensions.y);
-                minHeightSpinner.setMinimum(0.0f);
-                table.add(minHeightSpinner).minWidth(150.0f);
-                minHeightSpinner.getButtonMinus().addListener(main.getHandListener());
-                minHeightSpinner.getButtonPlus().addListener(main.getHandListener());
-                minHeightSpinner.getTextField().addListener(main.getIbeamListener());
-                minHeightSpinner.setTransversalPrevious(minWidthSpinner.getTextField());
-                minHeightSpinner.setTransversalNext(textField);
-
-                textField.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeListener.ChangeEvent event,
-                            Actor actor) {
-                        boolean disable = !DrawableData.validate(textField.getText());
-                        if (!disable) {
-                            for (DrawableData data : main.getAtlasData().getDrawables()) {
-                                if (data.name.equals(textField.getText())) {
-                                    disable = true;
-                                    break;
-                                }
-                            }
-                        }
-                        okButton.setDisabled(disable);
-                    }
+                    okButton.setDisabled(!validateTiledDrawable(drawable, textField.getText(), (ColorData) button.getUserObject()));
                 });
-                textField.setTextFieldListener(new TextField.TextFieldListener() {
-                    @Override
-                    public void keyTyped(TextField textField, char c) {
-                        if (c == '\n') {
-                            if (!okButton.isDisabled()) {
-                                tiledDrawable(drawable, colorData, (float) minWidthSpinner.getValue(), (float) minHeightSpinner.getValue(), textField.getText());
-                                tileDialog.hide();
-                            }
-                        }
-                    }
-                });
-                textField.addListener(main.getIbeamListener());
-
-                tileDialog.show(getStage());
+                dialog.setFillParent(true);
+                dialog.show(getStage());
+                dialog.refreshTable();
             }
         });
-        dialog.setFillParent(true);
-        dialog.show(getStage());
-        dialog.refreshTable();
+        
+        table.row();
+        label = new Label("MinWidth:", getSkin());
+        table.add(label).right();
+        minWidthSpinner.setValue(drawable.minWidth);
+        minWidthSpinner.setMinimum(0.0f);
+        table.add(minWidthSpinner).minWidth(150.0f);
+        minWidthSpinner.setTransversalPrevious(textField);
+        minWidthSpinner.setTransversalNext(minHeightSpinner.getTextField());
+        minWidthSpinner.getButtonMinus().addListener(main.getHandListener());
+        minWidthSpinner.getButtonPlus().addListener(main.getHandListener());
+        minWidthSpinner.getTextField().addListener(main.getIbeamListener());
+
+        table.row();
+        label = new Label("MinHeight:", getSkin());
+        table.add(label).right();
+        minHeightSpinner.setValue(drawable.minHeight);
+        minHeightSpinner.setMinimum(0.0f);
+        table.add(minHeightSpinner).minWidth(150.0f);
+        minHeightSpinner.setTransversalPrevious(minWidthSpinner.getTextField());
+        minHeightSpinner.setTransversalNext(textField);
+        minHeightSpinner.getButtonMinus().addListener(main.getHandListener());
+        minHeightSpinner.getButtonPlus().addListener(main.getHandListener());
+        minHeightSpinner.getTextField().addListener(main.getIbeamListener());
+
+        okButton.setDisabled(!validateTiledDrawable(drawable, textField.getText(), (ColorData) button.getUserObject()));
+        
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event,
+                    Actor actor) {
+                
+                Button button = tileDialog.findActor("color-selector");
+                
+                okButton.setDisabled(!validateTiledDrawable(drawable, textField.getText(), (ColorData) button.getUserObject()));
+            }
+        });
+        textField.setTextFieldListener((TextField textField1, char c) -> {
+            if (c == '\n') {
+                if (!okButton.isDisabled()) {
+                    Button button1 = tileDialog.findActor("color-selector");
+                    tiledDrawableSettings(drawable, (ColorData) button1.getUserObject(), (float) minWidthSpinner.getValue(), (float) minHeightSpinner.getValue(), textField1.getText());
+                    tileDialog.hide();
+                }
+            }
+        });
+        textField.addListener(main.getIbeamListener());
+
+        tileDialog.show(getStage());
     }
     
-    private void tiledDrawable(DrawableData drawable, ColorData colorData, float minWidth, float minHeight, String name) {
-        DrawableData tiledDrawable = new DrawableData();
-        tiledDrawable.name = name;
-        tiledDrawable.tintName = colorData.getName();
-        tiledDrawable.file = drawable.file;
-        tiledDrawable.tiled = true;
-        tiledDrawable.visible = true;
-        tiledDrawable.minWidth = minWidth;
-        tiledDrawable.minHeight = minHeight;
+    private boolean validateTiledDrawable(DrawableData drawable, String newName, ColorData colorData) {
+        boolean returnValue = DrawableData.validate(newName);
         
-        //Fix background color for new, tinted drawable
-        Color temp = Utils.averageEdgeColor(tiledDrawable.file, colorData.color);
-
-        if (Utils.brightness(temp) > .5f) {
-            tiledDrawable.bgColor = Color.BLACK;
-        } else {
-            tiledDrawable.bgColor = Color.WHITE;
+        for (DrawableData data : main.getAtlasData().getDrawables()) {
+            if (data != drawable && data.name.equals(newName)) {
+                returnValue = false;
+            }
         }
         
-        main.getAtlasData().getDrawables().add(tiledDrawable);
-        main.getProjectData().setChangesSaved(false);
-        gatherDrawables();
-        produceAtlas();
-        sortBySelectedMode();
-        getStage().setScrollFocus(scrollPane);
+        if (colorData == null) {
+            returnValue = false;
+        }
         
-    }
-    
-    private void tiledDrawableSettingsDialog(DrawableData drawable) {
-        DialogColors dialog = new DialogColors(main, (StyleProperty) null, true, (ColorData colorData) -> {
-            if (colorData != null) {
-                final Spinner minWidthSpinner = new Spinner(0.0f, 1.0f, true, Spinner.Orientation.HORIZONTAL, getSkin());
-                final Spinner minHeightSpinner = new Spinner(0.0f, 1.0f, true, Spinner.Orientation.HORIZONTAL, getSkin());
-                TextField textField = new TextField("", getSkin()) {
-                    @Override
-                    public void next(boolean up) {
-                        if (up) {
-                            getStage().setKeyboardFocus(minHeightSpinner.getTextField());
-                            minHeightSpinner.getTextField().selectAll();
-                        } else {
-                            getStage().setKeyboardFocus(minWidthSpinner.getTextField());
-                            minWidthSpinner.getTextField().selectAll();
-                        }
-                    }
-                    
-                };
-                Dialog tileDialog = new Dialog("Tiled Drawable Settings", getSkin(), "bg") {
-                    @Override
-                    protected void result(Object object) {
-                        super.result(object);
-
-                        if (object instanceof Boolean && (boolean) object == true) {
-                            tiledDrawableSettings(drawable, colorData, (float) minWidthSpinner.getValue(), (float) minHeightSpinner.getValue(), textField.getText());
-                        }
-                        getStage().setScrollFocus(scrollPane);
-                    }
-
-                    @Override
-                    public Dialog show(Stage stage) {
-                        Dialog dialog = super.show(stage);
-                        stage.setKeyboardFocus(textField);
-                        return dialog;
-                    }
-                };
-
-                tileDialog.getTitleTable().padLeft(5.0f);
-                tileDialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
-                tileDialog.getButtonTable().padBottom(15.0f);
-
-                tileDialog.getContentTable().add(new Label("Please enter a name for the TiledDrawable: ", getSkin()));
-
-                tileDialog.button("OK", true);
-                tileDialog.button("Cancel", false).key(Keys.ESCAPE, false);
-                TextButton okButton = (TextButton) tileDialog.getButtonTable().getCells().first().getActor();
-                okButton.addListener(main.getHandListener());
-                tileDialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
-
-                tileDialog.getContentTable().row();
-                textField.setText(drawable.name);
-                textField.selectAll();
-                tileDialog.getContentTable().add(textField);
-                
-                tileDialog.getContentTable().row();
-                Table table = new Table();
-                table.defaults().space(10.0f);
-                tileDialog.getContentTable().add(table);
-                Label label = new Label("MinWidth:", getSkin());
-                table.add(label);
-                minWidthSpinner.setValue(drawable.minWidth);
-                minWidthSpinner.setMinimum(0.0f);
-                table.add(minWidthSpinner).minWidth(150.0f);
-                minWidthSpinner.setTransversalPrevious(textField);
-                minWidthSpinner.setTransversalNext(minHeightSpinner.getTextField());
-                
-                table.row();
-                label = new Label("MinHeight:", getSkin());
-                table.add(label);
-                minHeightSpinner.setValue(drawable.minHeight);
-                minHeightSpinner.setMinimum(0.0f);
-                table.add(minHeightSpinner).minWidth(150.0f);
-                minHeightSpinner.setTransversalPrevious(minWidthSpinner.getTextField());
-                minHeightSpinner.setTransversalNext(textField);
-
-                textField.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeListener.ChangeEvent event,
-                            Actor actor) {
-                        boolean disable = !DrawableData.validate(textField.getText());
-                        if (!disable) {
-                            if (!drawable.name.equals(textField.getText())) {
-                                for (DrawableData data : main.getAtlasData().getDrawables()) {
-                                    if (data.name.equals(textField.getText())) {
-                                        disable = true;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        okButton.setDisabled(disable);
-                    }
-                });
-                textField.setTextFieldListener(new TextField.TextFieldListener() {
-                    @Override
-                    public void keyTyped(TextField textField, char c) {
-                        if (c == '\n') {
-                            if (!okButton.isDisabled()) {
-                                tiledDrawableSettings(drawable, colorData, (float) minWidthSpinner.getValue(), (float) minHeightSpinner.getValue(), textField.getText());
-                                tileDialog.hide();
-                            }
-                        }
-                    }
-                });
-                textField.addListener(main.getIbeamListener());
-
-                tileDialog.show(getStage());
-            }
-        });
-        dialog.setFillParent(true);
-        dialog.show(getStage());
-        dialog.refreshTable();
+        return returnValue;
     }
     
     private void tiledDrawableSettings(DrawableData drawable, ColorData colorData, float minWidth, float minHeight, String name) {
@@ -1091,12 +1002,14 @@ public class DialogDrawables extends Dialog {
             drawable.bgColor = Color.WHITE;
         }
         
+        if (!main.getAtlasData().getDrawables().contains(drawable, false)) {
+            main.getAtlasData().getDrawables().add(drawable);
+        }
         main.getProjectData().setChangesSaved(false);
         gatherDrawables();
         produceAtlas();
         sortBySelectedMode();
         getStage().setScrollFocus(scrollPane);
-        
     }
     
     private void updateStyleValuesForRename(String oldName, String newName) {
