@@ -122,7 +122,10 @@ public class DialogFonts extends Dialog {
             Iterator<FileHandle> iter = files.iterator();
             while (iter.hasNext()) {
                 FileHandle file = iter.next();
-                if (file.isDirectory() || !file.name().toLowerCase().endsWith(".fnt")) {
+                if (file.isDirectory()) {
+                    files.addAll(file.list());
+                    iter.remove();
+                } else if (!file.name().toLowerCase().endsWith(".fnt")) {
                     iter.remove();
                 }
             }

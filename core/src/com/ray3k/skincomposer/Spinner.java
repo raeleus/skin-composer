@@ -319,17 +319,11 @@ public class Spinner extends Table {
     }
     
     private void updateText() {
-        int pos = textField.getCursorPosition();
-        int startLength = textField.getText().length();
         if (rounding) {
             textField.setText(Integer.toString((int)MathUtils.round(value.floatValue())));
         } else {
             textField.setText(value.toString());
         }
-        int length = textField.getText().length();
-        
-        pos += length - startLength;
-        textField.setCursorPosition(Math.max(Math.min(pos, length), 0));
     }
     
     static public class SpinnerStyle {

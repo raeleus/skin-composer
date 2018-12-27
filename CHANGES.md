@@ -1,3 +1,12 @@
+### Skin Composer Version 27 ###
+* Added filter option for Drawables dialog. Click the filter button or type text directly in the dialog.
+* Allow drag and drop of folders into Drawables and Fonts dialogs.
+* Fixed crash bug when editing the preview in Nine Patch Editor without an image loaded.
+* Fixed crash when erasing a value in the Nine Patch Editor.
+* Fixed preview properties for SelectBox: alignment and max items count.
+* Fixed issue with TextField messageFontColor not working.
+* Various formatting fixes.
+
 ### Skin Composer Version 26 ###
 * Fixed export creating JSON with null values for Styles that have parents
 * Allow drag and drop of SCMP files into main screen to load project.

@@ -1604,6 +1604,14 @@ public class RootTable extends Table {
                     spinner.getButtonMinus().addListener(main.getHandListener());
                     spinner.getButtonPlus().addListener(main.getHandListener());
                     t.add(spinner).growX();
+                    spinner.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                            previewProperties.put("max-list-count", spinner.getValueAsInt());
+                            refreshPreview();
+                        }
+                    });
+                    previewProperties.put("max-list-count", spinner.getValueAsInt());
 
                     t.row();
                     t.add(new Label("List Items: ", getSkin())).right();
@@ -1620,7 +1628,22 @@ public class RootTable extends Table {
                     });
                     previewProperties.put("text", listItemsTextArea.getText());
                     t.add(listItemsTextArea).growX();
-
+                    
+                    t.row();
+                    t.add(new Label("Alignment: ", getSkin())).right();
+                    var selectBox = new SelectBox<String>(getSkin());
+                    selectBox.setItems("left", "center", "right");
+                    selectBox.addListener(main.getHandListener());
+                    selectBox.getList().addListener(main.getHandListener());
+                    selectBox.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                            previewProperties.put("alignment", (new int[] {Align.left, Align.center, Align.right})[selectBox.getSelectedIndex()]);
+                            refreshPreview();
+                        }
+                    });
+                    t.add(selectBox).growX();
+                    previewProperties.put("alignment", (new int[] {Align.left, Align.center, Align.right})[selectBox.getSelectedIndex()]);
                 } else if (clazz.equals(Slider.class)) {
                     t.row();
                     t.add(new Label("Disabled: ", getSkin())).right();
@@ -2149,6 +2172,8 @@ public class RootTable extends Table {
                         ((SelectBox)widget).setDisabled((boolean) previewProperties.get("disabled"));
                         Array<String> items = new Array<>(((String) previewProperties.get("text")).split("\\n"));
                         ((SelectBox)widget).setItems(items);
+                        ((SelectBox)widget).setMaxListCount((int) previewProperties.get("max-list-count"));
+                        ((SelectBox)widget).setAlignment((int) previewProperties.get("alignment"));
                         widget.addListener(main.getHandListener());
                         ((SelectBox)widget).getList().addListener(main.getHandListener());
                     } else if (clazz.equals(Slider.class)) {

@@ -1,11 +1,20 @@
 # README #
 
-This project is programmed in Java and depends on LibGDX and the LWJGL3 backend.
+### ![Logo](docs/images/logo.png) ###
 
-### Skin Composer ###
+* Use Skin Composer to create skins for LibGDX's Scene2d.UI!
+* Version 27
+* Live preview of all widgets with configurable options
+* Specify tinted, tiled, and custom created Drawables right in the editor
+* Includes BitmapFont editor and Image font generator like Shoebox
+* Freetype support and custom serializer to generate fonts from Json
+* Nine-Patch editor with batch functions for multiple images
+* Implement your own classes allowing for extended Skin functionality
+* VisUI template and sample projects included
 
-* Use Skin Composer to create skins for scene2d.ui
-* Version 26
+![Skins Preview](docs/images/skins-preview.png)
+
+See more examples and sample code at [Ray3k](https://ray3k.wordpress.com/artwork/ "Free Scene2D UI Skins")
 
 ### Contact ###
 

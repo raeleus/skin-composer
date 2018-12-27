@@ -29,11 +29,6 @@ import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.Hinting;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -72,8 +67,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
@@ -82,7 +75,7 @@ import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "26";
+    public final static String VERSION = "27";
     public static String newVersion;
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,
@@ -127,51 +120,7 @@ public class Main extends ApplicationAdapter {
         
         appFolder = Gdx.files.external(".skincomposer/");
         
-        skin = new Skin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json")) {
-            //Override json loader to process FreeType fonts from skin JSON
-            @Override
-            protected Json getJsonLoader(final FileHandle skinFile) {
-                Json json = super.getJsonLoader(skinFile);
-                final Skin skin = this;
-
-                json.setSerializer(FreeTypeFontGenerator.class, new Json.ReadOnlySerializer<FreeTypeFontGenerator>() {
-                    @Override
-                    public FreeTypeFontGenerator read(Json json,
-                            JsonValue jsonData, Class type) {
-                        String path = json.readValue("font", String.class, jsonData);
-                        jsonData.remove("font");
-
-                        Hinting hinting = Hinting.valueOf(json.readValue("hinting",
-                                String.class, "AutoMedium", jsonData));
-                        jsonData.remove("hinting");
-
-                        TextureFilter minFilter = TextureFilter.valueOf(
-                                json.readValue("minFilter", String.class, "Nearest", jsonData));
-                        jsonData.remove("minFilter");
-
-                        TextureFilter magFilter = TextureFilter.valueOf(
-                                json.readValue("magFilter", String.class, "Nearest", jsonData));
-                        jsonData.remove("magFilter");
-
-                        FreeTypeFontParameter parameter = json.readValue(FreeTypeFontParameter.class, jsonData);
-                        parameter.hinting = hinting;
-                        parameter.minFilter = minFilter;
-                        parameter.magFilter = magFilter;
-                        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(skinFile.parent().child(path));
-                        BitmapFont font = generator.generateFont(parameter);
-                        skin.add(jsonData.name, font);
-                        if (parameter.incremental) {
-                            generator.dispose();
-                            return null;
-                        } else {
-                            return generator;
-                        }
-                    }
-                });
-
-                return json;
-            }
-        };
+        skin = new FreetypeSkin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         

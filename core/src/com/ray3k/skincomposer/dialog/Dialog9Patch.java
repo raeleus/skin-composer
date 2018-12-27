@@ -98,8 +98,8 @@ public class Dialog9Patch extends Dialog {
         previewBGcolor = new Color(Color.WHITE);
         listeners = new Array<>();
         this.main = main;
-
-          var cursor = Utils.textureRegionToCursor(main.getSkin().getRegion("cursor_resize_horizontal"), 16, 16);
+        
+        var cursor = Utils.textureRegionToCursor(main.getSkin().getRegion("cursor_resize_horizontal"), 16, 16);
         horizontalResizeListener = new ResizeFourArrowListener(cursor);
 
         cursor = Utils.textureRegionToCursor(main.getSkin().getRegion("cursor_resize_vertical"), 16, 16);
@@ -267,24 +267,24 @@ public class Dialog9Patch extends Dialog {
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                  var widget = (NinePatchWidget) findActor("ninePatchWidget");
-                  var spinner = (Spinner) actor;
+                var widget = (NinePatchWidget) findActor("ninePatchWidget");
+                var spinner = (Spinner) actor;
 
                 ninePatchLeft = spinner.getValueAsInt();
-
+                
                 widget.setPaddingLeft(spinner.getValueAsInt());
                 widget.getPaddingButton().setChecked(false);
 
-                  var otherSpinner = (Spinner) findActor("spinner-padding-right");
+                var otherSpinner = (Spinner) findActor("spinner-padding-right");
                 otherSpinner.setMaximum(widget.getRegionWidth() - spinner.getValueAsInt());
 
                 updatePreviewSplits();
             }
         });
 
-          var label = new Label("PADDING", getSkin());
+        var label = new Label("PADDING", getSkin());
         table.add(label);
-
+        
         spinner = new Spinner(0, 1, true, Spinner.Orientation.HORIZONTAL_FLIPPED, getSkin(), "horizontal-reversed");
         spinner.setName("spinner-padding-right");
         spinner.setValue(ninePatchRight);
@@ -296,15 +296,15 @@ public class Dialog9Patch extends Dialog {
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                  var widget = (NinePatchWidget) findActor("ninePatchWidget");
-                  var spinner = (Spinner) actor;
+                var widget = (NinePatchWidget) findActor("ninePatchWidget");
+                var spinner = (Spinner) actor;
 
                 ninePatchRight = spinner.getValueAsInt();
 
                 widget.setPaddingRight(spinner.getValueAsInt());
                 widget.getPaddingButton().setChecked(false);
 
-                  var otherSpinner = (Spinner) findActor("spinner-padding-left");
+                var otherSpinner = (Spinner) findActor("spinner-padding-left");
                 otherSpinner.setMaximum(widget.getRegionWidth() - spinner.getValueAsInt());
 
                 updatePreviewSplits();
@@ -329,15 +329,15 @@ public class Dialog9Patch extends Dialog {
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                  var widget = (NinePatchWidget) findActor("ninePatchWidget");
-                  var spinner = (Spinner) actor;
+                var widget = (NinePatchWidget) findActor("ninePatchWidget");
+                var spinner = (Spinner) actor;
 
                 ninePatchTop = spinner.getValueAsInt();
 
                 widget.setPaddingTop(spinner.getValueAsInt());
                 widget.getPaddingButton().setChecked(false);
 
-                  var otherSpinner = (Spinner) findActor("spinner-padding-bottom");
+                var otherSpinner = (Spinner) findActor("spinner-padding-bottom");
                 otherSpinner.setMaximum(widget.getRegionHeight() - spinner.getValueAsInt());
 
                 updatePreviewSplits();
@@ -590,8 +590,8 @@ public class Dialog9Patch extends Dialog {
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                  var widget = (NinePatchWidget) findActor("ninePatchWidget");
-                  var spinner = (Spinner) actor;
+                var widget = (NinePatchWidget) findActor("ninePatchWidget");
+                var spinner = (Spinner) actor;
 
                 ninePatchContentRight = spinner.getValueAsInt();
 
@@ -973,11 +973,11 @@ public class Dialog9Patch extends Dialog {
 
     private void updatePreviewContentActor(Actor actor) {
         previewContentActor = actor;
-          var resizer = (ResizeWidget) findActor("resizer");
-          var table = (Table) resizer.getActor();
+        var resizer = (ResizeWidget) findActor("resizer");
+        var table = (Table) resizer.getActor();
         table.clearChildren();
 
-        if (actor != null) {
+        if (actor != null && preview != null) {
             table.add(actor).grow();
             resizer.getStack().pack();
             resizer.setMinWidth(actor.getWidth() + previewZoomed.getTotalWidth() + previewZoomed.getPadLeft() + preview.getPadRight());
