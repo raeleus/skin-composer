@@ -111,7 +111,7 @@ public class DialogBitmapFont extends Dialog {
 
         filesDroppedListener = (Array<FileHandle> files) -> {
             if (files.size > 0) {
-                var extension = files.first().extension().toLowerCase(Locale.ROOT);
+                String extension = files.first().extension().toLowerCase(Locale.ROOT);
                 if (extension.equals("ttf")) {
                     Runnable runnable = () -> {
                         loadTTFsource(files.first());
@@ -170,11 +170,11 @@ public class DialogBitmapFont extends Dialog {
         root.add(image).growX().space(15.0f);
 
         root.row();
-        final var previewTable = new Table();
+        final Table previewTable = new Table();
         previewTable.setBackground(getSkin().getDrawable("white"));
         root.add(previewTable).growX();
         
-        var textField = new TextField(previewText, previewStyle);
+        TextField textField = new TextField(previewText, previewStyle);
         textField.setName("previewField");
         textField.setAlignment(Align.center);
         previewTable.add(textField).growX();
@@ -188,7 +188,7 @@ public class DialogBitmapFont extends Dialog {
         });
         
         root.row();
-        var imageButton = new ImageButton(getSkin(), "color");
+        ImageButton imageButton = new ImageButton(getSkin(), "color");
         root.add(imageButton).expandX().right();
         imageButton.addListener(main.getHandListener());
         imageButton.addListener(new ChangeListener() {
@@ -205,7 +205,7 @@ public class DialogBitmapFont extends Dialog {
                 });
             }
         });
-        var toolTip = new TextTooltip("Background color for preview text.", main.getTooltipManager(), getSkin());
+        TextTooltip toolTip = new TextTooltip("Background color for preview text.", main.getTooltipManager(), getSkin());
         imageButton.addListener(toolTip);
 
         root.row();
@@ -222,7 +222,7 @@ public class DialogBitmapFont extends Dialog {
         root.add(scrollPane).padTop(10.0f).growX();
 
         bottom.defaults().space(5.0f);
-        var table = new Table();
+        Table table = new Table();
         bottom.add(table).growX().colspan(5).spaceBottom(15.0f);
 
         table.defaults().space(5.0f);
@@ -234,7 +234,7 @@ public class DialogBitmapFont extends Dialog {
         textField.setDisabled(true);
         table.add(textField).growX();
 
-        var textButton = new TextButton("Browse...", skin);
+        TextButton textButton = new TextButton("Browse...", skin);
         table.add(textButton).fillX();
 
         textField.addListener(new ClickListener() {
@@ -249,7 +249,7 @@ public class DialogBitmapFont extends Dialog {
         textButton.addListener(toolTip);
         textField.addListener(main.getHandListener());
         textButton.addListener(main.getHandListener());
-        var sourceChangeListener = new ChangeListener() {
+        ChangeListener sourceChangeListener = new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 Runnable runnable = () -> {
@@ -297,7 +297,7 @@ public class DialogBitmapFont extends Dialog {
         textButton.addListener(toolTip);
         textField.addListener(main.getHandListener());
         textButton.addListener(main.getHandListener());
-        var targetChangeListener = new ChangeListener() {
+        ChangeListener targetChangeListener = new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 Runnable runnable = () -> {
@@ -315,7 +315,7 @@ public class DialogBitmapFont extends Dialog {
                             target = target.sibling(target.name() + ".fnt");
                         }
 
-                        var textField = (TextField) DialogBitmapFont.this.findActor("targetFileField");
+                        TextField textField = (TextField) DialogBitmapFont.this.findActor("targetFileField");
                         textField.setText(target.path());
                         textField.setCursorPosition(textField.getText().length() - 1);
 
@@ -337,7 +337,7 @@ public class DialogBitmapFont extends Dialog {
         label = new Label("Characters:", skin);
         table.add(label).right();
 
-        final var charactersTextField = new TextField(data.characters, skin);
+        final TextField charactersTextField = new TextField(data.characters, skin);
         charactersTextField.setName("characters");
         table.add(charactersTextField).growX();
 
@@ -345,7 +345,7 @@ public class DialogBitmapFont extends Dialog {
         toolTip = new TextTooltip("The characters the font should contain. Leave blank for defaults.", main.getTooltipManager(), getSkin());
         charactersTextField.addListener(toolTip);
 
-        var characterSelectBox = new SelectBox<String>(skin);
+        SelectBox<String> characterSelectBox = new SelectBox<String>(skin);
         characterSelectBox.setItems("default", "0-9", "a-zA-Z", "a-zA-Z0-9", "custom");
         table.add(characterSelectBox).fillX();
 
@@ -443,7 +443,7 @@ public class DialogBitmapFont extends Dialog {
         label = new Label("Hinting:", skin);
         bottom.add(label).right();
 
-        var selectBox = new SelectBox<String>(skin);
+        SelectBox<String> selectBox = new SelectBox<String>(skin);
         selectBox.setName("hinting");
         selectBox.setItems("None", "Slight", "Medium", "Full", "AutoSlight", "AutoMedium", "AutoFull");
         selectBox.setSelected(data.hinting);
@@ -954,7 +954,7 @@ public class DialogBitmapFont extends Dialog {
     private void loadTTFsource(FileHandle file) {
         data.file = file;
 
-        var textField = (TextField) DialogBitmapFont.this.findActor("sourceFileField");
+        TextField textField = (TextField) DialogBitmapFont.this.findActor("sourceFileField");
         textField.setText(data.file.path());
         textField.setCursorPosition(textField.getText().length() - 1);
         main.getProjectData().setLastFontPath(data.file.parent().path() + "/");
@@ -1068,7 +1068,7 @@ public class DialogBitmapFont extends Dialog {
 
             File file = main.getDesktopWorker().saveDialog("Save Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
             if (file != null) {
-                var fileHandle = new FileHandle(file);
+            	FileHandle fileHandle = new FileHandle(file);
                 
                 if (!fileHandle.extension().toLowerCase(Locale.ROOT).equals("scmp-font")) {
                     fileHandle = fileHandle.sibling(fileHandle.name() + ".scmp-font");
@@ -1082,7 +1082,7 @@ public class DialogBitmapFont extends Dialog {
     }
 
     private void saveSettings(FileHandle fileHandle) {
-        var fontSettings = new FontSettings();
+    	FontSettings fontSettings = new FontSettings();
         fontSettings.characters = ((TextField) findActor("characters")).getText();
         fontSettings.size = ((Spinner) findActor("size")).getValueAsInt();
         fontSettings.mono = ((Button) findActor("mono")).isChecked();
@@ -1172,7 +1172,7 @@ public class DialogBitmapFont extends Dialog {
     }
     
     private void loadSettings(FileHandle fileHandle) {
-        var fontSettings = json.fromJson(FontSettings.class, fileHandle);
+        FontSettings fontSettings = json.fromJson(FontSettings.class, fileHandle);
 
         ((TextField) findActor("characters")).setText(fontSettings.characters);
         data.characters = fontSettings.characters;
@@ -1187,7 +1187,7 @@ public class DialogBitmapFont extends Dialog {
         data.hinting = fontSettings.hinting;
         
         if (fontSettings.color != null) {
-            var color = main.getJsonData().getColorByName(fontSettings.color);
+            ColorData color = main.getJsonData().getColorByName(fontSettings.color);
             if (color == null) {
                 try {
                     color = new ColorData(fontSettings.color, new Color(fontSettings.colorValue));
@@ -1210,7 +1210,7 @@ public class DialogBitmapFont extends Dialog {
         data.borderWidth = fontSettings.borderWidth;
         
         if (fontSettings.borderColor != null) {
-            var color = main.getJsonData().getColorByName(fontSettings.borderColor);
+        	ColorData color = main.getJsonData().getColorByName(fontSettings.borderColor);
             if (color == null) {
                 try {
                     color = new ColorData(fontSettings.borderColor, new Color(fontSettings.borderColorValue));
@@ -1236,7 +1236,7 @@ public class DialogBitmapFont extends Dialog {
         data.shadowOffsetY = fontSettings.shadowOffsetY;
         
         if (fontSettings.shadowColor != null) {
-            var color = main.getJsonData().getColorByName(fontSettings.shadowColor);
+        	ColorData color = main.getJsonData().getColorByName(fontSettings.shadowColor);
             if (color == null) {
                 try {
                     color = new ColorData(fontSettings.shadowColor, new Color(fontSettings.shadowColorValue));

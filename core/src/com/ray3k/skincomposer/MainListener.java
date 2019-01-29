@@ -23,15 +23,17 @@
  ******************************************************************************/
 package com.ray3k.skincomposer;
 
+import java.io.File;
+import java.util.Locale;
+
 import com.badlogic.gdx.Files;
-import com.ray3k.skincomposer.data.CustomStyle;
-import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
@@ -42,25 +44,25 @@ import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.RootTable.RootTableListener;
 import com.ray3k.skincomposer.UndoableManager.DeleteCustomClassUndoable;
 import com.ray3k.skincomposer.UndoableManager.DuplicateCustomClassUndoable;
+import com.ray3k.skincomposer.UndoableManager.NewCustomClassUndoable;
+import com.ray3k.skincomposer.data.CustomClass;
+import com.ray3k.skincomposer.data.CustomProperty;
+import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
+import com.ray3k.skincomposer.data.CustomStyle;
+import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogCustomClass;
-import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyListener;
-import com.ray3k.skincomposer.data.CustomClass;
-import com.ray3k.skincomposer.data.CustomProperty;
-import com.ray3k.skincomposer.UndoableManager.NewCustomClassUndoable;
-import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
-import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
+import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyListener;
 import com.ray3k.skincomposer.dialog.DialogCustomStyle;
+import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
 import com.ray3k.skincomposer.utils.Utils;
-import java.io.File;
-import java.util.Locale;
 
 public class MainListener extends RootTableListener {
     private final RootTable root;
@@ -283,7 +285,7 @@ public class MainListener extends RootTableListener {
     
     public void newFile() {
         if (!projectData.areChangesSaved() && !projectData.isNewProject()) {
-            var dialog = dialogFactory.yesNoCancelDialog("Save Changes?",
+            Dialog dialog = dialogFactory.yesNoCancelDialog("Save Changes?",
                     "Do you want to save changes to the existing project?"
                             + "\nAll unsaved changes will be lost.",
                     (int selection) -> {
@@ -336,7 +338,7 @@ public class MainListener extends RootTableListener {
         };
         
         if (!projectData.areChangesSaved() && !projectData.isNewProject()) {
-            var dialog = dialogFactory.yesNoCancelDialog("Save Changes?",
+            Dialog dialog = dialogFactory.yesNoCancelDialog("Save Changes?",
                     "Do you want to save changes to the existing project?"
                     + "\nAll unsaved changes will be lost.",
                     (int selection) -> {
@@ -386,7 +388,7 @@ public class MainListener extends RootTableListener {
         };
         
         if (!projectData.areChangesSaved() && !projectData.isNewProject()) {
-            var dialog = dialogFactory.yesNoCancelDialog("Save Changes?",
+            Dialog dialog = dialogFactory.yesNoCancelDialog("Save Changes?",
                     "Do you want to save changes to the existing project?"
                     + "\nAll unsaved changes will be lost.",
                     (int selection) -> {
@@ -647,9 +649,9 @@ public class MainListener extends RootTableListener {
     }
 
     public boolean argumentsPassed(String[] args) {
-        var validArgument = false;
+        boolean validArgument = false;
         if (args != null && args.length > 0) {
-            var fileHandle = Gdx.files.absolute(args[0]);
+            FileHandle fileHandle = Gdx.files.absolute(args[0]);
             if (fileHandle.exists() && fileHandle.extension().toLowerCase(Locale.ROOT).equals("scmp")) {
                 validArgument = true;
                 openFile(fileHandle);

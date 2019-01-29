@@ -175,7 +175,7 @@ public class DialogFreeTypeFont extends Dialog {
             if (files.size > 0) {
                 CheckBox checkBox = (CheckBox) findActor("serializerCheckBox");
                 
-                var extension = files.first().extension().toLowerCase(Locale.ROOT);
+                String extension = files.first().extension().toLowerCase(Locale.ROOT);
                 if (extension.equals("ttf")) {
                     checkBox.setChecked(true);
                     loadTTF(files.first());
@@ -243,7 +243,7 @@ public class DialogFreeTypeFont extends Dialog {
                 loadSettings();
                 break;
             case CANCEL:
-                for (var listener : listeners) {
+                for (DialogFreeTypeFontListener listener : listeners) {
                     listener.cancelled();
                 }
                 break;
@@ -347,7 +347,7 @@ public class DialogFreeTypeFont extends Dialog {
         root.add(image).growX().space(15.0f);
         
         root.row();
-        final var previewTable = new Table();
+        final Table previewTable = new Table();
         previewTable.setBackground(getSkin().getDrawable("white"));
         root.add(previewTable).growX();
         
@@ -365,7 +365,7 @@ public class DialogFreeTypeFont extends Dialog {
         });
         
         root.row();
-        var imageButton = new ImageButton(getSkin(), "color");
+        ImageButton imageButton = new ImageButton(getSkin(), "color");
         root.add(imageButton).expandX().right();
         imageButton.addListener(main.getHandListener());
         imageButton.addListener(new ChangeListener() {
@@ -465,7 +465,7 @@ public class DialogFreeTypeFont extends Dialog {
         textField.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                var textField = findActor("fileField");
+                Actor textField = findActor("fileField");
                 textField.fire(new ChangeListener.ChangeEvent());
             }
         });
@@ -478,7 +478,7 @@ public class DialogFreeTypeFont extends Dialog {
         textButton.addListener(toolTip);
         textField.addListener(main.getHandListener());
         textButton.addListener(main.getHandListener());
-        var changeListener = new ChangeListener() {
+        ChangeListener changeListener = new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 Runnable runnable = () -> {
@@ -524,7 +524,7 @@ public class DialogFreeTypeFont extends Dialog {
                 data.characters = !data.characters.equals("") && !data.characters.contains("\u0000") ? "\u0000" + data.characters : data.characters;
                 updateDisabledFields();
                 
-                var selectBox = (SelectBox<String>) findActor("character-select-box");
+                SelectBox<String> selectBox = (SelectBox<String>) findActor("character-select-box");
                 selectBox.setSelected("custom");
             }
         });
@@ -540,8 +540,8 @@ public class DialogFreeTypeFont extends Dialog {
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                var selectBox = (SelectBox<String>) findActor("character-select-box");
-                var textField = (TextField) findActor("characters");
+            	SelectBox<String> selectBox = (SelectBox<String>) findActor("character-select-box");
+            	TextField textField = (TextField) findActor("characters");
                 
                 switch (selectBox.getSelected()) {
                     case "default":
@@ -1285,7 +1285,7 @@ public class DialogFreeTypeFont extends Dialog {
 
             File file = main.getDesktopWorker().saveDialog("Save Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
             if (file != null) {
-                var fileHandle = new FileHandle(file);
+            	FileHandle fileHandle = new FileHandle(file);
                 
                 if (!fileHandle.extension().toLowerCase(Locale.ROOT).equals("scmp-font")) {
                     fileHandle = fileHandle.sibling(fileHandle.name() + ".scmp-font");
@@ -1299,7 +1299,7 @@ public class DialogFreeTypeFont extends Dialog {
     }
 
     private void saveSettings(FileHandle fileHandle) {
-        var fontSettings = new FontSettings();
+    	FontSettings fontSettings = new FontSettings();
         fontSettings.characters = ((TextField) findActor("characters")).getText();
         fontSettings.size = ((Spinner) findActor("size")).getValueAsInt();
         fontSettings.mono = ((Button) findActor("mono")).isChecked();
@@ -1389,7 +1389,7 @@ public class DialogFreeTypeFont extends Dialog {
     }
     
     private void loadSettings(FileHandle fileHandle) {
-        var fontSettings = json.fromJson(FontSettings.class, fileHandle);
+        FontSettings fontSettings = json.fromJson(FontSettings.class, fileHandle);
 
         ((TextField) findActor("characters")).setText(fontSettings.characters);
         data.characters = fontSettings.characters;
@@ -1404,7 +1404,7 @@ public class DialogFreeTypeFont extends Dialog {
         data.hinting = fontSettings.hinting;
         
         if (fontSettings.color != null) {
-            var color = main.getJsonData().getColorByName(fontSettings.color);
+        	ColorData color = main.getJsonData().getColorByName(fontSettings.color);
             if (color == null) {
                 try {
                     color = new ColorData(fontSettings.color, new Color(fontSettings.colorValue));
@@ -1427,7 +1427,7 @@ public class DialogFreeTypeFont extends Dialog {
         data.borderWidth = fontSettings.borderWidth;
         
         if (fontSettings.borderColor != null) {
-            var color = main.getJsonData().getColorByName(fontSettings.borderColor);
+            ColorData color = main.getJsonData().getColorByName(fontSettings.borderColor);
             if (color == null) {
                 try {
                     color = new ColorData(fontSettings.borderColor, new Color(fontSettings.borderColorValue));
@@ -1453,7 +1453,7 @@ public class DialogFreeTypeFont extends Dialog {
         data.shadowOffsetY = fontSettings.shadowOffsetY;
         
         if (fontSettings.shadowColor != null) {
-            var color = main.getJsonData().getColorByName(fontSettings.shadowColor);
+        	ColorData color = main.getJsonData().getColorByName(fontSettings.shadowColor);
             if (color == null) {
                 try {
                     color = new ColorData(fontSettings.shadowColor, new Color(fontSettings.shadowColorValue));

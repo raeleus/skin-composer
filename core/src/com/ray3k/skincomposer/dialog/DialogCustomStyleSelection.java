@@ -38,6 +38,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.CustomClass;
+import com.ray3k.skincomposer.data.CustomStyle;
+import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.dialog.DialogCustomStyleSelection.DialogCustomStyleSelectionEvent;
 
 /**
@@ -55,24 +57,24 @@ public class DialogCustomStyleSelection extends Dialog {
     }
     
     private void populate() {
-        var t = getContentTable();
+        Table t = getContentTable();
         t.pad(5);
         
-        var table = new Table();
+        Table table = new Table();
         t.add(table).expandY();
         
         table.defaults().space(5);
-        var label = new Label("Class:", getSkin());
+        Label label = new Label("Class:", getSkin());
         table.add(label).right();
         
-        var selectBox = new SelectBox<String>(getSkin());
+        SelectBox<String> selectBox = new SelectBox<String>(getSkin());
         selectBox.setName("classes");
         table.add(selectBox).growX().minWidth(100);
         selectBox.addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                var selectBox = (SelectBox<String>) actor;
+            	SelectBox<String> selectBox = (SelectBox<String>) actor;
                 populateStyles(selectBox.getSelectedIndex());
             }
         });
@@ -93,7 +95,7 @@ public class DialogCustomStyleSelection extends Dialog {
         t.pad(5);
         
         t.defaults().space(5).minWidth(75);
-        var textButton = new TextButton("OK", getSkin());
+        TextButton textButton = new TextButton("OK", getSkin());
         button(textButton, true);
         textButton.addListener(main.getHandListener());
         
@@ -105,7 +107,7 @@ public class DialogCustomStyleSelection extends Dialog {
     }
     
     private void populateClasses() {
-        var classNames = new Array<String>();
+    	Array<String> classNames = new Array<String>();
         for (Class clazz : Main.BASIC_CLASSES) {
             classNames.add(clazz.getSimpleName());
         }
@@ -118,15 +120,15 @@ public class DialogCustomStyleSelection extends Dialog {
     }
     
     private void populateStyles(int index) {
-        var styleNames = new Array<String>();
+    	Array<String> styleNames = new Array<String>();
         if (index < Main.BASIC_CLASSES.length) {
-            var styles = main.getJsonData().getClassStyleMap().get(Main.BASIC_CLASSES[index]);
-            for (var style : styles) {
+            Array<StyleData> styles = main.getJsonData().getClassStyleMap().get(Main.BASIC_CLASSES[index]);
+            for (StyleData style : styles) {
                 styleNames.add(style.name);
             }
         } else {
-            var styles = main.getJsonData().getCustomClasses().get(index - Main.BASIC_CLASSES.length).getStyles();
-            for (var style : styles) {
+        	Array<CustomStyle> styles = main.getJsonData().getCustomClasses().get(index - Main.BASIC_CLASSES.length).getStyles();
+            for (CustomStyle style : styles) {
                 styleNames.add(style.getName());
             }
         }
@@ -150,7 +152,7 @@ public class DialogCustomStyleSelection extends Dialog {
     @Override
     protected void result(Object object) {
         if ((boolean) object) {
-            var style = ((SelectBox<String>) findActor("styles")).getSelected();
+        	String style = ((SelectBox<String>) findActor("styles")).getSelected();
             fire(new DialogCustomStyleSelectionEvent(DialogCustomStyleSelectionEvent.Type.CONFIRM, style));
         } else {
             fire(new DialogCustomStyleSelectionEvent(DialogCustomStyleSelectionEvent.Type.CANCEL));
@@ -179,7 +181,7 @@ public class DialogCustomStyleSelection extends Dialog {
         @Override
         public boolean handle(Event event) {
             if (event instanceof DialogCustomStyleSelectionEvent) {
-                var dialogEvent = (DialogCustomStyleSelectionEvent) event;
+            	DialogCustomStyleSelectionEvent dialogEvent = (DialogCustomStyleSelectionEvent) event;
                 switch (dialogEvent.type) {
                     case CONFIRM:
                         confirmed(dialogEvent.style);

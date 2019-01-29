@@ -32,6 +32,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.Hinting;
 import com.badlogic.gdx.utils.Json;
@@ -226,7 +227,7 @@ public class FreeTypeFontData implements Json.Serializable {
             parameter.spaceY = spaceY;
             parameter.packer = new PixmapPacker(512, 512, Pixmap.Format.RGBA8888, 2, false, new PixmapPacker.SkylineStrategy());
 
-            var data = generator.generateData(parameter);
+            FreeTypeBitmapFontData data = generator.generateData(parameter);
             
             main.getDesktopWorker().writeFont(data, parameter.packer.getPages(), target);
             generator.dispose();

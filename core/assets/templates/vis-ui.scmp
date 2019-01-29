@@ -3155,64 +3155,69 @@ jsonData: {
 					name: default
 					properties: [
 						{
-							name: scaleFactor
+							name: spacingTop
 							type: NUMBER
-							value: 1
+							value: null
 						}
 						{
 							name: spacingBottom
 							type: NUMBER
-							value: 8
+							value: null
 						}
 						{
 							name: spacingRight
 							type: NUMBER
-							value: 6
+							value: null
+						}
+						{
+							name: spacingLeft
+							type: NUMBER
+							value: null
 						}
 						{
 							name: buttonBarSpacing
 							type: NUMBER
-							value: 10
+							value: null
 						}
 						{
 							name: menuItemIconSize
 							type: NUMBER
-							value: 22
+							value: null
 						}
 						{
 							name: borderSize
 							type: NUMBER
-							value: 1
+							value: null
 						}
 						{
 							name: spinnerButtonHeight
 							type: NUMBER
-							value: 12
+							value: null
 						}
 						{
 							name: spinnerFieldSize
 							type: NUMBER
-							value: 50
+							value: null
 						}
 						{
 							name: fileChooserViewModeBigIconsSize
 							type: NUMBER
-							value: 200
+							value: null
 						}
 						{
 							name: fileChooserViewModeMediumIconsSize
 							type: NUMBER
-							value: 128
+							value: null
 						}
 						{
 							name: fileChooserViewModeSmallIconsSize
 							type: NUMBER
-							value: 64
+							value: null
 						}
 						{
 							name: fileChooserViewModeListWidthSize
 							type: NUMBER
-							value: 150
+							value: null
 						}
 					]
 					deletable: false
@@ -3222,65 +3227,70 @@ jsonData: {
 				name: template
 				properties: [
 					{
-						name: scaleFactor
-						type: NUMBER
-						value: null
-					}
-					{
-						name: spacingBottom
-						type: NUMBER
-						value: null
-					}
-					{
-						name: spacingRight
-						type: NUMBER
-						value: null
-					}
-					{
-						name: buttonBarSpacing
-						type: NUMBER
-						value: null
-					}
-					{
-						name: menuItemIconSize
-						type: NUMBER
-						value: null
-					}
-					{
-						name: borderSize
-						type: NUMBER
-						value: null
-					}
-					{
-						name: spinnerButtonHeight
-						type: NUMBER
-						value: null
-					}
-					{
-						name: spinnerFieldSize
-						type: NUMBER
-						value: null
-					}
-					{
-						name: fileChooserViewModeBigIconsSize
-						type: NUMBER
-						value: null
-					}
-					{
-						name: fileChooserViewModeMediumIconsSize
-						type: NUMBER
-						value: null
-					}
-					{
-						name: fileChooserViewModeSmallIconsSize
-						type: NUMBER
-						value: null
-					}
-					{
-						name: fileChooserViewModeListWidthSize
-						type: NUMBER
-						value: null
-					}
+							name: spacingTop
+							type: NUMBER
+							value: null
+						}
+						{
+							name: spacingBottom
+							type: NUMBER
+							value: null
+						}
+						{
+							name: spacingRight
+							type: NUMBER
+							value: null
+						}
+						{
+							name: spacingLeft
+							type: NUMBER
+							value: null
+						}
+						{
+							name: buttonBarSpacing
+							type: NUMBER
+							value: null
+						}
+						{
+							name: menuItemIconSize
+							type: NUMBER
+							value: null
+						}
+						{
+							name: borderSize
+							type: NUMBER
+							value: null
+						}
+						{
+							name: spinnerButtonHeight
+							type: NUMBER
+							value: null
+						}
+						{
+							name: spinnerFieldSize
+							type: NUMBER
+							value: null
+						}
+						{
+							name: fileChooserViewModeBigIconsSize
+							type: NUMBER
+							value: null
+						}
+						{
+							name: fileChooserViewModeMediumIconsSize
+							type: NUMBER
+							value: null
+						}
+						{
+							name: fileChooserViewModeSmallIconsSize
+							type: NUMBER
+							value: null
+						}
+						{
+							name: fileChooserViewModeListWidthSize
+							type: NUMBER
+							value: null
+						}
 				]
 				deletable: true
 			}
@@ -5105,101 +5115,6 @@ jsonData: {
 							type: DRAWABLE
 							value: null
 						}
-						{
-							name: font
-							type: FONT
-							value: null
-						}
-						{
-							name: fontColor
-							type: COLOR
-							value: null
-						}
-						{
-							name: disabledFontColor
-							type: DRAWABLE
-							value: null
-						}
-						{
-							name: downFontColor
-							type: COLOR
-							value: null
-						}
-						{
-							name: overFontColor
-							type: COLOR
-							value: null
-						}
-						{
-							name: checkedFontColor
-							type: COLOR
-							value: null
-						}
-						{
-							name: checkedOverFontColor
-							type: COLOR
-							value: null
-						}
-						{
-							name: up
-							type: DRAWABLE
-							value: null
-						}
-						{
-							name: down
-							type: DRAWABLE
-							value: null
-						}
-						{
-							name: over
-							type: DRAWABLE
-							value: null
-						}
-						{
-							name: checked
-							type: DRAWABLE
-							value: null
-						}
-						{
-							name: checkedOver
-							type: DRAWABLE
-							value: null
-						}
-						{
-							name: disabled
-							type: DRAWABLE
-							value: null
-						}
-						{
-							name: pressedOffsetX
-							type: NUMBER
-							value: null
-						}
-						{
-							name: pressedOffsetY
-							type: NUMBER
-							value: null
-						}
-						{
-							name: unpressedOffsetX
-							type: NUMBER
-							value: null
-						}
-						{
-							name: unpressedOffsetY
-							type: NUMBER
-							value: null
-						}
-						{
-							name: checkedOffsetX
-							type: NUMBER
-							value: null
-						}
-						{
-							name: checkedOffsetY
-							type: NUMBER
-							value: null
-						}
 					]
 					deletable: false
 				}
@@ -5239,101 +5154,6 @@ jsonData: {
 						{
 							name: errorBorder
 							type: DRAWABLE
-							value: null
-						}
-						{
-							name: font
-							type: FONT
-							value: null
-						}
-						{
-							name: fontColor
-							type: COLOR
-							value: null
-						}
-						{
-							name: disabledFontColor
-							type: DRAWABLE
-							value: null
-						}
-						{
-							name: downFontColor
-							type: COLOR
-							value: null
-						}
-						{
-							name: overFontColor
-							type: COLOR
-							value: null
-						}
-						{
-							name: checkedFontColor
-							type: COLOR
-							value: null
-						}
-						{
-							name: checkedOverFontColor
-							type: COLOR
-							value: null
-						}
-						{
-							name: up
-							type: DRAWABLE
-							value: null
-						}
-						{
-							name: down
-							type: DRAWABLE
-							value: null
-						}
-						{
-							name: over
-							type: DRAWABLE
-							value: null
-						}
-						{
-							name: checked
-							type: DRAWABLE
-							value: null
-						}
-						{
-							name: checkedOver
-							type: DRAWABLE
-							value: null
-						}
-						{
-							name: disabled
-							type: DRAWABLE
-							value: null
-						}
-						{
-							name: pressedOffsetX
-							type: NUMBER
-							value: null
-						}
-						{
-							name: pressedOffsetY
-							type: NUMBER
-							value: null
-						}
-						{
-							name: unpressedOffsetX
-							type: NUMBER
-							value: null
-						}
-						{
-							name: unpressedOffsetY
-							type: NUMBER
-							value: null
-						}
-						{
-							name: checkedOffsetX
-							type: NUMBER
-							value: null
-						}
-						{
-							name: checkedOffsetY
-							type: NUMBER
 							value: null
 						}
 					]
@@ -5376,101 +5196,6 @@ jsonData: {
 					{
 						name: errorBorder
 						type: DRAWABLE
-						value: null
-					}
-					{
-						name: font
-						type: FONT
-						value: null
-					}
-					{
-						name: fontColor
-						type: COLOR
-						value: null
-					}
-					{
-						name: disabledFontColor
-						type: DRAWABLE
-						value: null
-					}
-					{
-						name: downFontColor
-						type: COLOR
-						value: null
-					}
-					{
-						name: overFontColor
-						type: COLOR
-						value: null
-					}
-					{
-						name: checkedFontColor
-						type: COLOR
-						value: null
-					}
-					{
-						name: checkedOverFontColor
-						type: COLOR
-						value: null
-					}
-					{
-						name: up
-						type: DRAWABLE
-						value: null
-					}
-					{
-						name: down
-						type: DRAWABLE
-						value: null
-					}
-					{
-						name: over
-						type: DRAWABLE
-						value: null
-					}
-					{
-						name: checked
-						type: DRAWABLE
-						value: null
-					}
-					{
-						name: checkedOver
-						type: DRAWABLE
-						value: null
-					}
-					{
-						name: disabled
-						type: DRAWABLE
-						value: null
-					}
-					{
-						name: pressedOffsetX
-						type: NUMBER
-						value: null
-					}
-					{
-						name: pressedOffsetY
-						type: NUMBER
-						value: null
-					}
-					{
-						name: unpressedOffsetX
-						type: NUMBER
-						value: null
-					}
-					{
-						name: unpressedOffsetY
-						type: NUMBER
-						value: null
-					}
-					{
-						name: checkedOffsetX
-						type: NUMBER
-						value: null
-					}
-					{
-						name: checkedOffsetY
-						type: NUMBER
 						value: null
 					}
 				]

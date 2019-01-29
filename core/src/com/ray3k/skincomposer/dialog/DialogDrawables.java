@@ -154,10 +154,10 @@ public class DialogDrawables extends Dialog {
                 }
             }
             
-            var filesLimited = new Array<FileHandle>(files);
+            Array<FileHandle> filesLimited = new Array<FileHandle>(files);
             iter = filesLimited.iterator();
             while (iter.hasNext()) {
-                var file = iter.next();
+            	FileHandle file = iter.next();
                 if (!file.name().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
                     if (files.contains(file.sibling(file.nameWithoutExtension() + ".9.png"), false)) {
                         iter.remove();
@@ -268,7 +268,7 @@ public class DialogDrawables extends Dialog {
         table.defaults().pad(6.0f);
         getContentTable().add(table).growX();
         
-        var button = new Button(getSkin(), "filter");
+        Button button = new Button(getSkin(), "filter");
         button.setName("filter");
         button.setProgrammaticChangeEvents(false);
         table.add(button);
@@ -276,7 +276,7 @@ public class DialogDrawables extends Dialog {
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                var button = (Button) actor;
+            	Button button = (Button) actor;
                 button.setChecked(true);
                 main.getDialogFactory().showDialogDrawablesFilter(filterOptions, new DialogDrawablesFilter.FilterListener() {
                     @Override
@@ -870,7 +870,7 @@ public class DialogDrawables extends Dialog {
         tileDialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         
         tileDialog.getContentTable().row();
-        var table = new Table();
+        Table table = new Table();
         table.defaults().space(10.0f);
         tileDialog.getContentTable().add(table);
         
@@ -879,14 +879,14 @@ public class DialogDrawables extends Dialog {
         table.add(textField).growX().colspan(2);
         
         table.row();
-        var label = new Label("Color:", getSkin());
+        Label label = new Label("Color:", getSkin());
         table.add(label).right();
         
-        var subTable = new Table();
+        Table subTable = new Table();
         subTable.setBackground(getSkin().getDrawable("dark-gray"));
         table.add(subTable).growX().height(35);
 
-        var button = new Button(getSkin(), "color-selector");
+        Button button = new Button(getSkin(), "color-selector");
         button.setName("color-selector");
         if (drawable.tintName != null) {
             button.setColor(main.getJsonData().getColorByName(drawable.tintName).color);
@@ -1114,9 +1114,9 @@ public class DialogDrawables extends Dialog {
     
     private void applyFilterOptions() {
         if (filterOptions.applied) {
-            var iter = drawables.iterator();
+            Iterator<DrawableData> iter = drawables.iterator();
             while (iter.hasNext()) {
-                var drawable = iter.next();
+            	DrawableData drawable = iter.next();
                 
                 if (!filterOptions.regularExpression) {
                     if (!filterOptions.name.equals("") && !drawable.name.contains(filterOptions.name.toLowerCase(Locale.ROOT))) {
@@ -1825,7 +1825,7 @@ public class DialogDrawables extends Dialog {
                 name = "";
             }
             
-            var filterOptions = dialog.filterOptions;
+            FilterOptions filterOptions = dialog.filterOptions;
             filterOptions.regularExpression = false;
             filterOptions.applied = true;
             if (character == 8) {

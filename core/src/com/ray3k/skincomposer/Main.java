@@ -68,6 +68,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.kotcrab.vis.ui.VisUI;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
@@ -121,6 +122,7 @@ public class Main extends ApplicationAdapter {
         appFolder = Gdx.files.external(".skincomposer/");
         
         skin = new FreetypeSkin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
+        VisUI.load();
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         
@@ -135,7 +137,7 @@ public class Main extends ApplicationAdapter {
         skin.getFont("font").getData().markupEnabled = true;
         
         //copy defaults.json to temp folder if it doesn't exist
-        var fileHandle = appFolder.child("texturepacker/defaults.json");
+        FileHandle fileHandle = appFolder.child("texturepacker/defaults.json");
         if (!fileHandle.exists()) {
             Gdx.files.internal("defaults.json").copyTo(fileHandle);
         }

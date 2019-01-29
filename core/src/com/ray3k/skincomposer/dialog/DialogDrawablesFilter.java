@@ -64,18 +64,18 @@ public class DialogDrawablesFilter extends Dialog {
         appliedFilterOptions = filterOptions;
         this.filterOptions.set(filterOptions);
         
-        var table = getContentTable();
+        Table table = getContentTable();
         table.pad(10);
         
-        var label = new Label("Filter by type:", skin);
+        Label label = new Label("Filter by type:", skin);
         table.add(label);
         
         table.row();
-        var subTable = new Table();
+        Table subTable = new Table();
         table.add(subTable);
         
         subTable.defaults().space(10).align(Align.left);
-        var checkBox = new CheckBox("Texture", skin);
+        CheckBox checkBox = new CheckBox("Texture", skin);
         checkBox.setChecked(this.filterOptions.texture);
         subTable.add(checkBox);
         checkBox.addListener(main.getHandListener());
@@ -133,7 +133,7 @@ public class DialogDrawablesFilter extends Dialog {
         });
         
         table.row();
-        var image = new Image(skin, "welcome-separator");
+        Image image = new Image(skin, "welcome-separator");
         table.add(image).growX();
         
         table.row();
@@ -155,7 +155,7 @@ public class DialogDrawablesFilter extends Dialog {
         });
         
         table.row();
-        var textField = new TextField("", skin);
+        TextField textField = new TextField("", skin);
         textField.setName("text");
         textField.setText(this.filterOptions.name);
         table.add(textField);
@@ -170,7 +170,7 @@ public class DialogDrawablesFilter extends Dialog {
         
         getButtonTable().pad(10);
         getButtonTable().defaults().space(5);
-        var textButton = new TextButton("Apply", skin);
+        TextButton textButton = new TextButton("Apply", skin);
         textButton.setName("apply");
         button(textButton, Selection.APPLY);
         textButton.addListener(main.getHandListener());
@@ -199,7 +199,7 @@ public class DialogDrawablesFilter extends Dialog {
     }
     
     private void updateApplyButton() {
-        var disabled = true;
+        boolean disabled = true;
         CheckBox checkBox = findActor("regular-expression");
         TextField textField = findActor("text");
         if (!checkBox.isChecked()) {
@@ -242,7 +242,7 @@ public class DialogDrawablesFilter extends Dialog {
         @Override
         public boolean handle(Event event) {
             if (event instanceof FilterEvent) {
-                var filterEvent = (FilterEvent) event;
+            	FilterEvent filterEvent = (FilterEvent) event;
                 switch (filterEvent.selection) {
                     case APPLY:
                         applied();

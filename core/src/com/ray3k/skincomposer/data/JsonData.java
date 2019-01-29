@@ -939,13 +939,13 @@ public class JsonData implements Json.Serializable {
             
             freeTypeFonts = json.readValue("freeTypeFonts", Array.class, new Array<FreeTypeFontData>(),jsonData);
             FileHandle previewFontsPath = Main.appFolder.child("preview fonts");
-            var fontsList = previewFontsPath.list();
+            FileHandle[] fontsList = previewFontsPath.list();
             
-            for (var freeTypeFont : freeTypeFonts) {
+            for (FreeTypeFontData freeTypeFont : freeTypeFonts) {
                 if (freeTypeFont.previewTTF != null) {
                     
                     boolean foundMatch = false;
-                    for (var previewFile : fontsList) {
+                    for (FileHandle previewFile : fontsList) {
                         if (freeTypeFont.previewTTF.equals(previewFile.nameWithoutExtension())) {
                             foundMatch = true;
                             break;

@@ -23,7 +23,11 @@
  */
 package com.ray3k.skincomposer.dialog;
 
-import com.badlogic.gdx.*;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -37,7 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.Main;
-import java.nio.file.Paths;
 
 /**
  *
@@ -59,17 +62,17 @@ public class DialogImport extends Dialog {
     private void populate() {
         getTitleTable().padLeft(5);
         
-        var t = getContentTable();
+        Table t = getContentTable();
         t.pad(15);
         
-        var table = new Table();
+        Table table = new Table();
         t.add(table);
         
         table.defaults().space(5);
-        var label = new Label("Import Path:", getSkin());
+        Label label = new Label("Import Path:", getSkin());
         table.add(label);
         
-        var textField = new TextField("", getSkin());
+        TextField textField = new TextField("", getSkin());
         textField.setName("path");
         textField.setText(main.getProjectData().getLastImportExportPath());
         textField.setCursorPosition(Math.max(0, textField.getText().length() - 1));
@@ -86,7 +89,7 @@ public class DialogImport extends Dialog {
             }
         });
         
-        var textButton = new TextButton("Browse...", main.getSkin());
+        TextButton textButton = new TextButton("Browse...", main.getSkin());
         table.add(textButton);
         textButton.addListener(main.getHandListener());
         textButton.addListener(new ChangeListener() {
@@ -131,7 +134,7 @@ public class DialogImport extends Dialog {
                     cancel();
                 } else {
                     TextField textField = findActor("path");
-                    var fileHandle = Gdx.files.absolute(textField.getText());
+                    FileHandle fileHandle = Gdx.files.absolute(textField.getText());
                     main.getProjectData().setLastImportExportPath(fileHandle.path());
 
                     newFile(fileHandle);
@@ -142,7 +145,7 @@ public class DialogImport extends Dialog {
                     cancel();
                 } else {
                     TextField textField = findActor("path");
-                    var fileHandle = Gdx.files.absolute(textField.getText());
+                    FileHandle fileHandle = Gdx.files.absolute(textField.getText());
                     main.getProjectData().setLastImportExportPath(fileHandle.path());
 
                     importFile(fileHandle);
@@ -212,9 +215,9 @@ public class DialogImport extends Dialog {
         String[] filterPatterns = {"*.json"};
 
         TextField textField  = findActor("path");
-        var file = main.getDesktopWorker().openDialog("Import skin...", textField.getText(), filterPatterns, "Json files");
+        File file = main.getDesktopWorker().openDialog("Import skin...", textField.getText(), filterPatterns, "Json files");
         if (file != null) {
-            var fileHandle = new FileHandle(file);
+        	FileHandle fileHandle = new FileHandle(file);
             
             textField.setText(fileHandle.path());
             textField.setCursorPosition(Math.max(0, textField.getText().length() - 1));
@@ -230,8 +233,8 @@ public class DialogImport extends Dialog {
     private boolean checkPath() {
         TextField textField = findActor("path");
         try {
-            var path = Paths.get(textField.getText());
-            var fileHandle = Gdx.files.absolute(path.toString());
+            Path path = Paths.get(textField.getText());
+            FileHandle fileHandle = Gdx.files.absolute(path.toString());
             return !fileHandle.isDirectory() && fileHandle.exists();
         } catch (Exception e) {
             return false;

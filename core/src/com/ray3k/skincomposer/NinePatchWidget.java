@@ -30,6 +30,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
@@ -94,19 +95,19 @@ public class NinePatchWidget extends Stack {
     private void populate() {
         clearChildren();
         
-        var table = new Table();
+        Table table = new Table();
         table.setClip(true);
         add(table);
         
         tile = new TilePatternDrawable(this, style);
         tile.style = style;
-        var image = new Image(tile);
+        Image image = new Image(tile);
         table.add(image).grow();
         DragListener dragListener = new DragListener() {
             @Override
             public void drag(InputEvent event, float x, float y, int pointer) {
-                var worldX = (x - image.getWidth() / 2.0f) / zoom - positionX;
-                var worldY = (y - image.getHeight() / 2.0f) / zoom - positionY;
+                float worldX = (x - image.getWidth() / 2.0f) / zoom - positionX;
+                float worldY = (y - image.getHeight() / 2.0f) / zoom - positionY;
                 
                 switch (currentHandle) {
                     case PADDING_LEFT:
@@ -217,8 +218,8 @@ public class NinePatchWidget extends Stack {
 
             @Override
             public boolean mouseMoved(InputEvent event, float x, float y) {
-                var worldX = (x - image.getWidth() / 2.0f) / zoom - positionX;
-                var worldY = (y - image.getHeight() / 2.0f) / zoom - positionY;
+                float worldX = (x - image.getWidth() / 2.0f) / zoom - positionX;
+                float worldY = (y - image.getHeight() / 2.0f) / zoom - positionY;
                 
                 if (!showContent) {
                     if (MathUtils.ceil(worldX) == paddingLeft) {
@@ -272,7 +273,7 @@ public class NinePatchWidget extends Stack {
         table = new Table();
         add(table);
         
-        var buttonStyle = new Button.ButtonStyle();
+        ButtonStyle buttonStyle = new Button.ButtonStyle();
         buttonStyle.up = style.switchOff;
         buttonStyle.over = style.switchOffOver;
         buttonStyle.checked = style.switchOn;
@@ -373,7 +374,7 @@ public class NinePatchWidget extends Stack {
 
     public void setPaddingTop(int paddingTop) {
         this.paddingTop = paddingTop;
-        for (var listener : listeners) {
+        for (NinePatchWidgetListener listener : listeners) {
             listener.valueChange(HandleType.PADDING_TOP, paddingTop);
         }
     }
@@ -384,7 +385,7 @@ public class NinePatchWidget extends Stack {
 
     public void setPaddingBottom(int paddingBottom) {
         this.paddingBottom = paddingBottom;
-        for (var listener : listeners) {
+        for (NinePatchWidgetListener listener : listeners) {
             listener.valueChange(HandleType.PADDING_BOTTOM, paddingBottom);
         }
     }
@@ -395,7 +396,7 @@ public class NinePatchWidget extends Stack {
 
     public void setPaddingLeft(int paddingLeft) {
         this.paddingLeft = paddingLeft;
-        for (var listener : listeners) {
+        for (NinePatchWidgetListener listener : listeners) {
             listener.valueChange(HandleType.PADDING_LEFT, paddingLeft);
         }
     }
@@ -406,7 +407,7 @@ public class NinePatchWidget extends Stack {
 
     public void setPaddingRight(int paddingRight) {
         this.paddingRight = paddingRight;
-        for (var listener : listeners) {
+        for (NinePatchWidgetListener listener : listeners) {
             listener.valueChange(HandleType.PADDING_RIGHT, paddingRight);
         }
     }
@@ -417,7 +418,7 @@ public class NinePatchWidget extends Stack {
 
     public void setContentTop(int contentTop) {
         this.contentTop = contentTop;
-        for (var listener : listeners) {
+        for (NinePatchWidgetListener listener : listeners) {
             listener.valueChange(HandleType.CONTENT_TOP, contentTop);
         }
     }
@@ -428,7 +429,7 @@ public class NinePatchWidget extends Stack {
 
     public void setContentBottom(int contentBottom) {
         this.contentBottom = contentBottom;
-        for (var listener : listeners) {
+        for (NinePatchWidgetListener listener : listeners) {
             listener.valueChange(HandleType.CONTENT_BOTTOM, contentBottom);
         }
     }
@@ -439,7 +440,7 @@ public class NinePatchWidget extends Stack {
 
     public void setContentLeft(int contentLeft) {
         this.contentLeft = contentLeft;
-        for (var listener : listeners) {
+        for (NinePatchWidgetListener listener : listeners) {
             listener.valueChange(HandleType.CONTENT_LEFT, contentLeft);
         }
     }
@@ -450,7 +451,7 @@ public class NinePatchWidget extends Stack {
 
     public void setContentRight(int contentRight) {
         this.contentRight = contentRight;
-        for (var listener : listeners) {
+        for (NinePatchWidgetListener listener : listeners) {
             listener.valueChange(HandleType.CONTENT_RIGHT, contentRight);
         }
     }
@@ -550,11 +551,11 @@ public class NinePatchWidget extends Stack {
         
         private void drawTiles(Batch batch, float x, float y, float width, float height) {
             if (offsetX % widget.zoom > 0) {
-                var flip = (offsetX / widget.zoom) % 2 == 0;
+                boolean flip = (offsetX / widget.zoom) % 2 == 0;
                 if ((offsetY / widget.zoom) % 2 == 0) flip = !flip;
                 
-                var posX = (int) x + offsetX % widget.zoom - widget.zoom;
-                for (var posY = (int) y + offsetY % widget.zoom - widget.zoom; posY < y + height; posY += widget.zoom) {
+                float posX = (int) x + offsetX % widget.zoom - widget.zoom;
+                for (int posY = (int) y + offsetY % widget.zoom - widget.zoom; posY < y + height; posY += widget.zoom) {
                     flip = !flip;
                     
                     if (flip) {
@@ -568,11 +569,11 @@ public class NinePatchWidget extends Stack {
             }
             
             if (offsetY % widget.zoom > 0) {
-                var flip = (offsetX / widget.zoom) % 2 == 0;
+                boolean flip = (offsetX / widget.zoom) % 2 == 0;
                 if ((offsetY / widget.zoom) % 2 == 0) flip = !flip;
             
-                var posY = (int) y + offsetY % widget.zoom - widget.zoom;
-                for (var posX = (int) x + offsetX % widget.zoom; posX < x + width; posX += widget.zoom) {
+                int posY = (int) y + offsetY % widget.zoom - widget.zoom;
+                for (int posX = (int) x + offsetX % widget.zoom; posX < x + width; posX += widget.zoom) {
                     flip = !flip;
                     if (!flip) {
                         style.lightTile.draw(batch, posX, posY, widget.zoom, widget.zoom);
@@ -584,13 +585,13 @@ public class NinePatchWidget extends Stack {
                 }
             }
             
-            var flip = (offsetX / widget.zoom) % 2 == 0;
+            boolean flip = (offsetX / widget.zoom) % 2 == 0;
             if ((offsetY / widget.zoom) % 2 == 0) flip = !flip;
             
-            for (var posY = (int) y + offsetY % widget.zoom; posY < y + height; posY += widget.zoom) {
+            for (int posY = (int) y + offsetY % widget.zoom; posY < y + height; posY += widget.zoom) {
                 flip = !flip;
                 
-                for (var posX = (int) x + offsetX % widget.zoom; posX < x + width; posX += widget.zoom * 2) {
+                for (int posX = (int) x + offsetX % widget.zoom; posX < x + width; posX += widget.zoom * 2) {
                     if (flip) {
                         style.lightTile.draw(batch, posX, posY, widget.zoom, widget.zoom);
                         style.darkTile.draw(batch, posX + widget.zoom, posY, widget.zoom, widget.zoom);
@@ -608,22 +609,22 @@ public class NinePatchWidget extends Stack {
         
         private void drawBlackBars(Batch batch, float x, float y, float width, float height) {
             if (!widget.showContent) {
-                var barWidth = (widget.regionWidth - widget.paddingLeft - widget.paddingRight) * widget.zoom;
+                float barWidth = (widget.regionWidth - widget.paddingLeft - widget.paddingRight) * widget.zoom;
                 if (barWidth > 0) {
                     style.black.draw(batch, x + offsetX + widget.paddingLeft * widget.zoom, y + height - widget.zoom, barWidth, widget.zoom);
                 }
 
-                var barHeight = (widget.regionHeight - widget.paddingBottom - widget.paddingTop) * widget.zoom;
+                float barHeight = (widget.regionHeight - widget.paddingBottom - widget.paddingTop) * widget.zoom;
                 if (barHeight > 0) {
                     style.black.draw(batch, x, y + offsetY + widget.paddingBottom * widget.zoom, widget.zoom, barHeight);
                 }
             } else {
-                var barWidth = (widget.regionWidth - widget.contentLeft - widget.contentRight) * widget.zoom;
+            	float barWidth = (widget.regionWidth - widget.contentLeft - widget.contentRight) * widget.zoom;
                 if (barWidth > 0) {
                     style.black.draw(batch, x + offsetX + widget.contentLeft * widget.zoom, y, barWidth, widget.zoom);
                 }
 
-                var barHeight = (widget.regionHeight - widget.contentBottom - widget.contentTop) * widget.zoom;
+                float barHeight = (widget.regionHeight - widget.contentBottom - widget.contentTop) * widget.zoom;
                 if (barHeight > 0) {
                     style.black.draw(batch, x + width - widget.zoom, y + offsetY + widget.contentBottom * widget.zoom, widget.zoom, barHeight);
                 }
@@ -762,11 +763,11 @@ public class NinePatchWidget extends Stack {
             }
             
             if (drawable != null) {
-                for (var drawY = 0; drawY <= widget.getRegionHeight(); drawY++) {
+                for (int drawY = 0; drawY <= widget.getRegionHeight(); drawY++) {
                     drawable.draw(batch, x, y + drawY * widget.zoom + offsetY, width, 1);
                 }
                 
-                for (var drawX = 0; drawX <= widget.getRegionWidth(); drawX++) {
+                for (int drawX = 0; drawX <= widget.getRegionWidth(); drawX++) {
                     drawable.draw(batch, x + drawX * widget.zoom + offsetX, y, 1, height);
                 }
             }

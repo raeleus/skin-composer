@@ -76,7 +76,7 @@ public class ResizeWidget extends Table {
         }
 
         if (style.handle != null || style.handleOver != null || style.handlePressed != null) {
-              var handleStyle = new ButtonStyle();
+        	ButtonStyle handleStyle = new ButtonStyle();
             handleStyle.up = style.handle;
             handleStyle.down = style.handlePressed;
             handleStyle.checked = style.handlePressed;
@@ -111,10 +111,10 @@ public class ResizeWidget extends Table {
 
                 @Override
                 public void drag(InputEvent event, float x, float y, int pointer) {
-                      var width = startX - x + stack.getWidth();
-                      var height = y - startY + stack.getHeight();
-                      var xPos = x - startX + stack.getX();
-                      var yPos = stack.getY();
+                      float width = startX - x + stack.getWidth();
+                      float height = y - startY + stack.getHeight();
+                      float xPos = x - startX + stack.getX();
+                      float yPos = stack.getY();
 
                     if (resizeFromCenter) {
                         width += startX - x;
@@ -189,10 +189,10 @@ public class ResizeWidget extends Table {
 
                 @Override
                 public void drag(InputEvent event, float x, float y, int pointer) {
-                      var width = x - startX + stack.getWidth();
-                      var height = y - startY + stack.getHeight();
-                      var xPos = stack.getX();
-                      var yPos = stack.getY();
+                      float width = x - startX + stack.getWidth();
+                      float height = y - startY + stack.getHeight();
+                      float xPos = stack.getX();
+                      float yPos = stack.getY();
 
                     if (resizeFromCenter) {
                         width += x - startX;
@@ -266,10 +266,10 @@ public class ResizeWidget extends Table {
 
                 @Override
                 public void drag(InputEvent event, float x, float y, int pointer) {
-                      var width = x - startX + stack.getWidth();
-                      var height = startY - y + stack.getHeight();
-                      var xPos = stack.getX();
-                      var yPos = y - startY + stack.getY();
+                      float width = x - startX + stack.getWidth();
+                      float height = startY - y + stack.getHeight();
+                      float xPos = stack.getX();
+                      float yPos = y - startY + stack.getY();
 
                     if (resizeFromCenter) {
                         width += x - startX;
@@ -344,10 +344,10 @@ public class ResizeWidget extends Table {
 
                 @Override
                 public void drag(InputEvent event, float x, float y, int pointer) {
-                      var width = startX - x + stack.getWidth();
-                      var height = startY - y + stack.getHeight();
-                      var xPos = x - startX + stack.getX();
-                      var yPos = y - startY + stack.getY();
+                      float width = startX - x + stack.getWidth();
+                      float height = startY - y + stack.getHeight();
+                      float xPos = x - startX + stack.getX();
+                      float yPos = y - startY + stack.getY();
 
                     if (resizeFromCenter) {
                         width += startX - x;
@@ -396,7 +396,7 @@ public class ResizeWidget extends Table {
         }
 
         if (style.minorHandle != null || style.minorHandleOver != null || style.minorHandlePressed != null) {
-              var minorHandleStyle = new ButtonStyle();
+              ButtonStyle minorHandleStyle = new ButtonStyle();
             minorHandleStyle.up = style.minorHandle;
             minorHandleStyle.down = style.minorHandlePressed;
             minorHandleStyle.checked = style.minorHandlePressed;
@@ -430,12 +430,12 @@ public class ResizeWidget extends Table {
 
                 @Override
                 public void drag(InputEvent event, float x, float y, int pointer) {
-                      var height = y - startY + stack.getHeight();
+                      float height = y - startY + stack.getHeight();
                     if (resizeFromCenter) {
                         height += y - startY;
                     }
 
-                      var yPos = stack.getY();
+                      float yPos = stack.getY();
                     if (resizeFromCenter) {
                         yPos -= y - startY;
                     }
@@ -489,11 +489,11 @@ public class ResizeWidget extends Table {
 
                 @Override
                 public void drag(InputEvent event, float x, float y, int pointer) {
-                      var width = x - startX + stack.getWidth();
+                      float width = x - startX + stack.getWidth();
                     if (resizeFromCenter) {
                         width += x - startX;
                     }
-                      var xPos = stack.getX();
+                      float xPos = stack.getX();
                     if (resizeFromCenter) {
                         xPos -= x - startX;
                     }
@@ -547,12 +547,12 @@ public class ResizeWidget extends Table {
 
                 @Override
                 public void drag(InputEvent event, float x, float y, int pointer) {
-                      var height = startY - y + stack.getHeight();
+                      float height = startY - y + stack.getHeight();
                     if (resizeFromCenter) {
                         height += startY - y;
                     }
 
-                      var yPos = y - startY + stack.getY();
+                      float yPos = y - startY + stack.getY();
 
                     if (height < getMinHeight()) {
                         height = getMinHeight();
@@ -605,12 +605,12 @@ public class ResizeWidget extends Table {
 
                 @Override
                 public void drag(InputEvent event, float x, float y, int pointer) {
-                      var width = startX - x + stack.getWidth();
+                      float width = startX - x + stack.getWidth();
                     if (resizeFromCenter) {
                         width += startX - x;
                     }
 
-                      var xPos = x - startX + stack.getX();
+                      float xPos = x - startX + stack.getX();
 
                     if (width < getMinWidth()) {
                         width = getMinWidth();
@@ -710,7 +710,7 @@ public class ResizeWidget extends Table {
     private void populate() {
         stack.clearChildren();
 
-        var table = new Table();
+        Table table = new Table();
         stack.add(table);
 
         if (style.background != null) {
@@ -725,7 +725,7 @@ public class ResizeWidget extends Table {
             stack.add(foreground);
         }
 
-        var buttonTable = new Table();
+        Table buttonTable = new Table();
         stack.add(buttonTable);
 
         buttonTable.add(topLeftHandle);

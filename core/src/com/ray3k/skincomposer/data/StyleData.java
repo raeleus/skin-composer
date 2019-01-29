@@ -146,15 +146,15 @@ public class StyleData implements Json.Serializable {
             }
         }
         
-        var parentStyle = findParentStyle();
+        StyleData parentStyle = findParentStyle();
         return returnValue && (parentStyle == null || parentStyle.hasAllNullFields());
     }
     
     public boolean hasMandatoryFields() {
         boolean returnValue = true;
-        var propertiesList = this.properties.values().toArray();
+        Array<StyleProperty> propertiesList = this.properties.values().toArray();
         for (int i = 0; i < propertiesList.size; i++) {
-            var property = propertiesList.get(i);
+        	StyleProperty property = propertiesList.get(i);
             if (!property.optional && !hasField(property)) {
                 returnValue = false;
                 break;
@@ -231,9 +231,9 @@ public class StyleData implements Json.Serializable {
             Class recursiveStyleClass = Main.basicToStyleClass(recursiveClass);
             loop:
             while (recursiveStyleClass != null && Arrays.asList(Main.STYLE_CLASSES).contains(recursiveStyleClass)) {
-                var styles = main.getJsonData().getClassStyleMap().get(recursiveClass);
+                Array<StyleData> styles = main.getJsonData().getClassStyleMap().get(recursiveClass);
                 for (int i = 0; i < styles.size; i++) {
-                    var style = styles.get(i);
+                    StyleData style = styles.get(i);
                     if (parent.equals(style.name) && !(clazz.equals(recursiveClass) && name.equals(style.name))) {
                         returnValue = style;
                         break loop;
@@ -249,12 +249,12 @@ public class StyleData implements Json.Serializable {
     }
     
     public boolean hasField(StyleProperty property) {
-        var style = this;
+        StyleData style = this;
         
         while (style != null) {
-            var propertiesList = style.properties.values().toArray();
+            Array<StyleProperty> propertiesList = style.properties.values().toArray();
             for (int i = 0; i < propertiesList.size; i++) {
-                var current = propertiesList.get(i);
+            	StyleProperty current = propertiesList.get(i);
                 if (current.name.equals(property.name) && current.value != null) {
                     return true;
                 }
@@ -266,12 +266,12 @@ public class StyleData implements Json.Serializable {
     }
     
     public Object getInheritedValue(String name) {
-        var style = this;
+        StyleData style = this;
         
         while (style != null) {
-            var propertiesList = style.properties.values().toArray();
+            Array<StyleProperty> propertiesList = style.properties.values().toArray();
             for (int i = 0; i < propertiesList.size; i++) {
-                var current = propertiesList.get(i);
+            	StyleProperty current = propertiesList.get(i);
                 if (current.name.equals(name) && current.value != null) {
                     return current.value;
                 }
@@ -283,7 +283,7 @@ public class StyleData implements Json.Serializable {
     }
     
     public static boolean validate(String name) {
-        return name != null && !name.matches("^\\d.*|^-.*|.*\\s.*|.*[^a-zA-Z\\d\\s-_ñáéíóúüÑÁÉÍÓÚÜ].*|^$");
+        return name != null && !name.matches("^\\d.*|^-.*|.*\\s.*|.*[^a-zA-Z\\d\\s-_Ã±Ã¡Ã©Ã­Ã³ÃºÃ¼Ã‘Ã�Ã‰Ã�Ã“ÃšÃœ].*|^$");
     }
 
     @Override

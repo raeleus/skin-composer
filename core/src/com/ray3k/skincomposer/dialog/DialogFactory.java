@@ -89,7 +89,7 @@ public class DialogFactory {
     }
     
     public DialogExport showDialogExport(DialogListener listener) {
-        var dialog = new DialogExport(main);
+    	DialogExport dialog = new DialogExport(main);
         if (listener != null) {
             dialog.addListener(listener);
         }
@@ -98,7 +98,7 @@ public class DialogFactory {
     }
     
     public DialogImport showDialogImport(DialogListener listener) {
-        var dialog = new DialogImport(main);
+    	DialogImport dialog = new DialogImport(main);
         if (listener != null) {
             dialog.addListener(listener);
         }
@@ -669,7 +669,7 @@ public class DialogFactory {
     }
     
     public void showInputDialog(String title, String message, String defaultText, InputDialogListener listener) {
-        var dialog = new Dialog(title, main.getSkin(), "bg") {
+    	Dialog dialog = new Dialog(title, main.getSkin(), "bg") {
             @Override
             protected void result(Object object) {
                 if ((Boolean) object) {
@@ -682,15 +682,15 @@ public class DialogFactory {
         
         dialog.getTitleTable().getCells().first().padLeft(5.0f);
         
-        var root = dialog.getContentTable();
+        Table root = dialog.getContentTable();
         root.pad(5);
         
         root.defaults().space(5.0f);
-        var label = new Label(message, main.getSkin());
+        Label label = new Label(message, main.getSkin());
         root.add(label);
         
         root.row();
-        var textField = new TextField(defaultText, main.getSkin());
+        TextField textField = new TextField(defaultText, main.getSkin());
         textField.setName("textField");
         textField.setSelection(0, textField.getText().length());
         root.add(textField).growX();
@@ -699,7 +699,7 @@ public class DialogFactory {
         dialog.getButtonTable().pad(5);
         dialog.getButtonTable().defaults().space(5).minWidth(100);
         
-        var button = new TextButton("OK", main.getSkin());
+        TextButton button = new TextButton("OK", main.getSkin());
         dialog.button(button, true);
         button.addListener(main.getHandListener());
         
@@ -972,7 +972,7 @@ public class DialogFactory {
     }
     
     public DialogCustomStyleSelection showDialogCustomStyleSelection(CustomProperty customProperty, DialogListener dialogListener) {
-        var dialog = new DialogCustomStyleSelection(main);
+    	DialogCustomStyleSelection dialog = new DialogCustomStyleSelection(main);
         dialog.addListener(dialogListener);
         dialog.show(main.getStage());
         dialog.addListener(new DialogCustomStyleSelection.DialogCustomStyleSelectionListener() {
@@ -990,7 +990,7 @@ public class DialogFactory {
     }
     
     public void showDialogDrawablesFilter(DialogDrawables.FilterOptions filterOptions, EventListener listener) {
-        var dialog = new DialogDrawablesFilter(filterOptions, main);
+    	DialogDrawablesFilter dialog = new DialogDrawablesFilter(filterOptions, main);
         dialog.addListener(listener);
         dialog.show(main.getStage());
     }

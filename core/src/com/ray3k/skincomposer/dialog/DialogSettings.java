@@ -96,18 +96,18 @@ public class DialogSettings extends Dialog {
     public void populate() {
         getContentTable().pad(5);
         
-        var t = getContentTable();
+        Table t = getContentTable();
 
         t.defaults().space(15);
-        var label = new Label("Settings", main.getSkin(), "title");
+        Label label = new Label("Settings", main.getSkin(), "title");
         t.add(label);
         
         t.row();
-        var table = new Table();
+        Table table = new Table();
         t.add(table);
         
         table.defaults().growX().space(5);
-        var textButton = new TextButton("Open temp/log directory", main.getSkin());
+        TextButton textButton = new TextButton("Open temp/log directory", main.getSkin());
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -181,7 +181,7 @@ public class DialogSettings extends Dialog {
         label = new Label("Max Number of Undos: ", main.getSkin());
         table.add(label);
         
-        var spinner = new Spinner(main.getProjectData().getMaxUndos(), 1.0, true, Orientation.HORIZONTAL, getSkin());
+        Spinner spinner = new Spinner(main.getProjectData().getMaxUndos(), 1.0, true, Orientation.HORIZONTAL, getSkin());
         spinner.setMinimum(1.0);
         spinner.setMaximum(100.0);
         spinner.addListener(new ChangeListener() {
@@ -208,7 +208,7 @@ public class DialogSettings extends Dialog {
         t.add(table);
         
         table.defaults().expandX().left().space(5);
-        var relativeCheckBox = new ImageTextButton("Keep resources relative?", getSkin(), "checkbox");
+        ImageTextButton relativeCheckBox = new ImageTextButton("Keep resources relative?", getSkin(), "checkbox");
         relativeCheckBox.setChecked(resourcesRelative);
         relativeCheckBox.addListener(main.getHandListener());
         relativeCheckBox.addListener(new ChangeListener() {
@@ -220,7 +220,7 @@ public class DialogSettings extends Dialog {
         table.add(relativeCheckBox);
         
         table.row();
-        var welcomeCheckBox = new ImageTextButton("Show welcome screen?", getSkin(), "checkbox");
+        ImageTextButton welcomeCheckBox = new ImageTextButton("Show welcome screen?", getSkin(), "checkbox");
         welcomeCheckBox.setChecked(allowingWelcome);
         welcomeCheckBox.addListener(main.getHandListener());
         welcomeCheckBox.addListener(new ChangeListener() {
@@ -232,7 +232,7 @@ public class DialogSettings extends Dialog {
         table.add(welcomeCheckBox);
         
         table.row();
-        var updatesCheckBox = new ImageTextButton("Check for updates?", getSkin(), "checkbox");
+        ImageTextButton updatesCheckBox = new ImageTextButton("Check for updates?", getSkin(), "checkbox");
         updatesCheckBox.setChecked(allowingUpdates);
         updatesCheckBox.addListener(main.getHandListener());
         updatesCheckBox.addListener(new ChangeListener() {

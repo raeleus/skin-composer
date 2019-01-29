@@ -23,9 +23,14 @@
  */
 package com.ray3k.skincomposer.dialog;
 
+import java.io.File;
+import java.util.List;
+import java.util.Locale;
+
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
@@ -52,6 +57,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
@@ -67,8 +73,6 @@ import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
-import java.io.File;
-import java.util.Locale;
 
 /**
  *
@@ -99,7 +103,7 @@ public class Dialog9Patch extends Dialog {
         listeners = new Array<>();
         this.main = main;
         
-        var cursor = Utils.textureRegionToCursor(main.getSkin().getRegion("cursor_resize_horizontal"), 16, 16);
+        Cursor cursor = Utils.textureRegionToCursor(main.getSkin().getRegion("cursor_resize_horizontal"), 16, 16);
         horizontalResizeListener = new ResizeFourArrowListener(cursor);
 
         cursor = Utils.textureRegionToCursor(main.getSkin().getRegion("cursor_resize_vertical"), 16, 16);
@@ -127,18 +131,18 @@ public class Dialog9Patch extends Dialog {
     }
 
     private void populate() {
-        var root = getContentTable();
+        Table root = getContentTable();
         root.clear();
         root.pad(10);
 
-        var horizontalGroup = new HorizontalGroup();
+        HorizontalGroup horizontalGroup = new HorizontalGroup();
         horizontalGroup.space(5.0f);
         horizontalGroup.wrap();
         horizontalGroup.wrapSpace(5.0f);
         horizontalGroup.center();
         root.add(horizontalGroup).growX();
 
-        var textButton = new TextButton("Load Image", getSkin());
+        TextButton textButton = new TextButton("Load Image", getSkin());
         horizontalGroup.addActor(textButton);
         textButton.addListener(main.getHandListener());
         textButton.addListener(new ChangeListener() {
@@ -155,9 +159,9 @@ public class Dialog9Patch extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                var widget = (NinePatchWidget) findActor("ninePatchWidget");
+            	NinePatchWidget widget = (NinePatchWidget) findActor("ninePatchWidget");
 
-                var spinnerItem = (Spinner) findActor("spinner-padding-left");
+            	Spinner spinnerItem = (Spinner) findActor("spinner-padding-left");
                 spinnerItem.setValue(ninePatchLeftOriginal);
                 widget.setPaddingLeft(ninePatchLeftOriginal);
                 ninePatchLeft = ninePatchLeftOriginal;
@@ -235,28 +239,28 @@ public class Dialog9Patch extends Dialog {
         });
 
         root.row();
-        var image = new Image(getSkin(), "welcome-separator");
+        Image image = new Image(getSkin(), "welcome-separator");
         root.add(image).growX().space(15.0f);
         image.setScaling(Scaling.stretch);
 
-        var top = new Table();
+        Table top = new Table();
         top.setTouchable(Touchable.enabled);
 
-        var bottom = new Table();
+        Table bottom = new Table();
         bottom.setBackground(getSkin().getDrawable("white"));
         bottom.setTouchable(Touchable.enabled);
 
         root.row();
-          var splitPane = new SplitPane(top, bottom, true, getSkin());
+        SplitPane splitPane = new SplitPane(top, bottom, true, getSkin());
         splitPane.setName("split");
         root.add(splitPane).grow();
 
         splitPane.addListener(main.getVerticalResizeArrowListener());
 
-          var table = new Table();
+        Table table = new Table();
         top.add(table).growX();
 
-          var spinner = new Spinner(0, 1, true, Spinner.Orientation.HORIZONTAL, getSkin());
+        Spinner spinner = new Spinner(0, 1, true, Spinner.Orientation.HORIZONTAL, getSkin());
         spinner.setName("spinner-padding-left");
         spinner.setValue(ninePatchLeft);
         spinner.setMinimum(0);
@@ -267,22 +271,22 @@ public class Dialog9Patch extends Dialog {
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                var widget = (NinePatchWidget) findActor("ninePatchWidget");
-                var spinner = (Spinner) actor;
+            	NinePatchWidget widget = (NinePatchWidget) findActor("ninePatchWidget");
+                Spinner spinner = (Spinner) actor;
 
                 ninePatchLeft = spinner.getValueAsInt();
                 
                 widget.setPaddingLeft(spinner.getValueAsInt());
                 widget.getPaddingButton().setChecked(false);
 
-                var otherSpinner = (Spinner) findActor("spinner-padding-right");
+                Spinner otherSpinner = (Spinner) findActor("spinner-padding-right");
                 otherSpinner.setMaximum(widget.getRegionWidth() - spinner.getValueAsInt());
 
                 updatePreviewSplits();
             }
         });
 
-        var label = new Label("PADDING", getSkin());
+        Label label = new Label("PADDING", getSkin());
         table.add(label);
         
         spinner = new Spinner(0, 1, true, Spinner.Orientation.HORIZONTAL_FLIPPED, getSkin(), "horizontal-reversed");
@@ -296,15 +300,15 @@ public class Dialog9Patch extends Dialog {
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                var widget = (NinePatchWidget) findActor("ninePatchWidget");
-                var spinner = (Spinner) actor;
+            	NinePatchWidget widget = (NinePatchWidget) findActor("ninePatchWidget");
+            	Spinner spinner = (Spinner) actor;
 
                 ninePatchRight = spinner.getValueAsInt();
 
                 widget.setPaddingRight(spinner.getValueAsInt());
                 widget.getPaddingButton().setChecked(false);
 
-                var otherSpinner = (Spinner) findActor("spinner-padding-left");
+                Spinner otherSpinner = (Spinner) findActor("spinner-padding-left");
                 otherSpinner.setMaximum(widget.getRegionWidth() - spinner.getValueAsInt());
 
                 updatePreviewSplits();
@@ -315,7 +319,7 @@ public class Dialog9Patch extends Dialog {
         table = new Table();
         top.add(table).grow();
 
-          var subTable = new Table();
+        Table subTable = new Table();
         table.add(subTable).growY();
 
         spinner = new Spinner(0, 1, true, Spinner.Orientation.VERTICAL_FLIPPED, getSkin(), "vertical-reversed");
@@ -329,15 +333,15 @@ public class Dialog9Patch extends Dialog {
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                var widget = (NinePatchWidget) findActor("ninePatchWidget");
-                var spinner = (Spinner) actor;
+            	NinePatchWidget widget = (NinePatchWidget) findActor("ninePatchWidget");
+            	Spinner spinner = (Spinner) actor;
 
                 ninePatchTop = spinner.getValueAsInt();
 
                 widget.setPaddingTop(spinner.getValueAsInt());
                 widget.getPaddingButton().setChecked(false);
 
-                var otherSpinner = (Spinner) findActor("spinner-padding-bottom");
+                Spinner otherSpinner = (Spinner) findActor("spinner-padding-bottom");
                 otherSpinner.setMaximum(widget.getRegionHeight() - spinner.getValueAsInt());
 
                 updatePreviewSplits();
@@ -345,7 +349,7 @@ public class Dialog9Patch extends Dialog {
         });
 
         subTable.row();
-          var group = new Table();
+        Table group = new Table();
         group.setTransform(true);
         subTable.add(group).size(0).minHeight(100.0f);
 
@@ -366,22 +370,22 @@ public class Dialog9Patch extends Dialog {
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                  var widget = (NinePatchWidget) findActor("ninePatchWidget");
-                  var spinner = (Spinner) actor;
+            	NinePatchWidget widget = (NinePatchWidget) findActor("ninePatchWidget");
+            	Spinner spinner = (Spinner) actor;
 
                 ninePatchBottom = spinner.getValueAsInt();
 
                 widget.setPaddingBottom(spinner.getValueAsInt());
                 widget.getPaddingButton().setChecked(false);
 
-                  var otherSpinner = (Spinner) findActor("spinner-padding-top");
+                Spinner otherSpinner = (Spinner) findActor("spinner-padding-top");
                 otherSpinner.setMaximum(widget.getRegionHeight() - spinner.getValueAsInt());
 
                 updatePreviewSplits();
             }
         });
 
-        var ninePatchWidget = new NinePatchWidget(getSkin());
+        NinePatchWidget ninePatchWidget = new NinePatchWidget(getSkin());
         ninePatchWidget.setName("ninePatchWidget");
         ninePatchWidget.setTouchable(Touchable.enabled);
         table.add(ninePatchWidget).grow().pad(5.0f);
@@ -389,12 +393,12 @@ public class Dialog9Patch extends Dialog {
         ninePatchWidget.addListener((NinePatchWidget.HandleType handle, int value) -> {
             switch (handle) {
                 case PADDING_LEFT:
-                    var spinnerItem = (Spinner) findActor("spinner-padding-left");
+                	Spinner spinnerItem = (Spinner) findActor("spinner-padding-left");
                     spinnerItem.setValue(value);
 
                     ninePatchLeft = value;
 
-                    var otherSpinner = (Spinner) findActor("spinner-padding-right");
+                    Spinner otherSpinner = (Spinner) findActor("spinner-padding-right");
                     otherSpinner.setMaximum(ninePatchWidget.getRegionWidth() - value);
                     break;
                 case PADDING_RIGHT:
@@ -465,7 +469,7 @@ public class Dialog9Patch extends Dialog {
             updatePreviewSplits();
         });
 
-          var inputListener = new InputListener() {
+        InputListener inputListener = new InputListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                 getStage().setScrollFocus(ninePatchWidget);
@@ -473,7 +477,7 @@ public class Dialog9Patch extends Dialog {
 
             @Override
             public boolean scrolled(InputEvent event, float x, float y, int amount) {
-                var slider = (Slider) findActor("top-zoom");
+            	Slider slider = (Slider) findActor("top-zoom");
                 slider.setValue(slider.getValue() - amount * 3);
                 return true;
             }
@@ -494,15 +498,15 @@ public class Dialog9Patch extends Dialog {
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                var widget = (NinePatchWidget) findActor("ninePatchWidget");
-                var spinner = (Spinner) actor;
+            	NinePatchWidget widget = (NinePatchWidget) findActor("ninePatchWidget");
+            	Spinner spinner = (Spinner) actor;
 
                 ninePatchContentTop = spinner.getValueAsInt();
 
                 widget.setContentTop(spinner.getValueAsInt());
                 widget.getPaddingButton().setChecked(true);
 
-                var otherSpinner = (Spinner) findActor("spinner-content-bottom");
+                Spinner otherSpinner = (Spinner) findActor("spinner-content-bottom");
                 otherSpinner.setMaximum(widget.getRegionHeight() - spinner.getValueAsInt());
 
                 updatePreviewSplits();
@@ -531,15 +535,15 @@ public class Dialog9Patch extends Dialog {
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                var widget = (NinePatchWidget) findActor("ninePatchWidget");
-                var spinner = (Spinner) actor;
+            	NinePatchWidget widget = (NinePatchWidget) findActor("ninePatchWidget");
+                Spinner spinner = (Spinner) actor;
 
                 ninePatchContentBottom = spinner.getValueAsInt();
 
                 widget.setContentBottom(spinner.getValueAsInt());
                 widget.getPaddingButton().setChecked(true);
 
-                var otherSpinner = (Spinner) findActor("spinner-content-top");
+                Spinner otherSpinner = (Spinner) findActor("spinner-content-top");
                 otherSpinner.setMaximum(widget.getRegionHeight() - spinner.getValueAsInt());
 
                 updatePreviewSplits();
@@ -561,15 +565,15 @@ public class Dialog9Patch extends Dialog {
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                 var widget = (NinePatchWidget) findActor("ninePatchWidget");
-                var spinner = (Spinner) actor;
+            	NinePatchWidget widget = (NinePatchWidget) findActor("ninePatchWidget");
+            	Spinner spinner = (Spinner) actor;
 
                 ninePatchContentLeft = spinner.getValueAsInt();
 
                 widget.setContentLeft(spinner.getValueAsInt());
                 widget.getPaddingButton().setChecked(true);
 
-                  var otherSpinner = (Spinner) findActor("spinner-content-right");
+                Spinner otherSpinner = (Spinner) findActor("spinner-content-right");
                 otherSpinner.setMaximum(widget.getRegionWidth() - spinner.getValueAsInt());
 
                 updatePreviewSplits();
@@ -590,15 +594,15 @@ public class Dialog9Patch extends Dialog {
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                var widget = (NinePatchWidget) findActor("ninePatchWidget");
-                var spinner = (Spinner) actor;
+            	NinePatchWidget widget = (NinePatchWidget) findActor("ninePatchWidget");
+            	Spinner spinner = (Spinner) actor;
 
                 ninePatchContentRight = spinner.getValueAsInt();
 
                 widget.setContentRight(spinner.getValueAsInt());
                 widget.getPaddingButton().setChecked(true);
 
-                var otherSpinner = (Spinner) findActor("spinner-content-left");
+                Spinner otherSpinner = (Spinner) findActor("spinner-content-left");
                 otherSpinner.setMaximum(widget.getRegionWidth() - spinner.getValueAsInt());
 
                 updatePreviewSplits();
@@ -611,7 +615,7 @@ public class Dialog9Patch extends Dialog {
         top.add(table).growX();
 
         table.defaults().space(5);
-        var imageButton = new ImageButton(getSkin(), "grid-light");
+        ImageButton imageButton = new ImageButton(getSkin(), "grid-light");
         imageButton.setName("grid-light");
         imageButton.setProgrammaticChangeEvents(false);
         table.add(imageButton);
@@ -620,7 +624,7 @@ public class Dialog9Patch extends Dialog {
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                  var widget = (NinePatchWidget) findActor("ninePatchWidget");
+            	NinePatchWidget widget = (NinePatchWidget) findActor("ninePatchWidget");
                 if (((ImageButton) actor).isChecked()) {
                     widget.setGridType(NinePatchWidget.GridType.LIGHT);
                 } else {
@@ -640,7 +644,7 @@ public class Dialog9Patch extends Dialog {
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                  var widget = (NinePatchWidget) findActor("ninePatchWidget");
+            	NinePatchWidget widget = (NinePatchWidget) findActor("ninePatchWidget");
                 if (((ImageButton) actor).isChecked()) {
                     widget.setGridType(NinePatchWidget.GridType.DARK);
                 } else {
@@ -662,7 +666,7 @@ public class Dialog9Patch extends Dialog {
             }
         });
 
-        var slider = new Slider(1, 50, 1, false, getSkin(), "zoom-horizontal");
+        Slider slider = new Slider(1, 50, 1, false, getSkin(), "zoom-horizontal");
         slider.setName("top-zoom");
         table.add(slider);
         slider.addListener(main.getHandListener());
@@ -670,7 +674,7 @@ public class Dialog9Patch extends Dialog {
         slider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                  var slider = (Slider) findActor("top-zoom");
+            	Slider slider = (Slider) findActor("top-zoom");
                 ninePatchWidget.setZoom((int) slider.getValue());
             }
         });
@@ -680,7 +684,7 @@ public class Dialog9Patch extends Dialog {
 
         bottom.row();
 
-        var resizer = new ResizeWidget(null, getSkin());
+        ResizeWidget resizer = new ResizeWidget(null, getSkin());
         resizer.setTouchable(Touchable.enabled);
         resizer.setName("resizer");
         table = new Table();
@@ -711,13 +715,13 @@ public class Dialog9Patch extends Dialog {
 
             @Override
             public boolean scrolled(InputEvent event, float x, float y, int amount) {
-                  var slider = (Slider) findActor("bottom-zoom");
+            	Slider slider = (Slider) findActor("bottom-zoom");
                 slider.setValue(slider.getValue() - amount * 5);
                 return true;
             }
         });
 
-        var scrollPane = new ScrollPane(resizer, getSkin());
+        ScrollPane scrollPane = new ScrollPane(resizer, getSkin());
         scrollPane.setName("scroll");
         scrollPane.setFlickScroll(false);
         scrollPane.setFadeScrollBars(false);
@@ -733,7 +737,7 @@ public class Dialog9Patch extends Dialog {
         label = new Label("Content:", getSkin());
         table.add(label);
 
-        var selectBox = new SelectBox<String>(getSkin());
+        SelectBox selectBox = new SelectBox<String>(getSkin());
         selectBox.setName("contentSelectBox");
         table.add(selectBox);
         selectBox.setItems("None", "Text", "Color", "Drawable");
@@ -747,11 +751,12 @@ public class Dialog9Patch extends Dialog {
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                switch (selectBox.getSelected()) {
-                    case "None":
+            	
+                    if(selectBox.getSelected().equals("None")) {
                         updatePreviewContentActor(null);
-                        break;
-                    case "Text":
+                    }
+                    
+                    if(selectBox.getSelected().equals("Text")) {
                         main.getDialogFactory().showInputDialog("Text Content", "Enter the text to be displayed inside of the preview:", "Lorem Ipsum", new DialogFactory.InputDialogListener() {
                             @Override
                             public void confirmed(String text) {
@@ -759,7 +764,7 @@ public class Dialog9Patch extends Dialog {
                                     if (colorData == null) {
                                         selectBox.setSelected("None");
                                     } else {
-                                          var label = new Label(text, getSkin(), "white");
+                                    	Label label = new Label(text, getSkin(), "white");
                                         label.setAlignment(Align.center);
                                         label.setColor(colorData.color);
                                         label.setUserObject("Text");
@@ -774,13 +779,14 @@ public class Dialog9Patch extends Dialog {
                                 selectBox.setSelected("None");
                             }
                         });
-                        break;
-                    case "Color":
+                    }
+                    
+                    if(selectBox.getSelected().equals("Color")) {
                         main.getDialogFactory().showDialogColors(new StyleProperty(), (ColorData colorData) -> {
                             if (colorData == null) {
                                 selectBox.setSelected("None");
                             } else {
-                                  var image = new Image(getSkin(), "white");
+                            	Image image = new Image(getSkin(), "white");
                                 image.setScaling(Scaling.stretch);
                                 image.setColor(colorData.color);
                                 image.setUserObject("Color");
@@ -788,12 +794,13 @@ public class Dialog9Patch extends Dialog {
                                 updatePreviewContentActor(image);
                             }
                         }, null);
-                        break;
-                    case "Drawable":
-                          var dialog = main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
+                    }
+                    
+                    if(selectBox.getSelected().equals("Drawable")) {
+                          DialogDrawables dialog = main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
                             @Override
                             public void confirmed(DrawableData drawable) {
-                                  var image = new Image(main.getRootTable().getDrawablePairs().get(drawable.name));
+                            	Image image = new Image(main.getRootTable().getDrawablePairs().get(drawable.name));
                                 image.setScaling(Scaling.none);
                                 image.setUserObject("Drawable");
 
@@ -812,9 +819,8 @@ public class Dialog9Patch extends Dialog {
                         }, null);
 
                         dialog.setShowing9patchButton(false);
-                        break;
-                }
-            }
+                    }
+            	}
         });
         
         imageButton = new ImageButton(getSkin(), "color");
@@ -834,7 +840,7 @@ public class Dialog9Patch extends Dialog {
                 });
             }
         });
-        var toolTip = new TextTooltip("Background color for preview pane.", main.getTooltipManager(), getSkin());
+        TextTooltip toolTip = new TextTooltip("Background color for preview pane.", main.getTooltipManager(), getSkin());
         imageButton.addListener(toolTip);
 
         slider = new Slider(1.0f, 100.0f, 1.0f, false, getSkin(), "zoom-horizontal");
@@ -846,8 +852,8 @@ public class Dialog9Patch extends Dialog {
         slider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                  var slider = (Slider) findActor("bottom-zoom");
-                  var zoom = slider.getValue();
+            	Slider slider = (Slider) findActor("bottom-zoom");
+                float zoom = slider.getValue();
 
                 if (previewZoomed != null) {
                     previewZoomed.setLeftWidth(preview.getLeftWidth() * zoom);
@@ -868,7 +874,7 @@ public class Dialog9Patch extends Dialog {
                         previewZoomed.setPadBottom(preview.getPadBottom() * zoom);
                     }
 
-                      var table = new Table();
+                    Table table = new Table();
                     resizer.setActor(table);
                     resizer.setMinWidth(previewZoomed.getTotalWidth() + previewZoomed.getPadLeft() + preview.getPadRight());
                     resizer.setMinHeight(previewZoomed.getTotalHeight() + previewZoomed.getPadTop() + preview.getPadBottom());
@@ -877,10 +883,10 @@ public class Dialog9Patch extends Dialog {
                     updatePreviewContentActor(previewContentActor);
                     if (previewContentActor != null) {
 
-                          var selectBox = (SelectBox<String>) findActor("contentSelectBox");
+                    	SelectBox<String> selectBox = (SelectBox<String>) findActor("contentSelectBox");
 
-                          var listeners = new Array<EventListener>(selectBox.getListeners());
-                        for (  var listener : listeners) {
+                    	Array<EventListener> listeners = new Array<EventListener>(selectBox.getListeners());
+                        for (EventListener listener : listeners) {
                             if (listener instanceof ChangeListener) {
                                 selectBox.removeListener(listener);
                             }
@@ -888,7 +894,7 @@ public class Dialog9Patch extends Dialog {
 
                         selectBox.setSelected((String) previewContentActor.getUserObject());
 
-                        for (  var listener : listeners) {
+                        for (EventListener listener : listeners) {
                             if (listener instanceof ChangeListener) {
                                 selectBox.addListener(listener);
                             }
@@ -927,7 +933,7 @@ public class Dialog9Patch extends Dialog {
                         main.getProjectData().setLastDrawablePath(fileHandle.parent().path() + "/");
                         hide();
                         
-                        for (var listener : listeners) {
+                        for (Dialog9PatchListener listener : listeners) {
                             listener.fileSaved(fileHandle);
                         }
                     }
@@ -947,7 +953,7 @@ public class Dialog9Patch extends Dialog {
     @Override
     protected void result(Object object) {
         if (!(Boolean) object) {
-            for (var listener : listeners) {
+            for (Dialog9PatchListener listener : listeners) {
                 listener.cancelled();
             }
         }
@@ -965,16 +971,16 @@ public class Dialog9Patch extends Dialog {
             preview.setPadding(ninePatchContentLeft, ninePatchContentRight, ninePatchContentTop, ninePatchContentBottom);
             previewZoomed = new NinePatch(preview);
 
-            var resizer = (ResizeWidget) findActor("resizer");
-            var table = (Table) resizer.getActor();
+            ResizeWidget resizer = (ResizeWidget) findActor("resizer");
+            Table table = (Table) resizer.getActor();
             table.setBackground(new NinePatchDrawable(previewZoomed));
         }
     }
 
     private void updatePreviewContentActor(Actor actor) {
         previewContentActor = actor;
-        var resizer = (ResizeWidget) findActor("resizer");
-        var table = (Table) resizer.getActor();
+        ResizeWidget resizer = (ResizeWidget) findActor("resizer");
+        Table table = (Table) resizer.getActor();
         table.clearChildren();
 
         if (actor != null && preview != null) {
@@ -1008,7 +1014,7 @@ public class Dialog9Patch extends Dialog {
 
             File file = main.getDesktopWorker().openDialog("Open Image...", defaultPath, filterPatterns, "Image files");
             if (file != null) {
-                var fileHandle = new FileHandle(file);
+            	FileHandle fileHandle = new FileHandle(file);
                 loadImage(fileHandle);
             }
         };
@@ -1028,16 +1034,16 @@ public class Dialog9Patch extends Dialog {
         ninePatchContentTop = 0;
         ninePatchContentBottom = 0;
 
-        var pixmap = new Pixmap(fileHandle);
+        Pixmap pixmap = new Pixmap(fileHandle);
 
         if (fileHandle.nameWithoutExtension().endsWith(".9") && pixmap.getWidth() >= 3 && pixmap.getHeight() >= 3) {
-            var cropped = new Pixmap(pixmap.getWidth() - 2, pixmap.getHeight() - 2, Pixmap.Format.RGBA8888);
+        	Pixmap cropped = new Pixmap(pixmap.getWidth() - 2, pixmap.getHeight() - 2, Pixmap.Format.RGBA8888);
 
             cropped.setBlending(Pixmap.Blending.None);
             cropped.drawPixmap(pixmap, 0, 0, 1, 1, pixmap.getWidth() - 2, pixmap.getHeight() - 2);
 
             for (int x = 1; x < pixmap.getWidth() - 2; x++) {
-                  var color = new Color(pixmap.getPixel(x, pixmap.getHeight() - 1));
+            	Color color = new Color(pixmap.getPixel(x, pixmap.getHeight() - 1));
                 if (color.a > 0) {
                     if (color.r != 0 || color.g != 0 || color.b != 0) {
                         break;
@@ -1049,7 +1055,7 @@ public class Dialog9Patch extends Dialog {
             }
 
             for (int x = pixmap.getWidth() - 2; x > 0; x--) {
-                  var color = new Color(pixmap.getPixel(x, pixmap.getHeight() - 1));
+            	Color color = new Color(pixmap.getPixel(x, pixmap.getHeight() - 1));
                 if (color.a > 0) {
                     if (color.r != 0 || color.g != 0 || color.b != 0) {
                         break;
@@ -1061,7 +1067,7 @@ public class Dialog9Patch extends Dialog {
             }
 
             for (int y = 1; y < pixmap.getHeight() - 2; y++) {
-                  var color = new Color(pixmap.getPixel(0, y));
+            	Color color = new Color(pixmap.getPixel(0, y));
                 if (color.a > 0) {
                     if (color.r != 0 || color.g != 0 || color.b != 0) {
                         break;
@@ -1073,7 +1079,7 @@ public class Dialog9Patch extends Dialog {
             }
 
             for (int y = pixmap.getHeight() - 2; y > 0; y--) {
-                  var color = new Color(pixmap.getPixel(0, y));
+            	Color color = new Color(pixmap.getPixel(0, y));
                 if (color.a > 0) {
                     if (color.r != 0 || color.g != 0 || color.b != 0) {
                         break;
@@ -1085,7 +1091,7 @@ public class Dialog9Patch extends Dialog {
             }
 
             for (int x = 1; x < pixmap.getWidth() - 2; x++) {
-                  var color = new Color(pixmap.getPixel(x, 0));
+            	Color color = new Color(pixmap.getPixel(x, 0));
                 if (color.a > 0) {
                     if (color.r != 0 || color.g != 0 || color.b != 0) {
                         break;
@@ -1097,7 +1103,7 @@ public class Dialog9Patch extends Dialog {
             }
 
             for (int x = pixmap.getWidth() - 2; x > 0; x--) {
-                  var color = new Color(pixmap.getPixel(x, 0));
+            	Color color = new Color(pixmap.getPixel(x, 0));
                 if (color.a > 0) {
                     if (color.r != 0 || color.g != 0 || color.b != 0) {
                         break;
@@ -1109,7 +1115,7 @@ public class Dialog9Patch extends Dialog {
             }
 
             for (int y = 1; y < pixmap.getHeight() - 2; y++) {
-                  var color = new Color(pixmap.getPixel(pixmap.getWidth() - 1, y));
+            	Color color = new Color(pixmap.getPixel(pixmap.getWidth() - 1, y));
                 if (color.a > 0) {
                     if (color.r != 0 || color.g != 0 || color.b != 0) {
                         break;
@@ -1121,7 +1127,7 @@ public class Dialog9Patch extends Dialog {
             }
 
             for (int y = pixmap.getHeight() - 2; y > 0; y--) {
-                  var color = new Color(pixmap.getPixel(pixmap.getWidth() - 1, y));
+            	Color color = new Color(pixmap.getPixel(pixmap.getWidth() - 1, y));
                 if (color.a > 0) {
                     if (color.r != 0 || color.g != 0 || color.b != 0) {
                         break;
@@ -1144,7 +1150,7 @@ public class Dialog9Patch extends Dialog {
         ninePatchContentBottomOriginal = ninePatchContentBottom;
         ninePatchContentTopOriginal = ninePatchContentTop;
 
-        var texture = new Texture(pixmap);
+        Texture texture = new Texture(pixmap);
         preview = new NinePatch(texture, ninePatchLeft, ninePatchRight, ninePatchTop, ninePatchBottom);
         preview.setPadding(ninePatchContentLeft, ninePatchContentRight, ninePatchContentTop, ninePatchContentBottom);
         previewZoomed = new NinePatch(preview);
@@ -1155,10 +1161,10 @@ public class Dialog9Patch extends Dialog {
 
         updatePreviewContentActor(previewContentActor);
         if (previewContentActor != null) {
-            var selectBox = (SelectBox<String>) findActor("contentSelectBox");
+        	SelectBox<String> selectBox = (SelectBox<String>) findActor("contentSelectBox");
 
-            var listeners = new Array<EventListener>(selectBox.getListeners());
-            for (  var listener : listeners) {
+        	Array<EventListener> listeners = new Array<EventListener>(selectBox.getListeners());
+            for (EventListener listener : listeners) {
                 if (listener instanceof ChangeListener) {
                     selectBox.removeListener(listener);
                 }
@@ -1166,19 +1172,19 @@ public class Dialog9Patch extends Dialog {
 
             selectBox.setSelected((String) previewContentActor.getUserObject());
 
-            for (  var listener : listeners) {
+            for (EventListener listener : listeners) {
                 if (listener instanceof ChangeListener) {
                     selectBox.addListener(listener);
                 }
             }
         }
 
-        var ninePatchWidget = (NinePatchWidget) findActor("ninePatchWidget");
-        var existingDrawable = ninePatchWidget.getDrawable();
+        NinePatchWidget ninePatchWidget = (NinePatchWidget) findActor("ninePatchWidget");
+        Drawable existingDrawable = ninePatchWidget.getDrawable();
         if (existingDrawable != null) {
             ((TextureRegionDrawable) existingDrawable).getRegion().getTexture().dispose();
         }
-        var region = new TextureRegion(texture);
+        TextureRegion region = new TextureRegion(texture);
         ninePatchWidget.setDrawable(new TextureRegionDrawable(region));
         ninePatchWidget.setRegionWidth(region.getRegionWidth());
         ninePatchWidget.setRegionHeight(region.getRegionHeight());
@@ -1194,7 +1200,7 @@ public class Dialog9Patch extends Dialog {
 
         zoomAndRecenter();
 
-        var spinner = (Spinner) findActor("spinner-padding-left");
+        Spinner spinner = (Spinner) findActor("spinner-padding-left");
         spinner.setMaximum(region.getRegionWidth() - ninePatchRight);
 
         spinner = (Spinner) findActor("spinner-padding-right");
@@ -1226,10 +1232,10 @@ public class Dialog9Patch extends Dialog {
     }
     
     private void saveNinePatch(FileHandle originalFile, FileHandle targetFile, int ninePatchLeft, int ninePatchRight, int ninePatchBottom, int ninePatchTop, int ninePatchContentLeft, int ninePatchContentRight, int ninePatchContentBottom, int ninePatchContentTop) {
-        var originalImage = new Pixmap(originalFile);
+    	Pixmap originalImage = new Pixmap(originalFile);
         
         if (originalFile.path().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
-            var cropped = new Pixmap(originalImage.getWidth() - 2, originalImage.getHeight() - 2, Pixmap.Format.RGBA8888);
+        	Pixmap cropped = new Pixmap(originalImage.getWidth() - 2, originalImage.getHeight() - 2, Pixmap.Format.RGBA8888);
             cropped.setBlending(Pixmap.Blending.None);
             
             cropped.drawPixmap(originalImage, 0, 0, 1, 1, originalImage.getWidth() - 2, originalImage.getHeight() - 2);
@@ -1237,7 +1243,7 @@ public class Dialog9Patch extends Dialog {
             originalImage = cropped;
         }
         
-        var savePixmap = new Pixmap(originalImage.getWidth() + 2, originalImage.getHeight() + 2, Pixmap.Format.RGBA8888);
+        Pixmap savePixmap = new Pixmap(originalImage.getWidth() + 2, originalImage.getHeight() + 2, Pixmap.Format.RGBA8888);
         savePixmap.setBlending(Pixmap.Blending.None);
         savePixmap.drawPixmap(originalImage, 1, 1);
         
@@ -1255,12 +1261,12 @@ public class Dialog9Patch extends Dialog {
 
     private void zoomAndRecenter() {
         pack();
-        var widget = (NinePatchWidget) findActor("ninePatchWidget");
-        var slider = (Slider) findActor("top-zoom");
+        NinePatchWidget widget = (NinePatchWidget) findActor("ninePatchWidget");
+        Slider slider = (Slider) findActor("top-zoom");
         
-        var widthRatio = MathUtils.floor(widget.getWidth() / (widget.getRegionWidth() + 4));
-        var heightRatio = MathUtils.floor(widget.getHeight() / (widget.getRegionHeight() + 4));
-        slider.setValue(Math.min(widthRatio, heightRatio));
+        double widthRatio = MathUtils.floor(widget.getWidth() / (widget.getRegionWidth() + 4));
+        double heightRatio = MathUtils.floor(widget.getHeight() / (widget.getRegionHeight() + 4));
+        slider.setValue((float) Math.min(widthRatio, heightRatio));
         
         widget.setPositionX(-widget.getRegionWidth() / 2.0f);
         widget.setPositionY(-widget.getRegionHeight() / 2.0f);
@@ -1284,10 +1290,10 @@ public class Dialog9Patch extends Dialog {
     }
     
     private void autoPatches() {
-        var originalImage = new Pixmap(loadedFile);
+    	Pixmap originalImage = new Pixmap(loadedFile);
         
         if (loadedFile.path().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
-            var cropped = new Pixmap(originalImage.getWidth() - 2, originalImage.getHeight() - 2, Pixmap.Format.RGBA8888);
+        	Pixmap cropped = new Pixmap(originalImage.getWidth() - 2, originalImage.getHeight() - 2, Pixmap.Format.RGBA8888);
             cropped.setBlending(Pixmap.Blending.None);
             
             cropped.drawPixmap(originalImage, 0, 0, 1, 1, originalImage.getWidth() - 2, originalImage.getHeight() - 2);
@@ -1295,14 +1301,14 @@ public class Dialog9Patch extends Dialog {
             originalImage = cropped;
         }
         
-        var startX = originalImage.getWidth() / 2;
-        var color = new Color();
-        var colorPrevious = new Color();
-        var widget = (NinePatchWidget) findActor("ninePatchWidget");
-        var foundBreak = false;
+        int startX = originalImage.getWidth() / 2;
+        Color color = new Color();
+        Color colorPrevious = new Color();
+        NinePatchWidget widget = (NinePatchWidget) findActor("ninePatchWidget");
+        boolean foundBreak = false;
         
-        for (var x = startX - 1; x >= 0 && !foundBreak; x--) {
-            for (var y = 0; y < originalImage.getHeight(); y++) {
+        for (int x = startX - 1; x >= 0 && !foundBreak; x--) {
+            for (int y = 0; y < originalImage.getHeight(); y++) {
                 color.set(originalImage.getPixel(x, y));
                 colorPrevious.set(originalImage.getPixel(x + 1, y));
                 
@@ -1316,7 +1322,7 @@ public class Dialog9Patch extends Dialog {
         if (!foundBreak) {
             ninePatchLeft = 0;
         }
-        var spinnerItem = (Spinner) findActor("spinner-padding-left");
+        Spinner spinnerItem = (Spinner) findActor("spinner-padding-left");
         spinnerItem.setValue(ninePatchLeft);
         widget.setPaddingLeft(ninePatchLeft);
         
@@ -1326,8 +1332,8 @@ public class Dialog9Patch extends Dialog {
         widget.setContentLeft(ninePatchContentLeft);
         
         foundBreak = false;
-        for (var x = startX + 1; x < originalImage.getWidth() && !foundBreak; x++) {
-            for (var y = 0; y < originalImage.getHeight(); y++) {
+        for (int x = startX + 1; x < originalImage.getWidth() && !foundBreak; x++) {
+            for (int y = 0; y < originalImage.getHeight(); y++) {
                 color.set(originalImage.getPixel(x, y));
                 colorPrevious.set(originalImage.getPixel(x - 1, y));
                 
@@ -1350,10 +1356,10 @@ public class Dialog9Patch extends Dialog {
         spinnerItem.setValue(ninePatchContentRight);
         widget.setContentRight(ninePatchContentRight);
         
-        var startY = originalImage.getHeight() / 2;
+        int startY = originalImage.getHeight() / 2;
         foundBreak = false;
-        for (var y = startY - 1; y >= 0 && !foundBreak; y--) {
-            for (var x = 0; x < originalImage.getWidth(); x++) {
+        for (int y = startY - 1; y >= 0 && !foundBreak; y--) {
+            for (int x = 0; x < originalImage.getWidth(); x++) {
                 color.set(originalImage.getPixel(x, y));
                 colorPrevious.set(originalImage.getPixel(x, y + 1));
                 
@@ -1377,8 +1383,8 @@ public class Dialog9Patch extends Dialog {
         widget.setContentTop(ninePatchContentTop);
         
         foundBreak = false;
-        for (var y = startY + 1; y < originalImage.getHeight() && !foundBreak; y++) {
-            for (var x = 0; x < originalImage.getWidth(); x++) {
+        for (int y = startY + 1; y < originalImage.getHeight() && !foundBreak; y++) {
+            for (int x = 0; x < originalImage.getWidth(); x++) {
                 color.set(originalImage.getPixel(x, y));
                 colorPrevious.set(originalImage.getPixel(x, y - 1));
                 
@@ -1415,7 +1421,7 @@ public class Dialog9Patch extends Dialog {
 
             File file = main.getDesktopWorker().openDialog("Load Patches from File...", defaultPath, filterPatterns, "Nine Patch files");
             if (file != null) {
-                var fileHandle = new FileHandle(file);
+            	FileHandle fileHandle = new FileHandle(file);
                 loadPatches(fileHandle);
             }
         };
@@ -1433,16 +1439,16 @@ public class Dialog9Patch extends Dialog {
         ninePatchContentTop = 0;
         ninePatchContentBottom = 0;
         
-        var pixmap = new Pixmap(fileHandle);
+        Pixmap pixmap = new Pixmap(fileHandle);
 
         if (fileHandle.nameWithoutExtension().endsWith(".9") && pixmap.getWidth() >= 3 && pixmap.getHeight() >= 3) {
-            var cropped = new Pixmap(pixmap.getWidth() - 2, pixmap.getHeight() - 2, Pixmap.Format.RGBA8888);
+        	Pixmap cropped = new Pixmap(pixmap.getWidth() - 2, pixmap.getHeight() - 2, Pixmap.Format.RGBA8888);
 
             cropped.setBlending(Pixmap.Blending.None);
             cropped.drawPixmap(pixmap, 0, 0, 1, 1, pixmap.getWidth() - 2, pixmap.getHeight() - 2);
 
             for (int x = 1; x < pixmap.getWidth() - 2; x++) {
-                  var color = new Color(pixmap.getPixel(x, pixmap.getHeight() - 1));
+            	Color color = new Color(pixmap.getPixel(x, pixmap.getHeight() - 1));
                 if (color.a > 0) {
                     if (color.r != 0 || color.g != 0 || color.b != 0) {
                         break;
@@ -1454,7 +1460,7 @@ public class Dialog9Patch extends Dialog {
             }
 
             for (int x = pixmap.getWidth() - 2; x > 0; x--) {
-                  var color = new Color(pixmap.getPixel(x, pixmap.getHeight() - 1));
+            	Color color = new Color(pixmap.getPixel(x, pixmap.getHeight() - 1));
                 if (color.a > 0) {
                     if (color.r != 0 || color.g != 0 || color.b != 0) {
                         break;
@@ -1466,7 +1472,7 @@ public class Dialog9Patch extends Dialog {
             }
 
             for (int y = 1; y < pixmap.getHeight() - 2; y++) {
-                  var color = new Color(pixmap.getPixel(0, y));
+            	Color color = new Color(pixmap.getPixel(0, y));
                 if (color.a > 0) {
                     if (color.r != 0 || color.g != 0 || color.b != 0) {
                         break;
@@ -1478,7 +1484,7 @@ public class Dialog9Patch extends Dialog {
             }
 
             for (int y = pixmap.getHeight() - 2; y > 0; y--) {
-                  var color = new Color(pixmap.getPixel(0, y));
+            	Color color = new Color(pixmap.getPixel(0, y));
                 if (color.a > 0) {
                     if (color.r != 0 || color.g != 0 || color.b != 0) {
                         break;
@@ -1490,7 +1496,7 @@ public class Dialog9Patch extends Dialog {
             }
 
             for (int x = 1; x < pixmap.getWidth() - 2; x++) {
-                  var color = new Color(pixmap.getPixel(x, 0));
+            	Color color = new Color(pixmap.getPixel(x, 0));
                 if (color.a > 0) {
                     if (color.r != 0 || color.g != 0 || color.b != 0) {
                         break;
@@ -1502,7 +1508,7 @@ public class Dialog9Patch extends Dialog {
             }
 
             for (int x = pixmap.getWidth() - 2; x > 0; x--) {
-                  var color = new Color(pixmap.getPixel(x, 0));
+            	Color color = new Color(pixmap.getPixel(x, 0));
                 if (color.a > 0) {
                     if (color.r != 0 || color.g != 0 || color.b != 0) {
                         break;
@@ -1514,7 +1520,7 @@ public class Dialog9Patch extends Dialog {
             }
 
             for (int y = 1; y < pixmap.getHeight() - 2; y++) {
-                  var color = new Color(pixmap.getPixel(pixmap.getWidth() - 1, y));
+            	Color color = new Color(pixmap.getPixel(pixmap.getWidth() - 1, y));
                 if (color.a > 0) {
                     if (color.r != 0 || color.g != 0 || color.b != 0) {
                         break;
@@ -1526,7 +1532,7 @@ public class Dialog9Patch extends Dialog {
             }
 
             for (int y = pixmap.getHeight() - 2; y > 0; y--) {
-                  var color = new Color(pixmap.getPixel(pixmap.getWidth() - 1, y));
+            	Color color = new Color(pixmap.getPixel(pixmap.getWidth() - 1, y));
                 if (color.a > 0) {
                     if (color.r != 0 || color.g != 0 || color.b != 0) {
                         break;
@@ -1539,9 +1545,9 @@ public class Dialog9Patch extends Dialog {
             pixmap.dispose();
             cropped.dispose();
             
-            var widget = (NinePatchWidget) findActor("ninePatchWidget");
+            NinePatchWidget widget = (NinePatchWidget) findActor("ninePatchWidget");
 
-            var spinnerItem = (Spinner) findActor("spinner-padding-left");
+            Spinner spinnerItem = (Spinner) findActor("spinner-padding-left");
             spinnerItem.setValue(ninePatchLeft);
             widget.setPaddingLeft(ninePatchLeft);
 
@@ -1586,11 +1592,11 @@ public class Dialog9Patch extends Dialog {
                 filterPatterns = new String[]{"*.png;", "*.jpg"};
             }
 
-            var files = main.getDesktopWorker().openMultipleDialog("Batch apply to files", defaultPath, filterPatterns, "Image files");
+            List<File> files = main.getDesktopWorker().openMultipleDialog("Batch apply to files", defaultPath, filterPatterns, "Image files");
             if (files != null && files.size() > 0) {
-                var fileHandles = new Array<FileHandle>();
-                for (var file : files) {
-                    var fileHandle = new FileHandle(file);
+            	Array<FileHandle> fileHandles = new Array<FileHandle>();
+                for (File file : files) {
+                	FileHandle fileHandle = new FileHandle(file);
                     fileHandles.add(fileHandle);
                 }
                 batchApply(fileHandles);
@@ -1601,8 +1607,8 @@ public class Dialog9Patch extends Dialog {
     }
     
     private void batchApply(Array<FileHandle> fileHandles) {
-        for (var fileHandle : fileHandles) {
-            var targetFile = fileHandle;
+        for (FileHandle fileHandle : fileHandles) {
+        	FileHandle targetFile = fileHandle;
             if (!fileHandle.name().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
                 targetFile = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".9.png");
             }
@@ -1611,8 +1617,8 @@ public class Dialog9Patch extends Dialog {
     }
     
     private void updateDisabled() {
-        var disabled = loadedFile == null;
-        var textButton = (TextButton) findActor("reset-button");
+    	boolean disabled = loadedFile == null;
+    	TextButton textButton = (TextButton) findActor("reset-button");
         textButton.setDisabled(disabled);
 
         textButton = (TextButton) findActor("auto-button");

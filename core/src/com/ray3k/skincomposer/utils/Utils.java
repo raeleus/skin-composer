@@ -23,15 +23,6 @@
  ******************************************************************************/
 package com.ray3k.skincomposer.utils;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Cursor;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import java.awt.Desktop;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -40,10 +31,22 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 public class Utils {
     public static String os;
@@ -344,13 +347,13 @@ public class Utils {
     }
     
     public static Pixmap textureRegionToPixmap(TextureRegion textureRegion) {
-        var texture = textureRegion.getTexture();
+        Texture texture = textureRegion.getTexture();
         if (!texture.getTextureData().isPrepared()) {
             texture.getTextureData().prepare();
         }
         
-        var pixmap = texture.getTextureData().consumePixmap();
-        var returnValue = new Pixmap(textureRegion.getRegionWidth(), textureRegion.getRegionHeight(), Pixmap.Format.RGBA8888);
+        Pixmap pixmap = texture.getTextureData().consumePixmap();
+        Pixmap returnValue = new Pixmap(textureRegion.getRegionWidth(), textureRegion.getRegionHeight(), Pixmap.Format.RGBA8888);
         returnValue.setBlending(Pixmap.Blending.None);
         
         for (int x = 0; x < textureRegion.getRegionWidth(); x++) {

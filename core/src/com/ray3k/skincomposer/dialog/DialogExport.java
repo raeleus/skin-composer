@@ -23,7 +23,11 @@
  */
 package com.ray3k.skincomposer.dialog;
 
-import com.badlogic.gdx.*;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -42,7 +46,6 @@ import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.data.JsonData.ExportFormat;
-import java.nio.file.Paths;
 
 /**
  *
@@ -63,14 +66,14 @@ public class DialogExport extends Dialog {
         getContentTable().pad(15.0f);
         
         getContentTable().defaults().left().space(10);
-        var table = new Table();
+        Table table = new Table();
         getContentTable().add(table).padBottom(10);
         
         table.defaults().space(5);
-        var label = new Label("Export Path:", main.getSkin());
+        Label label = new Label("Export Path:", main.getSkin());
         table.add(label);
         
-        var textField = new TextField("", main.getSkin());
+        TextField textField = new TextField("", main.getSkin());
         textField.setName("path");
         textField.setText(main.getProjectData().getLastImportExportPath());
         textField.setCursorPosition(Math.max(0, textField.getText().length() - 1));
@@ -84,7 +87,7 @@ public class DialogExport extends Dialog {
             }
         });
         
-        var textButton = new TextButton("Browse...", main.getSkin());
+        TextButton textButton = new TextButton("Browse...", main.getSkin());
         table.add(textButton);
         textButton.addListener(main.getHandListener());
         textButton.addListener(new ChangeListener() {
@@ -95,7 +98,7 @@ public class DialogExport extends Dialog {
         });
         
         getContentTable().row();
-        var textureAtlasCheckBox = new CheckBox("Generate texture atlas", main.getSkin());
+        CheckBox textureAtlasCheckBox = new CheckBox("Generate texture atlas", main.getSkin());
         textureAtlasCheckBox.setChecked(main.getProjectData().isExportingAtlas());
         getContentTable().add(textureAtlasCheckBox);
         textureAtlasCheckBox.addListener(main.getHandListener());
@@ -107,7 +110,7 @@ public class DialogExport extends Dialog {
         });
         
         getContentTable().row();
-        var fontCheckBox = new CheckBox("Copy font files to destination", main.getSkin());
+        CheckBox fontCheckBox = new CheckBox("Copy font files to destination", main.getSkin());
         fontCheckBox.setChecked(main.getProjectData().isExportingFonts());
         getContentTable().add(fontCheckBox);
         fontCheckBox.addListener(main.getHandListener());
@@ -119,7 +122,7 @@ public class DialogExport extends Dialog {
         });
         
         getContentTable().row();
-        var simpleNamesCheckBox = new CheckBox("Export with simple names", main.getSkin());
+        CheckBox simpleNamesCheckBox = new CheckBox("Export with simple names", main.getSkin());
         simpleNamesCheckBox.setChecked(main.getProjectData().isUsingSimpleNames());
         getContentTable().add(simpleNamesCheckBox);
         simpleNamesCheckBox.addListener(main.getHandListener());
@@ -138,7 +141,7 @@ public class DialogExport extends Dialog {
         label = new Label("Exported JSON Format:", main.getSkin());
         table.add(label);
         
-        var selectBox = new SelectBox<ExportFormat>(main.getSkin());
+        SelectBox<ExportFormat> selectBox = new SelectBox<ExportFormat>(main.getSkin());
         selectBox.setItems(ExportFormat.MINIMAL, ExportFormat.JAVASCRIPT, ExportFormat.JSON);
         selectBox.setSelected(main.getProjectData().getExportFormat());
         table.add(selectBox);
@@ -171,9 +174,9 @@ public class DialogExport extends Dialog {
         String[] filterPatterns = {"*.json"};
 
         TextField textField  = findActor("path");
-        var file = main.getDesktopWorker().saveDialog("Export skin...", textField.getText(), filterPatterns, "Json files");
+        File file = main.getDesktopWorker().saveDialog("Export skin...", textField.getText(), filterPatterns, "Json files");
         if (file != null) {
-            var fileHandle = new FileHandle(file);
+        	FileHandle fileHandle = new FileHandle(file);
             if (fileHandle.extension().equals("")) {
                 fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".json");
             }
@@ -192,7 +195,7 @@ public class DialogExport extends Dialog {
                 cancel();
             } else {
                 TextField textField = findActor("path");
-                var fileHandle = Gdx.files.absolute(textField.getText());
+                FileHandle fileHandle = Gdx.files.absolute(textField.getText());
                 main.getProjectData().setLastImportExportPath(fileHandle.path());
                 
                 writeFile(fileHandle);
@@ -253,8 +256,8 @@ public class DialogExport extends Dialog {
     private boolean checkPath() {
         TextField textField = findActor("path");
         try {
-            var path = Paths.get(textField.getText());
-            var fileHandle = Gdx.files.absolute(path.toString());
+            Path path = Paths.get(textField.getText());
+            FileHandle fileHandle = Gdx.files.absolute(path.toString());
             return !fileHandle.isDirectory();
         } catch (Exception e) {
             return false;

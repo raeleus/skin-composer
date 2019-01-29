@@ -19,7 +19,7 @@ public interface DialogListener extends EventListener{
     @Override
     default boolean handle(Event event) {
         if (event instanceof DialogEvent) {
-            var dialogEvent = (DialogEvent) event;
+        	DialogEvent dialogEvent = (DialogEvent) event;
             if (dialogEvent.type == DialogEvent.Type.OPEN) {
                 opened();
             } else if (dialogEvent.type == DialogEvent.Type.CLOSE) {

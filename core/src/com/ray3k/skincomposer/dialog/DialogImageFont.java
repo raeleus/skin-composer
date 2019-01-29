@@ -31,6 +31,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -80,8 +81,8 @@ public class DialogImageFont extends Dialog {
     private static final String NUMBERS = "0123456789";
     private static final String ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String ALPHA_NUMERIC = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private static final String ALL = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~`!@#$%^&*()_-+=[{]}\\|;:'\",<.>/?•©¿¡áéíóúüñÑÁÉÍÓÚÜ";
-    private static final String SAMPLE_TEXT = "abcdefghijklmnopqrstuvwxyz\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n0123456789\n~`!@#$%^&*()_-+=[{]}\\|;:'\",<.>/?•©\n¿¡áéíóúüñÑÁÉÍÓÚÜ\n\nThe most merciful thing in the world, I think, is the inability of the human mind to correlate all its contents.\n\n\"That is not dead which can eternal lie, And with strange aeons even death may die.\"\n\nIn his house at R'lyeh dead Cthulhu waits dreaming.\n\nThe Thing cannot be described - there is no language for such abysms of shrieking and immemorial lunacy, such eldritch contradictions of all matter, force, and cosmic order. A mountain walked or stumbled.\n\nWe live on a placid island of ignorance in the midst of black seas of infinity, and it was not meant that we should voyage far.";
+    private static final String ALL = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~`!@#$%^&*()_-+=[{]}\\|;:'\",<.>/?â€¢Â©Â¿Â¡Ã¡Ã©Ã­Ã³ÃºÃ¼Ã±Ã‘Ã�Ã‰Ã�Ã“ÃšÃœ";
+    private static final String SAMPLE_TEXT = "abcdefghijklmnopqrstuvwxyz\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n0123456789\n~`!@#$%^&*()_-+=[{]}\\|;:'\",<.>/?â€¢Â©\nÂ¿Â¡Ã¡Ã©Ã­Ã³ÃºÃ¼Ã±Ã‘Ã�Ã‰Ã�Ã“ÃšÃœ\n\nThe most merciful thing in the world, I think, is the inability of the human mind to correlate all its contents.\n\n\"That is not dead which can eternal lie, And with strange aeons even death may die.\"\n\nIn his house at R'lyeh dead Cthulhu waits dreaming.\n\nThe Thing cannot be described - there is no language for such abysms of shrieking and immemorial lunacy, such eldritch contradictions of all matter, force, and cosmic order. A mountain walked or stumbled.\n\nWe live on a placid island of ignorance in the midst of black seas of infinity, and it was not meant that we should voyage far.";
     private static final String KERNING_DEFAULTS = "A' AC AG AO AQ AT AU AV AW AY BA BE BL BP BR BU BV BW BY CA CO CR DA DD DE DI DL DM DN DO DP DR DU DV DW DY EC EO FA FC FG FO F. F, GE GO GR GU HO IC IG IO JA JO KO L' LC LT LV LW LY LG LO LU M MG MO NC NG NO OA OB OD OE OF OH OI OK OL OM ON OP OR OT OU OV OW OX OY PA PE PL PO PP PU PY P. P, P; P: QU RC RG RY RT RU RV RW RY SI SM ST SU TA TC TO UA UC UG UO US VA VC VG VO VS WA WC WG WO YA YC YO YS ZO Ac Ad Ae Ag Ao Ap Aq At Au Av Aw Ay Bb Bi Bk Bl Br Bu By B. B, Ca Cr C. C, Da D. D, Eu Ev Fa Fe Fi Fo Fr Ft Fu Fy F. F, F; F: Gu He Ho Hu Hy Ic Id Iq Io It Ja Je Jo Ju J. J, Ke Ko Ku Lu Ly Ma Mc Md Me Mo Nu Na Ne Ni No Nu N. N, Oa Ob Oh Ok Ol O. O, Pa Pe Po Rd Re Ro Rt Ru Si Sp Su S. S, Ta Tc Te Ti To Tr Ts Tu Tw Ty T. T, T; T: Ua Ug Um Un Up Us U. U, Va Ve Vi Vo Vr Vu V. V, V; V: Wd Wi Wm Wr Wt Wu Wy W. W, W; W: Xa Xe Xo Xu Xy Yd Ye Yi Yp Yu Yv Y. Y, Y; Y: ac ad ae ag ap af at au av aw ay ap bl br bu by b. b, ca ch ck da dc de dg do dt du dv dw dy d. d, ea ei el em en ep er et eu ev ew ey e. e, fa fe ff fi fl fo f. f, ga ge gh gl go gg g. g, hc hd he hg ho hp ht hu hv hw hy ic id ie ig io ip it iu iv ja je jo ju j. j, ka kc kd ke kg ko la lc ld le lf lg lo lp lq lu lv lw ly ma mc md me mg mn mo mp mt mu mv my nc nd ne ng no np nt nu nv nw ny ob of oh oj ok ol om on op or ou ov ow ox oy o. o, pa ph pi pl pp pu p. p, qu t. ra rd re rg rk rl rm rn ro rq rr rt rv ry r. r, sh st su s. s, td ta te to t. t, ua uc ud ue ug uo up uq ut uv uw uy va vb vc vd ve vg vo vv vy v. v, wa wx wd we wg wh wo w. w, xa xe xo y. y, ya yc yd ye yo 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99";
     private static final CharArray BASELINE_EXCLUSION = new CharArray(new char[] {'C', 'G', 'J', 'O', 'Q', 'U', '0', '3', '4', '5', '6', '7', '8', '9', 'c', 'o', 'g', 'j', 'p', 'q', 'y'});
     private Array<BitmapCharacter> bitmapCharacters;
@@ -129,7 +130,7 @@ public class DialogImageFont extends Dialog {
         getButtonTable().pad(25.0f).padTop(0.0f);
         getButtonTable().defaults().minWidth(125.0f);
 
-        var textButton = new TextButton("Generate Font", skin);
+        TextButton textButton = new TextButton("Generate Font", skin);
         textButton.setName("generate");
         textButton.setDisabled(true);
         button(textButton, true);
@@ -140,7 +141,7 @@ public class DialogImageFont extends Dialog {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Keys.ENTER) {
-                    var textButton = ((TextButton) findActor("generate"));
+                	TextButton textButton = ((TextButton) findActor("generate"));
                     if (!textButton.isDisabled()) {
                         textButton.fire(new ChangeListener.ChangeEvent());
                     }
@@ -206,7 +207,7 @@ public class DialogImageFont extends Dialog {
     @Override
     protected void result(Object object) {
         if ((Boolean) object) {
-            var textField = (TextField) findActor("targetpath");
+        	TextField textField = (TextField) findActor("targetpath");
             writeFNT(Gdx.files.absolute(textField.getText()), true);
             if (imageFontListener != null) {
                 imageFontListener.fontGenerated(Gdx.files.absolute(textField.getText()));
@@ -220,19 +221,19 @@ public class DialogImageFont extends Dialog {
         fadables = new Array<Actor>();
         root.clearChildren();
         
-        var scrollTable = new Table();
+        Table scrollTable = new Table();
         scrollTable.defaults().space(10.0f);
-        var scrollPane = new ScrollPane(scrollTable, skin);
+        ScrollPane scrollPane = new ScrollPane(scrollTable, skin);
         scrollPane.setName("scroll");
         scrollPane.setFlickScroll(false);
         scrollPane.setFadeScrollBars(false);
         root.add(scrollPane).growY().growX();
         
-        var label = new Label("Settings", skin, "title-no-line");
+        Label label = new Label("Settings", skin, "title-no-line");
         scrollTable.add(label);
         
         scrollTable.row();
-        var content = new Table();
+        Table content = new Table();
         content.defaults().space(10.0f).spaceBottom(15.0f);
         scrollTable.add(content).minWidth(500).growX();
         
@@ -241,11 +242,11 @@ public class DialogImageFont extends Dialog {
         content.add(label).right().right();
         float width = label.getWidth();
         
-        var table = new Table();
+        Table table = new Table();
         table.defaults().space(10.0f);
         content.add(table).growX().colspan(3);
         
-        var textField = new TextField(settings.characters, skin);
+        TextField textField = new TextField(settings.characters, skin);
         textField.setName("characters");
         table.add(textField).growX();
         textField.addListener(new TextTooltip("Characters to be included in font", main.getTooltipManager(), skin));
@@ -265,7 +266,7 @@ public class DialogImageFont extends Dialog {
             }
         });
         
-        var selectBox = new SelectBox<String>(skin);
+        SelectBox<String> selectBox = new SelectBox<String>(skin);
         selectBox.setItems("0-9", "a-zA-Z", "a-zA-Z0-9", "a-zA-Z0-9!-?*", "custom");
         if (settings.characters.equals(NUMBERS)) {
             selectBox.setSelectedIndex(0);
@@ -285,7 +286,7 @@ public class DialogImageFont extends Dialog {
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                var textField = (TextField) findActor("characters");
+            	TextField textField = (TextField) findActor("characters");
                 switch (selectBox.getSelectedIndex()) {
                     case 0:
                         textField.setText(NUMBERS);
@@ -304,15 +305,15 @@ public class DialogImageFont extends Dialog {
             }
         });
         
-        var textButton = new TextButton("Copy", skin);
+        TextButton textButton = new TextButton("Copy", skin);
         table.add(textButton);
         textButton.addListener(new TextTooltip("Copy characters to clipboard", main.getTooltipManager(), skin));
         textButton.addListener(main.getHandListener());
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                var text = settings.characters;
-                var append = "    ";
+                String text = settings.characters;
+                String append = "    ";
                 for (int i = text.length() - 1; i > 0; i--) {
                     text = text.substring(0, i) + append + text.substring(i);
                 }
@@ -403,7 +404,7 @@ public class DialogImageFont extends Dialog {
         fadables.add(label);
         width = label.getWidth();
         
-        var spinner = new Spinner(settings.gap, 1.0, true, Spinner.Orientation.HORIZONTAL, skin);
+        Spinner spinner = new Spinner(settings.gap, 1.0, true, Spinner.Orientation.HORIZONTAL, skin);
         spinner.setName("gap");
         spinner.setMinimum(0);
         content.add(spinner).left().minWidth(100.0f);
@@ -417,7 +418,7 @@ public class DialogImageFont extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 settings.gap = ((Spinner) actor).getValueAsInt();
                 
-                var fileHandle = Gdx.files.absolute(((TextField) findActor("imagepath")).getText());
+                FileHandle fileHandle = Gdx.files.absolute(((TextField) findActor("imagepath")).getText());
                 try {
                     loadPixmap(fileHandle, false);
                     preview(true);
@@ -568,14 +569,14 @@ public class DialogImageFont extends Dialog {
         
         content.add().width(width);
         
-        for (var fadable : fadables) {
+        for (Actor fadable : fadables) {
             fadable.setColor(1.0f, 1.0f, 1.0f, .25f);
             fadable.setTouchable(Touchable.disabled);
         }
         
         //preview text
         scrollTable.row();
-        var image = new Image(skin, "pressed");
+        Image image = new Image(skin, "pressed");
         scrollTable.add(image).growX();
         
         scrollTable.row();
@@ -583,7 +584,7 @@ public class DialogImageFont extends Dialog {
         scrollTable.add(label);
         
         scrollTable.row();
-        var textArea = new TextArea(settings.preview, previewStyle);
+        TextArea textArea = new TextArea(settings.preview, previewStyle);
         textArea.setName("preview");
         scrollTable.add(textArea).grow().minHeight(100.0f);
         textArea.addListener(main.getIbeamListener());
@@ -623,12 +624,12 @@ public class DialogImageFont extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                var textArea = (TextArea) findActor("preview");
+            	TextArea textArea = (TextArea) findActor("preview");
                 textArea.setText(SAMPLE_TEXT);
             }
         });
         
-        var imageButton = new ImageButton(skin, "color");
+        ImageButton imageButton = new ImageButton(skin, "color");
         table.add(imageButton);
         imageButton.addListener(new TextTooltip("Change preview color", main.getTooltipManager(), skin));
         imageButton.addListener(main.getHandListener());
@@ -637,7 +638,7 @@ public class DialogImageFont extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 main.getDialogFactory().showDialogColors(new StyleProperty(), (ColorData colorData) -> {
                     if (colorData != null) {
-                        var textArea = (TextArea) findActor("preview");
+                    	TextArea textArea = (TextArea) findActor("preview");
                         previewStyle.fontColor = colorData.color;
                         settings.previewColor = colorData.color;
                     }
@@ -654,7 +655,7 @@ public class DialogImageFont extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 main.getDialogFactory().showDialogColors(new StyleProperty(), (ColorData colorData) -> {
                     if (colorData != null) {
-                        var textArea = (TextArea) findActor("preview");
+                    	TextArea textArea = (TextArea) findActor("preview");
                         previewStyle.background = ((NinePatchDrawable) previewStyle.background).tint(colorData.color);
                         settings.previewBackgroundColor = colorData.color;
                     }
@@ -666,7 +667,7 @@ public class DialogImageFont extends Dialog {
  
     private void sourceFileBrowse() {
         Runnable runnable = () -> {
-              var textField = (TextField) findActor("imagepath");
+        	TextField textField = (TextField) findActor("imagepath");
 
             String defaultPath = main.getProjectData().getLastFontPath();
             FileHandle currentPath = Gdx.files.absolute(textField.getText());
@@ -695,7 +696,7 @@ public class DialogImageFont extends Dialog {
             preview(true);
             main.getProjectData().setLastFontPath(fileHandle.parent().path() + "/");
             
-            var textField = (TextField) findActor("imagepath");
+            TextField textField = (TextField) findActor("imagepath");
             textField.setText(fileHandle.path());
             textField.setCursorPosition(textField.getText().length() - 1);
             
@@ -705,7 +706,7 @@ public class DialogImageFont extends Dialog {
             
             ((TextButton) findActor("generate")).setDisabled(false);
             
-            for (var fadable : fadables) {
+            for (Actor fadable : fadables) {
                 fadable.addAction(Actions.fadeIn(1.0f, Interpolation.fade));
                 fadable.setTouchable(Touchable.enabled);
             }
@@ -719,7 +720,7 @@ public class DialogImageFont extends Dialog {
     
     private void saveFileBrowse() {
         Runnable runnable = () -> {
-            var textField = (TextField) findActor("targetpath");
+        	TextField textField = (TextField) findActor("targetpath");
 
             String defaultPath = main.getProjectData().getLastFontPath();
             FileHandle currentPath = Gdx.files.absolute(textField.getText());
@@ -734,7 +735,7 @@ public class DialogImageFont extends Dialog {
 
             File file = main.getDesktopWorker().saveDialog("Save as font file...", defaultPath, filterPatterns, "Font files");
             if (file != null) {
-                var fileHandle = new FileHandle(file);
+            	FileHandle fileHandle = new FileHandle(file);
                 if (!fileHandle.extension().equalsIgnoreCase("fnt")) {
                     fileHandle = fileHandle.parent().child(fileHandle.name() + ".fnt");
                 }
@@ -749,7 +750,7 @@ public class DialogImageFont extends Dialog {
     }
     
     private void processSaveFile(String path) {
-        var textField = (TextField) findActor("targetpath");
+    	TextField textField = (TextField) findActor("targetpath");
         
         textField.setText(path);
         textField.setCursorPosition(textField.getText().length() - 1);
@@ -768,7 +769,7 @@ public class DialogImageFont extends Dialog {
 
             File file = main.getDesktopWorker().saveDialog("Save Image Font Settings...", defaultPath, filterPatterns, "Imagefont files");
             if (file != null) {
-                var fileHandle = new FileHandle(file);
+            	FileHandle fileHandle = new FileHandle(file);
                 if (!fileHandle.extension().equalsIgnoreCase("imagefont")) {
                     fileHandle = fileHandle.parent().child(fileHandle.name() + ".imagefont");
                 }
@@ -838,8 +839,8 @@ public class DialogImageFont extends Dialog {
     }
     
     private void loadSettings(FileHandle file) {
-        var imagePath = ((TextField) findActor("imagepath")).getText();
-        var targetPath = ((TextField) findActor("targetpath")).getText();
+    	String imagePath = ((TextField) findActor("imagepath")).getText();
+    	String targetPath = ((TextField) findActor("targetpath")).getText();
         
         json.setOutputType(JsonWriter.OutputType.json);
         settings = json.fromJson(ImageFontSettings.class, file);
@@ -860,8 +861,8 @@ public class DialogImageFont extends Dialog {
         Dialog dialog = new Dialog("Auto Kerning Pairs", skin) {
             @Override
             protected void result(Object object) {
-                var textButton = (TextButton) DialogImageFont.this.findActor("kerning button");
-                var fileHandle = Gdx.files.absolute(((TextField) DialogImageFont.this.findActor("imagepath")).getText());
+            	TextButton textButton = (TextButton) DialogImageFont.this.findActor("kerning button");
+                FileHandle fileHandle = Gdx.files.absolute(((TextField) DialogImageFont.this.findActor("imagepath")).getText());
                 if ((Boolean) object) {
                     textButton.setText("Kerning Pairs: ON");
                     settings.kerningPairsActivated = true;
@@ -892,13 +893,13 @@ public class DialogImageFont extends Dialog {
         
         dialog.getTitleTable().padLeft(10.0f);
         
-        var table = dialog.getContentTable();
+        Table table = dialog.getContentTable();
         table.pad(10.0f);
         
-        var label = new Label("Kerning Pairs", skin);
+        Label label = new Label("Kerning Pairs", skin);
         table.add(label).right();
         
-        var textField = new TextField(settings.kerningPairs, skin);
+        TextField textField = new TextField(settings.kerningPairs, skin);
         textField.setName("pairs");
         table.add(textField).growX();
         textField.addListener(main.getIbeamListener());
@@ -910,7 +911,7 @@ public class DialogImageFont extends Dialog {
             }
         });
         
-        var textButton = new TextButton("Reset", skin);
+        TextButton textButton = new TextButton("Reset", skin);
         table.add(textButton);
         textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("Reset kerning pairs to defaults", main.getTooltipManager(), skin));
@@ -926,7 +927,7 @@ public class DialogImageFont extends Dialog {
         label = new Label("Offset", skin);
         table.add(label).right();
         
-        var spinner = new Spinner(settings.kerningPairsOffset, 1.0, true, Spinner.Orientation.HORIZONTAL, skin);
+        Spinner spinner = new Spinner(settings.kerningPairsOffset, 1.0, true, Spinner.Orientation.HORIZONTAL, skin);
         table.add(spinner).left();
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getTextField().addListener(main.getIbeamListener());
@@ -960,31 +961,31 @@ public class DialogImageFont extends Dialog {
     }
     
     private void loadPixmap(FileHandle fileHandle, boolean setDefaults) throws InvalidFontImageException {
-        var fontPixmap = new Pixmap(fileHandle);
-        var tempColor = new Color();
+    	Pixmap fontPixmap = new Pixmap(fileHandle);
+    	Color tempColor = new Color();
         
         bitmapCharacters = new Array<>();
-        var yBreaks = new IntArray();
-        var characterList = settings.characters;
+        IntArray yBreaks = new IntArray();
+        String characterList = settings.characters;
         
-        var gapSize = settings.gap;
-        var findGapSize = false;
+        int gapSize = settings.gap;
+        boolean findGapSize = false;
         if (setDefaults) {
             gapSize = 0;
             findGapSize = true;
         }
-        var averageWidth = 0;
+        int averageWidth = 0;
         
         boolean failure;
         do {
             failure = false;
             bitmapCharacters.clear();
             yBreaks.clear();
-            var lookingForBreak = false;
+            boolean lookingForBreak = false;
             
             //find vertical breaks for separate rows
             for (int y = 0; y < fontPixmap.getHeight(); y++) {
-                var foundLine = false;
+            	boolean foundLine = false;
                 for (int x = 0; x < fontPixmap.getWidth(); x++) {
                     tempColor.set(fontPixmap.getPixel(x, y));
 
@@ -1026,10 +1027,10 @@ public class DialogImageFont extends Dialog {
                 BitmapCharacter bitmapCharacter = null;
                 lookingForBreak = false;
 
-                var gapCounter = 0;
+                int gapCounter = 0;
 
                 for (int x = 0; x < fontPixmap.getWidth(); x++) {
-                    var foundCharacter = false;
+                    boolean foundCharacter = false;
                     for (int y = yBreaks.get(i); y < yBreaks.get(i + 1); y++) {
                         tempColor.set(fontPixmap.getPixel(x, y));
 
@@ -1095,9 +1096,9 @@ public class DialogImageFont extends Dialog {
         }
         
         //find crop y and crop height
-        for (var character : bitmapCharacters) {
+        for (BitmapCharacter character : bitmapCharacters) {
             for (int y = character.y; y < character.y + character.height; y++) {
-                var lineEmpty = true;
+                boolean lineEmpty = true;
                 for (int x = character.x; x < character.x + character.width; x++) {
                     tempColor.set(fontPixmap.getPixel(x, y));
                     if (tempColor.a > 0) {
@@ -1112,9 +1113,9 @@ public class DialogImageFont extends Dialog {
             }
         }
         
-        for (var character : bitmapCharacters) {
+        for (BitmapCharacter character : bitmapCharacters) {
             for (int y = character.cropY + character.height; y >= character.cropY; y--) {
-                var lineEmpty = true;
+                boolean lineEmpty = true;
                 for (int x = character.x; x < character.x + character.width; x++) {
                     tempColor.set(fontPixmap.getPixel(x, y));
                     if (tempColor.a > 0) {
@@ -1133,8 +1134,8 @@ public class DialogImageFont extends Dialog {
         
         //write characters to temporary PNGs
         Main.appFolder.child("imagefont/characters").emptyDirectory();
-        for (var character : bitmapCharacters) {
-            var pixmap = new Pixmap(character.width, character.cropHeight, Pixmap.Format.RGBA8888);
+        for (BitmapCharacter character : bitmapCharacters) {
+        	Pixmap pixmap = new Pixmap(character.width, character.cropHeight, Pixmap.Format.RGBA8888);
             pixmap.setBlending(Pixmap.Blending.None);
             pixmap.drawPixmap(fontPixmap, 0, 0, character.x, character.cropY, character.width, character.cropHeight);
             PixmapIO.writePNG(Main.appFolder.child("imagefont/characters/" + character.name + ".png"), pixmap);
@@ -1143,24 +1144,24 @@ public class DialogImageFont extends Dialog {
         
         //calculate auto kerning pairs
         if (settings.kerningPairsActivated) {
-            var pairs = settings.kerningPairs.trim().split(" ");
+            String[] pairs = settings.kerningPairs.trim().split(" ");
             pairs = Stream.of(pairs).filter((t) -> {
                 return t.length() == 2;
             }).toArray(String[]::new);
             
-            var charFolder = Main.appFolder.child("imagefont/characters");
-            var pixmaps = new Array<Pixmap>();
-            var testColor = new Color();
+            FileHandle charFolder = Main.appFolder.child("imagefont/characters");
+            Array<Pixmap> pixmaps = new Array<Pixmap>();
+            Color testColor = new Color();
             kerningPairValues.clear();
-            for (var pair : pairs) {
+            for (String pair : pairs) {
                 pixmaps.clear();
                 
                 //find images for each character
-                var fileHandles = charFolder.list((File dir, String name1) -> name1.matches(".* (" + (int) pair.charAt(0) + "|" + (int) pair.charAt(1) + ").png"));
+                FileHandle[] fileHandles = charFolder.list((File dir, String name1) -> name1.matches(".* (" + (int) pair.charAt(0) + "|" + (int) pair.charAt(1) + ").png"));
                 
                 //create pixmaps
-                if (fileHandles.length == 1 && pair.charAt(0) == pair.charAt(1) || fileHandles.length == 2) for (var imageFileHandle : fileHandles) {
-                    var testPixmap = new Pixmap(imageFileHandle);
+                if (fileHandles.length == 1 && pair.charAt(0) == pair.charAt(1) || fileHandles.length == 2) for (FileHandle imageFileHandle : fileHandles) {
+                	Pixmap testPixmap = new Pixmap(imageFileHandle);
                     pixmaps.add(testPixmap);
                 } else {
                     continue;
@@ -1175,8 +1176,8 @@ public class DialogImageFont extends Dialog {
                 
                 //convert each pixmap to 50% transparency on every opaque character
                 for (int i = 0; i < pixmaps.size; i++) {
-                    var testPixmap = pixmaps.get(i);
-                    var temp = new Pixmap(testPixmap.getWidth(), testPixmap.getHeight(), Pixmap.Format.RGBA8888);
+                    Pixmap testPixmap = pixmaps.get(i);
+                    Pixmap temp = new Pixmap(testPixmap.getWidth(), testPixmap.getHeight(), Pixmap.Format.RGBA8888);
                     
                     for (int y = 0; y < testPixmap.getHeight(); y++) {
                         for (int x = 0; x < testPixmap.getWidth(); x++) {
@@ -1194,7 +1195,7 @@ public class DialogImageFont extends Dialog {
                     pixmaps.set(i, temp);
                 }
                 
-                var testX = pixmaps.get(0).getWidth();
+                int testX = pixmaps.get(0).getWidth();
                 float alpha = 0.0f;
                 while (testX >= 0.0f && alpha < .6f) {
                     //overlap pixmaps and test transparency, 100% means fail
@@ -1225,7 +1226,7 @@ public class DialogImageFont extends Dialog {
                 testX -= pixmaps.get(0).getWidth() - settings.kerningPairsOffset;
                 
                 //reset
-                for (var testPixmap : pixmaps) {
+                for (Pixmap testPixmap : pixmaps) {
                     testPixmap.dispose();
                 }
                 compilationPixmap.dispose();
@@ -1240,7 +1241,7 @@ public class DialogImageFont extends Dialog {
             settings.gap = gapSize;
             
             int height = 0;
-            for (var character : bitmapCharacters) {
+            for (BitmapCharacter character : bitmapCharacters) {
                 if (character.cropHeight > height) {
                     height = character.cropHeight;
                 }
@@ -1248,10 +1249,10 @@ public class DialogImageFont extends Dialog {
             ((Spinner) findActor("leading")).setValue(height);
             settings.leading = height;
 
-            var baseline = 0;
-            var baselineCount = 0;
+            int baseline = 0;
+            int baselineCount = 0;
 
-            for (var bitmapCharacter : bitmapCharacters) {
+            for (BitmapCharacter bitmapCharacter : bitmapCharacters) {
                 if (!BASELINE_EXCLUSION.contains(bitmapCharacter.character) && Character.toString(bitmapCharacter.character).matches("[A-Z]+|\\d+")) {
                     baseline += bitmapCharacter.baseline;
                     baselineCount++;
@@ -1306,13 +1307,13 @@ public class DialogImageFont extends Dialog {
     private void writeFNT(FileHandle saveFile, boolean texturePack) {
         if (texturePack) {
             //delete existing PNG's
-            var deleteFiles = saveFile.parent().list(new FilenameFilter() {
+            FileHandle[] deleteFiles = saveFile.parent().list(new FilenameFilter() {
                 @Override
                 public boolean accept(File dir, String name) {
                     return name.matches(saveFile.nameWithoutExtension() + "\\d*?\\.png|" + saveFile.nameWithoutExtension() + "\\.atlas|" + saveFile.nameWithoutExtension() + "\\.fnt");
                 }
             });
-            for (var file : deleteFiles) {
+            for (FileHandle file : deleteFiles) {
                 file.delete();
             }
             saveFile.delete();
@@ -1321,14 +1322,14 @@ public class DialogImageFont extends Dialog {
             //texturepack images
             main.getDesktopWorker().packFontImages(new Array<>(Main.appFolder.child("imagefont/characters").list()), saveFile);
             
-            var atlas = new TextureAtlas(saveFile.sibling(saveFile.nameWithoutExtension() + ".atlas"));
+            TextureAtlas atlas = new TextureAtlas(saveFile.sibling(saveFile.nameWithoutExtension() + ".atlas"));
 
-            for (var bitmapCharacter : bitmapCharacters) {
-                var number = (int) bitmapCharacter.character;
+            for (BitmapCharacter bitmapCharacter : bitmapCharacters) {
+                int number = (int) bitmapCharacter.character;
 
-                for (  var testRegion : atlas.getRegions()) {
+                for (  AtlasRegion testRegion : atlas.getRegions()) {
                     if (testRegion.name.matches(".* " + number + "$")) {
-                        var region = testRegion;
+                        AtlasRegion region = testRegion;
                         bitmapCharacter.x = region.getRegionX();
                         bitmapCharacter.y = region.getRegionY();
                         bitmapCharacter.width = region.getRegionWidth();
@@ -1342,14 +1343,14 @@ public class DialogImageFont extends Dialog {
         }
         
         String imageFileName = saveFile.nameWithoutExtension() + ".png";
-        var pixmap = new Pixmap(saveFile.sibling(imageFileName));
-        var width = pixmap.getWidth();
-        var height = pixmap.getHeight();
+        Pixmap pixmap = new Pixmap(saveFile.sibling(imageFileName));
+        int width = pixmap.getWidth();
+        int height = pixmap.getHeight();
         pixmap.dispose();
         
         //add extra characters
-        var characters = new Array<BitmapCharacter>(bitmapCharacters);
-        var bitmapCharacter = new BitmapCharacter();
+        Array<BitmapCharacter> characters = new Array<BitmapCharacter>(bitmapCharacters);
+        BitmapCharacter bitmapCharacter = new BitmapCharacter();
         bitmapCharacter.character = ' ';
         bitmapCharacter.width = settings.spaceWidth;
         characters.add(bitmapCharacter);
@@ -1360,13 +1361,13 @@ public class DialogImageFont extends Dialog {
         characters.add(bitmapCharacter);
         
         //write fnt file
-        var fntText = "";
+        String fntText = "";
         fntText += "info face=\"" + saveFile.nameWithoutExtension() + "\" size=12 bold=0 italic=0 charset=\"\" unicode=0 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1\n";
         fntText += "common lineHeight=" + settings.leading + " base=" + settings.baseline + " scaleW=" + width + " scaleH=" + height + " pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0\n";
         fntText += "page id=0 file=\"" + imageFileName + "\"\n";
 
         fntText += "chars count=" + bitmapCharacters.size + "\n";
-        for (var character : characters) {
+        for (BitmapCharacter character : characters) {
             fntText += "char id=" + (int) character.character + " x=" + character.x + " y=" + character.y + " width=" + character.width + " height=" + character.height + " xoffset=0 yoffset=" + character.yoffset + " xadvance=" + (character.width + settings.kerning) + " page=0 chnl=0" + " letter=\"" + character.character + "\"\n";
         }
         
@@ -1375,7 +1376,7 @@ public class DialogImageFont extends Dialog {
         } else {
             fntText += "\nkernings count=" + kerningPairValues.size + "\n";
             
-            for (var pair : kerningPairValues) {
+            for (KerningPair pair : kerningPairValues) {
                 fntText += "kerning first=" + (int) pair.character1 + "  second=" + (int) pair.character2 + "  amount=" + pair.value + "\n";
             }
         }
@@ -1389,7 +1390,7 @@ public class DialogImageFont extends Dialog {
     }
     
     private void preview(boolean texturePack) {
-        var file = Main.appFolder.child("imagefont/preview/preview.fnt");
+        FileHandle file = Main.appFolder.child("imagefont/preview/preview.fnt");
         
         try {
             if (texturePack) {
@@ -1405,8 +1406,8 @@ public class DialogImageFont extends Dialog {
                 ((TextArea) findActor("preview")).getStyle().fontColor = new Color(Color.WHITE);
             }
 
-            var oldTextArea = (TextArea) findActor("preview");
-            var textArea = new TextArea(oldTextArea.getText(), previewStyle);
+            TextArea oldTextArea = (TextArea) findActor("preview");
+            TextArea textArea = new TextArea(oldTextArea.getText(), previewStyle);
             textArea.setCursorPosition(oldTextArea.getCursorPosition());
             textArea.setName("preview");
             ((Table) oldTextArea.getParent()).getCell(oldTextArea).setActor(textArea);

@@ -913,7 +913,7 @@ public class DialogFonts extends Dialog {
         main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
         
         main.getDialogFactory().showDialogBitmapFont((FileHandle file) -> {
-            var files = new Array<FileHandle>();
+        	Array<FileHandle> files = new Array<FileHandle>();
             files.add(file);
             fontNameDialog(files, 0);
         
@@ -944,7 +944,7 @@ public class DialogFonts extends Dialog {
     private void newImageFontDialog() {
         main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
         main.getDialogFactory().showDialogImageFont((FileHandle file) -> {
-            var files = new Array<FileHandle>();
+        	Array<FileHandle> files = new Array<FileHandle>();
             files.add(file);
             fontNameDialog(files, 0);
             main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);

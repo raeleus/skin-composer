@@ -42,6 +42,7 @@ project(":desktop") {
         compile ("com.badlogicgames.gdx:gdx-tools:$gdxVersion") {
             exclude group: 'com.badlogicgames.gdx', module: 'gdx-backend-lwjgl'
         }
+        
     }
 }
 
@@ -52,6 +53,7 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        compile "com.kotcrab.vis:vis-ui:1.4.3-SNAPSHOT"
     }
 }
 
