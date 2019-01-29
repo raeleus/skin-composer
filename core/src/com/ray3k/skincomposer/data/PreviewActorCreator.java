@@ -14,15 +14,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Tree.Node;
+import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.kotcrab.vis.ui.util.InputValidator;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisCheckBox.VisCheckBoxStyle;
 import com.kotcrab.vis.ui.widget.VisDialog;
@@ -36,6 +40,16 @@ import com.kotcrab.vis.ui.widget.VisProgressBar;
 import com.kotcrab.vis.ui.widget.VisRadioButton;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
+import com.kotcrab.vis.ui.widget.VisSlider;
+import com.kotcrab.vis.ui.widget.VisSplitPane;
+import com.kotcrab.vis.ui.widget.VisSplitPane.VisSplitPaneStyle;
+import com.kotcrab.vis.ui.widget.VisTextArea;
+import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.kotcrab.vis.ui.widget.VisTextButton.VisTextButtonStyle;
+import com.kotcrab.vis.ui.widget.VisTextField;
+import com.kotcrab.vis.ui.widget.VisTextField.VisTextFieldStyle;
+import com.kotcrab.vis.ui.widget.VisTree;
+import com.kotcrab.vis.ui.widget.VisValidatableTextField;
 import com.kotcrab.vis.ui.widget.VisWindow;
 import com.ray3k.skincomposer.BrowseField;
 import com.ray3k.skincomposer.Main;
@@ -311,10 +325,130 @@ public class PreviewActorCreator {
 			actor.setStyle(visStyle);
 			actor.setItems("Item 1", "Item 2", "Item 3");
 			}
-			catch(Exception e) {System.out.println("Not enough");return null;}
+			catch(Exception e) {return null;}
+			return actor;
+		}
+		else if(clazz.equals(VisSlider.class)) {
+			populateStyle(SliderStyle.class, style);
+			SliderStyle visStyle = (SliderStyle)createStyle(table, SliderStyle.class, style);
+			table.refreshStyleProperties(true);
+			
+			VisSlider actor = new VisSlider(0, 100, 1, (boolean)previewProperties.get("vertical", false));
+			actor.setStyle(visStyle);
+			actor.setValue((float)((double) previewProperties.get("value", 0)));
+			actor.setDisabled((boolean)table.getPreviewProperties().get("disabled"));
+			return actor;
+		}
+		else if(clazz.equals(VisSplitPane.class)) {
+			populateStyle(VisSplitPaneStyle.class, style);
+			VisSplitPaneStyle visStyle = (VisSplitPaneStyle)createStyle(table, VisSplitPaneStyle.class, style);
+			table.refreshStyleProperties(true);
+			
+			VisLabel label1 = new VisLabel();
+			label1.setText((String)table.getPreviewProperties().get("text1"));
+			
+			VisLabel label2 = new VisLabel();
+			label2.setText((String)table.getPreviewProperties().get("text2"));
+			
+			if(visStyle.handle == null) {
+				return null;
+			}
+			
+			VisSplitPane actor = new VisSplitPane(label1, label2, (boolean)previewProperties.get("vertical", false));
+			actor.setStyle(visStyle);
+			return actor;
+		}
+		else if(clazz.equals(VisTextArea.class)) {
+			populateStyle(VisTextFieldStyle.class, style);
+			VisTextFieldStyle visStyle = (VisTextFieldStyle)createStyle(table, VisTextFieldStyle.class, style);
+			table.refreshStyleProperties(true);
+			if(visStyle.font == null) {
+				return null;
+			}
+			if(visStyle.fontColor == null) {
+				return null;
+			}
+			VisTextArea actor = new VisTextArea();
+			actor.setStyle(visStyle);
+			actor.setText((String) previewProperties.get("text", ""));
+			actor.setDisabled((boolean)table.getPreviewProperties().get("disabled"));
+			return actor;
+		}
+		else if(clazz.equals(VisTextButton.class)) {
+			populateStyle(VisTextButtonStyle.class, style);
+			VisTextButtonStyle visStyle = (VisTextButtonStyle)createStyle(table, VisTextButtonStyle.class, style);
+			table.refreshStyleProperties(true);
+
+			if(visStyle.font == null) {
+				return null;
+			}
+			
+			VisTextButton actor = new VisTextButton((String) previewProperties.get("text", ""));
+			actor.setDisabled((boolean)table.getPreviewProperties().get("disabled"));
+			actor.setStyle(visStyle);
 			
 			return actor;
-
+		}
+		else if(clazz.equals(VisTextField.class)) {
+			populateStyle(VisTextFieldStyle.class, style);
+			VisTextFieldStyle visStyle = (VisTextFieldStyle)createStyle(table, VisTextFieldStyle.class, style);
+			table.refreshStyleProperties(true);
+			if(visStyle.font == null) {
+				return null;
+			}
+			if(visStyle.fontColor == null) {
+				return null;
+			}
+			VisTextField actor = new VisTextField();
+			actor.setStyle(visStyle);
+			actor.setText((String) previewProperties.get("text", ""));
+			actor.setDisabled((boolean)table.getPreviewProperties().get("disabled"));
+			
+			return actor;
+		}
+		else if(clazz.equals(VisTree.class)) {
+			populateStyle(TreeStyle.class, style);
+			TreeStyle visStyle = (TreeStyle)createStyle(table, TreeStyle.class, style);
+			table.refreshStyleProperties(true);
+			
+			if(visStyle.plus == null) {
+				return null;
+			}
+			if(visStyle.minus == null) {
+				return null;
+			}
+			
+			VisTree actor = new VisTree();
+			Node n = new Node(new VisLabel("Root"));
+			n.add(new Node(new VisLabel("Leaf 1")));
+			n.add(new Node(new VisLabel("Leaf 2")));
+			n.add(new Node(new VisLabel("Leaf 3")));
+			actor.add(n);
+			actor.setStyle(visStyle);
+			
+			return actor;
+		}
+		else if(clazz.equals(VisValidatableTextField.class)) {
+			populateStyle(VisTextFieldStyle.class, style);
+			VisTextFieldStyle visStyle = (VisTextFieldStyle)createStyle(table, VisTextFieldStyle.class, style);
+			table.refreshStyleProperties(true);
+			if(visStyle.font == null) {
+				return null;
+			}
+			if(visStyle.fontColor == null) {
+				return null;
+			}
+			VisValidatableTextField actor = new VisValidatableTextField();
+			actor.addValidator(new InputValidator() {
+				public boolean validateInput(String input) {
+					return input.matches("^[0-9]+$");
+				}
+			});
+			actor.setStyle(visStyle);
+			actor.setText((String) previewProperties.get("text", ""));
+			actor.setDisabled((boolean)table.getPreviewProperties().get("disabled"));
+			
+			return actor;
 		}
 
 		}catch (IllegalArgumentException e) {
@@ -369,6 +503,32 @@ public class PreviewActorCreator {
 			addBooleanPicker("Flick Scroll", "flickScroll", table, root);
 			addBooleanPicker("Clamp", "clamp", table, root);
 			addTextArea("Sample text", "text", table, root);
+		}
+		else if(clazz.equals(VisSlider.class)) {
+			addBooleanPicker("Vertical", "vertical", table, root);
+			addBooleanPicker("Disable", "disabled", table, root);
+			addSpinnerProperty("Progress", "value", 0, 1, table, root);
+		}
+		else if(clazz.equals(VisSplitPane.class)) {
+			addBooleanPicker("Vertical", "vertical", table, root);
+			addTextArea("Sample text 1", "text1", table, root);
+			addTextArea("Sample text 2", "text2", table, root);
+		}
+		else if(clazz.equals(VisTextArea.class)) {
+			addTextArea("Sample text", "text", table, root);
+			addBooleanPicker("Disable", "disabled", table, root);
+		}
+		else if(clazz.equals(VisTextButton.class)) {
+			addTextProperty("Label text", "text", table, root);
+			addBooleanPicker("Disable", "disabled", table, root);
+		}
+		else if(clazz.equals(VisTextField.class)) {
+			addTextProperty("Label text", "text", table, root);
+			addBooleanPicker("Disable", "disabled", table, root);
+		}
+		else if(clazz.equals(VisValidatableTextField.class)) {
+			addTextProperty("Number only", "text", table, root);
+			addBooleanPicker("Disable", "disabled", table, root);
 		}
 	}
 	
