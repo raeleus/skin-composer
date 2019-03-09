@@ -4,10 +4,16 @@ sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 project.ext.mainClassName = "com.ray3k.skincomposer.desktop.DesktopLauncher"
-project.ext.assetsDir = new File("../core/assets");
+project.ext.mainClassNameMac = "com.ray3k.skincomposer.desktop.MacLauncher"
+project.ext.assetsDir = new File("../core/assets")
+def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
 
 task run(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
+    if (osName.contains('mac')) {
+        main = project.mainClassNameMac
+    } else {
+        main = project.mainClassName
+    }
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
@@ -15,7 +21,11 @@ task run(dependsOn: classes, type: JavaExec) {
 }
 
 task debug(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
+    if (osName.contains('mac')) {
+        main = project.mainClassNameMac
+    } else {
+        main = project.mainClassName
+    }
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
@@ -30,8 +40,14 @@ task dist(type: Jar) {
     from {configurations.compile.collect {zipTree(it)}}
     from files(project.assetsDir);
  
-    manifest {
-        attributes ('Main-Class': project.mainClassName, 'SplashScreen-Image' : 'splash.png')
+    if (osName.contains('mac')) {
+        manifest {
+            attributes ('Main-Class': project.mainClassNameMac)
+        }
+    } else {
+        manifest {
+            attributes ('Main-Class': project.mainClassName, 'SplashScreen-Image' : 'splash.png')
+        }
     }
 }
 
@@ -46,9 +62,9 @@ task jpackageStart(type: Exec, dependsOn: dist) {
         '--output', "${buildDir}/distribution",
         '--input', "${buildDir}/libs",
         '--name', project.appName,
-        '--class', project.mainClassName,
+        '--main-class', project.mainClassName,
         '--main-jar', "${project.appName}.jar",
-        '--force'
+        '--overwrite'
     ]
     
     def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
