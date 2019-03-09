@@ -108,7 +108,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
 
     @Override
     public void packFontImages(Array<FileHandle> files, FileHandle saveFile) {
-        var settings = new Settings();
+        Settings settings = new Settings();
         settings.pot = false;
         settings.duplicatePadding = true;
         settings.filterMin = Texture.TextureFilter.Linear;
@@ -120,9 +120,9 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         settings.maxHeight = 2048;
         settings.flattenPaths = true;
         settings.silent = true;
-        var texturePacker = new TexturePacker(settings);
+        TexturePacker texturePacker = new TexturePacker(settings);
 
-        for (var file : files) {
+        for (FileHandle file : files) {
             if (file.exists()) {
                 texturePacker.addImage(file.file());
             }
@@ -344,7 +344,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
 
     @Override
     public void writeFont(FreeTypeFontGenerator.FreeTypeBitmapFontData data, Array<PixmapPacker.Page> pages, FileHandle target) {
-        var pngTarget = target.sibling(target.nameWithoutExtension() + ".png");
+        FileHandle pngTarget = target.sibling(target.nameWithoutExtension() + ".png");
         
         BitmapFontWriter.FontInfo info = new BitmapFontWriter.FontInfo();
         data.capHeight--;
@@ -353,12 +353,12 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
 
         BitmapFontWriter.writePixmaps(pages, target.parent(), target.nameWithoutExtension());
         
-        var pixmap = new Pixmap(pngTarget);
-        var color = new Color();
-        var newHeight = pixmap.getHeight();
-        var foundOpaquePixel = false;
-        for (var y = pixmap.getHeight() - 1; y >= 0 && !foundOpaquePixel; y--) {
-            for (var x = 0; x < pixmap.getWidth(); x++) {
+        Pixmap pixmap = new Pixmap(pngTarget);
+        Color color = new Color();
+        int newHeight = pixmap.getHeight();
+        boolean foundOpaquePixel = false;
+        for (int y = pixmap.getHeight() - 1; y >= 0 && !foundOpaquePixel; y--) {
+            for (int x = 0; x < pixmap.getWidth(); x++) {
                 color.set(pixmap.getPixel(x, y));
                 if (color.a > 0) {
                     //add padding to new height
@@ -370,9 +370,9 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         }
         
         foundOpaquePixel = false;
-        var newWidth = pixmap.getWidth();
-        for (var x = pixmap.getWidth() - 1; x >= 0 && !foundOpaquePixel; x--) {
-            for (var y = 0; y < pixmap.getHeight(); y++) {
+        int newWidth = pixmap.getWidth();
+        for (int x = pixmap.getWidth() - 1; x >= 0 && !foundOpaquePixel; x--) {
+            for (int y = 0; y < pixmap.getHeight(); y++) {
                 color.set(pixmap.getPixel(x, y));
                 if (color.a > 0) {
                     //add padding to new height
@@ -383,7 +383,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
             }
         }
         
-        var fixedPixmap = new Pixmap(newWidth, newHeight, Pixmap.Format.RGBA8888);
+        Pixmap fixedPixmap = new Pixmap(newWidth, newHeight, Pixmap.Format.RGBA8888);
         fixedPixmap.setBlending(Pixmap.Blending.None);
         fixedPixmap.drawPixmap(pixmap, 0, 0);
         PixmapIO.writePNG(pngTarget, fixedPixmap);
