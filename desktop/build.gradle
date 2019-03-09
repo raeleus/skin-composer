@@ -24,7 +24,7 @@ task debug(dependsOn: classes, type: JavaExec) {
 }
 
 task dist(type: Jar) {
-    archiveName = "skin_composer.jar";
+    archiveName = "${project.appName}.jar";
     from files(sourceSets.main.output.classesDir)
     from files(sourceSets.main.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}
@@ -38,29 +38,35 @@ task dist(type: Jar) {
 dist.dependsOn classes
 
 // creates application bundle (executable + runtime)
-task javaPackager(type: Exec, dependsOn: dist) {
+task jpackageStart(type: Exec, dependsOn: dist) {
     workingDir project.projectDir
     def commands = [
-        'javapackager',
-        '-deploy',
-        '-nosign',
-        '-outdir', "${buildDir}/distribution",
-        '-srcdir', "${buildDir}/libs",
-        '-native', 'image',
-        '-name', project.appName,
-        '-appclass', project.mainClassName
+        "${project.projectDir}/jpackage/bin/jpackage",
+        'create-image',
+        '--output', "${buildDir}/distribution",
+        '--input', "${buildDir}/libs",
+        '--name', project.appName,
+        '--class', project.mainClassName,
+        '--main-jar', "${project.appName}.jar",
+        '--force'
     ]
     
     def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
     if (osName.contains('windows')) {
-        commands << "-Bicon=${project.projectDir}/logo.ico"
-        commands << "-BjvmOptions=-splash:splash.png"
+        commands << '--icon'
+        commands << "${project.projectDir}/logo.ico"
+        commands << '--jvm-args'
+        commands << "-splash:splash.png"
     } else if (osName.contains('linux')) {
-        commands << "-Bicon=${project.projectDir}/logo.png"
-        commands << "-BjvmOptions=-splash:splash.png"
+        commands << '--icon'
+        commands << "${project.projectDir}/logo.png"
+        commands << '--jvm-args'
+        commands << "-splash:splash.png"
     } else if (osName.contains('mac')) {
-        commands << "-Bicon=${project.projectDir}/logo.icns"
-        commands << "-BjvmOptions=-XstartOnFirstThread"
+        commands << '--icon'
+        commands << "${project.projectDir}/logo.icns"
+        commands << '--jvm-args'
+        commands << "-XstartOnFirstThread"
     }
     
     commandLine = commands
@@ -74,7 +80,7 @@ task javaPackager(type: Exec, dependsOn: dist) {
 }
 
 // removes bloated runtime created by javapackager
-task cleanPackagerRuntime(dependsOn: javaPackager) {
+task jpackageCleanRuntime(dependsOn: jpackageStart) {
     doLast() {
         File runtimeFile = new File("${buildDir}/distribution/${project.appName}/runtime")
         runtimeFile.deleteDir()
@@ -88,7 +94,7 @@ task cleanPackagerRuntime(dependsOn: javaPackager) {
 }
 
 // creates a replacement runtime via jlink command (much smaller than jpackager)
-task createFinalAppBundle(type: Exec, dependsOn: [cleanPackagerRuntime]) {
+task jpackageAppBundle(type: Exec, dependsOn: [jpackageCleanRuntime]) {
     def jdk = System.getProperty("java.home")
 
     workingDir project.projectDir
@@ -134,7 +140,7 @@ task updateAndCreateZip(type: Zip, dependsOn: [dist]) {
         }
     }
     
-    archiveName "skin-composer-${org.gradle.internal.os.OperatingSystem.current().getFamilyName()}.zip"
+    archiveName "${project.appName}_${org.gradle.internal.os.OperatingSystem.current().getFamilyName()}.zip"
     from "${buildDir}/distribution/${project.appName}"
     destinationDir = file("${buildDir}/distribution/")
 }
