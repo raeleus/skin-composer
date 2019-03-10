@@ -1,3 +1,6 @@
+### Skin Composer Version 28 ###
+* Resolved release issues with Mac and Windows
+
 ### Skin Composer Version 27 ###
 * Added filter option for Drawables dialog. Click the filter button or type text directly in the dialog.
 * Allow drag and drop of folders into Drawables and Fonts dialogs.
