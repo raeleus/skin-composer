@@ -537,6 +537,8 @@ public class DialogFreeTypeFont extends Dialog {
             selectBox.setSelected("custom");
         }
         
+        selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -626,6 +628,7 @@ public class DialogFreeTypeFont extends Dialog {
         selectBox.addListener(toolTip);
         
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1057,6 +1060,7 @@ public class DialogFreeTypeFont extends Dialog {
         selectBox.addListener(toolTip);
         
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1080,6 +1084,7 @@ public class DialogFreeTypeFont extends Dialog {
         selectBox.addListener(toolTip);
         
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {

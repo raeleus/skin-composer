@@ -1,5 +1,6 @@
 ### Skin Composer Version 28 ###
-* Resolved release issues with Mac and Windows
+* Resolved release issues with Mac and Windows.
+* Minor bug fixes and interface improvements.
 
 ### Skin Composer Version 27 ###
 * Added filter option for Drawables dialog. Click the filter button or type text directly in the dialog.

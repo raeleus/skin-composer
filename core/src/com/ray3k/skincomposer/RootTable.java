@@ -633,6 +633,7 @@ public class RootTable extends Table {
             parentSelectBox.setSelected(getSelectedStyle().parent);
             table.add(parentSelectBox);
             parentSelectBox.addListener(main.getHandListener());
+            parentSelectBox.getList().addListener(main.getHandListener());
             parentSelectBox.addListener(new StyleParentChangeListener(getSelectedStyle(), parentSelectBox));
             //make preview respect parent
             

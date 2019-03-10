@@ -282,6 +282,7 @@ public class DialogImageFont extends Dialog {
         table.add(selectBox);
         selectBox.addListener(new TextTooltip("Character Presets", main.getTooltipManager(), skin));
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {

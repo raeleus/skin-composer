@@ -350,6 +350,7 @@ public class DialogBitmapFont extends Dialog {
         table.add(characterSelectBox).fillX();
 
         characterSelectBox.addListener(main.getHandListener());
+        characterSelectBox.getList().addListener(main.getHandListener());
         toolTip = new TextTooltip("Character preset list", main.getTooltipManager(), getSkin());
         characterSelectBox.addListener(toolTip);
         characterSelectBox.addListener(new ChangeListener() {
@@ -453,6 +454,7 @@ public class DialogBitmapFont extends Dialog {
         selectBox.addListener(toolTip);
 
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -883,6 +885,7 @@ public class DialogBitmapFont extends Dialog {
         selectBox.addListener(toolTip);
 
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -906,6 +909,7 @@ public class DialogBitmapFont extends Dialog {
         selectBox.addListener(toolTip);
 
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
