@@ -89,8 +89,8 @@ task jpackageStart(type: Exec, dependsOn: dist) {
     doLast() {
         if (!osName.contains('mac')) {
             copy {
-                from file("${project.projectDir}/splash.png")
-                into file("${buildDir}/distribution/${project.appName}/app")
+                from '../core/assets/splash.png'
+                into "${buildDir}/distribution/${project.appName}/app"
             }
         }
     }
