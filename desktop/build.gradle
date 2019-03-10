@@ -67,7 +67,6 @@ task jpackageStart(type: Exec, dependsOn: dist) {
         '--overwrite'
     ]
     
-    def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
     if (osName.contains('windows')) {
         commands << '--icon'
         commands << "${project.projectDir}/logo.ico"
@@ -88,9 +87,11 @@ task jpackageStart(type: Exec, dependsOn: dist) {
     commandLine = commands
     
     doLast() {
-        copy {
-            from file("${project.projectDir}/splash.png");
-            into file("${buildDir}/distribution/${project.appName}/app");
+        if (!osName.contains('mac')) {
+            copy {
+                from file("${project.projectDir}/splash.png")
+                into file("${buildDir}/distribution/${project.appName}/app")
+            }
         }
     }
 }
@@ -99,6 +100,9 @@ task jpackageStart(type: Exec, dependsOn: dist) {
 task jpackageCleanRuntime(dependsOn: jpackageStart) {
     doLast() {
         File runtimeFile = new File("${buildDir}/distribution/${project.appName}/runtime")
+        if (osName.contains('mac')) {
+            runtimeFile = new File("${buildDir}/distribution/${project.appName}.app/contents/plugins/Java.runtime/Contents/Home")
+        }
         runtimeFile.deleteDir()
         delete {
             delete fileTree("${buildDir}/distribution/${project.appName}").matching {
@@ -111,12 +115,15 @@ task jpackageCleanRuntime(dependsOn: jpackageStart) {
 
 // creates a replacement runtime via jlink command (much smaller than jpackager)
 task jpackageAppBundle(type: Exec, dependsOn: [jpackageCleanRuntime]) {
-    def jdk = System.getProperty("java.home")
+    String runtimePath = "${buildDir}/distribution/${project.appName}/runtime"
+    if (osName.contains('mac')) {
+        runtimePath = "${buildDir}/distribution/${project.appName}.app/contents/plugins/Java.runtime/Contents/Home"
+    }
 
     workingDir project.projectDir
     commandLine = [
-        'jlink',
-        '-p', "${jdk}/jmods",
+        "${project.projectDir}/jpackage/bin/jlink",
+        '-p', "${project.projectDir}/jpackage/jmods",
         '--add-modules', 'java.base,java.desktop,jdk.unsupported',
         '--strip-debug',
         '--no-header-files',
@@ -124,9 +131,9 @@ task jpackageAppBundle(type: Exec, dependsOn: [jpackageCleanRuntime]) {
         '--strip-native-commands',
         "--vm=server",
         "--compress=2",
-        '--output', "${buildDir}/distribution/${project.appName}/runtime"
+        '--output', runtimePath
     ]
-
+    
     doLast{
         System.out.println("Application '${project.appName}' packaged.")
         System.out.println(" -> location: ${buildDir}/distribution/${project.appName}/")
