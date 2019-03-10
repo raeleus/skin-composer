@@ -140,9 +140,11 @@ public class DialogImageFont extends Dialog {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Keys.ENTER) {
-                    var textButton = ((TextButton) findActor("generate"));
-                    if (!textButton.isDisabled()) {
-                        textButton.fire(new ChangeListener.ChangeEvent());
+                    if (getStage().getKeyboardFocus() != findActor("preview")) {
+                        var textButton = ((TextButton) findActor("generate"));
+                        if (!textButton.isDisabled()) {
+                            textButton.fire(new ChangeListener.ChangeEvent());
+                        }
                     }
                 }
                 return false;
