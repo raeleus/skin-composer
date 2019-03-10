@@ -1820,31 +1820,35 @@ public class DialogDrawables extends Dialog {
 
         @Override
         public boolean keyTyped(InputEvent event, char character) {
-            Label label = dialog.findActor("filter-label");
-            if (!label.isVisible()) {
-                name = "";
-            }
-            
-            var filterOptions = dialog.filterOptions;
-            filterOptions.regularExpression = false;
-            filterOptions.applied = true;
-            if (character == 8) {
-                if (name.length() > 0) {
-                    name = name.substring(0, name.length() - 1);
+            //not enter
+            if (character != 10) {
+                Label label = dialog.findActor("filter-label");
+                if (!label.isVisible()) {
+                    name = "";
                 }
-            } else {
-                name += character;
+
+                var filterOptions = dialog.filterOptions;
+                filterOptions.regularExpression = false;
+                filterOptions.applied = true;
+                //backspace
+                if (character == 8) {
+                    if (name.length() > 0) {
+                        name = name.substring(0, name.length() - 1);
+                    }
+                } else {
+                    name += character;
+                }
+                filterOptions.name = name;
+
+                Button button = dialog.findActor("filter");
+                button.setChecked(true);
+
+                label.setText(name);
+                label.clearActions();
+                label.addAction(Actions.sequence(Actions.visible(true), Actions.fadeIn(.25f), Actions.delay(2.0f), Actions.fadeOut(.25f), Actions.visible(false)));
+
+                dialog.sortBySelectedMode();
             }
-            filterOptions.name = name;
-            
-            Button button = dialog.findActor("filter");
-            button.setChecked(true);
-            
-            label.setText(name);
-            label.clearActions();
-            label.addAction(Actions.sequence(Actions.visible(true), Actions.fadeIn(.25f), Actions.delay(2.0f), Actions.fadeOut(.25f), Actions.visible(false)));
-            
-            dialog.sortBySelectedMode();
             return super.keyTyped(event, character);
         }
         
