@@ -887,26 +887,30 @@ public class DialogFonts extends Dialog {
     }
     
     private void newFontDialog() {
-        String defaultPath = "";
-        
-        if (main.getProjectData().getLastFontPath() != null) {
-            FileHandle fileHandle = new FileHandle(main.getProjectData().getLastFontPath());
-            if (fileHandle.exists()) {
-                defaultPath = main.getProjectData().getLastFontPath();
+        main.getDialogFactory().showDialogLoading(() -> {
+            String defaultPath = "";
+
+            if (main.getProjectData().getLastFontPath() != null) {
+                FileHandle fileHandle = new FileHandle(main.getProjectData().getLastFontPath());
+                if (fileHandle.exists()) {
+                    defaultPath = main.getProjectData().getLastFontPath();
+                }
             }
-        }
-        
-        String[] filterPatterns = null;
-        if (!Utils.isMac()) {
-            filterPatterns = new String[] {"*.fnt"};
-        }
-        
-        List<File> files = main.getDesktopWorker().openMultipleDialog("Choose font file(s)...", defaultPath, filterPatterns, "Font files (*.fnt)");
-        if (files != null && files.size() > 0) {
-            FileHandle fileHandle = new FileHandle(files.get(0).getParentFile());
-            main.getProjectData().setLastFontPath(fileHandle.path() + "/");
-            fontNameDialog(files, 0);
-        }
+
+            String[] filterPatterns = null;
+            if (!Utils.isMac()) {
+                filterPatterns = new String[]{"*.fnt"};
+            }
+
+            List<File> files = main.getDesktopWorker().openMultipleDialog("Choose font file(s)...", defaultPath, filterPatterns, "Font files (*.fnt)");
+            if (files != null && files.size() > 0) {
+                Gdx.app.postRunnable(() -> {
+                    FileHandle fileHandle = new FileHandle(files.get(0).getParentFile());
+                    main.getProjectData().setLastFontPath(fileHandle.path() + "/");
+                    fontNameDialog(files, 0);
+                });
+            }
+        });
     }
     
     private void newBitmapFontDialog() {
