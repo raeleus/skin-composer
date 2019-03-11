@@ -188,35 +188,8 @@ public class AtlasData implements Json.Serializable {
         }
     }
     
-    public void writeAtlas() throws Exception {
-        FileHandle targetFile = Main.appFolder.child("temp/" + main.getProjectData().getId() + ".atlas");
-        targetFile.parent().mkdirs();
-        FileHandle[] oldFiles = targetFile.parent().list(new FilenameFilter() {
-            @Override
-            public boolean accept(File file, String string) {
-                return string.matches(targetFile.nameWithoutExtension() + "\\d*\\.(?i)png");
-            }
-        });
-        for (FileHandle fileHandle : oldFiles) {
-            fileHandle.delete();
-        }
-        targetFile.sibling(targetFile.nameWithoutExtension() + ".atlas").delete();
-        
-        Array<FileHandle> files = new Array<>();
-        
-        for (DrawableData drawable : fontDrawables) {
-            if (!files.contains(drawable.file, false)) {
-                files.add(drawable.file);
-            }
-        }
-        
-        for (DrawableData drawable : drawables) {
-            if (!drawable.customized && !files.contains(drawable.file, false)) {
-                files.add(drawable.file);
-            }
-        }
-        
-        main.getDesktopWorker().texturePack(files, main.getProjectData().getSaveFile(), targetFile);
+    public Array<String> writeAtlas() throws Exception {
+        return writeAtlas(Main.appFolder.child("temp/" + main.getProjectData().getId() + ".atlas"));
     }
     
     public Array<String> writeAtlas(FileHandle targetFile) throws Exception {
