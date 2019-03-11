@@ -304,7 +304,6 @@ public class DialogFonts extends Dialog {
                     }
                     
                     var drawable = new DrawableData(new FileHandle(path));
-                    drawable.visible = false;
                     if (!fontDrawables.contains(drawable, false)) {
                         main.getAtlasData().atlasCurrent = false;
                         fontDrawables.add(drawable);

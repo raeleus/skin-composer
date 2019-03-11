@@ -41,7 +41,6 @@ public class DrawableData implements Json.Serializable {
     
     public FileHandle file;
     public Color bgColor;
-    public boolean visible;
     public Color tint;
     public String tintName;
     public String name;
@@ -58,7 +57,6 @@ public class DrawableData implements Json.Serializable {
         } else {
             bgColor = Color.WHITE;
         }
-        visible = true;
         this.name = proper(file.name());
         customized = false;
     }
@@ -66,7 +64,6 @@ public class DrawableData implements Json.Serializable {
     public DrawableData(String customName) {
         name = customName;
         customized = true;
-        visible = true;
         bgColor = Color.WHITE;
         tiled = false;
     }
@@ -102,7 +99,6 @@ public class DrawableData implements Json.Serializable {
             json.writeValue("file", (String) null);
         }
         json.writeValue("bgColor", bgColor);
-        json.writeValue("visible", visible);
         json.writeValue("tint", tint);
         json.writeValue("tintName", tintName);
         json.writeValue("name", name);
@@ -118,7 +114,6 @@ public class DrawableData implements Json.Serializable {
             file = new FileHandle(jsonData.getString("file"));
         }
         bgColor = json.readValue("bgColor", Color.class, jsonData);
-        visible = json.readValue("visible", Boolean.TYPE, jsonData);
         tint = json.readValue("tint", Color.class, jsonData);
         tintName = json.readValue("tintName", String.class, jsonData);
         name = json.readValue("name", String.class, jsonData);

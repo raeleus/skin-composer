@@ -27,6 +27,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -167,7 +168,6 @@ public class JsonData implements Json.Serializable {
                             FileHandle file = new FileHandle(path);
                             
                             var drawable = main.getProjectData().getAtlasData().getDrawable(file.nameWithoutExtension());
-                            drawable.visible = false;
                             
                             main.getProjectData().getAtlasData().getDrawables().removeValue(drawable, false);
                             main.getProjectData().getAtlasData().getFontDrawables().add(drawable);
@@ -256,7 +256,6 @@ public class JsonData implements Json.Serializable {
                     drawableData.name = tiledDrawable.name;
                     
                     drawableData.tiled = true;
-                    drawableData.visible = true;
                     drawableData.tintName = tiledDrawable.getString("color");
                     drawableData.minWidth = tiledDrawable.getFloat("minWidth", 0.0f);
                     drawableData.minHeight = tiledDrawable.getFloat("minHeight", 0.0f);
@@ -981,6 +980,26 @@ public class JsonData implements Json.Serializable {
         } catch (ReflectionException e) {
             Gdx.app.log(getClass().getName(), "Error parsing json data during file read", e);
             main.getDialogFactory().showDialogError("Error while reading file...", "Error while attempting to read save file.\nPlease ensure that file is not corrupted.\n\nOpen error log?");
+        }
+    }
+    
+    /**
+     * Moves font drawables to the appropriate list when reading from legacy save files.
+     */
+    public void translateFontDrawables(AtlasData atlasData) {
+        
+        for (var font : fonts) {
+            var bitmapFontData = new BitmapFontData(font.file, false);
+            for (String path : bitmapFontData.imagePaths) {
+                FileHandle file = new FileHandle(path);
+                
+                var drawable = atlasData.getDrawable(file.nameWithoutExtension());
+
+                if (drawable != null) {
+                    atlasData.getDrawables().removeValue(drawable, false);
+                    atlasData.getFontDrawables().add(drawable);
+                }
+            }
         }
     }
 

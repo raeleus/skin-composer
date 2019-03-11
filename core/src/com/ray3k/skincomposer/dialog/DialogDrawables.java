@@ -187,12 +187,6 @@ public class DialogDrawables extends Dialog {
      */
     private void gatherDrawables() {
         drawables = new Array<>(main.getAtlasData().getDrawables());
-        fontDrawables =  new Array<>(main.getAtlasData().getFontDrawables());
-        Iterator<DrawableData> iter = drawables.iterator();
-        while(iter.hasNext()) {
-            DrawableData drawable = iter.next();
-            if (!drawable.visible) iter.remove();
-        }
     }
     
     /**
@@ -505,7 +499,6 @@ public class DialogDrawables extends Dialog {
                         tiledDrawable.name = drawable.name;
                         tiledDrawable.file = drawable.file;
                         tiledDrawable.tiled = true;
-                        tiledDrawable.visible = true;
                         Vector2 dimensions = Utils.imageDimensions(drawable.file);
                         tiledDrawable.minWidth = dimensions.x;
                         tiledDrawable.minHeight = dimensions.y;

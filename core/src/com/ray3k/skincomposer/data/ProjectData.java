@@ -528,6 +528,8 @@ public class ProjectData implements Json.Serializable {
         preferences = json.readValue("preferences", ObjectMap.class, jsonValue);
         jsonData.set(json.readValue("jsonData", JsonData.class, jsonValue));
         atlasData.set(json.readValue("atlasData", AtlasData.class, jsonValue));
+        jsonData.translateFontDrawables(atlasData);
+        
         if (!jsonValue.get("saveFile").isNull()) {
             saveFile = new FileHandle(jsonValue.getString("saveFile"));
         }
