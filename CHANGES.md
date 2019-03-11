@@ -1,6 +1,7 @@
 ### Skin Composer Version 28 ###
 * Resolved release issues with Mac and Windows.
 * Fixed pressing enter while typing in the preview dismisses the image font dialog.
+* Fixed create bitmap font dialog not closing file stream.
 * Minor bug fixes and interface improvements.
 
 ### Skin Composer Version 27 ###

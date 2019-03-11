@@ -269,8 +269,7 @@ public class Utils {
         Iterator<ImageReader> iter = ImageIO.getImageReadersBySuffix(suffix);
         if (iter.hasNext()) {
             ImageReader reader = iter.next();
-            try {
-                ImageInputStream stream = new FileImageInputStream(fileHandle.file());
+            try (var stream = new FileImageInputStream(fileHandle.file())) {
                 reader.setInput(stream);
                 int imageWidth = reader.getWidth(reader.getMinIndex());
                 int imageHeight = reader.getHeight(reader.getMinIndex());
