@@ -66,7 +66,7 @@ import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
-import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.stream.Stream;
 
 /**
@@ -219,7 +219,7 @@ public class DialogImageFont extends Dialog {
     private void refreshTable() {
         previewStyle = new TextFieldStyle(skin.get(TextFieldStyle.class));
         
-        fadables = new Array<Actor>();
+        fadables = new Array<>();
         root.clearChildren();
         
         var scrollTable = new Table();
@@ -252,12 +252,7 @@ public class DialogImageFont extends Dialog {
         table.add(textField).growX();
         textField.addListener(new TextTooltip("Characters to be included in font", main.getTooltipManager(), skin));
         textField.addListener(main.getIbeamListener());
-        textField.setTextFieldFilter(new TextField.TextFieldFilter() {
-            @Override
-            public boolean acceptChar(TextField textField, char c) {
-                return textField.getText().indexOf(c) == -1;
-            }
-        });
+        textField.setTextFieldFilter((TextField textField1, char c) -> textField1.getText().indexOf(c) == -1);
         
         textField.addListener(new ChangeListener() {
             @Override
@@ -269,16 +264,22 @@ public class DialogImageFont extends Dialog {
         
         var selectBox = new SelectBox<String>(skin);
         selectBox.setItems("0-9", "a-zA-Z", "a-zA-Z0-9", "a-zA-Z0-9!-?*", "custom");
-        if (settings.characters.equals(NUMBERS)) {
-            selectBox.setSelectedIndex(0);
-        } else if (settings.characters.equals(ALPHA)) {
-            selectBox.setSelectedIndex(1);
-        } else if (settings.characters.equals(ALPHA_NUMERIC)) {
-            selectBox.setSelectedIndex(2);
-        } else if (settings.characters.equals(ALL)) {
-            selectBox.setSelectedIndex(3);
-        } else {
-            selectBox.setSelectedIndex(4);
+        switch (settings.characters) {
+            case NUMBERS:
+                selectBox.setSelectedIndex(0);
+                break;
+            case ALPHA:
+                selectBox.setSelectedIndex(1);
+                break;
+            case ALPHA_NUMERIC:
+                selectBox.setSelectedIndex(2);
+                break;
+            case ALL:
+                selectBox.setSelectedIndex(3);
+                break;
+            default:
+                selectBox.setSelectedIndex(4);
+                break;
         }
         selectBox.setName("characters select");
         table.add(selectBox);
@@ -611,7 +612,7 @@ public class DialogImageFont extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 try {
                     Utils.openFileExplorer(Main.appFolder.child("imagefont/characters/"));
-                } catch (Exception e) {
+                } catch (IOException e) {
                     Gdx.app.error(getClass().getName(), "Error opening characters folder", e);
                     main.getDialogFactory().showDialogError("Folder Error...", "Error opening characters folder.\n\nOpen log?");
                 }
@@ -659,6 +660,7 @@ public class DialogImageFont extends Dialog {
                     if (colorData != null) {
                         var textArea = (TextArea) findActor("preview");
                         previewStyle.background = ((NinePatchDrawable) previewStyle.background).tint(colorData.color);
+                        previewStyle.focusedBackground = ((NinePatchDrawable) previewStyle.focusedBackground).tint(colorData.color);
                         settings.previewBackgroundColor = colorData.color;
                     }
                 }, null);
@@ -849,6 +851,7 @@ public class DialogImageFont extends Dialog {
         refreshTable();
         previewStyle.fontColor = settings.previewColor;
         previewStyle.background = ((NinePatchDrawable) previewStyle.background).tint(settings.previewBackgroundColor);
+        previewStyle.focusedBackground = ((NinePatchDrawable) previewStyle.focusedBackground).tint(settings.previewBackgroundColor);
         
         if (targetPath != null && !targetPath.equals("")) {
             processSaveFile(targetPath);
@@ -1078,7 +1081,6 @@ public class DialogImageFont extends Dialog {
                 }
 
                 if (!failure && lookingForBreak) {
-                    lookingForBreak = false;
                     bitmapCharacter.width = fontPixmap.getWidth() - 1 - bitmapCharacter.x;
                     averageWidth += bitmapCharacter.width;
                     bitmapCharacters.add(bitmapCharacter);
@@ -1309,12 +1311,7 @@ public class DialogImageFont extends Dialog {
     private void writeFNT(FileHandle saveFile, boolean texturePack) {
         if (texturePack) {
             //delete existing PNG's
-            var deleteFiles = saveFile.parent().list(new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String name) {
-                    return name.matches(saveFile.nameWithoutExtension() + "\\d*?\\.png|" + saveFile.nameWithoutExtension() + "\\.atlas|" + saveFile.nameWithoutExtension() + "\\.fnt");
-                }
-            });
+            var deleteFiles = saveFile.parent().list((File dir, String name1) -> name1.matches(saveFile.nameWithoutExtension() + "\\d*?\\.png|" + saveFile.nameWithoutExtension() + "\\.atlas|" + saveFile.nameWithoutExtension() + "\\.fnt"));
             for (var file : deleteFiles) {
                 file.delete();
             }
