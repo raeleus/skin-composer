@@ -49,6 +49,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
@@ -77,6 +78,7 @@ public class DialogFonts extends Dialog {
     private Array<FontData> fonts;
     private Array<FreeTypeFontData> freeTypeFonts;
     private Array<DrawableData> drawables;
+    private Array<DrawableData> fontDrawables;
     private Table fontsTable;
     private SelectBox<String> selectBox;
     private ObjectMap<FontData, BitmapFont> fontMap;
@@ -114,6 +116,7 @@ public class DialogFonts extends Dialog {
         fonts = main.getJsonData().getFonts();
         freeTypeFonts = main.getJsonData().getFreeTypeFonts();
         drawables = main.getAtlasData().getDrawables();
+        fontDrawables = main.getAtlasData().getFontDrawables();
 
         fontMap = new ObjectMap<>();
         produceAtlas();
@@ -271,19 +274,40 @@ public class DialogFonts extends Dialog {
                     BitmapFontData deleteFontData = new BitmapFontData(deleteFont.file, false);
                     for (String path : deleteFontData.imagePaths) {
                         FileHandle imagefile = new FileHandle(path);
-                        drawables.removeValue(new DrawableData(imagefile), false);
+                        var drawable = main.getAtlasData().getFontDrawable(imagefile.nameWithoutExtension());
+                        if (drawable != null) {
+                            fontDrawables.removeValue(drawable, false);
+                        }
                     }
                     
                     fonts.removeValue(font, false);
                 }
                 
-                BitmapFontData bitmapFontData = new BitmapFontData(file, false);
+                var bitmapFontData = new BitmapFontData(file, false);
                 for (String path : bitmapFontData.imagePaths) {
-                    DrawableData drawable = new DrawableData(new FileHandle(path));
+                    //remove any existing drawables that share the name
+                    FileHandle imagefile = new FileHandle(path);
+                    var duplicateDrawable = main.getAtlasData().getDrawable(imagefile.nameWithoutExtension());
+                    if (duplicateDrawable != null) {
+                        drawables.removeValue(duplicateDrawable, false);
+                        for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
+                            for (StyleData data : datas) {
+                                for (StyleProperty styleProperty : data.properties.values()) {
+                                    if (styleProperty != null && styleProperty.type.equals(Drawable.class) && styleProperty.value != null && styleProperty.value.equals(duplicateDrawable.toString())) {
+                                        styleProperty.value = null;
+                                    }
+                                }
+                            }
+                        }
+                        main.getRootTable().refreshStyleProperties(true);
+                        main.getRootTable().refreshPreview();
+                    }
+                    
+                    var drawable = new DrawableData(new FileHandle(path));
                     drawable.visible = false;
-                    if (!drawables.contains(drawable, false)) {
+                    if (!fontDrawables.contains(drawable, false)) {
                         main.getAtlasData().atlasCurrent = false;
-                        drawables.add(drawable);
+                        fontDrawables.add(drawable);
                     }
                 }
                 produceAtlas();
@@ -300,7 +324,7 @@ public class DialogFonts extends Dialog {
                 
                 sortBySelectedMode();
                 refreshTable();
-            } catch (Exception e) {
+            } catch (FontData.NameFormatException e) {
                 Gdx.app.error(getClass().getName(), "Error creating font from file", e);
                 main.getDialogFactory().showDialogError("Font Error...", "Error creating font from file. Check file paths.\n\nOpen log?");
             }
@@ -387,7 +411,7 @@ public class DialogFonts extends Dialog {
                         BitmapFontData bitmapFontData = new BitmapFontData(deleteFont.file, false);
                         for (String path : bitmapFontData.imagePaths) {
                             FileHandle imagefile = new FileHandle(path);
-                            drawables.removeValue(new DrawableData(imagefile), false);
+                            fontDrawables.removeValue(new DrawableData(imagefile), false);
                         }
                         
                         for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
@@ -626,14 +650,11 @@ public class DialogFonts extends Dialog {
                 okButton.setDisabled(disable);
             }
         });
-        textField.setTextFieldListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField textField, char c) {
-                if (c == '\n') {
-                    if (!okButton.isDisabled()) {
-                        renameFont(font, textField.getText());
-                        dialog.hide();
-                    }
+        textField.setTextFieldListener((TextField textField1, char c) -> {
+            if (c == '\n') {
+                if (!okButton.isDisabled()) {
+                    renameFont(font, textField1.getText());
+                    dialog.hide();
                 }
             }
         });
@@ -907,10 +928,58 @@ public class DialogFonts extends Dialog {
                 Gdx.app.postRunnable(() -> {
                     FileHandle fileHandle = new FileHandle(files.get(0).getParentFile());
                     main.getProjectData().setLastFontPath(fileHandle.path() + "/");
-                    fontNameDialog(files, 0);
+                    checkExistingDrawablesDialog(files, () -> {
+                        fontNameDialog(files, 0);
+                    });
                 });
             }
         });
+    }
+    
+    private void checkExistingDrawablesDialog(List<File> files, Runnable runnable) {
+        boolean execute = true;
+        
+        fontLoop : for (var fontFile : files) {
+            var bitmapFontData = new BitmapFontData(new FileHandle(fontFile), false);
+            for (var imagePath : bitmapFontData.imagePaths) {
+                var imageFile = new FileHandle(imagePath);
+                if (main.getAtlasData().getDrawable(imageFile.nameWithoutExtension()) != null) {
+                    execute = false;
+                    break fontLoop;
+                }
+            }
+        }
+        
+        if (execute) {
+            runnable.run();
+        } else {
+            var dialog = new Dialog("Override Drawables?", getSkin()) {
+                @Override
+                protected void result(Object object) {
+                    if ((Boolean) object) {
+                        runnable.run();
+                    }
+                }
+            };
+            dialog.getTitleTable().padLeft(5);
+            dialog.getContentTable().pad(5).padBottom(0);
+            dialog.getButtonTable().pad(5);
+            
+            dialog.text("This font will override existing drawables.\n"
+                    + "Proceed?");
+            
+            var textButton = new TextButton("OK", getSkin());
+            textButton.addListener(main.getHandListener());
+            dialog.button(textButton, true);
+            
+            textButton = new TextButton("Cancel", getSkin());
+            textButton.addListener(main.getHandListener());
+            dialog.button(textButton, false);
+            
+            dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
+            
+            dialog.show(getStage());
+        }
     }
     
     private void newBitmapFontDialog() {
@@ -957,9 +1026,9 @@ public class DialogFonts extends Dialog {
     
     private void fontNameDialog(List<File> files, int index) {
         Array<FileHandle> handles = new Array<>();
-        for (File file : files) {
+        files.forEach((file) -> {
             handles.add(new FileHandle(file));
-        }
+        });
         
         fontNameDialog(handles, index);
     }

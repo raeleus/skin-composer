@@ -2,6 +2,7 @@
 * Resolved release issues with Mac and Windows.
 * Fixed pressing enter while typing in the preview dismisses the image font dialog.
 * Fixed create bitmap font dialog not closing file stream.
+* Fixed errors when creating new font that overrides existing drawables.
 * Minor bug fixes and interface improvements.
 
 ### Skin Composer Version 27 ###

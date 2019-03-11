@@ -236,6 +236,22 @@ public class ProjectData implements Json.Serializable {
             }
         }
         
+        for (DrawableData drawableData : atlasData.getFontDrawables()) {
+            if (drawableData.file != null && drawableData.file.exists()) {
+                targetFolder.mkdirs();
+                //drawable files in the temp folder
+                if (drawableData.file.parent().equals(tempImportFolder)) {
+                    drawableData.file.moveTo(targetFolder);
+                    drawableData.file = targetFolder.child(drawableData.file.name());
+                }
+                //drawable files in the folder next to the old save
+                else if (localImportFolder != null && !localImportFolder.equals(targetFolder) && drawableData.file.parent().equals(localImportFolder)) {
+                    drawableData.file.copyTo(targetFolder);
+                    drawableData.file = targetFolder.child(drawableData.file.name());
+                }
+            }
+        }
+        
         for (FontData fontData : jsonData.getFonts()) {
             if (fontData.file.exists()) {
                 targetFolder.mkdirs();
@@ -275,6 +291,14 @@ public class ProjectData implements Json.Serializable {
         FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
         
         for (DrawableData drawableData : main.getAtlasData().getDrawables()) {
+            if (drawableData.file.exists() && !targetFolder.equals(drawableData.file.parent())) {
+                targetFolder.mkdirs();
+                drawableData.file.copyTo(targetFolder);
+                drawableData.file = targetFolder.child(drawableData.file.name());
+            }
+        }
+        
+        for (DrawableData drawableData : main.getAtlasData().getFontDrawables()) {
             if (drawableData.file.exists() && !targetFolder.equals(drawableData.file.parent())) {
                 targetFolder.mkdirs();
                 drawableData.file.copyTo(targetFolder);
@@ -366,10 +390,29 @@ public class ProjectData implements Json.Serializable {
                     errors.add(drawable);
                 }
             }
+            
+            for (DrawableData drawable : atlasData.getFontDrawables()) {
+                if (!drawable.customized && (drawable.file == null || !drawable.file.exists())) {
+                    errors.add(drawable);
+                }
+            }
         } else {
             FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
             
             for (DrawableData drawable : atlasData.getDrawables()) {
+                if (!drawable.customized) {
+                    if (drawable.file == null) {
+                        errors.add(drawable);
+                    } else {
+                        FileHandle localFile = targetFolder.child(drawable.file.name());
+                        if (!localFile.exists()) {
+                            errors.add(drawable);
+                        }
+                    }
+                }
+            }
+            
+            for (DrawableData drawable : atlasData.getFontDrawables()) {
                 if (!drawable.customized) {
                     if (drawable.file == null) {
                         errors.add(drawable);
@@ -418,6 +461,15 @@ public class ProjectData implements Json.Serializable {
         
         if (targetFolder.exists()) {
             for (DrawableData drawableData : atlasData.getDrawables()) {
+                if (resourcesRelative || drawableData.file != null && !drawableData.file.exists()) {
+                    FileHandle newFile = targetFolder.child(drawableData.file.name());
+                    if (newFile.exists()) {
+                        drawableData.file = newFile;
+                    }
+                }
+            }
+            
+            for (DrawableData drawableData : atlasData.getFontDrawables()) {
                 if (resourcesRelative || drawableData.file != null && !drawableData.file.exists()) {
                     FileHandle newFile = targetFolder.child(drawableData.file.name());
                     if (newFile.exists()) {

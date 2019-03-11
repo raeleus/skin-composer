@@ -23,7 +23,6 @@
  ******************************************************************************/
 package com.ray3k.skincomposer.data;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -42,10 +41,12 @@ import java.io.FilenameFilter;
 public class AtlasData implements Json.Serializable {
     public boolean atlasCurrent = false;
     private Array<DrawableData> drawables;
+    private Array<DrawableData> fontDrawables;
     private Main main;
     
     public AtlasData() {
         drawables = new Array<>();
+        fontDrawables = new Array<>();
     }
 
     public void setMain(Main main) {
@@ -54,6 +55,7 @@ public class AtlasData implements Json.Serializable {
     
     public void clear() {
         drawables.clear();
+        fontDrawables.clear();
         atlasCurrent = false;
     }
 
@@ -64,6 +66,22 @@ public class AtlasData implements Json.Serializable {
     public DrawableData getDrawable(String name) {
         DrawableData returnValue = null;
         for (DrawableData data : drawables) {
+            if (data.name.equals(name)) {
+                returnValue = data;
+                break;
+            }
+        }
+        
+        return returnValue;
+    }
+
+    public Array<DrawableData> getFontDrawables() {
+        return fontDrawables;
+    }
+    
+    public DrawableData getFontDrawable(String name) {
+        DrawableData returnValue = null;
+        for (DrawableData data : fontDrawables) {
             if (data.name.equals(name)) {
                 returnValue = data;
                 break;
@@ -185,6 +203,13 @@ public class AtlasData implements Json.Serializable {
         targetFile.sibling(targetFile.nameWithoutExtension() + ".atlas").delete();
         
         Array<FileHandle> files = new Array<>();
+        
+        for (DrawableData drawable : fontDrawables) {
+            if (!files.contains(drawable.file, false)) {
+                files.add(drawable.file);
+            }
+        }
+        
         for (DrawableData drawable : drawables) {
             if (!drawable.customized && !files.contains(drawable.file, false)) {
                 files.add(drawable.file);
@@ -209,6 +234,18 @@ public class AtlasData implements Json.Serializable {
         targetFile.sibling(targetFile.nameWithoutExtension() + ".atlas").delete();
         
         Array<FileHandle> files = new Array<>();
+        
+        
+        for (DrawableData drawable : fontDrawables) {
+            if (!files.contains(drawable.file, false)) {
+                files.add(drawable.file);
+            }
+            
+            if (!main.getProjectData().resourceExists(drawable.file)) {
+                warnings.add("[RED]ERROR:[] Drawable file [BLACK]" + drawable.file + "[] does not exist.");
+            }
+        }
+        
         for (DrawableData drawable : drawables) {
             if (!drawable.customized) {
                 if (!files.contains(drawable.file, false)) {
@@ -242,17 +279,22 @@ public class AtlasData implements Json.Serializable {
     public void set(AtlasData atlasData) {
         drawables.clear();
         drawables.addAll(atlasData.drawables);
+        
+        fontDrawables.clear();
+        fontDrawables.addAll(atlasData.fontDrawables);
     }
 
     @Override
     public void write(Json json) {
         json.writeValue("atlasCurrent", atlasCurrent);
         json.writeValue("drawables", drawables, Array.class, DrawableData.class);
+        json.writeValue("fontDrawables", fontDrawables, Array.class, DrawableData.class);
     }
 
     @Override
     public void read(Json json, JsonValue jsonData) {
         atlasCurrent = json.readValue("atlasCurrent", Boolean.TYPE, jsonData);
         drawables = json.readValue("drawables", Array.class, DrawableData.class, jsonData);
+        fontDrawables = json.readValue("fontDrawables", Array.class, DrawableData.class, new Array<DrawableData>(),jsonData);
     }
 }

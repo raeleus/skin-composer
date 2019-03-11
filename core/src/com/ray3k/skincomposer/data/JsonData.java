@@ -165,7 +165,12 @@ public class JsonData implements Json.Serializable {
                         BitmapFont.BitmapFontData bitmapFontData = new BitmapFont.BitmapFontData(fontCopy, false);
                         for (String path : bitmapFontData.imagePaths) {
                             FileHandle file = new FileHandle(path);
-                            main.getProjectData().getAtlasData().getDrawable(file.nameWithoutExtension()).visible = false;
+                            
+                            var drawable = main.getProjectData().getAtlasData().getDrawable(file.nameWithoutExtension());
+                            drawable.visible = false;
+                            
+                            main.getProjectData().getAtlasData().getDrawables().removeValue(drawable, false);
+                            main.getProjectData().getAtlasData().getFontDrawables().add(drawable);
                         }
                     }
                 }
