@@ -203,38 +203,40 @@ public class DialogExport extends Dialog {
     
     private void writeFile(FileHandle fileHandle) {
         main.getDialogFactory().showDialogLoading(() -> {
-            Array<String> warnings = new Array<>();
+            Gdx.app.postRunnable(() -> {
+                Array<String> warnings = new Array<>();
 
-            Array<String> newWarnings = main.getProjectData().getJsonData().writeFile(fileHandle);
-            warnings.addAll(newWarnings);
+                Array<String> newWarnings = main.getProjectData().getJsonData().writeFile(fileHandle);
+                warnings.addAll(newWarnings);
 
-            if (main.getProjectData().isExportingAtlas()) {
-                try {
-                    newWarnings = main.getProjectData().getAtlasData().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
-                    warnings.addAll(newWarnings);
-                } catch (Exception ex) {
-                    Gdx.app.error(getClass().getName(), "Error while writing texture atlas", ex);
-                    main.getDialogFactory().showDialogError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
-                }
-            }
-
-            if (main.getProjectData().isExportingFonts()) {
-                for (FontData font : main.getProjectData().getJsonData().getFonts()) {
-                    if (!font.file.parent().equals(fileHandle.parent())) {
-                        font.file.copyTo(fileHandle.parent());
+                if (main.getProjectData().isExportingAtlas()) {
+                    try {
+                        newWarnings = main.getProjectData().getAtlasData().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
+                        warnings.addAll(newWarnings);
+                    } catch (Exception ex) {
+                        Gdx.app.error(getClass().getName(), "Error while writing texture atlas", ex);
+                        main.getDialogFactory().showDialogError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
                     }
                 }
 
-                for (FreeTypeFontData font : main.getProjectData().getJsonData().getFreeTypeFonts()) {
-                    if (font.useCustomSerializer && !font.file.parent().equals(fileHandle.parent())) {
-                        font.file.copyTo(fileHandle.parent());
+                if (main.getProjectData().isExportingFonts()) {
+                    for (FontData font : main.getProjectData().getJsonData().getFonts()) {
+                        if (!font.file.parent().equals(fileHandle.parent())) {
+                            font.file.copyTo(fileHandle.parent());
+                        }
+                    }
+
+                    for (FreeTypeFontData font : main.getProjectData().getJsonData().getFreeTypeFonts()) {
+                        if (font.useCustomSerializer && !font.file.parent().equals(fileHandle.parent())) {
+                            font.file.copyTo(fileHandle.parent());
+                        }
                     }
                 }
-            }
 
-            if (warnings.size > 0) {
-                main.getDialogFactory().showWarningDialog(warnings);
-            }
+                if (warnings.size > 0) {
+                    main.getDialogFactory().showWarningDialog(warnings);
+                }
+            });
         });
     }
 

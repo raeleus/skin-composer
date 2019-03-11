@@ -110,7 +110,9 @@ public class DialogImageFont extends Dialog {
         filesDroppedListener = (Array<FileHandle> files) -> {
             if (files.size > 0 && files.first().extension().equalsIgnoreCase("png")) {
                 Runnable runnable = () -> {
-                    processSourceFile(files.first(), true);
+                    Gdx.app.postRunnable(() -> {
+                        processSourceFile(files.first(), true);
+                    });
                 };
                 
                 main.getDialogFactory().showDialogLoading(runnable);
@@ -686,8 +688,10 @@ public class DialogImageFont extends Dialog {
 
             File file = main.getDesktopWorker().openDialog("Select image file...", defaultPath, filterPatterns, "Image files");
             if (file != null) {
-                FileHandle fileHandle = new FileHandle(file);
-                processSourceFile(fileHandle, true);
+                Gdx.app.postRunnable(() -> {
+                    FileHandle fileHandle = new FileHandle(file);
+                    processSourceFile(fileHandle, true);
+                });
             }
         };
 
@@ -724,30 +728,32 @@ public class DialogImageFont extends Dialog {
     
     private void saveFileBrowse() {
         Runnable runnable = () -> {
-            var textField = (TextField) findActor("targetpath");
+            Gdx.app.postRunnable(() -> {
+                var textField = (TextField) findActor("targetpath");
 
-            String defaultPath = main.getProjectData().getLastFontPath();
-            FileHandle currentPath = Gdx.files.absolute(textField.getText());
-            if (currentPath.exists()) {
-                defaultPath = textField.getText();
-            }
-
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[]{"*.fnt"};
-            }
-
-            File file = main.getDesktopWorker().saveDialog("Save as font file...", defaultPath, filterPatterns, "Font files");
-            if (file != null) {
-                var fileHandle = new FileHandle(file);
-                if (!fileHandle.extension().equalsIgnoreCase("fnt")) {
-                    fileHandle = fileHandle.parent().child(fileHandle.name() + ".fnt");
+                String defaultPath = main.getProjectData().getLastFontPath();
+                FileHandle currentPath = Gdx.files.absolute(textField.getText());
+                if (currentPath.exists()) {
+                    defaultPath = textField.getText();
                 }
-                
-                processSaveFile(fileHandle.path());
-                
-                main.getProjectData().setLastFontPath(fileHandle.parent().path() + "/");
-            }
+
+                String[] filterPatterns = null;
+                if (!Utils.isMac()) {
+                    filterPatterns = new String[]{"*.fnt"};
+                }
+
+                File file = main.getDesktopWorker().saveDialog("Save as font file...", defaultPath, filterPatterns, "Font files");
+                if (file != null) {
+                    var fileHandle = new FileHandle(file);
+                    if (!fileHandle.extension().equalsIgnoreCase("fnt")) {
+                        fileHandle = fileHandle.parent().child(fileHandle.name() + ".fnt");
+                    }
+
+                    processSaveFile(fileHandle.path());
+
+                    main.getProjectData().setLastFontPath(fileHandle.parent().path() + "/");
+                }
+            });
         };
 
         main.getDialogFactory().showDialogLoading(runnable);
@@ -773,14 +779,16 @@ public class DialogImageFont extends Dialog {
 
             File file = main.getDesktopWorker().saveDialog("Save Image Font Settings...", defaultPath, filterPatterns, "Imagefont files");
             if (file != null) {
-                var fileHandle = new FileHandle(file);
-                if (!fileHandle.extension().equalsIgnoreCase("imagefont")) {
-                    fileHandle = fileHandle.parent().child(fileHandle.name() + ".imagefont");
-                }
-                
-                saveSettings(fileHandle);
-                
-                main.getProjectData().setLastFontPath(fileHandle.parent().path() + "/");
+                Gdx.app.postRunnable(() -> {
+                    var fileHandle = new FileHandle(file);
+                    if (!fileHandle.extension().equalsIgnoreCase("imagefont")) {
+                        fileHandle = fileHandle.parent().child(fileHandle.name() + ".imagefont");
+                    }
+
+                    saveSettings(fileHandle);
+
+                    main.getProjectData().setLastFontPath(fileHandle.parent().path() + "/");
+                });
             }
         };
 
@@ -825,18 +833,20 @@ public class DialogImageFont extends Dialog {
     
     private void loadSettingsBrowse() {
         Runnable runnable = () -> {
-            String defaultPath = main.getProjectData().getLastFontPath();
+            Gdx.app.postRunnable(() -> {
+                String defaultPath = main.getProjectData().getLastFontPath();
 
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[]{"*.imagefont"};
-            }
+                String[] filterPatterns = null;
+                if (!Utils.isMac()) {
+                    filterPatterns = new String[]{"*.imagefont"};
+                }
 
-            File file = main.getDesktopWorker().openDialog("Load Image Font Settings...", defaultPath, filterPatterns, "Imagefont files");
-            if (file != null) {
-                FileHandle fileHandle = new FileHandle(file);
-                loadSettings(fileHandle);
-            }
+                File file = main.getDesktopWorker().openDialog("Load Image Font Settings...", defaultPath, filterPatterns, "Imagefont files");
+                if (file != null) {
+                    FileHandle fileHandle = new FileHandle(file);
+                    loadSettings(fileHandle);
+                }
+            });
         };
 
         main.getDialogFactory().showDialogLoading(runnable);

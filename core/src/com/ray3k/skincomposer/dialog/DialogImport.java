@@ -160,8 +160,10 @@ public class DialogImport extends Dialog {
                     (int selection) -> {
                         if (selection == 0) {
                             main.getMainListener().saveFile(() -> {
-                                main.getProjectData().clear();
-                                importFile(fileHandle);
+                                Gdx.app.postRunnable(() -> {
+                                    main.getProjectData().clear();
+                                    importFile(fileHandle);
+                                });
                             });
                         } else if (selection == 1) {
                             main.getProjectData().clear();
@@ -176,23 +178,25 @@ public class DialogImport extends Dialog {
     
     private void importFile(FileHandle fileHandle) {
         main.getDialogFactory().showDialogLoading(() -> {
-            Array<String> warnings = new Array<>();
+            Gdx.app.postRunnable(() -> {
+                Array<String> warnings = new Array<>();
 
-            try {
-                Array<String> newWarnings = main.getJsonData().readFile(fileHandle);
-                warnings.addAll(newWarnings);
-                main.getProjectData().getAtlasData().atlasCurrent = false;
-                main.getJsonData().checkForPropertyConsistency();
-                main.getRootTable().produceAtlas();
-                main.getRootTable().populate();
-            } catch (Exception e) {
-                Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
-                main.getDialogFactory().showDialogError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
-            }
+                try {
+                    Array<String> newWarnings = main.getJsonData().readFile(fileHandle);
+                    warnings.addAll(newWarnings);
+                    main.getProjectData().getAtlasData().atlasCurrent = false;
+                    main.getJsonData().checkForPropertyConsistency();
+                    main.getRootTable().produceAtlas();
+                    main.getRootTable().populate();
+                } catch (Exception e) {
+                    Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
+                    main.getDialogFactory().showDialogError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
+                }
 
-            if (warnings.size > 0) {
-                main.getDialogFactory().showWarningDialog(warnings);
-            }
+                if (warnings.size > 0) {
+                    main.getDialogFactory().showWarningDialog(warnings);
+                }
+            });
         });
     }
 

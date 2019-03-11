@@ -289,7 +289,9 @@ public class MainListener extends RootTableListener {
                     (int selection) -> {
                         if (selection == 0) {
                             saveFile(() -> {
-                                projectData.clear();
+                                Gdx.app.postRunnable(() -> {
+                                    projectData.clear();
+                                });
                             });
                         } else if (selection == 1) {
                             projectData.clear();
@@ -322,16 +324,18 @@ public class MainListener extends RootTableListener {
 
             File file = desktopWorker.openDialog("Open skin file...", defaultPath, filterPatterns, "Skin Composer files");
             if (file != null) {
-                FileHandle fileHandle = new FileHandle(file);
-                projectData.load(fileHandle);
-                Array<DrawableData> drawableErrors = projectData.verifyDrawablePaths();
-                Array<FontData> fontErrors = projectData.verifyFontPaths();
-                if (drawableErrors.size > 0 || fontErrors.size > 0) {
-                    dialogFactory.showDialogPathErrors(drawableErrors, fontErrors);
-                }
-                projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
-                root.populate();
-                root.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
+                Gdx.app.postRunnable(() -> {
+                    FileHandle fileHandle = new FileHandle(file);
+                    projectData.load(fileHandle);
+                    Array<DrawableData> drawableErrors = projectData.verifyDrawablePaths();
+                    Array<FontData> fontErrors = projectData.verifyFontPaths();
+                    if (drawableErrors.size > 0 || fontErrors.size > 0) {
+                        dialogFactory.showDialogPathErrors(drawableErrors, fontErrors);
+                    }
+                    projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
+                    root.populate();
+                    root.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
+                });
             }
         };
         
@@ -373,15 +377,17 @@ public class MainListener extends RootTableListener {
             }
 
             if (fileHandle != null) {
-                projectData.load(fileHandle);
-                Array<DrawableData> drawableErrors = projectData.verifyDrawablePaths();
-                Array<FontData> fontErrors = projectData.verifyFontPaths();
-                if (drawableErrors.size > 0 || fontErrors.size > 0) {
-                    dialogFactory.showDialogPathErrors(drawableErrors, fontErrors);
-                }
-                projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
-                root.populate();
-                root.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
+                Gdx.app.postRunnable(() -> {
+                    projectData.load(fileHandle);
+                    Array<DrawableData> drawableErrors = projectData.verifyDrawablePaths();
+                    Array<FontData> fontErrors = projectData.verifyFontPaths();
+                    if (drawableErrors.size > 0 || fontErrors.size > 0) {
+                        dialogFactory.showDialogPathErrors(drawableErrors, fontErrors);
+                    }
+                    projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
+                    root.populate();
+                    root.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
+                });
             }
         };
         
@@ -435,15 +441,17 @@ public class MainListener extends RootTableListener {
 
             File file = desktopWorker.saveDialog("Save skin file as...", defaultPath, filterPatterns, "Skin Composer files");
             if (file != null) {
-                FileHandle fileHandle = new FileHandle(file);
-                if (fileHandle.extension() == null || !fileHandle.extension().equals(".scmp")) {
-                    fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".scmp");
-                }
-                projectData.save(fileHandle);
-                projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
-                if (runnable != null) {
-                    runnable.run();
-                }
+                Gdx.app.postRunnable(() -> {
+                    FileHandle fileHandle = new FileHandle(file);
+                    if (fileHandle.extension() == null || !fileHandle.extension().equals(".scmp")) {
+                        fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".scmp");
+                    }
+                    projectData.save(fileHandle);
+                    projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
+                    if (runnable != null) {
+                        runnable.run();
+                    }
+                });
             }
         });
     }
@@ -625,16 +633,18 @@ public class MainListener extends RootTableListener {
     
     public void refreshTextureAtlas() {
         main.getDialogFactory().showDialogLoading(() -> {
-            try {
-                main.getProjectData().getAtlasData().writeAtlas();
-                main.getProjectData().getAtlasData().atlasCurrent = true;
-                main.getRootTable().produceAtlas();
-                main.getRootTable().refreshPreview();
-            } catch (Exception e) {
-                main.getDialogFactory().showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
-                Gdx.app.error(getClass().getName(), "Unable to write texture atlas to temporary storage!", e);
-                main.getDialogFactory().showDialogError("Atlas Error...", "Unable to write texture atlas to temporary storage.\n\nOpen log?");
-            }
+            Gdx.app.postRunnable(() -> {
+                try {
+                    main.getProjectData().getAtlasData().writeAtlas();
+                    main.getProjectData().getAtlasData().atlasCurrent = true;
+                    main.getRootTable().produceAtlas();
+                    main.getRootTable().refreshPreview();
+                } catch (Exception e) {
+                    main.getDialogFactory().showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
+                    Gdx.app.error(getClass().getName(), "Unable to write texture atlas to temporary storage!", e);
+                    main.getDialogFactory().showDialogError("Atlas Error...", "Unable to write texture atlas to temporary storage.\n\nOpen log?");
+                }
+            });
         });
     }
     

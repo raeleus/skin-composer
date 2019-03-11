@@ -491,8 +491,10 @@ public class DialogFreeTypeFont extends Dialog {
 
                     File file = main.getDesktopWorker().openDialog("Select TTF file...", defaultPath, filterPatterns, "True Type Font files");
                     if (file != null) {
-                        FileHandle fileHandle = new FileHandle(file);
-                        loadTTF(fileHandle);
+                        Gdx.app.postRunnable(() -> {
+                            FileHandle fileHandle = new FileHandle(file);
+                            loadTTF(fileHandle);
+                        });
                     }
                 };
                 
@@ -1290,13 +1292,15 @@ public class DialogFreeTypeFont extends Dialog {
 
             File file = main.getDesktopWorker().saveDialog("Save Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
             if (file != null) {
-                var fileHandle = new FileHandle(file);
-                
-                if (!fileHandle.extension().toLowerCase(Locale.ROOT).equals("scmp-font")) {
-                    fileHandle = fileHandle.sibling(fileHandle.name() + ".scmp-font");
-                }
-                
-                saveSettings(fileHandle);
+                Gdx.app.postRunnable(() -> {
+                    var fileHandle = new FileHandle(file);
+
+                    if (!fileHandle.extension().toLowerCase(Locale.ROOT).equals("scmp-font")) {
+                        fileHandle = fileHandle.sibling(fileHandle.name() + ".scmp-font");
+                    }
+
+                    saveSettings(fileHandle);
+                });
             }
         };
 
@@ -1386,7 +1390,9 @@ public class DialogFreeTypeFont extends Dialog {
 
             File file = main.getDesktopWorker().openDialog("Select Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
             if (file != null) {
-                loadSettings(new FileHandle(file));
+                Gdx.app.postRunnable(() -> {
+                    loadSettings(new FileHandle(file));
+                });
             }
         };
 

@@ -1383,26 +1383,28 @@ public class DialogDrawables extends Dialog {
                 gatherDrawables();
 
                 main.getDialogFactory().showDialogLoading(() -> {
-                    if (!produceAtlas()) {
-                        showDrawableError();
-                        Gdx.app.log(getClass().getName(), "Attempting to reload drawables backup...");
-                        main.getAtlasData().getDrawables().clear();
-                        main.getAtlasData().getDrawables().addAll(backup);
-                        gatherDrawables();
-                        if (produceAtlas()) {
-                            Gdx.app.log(getClass().getName(), "Successfully rolled back changes to drawables");
+                    Gdx.app.postRunnable(() -> {
+                        if (!produceAtlas()) {
+                            showDrawableError();
+                            Gdx.app.log(getClass().getName(), "Attempting to reload drawables backup...");
+                            main.getAtlasData().getDrawables().clear();
+                            main.getAtlasData().getDrawables().addAll(backup);
+                            gatherDrawables();
+                            if (produceAtlas()) {
+                                Gdx.app.log(getClass().getName(), "Successfully rolled back changes to drawables");
+                            } else {
+                                Gdx.app.error(getClass().getName(), "Critical failure, could not roll back changes to drawables");
+                            }
                         } else {
-                            Gdx.app.error(getClass().getName(), "Critical failure, could not roll back changes to drawables");
-                        }
-                    } else {
-                        if (main.getProjectData().areResourcesRelative()) {
-                            main.getProjectData().makeResourcesRelative();
+                            if (main.getProjectData().areResourcesRelative()) {
+                                main.getProjectData().makeResourcesRelative();
+                            }
+
+                            main.getProjectData().setChangesSaved(false);
                         }
 
-                        main.getProjectData().setChangesSaved(false);
-                    }
-
-                    sortBySelectedMode();
+                        sortBySelectedMode();
+                    });
                 });
             }
         });
@@ -1510,26 +1512,28 @@ public class DialogDrawables extends Dialog {
         gatherDrawables();
 
         main.getDialogFactory().showDialogLoading(() -> {
-            if (!produceAtlas()) {
-                showDrawableError();
-                Gdx.app.log(getClass().getName(), "Attempting to reload drawables backup...");
-                main.getAtlasData().getDrawables().clear();
-                main.getAtlasData().getDrawables().addAll(backup);
-                gatherDrawables();
-                if (produceAtlas()) {
-                    Gdx.app.log(getClass().getName(), "Successfully rolled back changes to drawables");
+            Gdx.app.postRunnable(() -> {
+                if (!produceAtlas()) {
+                    showDrawableError();
+                    Gdx.app.log(getClass().getName(), "Attempting to reload drawables backup...");
+                    main.getAtlasData().getDrawables().clear();
+                    main.getAtlasData().getDrawables().addAll(backup);
+                    gatherDrawables();
+                    if (produceAtlas()) {
+                        Gdx.app.log(getClass().getName(), "Successfully rolled back changes to drawables");
+                    } else {
+                        Gdx.app.error(getClass().getName(), "Critical failure, could not roll back changes to drawables");
+                    }
                 } else {
-                    Gdx.app.error(getClass().getName(), "Critical failure, could not roll back changes to drawables");
-                }
-            } else {
-                if (main.getProjectData().areResourcesRelative()) {
-                    main.getProjectData().makeResourcesRelative();
-                }
-                
-                main.getProjectData().setChangesSaved(false);
-            }
+                    if (main.getProjectData().areResourcesRelative()) {
+                        main.getProjectData().makeResourcesRelative();
+                    }
 
-            sortBySelectedMode();
+                    main.getProjectData().setChangesSaved(false);
+                }
+
+                sortBySelectedMode();
+            });
         });
     }
     

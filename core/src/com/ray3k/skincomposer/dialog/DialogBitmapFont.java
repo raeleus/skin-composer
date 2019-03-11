@@ -114,7 +114,9 @@ public class DialogBitmapFont extends Dialog {
                 var extension = files.first().extension().toLowerCase(Locale.ROOT);
                 if (extension.equals("ttf")) {
                     Runnable runnable = () -> {
-                        loadTTFsource(files.first());
+                        Gdx.app.postRunnable(() -> {
+                            loadTTFsource(files.first());
+                        });
                     };
 
                     main.getDialogFactory().showDialogLoading(runnable);
@@ -262,7 +264,9 @@ public class DialogBitmapFont extends Dialog {
 
                     File file = main.getDesktopWorker().openDialog("Select TTF file...", defaultPath, filterPatterns, "True Type Font files");
                     if (file != null) {
-                        loadTTFsource(new FileHandle(file));
+                        Gdx.app.postRunnable(() -> {
+                            loadTTFsource(new FileHandle(file));
+                        });
                     }
                 };
 
@@ -310,18 +314,20 @@ public class DialogBitmapFont extends Dialog {
 
                     File file = main.getDesktopWorker().saveDialog("Select FNT file...", defaultPath, filterPatterns, "Bitmap Font files");
                     if (file != null) {
-                        target = new FileHandle(file);
-                        if (!target.extension().equalsIgnoreCase("fnt")) {
-                            target = target.sibling(target.name() + ".fnt");
-                        }
+                        Gdx.app.postRunnable(() -> {
+                            target = new FileHandle(file);
+                            if (!target.extension().equalsIgnoreCase("fnt")) {
+                                target = target.sibling(target.name() + ".fnt");
+                            }
 
-                        var textField = (TextField) DialogBitmapFont.this.findActor("targetFileField");
-                        textField.setText(target.path());
-                        textField.setCursorPosition(textField.getText().length() - 1);
+                            var textField = (TextField) DialogBitmapFont.this.findActor("targetFileField");
+                            textField.setText(target.path());
+                            textField.setCursorPosition(textField.getText().length() - 1);
 
-                        main.getProjectData().setLastFontPath(target.parent().path() + "/");
+                            main.getProjectData().setLastFontPath(target.parent().path() + "/");
 
-                        updatePreviewAndOK();
+                            updatePreviewAndOK();
+                        });
                     }
                 };
 
@@ -1072,13 +1078,15 @@ public class DialogBitmapFont extends Dialog {
 
             File file = main.getDesktopWorker().saveDialog("Save Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
             if (file != null) {
-                var fileHandle = new FileHandle(file);
-                
-                if (!fileHandle.extension().toLowerCase(Locale.ROOT).equals("scmp-font")) {
-                    fileHandle = fileHandle.sibling(fileHandle.name() + ".scmp-font");
-                }
-                
-                saveSettings(fileHandle);
+                Gdx.app.postRunnable(() -> {
+                    var fileHandle = new FileHandle(file);
+
+                    if (!fileHandle.extension().toLowerCase(Locale.ROOT).equals("scmp-font")) {
+                        fileHandle = fileHandle.sibling(fileHandle.name() + ".scmp-font");
+                    }
+
+                    saveSettings(fileHandle);
+                });
             }
         };
 
@@ -1168,7 +1176,9 @@ public class DialogBitmapFont extends Dialog {
 
             File file = main.getDesktopWorker().openDialog("Select Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
             if (file != null) {
-                loadSettings(new FileHandle(file));
+                Gdx.app.postRunnable(() -> {
+                    loadSettings(new FileHandle(file));
+                });
             }
         };
 

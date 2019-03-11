@@ -557,7 +557,9 @@ public class DialogFactory {
                         if ((int) object == 0) {
                             main.getMainListener().saveFile(() -> {
                                 if (main.getProjectData().areChangesSaved()) {
-                                    Gdx.app.exit();
+                                    Gdx.app.postRunnable(() -> {
+                                        Gdx.app.exit();
+                                    });
                                 }
                             });
                         } else if ((int) object == 1) {
