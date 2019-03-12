@@ -56,7 +56,6 @@ public class DialogPathErrors extends Dialog {
     
     public DialogPathErrors(Main main, Skin skin, String windowStyleName, Array<DrawableData> drawables, Array<FontData> fonts) {
         super("", skin, windowStyleName);
-        System.out.println(fonts.size);
         
         this.main = main;
     

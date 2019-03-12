@@ -1461,7 +1461,6 @@ public class DialogDrawables extends Dialog {
             @Override
             protected void result(Object object) {
                 if ((boolean) object) {
-                    System.out.println("hit");
                     for (FileHandle fileHandle : unhandledFiles) {
                         removeDuplicateDrawables(DrawableData.proper(fileHandle.name()), false);
                         if (!checkDuplicateFontDrawables(DrawableData.proper(fileHandle.name()), 0)) {
