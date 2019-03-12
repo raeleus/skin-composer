@@ -29,6 +29,8 @@ import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -93,7 +95,7 @@ public class Main extends ApplicationAdapter {
     private static Skin skin;
     private DialogFactory dialogFactory;
     private DesktopWorker desktopWorker;
-    private AnimatedDrawable loadingAnimation;
+    private AnimationDrawable loadingAnimation;
     private UndoableManager undoableManager;
     private ProjectData projectData;
     private RootTable rootTable;
@@ -194,15 +196,7 @@ public class Main extends ApplicationAdapter {
             return false;
         });
         
-        loadingAnimation = new AnimatedDrawable(.05f);
-        loadingAnimation.addDrawable(skin.getDrawable("loading_0"));
-        loadingAnimation.addDrawable(skin.getDrawable("loading_1"));
-        loadingAnimation.addDrawable(skin.getDrawable("loading_2"));
-        loadingAnimation.addDrawable(skin.getDrawable("loading_3"));
-        loadingAnimation.addDrawable(skin.getDrawable("loading_4"));
-        loadingAnimation.addDrawable(skin.getDrawable("loading_5"));
-        loadingAnimation.addDrawable(skin.getDrawable("loading_6"));
-        loadingAnimation.addDrawable(skin.getDrawable("loading_7"));
+        loadingAnimation = new AnimationDrawable(skin, "loading-animation", 1 / 30f);
         
         projectData.getAtlasData().clearTempData();
         handListener = new HandListener();
@@ -271,7 +265,7 @@ public class Main extends ApplicationAdapter {
         return stage;
     }
 
-    public AnimatedDrawable getLoadingAnimation() {
+    public AnimationDrawable getLoadingAnimation() {
         return loadingAnimation;
     }
 
