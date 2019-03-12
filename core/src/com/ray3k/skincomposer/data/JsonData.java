@@ -989,15 +989,17 @@ public class JsonData implements Json.Serializable {
     public void translateFontDrawables(AtlasData atlasData) {
         
         for (var font : fonts) {
-            var bitmapFontData = new BitmapFontData(font.file, false);
-            for (String path : bitmapFontData.imagePaths) {
-                FileHandle file = new FileHandle(path);
-                
-                var drawable = atlasData.getDrawable(file.nameWithoutExtension());
+            if (font.file.exists()) {
+                var bitmapFontData = new BitmapFontData(font.file, false);
+                for (String path : bitmapFontData.imagePaths) {
+                    FileHandle file = new FileHandle(path);
 
-                if (drawable != null) {
-                    atlasData.getDrawables().removeValue(drawable, false);
-                    atlasData.getFontDrawables().add(drawable);
+                    var drawable = atlasData.getDrawable(file.nameWithoutExtension());
+
+                    if (drawable != null) {
+                        atlasData.getDrawables().removeValue(drawable, false);
+                        atlasData.getFontDrawables().add(drawable);
+                    }
                 }
             }
         }

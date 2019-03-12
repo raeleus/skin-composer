@@ -327,6 +327,7 @@ public class MainListener extends RootTableListener {
                 Gdx.app.postRunnable(() -> {
                     FileHandle fileHandle = new FileHandle(file);
                     projectData.load(fileHandle);
+                    System.out.println("I am ready to start");
                     Array<DrawableData> drawableErrors = projectData.verifyDrawablePaths();
                     Array<FontData> fontErrors = projectData.verifyFontPaths();
                     if (drawableErrors.size > 0 || fontErrors.size > 0) {
