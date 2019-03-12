@@ -1340,7 +1340,10 @@ public class DialogDrawables extends Dialog {
         Label label = new Label("Error while adding new drawables.\nEnsure that image dimensions are\nless than maximums specified in project.\nRolling back changes...", getSkin());
         label.setAlignment(Align.center);
         dialog.text(label);
-        dialog.button("OK");
+        
+        var textButton = new TextButton("OK", getSkin());
+        textButton.addListener(main.getHandListener());
+        dialog.button(textButton);
         dialog.show(getStage());
     }
     

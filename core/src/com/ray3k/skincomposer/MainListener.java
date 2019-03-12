@@ -322,7 +322,7 @@ public class MainListener extends RootTableListener {
                 filterPatterns = new String[] {"*.scmp"};
             }
 
-            File file = desktopWorker.openDialog("Open skin file...", defaultPath, filterPatterns, "Skin Composer files");
+            File file = desktopWorker.openDialog("Open Skin Composer file...", defaultPath, filterPatterns, "Skin Composer files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     FileHandle fileHandle = new FileHandle(file);
@@ -439,7 +439,7 @@ public class MainListener extends RootTableListener {
 
             String[] filterPatterns = {"*.scmp"};
 
-            File file = desktopWorker.saveDialog("Save skin file as...", defaultPath, filterPatterns, "Skin Composer files");
+            File file = desktopWorker.saveDialog("Save Skin Composer file as...", defaultPath, filterPatterns, "Skin Composer files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     FileHandle fileHandle = new FileHandle(file);
