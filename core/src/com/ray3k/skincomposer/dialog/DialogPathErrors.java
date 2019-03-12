@@ -248,6 +248,9 @@ public class DialogPathErrors extends Dialog {
                 dataTable.add(image).colspan(4).pad(5.0f).padLeft(0.0f).padRight(0.0f).growX();
             }
         }
+        
+        dataTable.row();
+        dataTable.add().grow().colspan(4);
     }
 
     private void resolveAssetsFromFolder(FileHandle folder, Array<DrawableData> drawables, Array<FontData> fonts) {
