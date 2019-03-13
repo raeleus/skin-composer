@@ -446,7 +446,7 @@ public class DialogColors extends Dialog {
                 colorTable.row();
             }
         } else {
-            colorTable.add(new Label("No colors have been set!", getSkin(), "required"));
+            colorTable.add(new Label("No colors have been set!", getSkin(), "black"));
         }
     }
     

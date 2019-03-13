@@ -338,11 +338,11 @@ public class DialogFonts extends Dialog {
         fontsTable.defaults().growX().pad(5.0f);
 
         if (fonts.size == 0 && freeTypeFonts.size == 0) {
-            fontsTable.add(new Label("No fonts have been set!", getSkin()));
+            fontsTable.add(new Label("No fonts have been set!", getSkin(), "black"));
         } else {
             
             if (fonts.size > 0) {
-                Label label = new Label("Bitmap Fonts", getSkin(), "required");
+                Label label = new Label("Bitmap Fonts", getSkin(), "black");
                 label.setAlignment(Align.center);
                 fontsTable.add(label);
                 fontsTable.row();
@@ -463,7 +463,7 @@ public class DialogFonts extends Dialog {
             }
             
             if (freeTypeFonts.size > 0) {
-                Label label = new Label("FreeType Fonts", getSkin(), "required");
+                Label label = new Label("FreeType Fonts", getSkin(), "black");
                 label.setAlignment(Align.center);
                 fontsTable.add(label).spaceTop(20.0f);
                 fontsTable.row();
