@@ -3,6 +3,7 @@
 * Dialogs now highlight which field needs to be completed in order to continue.
 * Added option to not show warnings when exporting a skin.
 * Added option to import/export colors in a skin JSON as hexadecimal.
+* Default export path is now a per project setting to prevent unfortunate accidents.
 * Fixed pressing enter while typing in the preview dismisses the image font dialog.
 * Fixed create bitmap font dialog not closing file stream.
 * Fixed errors when creating new font that overrides existing drawables.

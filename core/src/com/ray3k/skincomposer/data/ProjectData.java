@@ -567,14 +567,11 @@ public class ProjectData implements Json.Serializable {
     }
 
     public String getLastImportExportPath() {
-        return (String) generalPref.getString("last-import-export-path",
-                generalPref.getString("last-path",
-                        Gdx.files.getLocalStoragePath()));
+        return (String) preferences.get("last-import-export-path", Gdx.files.getLocalStoragePath());
     }
 
     public void setLastImportExportPath(String importExportPath) {
-        generalPref.putString("last-import-export-path", importExportPath);
-        generalPref.flush();
+        preferences.put("last-import-export-path", importExportPath);
 
         setLastPath(importExportPath);
     }
