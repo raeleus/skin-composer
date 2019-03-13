@@ -29,8 +29,10 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -163,7 +165,7 @@ public class DialogBitmapFont extends Dialog {
     private void populate() {
         root.pad(15.0f);
 
-        Label label = new Label("Create a new Bitmap Font.", skin, "required");
+        Label label = new Label("Create a new Bitmap Font.", skin, "black");
         root.add(label);
 
         root.row();
@@ -229,6 +231,7 @@ public class DialogBitmapFont extends Dialog {
 
         table.defaults().space(5.0f);
         label = new Label("Source TTF Path:", skin);
+        label.setName("source-label");
         table.add(label).right();
 
         textField = new TextField(data.file == null ? "" : data.file.path(), skin);
@@ -279,6 +282,7 @@ public class DialogBitmapFont extends Dialog {
         table.row();
         table.defaults().space(5.0f);
         label = new Label("Target FNT Path:", skin);
+        label.setName("target-label");
         table.add(label).right();
 
         textField = new TextField(target == null ? "" : data.file.path(), skin);
@@ -472,6 +476,7 @@ public class DialogBitmapFont extends Dialog {
         });
 
         label = new Label("Color:", skin);
+        label.setName("color-label");
         bottom.add(label).right();
 
         textButton = new TextButton(data.color, skin);
@@ -578,6 +583,7 @@ public class DialogBitmapFont extends Dialog {
         });
 
         label = new Label("Border Color:", skin);
+        label.setName("border-color-label");
         bottom.add(label).right();
 
         textButton = new TextButton(data.borderColor, skin);
@@ -706,6 +712,7 @@ public class DialogBitmapFont extends Dialog {
 
         bottom.row();
         label = new Label("Shadow Color:", skin);
+        label.setName("shadow-color-label");
         bottom.add(label).right();
 
         textButton = new TextButton(data.shadowColor, skin);
@@ -959,6 +966,8 @@ public class DialogBitmapFont extends Dialog {
         textButton.setName("cancelButton");
         textButton.addListener(main.getHandListener());
         button(textButton, ButtonType.CANCEL);
+        
+        updateLabelHighlight(null);
     }
 
     private void loadTTFsource(FileHandle file) {
@@ -1012,14 +1021,21 @@ public class DialogBitmapFont extends Dialog {
         boolean notValid = false;
         if (data.color == null) {
             notValid = true;
+            updateLabelHighlight("color-label");
         } else if (data.file == null || !data.file.exists()) {
             notValid = true;
+            updateLabelHighlight("source-label");
         } else if (target == null) {
             notValid = true;
+            updateLabelHighlight("target-label");
         } else if (!MathUtils.isZero(data.borderWidth) && data.borderColor == null) {
             notValid = true;
+            updateLabelHighlight("border-color-label");
         } else if ((data.shadowOffsetX != 0 || data.shadowOffsetY != 0) && data.shadowColor == null) {
             notValid = true;
+            updateLabelHighlight("shadow-color-label");
+        } else {
+            updateLabelHighlight(null);
         }
 
         if (notValid) {
@@ -1289,5 +1305,32 @@ public class DialogBitmapFont extends Dialog {
 
         updateColors();
         updatePreviewAndOK();
+    }
+
+    private void updateLabelHighlight(String requiredLabelName) {
+        var normalStyle = skin.get(LabelStyle.class);
+        var requiredStyle = skin.get("required", LabelStyle.class);
+        var actors = new Array<Actor>();
+        actors.addAll(getChildren());
+        
+        for (int i = 0; i < actors.size; i++) {
+            var actor = actors.get(i);
+            
+            if (actor instanceof Group) {
+                actors.addAll(((Group) actor).getChildren());
+            }
+            
+            if (actor instanceof Label) {
+                Label label = (Label) actor;
+                
+                if (label.getStyle().equals(requiredStyle)) {
+                    label.setStyle(normalStyle);
+                }
+                
+                if (requiredLabelName != null && label.getName() != null && label.getName().equals(requiredLabelName)) {
+                    label.setStyle(requiredStyle);
+                }
+            }
+        }
     }
 }

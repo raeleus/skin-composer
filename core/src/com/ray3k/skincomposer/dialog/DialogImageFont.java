@@ -34,6 +34,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -134,6 +135,7 @@ public class DialogImageFont extends Dialog {
         var textButton = new TextButton("Generate Font", skin);
         textButton.setName("generate");
         textButton.setDisabled(true);
+        updateLabelHighlight("image-label");
         button(textButton, true);
         textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("Generate bitmap font, save to specified file, and add to list of fonts", main.getTooltipManager(), skin));
@@ -332,6 +334,7 @@ public class DialogImageFont extends Dialog {
         //source file
         content.row();
         label = new Label("Image File", skin);
+        label.setName("image-label");
         content.add(label).right();
         width = label.getWidth();
         
@@ -713,6 +716,7 @@ public class DialogImageFont extends Dialog {
             textField.setCursorPosition(textField.getText().length() - 1);
             
             ((TextButton) findActor("generate")).setDisabled(false);
+            updateLabelHighlight(null);
             
             for (var fadable : fadables) {
                 fadable.addAction(Actions.fadeIn(1.0f, Interpolation.fade));
@@ -766,6 +770,7 @@ public class DialogImageFont extends Dialog {
         textField.setCursorPosition(textField.getText().length() - 1);
 
         ((TextButton) findActor("generate")).setDisabled(false);
+        updateLabelHighlight(null);
     }
     
     private void saveSettingsBrowse() {
@@ -1438,5 +1443,32 @@ public class DialogImageFont extends Dialog {
         name = name.replace(">", "greater than");
         name = name.replace("|", "pipe");
         return name;
+    }
+    
+    private void updateLabelHighlight(String requiredLabelName) {
+        var normalStyle = skin.get(Label.LabelStyle.class);
+        var requiredStyle = skin.get("required", Label.LabelStyle.class);
+        var actors = new Array<Actor>();
+        actors.addAll(getChildren());
+        
+        for (int i = 0; i < actors.size; i++) {
+            var actor = actors.get(i);
+            
+            if (actor instanceof Group) {
+                actors.addAll(((Group) actor).getChildren());
+            }
+            
+            if (actor instanceof Label) {
+                Label label = (Label) actor;
+                
+                if (label.getStyle().equals(requiredStyle)) {
+                    label.setStyle(normalStyle);
+                }
+                
+                if (requiredLabelName != null && label.getName() != null && label.getName().equals(requiredLabelName)) {
+                    label.setStyle(requiredStyle);
+                }
+            }
+        }
     }
 }

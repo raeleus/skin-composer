@@ -34,6 +34,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -845,7 +846,9 @@ public class DialogDrawables extends Dialog {
         tileDialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
         tileDialog.getButtonTable().padBottom(15.0f);
 
-        tileDialog.getContentTable().add(new Label("Please enter a name for the TiledDrawable: ", getSkin()));
+        var label = new Label("Please enter a name for the TiledDrawable: ", getSkin());
+        label.setName("name-label");
+        tileDialog.getContentTable().add(label);
 
         tileDialog.button("OK", true);
         tileDialog.button("Cancel", false).key(Keys.ESCAPE, false);
@@ -863,7 +866,8 @@ public class DialogDrawables extends Dialog {
         table.add(textField).growX().colspan(2);
         
         table.row();
-        var label = new Label("Color:", getSkin());
+        label = new Label("Color:", getSkin());
+        label.setName("color-label");
         table.add(label).right();
         
         var subTable = new Table();
@@ -897,7 +901,7 @@ public class DialogDrawables extends Dialog {
                             button.setColor(Color.WHITE);
                         }
                     }
-                    okButton.setDisabled(!validateTiledDrawable(drawable, textField.getText(), (ColorData) button.getUserObject()));
+                    okButton.setDisabled(!validateTiledDrawable(tileDialog, textField.getText(), (ColorData) button.getUserObject()));
                 });
                 dialog.setFillParent(true);
                 dialog.show(getStage());
@@ -929,7 +933,7 @@ public class DialogDrawables extends Dialog {
         minHeightSpinner.getButtonPlus().addListener(main.getHandListener());
         minHeightSpinner.getTextField().addListener(main.getIbeamListener());
 
-        okButton.setDisabled(!validateTiledDrawable(drawable, textField.getText(), (ColorData) button.getUserObject()));
+        okButton.setDisabled(!validateTiledDrawable(tileDialog, textField.getText(), (ColorData) button.getUserObject()));
         
         textField.addListener(new ChangeListener() {
             @Override
@@ -938,7 +942,8 @@ public class DialogDrawables extends Dialog {
                 
                 Button button = tileDialog.findActor("color-selector");
                 
-                okButton.setDisabled(!validateTiledDrawable(drawable, textField.getText(), (ColorData) button.getUserObject()));
+                okButton.setDisabled(!validateTiledDrawable(tileDialog, textField.getText(), (ColorData) button.getUserObject()));
+                
             }
         });
         textField.setTextFieldListener((TextField textField1, char c) -> {
@@ -955,15 +960,42 @@ public class DialogDrawables extends Dialog {
         tileDialog.show(getStage());
     }
     
-    private boolean validateTiledDrawable(DrawableData drawable, String newName, ColorData colorData) {
-        boolean returnValue = DrawableData.validate(newName);
-        
-        if (checkIfNameExists(newName)) {
+    private boolean validateTiledDrawable(Dialog dialog, String newName, ColorData colorData) {
+        boolean returnValue = true;
+        String requiredLabelName = null;
+                
+        if (!DrawableData.validate(newName) || checkIfNameExists(newName)) {
+            requiredLabelName = "name-label";
+            returnValue = false;
+            
+        } else if (colorData == null) {
+            requiredLabelName = "color-label";
             returnValue = false;
         }
         
-        if (colorData == null) {
-            returnValue = false;
+        var normalStyle = getSkin().get(Label.LabelStyle.class);
+        var requiredStyle = getSkin().get("required", Label.LabelStyle.class);
+        var actors = new Array<Actor>();
+        actors.addAll(dialog.getChildren());
+        
+        for (int i = 0; i < actors.size; i++) {
+            var actor = actors.get(i);
+            
+            if (actor instanceof Group) {
+                actors.addAll(((Group) actor).getChildren());
+            }
+            
+            if (actor instanceof Label) {
+                Label label = (Label) actor;
+                
+                if (label.getStyle().equals(requiredStyle)) {
+                    label.setStyle(normalStyle);
+                }
+                
+                if (requiredLabelName != null && label.getName() != null && label.getName().equals(requiredLabelName)) {
+                    label.setStyle(requiredStyle);
+                }
+            }
         }
         
         return returnValue;
