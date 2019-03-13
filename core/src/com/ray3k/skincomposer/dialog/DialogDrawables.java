@@ -446,7 +446,7 @@ public class DialogDrawables extends Dialog {
             };
             
             //color wheel
-            if (!drawable.customized && !drawable.tiled) {
+            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null) {
                 Button button = new Button(getSkin(), "colorwheel");
                 button.addListener(new ChangeListener() {
                     @Override
@@ -468,7 +468,7 @@ public class DialogDrawables extends Dialog {
             }
 
             //swatches
-            if (!drawable.customized && !drawable.tiled) {
+            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null) {
                 Button button = new Button(getSkin(), "swatches");
                 button.addListener(new ChangeListener() {
                     @Override
@@ -489,8 +489,8 @@ public class DialogDrawables extends Dialog {
                 table.add();
             }
             
-            //tiles button (NOT FOR TINTS OR CUSTOM DRAWABLES)
-            if (!drawable.customized && drawable.tint == null && drawable.tintName == null) {
+            //tiles button
+            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null) {
                 Button button = new Button(getSkin(), "tiles");
                 button.addListener(new ChangeListener() {
                     @Override
