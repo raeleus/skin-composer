@@ -166,10 +166,10 @@ public class DialogSettings extends Dialog {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 try {
-                    Utils.openFileExplorer(Main.appFolder.child("texturepacker/defaults.json"));
+                    Utils.openFileExplorer(Main.appFolder.child("texturepacker/atlas-export-settings.json"));
                 } catch (Exception e) {
-                    Gdx.app.error(getClass().getName(), "Error opening defaults.json", e);
-                    main.getDialogFactory().showDialogError("File Error...", "Error opening defaults.json\n\nOpen log?");
+                    Gdx.app.error(getClass().getName(), "Error opening atlas-export-settings.json", e);
+                    main.getDialogFactory().showDialogError("File Error...", "Error opening atlas-export-settings.json\n\nOpen log?");
                 }
             }
         });

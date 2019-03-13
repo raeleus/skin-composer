@@ -188,11 +188,11 @@ public class AtlasData implements Json.Serializable {
         }
     }
     
-    public Array<String> writeAtlas() throws Exception {
-        return writeAtlas(Main.appFolder.child("temp/" + main.getProjectData().getId() + ".atlas"));
+    public Array<String> writeAtlas(FileHandle settingsFile) throws Exception {
+        return writeAtlas(Main.appFolder.child("temp/" + main.getProjectData().getId() + ".atlas"), settingsFile);
     }
     
-    public Array<String> writeAtlas(FileHandle targetFile) throws Exception {
+    public Array<String> writeAtlas(FileHandle targetFile, FileHandle settingsFile) throws Exception {
         Array<String> warnings = new Array<>();
         targetFile.parent().mkdirs();
         FileHandle[] oldFiles = targetFile.parent().list(new FilenameFilter() {
@@ -231,7 +231,7 @@ public class AtlasData implements Json.Serializable {
             }
         }
         
-        main.getDesktopWorker().texturePack(files, main.getProjectData().getSaveFile(), targetFile);
+        main.getDesktopWorker().texturePack(files, main.getProjectData().getSaveFile(), targetFile, settingsFile);
         return warnings;
     }
     

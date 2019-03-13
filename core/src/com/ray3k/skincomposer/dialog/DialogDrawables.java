@@ -202,7 +202,7 @@ public class DialogDrawables extends Dialog {
                 atlas = null;
             }
             if (!main.getAtlasData().atlasCurrent) {
-                main.getAtlasData().writeAtlas();
+                main.getAtlasData().writeAtlas(Gdx.files.internal("atlas-internal-settings.json"));
                 main.getAtlasData().atlasCurrent = true;
             }
             atlas = main.getAtlasData().getAtlas();
@@ -1737,7 +1737,7 @@ public class DialogDrawables extends Dialog {
         
         try {
             if (!main.getAtlasData().atlasCurrent) {
-                main.getAtlasData().writeAtlas();
+                main.getAtlasData().writeAtlas(Gdx.files.internal("atlas-internal-settings.json"));
                 main.getAtlasData().atlasCurrent = true;
             }
         } catch (Exception e) {

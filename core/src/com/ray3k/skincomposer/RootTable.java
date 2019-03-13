@@ -2604,7 +2604,7 @@ public class RootTable extends Table {
             }
             
             if (!main.getProjectData().getAtlasData().atlasCurrent) {
-                main.getProjectData().getAtlasData().writeAtlas();
+                main.getProjectData().getAtlasData().writeAtlas(Gdx.files.internal("atlas-internal-settings.json"));
                 main.getProjectData().getAtlasData().atlasCurrent = true;
             }
             atlas = main.getProjectData().getAtlasData().getAtlas();

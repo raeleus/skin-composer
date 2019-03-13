@@ -29,8 +29,6 @@ import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -137,9 +135,9 @@ public class Main extends ApplicationAdapter {
         skin.getFont("font").getData().markupEnabled = true;
         
         //copy defaults.json to temp folder if it doesn't exist
-        var fileHandle = appFolder.child("texturepacker/defaults.json");
+        var fileHandle = appFolder.child("texturepacker/atlas-export-settings.json");
         if (!fileHandle.exists()) {
-            Gdx.files.internal("defaults.json").copyTo(fileHandle);
+            Gdx.files.internal("atlas-export-settings.json").copyTo(fileHandle);
         }
         
         //copy preview fonts to preview fonts folder if they do not exist

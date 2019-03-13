@@ -223,7 +223,7 @@ public class DialogExport extends Dialog {
 
                 if (main.getProjectData().isExportingAtlas()) {
                     try {
-                        newWarnings = main.getProjectData().getAtlasData().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
+                        newWarnings = main.getProjectData().getAtlasData().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"), Main.appFolder.child("texturepacker/atlas-export-settings.json"));
                         warnings.addAll(newWarnings);
                     } catch (Exception ex) {
                         Gdx.app.error(getClass().getName(), "Error while writing texture atlas", ex);

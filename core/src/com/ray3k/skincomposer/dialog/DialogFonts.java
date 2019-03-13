@@ -96,8 +96,8 @@ public class DialogFonts extends Dialog {
         maxTextureWidth = 1024;
         maxTextureHeight = 1024;
         
-        //extract max texture dimensions from defaults.json
-        FileHandle defaultsFile = Main.appFolder.child("texturepacker/defaults.json");
+        //extract max texture dimensions from atlas-export-settings.json
+        FileHandle defaultsFile = Main.appFolder.child("texturepacker/atlas-export-settings.json");
         if (defaultsFile.exists()) {
             JsonReader reader = new JsonReader();
             JsonValue val = reader.parse(defaultsFile);
@@ -878,7 +878,7 @@ public class DialogFonts extends Dialog {
             }
             
             if (!main.getAtlasData().atlasCurrent) {
-                main.getAtlasData().writeAtlas();
+                main.getAtlasData().writeAtlas(Gdx.files.internal("atlas-internal-settings.json"));
                 main.getAtlasData().atlasCurrent = true;
             }
             atlas = main.getAtlasData().getAtlas();

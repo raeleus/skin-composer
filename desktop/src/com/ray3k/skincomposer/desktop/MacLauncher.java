@@ -75,15 +75,9 @@ public class MacLauncher implements DesktopWorker, Lwjgl3WindowListener {
     }
     
     @Override
-    public void texturePack(Array<FileHandle> handles, FileHandle localFile, FileHandle targetFile) {
-        //copy defaults.json to temp folder if it doesn't exist
-        FileHandle fileHandle = Gdx.files.external(".skincomposer/texturepacker/defaults.json");
-        if (!fileHandle.exists()) {
-            Gdx.files.internal("defaults.json").copyTo(fileHandle);
-        }
-        
+    public void texturePack(Array<FileHandle> handles, FileHandle localFile, FileHandle targetFile, FileHandle settingsFile) {
         Json json = new Json();
-        Settings settings = json.fromJson(Settings.class, fileHandle);
+        Settings settings = json.fromJson(Settings.class, settingsFile);
         
         TexturePacker p = new TexturePacker(settings);
         for (FileHandle handle : handles) {
