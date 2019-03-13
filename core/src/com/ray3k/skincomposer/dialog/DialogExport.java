@@ -131,6 +131,18 @@ public class DialogExport extends Dialog {
         });
         
         getContentTable().row();
+        var hexCheckBox = new CheckBox("Export colors as hexadecimal", main.getSkin());
+        hexCheckBox.setChecked(main.getProjectData().isExportingHex());
+        getContentTable().add(hexCheckBox);
+        hexCheckBox.addListener(main.getHandListener());
+        hexCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                main.getProjectData().setExportingHex(hexCheckBox.isChecked());
+            }
+        });
+        
+        getContentTable().row();
         table = new Table();
         getContentTable().add(table);
         

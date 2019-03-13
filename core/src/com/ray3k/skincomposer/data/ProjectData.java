@@ -647,6 +647,14 @@ public class ProjectData implements Json.Serializable {
         preferences.put("export-fonts", exportAtlas);
     }
     
+    public boolean isExportingHex() {
+        return (boolean) preferences.get("export-hex", false);
+    }
+    
+    public void setExportingHex(boolean exportHex) {
+        preferences.put("export-hex", exportHex);
+    }
+    
     /**
      * Returns true if file exists and depending on the state of relative resources
      * and save file state.

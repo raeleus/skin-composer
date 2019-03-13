@@ -238,7 +238,13 @@ public class JsonData implements Json.Serializable {
             } //colors
             else if (child.name().equals(Color.class.getName()) || child.name().equals(Color.class.getSimpleName())) {
                 for (JsonValue color : child.iterator()) {
-                    ColorData colorData = new ColorData(color.name, new Color(color.getFloat("r", 0.0f), color.getFloat("g", 0.0f), color.getFloat("b", 0.0f), color.getFloat("a", 0.0f)));
+                    var colorValue = new Color();
+                    if (color.has("hex")) {
+                        colorValue.set(Color.valueOf(color.getString("hex")));
+                    } else {
+                        colorValue.set(color.getFloat("r", 1.0f), color.getFloat("g", 1.0f), color.getFloat("b", 1.0f), color.getFloat("a", 1.0f));
+                    }
+                    ColorData colorData = new ColorData(color.name, colorValue);
                     
                     //delete colors with the same name
                     for (ColorData originalData : new Array<>(colors)) {
@@ -276,7 +282,12 @@ public class JsonData implements Json.Serializable {
                     drawableData.name = tintedDrawable.name;
                     
                     if (!tintedDrawable.get("color").isString()) {
-                        drawableData.tint = new Color(tintedDrawable.get("color").getFloat("r", 0.0f), tintedDrawable.get("color").getFloat("g", 0.0f), tintedDrawable.get("color").getFloat("b", 0.0f), tintedDrawable.get("color").getFloat("a", 0.0f));
+                        drawableData.tint = new Color();
+                        if (tintedDrawable.get("color").has("hex")) {
+                            drawableData.tint.set(Color.valueOf(tintedDrawable.get("color").getString("hex")));
+                        } else {
+                            drawableData.tint.set(tintedDrawable.get("color").getFloat("r", 1.0f), tintedDrawable.get("color").getFloat("g", 1.0f), tintedDrawable.get("color").getFloat("b", 1.0f), tintedDrawable.get("color").getFloat("a", 1.0f));
+                        }
                     } else {
                         drawableData.tintName = tintedDrawable.getString("color");
                     }
@@ -580,11 +591,16 @@ public class JsonData implements Json.Serializable {
             json.writeObjectStart(className);
             for (ColorData color : colors) {
                 json.writeObjectStart(color.getName());
-                json.writeValue("r", color.color.r);
-                json.writeValue("g", color.color.g);
-                json.writeValue("b", color.color.b);
-                json.writeValue("a", color.color.a);
-                json.writeObjectEnd();
+                if (main.getProjectData().isExportingHex()) {
+                    json.writeValue("hex", color.color.toString());
+                    json.writeObjectEnd();
+                } else {
+                    json.writeValue("r", color.color.r);
+                    json.writeValue("g", color.color.g);
+                    json.writeValue("b", color.color.b);
+                    json.writeValue("a", color.color.a);
+                    json.writeObjectEnd();
+                }
             }
             json.writeObjectEnd();
         }
@@ -651,10 +667,14 @@ public class JsonData implements Json.Serializable {
                 json.writeValue("name", DrawableData.proper(drawable.file.name()));
                 if (drawable.tint != null) {
                     json.writeObjectStart("color");
-                    json.writeValue("r", drawable.tint.r);
-                    json.writeValue("g", drawable.tint.g);
-                    json.writeValue("b", drawable.tint.b);
-                    json.writeValue("a", drawable.tint.a);
+                    if (main.getProjectData().isExportingHex()) {
+                        json.writeValue("hex", drawable.tint.toString());
+                    } else {
+                        json.writeValue("r", drawable.tint.r);
+                        json.writeValue("g", drawable.tint.g);
+                        json.writeValue("b", drawable.tint.b);
+                        json.writeValue("a", drawable.tint.a);
+                    }
                     json.writeObjectEnd();
                 } else if (drawable.tintName != null) {
                     json.writeValue("color", drawable.tintName);
