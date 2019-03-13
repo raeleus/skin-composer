@@ -503,7 +503,7 @@ public class DialogDrawables extends Dialog {
                         Vector2 dimensions = Utils.imageDimensions(drawable.file);
                         tiledDrawable.minWidth = dimensions.x;
                         tiledDrawable.minHeight = dimensions.y;
-                        tiledDrawableSettingsDialog("New Tiled Drawable", tiledDrawable);
+                        tiledDrawableSettingsDialog("New Tiled Drawable", tiledDrawable, true);
                         event.setBubbles(false);
                     }
                 });
@@ -525,7 +525,7 @@ public class DialogDrawables extends Dialog {
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        tiledDrawableSettingsDialog("Tiled Drawable Settings", drawable);
+                        tiledDrawableSettingsDialog("Tiled Drawable Settings", drawable, false);
                         event.setBubbles(false);
                     }
                 });
@@ -806,7 +806,7 @@ public class DialogDrawables extends Dialog {
         sortBySelectedMode();
     }
     
-    private void tiledDrawableSettingsDialog(String title, DrawableData drawable) {
+    private void tiledDrawableSettingsDialog(String title, DrawableData drawable, boolean newDrawable) {
         final Spinner minWidthSpinner = new Spinner(0.0f, 1.0f, true, Spinner.Orientation.HORIZONTAL, getSkin());
         final Spinner minHeightSpinner = new Spinner(0.0f, 1.0f, true, Spinner.Orientation.HORIZONTAL, getSkin());
         TextField textField = new TextField("", getSkin()) {
@@ -901,7 +901,7 @@ public class DialogDrawables extends Dialog {
                             button.setColor(Color.WHITE);
                         }
                     }
-                    okButton.setDisabled(!validateTiledDrawable(tileDialog, textField.getText(), (ColorData) button.getUserObject()));
+                    okButton.setDisabled(!validateTiledDrawable(tileDialog, textField.getText(), drawable.name, (ColorData) button.getUserObject(), newDrawable));
                 });
                 dialog.setFillParent(true);
                 dialog.show(getStage());
@@ -933,7 +933,7 @@ public class DialogDrawables extends Dialog {
         minHeightSpinner.getButtonPlus().addListener(main.getHandListener());
         minHeightSpinner.getTextField().addListener(main.getIbeamListener());
 
-        okButton.setDisabled(!validateTiledDrawable(tileDialog, textField.getText(), (ColorData) button.getUserObject()));
+        okButton.setDisabled(!validateTiledDrawable(tileDialog, textField.getText(), drawable.name, (ColorData) button.getUserObject(), newDrawable));
         
         textField.addListener(new ChangeListener() {
             @Override
@@ -942,7 +942,7 @@ public class DialogDrawables extends Dialog {
                 
                 Button button = tileDialog.findActor("color-selector");
                 
-                okButton.setDisabled(!validateTiledDrawable(tileDialog, textField.getText(), (ColorData) button.getUserObject()));
+                okButton.setDisabled(!validateTiledDrawable(tileDialog, textField.getText(), drawable.name, (ColorData) button.getUserObject(), newDrawable));
                 
             }
         });
@@ -960,13 +960,15 @@ public class DialogDrawables extends Dialog {
         tileDialog.show(getStage());
     }
     
-    private boolean validateTiledDrawable(Dialog dialog, String newName, ColorData colorData) {
+    private boolean validateTiledDrawable(Dialog dialog, String newName, String oldName, ColorData colorData, boolean newDrawable) {
         boolean returnValue = true;
         String requiredLabelName = null;
                 
         if (!DrawableData.validate(newName) || checkIfNameExists(newName)) {
-            requiredLabelName = "name-label";
-            returnValue = false;
+            if (newDrawable || !newName.equals(oldName)) {
+                requiredLabelName = "name-label";
+                returnValue = false;
+            }
             
         } else if (colorData == null) {
             requiredLabelName = "color-label";
