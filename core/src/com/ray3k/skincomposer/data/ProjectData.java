@@ -163,6 +163,15 @@ public class ProjectData implements Json.Serializable {
         return generalPref.getBoolean("checkForUpdates", true);
     }
     
+    public void setShowingExportWarnings(boolean allow) {
+        generalPref.putBoolean("exportWarnings", allow);
+        generalPref.flush();
+    }
+    
+    public boolean isShowingExportWarnings() {
+        return generalPref.getBoolean("exportWarnings", true);
+    }
+    
     public void setExportFormat(ExportFormat exportFormat) {
         generalPref.putString("exportFormat", exportFormat.toString());
     }

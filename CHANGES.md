@@ -1,6 +1,7 @@
 ### Skin Composer Version 28 ###
 * Resolved release issues with Mac and Windows.
 * Dialogs now highlight which field needs to be completed in order to continue.
+* Added option to not show warnings when exporting a skin.
 * Fixed pressing enter while typing in the preview dismisses the image font dialog.
 * Fixed create bitmap font dialog not closing file stream.
 * Fixed errors when creating new font that overrides existing drawables.

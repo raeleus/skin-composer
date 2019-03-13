@@ -45,6 +45,7 @@ public class DialogSettings extends Dialog {
     private Integer maxUndos;
     private boolean resourcesRelative;
     private boolean allowingWelcome;
+    private boolean exportWarnings;
     private boolean allowingUpdates;
     private final Main main;
 
@@ -55,6 +56,7 @@ public class DialogSettings extends Dialog {
         maxUndos = main.getProjectData().getMaxUndos();
         resourcesRelative = main.getProjectData().areResourcesRelative();
         allowingWelcome = main.getProjectData().isAllowingWelcome();
+        exportWarnings = main.getProjectData().isShowingExportWarnings();
         allowingUpdates = main.getProjectData().isCheckingForUpdates();
 
         populate();
@@ -69,6 +71,7 @@ public class DialogSettings extends Dialog {
             main.getProjectData().setMaxUndos(maxUndos);
             main.getProjectData().setResourcesRelative(resourcesRelative);
             main.getProjectData().setAllowingWelcome(allowingWelcome);
+            main.getProjectData().setShowingExportWarnings(exportWarnings);
             main.getProjectData().setCheckingForUpdates(allowingUpdates);
             main.getUndoableManager().clearUndoables();
             
@@ -230,6 +233,18 @@ public class DialogSettings extends Dialog {
             }
         });
         table.add(welcomeCheckBox);
+        
+        table.row();
+        var exportWarningsCheckBox = new ImageTextButton("Show export warnings?", getSkin(), "checkbox");
+        exportWarningsCheckBox.setChecked(exportWarnings);
+        exportWarningsCheckBox.addListener(main.getHandListener());
+        exportWarningsCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                exportWarnings = exportWarningsCheckBox.isChecked();
+            }
+        });
+        table.add(exportWarningsCheckBox);
         
         table.row();
         var updatesCheckBox = new ImageTextButton("Check for updates?", getSkin(), "checkbox");

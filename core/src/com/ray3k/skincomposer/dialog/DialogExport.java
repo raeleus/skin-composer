@@ -233,7 +233,7 @@ public class DialogExport extends Dialog {
                     }
                 }
 
-                if (warnings.size > 0) {
+                if (warnings.size > 0 && main.getProjectData().isShowingExportWarnings()) {
                     main.getDialogFactory().showWarningDialog(warnings);
                 }
             });
