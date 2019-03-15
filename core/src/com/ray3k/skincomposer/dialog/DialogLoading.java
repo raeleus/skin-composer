@@ -62,7 +62,7 @@ public class DialogLoading extends Dialog {
             });
             thread.start();
         });
-        Action action = new SequenceAction(new DelayAction(.25f), runnableAction);
+        Action action = new SequenceAction(new DelayAction(.5f), runnableAction);
         addAction(action);
         
         return dialog;
