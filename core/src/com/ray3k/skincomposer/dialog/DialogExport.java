@@ -42,6 +42,8 @@ import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.data.JsonData.ExportFormat;
+import com.ray3k.skincomposer.utils.Utils;
+
 import java.nio.file.Paths;
 
 /**
@@ -180,7 +182,10 @@ public class DialogExport extends Dialog {
     }
     
     private void showFileBrowser() {
-        String[] filterPatterns = {"*.json"};
+        String[] filterPatterns = null;
+        if (!Utils.isMac()) {
+             filterPatterns = new String[] {"*.json"};
+        }
 
         TextField textField  = findActor("path");
         var file = main.getDesktopWorker().saveDialog("Export skin...", textField.getText(), filterPatterns, "Json files");

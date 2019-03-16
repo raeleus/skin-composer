@@ -437,7 +437,10 @@ public class MainListener extends RootTableListener {
         dialogFactory.showDialogLoading(() -> {
             String defaultPath = projectData.getLastOpenSavePath();
 
-            String[] filterPatterns = {"*.scmp"};
+            String[] filterPatterns = null;
+            if (!Utils.isMac()) {
+                filterPatterns = new String[] {"*.scmp"};
+            }
 
             File file = desktopWorker.saveDialog("Save Skin Composer file as...", defaultPath, filterPatterns, "Skin Composer files");
             if (file != null) {
