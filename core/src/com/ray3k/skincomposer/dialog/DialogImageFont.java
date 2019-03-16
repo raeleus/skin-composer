@@ -268,6 +268,7 @@ public class DialogImageFont extends Dialog {
         
         var selectBox = new SelectBox<String>(skin);
         selectBox.setItems("0-9", "a-zA-Z", "a-zA-Z0-9", "a-zA-Z0-9!-?*", "custom");
+        selectBox.setItems("default", "0-9", "a-zA-Z", "a-zA-Z0-9", "custom", "Load from file (UTF-8)...");
         switch (settings.characters) {
             case NUMBERS:
                 selectBox.setSelectedIndex(0);
@@ -297,18 +298,36 @@ public class DialogImageFont extends Dialog {
                 switch (selectBox.getSelectedIndex()) {
                     case 0:
                         textField.setText(NUMBERS);
+                        textField.setMessageText("");
+                        settings.characters = NUMBERS;
                         break;
                     case 1:
                         textField.setText(ALPHA);
+                        textField.setMessageText("");
+                        settings.characters = ALPHA;
                         break;
                     case 2:
                         textField.setText(ALPHA_NUMERIC);
+                        textField.setMessageText("");
+                        settings.characters = ALPHA_NUMERIC;
                         break;
                     case 3:
                         textField.setText(ALL);
+                        textField.setMessageText("");
+                        settings.characters = ALL;
+                        break;
+                    case 4:
+                        textField.setText(textField.getText());
+                        textField.setMessageText("");
+                        settings.characters = ((TextField) findActor("characters")).getText();
+                    case 5:
+                        textField.setText("");
+                        textField.setMessageText("Characters loaded from text file...");
+                        settings.characters = "";
+                        showCharacterDialog();
+                        
                         break;
                 }
-                settings.characters = ((TextField) findActor("characters")).getText();
             }
         });
         
@@ -833,7 +852,7 @@ public class DialogImageFont extends Dialog {
     }
     
     private void saveSettings(FileHandle file) {
-        file.writeString(json.prettyPrint(settings), false);
+        file.writeString(json.prettyPrint(settings), false, "utf-8");
     }
     
     private void loadSettingsBrowse() {
@@ -862,7 +881,7 @@ public class DialogImageFont extends Dialog {
         var targetPath = ((TextField) findActor("targetpath")).getText();
         
         json.setOutputType(JsonWriter.OutputType.json);
-        settings = json.fromJson(ImageFontSettings.class, file);
+        settings = json.fromJson(ImageFontSettings.class, file.readString("utf-8"));
         refreshTable();
         previewStyle.fontColor = settings.previewColor;
         previewStyle.background = ((NinePatchDrawable) previewStyle.background).tint(settings.previewBackgroundColor);
@@ -1470,5 +1489,24 @@ public class DialogImageFont extends Dialog {
                 }
             }
         }
+    }
+    
+    private void showCharacterDialog() {
+        Runnable runnable = () -> {
+            String defaultPath = main.getProjectData().getLastFontPath();
+
+            File file = main.getDesktopWorker().openDialog("Select character text file...", defaultPath, null, "All files");
+            if (file != null) {
+                var fileHandle = new FileHandle(file);
+                String characters = fileHandle.readString("utf-8");
+                Gdx.app.postRunnable(() -> {
+                    settings.characters = Utils.removeDuplicateCharacters(characters);
+                    var textField = (TextField) findActor("characters");
+                    textField.setText("");
+                });
+            }
+        };
+
+        main.getDialogFactory().showDialogLoading(runnable);
     }
 }

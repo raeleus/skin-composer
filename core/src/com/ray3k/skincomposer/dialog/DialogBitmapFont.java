@@ -356,7 +356,7 @@ public class DialogBitmapFont extends Dialog {
         charactersTextField.addListener(toolTip);
 
         var characterSelectBox = new SelectBox<String>(skin);
-        characterSelectBox.setItems("default", "0-9", "a-zA-Z", "a-zA-Z0-9", "custom");
+        characterSelectBox.setItems("default", "0-9", "a-zA-Z", "a-zA-Z0-9", "custom", "Load from file (UTF-8)...");
         table.add(characterSelectBox).fillX();
 
         characterSelectBox.addListener(main.getHandListener());
@@ -369,19 +369,32 @@ public class DialogBitmapFont extends Dialog {
                 switch (characterSelectBox.getSelected()) {
                     case "default":
                         charactersTextField.setText("");
+                        charactersTextField.setMessageText("");
+                        data.characters = "";
                         break;
                     case "0-9":
                         charactersTextField.setText("0123456789");
+                        charactersTextField.setMessageText("");
+                        data.characters = charactersTextField.getText();
                         break;
                     case "a-zA-Z":
                         charactersTextField.setText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+                        charactersTextField.setMessageText("");
+                        data.characters = charactersTextField.getText();
                         break;
                     case "a-zA-Z0-9":
                         charactersTextField.setText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+                        charactersTextField.setMessageText("");
+                        data.characters = charactersTextField.getText();
+                        break;
+                    case "Load from file (UTF-8)...":
+                        charactersTextField.setText("");
+                        charactersTextField.setMessageText("Characters loaded from text file...");
+                        data.characters = "";
+                        showCharacterDialog();
                         break;
                 }
-
-                data.characters = charactersTextField.getText();
+                
                 data.characters = !data.characters.equals("") && !data.characters.contains("\u0000") ? "\u0000" + data.characters : data.characters;
                 updatePreviewAndOK();
             }
@@ -1111,7 +1124,7 @@ public class DialogBitmapFont extends Dialog {
 
     private void saveSettings(FileHandle fileHandle) {
         var fontSettings = new FontSettings();
-        fontSettings.characters = ((TextField) findActor("characters")).getText();
+        fontSettings.characters = data.characters;
         fontSettings.size = ((Spinner) findActor("size")).getValueAsInt();
         fontSettings.mono = ((Button) findActor("mono")).isChecked();
         fontSettings.hinting = ((SelectBox<String>) findActor("hinting")).getSelected();
@@ -1149,7 +1162,7 @@ public class DialogBitmapFont extends Dialog {
         fontSettings.minFilter = ((SelectBox<String>) findActor("minFilter")).getSelected();
         fontSettings.magFilter = ((SelectBox<String>) findActor("magFilter")).getSelected();
 
-        fileHandle.writeString(json.prettyPrint(fontSettings), false);
+        fileHandle.writeString(json.prettyPrint(fontSettings), false, "utf-8");
     }
 
     private static class FontSettings {
@@ -1202,7 +1215,7 @@ public class DialogBitmapFont extends Dialog {
     }
     
     private void loadSettings(FileHandle fileHandle) {
-        var fontSettings = json.fromJson(FontSettings.class, fileHandle);
+        var fontSettings = json.fromJson(FontSettings.class, fileHandle.readString("utf-8"));
 
         ((TextField) findActor("characters")).setText(fontSettings.characters);
         data.characters = fontSettings.characters;
@@ -1332,5 +1345,23 @@ public class DialogBitmapFont extends Dialog {
                 }
             }
         }
+    }
+    
+    private void showCharacterDialog() {
+        Runnable runnable = () -> {
+            String defaultPath = main.getProjectData().getLastFontPath();
+
+            File file = main.getDesktopWorker().openDialog("Select character text file...", defaultPath, null, "All files");
+            if (file != null) {
+                var fileHandle = new FileHandle(file);
+                String characters = fileHandle.readString("utf-8");
+                Gdx.app.postRunnable(() -> {
+                    data.characters = Utils.removeDuplicateCharacters(characters);
+                    updatePreviewAndOK();
+                });
+            }
+        };
+
+        main.getDialogFactory().showDialogLoading(runnable);
     }
 }

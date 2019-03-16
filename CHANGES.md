@@ -1,9 +1,12 @@
 ### Skin Composer Version 28 ###
+* BREAKING CHANGE: Bitmap/Freetype Font settings files may not be compatible with this version of Skin Composer unless converted to UTF-8.
+
 * Resolved release issues with Mac and Windows.
 * Dialogs now highlight which field needs to be completed in order to continue.
 * Added option to not show warnings when exporting a skin.
 * Added option to import/export colors in a skin JSON as hexadecimal.
 * Default export path is now a per project setting to prevent unfortunate accidents.
+* Allow loading characters from a text file (UTF-8) in font dialogs. This allows for any Unicode characters to be included in your fonts.
 * Fixed pressing enter while typing in the preview dismisses the image font dialog.
 * Fixed create bitmap font dialog not closing file stream.
 * Fixed errors when creating new font that overrides existing drawables.

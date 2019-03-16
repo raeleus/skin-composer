@@ -536,7 +536,7 @@ public class DialogFreeTypeFont extends Dialog {
         
         selectBox = new SelectBox<String>(skin);
         selectBox.setName("character-select-box");
-        selectBox.setItems("default", "0-9", "a-zA-Z", "a-zA-Z0-9", "custom");
+        selectBox.setItems("default", "0-9", "a-zA-Z", "a-zA-Z0-9", "custom", "Load from file (UTF-8)...");
         table.add(selectBox);
         if (!data.characters.equals("")) {
             selectBox.setSelected("custom");
@@ -553,19 +553,32 @@ public class DialogFreeTypeFont extends Dialog {
                 switch (selectBox.getSelected()) {
                     case "default":
                         textField.setText("");
+                        textField.setMessageText("");
+                        data.characters = "";
                         break;
                     case "0-9":
                         textField.setText("0123456789");
+                        textField.setMessageText("");
+                        data.characters = textField.getText();
                         break;
                     case "a-zA-Z":
                         textField.setText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+                        textField.setMessageText("");
+                        data.characters = textField.getText();
                         break;
                     case "a-zA-Z0-9":
                         textField.setText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+                        textField.setMessageText("");
+                        data.characters = textField.getText();
+                        break;
+                    case "Load from file (UTF-8)...":
+                        textField.setText("");
+                        textField.setMessageText("Characters loaded from text file...");
+                        data.characters = "";
+                        showCharacterDialog();
                         break;
                 }
                 
-                data.characters = textField.getText();
                 data.characters = !data.characters.equals("") && !data.characters.contains("\u0000") ? "\u0000" + data.characters : data.characters;
                 updateDisabledFields();
             }
@@ -1336,7 +1349,7 @@ public class DialogFreeTypeFont extends Dialog {
 
     private void saveSettings(FileHandle fileHandle) {
         var fontSettings = new FontSettings();
-        fontSettings.characters = ((TextField) findActor("characters")).getText();
+        fontSettings.characters = data.characters;
         fontSettings.size = ((Spinner) findActor("size")).getValueAsInt();
         fontSettings.mono = ((Button) findActor("mono")).isChecked();
         fontSettings.hinting = ((SelectBox<String>) findActor("hinting")).getSelected();
@@ -1374,7 +1387,7 @@ public class DialogFreeTypeFont extends Dialog {
         fontSettings.minFilter = ((SelectBox<String>) findActor("minFilter")).getSelected();
         fontSettings.magFilter = ((SelectBox<String>) findActor("magFilter")).getSelected();
 
-        fileHandle.writeString(json.prettyPrint(fontSettings), false);
+        fileHandle.writeString(json.prettyPrint(fontSettings), false, "utf-8");
     }
 
     private static class FontSettings {
@@ -1427,7 +1440,7 @@ public class DialogFreeTypeFont extends Dialog {
     }
     
     private void loadSettings(FileHandle fileHandle) {
-        var fontSettings = json.fromJson(FontSettings.class, fileHandle);
+        var fontSettings = json.fromJson(FontSettings.class, fileHandle.readString("utf-8"));
 
         ((TextField) findActor("characters")).setText(fontSettings.characters);
         data.characters = fontSettings.characters;
@@ -1557,5 +1570,23 @@ public class DialogFreeTypeFont extends Dialog {
                 }
             }
         }
+    }
+    
+    private void showCharacterDialog() {
+        Runnable runnable = () -> {
+            String defaultPath = main.getProjectData().getLastFontPath();
+
+            File file = main.getDesktopWorker().openDialog("Select character text file...", defaultPath, null, "All files");
+            if (file != null) {
+                var fileHandle = new FileHandle(file);
+                String characters = fileHandle.readString("utf-8");
+                Gdx.app.postRunnable(() -> {
+                    data.characters = Utils.removeDuplicateCharacters(characters);
+                    updateDisabledFields();
+                });
+            }
+        };
+
+        main.getDialogFactory().showDialogLoading(runnable);
     }
 }
