@@ -65,44 +65,6 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 public class Launcher implements DesktopWorker, Lwjgl3WindowListener {
     private Array<FilesDroppedListener> filesDroppedListeners;
     private CloseListener closeListener;
-    
-    public static void main(String[] args) {
-        Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-        config.setResizable(true);
-        config.useVsync(true);
-        config.setWindowedMode(800, 800);
-        MacLauncher desktopLauncher = new MacLauncher();
-        config.setWindowListener(desktopLauncher);
-        config.setTitle("Skin Composer - New Project*");
-        config.setWindowSizeLimits(675, 400, -1, -1);
-        config.setWindowIcon("logo-16.png", "logo-32.png", "logo-48.png", "logo.png");
-        Main main = new Main(args);
-        main.setDesktopWorker(desktopLauncher);
-        if (!Utils.isWindows()) {
-            desktopLauncher.closeSplashScreen();
-        }
-
-        try {
-            new Lwjgl3Application(main, config);
-        } catch (Exception e) {
-            e.printStackTrace();
-            
-            FileWriter fw = null;
-            try {
-                fw = new FileWriter(Gdx.files.external(".skincomposer/temp/java-stacktrace.txt").file(), true);
-                PrintWriter pw = new PrintWriter(fw);
-                e.printStackTrace(pw);
-                pw.close();
-                fw.close();
-                int choice = JOptionPane.showConfirmDialog(null, "Exception occurred. See error log?", "Skin Composer Exception!", JOptionPane.YES_NO_OPTION);
-                if (choice == 0) {
-                    Utils.openFileExplorer(Gdx.files.external(".skincomposer/temp/java-stacktrace.txt"));
-                }
-            } catch (Exception ex) {
-
-            }
-        }
-    }
 
     public Launcher() {
         filesDroppedListeners = new Array<>();
