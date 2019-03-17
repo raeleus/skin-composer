@@ -267,8 +267,7 @@ public class DialogImageFont extends Dialog {
         });
         
         var selectBox = new SelectBox<String>(skin);
-        selectBox.setItems("0-9", "a-zA-Z", "a-zA-Z0-9", "a-zA-Z0-9!-?*", "custom");
-        selectBox.setItems("default", "0-9", "a-zA-Z", "a-zA-Z0-9", "custom", "Load from file (UTF-8)...");
+        selectBox.setItems("0-9", "a-zA-Z", "a-zA-Z0-9", "a-zA-Z0-9!-?*", "custom", "Load from file (UTF-8)...");
         switch (settings.characters) {
             case NUMBERS:
                 selectBox.setSelectedIndex(0);
@@ -320,12 +319,12 @@ public class DialogImageFont extends Dialog {
                         textField.setText(textField.getText());
                         textField.setMessageText("");
                         settings.characters = ((TextField) findActor("characters")).getText();
+                        break;
                     case 5:
                         textField.setText("");
                         textField.setMessageText("Characters loaded from text file...");
                         settings.characters = "";
                         showCharacterDialog();
-                        
                         break;
                 }
             }
@@ -1150,7 +1149,7 @@ public class DialogImageFont extends Dialog {
                 }
             }
         }
-        
+
         for (var character : bitmapCharacters) {
             for (int y = character.cropY + character.height; y >= character.cropY; y--) {
                 var lineEmpty = true;
@@ -1165,6 +1164,7 @@ public class DialogImageFont extends Dialog {
                     character.cropHeight = y - character.cropY + 1;
                     character.yoffset = character.cropY - character.y;
                     character.baseline = y - character.y;
+//                    System.out.println(y + " " + character.baseline + " " + character.character + " " + character.cropHeight + " " + character.cropY + " " + character.y + " " + character.height);
                     break;
                 }
             }
