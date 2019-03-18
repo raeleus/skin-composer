@@ -6,9 +6,11 @@
 * Added option to not show warnings when exporting a skin.
 * Added option to import/export colors in a skin JSON as hexadecimal.
 * Default export path is now a per project setting to prevent unfortunate accidents.
-* Allow loading characters from a text file (UTF-8) in font dialogs. This allows for any Unicode characters to be included in your fonts.
-* Fixed pressing enter while typing in the preview dismisses the image font dialog.
-* Fixed create bitmap font dialog not closing file stream.
+* Allow loading characters from a text file (UTF-8) in Font dialogs. This allows for any Unicode characters to be included in your fonts.
+* Added detail view to Drawables dialog.
+* Improved Image Font dialog's calculation of default baseline.
+* Fixed pressing enter while typing in the preview dismisses the Image Font dialog.
+* Fixed Create Bitmap Font dialog not closing file stream.
 * Fixed errors when creating new font that overrides existing drawables.
 * Fixed errors when opening a project with missing assets on Mac.
 * Fixed filter error in native dialogs on Mac.

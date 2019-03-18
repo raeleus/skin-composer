@@ -85,7 +85,7 @@ import java.util.Locale;
 
 public class DialogDrawables extends Dialog {
     public static DialogDrawables instance;
-    private final static int[] sizes = {125, 150, 200, 250};
+    private final static int[] sizes = {40, 125, 150, 200, 250};
     private static float scrollPosition = 0.0f;
     private static int sortSelection = 0;
     private SelectBox sortSelectBox;
@@ -94,10 +94,9 @@ public class DialogDrawables extends Dialog {
     private StyleProperty property;
     private CustomProperty customProperty;
     private Array<DrawableData> drawables;
-    private Array<DrawableData> fontDrawables;
     private ObjectMap<DrawableData, Drawable> drawablePairs;
     private TextureAtlas atlas;
-    private HorizontalGroup contentGroup;
+    private Table contentTable;
     private FilesDroppedListener filesDroppedListener;
     private DialogDrawablesListener listener;
     private Main main;
@@ -363,7 +362,8 @@ public class DialogDrawables extends Dialog {
         }
         
         table.add(new Label("Zoom:", getSkin())).right().expandX();
-        zoomSlider = new Slider(0, 3, 1, false, getSkin());
+        zoomSlider = new Slider(0, 4, 1, false, getSkin());
+        zoomSlider.setValue(1);
         zoomSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -374,9 +374,8 @@ public class DialogDrawables extends Dialog {
         table.add(zoomSlider);
         
         getContentTable().row();
-        contentGroup = new HorizontalGroup();
-        contentGroup.center().wrap(true).space(5.0f).wrapSpace(5.0f).rowAlign(Align.left);
-        scrollPane = new ScrollPane(contentGroup, getSkin());
+        contentTable = new Table();
+        scrollPane = new ScrollPane(contentTable, getSkin());
         scrollPane.setFadeScrollBars(false);
         scrollPane.setFlickScroll(false);
         getContentTable().add(scrollPane).grow();
@@ -406,17 +405,245 @@ public class DialogDrawables extends Dialog {
     }
     
     private void refreshDrawableDisplay() {
-        contentGroup.clear();
+        contentTable.clear();
         
         if (drawables.size == 0) {
             Label label = new Label("No drawables have been added!", getSkin());
             if (filterOptions.applied) {
                 label.setText("No drawables match filter!");
             }
-            contentGroup.addActor(label);
+            contentTable.add(label);
+        } else {
+            if (MathUtils.isZero(zoomSlider.getValue())) {
+                refreshDrawableDisplayDetail();
+            } else {
+                refreshDrawableDisplayNormal();
+            }
         }
+    }
+    
+    private void refreshDrawableDisplayDetail() {
+        contentTable.pad(5);
+        contentTable.defaults().space(3);
+        for (var drawable: drawables) {
+            Button drawableButton;
+            
+            if (property != null || customProperty != null) {
+                drawableButton = new Button(getSkin(), "color-base");
+                drawableButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        result(drawable);
+                        hide();
+                    }
+                });
+                drawableButton.addListener(main.getHandListener());
+            } else {
+                drawableButton = new Button(getSkin(), "color-base-static");
+            }
+            contentTable.add(drawableButton).growX();
+            contentTable.row();
+            
+            Table table = new Table();
+            drawableButton.add(table).growX();
+            table.defaults().minWidth(25);
+            
+            ClickListener fixDuplicateTouchListener = new ClickListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    event.setBubbles(false);
+                    return super.touchDown(event, x, y, pointer, button);
+                }
+            };
+            
+            //preview
+            Container bg = new Container();
+            bg.setClip(true);
+            bg.setBackground(getSkin().getDrawable("white"));
+            bg.setColor(drawable.bgColor);
+            
+            Image image = new Image(drawablePairs.get(drawable));
+            if (MathUtils.isEqual(zoomSlider.getValue(), 1)) {
+                image.setScaling(Scaling.fit);
+                bg.fill(false);
+            } else {
+                image.setScaling(Scaling.stretch);
+                bg.fill();
+            }
+            bg.setActor(image);
+            table.add(bg).size(sizes[MathUtils.floor(zoomSlider.getValue())]);
+            
+            //color wheel
+            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null) {
+                Button button = new Button(getSkin(), "colorwheel");
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        newTintedDrawable(drawable);
+                        event.setBubbles(false);
+                    }
+                });
+                button.addListener(fixDuplicateTouchListener);
+                if (property == null && customProperty == null) {
+                    button.addListener(main.getHandListener());
+                }
+                table.add(button);
+
+                var toolTip = new TextTooltip("New Tinted Drawable", main.getTooltipManager(), getSkin());
+                button.addListener(toolTip);
+            }
+            
+            //swatches
+            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null) {
+                Button button = new Button(getSkin(), "swatches");
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        colorSwatchesDialog(drawable);
+                        event.setBubbles(false);
+                    }
+                });
+                button.addListener(fixDuplicateTouchListener);
+                if (property == null && customProperty == null) {
+                    button.addListener(main.getHandListener());
+                }
+                table.add(button);
+
+                var toolTip = new TextTooltip("Tinted Drawable from Colors", main.getTooltipManager(), getSkin());
+                button.addListener(toolTip);
+            }
+            
+            //tiles button
+            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null) {
+                Button button = new Button(getSkin(), "tiles");
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event,
+                            Actor actor) {
+                        DrawableData tiledDrawable = new DrawableData();
+                        tiledDrawable.name = drawable.name;
+                        tiledDrawable.file = drawable.file;
+                        tiledDrawable.tiled = true;
+                        Vector2 dimensions = Utils.imageDimensions(drawable.file);
+                        tiledDrawable.minWidth = dimensions.x;
+                        tiledDrawable.minHeight = dimensions.y;
+                        tiledDrawableSettingsDialog("New Tiled Drawable", tiledDrawable, true);
+                        event.setBubbles(false);
+                    }
+                });
+                button.addListener(fixDuplicateTouchListener);
+                if (property == null && customProperty == null) {
+                    button.addListener(main.getHandListener());
+                }
+                table.add(button);
+
+                var toolTip = new TextTooltip("Tiled Drawable", main.getTooltipManager(), getSkin());
+                button.addListener(toolTip);
+            }
+            
+            //tiled settings
+            if (drawable.tiled) {
+                Button button = new Button(getSkin(), "settings-small");
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        tiledDrawableSettingsDialog("Tiled Drawable Settings", drawable, false);
+                        event.setBubbles(false);
+                    }
+                });
+                button.addListener(fixDuplicateTouchListener);
+                if (property == null && customProperty == null) {
+                    button.addListener(main.getHandListener());
+                }
+                table.add();
+                table.add();
+                table.add(button);
+                
+                var toolTip = new TextTooltip("Tiled Drawable Settings", main.getTooltipManager(), getSkin());
+                button.addListener(toolTip);
+            }
+            
+            //rename (ONLY FOR TINTS)
+            else if (drawable.tint != null || drawable.tintName != null) {
+                Button button = new Button(getSkin(), "settings-small");
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        renameDrawableDialog(drawable);
+                        event.setBubbles(false);
+                    }
+                });
+                button.addListener(fixDuplicateTouchListener);
+                if (property == null && customProperty == null) {
+                    button.addListener(main.getHandListener());
+                }
+                table.add();
+                table.add();
+                table.add(button);
+                
+                var toolTip = new TextTooltip("Rename Tinted Drawable", main.getTooltipManager(), getSkin());
+                button.addListener(toolTip);
+            }
+            
+            //settings for custom drawables
+            else if (drawable.customized) {
+                Button button = new Button(getSkin(), "settings-small");
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        renameCustomDrawableDialog(drawable);
+                        event.setBubbles(false);
+                    }
+                });
+                button.addListener(fixDuplicateTouchListener);
+                if (property == null && customProperty == null) {
+                    button.addListener(main.getHandListener());
+                }
+                table.add();
+                table.add();
+                table.add(button);
+                
+                var toolTip = new TextTooltip("Rename Custom Drawable", main.getTooltipManager(), getSkin());
+                button.addListener(toolTip);
+            }
+
+            //delete
+            Button button = new Button(getSkin(), "delete-small");
+            button.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                    deleteDrawable(drawable);
+                    event.setBubbles(false);
+                }
+            });
+            button.addListener(fixDuplicateTouchListener);
+            if (property == null && customProperty == null) {
+                button.addListener(main.getHandListener());
+            }
+            table.add(button);
+            
+            var toolTip = new TextTooltip("Delete Drawable", main.getTooltipManager(), getSkin());
+            button.addListener(toolTip);
+            
+            //name
+            Label label = new Label(drawable.name, getSkin());
+            label.setAlignment(Align.left);
+            label.setEllipsis("...");
+            label.setEllipsis(true);
+            table.add(label).growX();
+            
+            //Tooltip
+            toolTip = new TextTooltip(drawable.name, main.getTooltipManager(), getSkin());
+            label.addListener(toolTip);
+        }
+    }
+    
+    private void refreshDrawableDisplayNormal() {
+        var contentGroup = new HorizontalGroup();
+        contentGroup.center().wrap(true).space(5.0f).wrapSpace(5.0f).rowAlign(Align.left);
+        contentTable.add(contentGroup).grow();
         
-        for (DrawableData drawable : drawables) {
+        for (var drawable : drawables) {
             Button drawableButton;
             
             if (property != null || customProperty != null) {
@@ -605,7 +832,7 @@ public class DialogDrawables extends Dialog {
             bg.setColor(drawable.bgColor);
             
             Image image = new Image(drawablePairs.get(drawable));
-            if (MathUtils.isZero(zoomSlider.getValue())) {
+            if (MathUtils.isEqual(zoomSlider.getValue(), 1)) {
                 image.setScaling(Scaling.fit);
                 bg.fill(false);
             } else {
