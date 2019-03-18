@@ -13,6 +13,7 @@
 * Fixed Create Bitmap Font dialog not closing file stream.
 * Fixed errors when creating new font that overrides existing drawables.
 * Fixed errors when opening a project with missing assets on Mac.
+* Fixed unable to import FreeType fonts when importing a skin.
 * Fixed filter error in native dialogs on Mac.
 * Changes to texture packer settings no longer influence internal rendering of assets. This prevents "useIndexes" from crashing skin composer.
 * Minor bug fixes and interface improvements.

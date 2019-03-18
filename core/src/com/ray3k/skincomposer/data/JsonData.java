@@ -106,7 +106,7 @@ public class JsonData implements Json.Serializable {
     }
 
     /**
-     * Imports skin data from a JSON file. Supports skins from LibGDX 1.9.9
+     * Imports skin data from a JSON file. Supports skins from LibGDX 1.9.10
      * @param fileHandle
      * @return
      * @throws Exception 
@@ -181,7 +181,7 @@ public class JsonData implements Json.Serializable {
                         FreeTypeFontData data = new FreeTypeFontData();
                         data.name = font.name;
                         data.previewTTF = font.getString("previewTTF", null);
-                        data.useCustomSerializer= font.getBoolean("useCustomSerializer", false);
+                        data.useCustomSerializer= font.getBoolean("useCustomSerializer", true);
                         data.size = font.getInt("size", 16);
                         data.mono = font.getBoolean("mono", false);
                         data.hinting = font.getString("hinting", "AutoMedium");
