@@ -1584,6 +1584,11 @@ public class DialogFreeTypeFont extends Dialog {
                     data.characters = Utils.removeDuplicateCharacters(characters);
                     updateDisabledFields();
                 });
+            } else {
+                Gdx.app.postRunnable(() -> {
+                    SelectBox<String> selectBox = findActor("character-select-box");
+                    selectBox.setSelected("default");
+                });
             }
         };
 

@@ -1502,6 +1502,11 @@ public class DialogImageFont extends Dialog {
                     var textField = (TextField) findActor("characters");
                     textField.setText("");
                 });
+            } else {
+                Gdx.app.postRunnable(() -> {
+                    SelectBox<String> selectBox = findActor("characters select");
+                    selectBox.setSelectedIndex(3);
+                });
             }
         };
 

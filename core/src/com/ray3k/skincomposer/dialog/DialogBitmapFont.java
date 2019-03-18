@@ -356,6 +356,7 @@ public class DialogBitmapFont extends Dialog {
         charactersTextField.addListener(toolTip);
 
         var characterSelectBox = new SelectBox<String>(skin);
+        characterSelectBox.setName("characterSelectBox");
         characterSelectBox.setItems("default", "0-9", "a-zA-Z", "a-zA-Z0-9", "custom", "Load from file (UTF-8)...");
         table.add(characterSelectBox).fillX();
 
@@ -1358,6 +1359,11 @@ public class DialogBitmapFont extends Dialog {
                 Gdx.app.postRunnable(() -> {
                     data.characters = Utils.removeDuplicateCharacters(characters);
                     updatePreviewAndOK();
+                });
+            } else {
+                Gdx.app.postRunnable(() -> {
+                    SelectBox<String> selectBox = findActor("characterSelectBox");
+                    selectBox.setSelected("default");
                 });
             }
         };
