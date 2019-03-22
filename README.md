@@ -24,6 +24,7 @@ See more examples and sample code at [Ray3k](https://ray3k.wordpress.com/artwork
 
 ### Notes ###
 
+Skin Composer has now has wiki: [start here](https://github.com/raeleus/skin-composer/wiki) to begin learning!
 To run Skin Composer on OSX, please see the [wiki](https://github.com/raeleus/skin-composer/wiki/Getting-Started-With-Mac "Getting Started With Mac") for details.
 
 ### License ###

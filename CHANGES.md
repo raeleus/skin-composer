@@ -1,6 +1,7 @@
 ### Skin Composer Version 28 ###
 * BREAKING CHANGE: Bitmap/Freetype Font settings files may not be compatible with this version of Skin Composer unless converted to UTF-8.
 
+* Skin Composer now has a wiki: https://github.com/raeleus/skin-composer/wiki
 * Resolved release issues with Mac and Windows.
 * Dialogs now highlight which field needs to be completed in order to continue.
 * Added option to not show warnings when exporting a skin.
