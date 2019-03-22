@@ -157,6 +157,7 @@ public class DialogExport extends Dialog {
         selectBox.setSelected(main.getProjectData().getExportFormat());
         table.add(selectBox);
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {

@@ -741,6 +741,7 @@ public class Dialog9Patch extends Dialog {
         table.add(selectBox);
         selectBox.setItems("None", "Text", "Color", "Drawable");
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.getList().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
