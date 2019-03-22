@@ -5,18 +5,17 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.utils.Utils;
-import java.awt.SplashScreen;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import javax.swing.JOptionPane;
 
-public class DesktopLauncher extends Launcher {
+public class MacLauncher extends Launcher {
     public static void main(String[] args) {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setResizable(true);
         config.useVsync(true);
         config.setWindowedMode(800, 800);
-        DesktopLauncher desktopLauncher = new DesktopLauncher();
+        MacLauncher desktopLauncher = new MacLauncher();
         config.setWindowListener(desktopLauncher);
         config.setTitle("Skin Composer - New Project*");
         config.setWindowSizeLimits(675, 400, -1, -1);
@@ -46,14 +45,6 @@ public class DesktopLauncher extends Launcher {
             } catch (Exception ex) {
 
             }
-        }
-    }
-    
-    @Override
-    public void closeSplashScreen() {
-        SplashScreen splash = SplashScreen.getSplashScreen();
-        if (splash != null) {
-            splash.close();
         }
     }
 }

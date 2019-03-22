@@ -142,8 +142,10 @@ public class DialogPathErrors extends Dialog {
                         if (!Utils.isMac()) {
                             filterPatterns = new String[] {"*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif"};
                         }
+                        
+                        var defaultPath = drawable.file.parent().exists() ? drawable.file.parent().path() + "/": "";
 
-                        File file = desktopWorker.openDialog("Locate " + drawable.file.name() + "...", drawable.file.path(), filterPatterns, "Image files");
+                        File file = desktopWorker.openDialog("Locate " + drawable.file.name() + "...", defaultPath, filterPatterns, "Image files");
                         if (file != null) {
                             FileHandle fileHandle = new FileHandle(file);
                             drawable.file = fileHandle;
@@ -215,8 +217,10 @@ public class DialogPathErrors extends Dialog {
                         if (!Utils.isMac()) {
                             filterPatterns = new String[] {"*.fnt"};
                         }
+                        
+                        var defaultPath = font.file.parent().exists() ? font.file.parent().path() + "/": "";
 
-                        File file = desktopWorker.openDialog("Locate " + font.file.name() + "...", font.file.path(), filterPatterns, "Font files");
+                        File file = desktopWorker.openDialog("Locate " + font.file.name() + "...", defaultPath, filterPatterns, "Font files");
                         if (file != null) {
                             FileHandle fileHandle = new FileHandle(file);
                             font.file = fileHandle;
@@ -244,6 +248,9 @@ public class DialogPathErrors extends Dialog {
                 dataTable.add(image).colspan(4).pad(5.0f).padLeft(0.0f).padRight(0.0f).growX();
             }
         }
+        
+        dataTable.row();
+        dataTable.add().grow().colspan(4);
     }
 
     private void resolveAssetsFromFolder(FileHandle folder, Array<DrawableData> drawables, Array<FontData> fonts) {

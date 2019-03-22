@@ -34,6 +34,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -66,7 +67,7 @@ import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
-import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.stream.Stream;
 
 /**
@@ -83,7 +84,7 @@ public class DialogImageFont extends Dialog {
     private static final String ALL = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~`!@#$%^&*()_-+=[{]}\\|;:'\",<.>/?•©¿¡áéíóúüñÑÁÉÍÓÚÜ";
     private static final String SAMPLE_TEXT = "abcdefghijklmnopqrstuvwxyz\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n0123456789\n~`!@#$%^&*()_-+=[{]}\\|;:'\",<.>/?•©\n¿¡áéíóúüñÑÁÉÍÓÚÜ\n\nThe most merciful thing in the world, I think, is the inability of the human mind to correlate all its contents.\n\n\"That is not dead which can eternal lie, And with strange aeons even death may die.\"\n\nIn his house at R'lyeh dead Cthulhu waits dreaming.\n\nThe Thing cannot be described - there is no language for such abysms of shrieking and immemorial lunacy, such eldritch contradictions of all matter, force, and cosmic order. A mountain walked or stumbled.\n\nWe live on a placid island of ignorance in the midst of black seas of infinity, and it was not meant that we should voyage far.";
     private static final String KERNING_DEFAULTS = "A' AC AG AO AQ AT AU AV AW AY BA BE BL BP BR BU BV BW BY CA CO CR DA DD DE DI DL DM DN DO DP DR DU DV DW DY EC EO FA FC FG FO F. F, GE GO GR GU HO IC IG IO JA JO KO L' LC LT LV LW LY LG LO LU M MG MO NC NG NO OA OB OD OE OF OH OI OK OL OM ON OP OR OT OU OV OW OX OY PA PE PL PO PP PU PY P. P, P; P: QU RC RG RY RT RU RV RW RY SI SM ST SU TA TC TO UA UC UG UO US VA VC VG VO VS WA WC WG WO YA YC YO YS ZO Ac Ad Ae Ag Ao Ap Aq At Au Av Aw Ay Bb Bi Bk Bl Br Bu By B. B, Ca Cr C. C, Da D. D, Eu Ev Fa Fe Fi Fo Fr Ft Fu Fy F. F, F; F: Gu He Ho Hu Hy Ic Id Iq Io It Ja Je Jo Ju J. J, Ke Ko Ku Lu Ly Ma Mc Md Me Mo Nu Na Ne Ni No Nu N. N, Oa Ob Oh Ok Ol O. O, Pa Pe Po Rd Re Ro Rt Ru Si Sp Su S. S, Ta Tc Te Ti To Tr Ts Tu Tw Ty T. T, T; T: Ua Ug Um Un Up Us U. U, Va Ve Vi Vo Vr Vu V. V, V; V: Wd Wi Wm Wr Wt Wu Wy W. W, W; W: Xa Xe Xo Xu Xy Yd Ye Yi Yp Yu Yv Y. Y, Y; Y: ac ad ae ag ap af at au av aw ay ap bl br bu by b. b, ca ch ck da dc de dg do dt du dv dw dy d. d, ea ei el em en ep er et eu ev ew ey e. e, fa fe ff fi fl fo f. f, ga ge gh gl go gg g. g, hc hd he hg ho hp ht hu hv hw hy ic id ie ig io ip it iu iv ja je jo ju j. j, ka kc kd ke kg ko la lc ld le lf lg lo lp lq lu lv lw ly ma mc md me mg mn mo mp mt mu mv my nc nd ne ng no np nt nu nv nw ny ob of oh oj ok ol om on op or ou ov ow ox oy o. o, pa ph pi pl pp pu p. p, qu t. ra rd re rg rk rl rm rn ro rq rr rt rv ry r. r, sh st su s. s, td ta te to t. t, ua uc ud ue ug uo up uq ut uv uw uy va vb vc vd ve vg vo vv vy v. v, wa wx wd we wg wh wo w. w, xa xe xo y. y, ya yc yd ye yo 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99";
-    private static final CharArray BASELINE_EXCLUSION = new CharArray(new char[] {'C', 'G', 'J', 'O', 'Q', 'U', '0', '3', '4', '5', '6', '7', '8', '9', 'c', 'o', 'g', 'j', 'p', 'q', 'y'});
+    private static final CharArray BASELINE_EXCLUSION = new CharArray(new char[] {'C', 'G', 'J', 'O', 'Q', 'U', '0', '3', '4', '5', '6', '7', '8', '9', 'c', 'o', 'g', 'j', 'p', 'q', 'y', '_', '-', '=', '|'});
     private Array<BitmapCharacter> bitmapCharacters;
     private BitmapFont previewFont;
     private TextFieldStyle previewStyle;
@@ -110,7 +111,9 @@ public class DialogImageFont extends Dialog {
         filesDroppedListener = (Array<FileHandle> files) -> {
             if (files.size > 0 && files.first().extension().equalsIgnoreCase("png")) {
                 Runnable runnable = () -> {
-                    processSourceFile(files.first(), true);
+                    Gdx.app.postRunnable(() -> {
+                        processSourceFile(files.first(), true);
+                    });
                 };
                 
                 main.getDialogFactory().showDialogLoading(runnable);
@@ -132,6 +135,7 @@ public class DialogImageFont extends Dialog {
         var textButton = new TextButton("Generate Font", skin);
         textButton.setName("generate");
         textButton.setDisabled(true);
+        updateLabelHighlight("image-label");
         button(textButton, true);
         textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("Generate bitmap font, save to specified file, and add to list of fonts", main.getTooltipManager(), skin));
@@ -140,9 +144,11 @@ public class DialogImageFont extends Dialog {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Keys.ENTER) {
-                    var textButton = ((TextButton) findActor("generate"));
-                    if (!textButton.isDisabled()) {
-                        textButton.fire(new ChangeListener.ChangeEvent());
+                    if (getStage().getKeyboardFocus() != findActor("preview")) {
+                        var textButton = ((TextButton) findActor("generate"));
+                        if (!textButton.isDisabled()) {
+                            textButton.fire(new ChangeListener.ChangeEvent());
+                        }
                     }
                 }
                 return false;
@@ -217,7 +223,7 @@ public class DialogImageFont extends Dialog {
     private void refreshTable() {
         previewStyle = new TextFieldStyle(skin.get(TextFieldStyle.class));
         
-        fadables = new Array<Actor>();
+        fadables = new Array<>();
         root.clearChildren();
         
         var scrollTable = new Table();
@@ -250,12 +256,7 @@ public class DialogImageFont extends Dialog {
         table.add(textField).growX();
         textField.addListener(new TextTooltip("Characters to be included in font", main.getTooltipManager(), skin));
         textField.addListener(main.getIbeamListener());
-        textField.setTextFieldFilter(new TextField.TextFieldFilter() {
-            @Override
-            public boolean acceptChar(TextField textField, char c) {
-                return textField.getText().indexOf(c) == -1;
-            }
-        });
+        textField.setTextFieldFilter((TextField textField1, char c) -> textField1.getText().indexOf(c) == -1);
         
         textField.addListener(new ChangeListener() {
             @Override
@@ -266,22 +267,29 @@ public class DialogImageFont extends Dialog {
         });
         
         var selectBox = new SelectBox<String>(skin);
-        selectBox.setItems("0-9", "a-zA-Z", "a-zA-Z0-9", "a-zA-Z0-9!-?*", "custom");
-        if (settings.characters.equals(NUMBERS)) {
-            selectBox.setSelectedIndex(0);
-        } else if (settings.characters.equals(ALPHA)) {
-            selectBox.setSelectedIndex(1);
-        } else if (settings.characters.equals(ALPHA_NUMERIC)) {
-            selectBox.setSelectedIndex(2);
-        } else if (settings.characters.equals(ALL)) {
-            selectBox.setSelectedIndex(3);
-        } else {
-            selectBox.setSelectedIndex(4);
+        selectBox.setItems("0-9", "a-zA-Z", "a-zA-Z0-9", "a-zA-Z0-9!-?*", "custom", "Load from file (UTF-8)...");
+        switch (settings.characters) {
+            case NUMBERS:
+                selectBox.setSelectedIndex(0);
+                break;
+            case ALPHA:
+                selectBox.setSelectedIndex(1);
+                break;
+            case ALPHA_NUMERIC:
+                selectBox.setSelectedIndex(2);
+                break;
+            case ALL:
+                selectBox.setSelectedIndex(3);
+                break;
+            default:
+                selectBox.setSelectedIndex(4);
+                break;
         }
         selectBox.setName("characters select");
         table.add(selectBox);
         selectBox.addListener(new TextTooltip("Character Presets", main.getTooltipManager(), skin));
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -289,18 +297,36 @@ public class DialogImageFont extends Dialog {
                 switch (selectBox.getSelectedIndex()) {
                     case 0:
                         textField.setText(NUMBERS);
+                        textField.setMessageText("");
+                        settings.characters = NUMBERS;
                         break;
                     case 1:
                         textField.setText(ALPHA);
+                        textField.setMessageText("");
+                        settings.characters = ALPHA;
                         break;
                     case 2:
                         textField.setText(ALPHA_NUMERIC);
+                        textField.setMessageText("");
+                        settings.characters = ALPHA_NUMERIC;
                         break;
                     case 3:
                         textField.setText(ALL);
+                        textField.setMessageText("");
+                        settings.characters = ALL;
+                        break;
+                    case 4:
+                        textField.setText(textField.getText());
+                        textField.setMessageText("");
+                        settings.characters = ((TextField) findActor("characters")).getText();
+                        break;
+                    case 5:
+                        textField.setText("");
+                        textField.setMessageText("Characters loaded from text file...");
+                        settings.characters = "";
+                        showCharacterDialog();
                         break;
                 }
-                settings.characters = ((TextField) findActor("characters")).getText();
             }
         });
         
@@ -326,6 +352,7 @@ public class DialogImageFont extends Dialog {
         //source file
         content.row();
         label = new Label("Image File", skin);
+        label.setName("image-label");
         content.add(label).right();
         width = label.getWidth();
         
@@ -608,7 +635,7 @@ public class DialogImageFont extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 try {
                     Utils.openFileExplorer(Main.appFolder.child("imagefont/characters/"));
-                } catch (Exception e) {
+                } catch (IOException e) {
                     Gdx.app.error(getClass().getName(), "Error opening characters folder", e);
                     main.getDialogFactory().showDialogError("Folder Error...", "Error opening characters folder.\n\nOpen log?");
                 }
@@ -656,6 +683,7 @@ public class DialogImageFont extends Dialog {
                     if (colorData != null) {
                         var textArea = (TextArea) findActor("preview");
                         previewStyle.background = ((NinePatchDrawable) previewStyle.background).tint(colorData.color);
+                        previewStyle.focusedBackground = ((NinePatchDrawable) previewStyle.focusedBackground).tint(colorData.color);
                         settings.previewBackgroundColor = colorData.color;
                     }
                 }, null);
@@ -681,8 +709,10 @@ public class DialogImageFont extends Dialog {
 
             File file = main.getDesktopWorker().openDialog("Select image file...", defaultPath, filterPatterns, "Image files");
             if (file != null) {
-                FileHandle fileHandle = new FileHandle(file);
-                processSourceFile(fileHandle, true);
+                Gdx.app.postRunnable(() -> {
+                    FileHandle fileHandle = new FileHandle(file);
+                    processSourceFile(fileHandle, true);
+                });
             }
         };
 
@@ -704,6 +734,7 @@ public class DialogImageFont extends Dialog {
             textField.setCursorPosition(textField.getText().length() - 1);
             
             ((TextButton) findActor("generate")).setDisabled(false);
+            updateLabelHighlight(null);
             
             for (var fadable : fadables) {
                 fadable.addAction(Actions.fadeIn(1.0f, Interpolation.fade));
@@ -719,30 +750,32 @@ public class DialogImageFont extends Dialog {
     
     private void saveFileBrowse() {
         Runnable runnable = () -> {
-            var textField = (TextField) findActor("targetpath");
+            Gdx.app.postRunnable(() -> {
+                var textField = (TextField) findActor("targetpath");
 
-            String defaultPath = main.getProjectData().getLastFontPath();
-            FileHandle currentPath = Gdx.files.absolute(textField.getText());
-            if (currentPath.exists()) {
-                defaultPath = textField.getText();
-            }
-
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[]{"*.fnt"};
-            }
-
-            File file = main.getDesktopWorker().saveDialog("Save as font file...", defaultPath, filterPatterns, "Font files");
-            if (file != null) {
-                var fileHandle = new FileHandle(file);
-                if (!fileHandle.extension().equalsIgnoreCase("fnt")) {
-                    fileHandle = fileHandle.parent().child(fileHandle.name() + ".fnt");
+                String defaultPath = main.getProjectData().getLastFontPath();
+                FileHandle currentPath = Gdx.files.absolute(textField.getText());
+                if (currentPath.exists()) {
+                    defaultPath = textField.getText();
                 }
-                
-                processSaveFile(fileHandle.path());
-                
-                main.getProjectData().setLastFontPath(fileHandle.parent().path() + "/");
-            }
+
+                String[] filterPatterns = null;
+                if (!Utils.isMac()) {
+                    filterPatterns = new String[]{"*.fnt"};
+                }
+
+                File file = main.getDesktopWorker().saveDialog("Save as font file...", defaultPath, filterPatterns, "Font files");
+                if (file != null) {
+                    var fileHandle = new FileHandle(file);
+                    if (!fileHandle.extension().equalsIgnoreCase("fnt")) {
+                        fileHandle = fileHandle.parent().child(fileHandle.name() + ".fnt");
+                    }
+
+                    processSaveFile(fileHandle.path());
+
+                    main.getProjectData().setLastFontPath(fileHandle.parent().path() + "/");
+                }
+            });
         };
 
         main.getDialogFactory().showDialogLoading(runnable);
@@ -755,6 +788,7 @@ public class DialogImageFont extends Dialog {
         textField.setCursorPosition(textField.getText().length() - 1);
 
         ((TextButton) findActor("generate")).setDisabled(false);
+        updateLabelHighlight(null);
     }
     
     private void saveSettingsBrowse() {
@@ -768,14 +802,16 @@ public class DialogImageFont extends Dialog {
 
             File file = main.getDesktopWorker().saveDialog("Save Image Font Settings...", defaultPath, filterPatterns, "Imagefont files");
             if (file != null) {
-                var fileHandle = new FileHandle(file);
-                if (!fileHandle.extension().equalsIgnoreCase("imagefont")) {
-                    fileHandle = fileHandle.parent().child(fileHandle.name() + ".imagefont");
-                }
-                
-                saveSettings(fileHandle);
-                
-                main.getProjectData().setLastFontPath(fileHandle.parent().path() + "/");
+                Gdx.app.postRunnable(() -> {
+                    var fileHandle = new FileHandle(file);
+                    if (!fileHandle.extension().equalsIgnoreCase("imagefont")) {
+                        fileHandle = fileHandle.parent().child(fileHandle.name() + ".imagefont");
+                    }
+
+                    saveSettings(fileHandle);
+
+                    main.getProjectData().setLastFontPath(fileHandle.parent().path() + "/");
+                });
             }
         };
 
@@ -815,23 +851,25 @@ public class DialogImageFont extends Dialog {
     }
     
     private void saveSettings(FileHandle file) {
-        file.writeString(json.prettyPrint(settings), false);
+        file.writeString(json.prettyPrint(settings), false, "utf-8");
     }
     
     private void loadSettingsBrowse() {
         Runnable runnable = () -> {
-            String defaultPath = main.getProjectData().getLastFontPath();
+            Gdx.app.postRunnable(() -> {
+                String defaultPath = main.getProjectData().getLastFontPath();
 
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[]{"*.imagefont"};
-            }
+                String[] filterPatterns = null;
+                if (!Utils.isMac()) {
+                    filterPatterns = new String[]{"*.imagefont"};
+                }
 
-            File file = main.getDesktopWorker().openDialog("Load Image Font Settings...", defaultPath, filterPatterns, "Imagefont files");
-            if (file != null) {
-                FileHandle fileHandle = new FileHandle(file);
-                loadSettings(fileHandle);
-            }
+                File file = main.getDesktopWorker().openDialog("Load Image Font Settings...", defaultPath, filterPatterns, "Imagefont files");
+                if (file != null) {
+                    FileHandle fileHandle = new FileHandle(file);
+                    loadSettings(fileHandle);
+                }
+            });
         };
 
         main.getDialogFactory().showDialogLoading(runnable);
@@ -842,10 +880,11 @@ public class DialogImageFont extends Dialog {
         var targetPath = ((TextField) findActor("targetpath")).getText();
         
         json.setOutputType(JsonWriter.OutputType.json);
-        settings = json.fromJson(ImageFontSettings.class, file);
+        settings = json.fromJson(ImageFontSettings.class, file.readString("utf-8"));
         refreshTable();
         previewStyle.fontColor = settings.previewColor;
         previewStyle.background = ((NinePatchDrawable) previewStyle.background).tint(settings.previewBackgroundColor);
+        previewStyle.focusedBackground = ((NinePatchDrawable) previewStyle.focusedBackground).tint(settings.previewBackgroundColor);
         
         if (targetPath != null && !targetPath.equals("")) {
             processSaveFile(targetPath);
@@ -1075,7 +1114,6 @@ public class DialogImageFont extends Dialog {
                 }
 
                 if (!failure && lookingForBreak) {
-                    lookingForBreak = false;
                     bitmapCharacter.width = fontPixmap.getWidth() - 1 - bitmapCharacter.x;
                     averageWidth += bitmapCharacter.width;
                     bitmapCharacters.add(bitmapCharacter);
@@ -1125,8 +1163,18 @@ public class DialogImageFont extends Dialog {
                 if (!lineEmpty) {
                     character.cropHeight = y - character.cropY + 1;
                     character.yoffset = character.cropY - character.y;
-                    character.baseline = y - character.y;
+                    character.baseline = y - character.cropY;
                     break;
+                }
+            }
+        }
+        
+        //find baseline
+        var baseline = 0;
+        for (var character : bitmapCharacters) {
+            if (!BASELINE_EXCLUSION.contains(character.character)) {
+                if (character.baseline > baseline) {
+                    baseline = character.baseline;
                 }
             }
         }
@@ -1248,21 +1296,10 @@ public class DialogImageFont extends Dialog {
             ((Spinner) findActor("leading")).setValue(height);
             settings.leading = height;
 
-            var baseline = 0;
-            var baselineCount = 0;
-
-            for (var bitmapCharacter : bitmapCharacters) {
-                if (!BASELINE_EXCLUSION.contains(bitmapCharacter.character) && Character.toString(bitmapCharacter.character).matches("[A-Z]+|\\d+")) {
-                    baseline += bitmapCharacter.baseline;
-                    baselineCount++;
-                }
-            }
-
-            if (baselineCount == 0) {
+            if (baseline == 0) {
                 baseline = settings.leading;
-            } else {
-                baseline = baseline / baselineCount + 1;
             }
+            
             ((Spinner) findActor("baseline")).setValue(baseline);
             settings.baseline = baseline;
             
@@ -1306,12 +1343,7 @@ public class DialogImageFont extends Dialog {
     private void writeFNT(FileHandle saveFile, boolean texturePack) {
         if (texturePack) {
             //delete existing PNG's
-            var deleteFiles = saveFile.parent().list(new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String name) {
-                    return name.matches(saveFile.nameWithoutExtension() + "\\d*?\\.png|" + saveFile.nameWithoutExtension() + "\\.atlas|" + saveFile.nameWithoutExtension() + "\\.fnt");
-                }
-            });
+            var deleteFiles = saveFile.parent().list((File dir, String name1) -> name1.matches(saveFile.nameWithoutExtension() + "\\d*?\\.png|" + saveFile.nameWithoutExtension() + "\\.atlas|" + saveFile.nameWithoutExtension() + "\\.fnt"));
             for (var file : deleteFiles) {
                 file.delete();
             }
@@ -1428,5 +1460,56 @@ public class DialogImageFont extends Dialog {
         name = name.replace(">", "greater than");
         name = name.replace("|", "pipe");
         return name;
+    }
+    
+    private void updateLabelHighlight(String requiredLabelName) {
+        var normalStyle = skin.get(Label.LabelStyle.class);
+        var requiredStyle = skin.get("required", Label.LabelStyle.class);
+        var actors = new Array<Actor>();
+        actors.addAll(getChildren());
+        
+        for (int i = 0; i < actors.size; i++) {
+            var actor = actors.get(i);
+            
+            if (actor instanceof Group) {
+                actors.addAll(((Group) actor).getChildren());
+            }
+            
+            if (actor instanceof Label) {
+                Label label = (Label) actor;
+                
+                if (label.getStyle().equals(requiredStyle)) {
+                    label.setStyle(normalStyle);
+                }
+                
+                if (requiredLabelName != null && label.getName() != null && label.getName().equals(requiredLabelName)) {
+                    label.setStyle(requiredStyle);
+                }
+            }
+        }
+    }
+    
+    private void showCharacterDialog() {
+        Runnable runnable = () -> {
+            String defaultPath = main.getProjectData().getLastFontPath();
+
+            File file = main.getDesktopWorker().openDialog("Select character text file...", defaultPath, null, "All files");
+            if (file != null) {
+                var fileHandle = new FileHandle(file);
+                String characters = fileHandle.readString("utf-8");
+                Gdx.app.postRunnable(() -> {
+                    settings.characters = Utils.removeDuplicateCharacters(characters);
+                    var textField = (TextField) findActor("characters");
+                    textField.setText("");
+                });
+            } else {
+                Gdx.app.postRunnable(() -> {
+                    SelectBox<String> selectBox = findActor("characters select");
+                    selectBox.setSelectedIndex(3);
+                });
+            }
+        };
+
+        main.getDialogFactory().showDialogLoading(runnable);
     }
 }

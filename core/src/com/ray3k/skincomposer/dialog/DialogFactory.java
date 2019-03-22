@@ -557,7 +557,9 @@ public class DialogFactory {
                         if ((int) object == 0) {
                             main.getMainListener().saveFile(() -> {
                                 if (main.getProjectData().areChangesSaved()) {
-                                    Gdx.app.exit();
+                                    Gdx.app.postRunnable(() -> {
+                                        Gdx.app.exit();
+                                    });
                                 }
                             });
                         } else if ((int) object == 1) {
@@ -768,12 +770,16 @@ public class DialogFactory {
                     if (selectBox.getSelected() != null) {
                         FileHandle file = selectBox.getSelected().getFileHandle();
                         if (file.exists()) {
-                            main.getProjectData().load(file);
-                            Array<DrawableData> drawableErrors = main.getProjectData().verifyDrawablePaths();
-                            Array<FontData> fontErrors = main.getProjectData().verifyFontPaths();
-                            if (drawableErrors.size > 0 || fontErrors.size > 0) {
-                                main.getDialogFactory().showDialogPathErrors(drawableErrors, fontErrors);
-                            }
+                            showDialogLoading(() -> {
+                                Gdx.app.postRunnable(() -> {
+                                    main.getProjectData().load(file);
+                                    Array<DrawableData> drawableErrors = main.getProjectData().verifyDrawablePaths();
+                                    Array<FontData> fontErrors = main.getProjectData().verifyFontPaths();
+                                    if (drawableErrors.size > 0 || fontErrors.size > 0) {
+                                        main.getDialogFactory().showDialogPathErrors(drawableErrors, fontErrors);
+                                    }
+                                });
+                            });
                         }
                     }
                 }

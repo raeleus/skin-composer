@@ -31,6 +31,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -257,7 +258,7 @@ public class DialogFreeTypeFont extends Dialog {
     private void populate() {
         root.pad(15.0f);
         
-        Label label = new Label(mode == Mode.NEW ? "Create a new FreeType Font placeholder." : "Edit FreeType Font placeholder.", skin, "required");
+        Label label = new Label(mode == Mode.NEW ? "Create a new FreeType Font placeholder." : "Edit FreeType Font placeholder.", skin, "black");
         root.add(label);
         
         root.row();
@@ -266,6 +267,7 @@ public class DialogFreeTypeFont extends Dialog {
         
         table.defaults().space(5.0f);
         label = new Label("Font Name:", skin);
+        label.setName("name-label");
         table.add(label);
         
         TextField textField = new TextField(data.name, skin);
@@ -313,6 +315,7 @@ public class DialogFreeTypeFont extends Dialog {
         selectBox.addListener(toolTip);
         
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -455,6 +458,7 @@ public class DialogFreeTypeFont extends Dialog {
         
         table.defaults().space(5.0f);
         label = new Label("TTF Path:", skin);
+        label.setName("source-label");
         table.add(label).right();
         
         textField = new TextField(data.file == null ? "" : data.file.path(), skin);
@@ -491,8 +495,10 @@ public class DialogFreeTypeFont extends Dialog {
 
                     File file = main.getDesktopWorker().openDialog("Select TTF file...", defaultPath, filterPatterns, "True Type Font files");
                     if (file != null) {
-                        FileHandle fileHandle = new FileHandle(file);
-                        loadTTF(fileHandle);
+                        Gdx.app.postRunnable(() -> {
+                            FileHandle fileHandle = new FileHandle(file);
+                            loadTTF(fileHandle);
+                        });
                     }
                 };
                 
@@ -531,12 +537,14 @@ public class DialogFreeTypeFont extends Dialog {
         
         selectBox = new SelectBox<String>(skin);
         selectBox.setName("character-select-box");
-        selectBox.setItems("default", "0-9", "a-zA-Z", "a-zA-Z0-9", "custom");
+        selectBox.setItems("default", "0-9", "a-zA-Z", "a-zA-Z0-9", "custom", "Load from file (UTF-8)...");
         table.add(selectBox);
         if (!data.characters.equals("")) {
             selectBox.setSelected("custom");
         }
         
+        selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -546,19 +554,32 @@ public class DialogFreeTypeFont extends Dialog {
                 switch (selectBox.getSelected()) {
                     case "default":
                         textField.setText("");
+                        textField.setMessageText("");
+                        data.characters = "";
                         break;
                     case "0-9":
                         textField.setText("0123456789");
+                        textField.setMessageText("");
+                        data.characters = textField.getText();
                         break;
                     case "a-zA-Z":
                         textField.setText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+                        textField.setMessageText("");
+                        data.characters = textField.getText();
                         break;
                     case "a-zA-Z0-9":
                         textField.setText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+                        textField.setMessageText("");
+                        data.characters = textField.getText();
+                        break;
+                    case "Load from file (UTF-8)...":
+                        textField.setText("");
+                        textField.setMessageText("Characters loaded from text file...");
+                        data.characters = "";
+                        showCharacterDialog();
                         break;
                 }
                 
-                data.characters = textField.getText();
                 data.characters = !data.characters.equals("") && !data.characters.contains("\u0000") ? "\u0000" + data.characters : data.characters;
                 updateDisabledFields();
             }
@@ -626,6 +647,7 @@ public class DialogFreeTypeFont extends Dialog {
         selectBox.addListener(toolTip);
         
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -637,6 +659,7 @@ public class DialogFreeTypeFont extends Dialog {
         });
         
         label = new Label("Color:", skin);
+        label.setName("color-label");
         bottom.add(label).right();
         
         textButton = new TextButton(data.color, skin);
@@ -743,6 +766,7 @@ public class DialogFreeTypeFont extends Dialog {
         });
         
         label = new Label("Border Color:", skin);
+        label.setName("border-color-label");
         bottom.add(label).right();
         
         textButton = new TextButton(data.borderColor, skin);
@@ -871,6 +895,7 @@ public class DialogFreeTypeFont extends Dialog {
         
         bottom.row();
         label = new Label("Shadow Color:", skin);
+        label.setName("shadow-color-label");
         bottom.add(label).right();
         
         textButton = new TextButton(data.shadowColor, skin);
@@ -1057,6 +1082,7 @@ public class DialogFreeTypeFont extends Dialog {
         selectBox.addListener(toolTip);
         
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1080,6 +1106,7 @@ public class DialogFreeTypeFont extends Dialog {
         selectBox.addListener(toolTip);
         
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1165,10 +1192,22 @@ public class DialogFreeTypeFont extends Dialog {
         
         boolean notValid = false;
         if (checkBox.isChecked()) {
-            if (data.color == null) notValid = true;
-            else if (data.file == null || !data.file.exists()) notValid = true;
-            else if (!MathUtils.isZero(data.borderWidth) && data.borderColor == null) notValid = true;
-            else if ((data.shadowOffsetX != 0 || data.shadowOffsetY != 0) && data.shadowColor == null) notValid = true;
+            if (data.color == null) {
+                notValid = true;
+                updateLabelHighlight("color-label");
+            }
+            else if (data.file == null || !data.file.exists()) {
+                notValid = true;
+                updateLabelHighlight("source-label");
+            }
+            else if (!MathUtils.isZero(data.borderWidth) && data.borderColor == null) {
+                notValid = true;
+                updateLabelHighlight("border-color-label");
+            }
+            else if ((data.shadowOffsetX != 0 || data.shadowOffsetY != 0) && data.shadowColor == null) {
+                notValid = true;
+                updateLabelHighlight("shadow-color-label");
+            }
         }
         
         if (notValid) {
@@ -1208,11 +1247,15 @@ public class DialogFreeTypeFont extends Dialog {
             }
         }
         
-        if (!StyleData.validate(((TextField)findActor("fontName")).getText())) notValid = true;
+        if (!StyleData.validate(((TextField)findActor("fontName")).getText())) {
+            notValid = true;
+            updateLabelHighlight("name-label");
+        }
         
         for (FontData font : main.getJsonData().getFonts()) {
             if (font.getName().equals(data.name)) {
                 notValid = true;
+                updateLabelHighlight("name-label");
                 break;
             }
         }
@@ -1220,8 +1263,13 @@ public class DialogFreeTypeFont extends Dialog {
         for (FreeTypeFontData font : main.getJsonData().getFreeTypeFonts()) {
             if (font.name.equals(data.name) && (mode == Mode.NEW || !font.name.equals(originalData.name))) {
                 notValid = true;
+                updateLabelHighlight("name-label");
                 break;
             }
+        }
+        
+        if (!notValid) {
+            updateLabelHighlight(null);
         }
         
         TextButton textButton = findActor("okButton");
@@ -1285,13 +1333,15 @@ public class DialogFreeTypeFont extends Dialog {
 
             File file = main.getDesktopWorker().saveDialog("Save Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
             if (file != null) {
-                var fileHandle = new FileHandle(file);
-                
-                if (!fileHandle.extension().toLowerCase(Locale.ROOT).equals("scmp-font")) {
-                    fileHandle = fileHandle.sibling(fileHandle.name() + ".scmp-font");
-                }
-                
-                saveSettings(fileHandle);
+                Gdx.app.postRunnable(() -> {
+                    var fileHandle = new FileHandle(file);
+
+                    if (!fileHandle.extension().toLowerCase(Locale.ROOT).equals("scmp-font")) {
+                        fileHandle = fileHandle.sibling(fileHandle.name() + ".scmp-font");
+                    }
+
+                    saveSettings(fileHandle);
+                });
             }
         };
 
@@ -1300,7 +1350,7 @@ public class DialogFreeTypeFont extends Dialog {
 
     private void saveSettings(FileHandle fileHandle) {
         var fontSettings = new FontSettings();
-        fontSettings.characters = ((TextField) findActor("characters")).getText();
+        fontSettings.characters = data.characters;
         fontSettings.size = ((Spinner) findActor("size")).getValueAsInt();
         fontSettings.mono = ((Button) findActor("mono")).isChecked();
         fontSettings.hinting = ((SelectBox<String>) findActor("hinting")).getSelected();
@@ -1338,7 +1388,7 @@ public class DialogFreeTypeFont extends Dialog {
         fontSettings.minFilter = ((SelectBox<String>) findActor("minFilter")).getSelected();
         fontSettings.magFilter = ((SelectBox<String>) findActor("magFilter")).getSelected();
 
-        fileHandle.writeString(json.prettyPrint(fontSettings), false);
+        fileHandle.writeString(json.prettyPrint(fontSettings), false, "utf-8");
     }
 
     private static class FontSettings {
@@ -1381,7 +1431,9 @@ public class DialogFreeTypeFont extends Dialog {
 
             File file = main.getDesktopWorker().openDialog("Select Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
             if (file != null) {
-                loadSettings(new FileHandle(file));
+                Gdx.app.postRunnable(() -> {
+                    loadSettings(new FileHandle(file));
+                });
             }
         };
 
@@ -1389,7 +1441,7 @@ public class DialogFreeTypeFont extends Dialog {
     }
     
     private void loadSettings(FileHandle fileHandle) {
-        var fontSettings = json.fromJson(FontSettings.class, fileHandle);
+        var fontSettings = json.fromJson(FontSettings.class, fileHandle.readString("utf-8"));
 
         ((TextField) findActor("characters")).setText(fontSettings.characters);
         data.characters = fontSettings.characters;
@@ -1492,5 +1544,55 @@ public class DialogFreeTypeFont extends Dialog {
 
         updateColors();
         updateDisabledFields();
+    }
+    
+    private void updateLabelHighlight(String requiredLabelName) {
+        var normalStyle = skin.get(Label.LabelStyle.class);
+        var requiredStyle = skin.get("required", Label.LabelStyle.class);
+        var actors = new Array<Actor>();
+        actors.addAll(getChildren());
+        
+        for (int i = 0; i < actors.size; i++) {
+            var actor = actors.get(i);
+            
+            if (actor instanceof Group) {
+                actors.addAll(((Group) actor).getChildren());
+            }
+            
+            if (actor instanceof Label) {
+                Label label = (Label) actor;
+                
+                if (label.getStyle().equals(requiredStyle)) {
+                    label.setStyle(normalStyle);
+                }
+                
+                if (requiredLabelName != null && label.getName() != null && label.getName().equals(requiredLabelName)) {
+                    label.setStyle(requiredStyle);
+                }
+            }
+        }
+    }
+    
+    private void showCharacterDialog() {
+        Runnable runnable = () -> {
+            String defaultPath = main.getProjectData().getLastFontPath();
+
+            File file = main.getDesktopWorker().openDialog("Select character text file...", defaultPath, null, "All files");
+            if (file != null) {
+                var fileHandle = new FileHandle(file);
+                String characters = fileHandle.readString("utf-8");
+                Gdx.app.postRunnable(() -> {
+                    data.characters = Utils.removeDuplicateCharacters(characters);
+                    updateDisabledFields();
+                });
+            } else {
+                Gdx.app.postRunnable(() -> {
+                    SelectBox<String> selectBox = findActor("character-select-box");
+                    selectBox.setSelected("default");
+                });
+            }
+        };
+
+        main.getDialogFactory().showDialogLoading(runnable);
     }
 }

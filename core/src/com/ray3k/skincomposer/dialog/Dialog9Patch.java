@@ -23,6 +23,7 @@
  */
 package com.ray3k.skincomposer.dialog;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -114,7 +115,9 @@ public class Dialog9Patch extends Dialog {
         filesDroppedListener = (Array<FileHandle> files) -> {
             if (files.size > 0 && files.first().extension().equalsIgnoreCase("png")) {
                 Runnable runnable = () -> {
-                    loadImage(files.first());
+                    Gdx.app.postRunnable(() -> {
+                        loadImage(files.first());
+                    });
                 };
                 
                 main.getDialogFactory().showDialogLoading(runnable);
@@ -738,6 +741,7 @@ public class Dialog9Patch extends Dialog {
         table.add(selectBox);
         selectBox.setItems("None", "Text", "Color", "Drawable");
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.getList().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -919,17 +923,19 @@ public class Dialog9Patch extends Dialog {
 
                     File file = main.getDesktopWorker().saveDialog("Save nine patch file as...", defaultPath, filterPatterns, "Nine Patch files");
                     if (file != null) {
-                        FileHandle fileHandle = new FileHandle(file);
-                        if (fileHandle.extension() == null || !fileHandle.name().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
-                            fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".9.png");
-                        }
-                        saveNinePatch(fileHandle);
-                        main.getProjectData().setLastDrawablePath(fileHandle.parent().path() + "/");
-                        hide();
-                        
-                        for (var listener : listeners) {
-                            listener.fileSaved(fileHandle);
-                        }
+                        Gdx.app.postRunnable(() -> {
+                            FileHandle fileHandle = new FileHandle(file);
+                            if (fileHandle.extension() == null || !fileHandle.name().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
+                                fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".9.png");
+                            }
+                            saveNinePatch(fileHandle);
+                            main.getProjectData().setLastDrawablePath(fileHandle.parent().path() + "/");
+                            hide();
+
+                            for (var listener : listeners) {
+                                listener.fileSaved(fileHandle);
+                            }
+                        });
                     }
                 });
             }
@@ -1008,8 +1014,10 @@ public class Dialog9Patch extends Dialog {
 
             File file = main.getDesktopWorker().openDialog("Open Image...", defaultPath, filterPatterns, "Image files");
             if (file != null) {
-                var fileHandle = new FileHandle(file);
-                loadImage(fileHandle);
+                Gdx.app.postRunnable(() -> {
+                    var fileHandle = new FileHandle(file);
+                    loadImage(fileHandle);
+                });
             }
         };
 
@@ -1415,8 +1423,10 @@ public class Dialog9Patch extends Dialog {
 
             File file = main.getDesktopWorker().openDialog("Load Patches from File...", defaultPath, filterPatterns, "Nine Patch files");
             if (file != null) {
-                var fileHandle = new FileHandle(file);
-                loadPatches(fileHandle);
+                Gdx.app.postRunnable(() -> {
+                    var fileHandle = new FileHandle(file);
+                    loadPatches(fileHandle);
+                });
             }
         };
 
@@ -1588,12 +1598,14 @@ public class Dialog9Patch extends Dialog {
 
             var files = main.getDesktopWorker().openMultipleDialog("Batch apply to files", defaultPath, filterPatterns, "Image files");
             if (files != null && files.size() > 0) {
-                var fileHandles = new Array<FileHandle>();
-                for (var file : files) {
-                    var fileHandle = new FileHandle(file);
-                    fileHandles.add(fileHandle);
-                }
-                batchApply(fileHandles);
+                Gdx.app.postRunnable(() -> {
+                    var fileHandles = new Array<FileHandle>();
+                    for (var file : files) {
+                        var fileHandle = new FileHandle(file);
+                        fileHandles.add(fileHandle);
+                    }
+                    batchApply(fileHandles);
+                });
             }
         };
 

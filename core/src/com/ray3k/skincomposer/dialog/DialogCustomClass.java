@@ -131,6 +131,7 @@ public class DialogCustomClass extends Dialog {
         checkBox.setChecked(declareAfterUIclasses);
         checkBox.setName("declareAfterUIcheckBox");
         getContentTable().add(checkBox).padLeft(10.0f).padRight(10.0f).left().padTop(10.0f);
+        checkBox.addListener(main.getHandListener());
         
         getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         button("OK", true);

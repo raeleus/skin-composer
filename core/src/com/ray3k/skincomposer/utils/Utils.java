@@ -38,12 +38,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.FileImageInputStream;
-import javax.imageio.stream.ImageInputStream;
 
 public class Utils {
     public static String os;
@@ -269,8 +270,7 @@ public class Utils {
         Iterator<ImageReader> iter = ImageIO.getImageReadersBySuffix(suffix);
         if (iter.hasNext()) {
             ImageReader reader = iter.next();
-            try {
-                ImageInputStream stream = new FileImageInputStream(fileHandle.file());
+            try (var stream = new FileImageInputStream(fileHandle.file())) {
                 reader.setInput(stream);
                 int imageWidth = reader.getWidth(reader.getMinIndex());
                 int imageHeight = reader.getHeight(reader.getMinIndex());
@@ -371,5 +371,19 @@ public class Utils {
     
     public static int colorToInt(Color color) {
         return ((int)(255 * color.r) << 24) | ((int)(255 * color.g) << 16) | ((int)(255 * color.b) << 8) | ((int)(255 * color.a));
+    }
+    
+    public static String removeDuplicateCharacters(String string) {
+        char[] chars = string.toCharArray();
+        Set<Character> charSet = new LinkedHashSet<Character>();
+        for (char c : chars) {
+            charSet.add(c);
+        }
+
+        var sb = new StringBuilder();
+        charSet.forEach((character) -> {
+            sb.append(character);
+        });
+        return sb.toString();
     }
 }

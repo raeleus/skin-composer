@@ -75,7 +75,7 @@ import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "27";
+    public final static String VERSION = "28";
     public static String newVersion;
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,
@@ -93,7 +93,7 @@ public class Main extends ApplicationAdapter {
     private static Skin skin;
     private DialogFactory dialogFactory;
     private DesktopWorker desktopWorker;
-    private AnimatedDrawable loadingAnimation;
+    private AnimationDrawable loadingAnimation;
     private UndoableManager undoableManager;
     private ProjectData projectData;
     private RootTable rootTable;
@@ -135,9 +135,9 @@ public class Main extends ApplicationAdapter {
         skin.getFont("font").getData().markupEnabled = true;
         
         //copy defaults.json to temp folder if it doesn't exist
-        var fileHandle = appFolder.child("texturepacker/defaults.json");
+        var fileHandle = appFolder.child("texturepacker/atlas-export-settings.json");
         if (!fileHandle.exists()) {
-            Gdx.files.internal("defaults.json").copyTo(fileHandle);
+            Gdx.files.internal("atlas-export-settings.json").copyTo(fileHandle);
         }
         
         //copy preview fonts to preview fonts folder if they do not exist
@@ -194,15 +194,7 @@ public class Main extends ApplicationAdapter {
             return false;
         });
         
-        loadingAnimation = new AnimatedDrawable(.05f);
-        loadingAnimation.addDrawable(skin.getDrawable("loading_0"));
-        loadingAnimation.addDrawable(skin.getDrawable("loading_1"));
-        loadingAnimation.addDrawable(skin.getDrawable("loading_2"));
-        loadingAnimation.addDrawable(skin.getDrawable("loading_3"));
-        loadingAnimation.addDrawable(skin.getDrawable("loading_4"));
-        loadingAnimation.addDrawable(skin.getDrawable("loading_5"));
-        loadingAnimation.addDrawable(skin.getDrawable("loading_6"));
-        loadingAnimation.addDrawable(skin.getDrawable("loading_7"));
+        loadingAnimation = new AnimationDrawable(skin, "loading-animation", 1 / 30f);
         
         projectData.getAtlasData().clearTempData();
         handListener = new HandListener();
@@ -271,7 +263,7 @@ public class Main extends ApplicationAdapter {
         return stage;
     }
 
-    public AnimatedDrawable getLoadingAnimation() {
+    public AnimationDrawable getLoadingAnimation() {
         return loadingAnimation;
     }
 

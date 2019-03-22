@@ -37,6 +37,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.utils.Utils;
+
 import java.nio.file.Paths;
 
 /**
@@ -160,8 +162,10 @@ public class DialogImport extends Dialog {
                     (int selection) -> {
                         if (selection == 0) {
                             main.getMainListener().saveFile(() -> {
-                                main.getProjectData().clear();
-                                importFile(fileHandle);
+                                Gdx.app.postRunnable(() -> {
+                                    main.getProjectData().clear();
+                                    importFile(fileHandle);
+                                });
                             });
                         } else if (selection == 1) {
                             main.getProjectData().clear();
@@ -176,23 +180,25 @@ public class DialogImport extends Dialog {
     
     private void importFile(FileHandle fileHandle) {
         main.getDialogFactory().showDialogLoading(() -> {
-            Array<String> warnings = new Array<>();
+            Gdx.app.postRunnable(() -> {
+                Array<String> warnings = new Array<>();
 
-            try {
-                Array<String> newWarnings = main.getJsonData().readFile(fileHandle);
-                warnings.addAll(newWarnings);
-                main.getProjectData().getAtlasData().atlasCurrent = false;
-                main.getJsonData().checkForPropertyConsistency();
-                main.getRootTable().produceAtlas();
-                main.getRootTable().populate();
-            } catch (Exception e) {
-                Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
-                main.getDialogFactory().showDialogError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
-            }
+                try {
+                    Array<String> newWarnings = main.getJsonData().readFile(fileHandle);
+                    warnings.addAll(newWarnings);
+                    main.getProjectData().getAtlasData().atlasCurrent = false;
+                    main.getJsonData().checkForPropertyConsistency();
+                    main.getRootTable().produceAtlas();
+                    main.getRootTable().populate();
+                } catch (Exception e) {
+                    Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
+                    main.getDialogFactory().showDialogError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
+                }
 
-            if (warnings.size > 0) {
-                main.getDialogFactory().showWarningDialog(warnings);
-            }
+                if (warnings.size > 0) {
+                    main.getDialogFactory().showWarningDialog(warnings);
+                }
+            });
         });
     }
 
@@ -209,7 +215,10 @@ public class DialogImport extends Dialog {
     }
     
     private void showFileBrowser() {
-        String[] filterPatterns = {"*.json"};
+        String[] filterPatterns = null;
+        if (!Utils.isMac()) {
+            filterPatterns = new String[] {"*.json"};
+        }
 
         TextField textField  = findActor("path");
         var file = main.getDesktopWorker().openDialog("Import skin...", textField.getText(), filterPatterns, "Json files");

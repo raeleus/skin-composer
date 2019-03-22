@@ -3,7 +3,7 @@
 ### ![Logo](docs/images/logo.png) ###
 
 * Use Skin Composer to create skins for LibGDX's Scene2d.UI!
-* Version 27
+* Version 28
 * Live preview of all widgets with configurable options
 * Specify tinted, tiled, and custom created Drawables right in the editor
 * Includes BitmapFont editor and Image font generator like Shoebox
@@ -24,14 +24,8 @@ See more examples and sample code at [Ray3k](https://ray3k.wordpress.com/artwork
 
 ### Notes ###
 
-To run Skin Composer on OSX, use the executable Mac release. If that fails, download the skin_composer_mac.jar version of the app and run it via terminal with the following command: **java -XstartOnFirstThread -jar skin_composer_mac.jar**
-
-To run/build the project in Idea/Android Studio, do the following:
-
-* In 'File/Project Structure...' set the project language level to 10
-* Update run configuration with the following VM Option: -XstartOnFirstThread
-
-Thanks to contributer RaimundWege for this information.
+Skin Composer has now has wiki: [start here](https://github.com/raeleus/skin-composer/wiki) to begin learning!
+To run Skin Composer on OSX, please see the [wiki](https://github.com/raeleus/skin-composer/wiki/Getting-Started-With-Mac "Getting Started With Mac") for details.
 
 ### License ###
 MIT License

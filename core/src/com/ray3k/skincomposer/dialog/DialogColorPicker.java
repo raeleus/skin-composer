@@ -608,53 +608,53 @@ public class DialogColorPicker extends Dialog {
         ((Table) t.findActor("confirmTable")).add(table).colspan(2);
         
         table.defaults().space(10.0f);
-        label = new Label("#", skin, "required");
+        label = new Label("#", skin, "black");
         table.add(label);
         
         table.add(hexField).width(75.0f);
         
         t.row();
         table = new Table();
-        label = new Label("R", skin, "required");
+        label = new Label("R", skin, "black");
         table.add(label);
         table.add(redSpinner).padLeft(10.0f).minWidth(90.0f);
         t.add(table);
         
         table = new Table();
-        label = new Label("H", skin, "required");
+        label = new Label("H", skin, "black");
         table.add(label);
         table.add(hueSpinner).padLeft(10.0f).minWidth(90.0f);
         t.add(table);
         
         t.row();
         table = new Table();
-        label = new Label("G", skin, "required");
+        label = new Label("G", skin, "black");
         table.add(label);
         table.add(greenSpinner).padLeft(10.0f).minWidth(90.0f);
         t.add(table);
         
         table = new Table();
-        label = new Label("S", skin, "required");
+        label = new Label("S", skin, "black");
         table.add(label);
         table.add(saturationSpinner).padLeft(10.0f).minWidth(90.0f);
         t.add(table);
         
         t.row();
         table = new Table();
-        label = new Label("B", skin, "required");
+        label = new Label("B", skin, "black");
         table.add(label);
         table.add(blueSpinner).padLeft(10.0f).minWidth(90.0f);
         t.add(table);
         
         table = new Table();
-        label = new Label("B", skin, "required");
+        label = new Label("B", skin, "black");
         table.add(label);
         table.add(brightnessSpinner).padLeft(10.0f).minWidth(90.0f);
         t.add(table);
         
         t.row();
         table = new Table();
-        label = new Label("A", skin, "required");
+        label = new Label("A", skin, "black");
         table.add(label);
         t.add(table);
         table.add(alphaSpinner).padLeft(10.0f).minWidth(90.0f);

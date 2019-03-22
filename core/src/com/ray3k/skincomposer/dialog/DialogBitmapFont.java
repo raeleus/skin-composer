@@ -29,8 +29,10 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -114,7 +116,9 @@ public class DialogBitmapFont extends Dialog {
                 var extension = files.first().extension().toLowerCase(Locale.ROOT);
                 if (extension.equals("ttf")) {
                     Runnable runnable = () -> {
-                        loadTTFsource(files.first());
+                        Gdx.app.postRunnable(() -> {
+                            loadTTFsource(files.first());
+                        });
                     };
 
                     main.getDialogFactory().showDialogLoading(runnable);
@@ -161,7 +165,7 @@ public class DialogBitmapFont extends Dialog {
     private void populate() {
         root.pad(15.0f);
 
-        Label label = new Label("Create a new Bitmap Font.", skin, "required");
+        Label label = new Label("Create a new Bitmap Font.", skin, "black");
         root.add(label);
 
         root.row();
@@ -227,6 +231,7 @@ public class DialogBitmapFont extends Dialog {
 
         table.defaults().space(5.0f);
         label = new Label("Source TTF Path:", skin);
+        label.setName("source-label");
         table.add(label).right();
 
         textField = new TextField(data.file == null ? "" : data.file.path(), skin);
@@ -262,7 +267,9 @@ public class DialogBitmapFont extends Dialog {
 
                     File file = main.getDesktopWorker().openDialog("Select TTF file...", defaultPath, filterPatterns, "True Type Font files");
                     if (file != null) {
-                        loadTTFsource(new FileHandle(file));
+                        Gdx.app.postRunnable(() -> {
+                            loadTTFsource(new FileHandle(file));
+                        });
                     }
                 };
 
@@ -275,6 +282,7 @@ public class DialogBitmapFont extends Dialog {
         table.row();
         table.defaults().space(5.0f);
         label = new Label("Target FNT Path:", skin);
+        label.setName("target-label");
         table.add(label).right();
 
         textField = new TextField(target == null ? "" : data.file.path(), skin);
@@ -310,18 +318,20 @@ public class DialogBitmapFont extends Dialog {
 
                     File file = main.getDesktopWorker().saveDialog("Select FNT file...", defaultPath, filterPatterns, "Bitmap Font files");
                     if (file != null) {
-                        target = new FileHandle(file);
-                        if (!target.extension().equalsIgnoreCase("fnt")) {
-                            target = target.sibling(target.name() + ".fnt");
-                        }
+                        Gdx.app.postRunnable(() -> {
+                            target = new FileHandle(file);
+                            if (!target.extension().equalsIgnoreCase("fnt")) {
+                                target = target.sibling(target.name() + ".fnt");
+                            }
 
-                        var textField = (TextField) DialogBitmapFont.this.findActor("targetFileField");
-                        textField.setText(target.path());
-                        textField.setCursorPosition(textField.getText().length() - 1);
+                            var textField = (TextField) DialogBitmapFont.this.findActor("targetFileField");
+                            textField.setText(target.path());
+                            textField.setCursorPosition(textField.getText().length() - 1);
 
-                        main.getProjectData().setLastFontPath(target.parent().path() + "/");
+                            main.getProjectData().setLastFontPath(target.parent().path() + "/");
 
-                        updatePreviewAndOK();
+                            updatePreviewAndOK();
+                        });
                     }
                 };
 
@@ -346,10 +356,12 @@ public class DialogBitmapFont extends Dialog {
         charactersTextField.addListener(toolTip);
 
         var characterSelectBox = new SelectBox<String>(skin);
-        characterSelectBox.setItems("default", "0-9", "a-zA-Z", "a-zA-Z0-9", "custom");
+        characterSelectBox.setName("characterSelectBox");
+        characterSelectBox.setItems("default", "0-9", "a-zA-Z", "a-zA-Z0-9", "custom", "Load from file (UTF-8)...");
         table.add(characterSelectBox).fillX();
 
         characterSelectBox.addListener(main.getHandListener());
+        characterSelectBox.getList().addListener(main.getHandListener());
         toolTip = new TextTooltip("Character preset list", main.getTooltipManager(), getSkin());
         characterSelectBox.addListener(toolTip);
         characterSelectBox.addListener(new ChangeListener() {
@@ -358,19 +370,32 @@ public class DialogBitmapFont extends Dialog {
                 switch (characterSelectBox.getSelected()) {
                     case "default":
                         charactersTextField.setText("");
+                        charactersTextField.setMessageText("");
+                        data.characters = "";
                         break;
                     case "0-9":
                         charactersTextField.setText("0123456789");
+                        charactersTextField.setMessageText("");
+                        data.characters = charactersTextField.getText();
                         break;
                     case "a-zA-Z":
                         charactersTextField.setText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+                        charactersTextField.setMessageText("");
+                        data.characters = charactersTextField.getText();
                         break;
                     case "a-zA-Z0-9":
                         charactersTextField.setText("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+                        charactersTextField.setMessageText("");
+                        data.characters = charactersTextField.getText();
+                        break;
+                    case "Load from file (UTF-8)...":
+                        charactersTextField.setText("");
+                        charactersTextField.setMessageText("Characters loaded from text file...");
+                        data.characters = "";
+                        showCharacterDialog();
                         break;
                 }
-
-                data.characters = charactersTextField.getText();
+                
                 data.characters = !data.characters.equals("") && !data.characters.contains("\u0000") ? "\u0000" + data.characters : data.characters;
                 updatePreviewAndOK();
             }
@@ -453,6 +478,7 @@ public class DialogBitmapFont extends Dialog {
         selectBox.addListener(toolTip);
 
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -464,6 +490,7 @@ public class DialogBitmapFont extends Dialog {
         });
 
         label = new Label("Color:", skin);
+        label.setName("color-label");
         bottom.add(label).right();
 
         textButton = new TextButton(data.color, skin);
@@ -570,6 +597,7 @@ public class DialogBitmapFont extends Dialog {
         });
 
         label = new Label("Border Color:", skin);
+        label.setName("border-color-label");
         bottom.add(label).right();
 
         textButton = new TextButton(data.borderColor, skin);
@@ -698,6 +726,7 @@ public class DialogBitmapFont extends Dialog {
 
         bottom.row();
         label = new Label("Shadow Color:", skin);
+        label.setName("shadow-color-label");
         bottom.add(label).right();
 
         textButton = new TextButton(data.shadowColor, skin);
@@ -883,6 +912,7 @@ public class DialogBitmapFont extends Dialog {
         selectBox.addListener(toolTip);
 
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -906,6 +936,7 @@ public class DialogBitmapFont extends Dialog {
         selectBox.addListener(toolTip);
 
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -949,6 +980,8 @@ public class DialogBitmapFont extends Dialog {
         textButton.setName("cancelButton");
         textButton.addListener(main.getHandListener());
         button(textButton, ButtonType.CANCEL);
+        
+        updateLabelHighlight(null);
     }
 
     private void loadTTFsource(FileHandle file) {
@@ -1002,14 +1035,21 @@ public class DialogBitmapFont extends Dialog {
         boolean notValid = false;
         if (data.color == null) {
             notValid = true;
+            updateLabelHighlight("color-label");
         } else if (data.file == null || !data.file.exists()) {
             notValid = true;
+            updateLabelHighlight("source-label");
         } else if (target == null) {
             notValid = true;
+            updateLabelHighlight("target-label");
         } else if (!MathUtils.isZero(data.borderWidth) && data.borderColor == null) {
             notValid = true;
+            updateLabelHighlight("border-color-label");
         } else if ((data.shadowOffsetX != 0 || data.shadowOffsetY != 0) && data.shadowColor == null) {
             notValid = true;
+            updateLabelHighlight("shadow-color-label");
+        } else {
+            updateLabelHighlight(null);
         }
 
         if (notValid) {
@@ -1068,13 +1108,15 @@ public class DialogBitmapFont extends Dialog {
 
             File file = main.getDesktopWorker().saveDialog("Save Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
             if (file != null) {
-                var fileHandle = new FileHandle(file);
-                
-                if (!fileHandle.extension().toLowerCase(Locale.ROOT).equals("scmp-font")) {
-                    fileHandle = fileHandle.sibling(fileHandle.name() + ".scmp-font");
-                }
-                
-                saveSettings(fileHandle);
+                Gdx.app.postRunnable(() -> {
+                    var fileHandle = new FileHandle(file);
+
+                    if (!fileHandle.extension().toLowerCase(Locale.ROOT).equals("scmp-font")) {
+                        fileHandle = fileHandle.sibling(fileHandle.name() + ".scmp-font");
+                    }
+
+                    saveSettings(fileHandle);
+                });
             }
         };
 
@@ -1083,7 +1125,7 @@ public class DialogBitmapFont extends Dialog {
 
     private void saveSettings(FileHandle fileHandle) {
         var fontSettings = new FontSettings();
-        fontSettings.characters = ((TextField) findActor("characters")).getText();
+        fontSettings.characters = data.characters;
         fontSettings.size = ((Spinner) findActor("size")).getValueAsInt();
         fontSettings.mono = ((Button) findActor("mono")).isChecked();
         fontSettings.hinting = ((SelectBox<String>) findActor("hinting")).getSelected();
@@ -1121,7 +1163,7 @@ public class DialogBitmapFont extends Dialog {
         fontSettings.minFilter = ((SelectBox<String>) findActor("minFilter")).getSelected();
         fontSettings.magFilter = ((SelectBox<String>) findActor("magFilter")).getSelected();
 
-        fileHandle.writeString(json.prettyPrint(fontSettings), false);
+        fileHandle.writeString(json.prettyPrint(fontSettings), false, "utf-8");
     }
 
     private static class FontSettings {
@@ -1164,7 +1206,9 @@ public class DialogBitmapFont extends Dialog {
 
             File file = main.getDesktopWorker().openDialog("Select Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
             if (file != null) {
-                loadSettings(new FileHandle(file));
+                Gdx.app.postRunnable(() -> {
+                    loadSettings(new FileHandle(file));
+                });
             }
         };
 
@@ -1172,7 +1216,7 @@ public class DialogBitmapFont extends Dialog {
     }
     
     private void loadSettings(FileHandle fileHandle) {
-        var fontSettings = json.fromJson(FontSettings.class, fileHandle);
+        var fontSettings = json.fromJson(FontSettings.class, fileHandle.readString("utf-8"));
 
         ((TextField) findActor("characters")).setText(fontSettings.characters);
         data.characters = fontSettings.characters;
@@ -1275,5 +1319,55 @@ public class DialogBitmapFont extends Dialog {
 
         updateColors();
         updatePreviewAndOK();
+    }
+
+    private void updateLabelHighlight(String requiredLabelName) {
+        var normalStyle = skin.get(LabelStyle.class);
+        var requiredStyle = skin.get("required", LabelStyle.class);
+        var actors = new Array<Actor>();
+        actors.addAll(getChildren());
+        
+        for (int i = 0; i < actors.size; i++) {
+            var actor = actors.get(i);
+            
+            if (actor instanceof Group) {
+                actors.addAll(((Group) actor).getChildren());
+            }
+            
+            if (actor instanceof Label) {
+                Label label = (Label) actor;
+                
+                if (label.getStyle().equals(requiredStyle)) {
+                    label.setStyle(normalStyle);
+                }
+                
+                if (requiredLabelName != null && label.getName() != null && label.getName().equals(requiredLabelName)) {
+                    label.setStyle(requiredStyle);
+                }
+            }
+        }
+    }
+    
+    private void showCharacterDialog() {
+        Runnable runnable = () -> {
+            String defaultPath = main.getProjectData().getLastFontPath();
+
+            File file = main.getDesktopWorker().openDialog("Select character text file...", defaultPath, null, "All files");
+            if (file != null) {
+                var fileHandle = new FileHandle(file);
+                String characters = fileHandle.readString("utf-8");
+                Gdx.app.postRunnable(() -> {
+                    data.characters = Utils.removeDuplicateCharacters(characters);
+                    updatePreviewAndOK();
+                });
+            } else {
+                Gdx.app.postRunnable(() -> {
+                    SelectBox<String> selectBox = findActor("characterSelectBox");
+                    selectBox.setSelected("default");
+                });
+            }
+        };
+
+        main.getDialogFactory().showDialogLoading(runnable);
     }
 }

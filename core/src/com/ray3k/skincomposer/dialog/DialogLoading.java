@@ -23,6 +23,7 @@
  ******************************************************************************/
 package com.ray3k.skincomposer.dialog;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
@@ -51,10 +52,15 @@ public class DialogLoading extends Dialog {
         Dialog dialog = super.show(stage);
         RunnableAction runnableAction = new RunnableAction();
         runnableAction.setRunnable(() -> {
-            if (runnable != null) {
-                runnable.run();
-            }
-            hide();
+            Thread thread = new Thread(() -> {
+                if (runnable != null) {
+                    runnable.run();
+                }
+                Gdx.app.postRunnable(() -> {
+                    hide();
+                });
+            });
+            thread.start();
         });
         Action action = new SequenceAction(new DelayAction(.5f), runnableAction);
         addAction(action);

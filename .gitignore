@@ -53,6 +53,7 @@ dist/
 nbdist/
 nbactions.xml
 nb-configuration.xml
+/.nb-gradle/
 
 ## Gradle
 
@@ -65,3 +66,5 @@ build/
 /.nb-gradle/
 core/assets/temp/
 core/assets/imagefont/
+desktop/jpackage/
+desktop/samples/

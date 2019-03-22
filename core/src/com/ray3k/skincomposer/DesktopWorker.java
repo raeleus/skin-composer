@@ -33,7 +33,7 @@ import java.io.File;
 import java.util.List;
 
 public interface DesktopWorker {
-    public void texturePack(Array<FileHandle> handles, FileHandle localFile, FileHandle targetFile);
+    public void texturePack(Array<FileHandle> handles, FileHandle localFile, FileHandle targetFile, FileHandle settingsFile);
     public void packFontImages(Array<FileHandle> files, FileHandle saveFile);
     public void sizeWindowToFit(int maxWidth, int maxHeight, int displayBorder, Graphics graphics);
     public void centerWindow(Graphics graphics);

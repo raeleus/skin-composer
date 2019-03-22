@@ -1,3 +1,24 @@
+### Skin Composer Version 28 ###
+* BREAKING CHANGE: Bitmap/Freetype Font settings files may not be compatible with this version of Skin Composer unless converted to UTF-8.
+
+* Skin Composer now has a wiki: https://github.com/raeleus/skin-composer/wiki
+* Resolved release issues with Mac and Windows.
+* Dialogs now highlight which field needs to be completed in order to continue.
+* Added option to not show warnings when exporting a skin.
+* Added option to import/export colors in a skin JSON as hexadecimal.
+* Default export path is now a per project setting to prevent unfortunate accidents.
+* Allow loading characters from a text file (UTF-8) in Font dialogs. This allows for any Unicode characters to be included in your fonts.
+* Added detail view to Drawables dialog.
+* Improved Image Font dialog's calculation of default baseline.
+* Fixed pressing enter while typing in the preview dismisses the Image Font dialog.
+* Fixed Create Bitmap Font dialog not closing file stream.
+* Fixed errors when creating new font that overrides existing drawables.
+* Fixed errors when opening a project with missing assets on Mac.
+* Fixed unable to import FreeType fonts when importing a skin.
+* Fixed filter error in native dialogs on Mac.
+* Changes to texture packer settings no longer influence internal rendering of assets. This prevents "useIndexes" from crashing skin composer.
+* Minor bug fixes and interface improvements.
+
 ### Skin Composer Version 27 ###
 * Added filter option for Drawables dialog. Click the filter button or type text directly in the dialog.
 * Allow drag and drop of folders into Drawables and Fonts dialogs.

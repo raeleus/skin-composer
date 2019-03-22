@@ -42,6 +42,8 @@ import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.data.JsonData.ExportFormat;
+import com.ray3k.skincomposer.utils.Utils;
+
 import java.nio.file.Paths;
 
 /**
@@ -131,6 +133,18 @@ public class DialogExport extends Dialog {
         });
         
         getContentTable().row();
+        var hexCheckBox = new CheckBox("Export colors as hexadecimal", main.getSkin());
+        hexCheckBox.setChecked(main.getProjectData().isExportingHex());
+        getContentTable().add(hexCheckBox);
+        hexCheckBox.addListener(main.getHandListener());
+        hexCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                main.getProjectData().setExportingHex(hexCheckBox.isChecked());
+            }
+        });
+        
+        getContentTable().row();
         table = new Table();
         getContentTable().add(table);
         
@@ -143,6 +157,7 @@ public class DialogExport extends Dialog {
         selectBox.setSelected(main.getProjectData().getExportFormat());
         table.add(selectBox);
         selectBox.addListener(main.getHandListener());
+        selectBox.getList().addListener(main.getHandListener());
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -168,7 +183,10 @@ public class DialogExport extends Dialog {
     }
     
     private void showFileBrowser() {
-        String[] filterPatterns = {"*.json"};
+        String[] filterPatterns = null;
+        if (!Utils.isMac()) {
+             filterPatterns = new String[] {"*.json"};
+        }
 
         TextField textField  = findActor("path");
         var file = main.getDesktopWorker().saveDialog("Export skin...", textField.getText(), filterPatterns, "Json files");
@@ -203,38 +221,40 @@ public class DialogExport extends Dialog {
     
     private void writeFile(FileHandle fileHandle) {
         main.getDialogFactory().showDialogLoading(() -> {
-            Array<String> warnings = new Array<>();
+            Gdx.app.postRunnable(() -> {
+                Array<String> warnings = new Array<>();
 
-            Array<String> newWarnings = main.getProjectData().getJsonData().writeFile(fileHandle);
-            warnings.addAll(newWarnings);
+                Array<String> newWarnings = main.getProjectData().getJsonData().writeFile(fileHandle);
+                warnings.addAll(newWarnings);
 
-            if (main.getProjectData().isExportingAtlas()) {
-                try {
-                    newWarnings = main.getProjectData().getAtlasData().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"));
-                    warnings.addAll(newWarnings);
-                } catch (Exception ex) {
-                    Gdx.app.error(getClass().getName(), "Error while writing texture atlas", ex);
-                    main.getDialogFactory().showDialogError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
-                }
-            }
-
-            if (main.getProjectData().isExportingFonts()) {
-                for (FontData font : main.getProjectData().getJsonData().getFonts()) {
-                    if (!font.file.parent().equals(fileHandle.parent())) {
-                        font.file.copyTo(fileHandle.parent());
+                if (main.getProjectData().isExportingAtlas()) {
+                    try {
+                        newWarnings = main.getProjectData().getAtlasData().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"), Main.appFolder.child("texturepacker/atlas-export-settings.json"));
+                        warnings.addAll(newWarnings);
+                    } catch (Exception ex) {
+                        Gdx.app.error(getClass().getName(), "Error while writing texture atlas", ex);
+                        main.getDialogFactory().showDialogError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
                     }
                 }
 
-                for (FreeTypeFontData font : main.getProjectData().getJsonData().getFreeTypeFonts()) {
-                    if (font.useCustomSerializer && !font.file.parent().equals(fileHandle.parent())) {
-                        font.file.copyTo(fileHandle.parent());
+                if (main.getProjectData().isExportingFonts()) {
+                    for (FontData font : main.getProjectData().getJsonData().getFonts()) {
+                        if (!font.file.parent().equals(fileHandle.parent())) {
+                            font.file.copyTo(fileHandle.parent());
+                        }
+                    }
+
+                    for (FreeTypeFontData font : main.getProjectData().getJsonData().getFreeTypeFonts()) {
+                        if (font.useCustomSerializer && !font.file.parent().equals(fileHandle.parent())) {
+                            font.file.copyTo(fileHandle.parent());
+                        }
                     }
                 }
-            }
 
-            if (warnings.size > 0) {
-                main.getDialogFactory().showWarningDialog(warnings);
-            }
+                if (warnings.size > 0 && main.getProjectData().isShowingExportWarnings()) {
+                    main.getDialogFactory().showWarningDialog(warnings);
+                }
+            });
         });
     }
 

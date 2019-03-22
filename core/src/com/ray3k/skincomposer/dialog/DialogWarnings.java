@@ -33,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -72,6 +73,8 @@ public class DialogWarnings extends Dialog {
         
         setMovable(false);
         
+        getContentTable().pad(5);
+        
         Button button = new Button(getSkin(), "close");
         button.addListener(main.getHandListener());
         button.addListener(new ChangeListener() {
@@ -88,13 +91,25 @@ public class DialogWarnings extends Dialog {
         
         getContentTable().row();
         Table table = new Table();
-        table.pad(10.0f).padTop(0.0f);
+        table.pad(5.0f).padTop(0.0f);
         table.defaults().space(10.0f);
         scrollPane = new ScrollPane(table, main.getSkin());
         scrollPane.setFadeScrollBars(false);
         scrollPane.setFlickScroll(false);
         scrollPane.setScrollingDisabled(true, false);
         getContentTable().add(scrollPane).grow();
+        
+        getContentTable().row();
+        var checkBox = new CheckBox("Do not show again", getSkin());
+        checkBox.setChecked(!main.getProjectData().isShowingExportWarnings());
+        getContentTable().add(checkBox).right();
+        checkBox.addListener(main.getHandListener());
+        checkBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                main.getProjectData().setShowingExportWarnings(!checkBox.isChecked());
+            }
+        });
         
         for (String warning : warnings) {
             table.row();

@@ -163,6 +163,15 @@ public class ProjectData implements Json.Serializable {
         return generalPref.getBoolean("checkForUpdates", true);
     }
     
+    public void setShowingExportWarnings(boolean allow) {
+        generalPref.putBoolean("exportWarnings", allow);
+        generalPref.flush();
+    }
+    
+    public boolean isShowingExportWarnings() {
+        return generalPref.getBoolean("exportWarnings", true);
+    }
+    
     public void setExportFormat(ExportFormat exportFormat) {
         generalPref.putString("exportFormat", exportFormat.toString());
     }
@@ -236,6 +245,22 @@ public class ProjectData implements Json.Serializable {
             }
         }
         
+        for (DrawableData drawableData : atlasData.getFontDrawables()) {
+            if (drawableData.file != null && drawableData.file.exists()) {
+                targetFolder.mkdirs();
+                //drawable files in the temp folder
+                if (drawableData.file.parent().equals(tempImportFolder)) {
+                    drawableData.file.moveTo(targetFolder);
+                    drawableData.file = targetFolder.child(drawableData.file.name());
+                }
+                //drawable files in the folder next to the old save
+                else if (localImportFolder != null && !localImportFolder.equals(targetFolder) && drawableData.file.parent().equals(localImportFolder)) {
+                    drawableData.file.copyTo(targetFolder);
+                    drawableData.file = targetFolder.child(drawableData.file.name());
+                }
+            }
+        }
+        
         for (FontData fontData : jsonData.getFonts()) {
             if (fontData.file.exists()) {
                 targetFolder.mkdirs();
@@ -275,6 +300,14 @@ public class ProjectData implements Json.Serializable {
         FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
         
         for (DrawableData drawableData : main.getAtlasData().getDrawables()) {
+            if (drawableData.file.exists() && !targetFolder.equals(drawableData.file.parent())) {
+                targetFolder.mkdirs();
+                drawableData.file.copyTo(targetFolder);
+                drawableData.file = targetFolder.child(drawableData.file.name());
+            }
+        }
+        
+        for (DrawableData drawableData : main.getAtlasData().getFontDrawables()) {
             if (drawableData.file.exists() && !targetFolder.equals(drawableData.file.parent())) {
                 targetFolder.mkdirs();
                 drawableData.file.copyTo(targetFolder);
@@ -366,10 +399,29 @@ public class ProjectData implements Json.Serializable {
                     errors.add(drawable);
                 }
             }
+            
+            for (DrawableData drawable : atlasData.getFontDrawables()) {
+                if (!drawable.customized && (drawable.file == null || !drawable.file.exists())) {
+                    errors.add(drawable);
+                }
+            }
         } else {
             FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
             
             for (DrawableData drawable : atlasData.getDrawables()) {
+                if (!drawable.customized) {
+                    if (drawable.file == null) {
+                        errors.add(drawable);
+                    } else {
+                        FileHandle localFile = targetFolder.child(drawable.file.name());
+                        if (!localFile.exists()) {
+                            errors.add(drawable);
+                        }
+                    }
+                }
+            }
+            
+            for (DrawableData drawable : atlasData.getFontDrawables()) {
                 if (!drawable.customized) {
                     if (drawable.file == null) {
                         errors.add(drawable);
@@ -418,6 +470,15 @@ public class ProjectData implements Json.Serializable {
         
         if (targetFolder.exists()) {
             for (DrawableData drawableData : atlasData.getDrawables()) {
+                if (resourcesRelative || drawableData.file != null && !drawableData.file.exists()) {
+                    FileHandle newFile = targetFolder.child(drawableData.file.name());
+                    if (newFile.exists()) {
+                        drawableData.file = newFile;
+                    }
+                }
+            }
+            
+            for (DrawableData drawableData : atlasData.getFontDrawables()) {
                 if (resourcesRelative || drawableData.file != null && !drawableData.file.exists()) {
                     FileHandle newFile = targetFolder.child(drawableData.file.name());
                     if (newFile.exists()) {
@@ -476,6 +537,8 @@ public class ProjectData implements Json.Serializable {
         preferences = json.readValue("preferences", ObjectMap.class, jsonValue);
         jsonData.set(json.readValue("jsonData", JsonData.class, jsonValue));
         atlasData.set(json.readValue("atlasData", AtlasData.class, jsonValue));
+        jsonData.translateFontDrawables(atlasData);
+        
         if (!jsonValue.get("saveFile").isNull()) {
             saveFile = new FileHandle(jsonValue.getString("saveFile"));
         }
@@ -504,14 +567,11 @@ public class ProjectData implements Json.Serializable {
     }
 
     public String getLastImportExportPath() {
-        return (String) generalPref.getString("last-import-export-path",
-                generalPref.getString("last-path",
-                        Gdx.files.getLocalStoragePath()));
+        return (String) preferences.get("last-import-export-path", Gdx.files.getLocalStoragePath());
     }
 
     public void setLastImportExportPath(String importExportPath) {
-        generalPref.putString("last-import-export-path", importExportPath);
-        generalPref.flush();
+        preferences.put("last-import-export-path", importExportPath);
 
         setLastPath(importExportPath);
     }
@@ -582,6 +642,14 @@ public class ProjectData implements Json.Serializable {
     
     public void setExportingFonts(boolean exportAtlas) {
         preferences.put("export-fonts", exportAtlas);
+    }
+    
+    public boolean isExportingHex() {
+        return (boolean) preferences.get("export-hex", false);
+    }
+    
+    public void setExportingHex(boolean exportHex) {
+        preferences.put("export-hex", exportHex);
     }
     
     /**
