@@ -161,6 +161,11 @@ task updateAndCreateZip(type: Zip, dependsOn: [dist]) {
             from '../core/assets/splash.png'
             into "${buildDir}/distribution/${project.appName}/app"
         }
+        
+        copy {
+            from './samples/'
+            into "${buildDir}/distribution/${project.appName}/samples/"
+        }
     }
     
     archiveName "${project.appName}_${org.gradle.internal.os.OperatingSystem.current().getFamilyName()}.zip"
