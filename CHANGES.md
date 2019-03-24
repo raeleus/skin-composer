@@ -1,3 +1,7 @@
+### Skin Composer Version 29 ###
+
+* Fixed issues with pressed, unpressed, and checked offsets in buttons.
+
 ### Skin Composer Version 28 ###
 * BREAKING CHANGE: Bitmap/Freetype Font settings files may not be compatible with this version of Skin Composer unless converted to UTF-8.
 

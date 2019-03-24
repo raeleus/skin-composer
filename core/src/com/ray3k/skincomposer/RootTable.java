@@ -2552,7 +2552,7 @@ public class RootTable extends Table {
                             }
                         }
                     } else if (field.getType().equals(Float.TYPE)) {
-                        field.set(returnValue, (float) value);
+                        field.set(returnValue, (float) (double) value);
                     } else if (field.getType().equals(ListStyle.class)) {
                         Array<StyleData> datas = main.getProjectData().getJsonData().getClassStyleMap().get(List.class);
 
