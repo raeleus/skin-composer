@@ -2,8 +2,8 @@
 
 ### ![Logo](docs/images/logo.png) ###
 
-* Use Skin Composer to create skins for LibGDX's Scene2d.UI!
-* Version 28
+* Use Skin Composer to create skins for LibGDX's Scene2D.UI!
+* Version 29
 * Live preview of all widgets with configurable options
 * Specify tinted, tiled, and custom created Drawables right in the editor
 * Includes BitmapFont editor and Image font generator like Shoebox
@@ -30,7 +30,7 @@ To run Skin Composer on OSX, please see the [wiki](https://github.com/raeleus/sk
 ### License ###
 MIT License
 
-Copyright (c) 2018 Raymond Buckley
+Copyright (c) 2019 Raymond Buckley
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -2655,7 +2655,7 @@ public class RootTable extends Table {
         table.setBackground(getSkin().getDrawable("status-bar"));
         add(table).growX();
         
-        Label label = new Label("ver. " + Main.VERSION + "    RAY3K.WORDPRESS.COM    © 2018 Raymond \"Raeleus\" Buckley", getSkin());
+        Label label = new Label("ver. " + Main.VERSION + "    RAY3K.WORDPRESS.COM    © 2019 Raymond \"Raeleus\" Buckley", getSkin());
         table.add(label).expandX().right().padRight(25.0f);
     }
 

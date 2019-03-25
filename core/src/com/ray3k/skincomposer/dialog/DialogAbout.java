@@ -49,7 +49,7 @@ public class DialogAbout extends Dialog {
         table.add(label);
         
         table.row();
-        label = new Label("Skin Composer is developed by Raeleus for the LibGDX community.\nVersion " + Main.VERSION + "\nCopyright © Raymond \"Raeleus\" Buckley 2018", skin);
+        label = new Label("Skin Composer is developed by Raeleus for the LibGDX community.\nVersion " + Main.VERSION + "\nCopyright © Raymond \"Raeleus\" Buckley 2019", skin);
         label.setAlignment(Align.center);
         table.add(label).padBottom(0);
         table.row();
