@@ -40,6 +40,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
@@ -53,7 +55,9 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.dialog.DialogFactory;
+import com.ray3k.skincomposer.utils.Utils;
 import java.io.StringWriter;
+import java.util.Locale;
 
 public class JsonData implements Json.Serializable {
     private Array<ColorData> colors;
@@ -650,12 +654,60 @@ public class JsonData implements Json.Serializable {
         
         Array<DrawableData> tintedDrawables = new Array<>();
         Array<DrawableData> tiledDrawables = new Array<>();
+        var textureRegionDrawables = new Array<DrawableData>();
+        var ninePatchDrawables = new Array<DrawableData>();
         for (DrawableData drawable : main.getProjectData().getAtlasData().getDrawables()) {
             if (drawable.tiled) {
                 tiledDrawables.add(drawable);
             } else if (drawable.tint != null || drawable.tintName != null) {
                 tintedDrawables.add(drawable);
             }
+            
+            if (!drawable.tiled) {
+                if (drawable.file != null && (!MathUtils.isEqual(drawable.minWidth, -1f) || !MathUtils.isEqual(drawable.minHeight, -1f))) {
+                    if (drawable.file.name().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
+                        ninePatchDrawables.add(drawable);
+                    } else {
+                        textureRegionDrawables.add(drawable);
+                    }
+                }
+            }
+        }
+        
+        //texture region drawables for minWidth and minHeight definition
+        if (textureRegionDrawables.size > 0) {
+            var className = TextureRegionDrawable.class.getName();
+            json.writeObjectStart(className);
+            for (var drawable : textureRegionDrawables) {
+                json.writeObjectStart(drawable.file.nameWithoutExtension());
+                json.writeValue("region", drawable.file.nameWithoutExtension());
+                if (!MathUtils.isEqual(drawable.minWidth, -1)) json.writeValue("minWidth", drawable.minWidth);
+                else json.writeValue("minWidth", Utils.imageDimensions(drawable.file).x);
+                if (!MathUtils.isEqual(drawable.minHeight, -1)) json.writeValue("minHeight", drawable.minHeight);
+                else json.writeValue("minHeight", Utils.imageDimensions(drawable.file).y);
+                json.writeObjectEnd();
+            }
+            json.writeObjectEnd();
+        }
+        
+        //ninepatch drawables for minWidth and minHeight definition
+        if (ninePatchDrawables.size > 0) {
+            var className = NinePatchDrawable.class.getName();
+            json.writeObjectStart(className);
+            for (var drawable : ninePatchDrawables) {
+                if (drawable.tint != null || drawable.tintName != null) {
+                    json.writeObjectStart(drawable.name);
+                } else {
+                    json.writeObjectStart(drawable.file.nameWithoutExtension());
+                }
+                json.writeValue("patch", drawable.file.nameWithoutExtension());
+                if (!MathUtils.isEqual(drawable.minWidth, -1)) json.writeValue("minWidth", drawable.minWidth);
+                else json.writeValue("minWidth", Utils.imageDimensions(drawable.file).x);
+                if (!MathUtils.isEqual(drawable.minHeight, -1)) json.writeValue("minHeight", drawable.minHeight);
+                else json.writeValue("minHeight", Utils.imageDimensions(drawable.file).y);
+                json.writeObjectEnd();
+            }
+            json.writeObjectEnd();
         }
         
         //tinted drawables
@@ -664,7 +716,12 @@ public class JsonData implements Json.Serializable {
             json.writeObjectStart(className);
             for (DrawableData drawable : tintedDrawables) {
                 json.writeObjectStart(drawable.name);
-                json.writeValue("name", DrawableData.proper(drawable.file.name()));
+                
+                if (!MathUtils.isEqual(drawable.minWidth, -1f) || !MathUtils.isEqual(drawable.minHeight, -1f)) {
+                    json.writeValue("name", DrawableData.proper(drawable.name));
+                } else {
+                    json.writeValue("name", DrawableData.proper(drawable.file.name()));
+                }
                 if (drawable.tint != null) {
                     json.writeObjectStart("color");
                     if (main.getProjectData().isExportingHex()) {
