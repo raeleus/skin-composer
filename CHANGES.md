@@ -1,5 +1,6 @@
 ### Skin Composer Version 29 ###
 
+* Improved Windows distribution with single file EXE
 * Added option to set minWidth and minHeight of any drawable.
 * Fixed issues with pressed, unpressed, and checked offsets in buttons.
 
