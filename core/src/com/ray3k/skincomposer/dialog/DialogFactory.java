@@ -574,7 +574,7 @@ public class DialogFactory {
         var spinner = new Spinner(drawable.minWidth, 1, true, Spinner.Orientation.HORIZONTAL, skin);
         spinner.setMinimum(-1);
         spinner.setName("minWidth");
-        root.add(spinner);
+        root.add(spinner).width(100);
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.getTextField().addListener(main.getIbeamListener());
@@ -586,7 +586,7 @@ public class DialogFactory {
         spinner = new Spinner(drawable.minHeight, 1, true, Spinner.Orientation.HORIZONTAL, skin);
         spinner.setMinimum(-1);
         spinner.setName("minHeight");
-        root.add(spinner);
+        root.add(spinner).width(100);
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.getTextField().addListener(main.getIbeamListener());
