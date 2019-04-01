@@ -140,6 +140,25 @@ task jpackageAppBundle(type: Exec, dependsOn: [jpackageCleanRuntime]) {
     }
 }
 
+task jpackageWinRarSfx(type: Exec, dependsOn: [jpackageAppBundle]) {
+    def winRarPath = 'C:/Program Files/WinRAR/WinRAR.exe'
+    workingDir project.projectDir
+    def commands = [
+        winRarPath,
+        'a',
+        '-m5',
+        '-ep1',
+        '-r',
+        '-sfx',
+        '-iiconlogo.ico',
+        '-zwinrar.txt',
+        "${buildDir}/distribution/${project.appName}.exe",
+        "${buildDir}/distribution/${project.appName}/"
+    ]
+    
+    commandLine = commands
+}
+
 task updateAndCreateZip(type: Zip, dependsOn: [dist]) {
     doFirst {
         copy {

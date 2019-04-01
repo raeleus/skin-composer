@@ -226,6 +226,8 @@ public class DialogDrawables extends Dialog {
                     } else if (data.tintName != null) {
                         drawable = ((NinePatchDrawable) drawable).tint(main.getJsonData().getColorByName(data.tintName).color);
                     }
+                    if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
+                    if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
                 } else {
                     String name = data.file.name();
                     name = DrawableData.proper(name);
@@ -235,6 +237,8 @@ public class DialogDrawables extends Dialog {
                     } else if (data.tintName != null) {
                         drawable = ((SpriteDrawable) drawable).tint(main.getJsonData().getColorByName(data.tintName).color);
                     }
+                    if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
+                    if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
                 }
                 
                 drawablePairs.put(data, drawable);
@@ -557,6 +561,7 @@ public class DialogDrawables extends Dialog {
                 }
                 table.add();
                 table.add();
+                table.add();
                 table.add(button);
                 
                 var toolTip = new TextTooltip("Tiled Drawable Settings", main.getTooltipManager(), getSkin());
@@ -569,7 +574,7 @@ public class DialogDrawables extends Dialog {
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        renameDrawableDialog(drawable);
+                        tintedDrawableSettingsDialog(drawable);
                         event.setBubbles(false);
                     }
                 });
@@ -577,6 +582,7 @@ public class DialogDrawables extends Dialog {
                 if (property == null && customProperty == null) {
                     button.addListener(main.getHandListener());
                 }
+                table.add();
                 table.add();
                 table.add();
                 table.add(button);
@@ -601,9 +607,34 @@ public class DialogDrawables extends Dialog {
                 }
                 table.add();
                 table.add();
+                table.add();
                 table.add(button);
                 
                 var toolTip = new TextTooltip("Rename Custom Drawable", main.getTooltipManager(), getSkin());
+                button.addListener(toolTip);
+            }
+            //settings for regular drawables
+            else {
+                Button button = new Button(getSkin(), "settings-small");
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        main.getDialogFactory().showDrawableSettingsDialog(getSkin(), getStage(), drawable, (boolean accepted) -> {
+                            if (accepted) {
+                                produceAtlas();
+                                refreshDrawableDisplay();
+                            }
+                        });
+                        event.setBubbles(false);
+                    }
+                });
+                button.addListener(fixDuplicateTouchListener);
+                if (property == null && customProperty == null) {
+                    button.addListener(main.getHandListener());
+                }
+                table.add(button);
+                
+                var toolTip = new TextTooltip("Drawable settings", main.getTooltipManager(), getSkin());
                 button.addListener(toolTip);
             }
 
@@ -771,7 +802,7 @@ public class DialogDrawables extends Dialog {
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        renameDrawableDialog(drawable);
+                        tintedDrawableSettingsDialog(drawable);
                         event.setBubbles(false);
                     }
                 });
@@ -802,8 +833,30 @@ public class DialogDrawables extends Dialog {
                 
                 TextTooltip toolTip = new TextTooltip("Rename Custom Drawable", main.getTooltipManager(), getSkin());
                 button.addListener(toolTip);
-            } else {
-                table.add();
+            }
+            //settings for regular drawables
+            else {
+                Button button = new Button(getSkin(), "settings-small");
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        main.getDialogFactory().showDrawableSettingsDialog(getSkin(), getStage(), drawable, (boolean accepted) -> {
+                            if (accepted) {
+                                produceAtlas();
+                                refreshDrawableDisplay();
+                            }
+                        });
+                        event.setBubbles(false);
+                    }
+                });
+                button.addListener(fixDuplicateTouchListener);
+                if (property == null && customProperty == null) {
+                    button.addListener(main.getHandListener());
+                }
+                table.add(button);
+                
+                TextTooltip toolTip = new TextTooltip("Rename Custom Drawable", main.getTooltipManager(), getSkin());
+                button.addListener(toolTip);
             }
 
             //delete
@@ -957,17 +1010,25 @@ public class DialogDrawables extends Dialog {
         dialog.refreshTable();
     }
     
-    private void renameDrawableDialog(DrawableData drawable) {
+    private void tintedDrawableSettingsDialog(DrawableData drawable) {
         TextField textField = new TextField("", getSkin());
-        Dialog dialog = new Dialog("Rename drawable?", getSkin(), "bg") {
+        var dialog = new Dialog("Rename drawable?", getSkin(), "bg") {
             @Override
             protected void result(Object object) {
                 super.result(object);
                 
                 if (object instanceof Boolean && (boolean) object == true) {
-                    renameDrawable(drawable, textField.getText());
+                    applyTintedDrawableSettings(drawable, textField.getText());
+                    drawable.minWidth = ((Spinner) findActor("minWidth")).getValueAsInt();
+                    drawable.minHeight = ((Spinner) findActor("minHeight")).getValueAsInt();
+                    produceAtlas();
+                    refreshDrawableDisplay();
                 }
                 getStage().setScrollFocus(scrollPane);
+            }
+            
+            public void callResult(Object object) {
+                result(object);
             }
 
             @Override
@@ -987,7 +1048,6 @@ public class DialogDrawables extends Dialog {
         dialog.button("OK", true);
         dialog.button("Cancel", false).key(Keys.ESCAPE, false);
         TextButton okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
-        okButton.setDisabled(true);
         okButton.addListener(main.getHandListener());
         dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         
@@ -997,14 +1057,14 @@ public class DialogDrawables extends Dialog {
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                boolean disable = !DrawableData.validate(textField.getText()) || checkIfNameExists(textField.getText());
+                boolean disable = !DrawableData.validate(textField.getText()) || (checkIfNameExists(textField.getText()) && !drawable.name.equals(textField.getText()));
                 okButton.setDisabled(disable);
             }
         });
         textField.setTextFieldListener((TextField textField1, char c) -> {
             if (c == '\n') {
                 if (!okButton.isDisabled()) {
-                    renameDrawable(drawable, textField1.getText());
+                    dialog.callResult(true);
                     dialog.hide();
                 }
             }
@@ -1012,12 +1072,44 @@ public class DialogDrawables extends Dialog {
         textField.addListener(main.getIbeamListener());
         dialog.getContentTable().add(textField);
         
+        dialog.getContentTable().row();
+        var table = new Table();
+        dialog.getContentTable().add(table);
+        
+        table.defaults().space(3);
+        var label = new Label("Set values to -1 to disable.", getSkin());
+        table.add(label).colspan(2).padTop(7);
+        
+        table.row();
+        label = new Label("minWidth:", getSkin());
+        table.add(label);
+        
+        var spinner = new Spinner(drawable.minWidth, 1, true, Spinner.Orientation.HORIZONTAL, getSkin());
+        spinner.setMinimum(-1);
+        spinner.setName("minWidth");
+        table.add(spinner).width(100);
+        spinner.getButtonMinus().addListener(main.getHandListener());
+        spinner.getButtonPlus().addListener(main.getHandListener());
+        spinner.getTextField().addListener(main.getIbeamListener());
+        
+        table.row();
+        label = new Label("minHeight:", getSkin());
+        table.add(label);
+        
+        spinner = new Spinner(drawable.minHeight, 1, true, Spinner.Orientation.HORIZONTAL, getSkin());
+        spinner.setMinimum(-1);
+        spinner.setName("minHeight");
+        table.add(spinner).width(100);
+        spinner.getButtonMinus().addListener(main.getHandListener());
+        spinner.getButtonPlus().addListener(main.getHandListener());
+        spinner.getTextField().addListener(main.getIbeamListener());
+        
         textField.setFocusTraversal(false);
         
         dialog.show(getStage());
     }
     
-    private void renameDrawable(DrawableData drawable, String name) {
+    private void applyTintedDrawableSettings(DrawableData drawable, String name) {
         String oldName = drawable.name;
         drawable.name = name;
 
@@ -1669,7 +1761,7 @@ public class DialogDrawables extends Dialog {
     
     private void renameCustomDrawableDialog(DrawableData drawableData) {
         main.getDialogFactory().showCustomDrawableDialog(main.getSkin(), main.getStage(), drawableData, (String name1) -> {
-            renameDrawable(drawableData, name1);
+            applyTintedDrawableSettings(drawableData, name1);
         });
     }
 
@@ -2073,6 +2165,9 @@ public class DialogDrawables extends Dialog {
                 listener.cancelled();
             }
         }
+        
+        main.getRootTable().produceAtlas();
+        main.getRootTable().refreshPreview();
     }
 
     public boolean isShowing9patchButton() {

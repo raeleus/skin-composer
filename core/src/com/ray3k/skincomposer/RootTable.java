@@ -30,6 +30,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -2552,7 +2553,7 @@ public class RootTable extends Table {
                             }
                         }
                     } else if (field.getType().equals(Float.TYPE)) {
-                        field.set(returnValue, (float) value);
+                        field.set(returnValue, (float) (double) value);
                     } else if (field.getType().equals(ListStyle.class)) {
                         Array<StyleData> datas = main.getProjectData().getJsonData().getClassStyleMap().get(List.class);
 
@@ -2629,6 +2630,8 @@ public class RootTable extends Table {
                     } else if (data.tintName != null) {
                         drawable = ((NinePatchDrawable) drawable).tint(main.getProjectData().getJsonData().getColorByName(data.tintName).color);
                     }
+                    if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
+                    if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
                 } else {
                     String name = data.file.name();
                     name = DrawableData.proper(name);
@@ -2638,6 +2641,8 @@ public class RootTable extends Table {
                     } else if (data.tintName != null) {
                         drawable = ((SpriteDrawable) drawable).tint(main.getProjectData().getJsonData().getColorByName(data.tintName).color);
                     }
+                    if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
+                    if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
                 }
                 
                 drawablePairs.put(data.name, drawable);
@@ -2655,7 +2660,7 @@ public class RootTable extends Table {
         table.setBackground(getSkin().getDrawable("status-bar"));
         add(table).growX();
         
-        Label label = new Label("ver. " + Main.VERSION + "    RAY3K.WORDPRESS.COM    © 2018 Raymond \"Raeleus\" Buckley", getSkin());
+        Label label = new Label("ver. " + Main.VERSION + "    RAY3K.WORDPRESS.COM    © 2019 Raymond \"Raeleus\" Buckley", getSkin());
         table.add(label).expandX().right().padRight(25.0f);
     }
 

@@ -43,6 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.UndoableManager;
 import com.ray3k.skincomposer.UndoableManager.DeleteStyleUndoable;
 import com.ray3k.skincomposer.UndoableManager.DuplicateStyleUndoable;
@@ -538,6 +539,72 @@ public class DialogFactory {
         stage.setKeyboardFocus(textField);
         textField.selectAll();
         textField.setFocusTraversal(false);
+    }
+    
+    public void showDrawableSettingsDialog(Skin skin, Stage stage, DrawableData drawable, DrawableSettingsListener listener) {
+        var dialog = new Dialog("Drawable Settings", skin, "bg") {
+            @Override
+            protected void result(Object object) {
+                if (listener != null) {
+                    if ((Boolean) object) {
+                        drawable.minWidth = ((Spinner) findActor("minWidth")).getValueAsInt();
+                        drawable.minHeight = ((Spinner) findActor("minHeight")).getValueAsInt();
+                        listener.result(true);
+                    } else {
+                        listener.result(false);
+                    }
+                }
+            }
+        };
+        
+        dialog.getTitleTable().pad(5);
+        dialog.getContentTable().pad(5);
+        dialog.getButtonTable().pad(5);
+        
+        var root = dialog.getContentTable();
+        
+        root.defaults().space(3);
+        var label = new Label("Set values to -1 to disable.", skin);
+        root.add(label).colspan(2);
+        
+        root.row();
+        label = new Label("minWidth:", skin);
+        root.add(label);
+        
+        var spinner = new Spinner(drawable.minWidth, 1, true, Spinner.Orientation.HORIZONTAL, skin);
+        spinner.setMinimum(-1);
+        spinner.setName("minWidth");
+        root.add(spinner).width(100);
+        spinner.getButtonMinus().addListener(main.getHandListener());
+        spinner.getButtonPlus().addListener(main.getHandListener());
+        spinner.getTextField().addListener(main.getIbeamListener());
+        
+        root.row();
+        label = new Label("minHeight:", skin);
+        root.add(label);
+        
+        spinner = new Spinner(drawable.minHeight, 1, true, Spinner.Orientation.HORIZONTAL, skin);
+        spinner.setMinimum(-1);
+        spinner.setName("minHeight");
+        root.add(spinner).width(100);
+        spinner.getButtonMinus().addListener(main.getHandListener());
+        spinner.getButtonPlus().addListener(main.getHandListener());
+        spinner.getTextField().addListener(main.getIbeamListener());
+        
+        var textButton = new TextButton("OK", skin);
+        dialog.button(textButton, true);
+        dialog.getButtonTable().add(textButton).uniform();
+        textButton.addListener(main.getHandListener());
+        
+        textButton = new TextButton("Cancel", skin);
+        dialog.button(textButton, false);
+        textButton.addListener(main.getHandListener());
+        
+        dialog.show(stage);
+    }
+    
+    public static interface DrawableSettingsListener {
+        public void result(boolean accepted);
     }
 
     public Dialog showCloseDialog(DialogListener dialogListener) {
