@@ -1,3 +1,7 @@
+### Skin Composer Version 30 ###
+
+* 
+
 ### Skin Composer Version 29 ###
 
 * Improved Windows distribution with single file EXE
