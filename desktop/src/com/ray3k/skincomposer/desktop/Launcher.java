@@ -26,7 +26,6 @@ package com.ray3k.skincomposer.desktop;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Input;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
@@ -45,15 +44,11 @@ import com.badlogic.gdx.utils.Json;
 import com.ray3k.skincomposer.CloseListener;
 import com.ray3k.skincomposer.DesktopWorker;
 import com.ray3k.skincomposer.FilesDroppedListener;
-import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.TextFileApplicationLogger;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -72,16 +67,16 @@ public class Launcher implements DesktopWorker, Lwjgl3WindowListener {
     
     @Override
     public void texturePack(Array<FileHandle> handles, FileHandle localFile, FileHandle targetFile, FileHandle settingsFile) {
-        Json json = new Json();
-        TexturePacker.Settings settings = json.fromJson(TexturePacker.Settings.class, settingsFile);
+        var json = new Json();
+        var settings = json.fromJson(TexturePacker.Settings.class, settingsFile);
         
-        TexturePacker p = new TexturePacker(settings);
-        for (FileHandle handle : handles) {
+        var p = new TexturePacker(settings);
+        for (var handle : handles) {
             if (handle.exists()) {
                 p.addImage(handle.file());
             } else {
                 if (localFile != null) {
-                    FileHandle localHandle = localFile.sibling(localFile.nameWithoutExtension() + "_data/" + handle.name());
+                    var localHandle = localFile.sibling(localFile.nameWithoutExtension() + "_data/" + handle.name());
                     if (localHandle.exists()) {
                         p.addImage(localHandle.file());
                     } else {
@@ -97,7 +92,7 @@ public class Launcher implements DesktopWorker, Lwjgl3WindowListener {
 
     @Override
     public void packFontImages(Array<FileHandle> files, FileHandle saveFile) {
-        TexturePacker.Settings settings = new TexturePacker.Settings();
+        var settings = new TexturePacker.Settings();
         settings.pot = false;
         settings.duplicatePadding = true;
         settings.filterMin = Texture.TextureFilter.Linear;
@@ -109,7 +104,7 @@ public class Launcher implements DesktopWorker, Lwjgl3WindowListener {
         settings.maxHeight = 2048;
         settings.flattenPaths = true;
         settings.silent = true;
-        TexturePacker texturePacker = new TexturePacker(settings);
+        var texturePacker = new TexturePacker(settings);
 
         for (FileHandle file : files) {
             if (file.exists()) {
@@ -122,15 +117,15 @@ public class Launcher implements DesktopWorker, Lwjgl3WindowListener {
     
     @Override
     public void centerWindow(Graphics graphics) {
-        Lwjgl3Graphics g = (Lwjgl3Graphics) graphics;
-        Graphics.DisplayMode mode = g.getDisplayMode();
-        Lwjgl3Window window = g.getWindow();
+        var g = (Lwjgl3Graphics) graphics;
+        var mode = g.getDisplayMode();
+        var window = g.getWindow();
         window.setPosition(mode.width / 2 - g.getWidth() / 2, mode.height / 2 - g.getHeight() / 2);
     }
 
     @Override
     public void sizeWindowToFit(int maxWidth, int maxHeight, int displayBorder, Graphics graphics) {
-        Graphics.DisplayMode mode = graphics.getDisplayMode();
+        var mode = graphics.getDisplayMode();
         
         int width = Math.min(mode.width - displayBorder * 2, maxWidth);
         int height = Math.min(mode.height - displayBorder * 2, maxHeight);
@@ -176,13 +171,13 @@ public class Launcher implements DesktopWorker, Lwjgl3WindowListener {
     
     @Override
     public void filesDropped(String[] files) {
-        Array<FileHandle> fileHandles = new Array<>();
-        for (String file : files) {
-            FileHandle fileHandle = new FileHandle(file);
+        var fileHandles = new Array<FileHandle>();
+        for (var file : files) {
+            var fileHandle = new FileHandle(file);
             fileHandles.add(fileHandle);
         }
         
-        for (FilesDroppedListener listener : filesDroppedListeners) {
+        for (var listener : filesDroppedListeners) {
             listener.filesDropped(fileHandles);
         }
     }
@@ -217,10 +212,10 @@ public class Launcher implements DesktopWorker, Lwjgl3WindowListener {
             defaultPath = defaultPath.replace("\\", "/");
         }
         if (filterPatterns != null && filterPatterns.length > 0) {
-            try (MemoryStack stack = stackPush()) {
-                PointerBuffer pointerBuffer = stack.mallocPointer(filterPatterns.length);
+            try (var stack = stackPush()) {
+                var pointerBuffer = stack.mallocPointer(filterPatterns.length);
 
-                for (String filterPattern : filterPatterns) {
+                for (var filterPattern : filterPatterns) {
                     pointerBuffer.put(stack.UTF8(filterPattern));
                 }
                 
@@ -232,9 +227,9 @@ public class Launcher implements DesktopWorker, Lwjgl3WindowListener {
         }
         
         if (result != null) {
-            String[] paths = result.split("\\|");
-            ArrayList<File> returnValue = new ArrayList<>();
-            for (String path : paths) {
+            var paths = result.split("\\|");
+            var returnValue = new ArrayList<File>();
+            for (var path : paths) {
                 returnValue.add(new File(path));
             }
             return returnValue;
@@ -290,7 +285,7 @@ public class Launcher implements DesktopWorker, Lwjgl3WindowListener {
         }
         
         if (filterPatterns != null && filterPatterns.length > 0) {
-            try (MemoryStack stack = stackPush()) {
+            try (var stack = stackPush()) {
                 PointerBuffer pointerBuffer = null;
                 pointerBuffer = stack.mallocPointer(filterPatterns.length);
 
@@ -320,7 +315,7 @@ public class Launcher implements DesktopWorker, Lwjgl3WindowListener {
     public char getKeyName(int keyCode) {
         int glfwKeyCode = Lwjgl3Input.getGlfwKeyCode(keyCode);
         try {
-            String output = org.lwjgl.glfw.GLFW.glfwGetKeyName(glfwKeyCode, 0);
+            var output = org.lwjgl.glfw.GLFW.glfwGetKeyName(glfwKeyCode, 0);
             return (output == null) ? ' ' : output.toLowerCase().charAt(0);
         } catch (Exception e) {
             return ' ';
@@ -329,17 +324,17 @@ public class Launcher implements DesktopWorker, Lwjgl3WindowListener {
 
     @Override
     public void writeFont(FreeTypeFontGenerator.FreeTypeBitmapFontData data, Array<PixmapPacker.Page> pages, FileHandle target) {
-        FileHandle pngTarget = target.sibling(target.nameWithoutExtension() + ".png");
+        var pngTarget = target.sibling(target.nameWithoutExtension() + ".png");
         
-        BitmapFontWriter.FontInfo info = new BitmapFontWriter.FontInfo();
+        var info = new BitmapFontWriter.FontInfo();
         data.capHeight--;
         info.face = target.nameWithoutExtension();
         info.padding = new BitmapFontWriter.Padding(1, 1, 1, 1);
 
         BitmapFontWriter.writePixmaps(pages, target.parent(), target.nameWithoutExtension());
         
-        Pixmap pixmap = new Pixmap(pngTarget);
-        Color color = new Color();
+        var pixmap = new Pixmap(pngTarget);
+        var color = new Color();
         int newHeight = pixmap.getHeight();
         boolean foundOpaquePixel = false;
         for (int y = pixmap.getHeight() - 1; y >= 0 && !foundOpaquePixel; y--) {
@@ -368,7 +363,7 @@ public class Launcher implements DesktopWorker, Lwjgl3WindowListener {
             }
         }
         
-        Pixmap fixedPixmap = new Pixmap(newWidth, newHeight, Pixmap.Format.RGBA8888);
+        var fixedPixmap = new Pixmap(newWidth, newHeight, Pixmap.Format.RGBA8888);
         fixedPixmap.setBlending(Pixmap.Blending.None);
         fixedPixmap.drawPixmap(pixmap, 0, 0);
         PixmapIO.writePNG(pngTarget, fixedPixmap);

@@ -12,16 +12,16 @@ import javax.swing.JOptionPane;
 
 public class DesktopLauncher extends Launcher {
     public static void main(String[] args) {
-        Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+        var config = new Lwjgl3ApplicationConfiguration();
         config.setResizable(true);
         config.useVsync(true);
         config.setWindowedMode(800, 800);
-        DesktopLauncher desktopLauncher = new DesktopLauncher();
+        var desktopLauncher = new DesktopLauncher();
         config.setWindowListener(desktopLauncher);
         config.setTitle("Skin Composer - New Project*");
         config.setWindowSizeLimits(675, 400, -1, -1);
         config.setWindowIcon("logo-16.png", "logo-32.png", "logo-48.png", "logo.png");
-        Main main = new Main(args);
+        var main = new Main(args);
         main.setDesktopWorker(desktopLauncher);
         if (!Utils.isWindows()) {
             desktopLauncher.closeSplashScreen();
@@ -32,10 +32,9 @@ public class DesktopLauncher extends Launcher {
         } catch (Exception e) {
             e.printStackTrace();
             
-            FileWriter fw = null;
             try {
-                fw = new FileWriter(Gdx.files.external(".skincomposer/temp/java-stacktrace.txt").file(), true);
-                PrintWriter pw = new PrintWriter(fw);
+                var fw = new FileWriter(Gdx.files.external(".skincomposer/temp/java-stacktrace.txt").file(), true);
+                var pw = new PrintWriter(fw);
                 e.printStackTrace(pw);
                 pw.close();
                 fw.close();
@@ -51,7 +50,7 @@ public class DesktopLauncher extends Launcher {
     
     @Override
     public void closeSplashScreen() {
-        SplashScreen splash = SplashScreen.getSplashScreen();
+        var splash = SplashScreen.getSplashScreen();
         if (splash != null) {
             splash.close();
         }
