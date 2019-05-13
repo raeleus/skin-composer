@@ -40,8 +40,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.UndoableManager;
@@ -67,6 +69,7 @@ import com.ray3k.skincomposer.dialog.DialogCustomStyle.CustomStyleListener;
 import com.ray3k.skincomposer.dialog.DialogDrawables.DialogDrawablesListener;
 import com.ray3k.skincomposer.dialog.DialogFreeTypeFont.DialogFreeTypeFontListener;
 import com.ray3k.skincomposer.dialog.DialogImageFont.ImageFontListener;
+import com.ray3k.skincomposer.dialog.DialogTenPatch.DialogTenPatchListener;
 import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
 
 public class DialogFactory {
@@ -1064,6 +1067,12 @@ public class DialogFactory {
     
     public void showDialogDrawablesFilter(DialogDrawables.FilterOptions filterOptions, EventListener listener) {
         var dialog = new DialogDrawablesFilter(filterOptions, main);
+        dialog.addListener(listener);
+        dialog.show(main.getStage());
+    }
+    
+    public void showDialogTenPatch(FileHandle fileHandle, DialogTenPatchListener listener, ObjectMap<DrawableData, Drawable> drawablePairs) {
+        DialogTenPatch dialog = new DialogTenPatch(main, fileHandle, drawablePairs);
         dialog.addListener(listener);
         dialog.show(main.getStage());
     }

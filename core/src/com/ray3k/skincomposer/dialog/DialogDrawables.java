@@ -77,6 +77,7 @@ import com.ray3k.skincomposer.data.CustomProperty;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
+import com.ray3k.skincomposer.dialog.DialogTenPatch.TenPatchData;
 import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
 import java.util.Iterator;
@@ -85,7 +86,7 @@ import java.util.Locale;
 
 public class DialogDrawables extends Dialog {
     public static DialogDrawables instance;
-    private final static int[] sizes = {40, 125, 150, 200, 250};
+    private final static int[] sizes = {40, 135, 160, 210, 260};
     private static float scrollPosition = 0.0f;
     private static int sortSelection = 0;
     private SelectBox sortSelectBox;
@@ -450,7 +451,7 @@ public class DialogDrawables extends Dialog {
             
             Table table = new Table();
             drawableButton.add(table).growX();
-            table.defaults().minWidth(25);
+            table.defaults().uniform();
             
             ClickListener fixDuplicateTouchListener = new ClickListener() {
                 @Override
@@ -475,7 +476,7 @@ public class DialogDrawables extends Dialog {
                 bg.fill();
             }
             bg.setActor(image);
-            table.add(bg).size(sizes[MathUtils.floor(zoomSlider.getValue())]);
+            table.add(bg).size(sizes[MathUtils.floor(zoomSlider.getValue())]).uniform(false, false);
             
             //color wheel
             if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null) {
@@ -545,6 +546,34 @@ public class DialogDrawables extends Dialog {
                 button.addListener(toolTip);
             }
             
+            //tenpatch button
+            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null) {
+                Button button = new Button(getSkin(), "tenpatch");
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event,
+                            Actor actor) {
+                        main.getDialogFactory().showDialogTenPatch(drawable.file, new DialogTenPatch.DialogTenPatchListener() {
+                            @Override
+                            public void selected(TenPatchData tenPatch) {
+                            }
+
+                            @Override
+                            public void cancelled() {
+                            }
+                        }, drawablePairs);
+                    }
+                });
+                button.addListener(fixDuplicateTouchListener);
+                if (property == null && customProperty == null) {
+                    button.addListener(main.getHandListener());
+                }
+                table.add(button);
+
+                var toolTip = new TextTooltip("Ten Patch Drawable", main.getTooltipManager(), getSkin());
+                button.addListener(toolTip);
+            }
+            
             //tiled settings
             if (drawable.tiled) {
                 Button button = new Button(getSkin(), "settings-small");
@@ -559,6 +588,7 @@ public class DialogDrawables extends Dialog {
                 if (property == null && customProperty == null) {
                     button.addListener(main.getHandListener());
                 }
+                table.add();
                 table.add();
                 table.add();
                 table.add();
@@ -585,6 +615,7 @@ public class DialogDrawables extends Dialog {
                 table.add();
                 table.add();
                 table.add();
+                table.add();
                 table.add(button);
                 
                 var toolTip = new TextTooltip("Rename Tinted Drawable", main.getTooltipManager(), getSkin());
@@ -605,6 +636,7 @@ public class DialogDrawables extends Dialog {
                 if (property == null && customProperty == null) {
                     button.addListener(main.getHandListener());
                 }
+                table.add();
                 table.add();
                 table.add();
                 table.add();
@@ -661,7 +693,7 @@ public class DialogDrawables extends Dialog {
             label.setAlignment(Align.left);
             label.setEllipsis("...");
             label.setEllipsis(true);
-            table.add(label).growX();
+            table.add(label).growX().uniform(false, false);
             
             //Tooltip
             toolTip = new TextTooltip(drawable.name, main.getTooltipManager(), getSkin());
@@ -772,6 +804,36 @@ public class DialogDrawables extends Dialog {
                 table.add(button);
 
                 TextTooltip toolTip = new TextTooltip("Tiled Drawable", main.getTooltipManager(), getSkin());
+                button.addListener(toolTip);
+            } else {
+                table.add();
+            }
+            
+            //tenpatch button
+            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null) {
+                Button button = new Button(getSkin(), "tenpatch");
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event,
+                            Actor actor) {
+                        main.getDialogFactory().showDialogTenPatch(drawable.file, new DialogTenPatch.DialogTenPatchListener() {
+                            @Override
+                            public void selected(TenPatchData tenPatch) {
+                            }
+
+                            @Override
+                            public void cancelled() {
+                            }
+                        }, drawablePairs);
+                    }
+                });
+                button.addListener(fixDuplicateTouchListener);
+                if (property == null && customProperty == null) {
+                    button.addListener(main.getHandListener());
+                }
+                table.add(button);
+
+                TextTooltip toolTip = new TextTooltip("Tenpatch Drawable", main.getTooltipManager(), getSkin());
                 button.addListener(toolTip);
             } else {
                 table.add();
@@ -893,7 +955,7 @@ public class DialogDrawables extends Dialog {
                 bg.fill();
             }
             bg.setActor(image);
-            table.add(bg).colspan(5).grow();
+            table.add(bg).colspan(6).grow();
 
             //name
             table.row();
@@ -901,7 +963,7 @@ public class DialogDrawables extends Dialog {
             label.setEllipsis("...");
             label.setEllipsis(true);
             label.setAlignment(Align.center);
-            table.add(label).colspan(5).growX().width(sizes[MathUtils.floor(zoomSlider.getValue())]);
+            table.add(label).colspan(6).growX().width(sizes[MathUtils.floor(zoomSlider.getValue())]);
             
             //Tooltip
             toolTip = new TextTooltip(drawable.name, main.getTooltipManager(), getSkin());
@@ -1646,7 +1708,6 @@ public class DialogDrawables extends Dialog {
     /**
      * Removes any duplicate drawables that share the same name. This does not
      * delete TintedDrawables from the same file.
-     * @param handle 
      */
     private void removeDuplicateDrawables(String name, boolean deleteStyleValues) {
         boolean refreshDrawables = false;
