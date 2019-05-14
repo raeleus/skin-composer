@@ -926,6 +926,7 @@ public class DialogDrawables extends Dialog {
                 table.add(button);
                 
                 TextTooltip toolTip = new TextTooltip("Rename Custom Drawable", main.getTooltipManager(), getSkin());
+                TextTooltip toolTip = new TextTooltip("Drawable Settings", main.getTooltipManager(), getSkin());
                 button.addListener(toolTip);
             }
 
