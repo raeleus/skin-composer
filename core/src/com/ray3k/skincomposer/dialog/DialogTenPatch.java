@@ -83,9 +83,6 @@ public class DialogTenPatch extends Dialog {
         this.main = main;
         skin = main.getSkin();
         this.drawableData = drawableData;
-        if (drawableData.tenPatchData.colorName != null) {
-            drawableData.tenPatchData.color.set(main.getJsonData().getColorByName(drawableData.tenPatchData.colorName).color);
-        }
         this.newDrawable = newDrawable;
         originalName = newDrawable ? "" : drawableData.name;
         zoomToMouse = false;
@@ -355,11 +352,9 @@ public class DialogTenPatch extends Dialog {
                     updateColorLabel(colorData);
                     
                     if (colorData == null) {
-                        drawableData.tenPatchData.color.set(Color.WHITE);
                         drawableData.tenPatchData.colorName = null;
                         tenPatchDrawable.getColor().set(Color.WHITE);
                     } else {
-                        drawableData.tenPatchData.color.set(colorData.color);
                         drawableData.tenPatchData.colorName = colorData.getName();
                         tenPatchDrawable.getColor().set(colorData.color);
                     }
@@ -448,7 +443,9 @@ public class DialogTenPatch extends Dialog {
         table.setName("tenPatchTable");
         table.setBackground(tenPatchDrawable);
         resizer.setActor(table);
-        tenPatchDrawable.getColor().set(drawableData.tenPatchData.color);
+        if (drawableData.tenPatchData.colorName != null) {
+            tenPatchDrawable.getColor().set(main.getJsonData().getColorByName(drawableData.tenPatchData.colorName).color);
+        }
         
         bottom.row();
         table = new Table();
@@ -811,7 +808,6 @@ public class DialogTenPatch extends Dialog {
         public int contentTop;
         public int contentBottom;
         public boolean tile;
-        public transient Color color = new Color(Color.WHITE);
         public String colorName;
         
         public void clear() {
@@ -822,7 +818,7 @@ public class DialogTenPatch extends Dialog {
             contentTop = 0;
             contentBottom = 0;
             tile = false;
-            color.set(Color.WHITE);
+            colorName = null;
         }
     
         public void removeInvalidStretchAreas(boolean horizontal) {
@@ -854,7 +850,7 @@ public class DialogTenPatch extends Dialog {
                         verticalStretchAreas.equals(other.verticalStretchAreas) &&
                         contentLeft == other.contentLeft && contentRight == other.contentRight &&
                         contentTop == other.contentTop && contentBottom == other.contentBottom && tile == other.tile &&
-                        (color == null && other.color == null || color != null && color.equals(other.color));
+                        (colorName == null && other.colorName == null || colorName != null && colorName.equals(other.colorName));
             } else {
                 return false;
             }

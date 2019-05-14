@@ -205,7 +205,9 @@ public class DialogDrawables extends Dialog {
                     var region = atlas.findRegion(DrawableData.proper(data.file.name()));
                     drawable = new TenPatchDrawable(data.tenPatchData.horizontalStretchAreas.toArray(),
                             data.tenPatchData.verticalStretchAreas.toArray(), data.tenPatchData.tile, region);
-                    ((TenPatchDrawable) drawable).getColor().set(data.tenPatchData.color);
+                    if (data.tenPatchData.colorName != null) {
+                        ((TenPatchDrawable) drawable).getColor().set(main.getJsonData().getColorByName(data.tenPatchData.colorName).color);
+                    }
                 } else if (data.tiled) {
                     String name = data.file.name();
                     name = DrawableData.proper(name);

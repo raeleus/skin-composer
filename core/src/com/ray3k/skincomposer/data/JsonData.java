@@ -43,19 +43,17 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.JsonWriter;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
-import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.dialog.DialogFactory;
+import com.ray3k.skincomposer.dialog.DialogTenPatch;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.tenpatch.TenPatchDrawable;
+
 import java.io.StringWriter;
 import java.util.Locale;
 
@@ -303,6 +301,32 @@ public class JsonData implements Json.Serializable {
                         }
                     }
                     
+                    main.getProjectData().getAtlasData().getDrawables().add(drawableData);
+                }
+            } //ten patch drawables
+            else if (child.name().equals(TenPatchDrawable.class.getName()) || child.name().equals(TenPatchDrawable.class.getSimpleName())) {
+                for (JsonValue value : child.iterator()) {
+                    DrawableData drawableData = new DrawableData(main.getProjectData().getAtlasData().getDrawable(value.getString("region")).file);
+                    drawableData.name = value.name();
+                    drawableData.tenPatchData = new DialogTenPatch.TenPatchData();
+                    drawableData.tenPatchData.colorName = value.getString("color", null);
+                    drawableData.tenPatchData.horizontalStretchAreas = new IntArray(value.get("horizontalStretchAreas").asIntArray());
+                    drawableData.tenPatchData.verticalStretchAreas = new IntArray(value.get("verticalStretchAreas").asIntArray());
+                    drawableData.tenPatchData.tile = value.getBoolean("tiling");
+                    drawableData.minWidth = value.getFloat("minWidth", 0f);
+                    drawableData.minHeight = value.getFloat("minHeight", 0f);
+                    drawableData.tenPatchData.contentRight = value.getInt("rightWidth", 0);
+                    drawableData.tenPatchData.contentLeft = value.getInt("leftWidth", 0);
+                    drawableData.tenPatchData.contentBottom = value.getInt("bottomHeight", 0);
+                    drawableData.tenPatchData.contentTop = value.getInt("topHeight", 0);
+    
+                    //delete drawables with the same name
+                    for (DrawableData originalData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {
+                        if (originalData.name.equals(drawableData.name)) {
+                            main.getProjectData().getAtlasData().getDrawables().removeValue(originalData, true);
+                        }
+                    }
+    
                     main.getProjectData().getAtlasData().getDrawables().add(drawableData);
                 }
             } //styles
@@ -656,14 +680,17 @@ public class JsonData implements Json.Serializable {
         Array<DrawableData> tiledDrawables = new Array<>();
         var textureRegionDrawables = new Array<DrawableData>();
         var ninePatchDrawables = new Array<DrawableData>();
+        var tenPatchDrawables = new Array<DrawableData>();
         for (DrawableData drawable : main.getProjectData().getAtlasData().getDrawables()) {
             if (drawable.tiled) {
                 tiledDrawables.add(drawable);
             } else if (drawable.tint != null || drawable.tintName != null) {
                 tintedDrawables.add(drawable);
+            } else if (drawable.tenPatchData != null) {
+                tenPatchDrawables.add(drawable);
             }
             
-            if (!drawable.tiled) {
+            if (!drawable.tiled && drawable.tenPatchData == null) {
                 if (drawable.file != null && (!MathUtils.isEqual(drawable.minWidth, -1f) || !MathUtils.isEqual(drawable.minHeight, -1f))) {
                     if (drawable.file.name().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
                         ninePatchDrawables.add(drawable);
@@ -751,6 +778,32 @@ public class JsonData implements Json.Serializable {
                 json.writeValue("color", drawable.tintName);
                 json.writeValue("minWidth", drawable.minWidth);
                 json.writeValue("minHeight", drawable.minHeight);
+                json.writeObjectEnd();
+            }
+            json.writeObjectEnd();
+        }
+        
+        //ten patch drawables
+        if (tenPatchDrawables.size > 0) {
+            String className = main.getProjectData().isUsingSimpleNames() ? TenPatchDrawable.class.getSimpleName() : TenPatchDrawable.class.getName();
+            json.writeObjectStart(className);
+            for (DrawableData drawable : tenPatchDrawables) {
+                json.writeObjectStart(drawable.name);
+                json.writeValue("region", DrawableData.proper(drawable.file.name()));
+                if (drawable.tenPatchData.colorName != null) {
+                    json.writeValue("color", drawable.tenPatchData.colorName);
+                }
+                json.writeValue("horizontalStretchAreas", drawable.tenPatchData.horizontalStretchAreas.toArray());
+                json.writeValue("verticalStretchAreas", drawable.tenPatchData.verticalStretchAreas.toArray());
+                json.writeValue("tiling", drawable.tenPatchData.tile);
+                if (!MathUtils.isEqual(drawable.minWidth, -1)) json.writeValue("minWidth", drawable.minWidth);
+                else json.writeValue("minWidth", Utils.imageDimensions(drawable.file).x);
+                if (!MathUtils.isEqual(drawable.minHeight, -1)) json.writeValue("minHeight", drawable.minHeight);
+                else json.writeValue("minHeight", Utils.imageDimensions(drawable.file).y);
+                json.writeValue("rightWidth", drawable.tenPatchData.contentRight);
+                json.writeValue("leftWidth", drawable.tenPatchData.contentLeft);
+                json.writeValue("bottomHeight", drawable.tenPatchData.contentBottom);
+                json.writeValue("topHeight", drawable.tenPatchData.contentTop);
                 json.writeObjectEnd();
             }
             json.writeObjectEnd();
