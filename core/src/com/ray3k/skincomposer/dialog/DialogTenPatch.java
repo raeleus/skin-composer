@@ -50,6 +50,7 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.*;
+import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
@@ -75,12 +76,17 @@ public class DialogTenPatch extends Dialog {
     private ObjectMap<DrawableData, Drawable> drawablePairs;
     private DrawableData drawableData;
     private String originalName;
+    private boolean newDrawable;
     
     public DialogTenPatch(Main main, DrawableData drawableData, boolean newDrawable, ObjectMap<DrawableData, Drawable> drawablePairs) {
         super("", main.getSkin(), "dialog");
         this.main = main;
         skin = main.getSkin();
         this.drawableData = drawableData;
+        if (drawableData.tenPatchData.colorName != null) {
+            drawableData.tenPatchData.color.set(main.getJsonData().getColorByName(drawableData.tenPatchData.colorName).color);
+        }
+        this.newDrawable = newDrawable;
         originalName = newDrawable ? "" : drawableData.name;
         zoomToMouse = false;
         temp = new Vector2();
@@ -213,7 +219,7 @@ public class DialogTenPatch extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                tenPatchWidget.getTenPatchData().clear();
+                drawableData.tenPatchData.clear();
             }
         });
         
@@ -231,8 +237,7 @@ public class DialogTenPatch extends Dialog {
         top.row();
         
         tenPatchWidget = new TenPatchWidget(skin);
-        var tenPatchData = new TenPatchData();
-        tenPatchWidget.setTenPatchData(tenPatchData);
+        tenPatchWidget.setTenPatchData(drawableData.tenPatchData);
         
         var pixmap = loadTextureFile(fileHandle);
         
@@ -329,13 +334,14 @@ public class DialogTenPatch extends Dialog {
         });
         
         var checkBox = new CheckBox("Tile", skin);
+        checkBox.setChecked(drawableData.tiled);
         table.add(checkBox).expandX().right();
         checkBox.addListener(main.getHandListener());
         checkBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                tenPatchData.tile = ((CheckBox) actor).isChecked();
-                tenPatchDrawable.setTiling(tenPatchData.tile);
+                drawableData.tenPatchData.tile = ((CheckBox) actor).isChecked();
+                tenPatchDrawable.setTiling(drawableData.tenPatchData.tile);
             }
         });
         
@@ -346,21 +352,15 @@ public class DialogTenPatch extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 main.getDialogFactory().showDialogColors(new StyleProperty(), colorData -> {
-                    Label label = findActor("color-label");
-                    Container<Label> container = findActor("color-label-container");
+                    updateColorLabel(colorData);
+                    
                     if (colorData == null) {
-                        label.setText("Color: none");
-                        label.setColor(Color.WHITE);
-                        container.setColor(Color.BLACK);
-                        tenPatchData.color.set(Color.WHITE);
-                        tenPatchData.colorName = null;
+                        drawableData.tenPatchData.color.set(Color.WHITE);
+                        drawableData.tenPatchData.colorName = null;
                         tenPatchDrawable.getColor().set(Color.WHITE);
                     } else {
-                        label.setText("Color: " + colorData.getName());
-                        label.setColor(colorData.color);
-                        container.setColor(Utils.blackOrWhiteBgColor(colorData.color));
-                        tenPatchData.color.set(colorData.color);
-                        tenPatchData.colorName = colorData.getName();
+                        drawableData.tenPatchData.color.set(colorData.color);
+                        drawableData.tenPatchData.colorName = colorData.getName();
                         tenPatchDrawable.getColor().set(colorData.color);
                     }
                 }, null);
@@ -374,9 +374,10 @@ public class DialogTenPatch extends Dialog {
         container.setColor(Color.BLACK);
         table.add(container).expandX().left();
         
-        label = new Label("Color: None", skin, "white");
+        label = new Label("", skin, "white");
         label.setName("color-label");
         container.setActor(label);
+        updateColorLabel(main.getProjectData().getJsonData().getColorByName(drawableData.tenPatchData.colorName));
         
         imageButton = new ImageButton(skin, "resize");
         table.add(imageButton);
@@ -447,6 +448,7 @@ public class DialogTenPatch extends Dialog {
         table.setName("tenPatchTable");
         table.setBackground(tenPatchDrawable);
         resizer.setActor(table);
+        tenPatchDrawable.getColor().set(drawableData.tenPatchData.color);
         
         bottom.row();
         table = new Table();
@@ -508,10 +510,10 @@ public class DialogTenPatch extends Dialog {
         button(textButton, false);
         textButton.addListener(main.getHandListener());
         
-        tenPatchDrawable.setHorizontalStretchAreas(sanitizeStretchAreas(tenPatchWidget.getTenPatchData().horizontalStretchAreas, true));
-        tenPatchDrawable.setVerticalStretchAreas(sanitizeStretchAreas(tenPatchWidget.getTenPatchData().verticalStretchAreas, false));
+        tenPatchDrawable.setHorizontalStretchAreas(sanitizeStretchAreas(drawableData.tenPatchData.horizontalStretchAreas, true));
+        tenPatchDrawable.setVerticalStretchAreas(sanitizeStretchAreas(drawableData.tenPatchData.verticalStretchAreas, false));
     
-        if (fileHandle.name().matches("(?i:.*\\.9\\.png)")) {
+        if (fileHandle.name().matches("(?i:.*\\.9\\.png)") && newDrawable) {
             loadPatchesFromFile(fileHandle);
         }
     }
@@ -621,7 +623,7 @@ public class DialogTenPatch extends Dialog {
         pixmap.drawPixmap(source, 1, 1);
         source.dispose();
         
-        var tenPatchData = tenPatchWidget.getTenPatchData();
+        var tenPatchData = drawableData.tenPatchData;
         
         pixmap.setColor(Color.BLACK);
         var stretchAreas = tenPatchData.horizontalStretchAreas;
@@ -643,7 +645,7 @@ public class DialogTenPatch extends Dialog {
     }
     
     private void loadPatchesFromFile(FileHandle fileHandle) {
-        var tenPatchData = tenPatchWidget.getTenPatchData();
+        var tenPatchData = drawableData.tenPatchData;
         tenPatchData.clear();
         var pixmap = new Pixmap(fileHandle);
         
@@ -692,8 +694,8 @@ public class DialogTenPatch extends Dialog {
                 tenPatchData.horizontalStretchAreas.add(x - 1);
             }
         }
-        tenPatchWidget.getTenPatchData().combineContiguousSretchAreas(true);
-        tenPatchWidget.getTenPatchData().removeInvalidStretchAreas(true);
+        drawableData.tenPatchData.combineContiguousSretchAreas(true);
+        drawableData.tenPatchData.removeInvalidStretchAreas(true);
     
         x = 0;
         for (y = pixmap.getHeight() - 2; y > 0; y--) {
@@ -704,8 +706,8 @@ public class DialogTenPatch extends Dialog {
             }
         }
         
-        tenPatchWidget.getTenPatchData().combineContiguousSretchAreas(false);
-        tenPatchWidget.getTenPatchData().removeInvalidStretchAreas(false);
+        drawableData.tenPatchData.combineContiguousSretchAreas(false);
+        drawableData.tenPatchData.removeInvalidStretchAreas(false);
     
         tenPatchDrawable.setHorizontalStretchAreas(sanitizeStretchAreas(tenPatchData.horizontalStretchAreas, true));
         tenPatchDrawable.setVerticalStretchAreas(sanitizeStretchAreas(tenPatchData.verticalStretchAreas, false));
@@ -765,7 +767,7 @@ public class DialogTenPatch extends Dialog {
     protected void result(Object object) {
         super.result(object);
         if ((boolean) object == true) {
-            fire(new DialogTenPatchEvent(tenPatchWidget.getTenPatchData()));
+            fire(new DialogTenPatchEvent(drawableData));
         } else {
             fire(new DialogTenPatchEvent(null));
         }
@@ -774,27 +776,30 @@ public class DialogTenPatch extends Dialog {
     }
     
     public static abstract class DialogTenPatchListener implements EventListener {
-        public abstract void selected(TenPatchData tenPatch);
+        public abstract void selected(DrawableData drawableData);
         
         public abstract void cancelled();
         
         @Override
         public boolean handle(Event event) {
             if (event instanceof DialogTenPatchEvent) {
-                selected(((DialogTenPatchEvent) event).tenPatch);
+                if (((DialogTenPatchEvent) event).drawableData != null) {
+                    selected(((DialogTenPatchEvent) event).drawableData);
+                } else {
+                    cancelled();
+                }
                 return true;
             } else {
-                cancelled();
                 return false;
             }
         }
     }
     
     private static class DialogTenPatchEvent extends Event {
-        public TenPatchData tenPatch;
+        public DrawableData drawableData;
         
-        public DialogTenPatchEvent(TenPatchData tenPatch) {
-            this.tenPatch = tenPatch;
+        public DialogTenPatchEvent(DrawableData drawableData) {
+            this.drawableData = drawableData;
         }
     }
     
@@ -917,5 +922,19 @@ public class DialogTenPatch extends Dialog {
         
         Label label = findActor("nameLabel");
         label.setColor(valid ? skin.getColor("button") : Color.RED);
+    }
+    
+    public void updateColorLabel(ColorData colorData) {
+        Label label = findActor("color-label");
+        Container<Label> container = findActor("color-label-container");
+        if (colorData == null) {
+            label.setText("Color: none");
+            label.setColor(Color.WHITE);
+            container.setColor(Color.BLACK);
+        } else {
+            label.setText("Color: " + colorData.getName());
+            label.setColor(colorData.color);
+            container.setColor(Utils.blackOrWhiteBgColor(colorData.color));
+        }
     }
 }

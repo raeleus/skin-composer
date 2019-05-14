@@ -40,19 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -79,6 +67,8 @@ import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogTenPatch.TenPatchData;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.tenpatch.TenPatchDrawable;
+
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
@@ -211,6 +201,11 @@ public class DialogDrawables extends Dialog {
                 Drawable drawable;
                 if (data.customized) {
                     drawable = getSkin().getDrawable("custom-drawable-skincomposer-image");
+                } else if (data.tenPatchData != null) {
+                    var region = atlas.findRegion(DrawableData.proper(data.file.name()));
+                    drawable = new TenPatchDrawable(data.tenPatchData.horizontalStretchAreas.toArray(),
+                            data.tenPatchData.verticalStretchAreas.toArray(), data.tenPatchData.tile, region);
+                    ((TenPatchDrawable) drawable).getColor().set(data.tenPatchData.color);
                 } else if (data.tiled) {
                     String name = data.file.name();
                     name = DrawableData.proper(name);
@@ -479,7 +474,7 @@ public class DialogDrawables extends Dialog {
             table.add(bg).size(sizes[MathUtils.floor(zoomSlider.getValue())]).uniform(false, false);
             
             //color wheel
-            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null) {
+            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null && drawable.tenPatchData == null) {
                 Button button = new Button(getSkin(), "colorwheel");
                 button.addListener(new ChangeListener() {
                     @Override
@@ -499,7 +494,7 @@ public class DialogDrawables extends Dialog {
             }
             
             //swatches
-            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null) {
+            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null && drawable.tenPatchData == null) {
                 Button button = new Button(getSkin(), "swatches");
                 button.addListener(new ChangeListener() {
                     @Override
@@ -519,7 +514,7 @@ public class DialogDrawables extends Dialog {
             }
             
             //tiles button
-            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null) {
+            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null && drawable.tenPatchData == null) {
                 Button button = new Button(getSkin(), "tiles");
                 button.addListener(new ChangeListener() {
                     @Override
@@ -547,7 +542,7 @@ public class DialogDrawables extends Dialog {
             }
             
             //tenpatch button
-            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null) {
+            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null && drawable.tenPatchData == null) {
                 Button button = new Button(getSkin(), "tenpatch");
                 button.addListener(new ChangeListener() {
                     @Override
@@ -556,10 +551,19 @@ public class DialogDrawables extends Dialog {
                         var drawableData = new DrawableData();
                         drawableData.name = drawable.name;
                         drawableData.file = drawable.file;
+                        drawableData.bgColor = drawable.bgColor;
+                        drawableData.tenPatchData = new TenPatchData();
                         
                         main.getDialogFactory().showDialogTenPatch(drawableData, true, new DialogTenPatch.DialogTenPatchListener() {
                             @Override
-                            public void selected(TenPatchData tenPatch) {
+                            public void selected(DrawableData drawableData) {
+                                main.getProjectData().getAtlasData().getDrawables().add(drawableData);
+                                refreshDrawableDisplay();
+                                main.getProjectData().setChangesSaved(false);
+                                gatherDrawables();
+                                produceAtlas();
+                                sortBySelectedMode();
+                                getStage().setScrollFocus(scrollPane);
                             }
 
                             @Override
@@ -649,6 +653,40 @@ public class DialogDrawables extends Dialog {
                 var toolTip = new TextTooltip("Rename Custom Drawable", main.getTooltipManager(), getSkin());
                 button.addListener(toolTip);
             }
+            
+            //settings for ten patch drawables
+            else if (drawable.tenPatchData != null) {
+                var button = new Button(getSkin(), "settings-small");
+                button.addListener(main.getHandListener());
+                button.addListener(fixDuplicateTouchListener);
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        var drawableData = new DrawableData(drawable);
+                        main.getDialogFactory().showDialogTenPatch(drawableData, false, new DialogTenPatch.DialogTenPatchListener() {
+                            @Override
+                            public void selected(DrawableData drawableData) {
+                                drawable.set(drawableData);
+                            }
+    
+                            @Override
+                            public void cancelled() {
+        
+                            }
+                        }, drawablePairs);
+                    }
+                });
+                
+                table.add();
+                table.add();
+                table.add();
+                table.add();
+                table.add(button);
+    
+                TextTooltip toolTip = new TextTooltip("Ten Patch Settings", main.getTooltipManager(), getSkin());
+                button.addListener(toolTip);
+            }
+            
             //settings for regular drawables
             else {
                 Button button = new Button(getSkin(), "settings-small");
@@ -740,7 +778,7 @@ public class DialogDrawables extends Dialog {
             };
             
             //color wheel
-            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null) {
+            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null && drawable.tenPatchData == null) {
                 Button button = new Button(getSkin(), "colorwheel");
                 button.addListener(new ChangeListener() {
                     @Override
@@ -762,7 +800,7 @@ public class DialogDrawables extends Dialog {
             }
 
             //swatches
-            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null) {
+            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null && drawable.tenPatchData == null) {
                 Button button = new Button(getSkin(), "swatches");
                 button.addListener(new ChangeListener() {
                     @Override
@@ -784,7 +822,7 @@ public class DialogDrawables extends Dialog {
             }
             
             //tiles button
-            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null) {
+            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null && drawable.tenPatchData == null) {
                 Button button = new Button(getSkin(), "tiles");
                 button.addListener(new ChangeListener() {
                     @Override
@@ -814,7 +852,7 @@ public class DialogDrawables extends Dialog {
             }
             
             //tenpatch button
-            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null) {
+            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null && drawable.tenPatchData == null) {
                 Button button = new Button(getSkin(), "tenpatch");
                 button.addListener(new ChangeListener() {
                     @Override
@@ -822,11 +860,18 @@ public class DialogDrawables extends Dialog {
                         var drawableData = new DrawableData();
                         drawableData.name = drawable.name;
                         drawableData.file = drawable.file;
+                        drawableData.bgColor = drawable.bgColor;
+                        drawableData.tenPatchData = new TenPatchData();
                         
                         main.getDialogFactory().showDialogTenPatch(drawableData, true, new DialogTenPatch.DialogTenPatchListener() {
                             @Override
-                            public void selected(TenPatchData tenPatchData) {
-                            
+                            public void selected(DrawableData drawableData) {
+                                main.getProjectData().getAtlasData().getDrawables().add(drawableData);
+                                main.getProjectData().setChangesSaved(false);
+                                gatherDrawables();
+                                produceAtlas();
+                                sortBySelectedMode();
+                                getStage().setScrollFocus(scrollPane);
                             }
 
                             @Override
@@ -904,6 +949,39 @@ public class DialogDrawables extends Dialog {
                 TextTooltip toolTip = new TextTooltip("Rename Custom Drawable", main.getTooltipManager(), getSkin());
                 button.addListener(toolTip);
             }
+            //settings for ten patch drawables
+            else if (drawable.tenPatchData != null) {
+                var button = new Button(getSkin(), "settings-small");
+                button.addListener(main.getHandListener());
+                button.addListener(fixDuplicateTouchListener);
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        var drawableData = new DrawableData(drawable);
+                        main.getDialogFactory().showDialogTenPatch(drawableData, false, new DialogTenPatch.DialogTenPatchListener() {
+                            @Override
+                            public void selected(DrawableData drawableData) {
+                                drawable.set(drawableData);
+                                main.getProjectData().setChangesSaved(false);
+                                gatherDrawables();
+                                produceAtlas();
+                                sortBySelectedMode();
+                                getStage().setScrollFocus(scrollPane);
+                            }
+                
+                            @Override
+                            public void cancelled() {
+                    
+                            }
+                        }, drawablePairs);
+                    }
+                });
+                
+                table.add(button);
+    
+                TextTooltip toolTip = new TextTooltip("Ten Patch Settings", main.getTooltipManager(), getSkin());
+                button.addListener(toolTip);
+            }
             //settings for regular drawables
             else {
                 Button button = new Button(getSkin(), "settings-small");
@@ -925,7 +1003,6 @@ public class DialogDrawables extends Dialog {
                 }
                 table.add(button);
                 
-                TextTooltip toolTip = new TextTooltip("Rename Custom Drawable", main.getTooltipManager(), getSkin());
                 TextTooltip toolTip = new TextTooltip("Drawable Settings", main.getTooltipManager(), getSkin());
                 button.addListener(toolTip);
             }
@@ -1434,7 +1511,7 @@ public class DialogDrawables extends Dialog {
     }
     
     private void deleteDrawable(DrawableData drawable) {
-        if (!drawable.customized && drawable.tint == null && drawable.tintName == null && checkDuplicateDrawables(drawable.file, 1)) {
+        if (!drawable.customized && drawable.tint == null && drawable.tintName == null && drawable.tenPatchData == null && checkDuplicateDrawables(drawable.file, 1)) {
             showConfirmDeleteDialog(drawable);
         } else {
             main.getAtlasData().getDrawables().removeValue(drawable, true);
@@ -1484,7 +1561,7 @@ public class DialogDrawables extends Dialog {
         dialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
         dialog.getButtonTable().padBottom(15.0f);
         
-        dialog.text("Deleting this drawable will also delete one or more tinted drawables.\n"
+        dialog.text("Deleting this drawable will also delete one or more derivative drawables.\n"
                 + "Delete duplicates?");
         dialog.button("OK", true);
         dialog.button("Cancel", false);

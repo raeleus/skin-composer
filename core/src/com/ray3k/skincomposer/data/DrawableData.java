@@ -78,6 +78,23 @@ public class DrawableData implements Json.Serializable {
         minWidth = -1;
         minHeight = -1;
     }
+    
+    public DrawableData(DrawableData drawableData) {
+        set(drawableData);
+    }
+    
+    public void set(DrawableData drawableData) {
+        this.file = drawableData.file;
+        this.bgColor = drawableData.bgColor;
+        this.tint = drawableData.tint;
+        this.tintName = drawableData.tintName;
+        this.name = drawableData.name;
+        this.tiled = drawableData.tiled;
+        this.minWidth = drawableData.minWidth;
+        this.minHeight = drawableData.minHeight;
+        this.customized = drawableData.customized;
+        this.tenPatchData = drawableData.tenPatchData;
+    }
 
     @Override
     public String toString() {
