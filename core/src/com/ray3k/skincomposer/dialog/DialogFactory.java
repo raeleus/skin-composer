@@ -1071,8 +1071,8 @@ public class DialogFactory {
         dialog.show(main.getStage());
     }
     
-    public void showDialogTenPatch(FileHandle fileHandle, DialogTenPatchListener listener, ObjectMap<DrawableData, Drawable> drawablePairs) {
-        DialogTenPatch dialog = new DialogTenPatch(main, fileHandle, drawablePairs);
+    public void showDialogTenPatch(DrawableData drawableData, boolean newDrawable, DialogTenPatchListener listener, ObjectMap<DrawableData, Drawable> drawablePairs) {
+        DialogTenPatch dialog = new DialogTenPatch(main, drawableData, newDrawable, drawablePairs);
         dialog.addListener(listener);
         dialog.show(main.getStage());
     }

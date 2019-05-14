@@ -553,7 +553,11 @@ public class DialogDrawables extends Dialog {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event,
                             Actor actor) {
-                        main.getDialogFactory().showDialogTenPatch(drawable.file, new DialogTenPatch.DialogTenPatchListener() {
+                        var drawableData = new DrawableData();
+                        drawableData.name = drawable.name;
+                        drawableData.file = drawable.file;
+                        
+                        main.getDialogFactory().showDialogTenPatch(drawableData, true, new DialogTenPatch.DialogTenPatchListener() {
                             @Override
                             public void selected(TenPatchData tenPatch) {
                             }
@@ -814,11 +818,15 @@ public class DialogDrawables extends Dialog {
                 Button button = new Button(getSkin(), "tenpatch");
                 button.addListener(new ChangeListener() {
                     @Override
-                    public void changed(ChangeListener.ChangeEvent event,
-                            Actor actor) {
-                        main.getDialogFactory().showDialogTenPatch(drawable.file, new DialogTenPatch.DialogTenPatchListener() {
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        var drawableData = new DrawableData();
+                        drawableData.name = drawable.name;
+                        drawableData.file = drawable.file;
+                        
+                        main.getDialogFactory().showDialogTenPatch(drawableData, true, new DialogTenPatch.DialogTenPatchListener() {
                             @Override
-                            public void selected(TenPatchData tenPatch) {
+                            public void selected(TenPatchData tenPatchData) {
+                            
                             }
 
                             @Override
