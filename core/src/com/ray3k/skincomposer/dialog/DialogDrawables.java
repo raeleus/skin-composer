@@ -959,6 +959,7 @@ public class DialogDrawables extends Dialog {
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
+                        event.setBubbles(false);
                         var drawableData = new DrawableData(drawable);
                         main.getDialogFactory().showDialogTenPatch(drawableData, false, new DialogTenPatch.DialogTenPatchListener() {
                             @Override
