@@ -439,14 +439,16 @@ public class DialogTenPatch extends Dialog {
         table.add(resizer).grow();
         
         tenPatchDrawable = new TenPatchDrawable(new int[0], new int[0], false, tenPatchWidget.getTextureRegion());
-        table = new Table();
-        table.setName("tenPatchTable");
-        table.setBackground(tenPatchDrawable);
-        resizer.setActor(table);
         if (drawableData.tenPatchData.colorName != null) {
             tenPatchDrawable.getColor().set(main.getJsonData().getColorByName(drawableData.tenPatchData.colorName).color);
         }
         tenPatchDrawable.setTiling(drawableData.tenPatchData.tile);
+        table = new Table();
+        table.setName("tenPatchTable");
+        table.setBackground(tenPatchDrawable);
+        resizer.setActor(table);
+        layout();
+        resizer.getStack().setSize(100, 100);
         
         bottom.row();
         table = new Table();
