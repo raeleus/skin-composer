@@ -331,7 +331,7 @@ public class DialogTenPatch extends Dialog {
         });
         
         var checkBox = new CheckBox("Tile", skin);
-        checkBox.setChecked(drawableData.tiled);
+        checkBox.setChecked(drawableData.tenPatchData.tile);
         table.add(checkBox).expandX().right();
         checkBox.addListener(main.getHandListener());
         checkBox.addListener(new ChangeListener() {
@@ -446,6 +446,7 @@ public class DialogTenPatch extends Dialog {
         if (drawableData.tenPatchData.colorName != null) {
             tenPatchDrawable.getColor().set(main.getJsonData().getColorByName(drawableData.tenPatchData.colorName).color);
         }
+        tenPatchDrawable.setTiling(drawableData.tenPatchData.tile);
         
         bottom.row();
         table = new Table();
