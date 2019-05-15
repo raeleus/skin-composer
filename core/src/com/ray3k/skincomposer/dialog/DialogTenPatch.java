@@ -330,52 +330,8 @@ public class DialogTenPatch extends Dialog {
             }
         });
         
-        var checkBox = new CheckBox("Tile", skin);
-        checkBox.setChecked(drawableData.tenPatchData.tile);
-        table.add(checkBox).expandX().right();
-        checkBox.addListener(main.getHandListener());
-        checkBox.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                drawableData.tenPatchData.tile = ((CheckBox) actor).isChecked();
-                tenPatchDrawable.setTiling(drawableData.tenPatchData.tile);
-            }
-        });
-        
-        imageButton = new ImageButton(skin, "color");
-        table.add(imageButton).spaceLeft(10);
-        imageButton.addListener(main.getHandListener());
-        imageButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColors(new StyleProperty(), colorData -> {
-                    updateColorLabel(colorData);
-                    
-                    if (colorData == null) {
-                        drawableData.tenPatchData.colorName = null;
-                        tenPatchDrawable.getColor().set(Color.WHITE);
-                    } else {
-                        drawableData.tenPatchData.colorName = colorData.getName();
-                        tenPatchDrawable.getColor().set(colorData.color);
-                    }
-                }, null);
-            }
-        });
-        
-        var container = new Container<Label>();
-        container.setName("color-label-container");
-        container.setBackground(skin.getDrawable("white"));
-        container.pad(5);
-        container.setColor(Color.BLACK);
-        table.add(container).expandX().left();
-        
-        label = new Label("", skin, "white");
-        label.setName("color-label");
-        container.setActor(label);
-        updateColorLabel(main.getProjectData().getJsonData().getColorByName(drawableData.tenPatchData.colorName));
-        
         imageButton = new ImageButton(skin, "resize");
-        table.add(imageButton);
+        table.add(imageButton).expandX().right();
         imageButton.addListener(main.getHandListener());
         imageButton.addListener(new ChangeListener() {
             @Override
@@ -403,6 +359,93 @@ public class DialogTenPatch extends Dialog {
                     tenPatchWidget.screenToLocalCoordinates(temp);
                     tenPatchWidget.setZoomScale(temp.x, temp.y, slider.getValue());
                 }
+            }
+        });
+        
+        top.row();
+        table = new Table();
+        top.add(table).growX();
+    
+        table.defaults().space(3);
+        var checkBox = new CheckBox("Tile", skin);
+        checkBox.setChecked(drawableData.tenPatchData.tile);
+        table.add(checkBox);
+        checkBox.addListener(main.getHandListener());
+        checkBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                drawableData.tenPatchData.tile = ((CheckBox) actor).isChecked();
+                tenPatchDrawable.setTiling(drawableData.tenPatchData.tile);
+            }
+        });
+    
+        imageButton = new ImageButton(skin, "color");
+        table.add(imageButton).spaceLeft(20);
+        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), colorData -> {
+                    updateColorLabel(colorData);
+                
+                    if (colorData == null) {
+                        drawableData.tenPatchData.colorName = null;
+                        tenPatchDrawable.getColor().set(Color.WHITE);
+                    } else {
+                        drawableData.tenPatchData.colorName = colorData.getName();
+                        tenPatchDrawable.getColor().set(colorData.color);
+                    }
+                }, null);
+            }
+        });
+    
+        var container = new Container<Label>();
+        container.setName("color-label-container");
+        container.setBackground(skin.getDrawable("white"));
+        container.pad(5);
+        container.setColor(Color.BLACK);
+        table.add(container).spaceLeft(3);
+    
+        label = new Label("", skin, "white");
+        label.setName("color-label");
+        container.setActor(label);
+        updateColorLabel(main.getProjectData().getJsonData().getColorByName(drawableData.tenPatchData.colorName));
+        
+        label = new Label("MinWidth:", skin);
+        table.add(label).spaceLeft(20);
+    
+        var spinner = new Spinner(drawableData.minWidth, 1, true, Spinner.Orientation.HORIZONTAL, skin);
+        spinner.setMinimum(-1);
+        table.add(spinner).width(100);
+        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(main.getHandListener());
+        spinner.getButtonPlus().addListener(main.getHandListener());
+        var toolTip = new TextTooltip("Set to -1 to disable", main.getTooltipManager(), getSkin());
+        spinner.addListener(toolTip);
+        spinner.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                var spinner = (Spinner) actor;
+                drawableData.minWidth = spinner.getValueAsInt();
+            }
+        });
+    
+        label = new Label("MinHeight:", skin);
+        table.add(label).spaceLeft(20);
+    
+        spinner = new Spinner(drawableData.minHeight, 1, true, Spinner.Orientation.HORIZONTAL, skin);
+        spinner.setMinimum(-1);
+        table.add(spinner).width(100);
+        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(main.getHandListener());
+        spinner.getButtonPlus().addListener(main.getHandListener());
+        toolTip = new TextTooltip("Set to -1 to disable", main.getTooltipManager(), getSkin());
+        spinner.addListener(toolTip);
+        spinner.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                var spinner = (Spinner) actor;
+                drawableData.minWidth = spinner.getValueAsInt();
             }
         });
         
