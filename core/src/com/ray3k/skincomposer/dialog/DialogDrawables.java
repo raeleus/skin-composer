@@ -208,6 +208,8 @@ public class DialogDrawables extends Dialog {
                     if (data.tenPatchData.colorName != null) {
                         ((TenPatchDrawable) drawable).getColor().set(main.getJsonData().getColorByName(data.tenPatchData.colorName).color);
                     }
+                    if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
+                    if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
                 } else if (data.tiled) {
                     String name = data.file.name();
                     name = DrawableData.proper(name);

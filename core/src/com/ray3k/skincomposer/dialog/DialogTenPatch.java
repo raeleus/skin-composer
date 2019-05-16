@@ -427,6 +427,8 @@ public class DialogTenPatch extends Dialog {
             public void changed(ChangeEvent event, Actor actor) {
                 var spinner = (Spinner) actor;
                 drawableData.minWidth = spinner.getValueAsInt();
+                ResizeWidget resizer = findActor("resizer");
+                resizer.setMinWidth(drawableData.minWidth);
             }
         });
     
@@ -445,7 +447,10 @@ public class DialogTenPatch extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 var spinner = (Spinner) actor;
-                drawableData.minWidth = spinner.getValueAsInt();
+                drawableData.minHeight = spinner.getValueAsInt();
+                tenPatchDrawable.setMinHeight(drawableData.minHeight);
+                ResizeWidget resizer = findActor("resizer");
+                resizer.setMinHeight(drawableData.minHeight);
             }
         });
         
@@ -457,6 +462,7 @@ public class DialogTenPatch extends Dialog {
         bottom.add(table).grow();
         
         var resizer = new ResizeWidget(null, skin);
+        resizer.setName("resizer");
         resizer.setTouchable(Touchable.enabled);
         resizer.setResizeFromCenter(true);
         

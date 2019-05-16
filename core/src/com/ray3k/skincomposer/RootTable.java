@@ -2630,6 +2630,8 @@ public class RootTable extends Table {
                     if (data.tenPatchData.colorName != null) {
                         ((TenPatchDrawable) drawable).getColor().set(main.getJsonData().getColorByName(data.tenPatchData.colorName).color);
                     }
+                    if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
+                    if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
                 } else if (data.file.name().matches(".*\\.9\\.[a-zA-Z0-9]*$")) {
                     String name = data.file.name();
                     name = DrawableData.proper(name);
