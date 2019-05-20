@@ -45,10 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.*;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
@@ -77,6 +74,7 @@ public class DialogTenPatch extends Dialog {
     private DrawableData drawableData;
     private String originalName;
     private boolean newDrawable;
+    private FilesDroppedListener filesDroppedListener;
     
     public DialogTenPatch(Main main, DrawableData drawableData, boolean newDrawable, ObjectMap<DrawableData, Drawable> drawablePairs) {
         super("", main.getSkin(), "dialog");
@@ -102,6 +100,20 @@ public class DialogTenPatch extends Dialog {
             }
         };
         main.getStage().addListener(stageResizeListener);
+    
+        filesDroppedListener = (Array<FileHandle> files) -> {
+            if (files.size > 0 && files.first().name().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
+                Runnable runnable = () -> {
+                    Gdx.app.postRunnable(() -> {
+                        loadPatchesFromFile(files.first());
+                    });
+                };
+            
+                main.getDialogFactory().showDialogLoading(runnable);
+            }
+        };
+    
+        main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
     }
     
     private void populate() {
@@ -821,6 +833,12 @@ public class DialogTenPatch extends Dialog {
         }
         
         main.getStage().removeListener(stageResizeListener);
+    }
+    
+    @Override
+    public boolean remove() {
+        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        return super.remove();
     }
     
     public static abstract class DialogTenPatchListener implements EventListener {

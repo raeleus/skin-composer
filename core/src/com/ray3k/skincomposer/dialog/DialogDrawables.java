@@ -559,7 +559,8 @@ public class DialogDrawables extends Dialog {
                         drawableData.file = drawable.file;
                         drawableData.bgColor = drawable.bgColor;
                         drawableData.tenPatchData = new TenPatchData();
-                        
+    
+                        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
                         main.getDialogFactory().showDialogTenPatch(drawableData, true, new DialogTenPatch.DialogTenPatchListener() {
                             @Override
                             public void selected(DrawableData drawableData) {
@@ -570,10 +571,12 @@ public class DialogDrawables extends Dialog {
                                 produceAtlas();
                                 sortBySelectedMode();
                                 getStage().setScrollFocus(scrollPane);
+                                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
                             }
 
                             @Override
                             public void cancelled() {
+                                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
                             }
                         }, drawablePairs);
                     }
@@ -669,15 +672,17 @@ public class DialogDrawables extends Dialog {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         var drawableData = new DrawableData(drawable);
+                        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
                         main.getDialogFactory().showDialogTenPatch(drawableData, false, new DialogTenPatch.DialogTenPatchListener() {
                             @Override
                             public void selected(DrawableData drawableData) {
                                 drawable.set(drawableData);
+                                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
                             }
     
                             @Override
                             public void cancelled() {
-        
+                                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
                             }
                         }, drawablePairs);
                     }
@@ -868,7 +873,8 @@ public class DialogDrawables extends Dialog {
                         drawableData.file = drawable.file;
                         drawableData.bgColor = drawable.bgColor;
                         drawableData.tenPatchData = new TenPatchData();
-                        
+    
+                        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
                         main.getDialogFactory().showDialogTenPatch(drawableData, true, new DialogTenPatch.DialogTenPatchListener() {
                             @Override
                             public void selected(DrawableData drawableData) {
@@ -878,10 +884,12 @@ public class DialogDrawables extends Dialog {
                                 produceAtlas();
                                 sortBySelectedMode();
                                 getStage().setScrollFocus(scrollPane);
+                                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
                             }
 
                             @Override
                             public void cancelled() {
+                                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
                             }
                         }, drawablePairs);
                     }
@@ -965,6 +973,8 @@ public class DialogDrawables extends Dialog {
                     public void changed(ChangeEvent event, Actor actor) {
                         event.setBubbles(false);
                         var drawableData = new DrawableData(drawable);
+    
+                        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
                         main.getDialogFactory().showDialogTenPatch(drawableData, false, new DialogTenPatch.DialogTenPatchListener() {
                             @Override
                             public void selected(DrawableData drawableData) {
@@ -974,11 +984,12 @@ public class DialogDrawables extends Dialog {
                                 produceAtlas();
                                 sortBySelectedMode();
                                 getStage().setScrollFocus(scrollPane);
+                                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
                             }
                 
                             @Override
                             public void cancelled() {
-                    
+                                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
                             }
                         }, drawablePairs);
                     }
