@@ -124,6 +124,7 @@ public class DialogTenPatch extends Dialog {
         var top = new Table();
         top.setTouchable(Touchable.enabled);
         var bottom = new Table();
+        bottom.setBackground(skin.getDrawable("white"));
         bottom.setTouchable(Touchable.enabled);
         var splitPane = new SplitPane(top, bottom, true, skin);
         root.add(splitPane).grow();
@@ -511,11 +512,13 @@ public class DialogTenPatch extends Dialog {
         
         bottom.row();
         table = new Table();
+        table.setBackground(skin.getDrawable("white"));
+        table.pad(5);
         bottom.add(table).growX();
         
         table.defaults().space(5);
         label = new Label("Content:", skin);
-        table.add(label);
+        table.add(label).right();
         
         var selectBox = new SelectBox<String>(skin);
         selectBox.setName("contentSelectBox");
@@ -537,7 +540,7 @@ public class DialogTenPatch extends Dialog {
         });
         
         imageButton = new ImageButton(skin, "color");
-        table.add(imageButton).expandX().left();
+        table.add(imageButton);
         imageButton.addListener(main.getHandListener());
         imageButton.addListener(new ChangeListener() {
             @Override
@@ -553,6 +556,29 @@ public class DialogTenPatch extends Dialog {
                 
             }
         });
+        
+        label = new Label("Background:", skin);
+        table.add(label).padLeft(15);
+    
+        imageButton = new ImageButton(skin, "color");
+        table.add(imageButton);
+        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), colorData -> {
+                    if (colorData == null) {
+                        bottom.setColor(Color.WHITE);
+                    } else {
+                        bottom.setColor(colorData.color);
+                    }
+                    updatePreview();
+                }, null);
+            
+            }
+        });
+    
+        table.add().expandX();
         
         root = getButtonTable();
         root.pad(10);
