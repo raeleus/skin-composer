@@ -145,7 +145,7 @@ public class DialogTenPatch extends Dialog {
         
         var textField = new TextField(drawableData.name, skin);
         textField.setName("nameField");
-        table.add(textField);
+        table.add(textField).growX();
         textField.addListener(main.getIbeamListener());
         textField.addListener(new ChangeListener() {
             @Override
@@ -220,9 +220,8 @@ public class DialogTenPatch extends Dialog {
             }
         });
         
-        table.defaults().reset();
         textButton = new TextButton("More info...", skin);
-        table.add(textButton).expandX().right();
+        table.add(textButton);
         textButton.addListener(main.getHandListener());
         textButton.addListener(new ChangeListener() {
             @Override
