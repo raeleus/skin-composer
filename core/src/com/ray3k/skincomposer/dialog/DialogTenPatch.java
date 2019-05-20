@@ -183,10 +183,9 @@ public class DialogTenPatch extends Dialog {
                     if (file != null) {
                         Gdx.app.postRunnable(() -> {
                             var fileHandle = new FileHandle(file);
-                            if (!fileHandle.name().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
-                                fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".9.png");
+                            if (fileHandle.name().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
+                                loadPatchesFromFile(fileHandle);
                             }
-                            loadPatchesFromFile(fileHandle);
                         });
                     }
                 };
