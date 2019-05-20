@@ -1,6 +1,12 @@
 ### Skin Composer Version 30 ###
 
-* 
+* Integrated TenPatch functionality as an alternative to 9patch. See https://github.com/raeleus/TenPatch
+* The last zoom level of the drawables dialog will be persisted to the next time you open it.
+* minWidth and minHeight values are now correctly exported for Tinted drawables
+* minWidth and minHeight values are now imported from JSON files.
+* Added dialog to fix the minWidth and minHeight settings of drawables when opening old projects.
+* Added tooltips when hovering over items in the preview for custom classes.
+* Source updated to JDK 11
 
 ### Skin Composer Version 29 ###
 
