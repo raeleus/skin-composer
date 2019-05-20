@@ -690,7 +690,7 @@ public class JsonData implements Json.Serializable {
                 tenPatchDrawables.add(drawable);
             }
             
-            if (!drawable.tiled && drawable.tenPatchData == null) {
+            if (!drawable.tiled  && drawable.tint == null && drawable.tintName == null && drawable.tenPatchData == null) {
                 if (drawable.file != null && (!MathUtils.isEqual(drawable.minWidth, -1f) || !MathUtils.isEqual(drawable.minHeight, -1f))) {
                     if (drawable.file.name().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
                         ninePatchDrawables.add(drawable);
@@ -722,12 +722,9 @@ public class JsonData implements Json.Serializable {
             var className = NinePatchDrawable.class.getName();
             json.writeObjectStart(className);
             for (var drawable : ninePatchDrawables) {
-                if (drawable.tint != null || drawable.tintName != null) {
-                    json.writeObjectStart(drawable.name);
-                } else {
-                    json.writeObjectStart(drawable.file.nameWithoutExtension());
-                }
-                json.writeValue("patch", drawable.file.nameWithoutExtension());
+                var name = drawable.file.name().toLowerCase(Locale.ROOT).replaceAll("\\.9.*$", "");
+                json.writeObjectStart(name);
+                json.writeValue("patch", name);
                 if (!MathUtils.isEqual(drawable.minWidth, -1)) json.writeValue("minWidth", drawable.minWidth);
                 else json.writeValue("minWidth", Utils.imageDimensions(drawable.file).x);
                 if (!MathUtils.isEqual(drawable.minHeight, -1)) json.writeValue("minHeight", drawable.minHeight);
@@ -743,12 +740,8 @@ public class JsonData implements Json.Serializable {
             json.writeObjectStart(className);
             for (DrawableData drawable : tintedDrawables) {
                 json.writeObjectStart(drawable.name);
-                
-                if (!MathUtils.isEqual(drawable.minWidth, -1f) || !MathUtils.isEqual(drawable.minHeight, -1f)) {
-                    json.writeValue("name", DrawableData.proper(drawable.name));
-                } else {
-                    json.writeValue("name", DrawableData.proper(drawable.file.name()));
-                }
+    
+                json.writeValue("name", DrawableData.proper(drawable.file.name()));
                 if (drawable.tint != null) {
                     json.writeObjectStart("color");
                     if (main.getProjectData().isExportingHex()) {
@@ -763,6 +756,14 @@ public class JsonData implements Json.Serializable {
                 } else if (drawable.tintName != null) {
                     json.writeValue("color", drawable.tintName);
                 }
+                
+                if (drawable.minWidth >= 0) {
+                    json.writeValue("minWidth", drawable.minWidth);
+                }
+                if (drawable.minHeight >= 0) {
+                    json.writeValue("minHeight", drawable.minHeight);
+                }
+                
                 json.writeObjectEnd();
             }
             json.writeObjectEnd();
