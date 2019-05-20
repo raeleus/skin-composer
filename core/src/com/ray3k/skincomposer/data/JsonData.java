@@ -257,6 +257,13 @@ public class JsonData implements Json.Serializable {
                     
                     colors.add(colorData);
                 }
+            }
+            else if (child.name().equals(TextureRegionDrawable.class.getName()) || child.name().equals(TextureRegionDrawable.class.getSimpleName()) || child.name().equals(NinePatchDrawable.class.getName()) || child.name().equals(NinePatchDrawable.class.getSimpleName())) {
+                for (JsonValue jsonValue : child.iterator()) {
+                    DrawableData drawableData = main.getProjectData().getAtlasData().getDrawable(jsonValue.name);
+                    if (jsonValue.has("minWidth")) drawableData.minWidth = jsonValue.getFloat("minWidth");
+                    if (jsonValue.has("minHeight")) drawableData.minHeight = jsonValue.getFloat("minHeight");
+                }
             } //tiled drawables
             else if (child.name().equals(TiledDrawable.class.getName()) || child.name().equals(TiledDrawable.class.getSimpleName())) {
                 for (JsonValue tiledDrawable : child.iterator()) {
@@ -293,6 +300,9 @@ public class JsonData implements Json.Serializable {
                     } else {
                         drawableData.tintName = tintedDrawable.getString("color");
                     }
+    
+                    if (tintedDrawable.has("minWidth")) drawableData.minWidth = tintedDrawable.getFloat("minWidth");
+                    if (tintedDrawable.has("minHeight")) drawableData.minHeight = tintedDrawable.getFloat("minHeight");
                     
                     //delete drawables with the same name
                     for (DrawableData originalData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {
