@@ -332,6 +332,20 @@ public class MainListener extends RootTableListener {
                     if (drawableErrors.size > 0 || fontErrors.size > 0) {
                         dialogFactory.showDialogPathErrors(drawableErrors, fontErrors);
                     }
+                    
+                    if (projectData.checkForInvalidMinWidthHeight()) {
+                        projectData.setLoadedVersion(Main.VERSION);
+                        main.getDialogFactory().yesNoDialog("Fix minWidth and minHeight errors?", "Old project (< v.30) detected.\nResolve minWidth and minHeight errors?", new DialogFactory.ConfirmationListener() {
+                            @Override
+                            public void selected(int selection) {
+                                if (selection == 0) {
+                                    projectData.fixInvalidMinWidthHeight();
+                                    refreshTextureAtlas();
+                                }
+                            }
+                        }, null);
+                    }
+                    
                     projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
                     root.populate();
                     root.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
@@ -369,13 +383,6 @@ public class MainListener extends RootTableListener {
     
     public void openFile(FileHandle fileHandle) {
         Runnable runnable = () -> {
-            String defaultPath = projectData.getLastOpenSavePath();
-
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[] {"*.scmp"};
-            }
-
             if (fileHandle != null) {
                 Gdx.app.postRunnable(() -> {
                     projectData.load(fileHandle);
@@ -384,6 +391,20 @@ public class MainListener extends RootTableListener {
                     if (drawableErrors.size > 0 || fontErrors.size > 0) {
                         dialogFactory.showDialogPathErrors(drawableErrors, fontErrors);
                     }
+    
+                    if (projectData.checkForInvalidMinWidthHeight()) {
+                        projectData.setLoadedVersion(Main.VERSION);
+                        main.getDialogFactory().yesNoDialog("Fix minWidth and minHeight errors?", "Old project (< v.30) detected.\nResolve minWidth and minHeight errors?", new DialogFactory.ConfirmationListener() {
+                            @Override
+                            public void selected(int selection) {
+                                if (selection == 0) {
+                                    projectData.fixInvalidMinWidthHeight();
+                                    refreshTextureAtlas();
+                                }
+                            }
+                        }, null);
+                    }
+                    
                     projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
                     root.populate();
                     root.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);

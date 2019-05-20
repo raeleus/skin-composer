@@ -848,6 +848,19 @@ public class DialogFactory {
                                     if (drawableErrors.size > 0 || fontErrors.size > 0) {
                                         main.getDialogFactory().showDialogPathErrors(drawableErrors, fontErrors);
                                     }
+    
+                                    if (main.getProjectData().checkForInvalidMinWidthHeight()) {
+                                        main.getProjectData().setLoadedVersion(Main.VERSION);
+                                        main.getDialogFactory().yesNoDialog("Fix minWidth and minHeight errors?", "Old project (< v.30) detected.\nResolve minWidth and minHeight errors?", new DialogFactory.ConfirmationListener() {
+                                            @Override
+                                            public void selected(int selection) {
+                                                if (selection == 0) {
+                                                    main.getProjectData().fixInvalidMinWidthHeight();
+                                                    main.getMainListener().refreshTextureAtlas();
+                                                }
+                                            }
+                                        }, null);
+                                    }
                                 });
                             });
                         }
