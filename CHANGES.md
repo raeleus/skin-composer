@@ -6,6 +6,7 @@
 * minWidth and minHeight values are now imported from JSON files.
 * Added dialog to fix the minWidth and minHeight settings of drawables when opening old projects.
 * Added tooltips when hovering over items in the preview for custom classes.
+* Fixed nine patch editor not showing drawables when selected from Content in Preview area.
 * Source updated to JDK 11
 
 ### Skin Composer Version 29 ###

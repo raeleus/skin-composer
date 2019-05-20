@@ -1053,8 +1053,8 @@ public class DialogFactory {
         dialog.show(stage);
     }
     
-    public void showDialog9Patch(Dialog9PatchListener listener) {
-        Dialog9Patch dialog = new Dialog9Patch(main);
+    public void showDialog9Patch(ObjectMap<DrawableData, Drawable> drawablePairs, Dialog9PatchListener listener) {
+        Dialog9Patch dialog = new Dialog9Patch(main, drawablePairs);
         dialog.addDialog9PatchListener(listener);
         dialog.setFillParent(true);
         dialog.show(main.getStage());

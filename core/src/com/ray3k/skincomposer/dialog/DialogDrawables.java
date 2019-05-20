@@ -346,7 +346,7 @@ public class DialogDrawables extends Dialog {
                 public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                     Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                     main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
-                    main.getDialogFactory().showDialog9Patch(new Dialog9Patch.Dialog9PatchListener() {
+                    main.getDialogFactory().showDialog9Patch(drawablePairs, new Dialog9Patch.Dialog9PatchListener() {
                         @Override
                         public void fileSaved(FileHandle fileHandle) {
                             if (fileHandle.exists()) {
