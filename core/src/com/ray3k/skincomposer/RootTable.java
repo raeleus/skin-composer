@@ -2398,7 +2398,6 @@ public class RootTable extends Table {
                     //the following causes a crash. LibGDX bug.
 //                    horizontalGroup.space(10.0f);
                     horizontalGroup.wrapSpace(10.0f);
-                    horizontalGroup.setTouchable(Touchable.disabled);
                     previewTable.add(horizontalGroup).grow().pad(10.0f);
 
                     for (CustomProperty customProperty : customStyle.getProperties()) {
@@ -2454,8 +2453,10 @@ public class RootTable extends Table {
                                         colorTable.setBackground("white");
                                         colorTable.setColor(colorData.color);
                                         colorTable.add().size(25.0f);
+                                        colorTable.setTouchable(Touchable.enabled);
 
                                         container.setActor(colorTable);
+                                        container.addListener(new TextTooltip(colorName, main.getTooltipManager(), getSkin()));
                                     }
                                     break;
                                 case FONT:
@@ -2479,6 +2480,8 @@ public class RootTable extends Table {
                                     if (font != null) {
                                         Label labelFont = new Label(fontData.getName(), new LabelStyle(font, Color.WHITE));
                                         container.setActor(labelFont);
+    
+                                        container.addListener(new TextTooltip(fontData.getName(), main.getTooltipManager(), getSkin()));
                                     }
 
                                     FreeTypeFontData freeTypeFontData = null;
@@ -2492,6 +2495,8 @@ public class RootTable extends Table {
                                     if (freeTypeFontData != null && freeTypeFontData.bitmapFont != null) {
                                         Label labelFont = new Label(freeTypeFontData.name, new LabelStyle(freeTypeFontData.bitmapFont, Color.WHITE));
                                         container.setActor(labelFont);
+    
+                                        container.addListener(new TextTooltip(freeTypeFontData.name, main.getTooltipManager(), getSkin()));
                                     }
 
                                     break;
@@ -2513,6 +2518,8 @@ public class RootTable extends Table {
                                     if (drawable != null) {
                                         Image image = new Image(drawablePairs.get(drawable.name));
                                         container.setActor(image);
+                                        
+                                        container.addListener(new TextTooltip(drawable.name, main.getTooltipManager(), getSkin()));
                                     }
                                     break;
                             }
