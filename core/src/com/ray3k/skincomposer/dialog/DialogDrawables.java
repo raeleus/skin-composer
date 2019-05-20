@@ -78,6 +78,7 @@ public class DialogDrawables extends Dialog {
     public static DialogDrawables instance;
     private final static int[] sizes = {40, 135, 160, 210, 260};
     private static float scrollPosition = 0.0f;
+    private static int zoomLevel = 1;
     private static int sortSelection = 0;
     private SelectBox sortSelectBox;
     private ScrollPane scrollPane;
@@ -367,10 +368,11 @@ public class DialogDrawables extends Dialog {
         
         table.add(new Label("Zoom:", getSkin())).right().expandX();
         zoomSlider = new Slider(0, 4, 1, false, getSkin());
-        zoomSlider.setValue(1);
+        zoomSlider.setValue(zoomLevel);
         zoomSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                zoomLevel = MathUtils.round(zoomSlider.getValue());
                 refreshDrawableDisplay();
             }
         });
