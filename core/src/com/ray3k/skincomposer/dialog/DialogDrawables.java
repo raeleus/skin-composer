@@ -554,6 +554,8 @@ public class DialogDrawables extends Dialog {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event,
                             Actor actor) {
+                        event.setBubbles(false);
+                        
                         var drawableData = new DrawableData();
                         drawableData.name = drawable.name;
                         drawableData.file = drawable.file;
@@ -671,6 +673,8 @@ public class DialogDrawables extends Dialog {
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
+                        event.setBubbles(false);
+                        
                         var drawableData = new DrawableData(drawable);
                         main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
                         main.getDialogFactory().showDialogTenPatch(drawableData, false, new DialogTenPatch.DialogTenPatchListener() {
@@ -868,6 +872,8 @@ public class DialogDrawables extends Dialog {
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        event.setBubbles(false);
+                        
                         var drawableData = new DrawableData();
                         drawableData.name = drawable.name;
                         drawableData.file = drawable.file;
