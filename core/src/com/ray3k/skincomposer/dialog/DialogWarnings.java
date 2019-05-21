@@ -66,7 +66,7 @@ public class DialogWarnings extends Dialog {
         }
     }
 
-    public DialogWarnings(Main main, Array<String> warnings) {
+    public DialogWarnings(Main main, boolean showCheckBox, Array<String> warnings) {
         super("", main.getSkin(), "welcome");
         this.main = main;
         this.warnings = warnings;
@@ -99,17 +99,19 @@ public class DialogWarnings extends Dialog {
         scrollPane.setScrollingDisabled(true, false);
         getContentTable().add(scrollPane).grow();
         
-        getContentTable().row();
-        var checkBox = new CheckBox("Do not show again", getSkin());
-        checkBox.setChecked(!main.getProjectData().isShowingExportWarnings());
-        getContentTable().add(checkBox).right();
-        checkBox.addListener(main.getHandListener());
-        checkBox.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                main.getProjectData().setShowingExportWarnings(!checkBox.isChecked());
-            }
-        });
+        if (showCheckBox) {
+            getContentTable().row();
+            var checkBox = new CheckBox("Do not show again", getSkin());
+            checkBox.setChecked(!main.getProjectData().isShowingExportWarnings());
+            getContentTable().add(checkBox).right();
+            checkBox.addListener(main.getHandListener());
+            checkBox.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                    main.getProjectData().setShowingExportWarnings(!checkBox.isChecked());
+                }
+            });
+        }
         
         for (String warning : warnings) {
             table.row();

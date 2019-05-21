@@ -220,7 +220,7 @@ public class DialogImport extends Dialog {
                 }
 
                 if (warnings.size > 0) {
-                    main.getDialogFactory().showWarningDialog(warnings);
+                    main.getDialogFactory().showWarningDialog(false, warnings);
                 }
             });
         });

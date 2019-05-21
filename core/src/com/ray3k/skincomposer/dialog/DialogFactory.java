@@ -979,7 +979,12 @@ public class DialogFactory {
     }
     
     public void showWarningDialog(Array<String> warnings) {
-        DialogWarnings dialog = new DialogWarnings(main, warnings);
+        DialogWarnings dialog = new DialogWarnings(main, true, warnings);
+        dialog.show(main.getStage());
+    }
+    
+    public void showWarningDialog(boolean showCheckBox, Array<String> warnings) {
+        DialogWarnings dialog = new DialogWarnings(main, showCheckBox, warnings);
         dialog.show(main.getStage());
     }
     
