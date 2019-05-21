@@ -2,6 +2,7 @@
 
 * Integrated TenPatch functionality as an alternative to 9patch. See https://github.com/raeleus/TenPatch
 * The last zoom level of the drawables dialog will be persisted to the next time you open it.
+* Allow for drag and drop of JSON files into import dialog.
 * minWidth and minHeight values are now correctly exported for Tinted drawables
 * minWidth and minHeight values are now imported from JSON files.
 * Added dialog to fix the minWidth and minHeight settings of drawables when opening old projects.
