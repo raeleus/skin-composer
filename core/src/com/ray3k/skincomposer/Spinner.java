@@ -127,14 +127,7 @@ public class Spinner extends Table {
             public boolean acceptChar(TextField textField1, char c) {
                 boolean returnValue = false;
                 if ((c >= 48 && c <= 57) || c == 45 || (!rounding && c == 46)) {
-                    String text = textField1.getText();
-                    if (textField1.getCursorPosition() <= text.length()) {
-                        text = text.substring(0, textField1.getCursorPosition());
-                        text += c + textField1.getText().substring(textField1.getCursorPosition());
-                    }
-                    if (text.matches("-?\\d*\\.?\\d*")) {
-                        returnValue = true;
-                    }
+                    returnValue = true;
                 }
                 return returnValue;
             }

@@ -9,6 +9,7 @@
 * Added tooltips when hovering over items in the preview for custom classes.
 * Fixed nine patch editor not showing drawables when selected from Content in Preview area.
 * Added wrapping to Style Property entries to prevent overflow.
+* Fixed character filtering in Spinner so that negative values can be entered properly.
 * Various UI tweaks and bug fixes.
 * Source updated to JDK 11
 
