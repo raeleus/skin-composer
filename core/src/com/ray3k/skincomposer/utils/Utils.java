@@ -390,4 +390,9 @@ public class Utils {
         });
         return sb.toString();
     }
+    
+    public static String sanitizeFilePath(String path) {
+        var file = new FileHandle(path);
+        return file.path();
+    }
 }

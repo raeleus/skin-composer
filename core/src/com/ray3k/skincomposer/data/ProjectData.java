@@ -34,6 +34,8 @@ import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.JsonData.ExportFormat;
+import com.ray3k.skincomposer.utils.Utils;
+
 import java.util.Iterator;
 
 public class ProjectData implements Json.Serializable {
@@ -581,7 +583,7 @@ public class ProjectData implements Json.Serializable {
     }
 
     public String getLastImportExportPath() {
-        return (String) preferences.get("last-import-export-path", Gdx.files.getLocalStoragePath());
+        return (String) preferences.get("last-import-export-path", Utils.sanitizeFilePath(System.getProperty("user.home")) + "/");
     }
 
     public void setLastImportExportPath(String importExportPath) {
