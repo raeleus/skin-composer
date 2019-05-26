@@ -23,6 +23,7 @@
  ***************************************************************************** */
 package com.ray3k.skincomposer;
 
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.ray3k.skincomposer.data.CustomProperty;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -41,36 +42,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
-import com.badlogic.gdx.scenes.scene2d.ui.TooltipManager;
-import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
-import com.badlogic.gdx.scenes.scene2d.ui.Tree;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
@@ -116,7 +93,7 @@ public class RootTable extends Table {
     private SelectBox<String> previewSizeSelectBox;
     private static final String[] DEFAULT_SIZES = {"small", "default", "large", "growX", "growY", "grow", "custom"};
     private static final String TEXT_SAMPLE = "Lorem ipsum dolor sit";
-    private static final String PARAGRAPH_SAMPLE = 
+    private static final String PARAGRAPH_SAMPLE =
             "Lorem ipsum dolor sit amet, consectetur\n"
             + "adipiscing elit, sed do eiusmod tempor\n"
             + "incididunt ut labore et dolore magna\n"
@@ -1114,6 +1091,22 @@ public class RootTable extends Table {
                 previewSizeSelectBox.addListener(main.getHandListener());
                 previewSizeSelectBox.getList().addListener(main.getHandListener());
                 t.add(previewSizeSelectBox).growX().minWidth(200.0f);
+                
+                t.row();
+                t.add(new Label("Zoom: ", getSkin())).right();
+                
+                var slider = new Slider(1, 10, 1, false, getSkin());
+                t.add(slider).growX();
+                slider.addListener(main.getHandListener());
+                slider.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        previewProperties.put("zoom", slider.getValue());
+                        refreshPreview();
+                    }
+                });
+                previewProperties.put("zoom", slider.getValue());
+                
                 Class clazz = Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()];
                 if (clazz.equals(Button.class)) {
                     t.row();
@@ -2086,7 +2079,7 @@ public class RootTable extends Table {
         }
     }
     
-    public void refreshPreview() {        
+    public void refreshPreview() {
         if (previewTable != null) {
             previewTable.clear();
             previewTable.setBackground("white");
@@ -2121,8 +2114,10 @@ public class RootTable extends Table {
                     if (clazz.equals(Button.class)) {
                         Button.ButtonStyle style = createPreviewStyle(Button.ButtonStyle.class, styleData);
                         widget = new Button(style);
+                        ((Button)widget).setTransform(true);
                         ((Button)widget).setDisabled((boolean) previewProperties.get("disabled"));
                         widget.addListener(main.getHandListener());
+                        widget.setScale((float)previewProperties.get("zoom"));
                     } else if (clazz.equals(CheckBox.class)) {
                         CheckBox.CheckBoxStyle style = createPreviewStyle(CheckBox.CheckBoxStyle.class, styleData);
                         widget = new CheckBox("", style);
@@ -2280,34 +2275,64 @@ public class RootTable extends Table {
                         ((Window)widget).add(sampleText);
                     }
 
-                    if (widget != null) {                        
+                    if (widget != null) {
+                        var zoom = (float) previewProperties.get("zoom");
                         switch ((int) previewProperties.get("size")) {
                             case (0):
-                                previewTable.add(widget).size(10.0f);
+                                if (MathUtils.isEqual(zoom, 1)) {
+                                    previewTable.add(widget).size(10.0f);
+                                } else {
+                                    previewTable.add(widget).size(10.0f).padRight(10 * (zoom - 1)).padTop(10 * (zoom - 1));
+                                }
                                 previewSizeSelectBox.setItems(DEFAULT_SIZES);
                                 break;
                             case (1):
-                                previewTable.add(widget);
+                                if (MathUtils.isEqual(zoom, 1)) {
+                                    previewTable.add(widget);
+                                } else {
+                                    previewTable.add(widget).padRight(Value.percentWidth(zoom - 1, widget)).padTop(Value.percentHeight(zoom - 1, widget));
+                                }
                                 previewSizeSelectBox.setItems(DEFAULT_SIZES);
                                 break;
                             case (2):
-                                previewTable.add(widget).size(200.0f);
+                                if (MathUtils.isEqual(zoom, 1)) {
+                                    previewTable.add(widget).size(200.0f);
+                                } else {
+                                    previewTable.add(widget).size(200.0f).padRight(200 * (zoom - 1)).padTop(200 * (zoom - 1));
+                                }
                                 previewSizeSelectBox.setItems(DEFAULT_SIZES);
                                 break;
                             case (3):
-                                previewTable.add(widget).growX();
+                                if (MathUtils.isEqual(zoom, 1)) {
+                                    previewTable.add(widget).growX();
+                                } else {
+                                    var width = previewTable.getParent().getWidth();
+                                    previewTable.add(widget).width(width / zoom).expandX().left().padTop(Value.percentHeight(zoom - 1, widget));
+                                }
                                 previewSizeSelectBox.setItems(DEFAULT_SIZES);
                                 break;
                             case (4):
-                                previewTable.add(widget).growY();
+                                if (MathUtils.isEqual(zoom, 1)) {
+                                    previewTable.add(widget).growY();
+                                } else {
+                                    var height = previewTable.getParent().getHeight();
+                                    previewTable.add(widget).height(height / zoom).expandY().bottom().padRight(Value.percentWidth(zoom - 1, widget));
+                                }
                                 previewSizeSelectBox.setItems(DEFAULT_SIZES);
                                 break;
                             case (5):
-                                previewTable.add(widget).grow();
+                                if (MathUtils.isEqual(zoom, 1)) {
+                                    previewTable.add(widget).grow();
+                                } else {
+                                    var width = previewTable.getParent().getWidth();
+                                    var height = previewTable.getParent().getHeight();
+                                    previewTable.add(widget).width(width / zoom).height(height / zoom).expand().left().bottom();
+                                }
                                 previewSizeSelectBox.setItems(DEFAULT_SIZES);
                                 break;
                             case (6):
                                 Actor addWidget = widget;
+                                
                                 TraversalTextField widthField = new TraversalTextField("", getSkin());
                                 TraversalTextField heightField = new TraversalTextField("", getSkin());
                                 widthField.setNextFocus(heightField);
@@ -2316,7 +2341,15 @@ public class RootTable extends Table {
                                     @Override
                                     protected void result(Object object) {
                                         if ((boolean)object) {
-                                            previewTable.add(addWidget).size(Integer.parseInt(widthField.getText()), Integer.parseInt(heightField.getText()));
+                                            var width = Integer.parseInt(widthField.getText());
+                                            var height = Integer.parseInt(heightField.getText());
+    
+                                            if (MathUtils.isEqual(zoom, 1)) {
+                                                previewTable.add(addWidget).size(width, height);
+                                            } else {
+                                                previewTable.add(addWidget).width(width).height(height).padRight(width * (zoom - 1)).padTop(height * (zoom - 1));
+                                            }
+                                            
                                             Array<String> items = new Array<>(DEFAULT_SIZES);
                                             items.add(widthField.getText() + "x" + heightField.getText());
                                             previewProperties.put("sizeX", Integer.parseInt(widthField.getText()));
@@ -2361,9 +2394,16 @@ public class RootTable extends Table {
                                 stage.setKeyboardFocus(widthField);
                                 break;
                             case (7):
-                                previewTable.add(widget).size((int) previewProperties.get("sizeX"), (int) previewProperties.get("sizeY"));
+                                var width = (int) previewProperties.get("sizeX");
+                                var height = (int) previewProperties.get("sizeY");
+                                if (MathUtils.isEqual(zoom, 1)) {
+                                    previewTable.add(widget).size(width, height);
+                                } else {
+                                    previewTable.add(widget).width(width).height(height).padRight(width * (zoom - 1)).padTop(height * (zoom - 1));
+                                }
                                 break;
                         }
+                        previewTable.add();
                     }
                 }
             } else {
@@ -2390,7 +2430,7 @@ public class RootTable extends Table {
                         previewTable.add(label);
                     }
                 }
-                 
+                
                 if (!showMessage) {
                     HorizontalGroup horizontalGroup = new HorizontalGroup();
                     horizontalGroup.wrap();
@@ -2604,7 +2644,7 @@ public class RootTable extends Table {
     /**
      * Writes a TextureAtlas based on drawables list. Creates drawables to be
      * displayed on screen
-     * @return 
+     * @return
      */
     public boolean produceAtlas() {
         try {

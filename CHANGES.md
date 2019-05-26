@@ -7,6 +7,7 @@
 * minWidth and minHeight values are now imported from JSON files.
 * Added dialog to fix the minWidth and minHeight settings of drawables when opening old projects.
 * Added tooltips when hovering over items in the preview for custom classes.
+* Added zoom option to preview.
 * Fixed nine patch editor not showing drawables when selected from Content in Preview area.
 * Added wrapping to Style Property entries to prevent overflow.
 * Fixed character filtering in Spinner so that negative values can be entered properly.
