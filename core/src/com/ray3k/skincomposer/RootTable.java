@@ -23,7 +23,9 @@
  ***************************************************************************** */
 package com.ray3k.skincomposer;
 
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.ray3k.skincomposer.data.CustomProperty;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -32,14 +34,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
@@ -48,11 +42,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -2282,7 +2271,9 @@ public class RootTable extends Table {
                                 if (MathUtils.isEqual(zoom, 1)) {
                                     previewTable.add(widget).size(10.0f);
                                 } else {
-                                    previewTable.add(widget).size(10.0f).padRight(10 * (zoom - 1)).padTop(10 * (zoom - 1));
+                                    var size = Math.min(10f * zoom, previewTable.getParent().getWidth());
+                                    size = Math.min(size, previewTable.getParent().getHeight());
+                                    previewTable.add(widget).size(size / zoom).padRight(size / zoom * (zoom - 1)).padTop(size / zoom * (zoom - 1));
                                 }
                                 previewSizeSelectBox.setItems(DEFAULT_SIZES);
                                 break;
@@ -2290,7 +2281,10 @@ public class RootTable extends Table {
                                 if (MathUtils.isEqual(zoom, 1)) {
                                     previewTable.add(widget);
                                 } else {
-                                    previewTable.add(widget).padRight(Value.percentWidth(zoom - 1, widget)).padTop(Value.percentHeight(zoom - 1, widget));
+                                    var layout = (Layout) widget;
+                                    var width = Math.min(layout.getMinWidth() * zoom, previewTable.getParent().getWidth());
+                                    var height = Math.min(layout.getMinHeight() * zoom, previewTable.getParent().getHeight());
+                                    previewTable.add(widget).size(width / zoom, height / zoom).padRight(width / zoom * (zoom - 1)).padTop(height / zoom * (zoom - 1));
                                 }
                                 previewSizeSelectBox.setItems(DEFAULT_SIZES);
                                 break;
@@ -2298,7 +2292,9 @@ public class RootTable extends Table {
                                 if (MathUtils.isEqual(zoom, 1)) {
                                     previewTable.add(widget).size(200.0f);
                                 } else {
-                                    previewTable.add(widget).size(200.0f).padRight(200 * (zoom - 1)).padTop(200 * (zoom - 1));
+                                    var size = Math.min(200f * zoom, previewTable.getParent().getWidth());
+                                    size = Math.min(size, previewTable.getParent().getHeight());
+                                    previewTable.add(widget).size(size / zoom).padRight(size / zoom * (zoom - 1)).padTop(size / zoom * (zoom - 1));
                                 }
                                 previewSizeSelectBox.setItems(DEFAULT_SIZES);
                                 break;
