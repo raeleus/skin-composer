@@ -659,7 +659,8 @@ public class MainListener extends RootTableListener {
         main.getDialogFactory().showDialogLoading(() -> {
             Gdx.app.postRunnable(() -> {
                 try {
-                    main.getProjectData().getAtlasData().writeAtlas(Gdx.files.internal("atlas-internal-settings.json"));
+                    FileHandle defaultsFile = Main.appFolder.child("texturepacker/atlas-internal-settings.json");
+                    main.getProjectData().getAtlasData().writeAtlas(defaultsFile);
                     main.getProjectData().getAtlasData().atlasCurrent = true;
                     main.getRootTable().produceAtlas();
                     main.getRootTable().refreshPreview();

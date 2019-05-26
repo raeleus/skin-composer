@@ -159,9 +159,9 @@ public class DialogSettings extends Dialog {
             textButton.addListener(main.getHandListener());
             table.add(textButton);
         }
-
+    
         table.row();
-        textButton = new TextButton("Open texture packer settings file", main.getSkin());
+        textButton = new TextButton("Open texture packer settings file for export", main.getSkin());
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -170,6 +170,22 @@ public class DialogSettings extends Dialog {
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error opening atlas-export-settings.json", e);
                     main.getDialogFactory().showDialogError("File Error...", "Error opening atlas-export-settings.json\n\nOpen log?");
+                }
+            }
+        });
+        textButton.addListener(main.getHandListener());
+        table.add(textButton);
+    
+        table.row();
+        textButton = new TextButton("Open texture packer settings file for preview", main.getSkin());
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                try {
+                    Utils.openFileExplorer(Main.appFolder.child("texturepacker/atlas-internal-settings.json"));
+                } catch (Exception e) {
+                    Gdx.app.error(getClass().getName(), "Error opening atlas-internal-settings.json", e);
+                    main.getDialogFactory().showDialogError("File Error...", "Error opening atlas-internal-settings.json\n\nOpen log?");
                 }
             }
         });

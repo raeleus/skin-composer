@@ -140,6 +140,12 @@ public class Main extends ApplicationAdapter {
             Gdx.files.internal("atlas-export-settings.json").copyTo(fileHandle);
         }
         
+        //copy atlas settings for preview to temp folder if it doesn't exist
+        fileHandle = appFolder.child("texturepacker/atlas-internal-settings.json");
+        if (!fileHandle.exists()) {
+            Gdx.files.internal("atlas-internal-settings.json").copyTo(fileHandle);
+        }
+        
         //copy preview fonts to preview fonts folder if they do not exist
         fileHandle = appFolder.child("preview fonts/IBMPlexSerif-Medium.ttf");
         if (!fileHandle.exists()) {

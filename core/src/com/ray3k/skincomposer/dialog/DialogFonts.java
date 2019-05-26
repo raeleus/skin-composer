@@ -878,7 +878,8 @@ public class DialogFonts extends Dialog {
             }
             
             if (!main.getAtlasData().atlasCurrent) {
-                main.getAtlasData().writeAtlas(Gdx.files.internal("atlas-internal-settings.json"));
+                FileHandle defaultsFile = Main.appFolder.child("texturepacker/atlas-internal-settings.json");
+                main.getAtlasData().writeAtlas(defaultsFile);
                 main.getAtlasData().atlasCurrent = true;
             }
             atlas = main.getAtlasData().getAtlas();
