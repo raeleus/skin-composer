@@ -53,7 +53,7 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        compile "com.github.raeleus:TenPatch:dev-SNAPSHOT"
+        compile "com.github.raeleus.TenPatch:tenpatch:dev-SNAPSHOT"
     }
 }
 
