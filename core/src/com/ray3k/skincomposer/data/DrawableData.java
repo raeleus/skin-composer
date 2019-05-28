@@ -27,6 +27,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.ray3k.skincomposer.dialog.DialogTenPatch;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class DrawableData implements Json.Serializable {
@@ -48,6 +49,7 @@ public class DrawableData implements Json.Serializable {
     public float minWidth;
     public float minHeight;
     public boolean customized;
+    public DialogTenPatch.TenPatchData tenPatchData;
 
     public DrawableData(FileHandle file) {
         this.file = file;
@@ -76,6 +78,23 @@ public class DrawableData implements Json.Serializable {
         minWidth = -1;
         minHeight = -1;
     }
+    
+    public DrawableData(DrawableData drawableData) {
+        set(drawableData);
+    }
+    
+    public void set(DrawableData drawableData) {
+        this.file = drawableData.file;
+        this.bgColor = drawableData.bgColor;
+        this.tint = drawableData.tint;
+        this.tintName = drawableData.tintName;
+        this.name = drawableData.name;
+        this.tiled = drawableData.tiled;
+        this.minWidth = drawableData.minWidth;
+        this.minHeight = drawableData.minHeight;
+        this.customized = drawableData.customized;
+        this.tenPatchData = drawableData.tenPatchData;
+    }
 
     @Override
     public String toString() {
@@ -91,7 +110,8 @@ public class DrawableData implements Json.Serializable {
                     customized == dd.customized && 
                     (file == null && dd.file == null || file != null && file.equals(dd.file)) &&
                     (tint == null && dd.tint == null || tint != null && tint.equals(dd.tint)) &&
-                    (tintName == null && dd.tintName == null || tintName != null && tintName.equals(dd.tintName));
+                    (tintName == null && dd.tintName == null || tintName != null && tintName.equals(dd.tintName)) &&
+                    (tenPatchData == null && dd.tenPatchData == null || tenPatchData != null && tenPatchData.equals(dd.tenPatchData));
         }
         return false;
     }
@@ -111,6 +131,7 @@ public class DrawableData implements Json.Serializable {
         json.writeValue("minWidth", minWidth);
         json.writeValue("minHeight", minHeight);
         json.writeValue("customized", customized);
+        json.writeValue("tenPatchData", tenPatchData);
     }
 
     @Override
@@ -126,5 +147,6 @@ public class DrawableData implements Json.Serializable {
         minWidth = json.readValue("minWidth", Float.class, -1f, jsonData);
         minHeight = json.readValue("minHeight", Float.class, -1f, jsonData);
         customized = json.readValue("customized", Boolean.class, false, jsonData);
+        tenPatchData = json.readValue("tenPatchData", DialogTenPatch.TenPatchData.class, jsonData);
     }
 }

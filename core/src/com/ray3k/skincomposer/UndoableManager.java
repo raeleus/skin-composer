@@ -144,6 +144,7 @@ public class UndoableManager {
             this.main = main;
             
             property.value = newValue;
+            main.getRootTable().refreshPreview();
         }
         
         @Override

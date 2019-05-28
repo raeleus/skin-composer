@@ -11,16 +11,16 @@ import javax.swing.JOptionPane;
 
 public class MacLauncher extends Launcher {
     public static void main(String[] args) {
-        Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+        var config = new Lwjgl3ApplicationConfiguration();
         config.setResizable(true);
         config.useVsync(true);
         config.setWindowedMode(800, 800);
-        MacLauncher desktopLauncher = new MacLauncher();
+        var desktopLauncher = new MacLauncher();
         config.setWindowListener(desktopLauncher);
         config.setTitle("Skin Composer - New Project*");
         config.setWindowSizeLimits(675, 400, -1, -1);
         config.setWindowIcon("logo-16.png", "logo-32.png", "logo-48.png", "logo.png");
-        Main main = new Main(args);
+        var main = new Main(args);
         main.setDesktopWorker(desktopLauncher);
         if (!Utils.isWindows()) {
             desktopLauncher.closeSplashScreen();
@@ -31,9 +31,8 @@ public class MacLauncher extends Launcher {
         } catch (Exception e) {
             e.printStackTrace();
             
-            FileWriter fw = null;
             try {
-                fw = new FileWriter(Gdx.files.external(".skincomposer/temp/java-stacktrace.txt").file(), true);
+                var fw = new FileWriter(Gdx.files.external(".skincomposer/temp/java-stacktrace.txt").file(), true);
                 PrintWriter pw = new PrintWriter(fw);
                 e.printStackTrace(pw);
                 pw.close();

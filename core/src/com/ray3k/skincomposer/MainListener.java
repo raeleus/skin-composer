@@ -332,6 +332,20 @@ public class MainListener extends RootTableListener {
                     if (drawableErrors.size > 0 || fontErrors.size > 0) {
                         dialogFactory.showDialogPathErrors(drawableErrors, fontErrors);
                     }
+                    
+                    if (projectData.checkForInvalidMinWidthHeight()) {
+                        projectData.setLoadedVersion(Main.VERSION);
+                        main.getDialogFactory().yesNoDialog("Fix minWidth and minHeight errors?", "Old project (< v.30) detected.\nResolve minWidth and minHeight errors?", new DialogFactory.ConfirmationListener() {
+                            @Override
+                            public void selected(int selection) {
+                                if (selection == 0) {
+                                    projectData.fixInvalidMinWidthHeight();
+                                    refreshTextureAtlas();
+                                }
+                            }
+                        }, null);
+                    }
+                    
                     projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
                     root.populate();
                     root.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
@@ -369,13 +383,6 @@ public class MainListener extends RootTableListener {
     
     public void openFile(FileHandle fileHandle) {
         Runnable runnable = () -> {
-            String defaultPath = projectData.getLastOpenSavePath();
-
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[] {"*.scmp"};
-            }
-
             if (fileHandle != null) {
                 Gdx.app.postRunnable(() -> {
                     projectData.load(fileHandle);
@@ -384,6 +391,20 @@ public class MainListener extends RootTableListener {
                     if (drawableErrors.size > 0 || fontErrors.size > 0) {
                         dialogFactory.showDialogPathErrors(drawableErrors, fontErrors);
                     }
+    
+                    if (projectData.checkForInvalidMinWidthHeight()) {
+                        projectData.setLoadedVersion(Main.VERSION);
+                        main.getDialogFactory().yesNoDialog("Fix minWidth and minHeight errors?", "Old project (< v.30) detected.\nResolve minWidth and minHeight errors?", new DialogFactory.ConfirmationListener() {
+                            @Override
+                            public void selected(int selection) {
+                                if (selection == 0) {
+                                    projectData.fixInvalidMinWidthHeight();
+                                    refreshTextureAtlas();
+                                }
+                            }
+                        }, null);
+                    }
+                    
                     projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
                     root.populate();
                     root.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
@@ -494,7 +515,7 @@ public class MainListener extends RootTableListener {
         } else if (styleProperty.type == BitmapFont.class) {
             dialogFactory.showDialogFonts(styleProperty, dialogListener);
         } else if (styleProperty.type == Float.TYPE) {
-            main.getUndoableManager().addUndoable(new UndoableManager.DoubleUndoable(main, styleProperty, ((Spinner) styleActor).getValue()), true);
+            main.getUndoableManager().addUndoable(new UndoableManager.DoubleUndoable(main, styleProperty, ((Spinner) styleActor).getValue()), false);
         } else if (styleProperty.type == ScrollPaneStyle.class) {
             main.getUndoableManager().addUndoable(new UndoableManager.SelectBoxUndoable(root, styleProperty, (SelectBox) styleActor), true);
         } else if (styleProperty.type == LabelStyle.class) {
@@ -638,7 +659,8 @@ public class MainListener extends RootTableListener {
         main.getDialogFactory().showDialogLoading(() -> {
             Gdx.app.postRunnable(() -> {
                 try {
-                    main.getProjectData().getAtlasData().writeAtlas(Gdx.files.internal("atlas-internal-settings.json"));
+                    FileHandle defaultsFile = Main.appFolder.child("texturepacker/atlas-internal-settings.json");
+                    main.getProjectData().getAtlasData().writeAtlas(defaultsFile);
                     main.getProjectData().getAtlasData().atlasCurrent = true;
                     main.getRootTable().produceAtlas();
                     main.getRootTable().refreshPreview();

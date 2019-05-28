@@ -40,8 +40,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.UndoableManager;
@@ -67,6 +69,7 @@ import com.ray3k.skincomposer.dialog.DialogCustomStyle.CustomStyleListener;
 import com.ray3k.skincomposer.dialog.DialogDrawables.DialogDrawablesListener;
 import com.ray3k.skincomposer.dialog.DialogFreeTypeFont.DialogFreeTypeFontListener;
 import com.ray3k.skincomposer.dialog.DialogImageFont.ImageFontListener;
+import com.ray3k.skincomposer.dialog.DialogTenPatch.DialogTenPatchListener;
 import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
 
 public class DialogFactory {
@@ -845,6 +848,19 @@ public class DialogFactory {
                                     if (drawableErrors.size > 0 || fontErrors.size > 0) {
                                         main.getDialogFactory().showDialogPathErrors(drawableErrors, fontErrors);
                                     }
+    
+                                    if (main.getProjectData().checkForInvalidMinWidthHeight()) {
+                                        main.getProjectData().setLoadedVersion(Main.VERSION);
+                                        main.getDialogFactory().yesNoDialog("Fix minWidth and minHeight errors?", "Old project (< v.30) detected.\nResolve minWidth and minHeight errors?", new DialogFactory.ConfirmationListener() {
+                                            @Override
+                                            public void selected(int selection) {
+                                                if (selection == 0) {
+                                                    main.getProjectData().fixInvalidMinWidthHeight();
+                                                    main.getMainListener().refreshTextureAtlas();
+                                                }
+                                            }
+                                        }, null);
+                                    }
                                 });
                             });
                         }
@@ -963,7 +979,12 @@ public class DialogFactory {
     }
     
     public void showWarningDialog(Array<String> warnings) {
-        DialogWarnings dialog = new DialogWarnings(main, warnings);
+        DialogWarnings dialog = new DialogWarnings(main, true, warnings);
+        dialog.show(main.getStage());
+    }
+    
+    public void showWarningDialog(boolean showCheckBox, Array<String> warnings) {
+        DialogWarnings dialog = new DialogWarnings(main, showCheckBox, warnings);
         dialog.show(main.getStage());
     }
     
@@ -1037,8 +1058,8 @@ public class DialogFactory {
         dialog.show(stage);
     }
     
-    public void showDialog9Patch(Dialog9PatchListener listener) {
-        Dialog9Patch dialog = new Dialog9Patch(main);
+    public void showDialog9Patch(ObjectMap<DrawableData, Drawable> drawablePairs, Dialog9PatchListener listener) {
+        Dialog9Patch dialog = new Dialog9Patch(main, drawablePairs);
         dialog.addDialog9PatchListener(listener);
         dialog.setFillParent(true);
         dialog.show(main.getStage());
@@ -1064,6 +1085,12 @@ public class DialogFactory {
     
     public void showDialogDrawablesFilter(DialogDrawables.FilterOptions filterOptions, EventListener listener) {
         var dialog = new DialogDrawablesFilter(filterOptions, main);
+        dialog.addListener(listener);
+        dialog.show(main.getStage());
+    }
+    
+    public void showDialogTenPatch(DrawableData drawableData, boolean newDrawable, DialogTenPatchListener listener, ObjectMap<DrawableData, Drawable> drawablePairs) {
+        DialogTenPatch dialog = new DialogTenPatch(main, drawableData, newDrawable, drawablePairs);
         dialog.addListener(listener);
         dialog.show(main.getStage());
     }

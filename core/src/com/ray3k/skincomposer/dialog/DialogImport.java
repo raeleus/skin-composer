@@ -36,10 +36,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
+import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.utils.Utils;
 
 import java.nio.file.Paths;
+import java.util.Locale;
 
 /**
  *
@@ -50,15 +52,37 @@ public class DialogImport extends Dialog {
     private enum Result {
         NEW, CURRENT, CANCEL
     }
+    private FilesDroppedListener filesDroppedListener;
     
     public DialogImport(Main main) {
         super("Import...", main.getSkin());
         this.main = main;
+    
+        filesDroppedListener = (Array<FileHandle> files) -> {
+            if (files.size > 0 && files.first().name().toLowerCase(Locale.ROOT).endsWith(".json")) {
+                Runnable runnable = () -> {
+                    Gdx.app.postRunnable(() -> {
+                        TextField textField  = findActor("path");
+                        textField.setText(files.first().path());
+                        textField.setCursorPosition(Math.max(0, textField.getText().length() - 1));
+    
+                        TextButton textButton = findActor("new");
+                        textButton.setDisabled(!checkPath());
+    
+                        textButton = findActor("current");
+                        textButton.setDisabled(!checkPath());
+                    });
+                };
+            
+                main.getDialogFactory().showDialogLoading(runnable);
+            }
+        };
         
         populate();
     }
     
     private void populate() {
+        main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
         getTitleTable().padLeft(5);
         
         var t = getContentTable();
@@ -196,7 +220,7 @@ public class DialogImport extends Dialog {
                 }
 
                 if (warnings.size > 0) {
-                    main.getDialogFactory().showWarningDialog(warnings);
+                    main.getDialogFactory().showWarningDialog(false, warnings);
                 }
             });
         });
@@ -211,6 +235,7 @@ public class DialogImport extends Dialog {
     @Override
     public boolean remove() {
         fire(new DialogEvent(DialogEvent.Type.CLOSE));
+        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
         return super.remove();
     }
     

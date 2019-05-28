@@ -51,12 +51,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.Main;
@@ -93,12 +91,14 @@ public class Dialog9Patch extends Dialog {
     private Array<Dialog9PatchListener> listeners;
     private FilesDroppedListener filesDroppedListener;
     private Color previewBGcolor;
+    private ObjectMap<DrawableData, Drawable> drawablePairs;
 
-    public Dialog9Patch(Main main) {
+    public Dialog9Patch(Main main, ObjectMap<DrawableData, Drawable> drawablePairs) {
         super("", main.getSkin(), "dialog");
         previewBGcolor = new Color(Color.WHITE);
         listeners = new Array<>();
         this.main = main;
+        this.drawablePairs = drawablePairs;
         
         var cursor = Utils.textureRegionToCursor(main.getSkin().getRegion("cursor_resize_horizontal"), 16, 16);
         horizontalResizeListener = new ResizeFourArrowListener(cursor);
@@ -797,7 +797,7 @@ public class Dialog9Patch extends Dialog {
                           var dialog = main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
                             @Override
                             public void confirmed(DrawableData drawable) {
-                                  var image = new Image(main.getRootTable().getDrawablePairs().get(drawable.name));
+                                var image = new Image(drawablePairs.get(drawable));
                                 image.setScaling(Scaling.none);
                                 image.setUserObject("Drawable");
 

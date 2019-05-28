@@ -58,7 +58,8 @@ public class BrowseField extends Table {
         textButton = new TextButton(valueText, style.mainButtonStyle);
         textButton.setTouchable(Touchable.disabled);
         textButton.getLabel().setAlignment(Align.left);
-        textButton.getLabelCell().padLeft(5).padRight(5);
+        textButton.getLabel().setWrap(true);
+        textButton.getLabelCell().padLeft(5).padRight(5).growX();
         add(textButton).minWidth(35.0f).prefWidth(35.0f).growX();
         
         button = new ImageButton(style.rightButtonStyle);

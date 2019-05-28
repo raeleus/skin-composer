@@ -219,6 +219,10 @@ public class Utils {
         return new Color(1 - color.r, 1 - color.g, 1 - color.b, color.a);
     }
     
+    public static Color blackOrWhiteBgColor(Color color) {
+        return brightness(color) > .5f ? new Color(Color.BLACK) : new Color(Color.WHITE);
+    }
+    
     public static float brightness(Color color) {
         return (float) (Math.sqrt(0.299f * Math.pow(color.r, 2) + 0.587 * Math.pow(color.g, 2) + 0.114 * Math.pow(color.b, 2)));
     }
@@ -300,7 +304,7 @@ public class Utils {
     /**
      * Extracts a zip file specified by the zipFilePath to a directory specified by
      * destDirectory (will be created if does not exists)
-     * @param zis
+     * @param zipFile
      * @param destDirectory
      * @throws IOException
      */
@@ -385,5 +389,10 @@ public class Utils {
             sb.append(character);
         });
         return sb.toString();
+    }
+    
+    public static String sanitizeFilePath(String path) {
+        var file = new FileHandle(path);
+        return file.path();
     }
 }

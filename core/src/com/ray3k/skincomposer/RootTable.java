@@ -93,6 +93,8 @@ import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.tenpatch.TenPatchDrawable;
+
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -2396,7 +2398,6 @@ public class RootTable extends Table {
                     //the following causes a crash. LibGDX bug.
 //                    horizontalGroup.space(10.0f);
                     horizontalGroup.wrapSpace(10.0f);
-                    horizontalGroup.setTouchable(Touchable.disabled);
                     previewTable.add(horizontalGroup).grow().pad(10.0f);
 
                     for (CustomProperty customProperty : customStyle.getProperties()) {
@@ -2452,8 +2453,10 @@ public class RootTable extends Table {
                                         colorTable.setBackground("white");
                                         colorTable.setColor(colorData.color);
                                         colorTable.add().size(25.0f);
+                                        colorTable.setTouchable(Touchable.enabled);
 
                                         container.setActor(colorTable);
+                                        container.addListener(new TextTooltip(colorName, main.getTooltipManager(), getSkin()));
                                     }
                                     break;
                                 case FONT:
@@ -2477,6 +2480,8 @@ public class RootTable extends Table {
                                     if (font != null) {
                                         Label labelFont = new Label(fontData.getName(), new LabelStyle(font, Color.WHITE));
                                         container.setActor(labelFont);
+    
+                                        container.addListener(new TextTooltip(fontData.getName(), main.getTooltipManager(), getSkin()));
                                     }
 
                                     FreeTypeFontData freeTypeFontData = null;
@@ -2490,6 +2495,8 @@ public class RootTable extends Table {
                                     if (freeTypeFontData != null && freeTypeFontData.bitmapFont != null) {
                                         Label labelFont = new Label(freeTypeFontData.name, new LabelStyle(freeTypeFontData.bitmapFont, Color.WHITE));
                                         container.setActor(labelFont);
+    
+                                        container.addListener(new TextTooltip(freeTypeFontData.name, main.getTooltipManager(), getSkin()));
                                     }
 
                                     break;
@@ -2511,6 +2518,8 @@ public class RootTable extends Table {
                                     if (drawable != null) {
                                         Image image = new Image(drawablePairs.get(drawable.name));
                                         container.setActor(image);
+                                        
+                                        container.addListener(new TextTooltip(drawable.name, main.getTooltipManager(), getSkin()));
                                     }
                                     break;
                             }
@@ -2621,6 +2630,15 @@ public class RootTable extends Table {
                     drawable.setMinWidth(data.minWidth);
                     drawable.setMinHeight(data.minHeight);
                     ((TiledDrawable) drawable).getColor().set(main.getJsonData().getColorByName(data.tintName).color);
+                } else if (data.tenPatchData != null) {
+                    var region = atlas.findRegion(DrawableData.proper(data.file.name()));
+                    drawable = new TenPatchDrawable(data.tenPatchData.horizontalStretchAreas.toArray(),
+                            data.tenPatchData.verticalStretchAreas.toArray(), data.tenPatchData.tile, region);
+                    if (data.tenPatchData.colorName != null) {
+                        ((TenPatchDrawable) drawable).getColor().set(main.getJsonData().getColorByName(data.tenPatchData.colorName).color);
+                    }
+                    if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
+                    if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
                 } else if (data.file.name().matches(".*\\.9\\.[a-zA-Z0-9]*$")) {
                     String name = data.file.name();
                     name = DrawableData.proper(name);

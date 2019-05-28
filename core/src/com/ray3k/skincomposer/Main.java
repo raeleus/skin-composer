@@ -75,7 +75,7 @@ import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "29";
+    public final static String VERSION = "30";
     public static String newVersion;
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,
@@ -138,6 +138,12 @@ public class Main extends ApplicationAdapter {
         var fileHandle = appFolder.child("texturepacker/atlas-export-settings.json");
         if (!fileHandle.exists()) {
             Gdx.files.internal("atlas-export-settings.json").copyTo(fileHandle);
+        }
+        
+        //copy atlas settings for preview to temp folder if it doesn't exist
+        fileHandle = appFolder.child("texturepacker/atlas-internal-settings.json");
+        if (!fileHandle.exists()) {
+            Gdx.files.internal("atlas-internal-settings.json").copyTo(fileHandle);
         }
         
         //copy preview fonts to preview fonts folder if they do not exist

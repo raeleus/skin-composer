@@ -34,6 +34,8 @@ import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.JsonData.ExportFormat;
+import com.ray3k.skincomposer.utils.Utils;
+
 import java.util.Iterator;
 
 public class ProjectData implements Json.Serializable {
@@ -46,6 +48,7 @@ public class ProjectData implements Json.Serializable {
     private Main main;
     private final JsonData jsonData;
     private final AtlasData atlasData;
+    private String loadedVersion;
     
     public ProjectData() {
         jsonData = new JsonData();
@@ -53,6 +56,7 @@ public class ProjectData implements Json.Serializable {
         
         changesSaved = false;
         newProject = true;
+        loadedVersion = Main.VERSION;
         preferences = new ObjectMap<>();
         generalPref = Gdx.app.getPreferences("com.ray3k.skincomposer");
         clear();
@@ -199,7 +203,15 @@ public class ProjectData implements Json.Serializable {
     public boolean areChangesSaved() {
         return changesSaved;
     }
-
+    
+    public String getLoadedVersion() {
+        return loadedVersion;
+    }
+    
+    public void setLoadedVersion(String loadedVersion) {
+        this.loadedVersion = loadedVersion;
+    }
+    
     public void setChangesSaved(boolean changesSaved) {
         this.changesSaved = changesSaved;
         newProject = false;
@@ -374,6 +386,7 @@ public class ProjectData implements Json.Serializable {
         putRecentFile(file.path());
         setLastOpenSavePath(file.parent().path() + "/");
         atlasData.atlasCurrent = false;
+        loadedVersion = instance.loadedVersion;
         
         correctFilePaths();
         
@@ -530,6 +543,7 @@ public class ProjectData implements Json.Serializable {
         } else {
             json.writeValue("saveFile", (String) null);
         }
+        json.writeValue("version", Main.VERSION);
     }
 
     @Override
@@ -542,6 +556,8 @@ public class ProjectData implements Json.Serializable {
         if (!jsonValue.get("saveFile").isNull()) {
             saveFile = new FileHandle(jsonValue.getString("saveFile"));
         }
+    
+        loadedVersion = jsonValue.getString("version", "none");
     }
 
     public JsonData getJsonData() {
@@ -567,7 +583,7 @@ public class ProjectData implements Json.Serializable {
     }
 
     public String getLastImportExportPath() {
-        return (String) preferences.get("last-import-export-path", Gdx.files.getLocalStoragePath());
+        return (String) preferences.get("last-import-export-path", Utils.sanitizeFilePath(System.getProperty("user.home")) + "/");
     }
 
     public void setLastImportExportPath(String importExportPath) {
@@ -670,5 +686,35 @@ public class ProjectData implements Json.Serializable {
             }
         }
         return true;
+    }
+    
+    /**
+     * Checks if this is an old project and has drawables with minWidth or minHeight incorrectly set to 0. This error
+     * was resolved in version 30.
+     * @return
+     * @see ProjectData#fixInvalidMinWidthHeight()
+     */
+    public boolean checkForInvalidMinWidthHeight() {
+        var returnValue = !loadedVersion.equals(Main.VERSION) && getAtlasData().getDrawables().size > 0;
+        
+        if (returnValue) {
+            for (var drawable : getAtlasData().getDrawables()) {
+                if (!drawable.tiled && (!MathUtils.isZero(drawable.minWidth) || !MathUtils.isZero(drawable.minHeight))) {
+                    returnValue = false;
+                    break;
+                }
+            }
+        }
+        
+        return returnValue;
+    }
+    
+    public void fixInvalidMinWidthHeight() {
+        for (var drawable : getAtlasData().getDrawables()) {
+            if (!drawable.tiled) {
+                drawable.minWidth = -1;
+                drawable.minHeight = -1;
+            }
+        }
     }
 }
