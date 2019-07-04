@@ -2636,6 +2636,10 @@ public class RootTable extends Table {
                     var region = atlas.findRegion(DrawableData.proper(data.file.name()));
                     drawable = new TenPatchDrawable(data.tenPatchData.horizontalStretchAreas.toArray(),
                             data.tenPatchData.verticalStretchAreas.toArray(), data.tenPatchData.tile, region);
+                    drawable.setLeftWidth(data.tenPatchData.contentLeft);
+                    drawable.setRightWidth(data.tenPatchData.contentRight);
+                    drawable.setTopHeight(data.tenPatchData.contentTop);
+                    drawable.setBottomHeight(data.tenPatchData.contentBottom);
                     if (data.tenPatchData.colorName != null) {
                         ((TenPatchDrawable) drawable).getColor().set(main.getJsonData().getColorByName(data.tenPatchData.colorName).color);
                     }

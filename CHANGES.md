@@ -1,5 +1,5 @@
 ### Skin Composer Version 31 ###
-
+* Fixed TenPatchDrawable content padding not being displayed in the preview.
 
 ### Skin Composer Version 30 ###
 
