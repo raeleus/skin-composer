@@ -1,3 +1,6 @@
+### Skin Composer Version 31 ###
+
+
 ### Skin Composer Version 30 ###
 
 * Integrated TenPatch functionality as an alternative to 9patch. See https://github.com/raeleus/TenPatch
