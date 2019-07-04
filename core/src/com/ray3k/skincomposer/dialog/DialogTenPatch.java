@@ -597,6 +597,10 @@ public class DialogTenPatch extends Dialog {
         
         tenPatchDrawable.setHorizontalStretchAreas(sanitizeStretchAreas(drawableData.tenPatchData.horizontalStretchAreas, true));
         tenPatchDrawable.setVerticalStretchAreas(sanitizeStretchAreas(drawableData.tenPatchData.verticalStretchAreas, false));
+        tenPatchDrawable.setLeftWidth(drawableData.tenPatchData.contentLeft);
+        tenPatchDrawable.setRightWidth(drawableData.tenPatchData.contentRight);
+        tenPatchDrawable.setTopHeight(drawableData.tenPatchData.contentTop);
+        tenPatchDrawable.setBottomHeight(drawableData.tenPatchData.contentBottom);
     
         if (fileHandle.name().matches("(?i:.*\\.9\\.png)") && newDrawable) {
             loadPatchesFromFile(fileHandle);
