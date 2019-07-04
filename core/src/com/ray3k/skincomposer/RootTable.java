@@ -2255,7 +2255,9 @@ public class RootTable extends Table {
                         Tree.Node parentNode = null;
                         for (String line: lines) {
                             Label label = new Label(line, getSkin());
-                            Tree.Node node = new Tree.Node(label);
+                            Tree.Node node = new Tree.Node(label) {
+                            
+                            };
                             if (parentNode == null) {
                                 ((Tree) widget).add(node);
                             } else {
