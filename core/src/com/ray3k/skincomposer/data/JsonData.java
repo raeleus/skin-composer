@@ -329,6 +329,14 @@ public class JsonData implements Json.Serializable {
                     drawableData.tenPatchData.contentLeft = value.getInt("leftWidth", 0);
                     drawableData.tenPatchData.contentBottom = value.getInt("bottomHeight", 0);
                     drawableData.tenPatchData.contentTop = value.getInt("topHeight", 0);
+                    drawableData.tenPatchData.color1Name = value.getString("color1", null);
+                    drawableData.tenPatchData.color2Name = value.getString("color2", null);
+                    drawableData.tenPatchData.color3Name = value.getString("color3", null);
+                    drawableData.tenPatchData.color4Name = value.getString("color4", null);
+                    drawableData.tenPatchData.offsetX = value.getInt("offsetX", 0);
+                    drawableData.tenPatchData.offsetY = value.getInt("offsetY", 0);
+                    drawableData.tenPatchData.offsetXspeed = value.getInt("offsetXspeed", 0);
+                    drawableData.tenPatchData.offsetYspeed = value.getInt("offsetYspeed", 0);
     
                     //delete drawables with the same name
                     for (DrawableData originalData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {
@@ -815,6 +823,22 @@ public class JsonData implements Json.Serializable {
                 json.writeValue("leftWidth", drawable.tenPatchData.contentLeft);
                 json.writeValue("bottomHeight", drawable.tenPatchData.contentBottom);
                 json.writeValue("topHeight", drawable.tenPatchData.contentTop);
+                if (drawable.tenPatchData.color1Name != null) {
+                    json.writeValue("color1", drawable.tenPatchData.color1Name);
+                }
+                if (drawable.tenPatchData.color2Name != null) {
+                    json.writeValue("color2", drawable.tenPatchData.color2Name);
+                }
+                if (drawable.tenPatchData.color3Name != null) {
+                    json.writeValue("color3", drawable.tenPatchData.color3Name);
+                }
+                if (drawable.tenPatchData.color4Name != null) {
+                    json.writeValue("color4", drawable.tenPatchData.color4Name);
+                }
+                json.writeValue("offsetX", drawable.tenPatchData.offsetX);
+                json.writeValue("offsetY", drawable.tenPatchData.offsetY);
+                json.writeValue("offsetXspeed", drawable.tenPatchData.offsetXspeed);
+                json.writeValue("offsetYspeed", drawable.tenPatchData.offsetYspeed);
                 json.writeObjectEnd();
             }
             json.writeObjectEnd();
