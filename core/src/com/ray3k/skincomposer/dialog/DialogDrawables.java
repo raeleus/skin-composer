@@ -207,11 +207,17 @@ public class DialogDrawables extends Dialog {
                     var region = atlas.findRegion(DrawableData.proper(data.file.name()));
                     drawable = new TenPatchDrawable(data.tenPatchData.horizontalStretchAreas.toArray(),
                             data.tenPatchData.verticalStretchAreas.toArray(), data.tenPatchData.tile, region);
-                    if (data.tenPatchData.colorName != null) {
-                        ((TenPatchDrawable) drawable).getColor().set(main.getJsonData().getColorByName(data.tenPatchData.colorName).color);
-                    }
                     if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
                     if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
+                    if (data.tenPatchData.colorName != null) ((TenPatchDrawable) drawable).setColor(main.getJsonData().getColorByName(data.tenPatchData.colorName).color);
+                    if (data.tenPatchData.color1Name != null) ((TenPatchDrawable) drawable).setColor1(main.getJsonData().getColorByName(data.tenPatchData.color1Name).color);
+                    if (data.tenPatchData.color2Name != null) ((TenPatchDrawable) drawable).setColor2(main.getJsonData().getColorByName(data.tenPatchData.color2Name).color);
+                    if (data.tenPatchData.color3Name != null) ((TenPatchDrawable) drawable).setColor3(main.getJsonData().getColorByName(data.tenPatchData.color3Name).color);
+                    if (data.tenPatchData.color4Name != null) ((TenPatchDrawable) drawable).setColor4(main.getJsonData().getColorByName(data.tenPatchData.color4Name).color);
+                    ((TenPatchDrawable) drawable).setOffsetX(data.tenPatchData.offsetX);
+                    ((TenPatchDrawable) drawable).setOffsetY(data.tenPatchData.offsetY);
+                    ((TenPatchDrawable) drawable).setOffsetXspeed(data.tenPatchData.offsetXspeed);
+                    ((TenPatchDrawable) drawable).setOffsetYspeed(data.tenPatchData.offsetYspeed);
                 } else if (data.tiled) {
                     String name = data.file.name();
                     name = DrawableData.proper(name);
@@ -2419,5 +2425,16 @@ public class DialogDrawables extends Dialog {
             return super.keyTyped(event, character);
         }
         
+    }
+    
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        
+        for (var drawable : drawablePairs.values()) {
+            if (drawable instanceof TenPatchDrawable) {
+                ((TenPatchDrawable) drawable).update(delta);
+            }
+        }
     }
 }

@@ -284,13 +284,6 @@ public class DialogTenPatch extends Dialog {
         tenPatchWidget.addListener(new TenPatchWidget.TenPatchListener() {
             @Override
             public void valueChanged(TenPatchData tenPatchData) {
-                tenPatchDrawable.setHorizontalStretchAreas(sanitizeStretchAreas(tenPatchData.horizontalStretchAreas, true));
-                tenPatchDrawable.setVerticalStretchAreas(sanitizeStretchAreas(tenPatchData.verticalStretchAreas, false));
-                tenPatchDrawable.setLeftWidth(tenPatchData.contentLeft);
-                tenPatchDrawable.setRightWidth(tenPatchData.contentRight);
-                tenPatchDrawable.setTopHeight(tenPatchData.contentTop);
-                tenPatchDrawable.setBottomHeight(tenPatchData.contentBottom);
-                
                 updatePreview();
             }
         });
@@ -378,92 +371,109 @@ public class DialogTenPatch extends Dialog {
         top.add(table).growX();
     
         table.defaults().space(3);
-        var checkBox = new CheckBox("Tile", skin);
-        checkBox.setChecked(drawableData.tenPatchData.tile);
-        table.add(checkBox);
-        checkBox.addListener(main.getHandListener());
-        checkBox.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                drawableData.tenPatchData.tile = ((CheckBox) actor).isChecked();
-                tenPatchDrawable.setTiling(drawableData.tenPatchData.tile);
-            }
-        });
+//        var checkBox = new CheckBox("Tile", skin);
+//        checkBox.setChecked(drawableData.tenPatchData.tile);
+//        table.add(checkBox);
+//        checkBox.addListener(main.getHandListener());
+//        checkBox.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                drawableData.tenPatchData.tile = ((CheckBox) actor).isChecked();
+//                tenPatchDrawable.setTiling(drawableData.tenPatchData.tile);
+//            }
+//        });
+//
+//        imageButton = new ImageButton(skin, "color");
+//        table.add(imageButton).spaceLeft(20);
+//        imageButton.addListener(main.getHandListener());
+//        imageButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                main.getDialogFactory().showDialogColors(new StyleProperty(), colorData -> {
+//                    updateColorLabel(colorData);
+//
+//                    if (colorData == null) {
+//                        drawableData.tenPatchData.colorName = null;
+//                        tenPatchDrawable.getColor().set(Color.WHITE);
+//                    } else {
+//                        drawableData.tenPatchData.colorName = colorData.getName();
+//                        tenPatchDrawable.getColor().set(colorData.color);
+//                    }
+//                }, null);
+//            }
+//        });
     
-        imageButton = new ImageButton(skin, "color");
-        table.add(imageButton).spaceLeft(20);
-        imageButton.addListener(main.getHandListener());
-        imageButton.addListener(new ChangeListener() {
+        textButton = new TextButton("More settings...", skin);
+        table.add(textButton).pad(5);
+        table.addListener(main.getHandListener());
+        table.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColors(new StyleProperty(), colorData -> {
-                    updateColorLabel(colorData);
-                
-                    if (colorData == null) {
-                        drawableData.tenPatchData.colorName = null;
-                        tenPatchDrawable.getColor().set(Color.WHITE);
-                    } else {
-                        drawableData.tenPatchData.colorName = colorData.getName();
-                        tenPatchDrawable.getColor().set(colorData.color);
+                var dialog = new DialogTenPatchSettings(drawableData, skin, main);
+                dialog.addListener(new DialogTenPatchSettings.DialogTenPatchSettingsListener() {
+                    @Override
+                    public void settingsUpdated(DialogTenPatchSettings.DialogTenPatchSettingsEvent event) {
+                        updatePreview();
                     }
-                }, null);
+                });
+                dialog.show(getStage());
             }
         });
-    
-        var container = new Container<Label>();
-        container.setName("color-label-container");
-        container.setBackground(skin.getDrawable("white"));
-        container.pad(5);
-        container.setColor(Color.BLACK);
-        table.add(container).spaceLeft(3);
-    
-        label = new Label("", skin, "white");
-        label.setName("color-label");
-        container.setActor(label);
-        updateColorLabel(main.getProjectData().getJsonData().getColorByName(drawableData.tenPatchData.colorName));
         
-        label = new Label("MinWidth:", skin);
-        table.add(label).spaceLeft(20);
-    
-        var spinner = new Spinner(drawableData.minWidth, 1, true, Spinner.Orientation.HORIZONTAL, skin);
-        spinner.setMinimum(-1);
-        table.add(spinner).width(100);
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        var toolTip = new TextTooltip("Set to -1 to disable", main.getTooltipManager(), getSkin());
-        spinner.addListener(toolTip);
-        spinner.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                var spinner = (Spinner) actor;
-                drawableData.minWidth = spinner.getValueAsInt();
-                ResizeWidget resizer = findActor("resizer");
-                resizer.setMinWidth(drawableData.minWidth);
-            }
-        });
-    
-        label = new Label("MinHeight:", skin);
-        table.add(label).spaceLeft(20);
-    
-        spinner = new Spinner(drawableData.minHeight, 1, true, Spinner.Orientation.HORIZONTAL, skin);
-        spinner.setMinimum(-1);
-        table.add(spinner).width(100);
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        toolTip = new TextTooltip("Set to -1 to disable", main.getTooltipManager(), getSkin());
-        spinner.addListener(toolTip);
-        spinner.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                var spinner = (Spinner) actor;
-                drawableData.minHeight = spinner.getValueAsInt();
-                tenPatchDrawable.setMinHeight(drawableData.minHeight);
-                ResizeWidget resizer = findActor("resizer");
-                resizer.setMinHeight(drawableData.minHeight);
-            }
-        });
+//        var container = new Container<Label>();
+//        container.setName("color-label-container");
+//        container.setBackground(skin.getDrawable("white"));
+//        container.pad(5);
+//        container.setColor(Color.BLACK);
+//        table.add(container).spaceLeft(3);
+//
+//        label = new Label("", skin, "white");
+//        label.setName("color-label");
+//        container.setActor(label);
+//        updateColorLabel(main.getProjectData().getJsonData().getColorByName(drawableData.tenPatchData.colorName));
+        
+//        label = new Label("MinWidth:", skin);
+//        table.add(label).spaceLeft(20);
+//
+//        var spinner = new Spinner(drawableData.minWidth, 1, true, Spinner.Orientation.HORIZONTAL, skin);
+//        spinner.setMinimum(-1);
+//        table.add(spinner).width(100);
+//        spinner.getTextField().addListener(main.getIbeamListener());
+//        spinner.getButtonMinus().addListener(main.getHandListener());
+//        spinner.getButtonPlus().addListener(main.getHandListener());
+//        var toolTip = new TextTooltip("Set to -1 to disable", main.getTooltipManager(), getSkin());
+//        spinner.addListener(toolTip);
+//        spinner.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                var spinner = (Spinner) actor;
+//                drawableData.minWidth = spinner.getValueAsInt();
+//                ResizeWidget resizer = findActor("resizer");
+//                resizer.setMinWidth(drawableData.minWidth);
+//            }
+//        });
+//
+//        label = new Label("MinHeight:", skin);
+//        table.add(label).spaceLeft(20);
+//
+//        spinner = new Spinner(drawableData.minHeight, 1, true, Spinner.Orientation.HORIZONTAL, skin);
+//        spinner.setMinimum(-1);
+//        table.add(spinner).width(100);
+//        spinner.getTextField().addListener(main.getIbeamListener());
+//        spinner.getButtonMinus().addListener(main.getHandListener());
+//        spinner.getButtonPlus().addListener(main.getHandListener());
+//        toolTip = new TextTooltip("Set to -1 to disable", main.getTooltipManager(), getSkin());
+//        spinner.addListener(toolTip);
+//        spinner.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                var spinner = (Spinner) actor;
+//                drawableData.minHeight = spinner.getValueAsInt();
+//                tenPatchDrawable.setMinHeight(drawableData.minHeight);
+//                ResizeWidget resizer = findActor("resizer");
+//                resizer.setMinHeight(drawableData.minHeight);
+//            }
+//        });
         
         label = new Label("Preview", skin, "title-no-line");
         bottom.add(label);
@@ -595,12 +605,7 @@ public class DialogTenPatch extends Dialog {
         button(textButton, false);
         textButton.addListener(main.getHandListener());
         
-        tenPatchDrawable.setHorizontalStretchAreas(sanitizeStretchAreas(drawableData.tenPatchData.horizontalStretchAreas, true));
-        tenPatchDrawable.setVerticalStretchAreas(sanitizeStretchAreas(drawableData.tenPatchData.verticalStretchAreas, false));
-        tenPatchDrawable.setLeftWidth(drawableData.tenPatchData.contentLeft);
-        tenPatchDrawable.setRightWidth(drawableData.tenPatchData.contentRight);
-        tenPatchDrawable.setTopHeight(drawableData.tenPatchData.contentTop);
-        tenPatchDrawable.setBottomHeight(drawableData.tenPatchData.contentBottom);
+        updatePreview();
     
         if (fileHandle.name().matches("(?i:.*\\.9\\.png)") && newDrawable) {
             loadPatchesFromFile(fileHandle);
@@ -664,6 +669,25 @@ public class DialogTenPatch extends Dialog {
     }
     
     private void updatePreview() {
+        tenPatchDrawable.setHorizontalStretchAreas(sanitizeStretchAreas(drawableData.tenPatchData.horizontalStretchAreas, true));
+        tenPatchDrawable.setVerticalStretchAreas(sanitizeStretchAreas(drawableData.tenPatchData.verticalStretchAreas, false));
+        tenPatchDrawable.setLeftWidth(drawableData.tenPatchData.contentLeft);
+        tenPatchDrawable.setRightWidth(drawableData.tenPatchData.contentRight);
+        tenPatchDrawable.setTopHeight(drawableData.tenPatchData.contentTop);
+        tenPatchDrawable.setBottomHeight(drawableData.tenPatchData.contentBottom);
+        tenPatchDrawable.setMinWidth(drawableData.minWidth);
+        tenPatchDrawable.setMinHeight(drawableData.minHeight);
+        tenPatchDrawable.setTiling(drawableData.tenPatchData.tile);
+        if (drawableData.tenPatchData.colorName != null) tenPatchDrawable.setColor(main.getJsonData().getColorByName(drawableData.tenPatchData.colorName).color);
+        if (drawableData.tenPatchData.color1Name != null) tenPatchDrawable.setColor1(main.getJsonData().getColorByName(drawableData.tenPatchData.color1Name).color);
+        if (drawableData.tenPatchData.color2Name != null) tenPatchDrawable.setColor2(main.getJsonData().getColorByName(drawableData.tenPatchData.color2Name).color);
+        if (drawableData.tenPatchData.color3Name != null) tenPatchDrawable.setColor3(main.getJsonData().getColorByName(drawableData.tenPatchData.color3Name).color);
+        if (drawableData.tenPatchData.color4Name != null) tenPatchDrawable.setColor4(main.getJsonData().getColorByName(drawableData.tenPatchData.color4Name).color);
+        tenPatchDrawable.setOffsetX(drawableData.tenPatchData.offsetX);
+        tenPatchDrawable.setOffsetY(drawableData.tenPatchData.offsetY);
+        tenPatchDrawable.setOffsetXspeed(drawableData.tenPatchData.offsetXspeed);
+        tenPatchDrawable.setOffsetYspeed(drawableData.tenPatchData.offsetYspeed);
+        
         Table table = findActor("tenPatchTable");
         if (table.getCells().size > 0) {
             var actor = table.getCells().first().getActor();
@@ -798,12 +822,6 @@ public class DialogTenPatch extends Dialog {
         drawableData.tenPatchData.combineContiguousSretchAreas(false);
         drawableData.tenPatchData.removeInvalidStretchAreas(false);
     
-        tenPatchDrawable.setHorizontalStretchAreas(sanitizeStretchAreas(tenPatchData.horizontalStretchAreas, true));
-        tenPatchDrawable.setVerticalStretchAreas(sanitizeStretchAreas(tenPatchData.verticalStretchAreas, false));
-        tenPatchDrawable.setLeftWidth(tenPatchData.contentLeft);
-        tenPatchDrawable.setRightWidth(tenPatchData.contentRight);
-        tenPatchDrawable.setTopHeight(tenPatchData.contentTop);
-        tenPatchDrawable.setBottomHeight(tenPatchData.contentBottom);
         updatePreview();
     }
     
@@ -833,6 +851,9 @@ public class DialogTenPatch extends Dialog {
     @Override
     public void act(float delta) {
         super.act(delta);
+        
+        tenPatchDrawable.update(delta);
+        
         if (Gdx.input.isKeyJustPressed(Keys.F5)) {
             populate();
             pack();
@@ -907,6 +928,14 @@ public class DialogTenPatch extends Dialog {
         public int contentBottom;
         public boolean tile;
         public String colorName;
+        public String color1Name;
+        public String color2Name;
+        public String color3Name;
+        public String color4Name;
+        public int offsetX;
+        public int offsetY;
+        public int offsetXspeed;
+        public int offsetYspeed;
         
         public void clear() {
             horizontalStretchAreas.clear();
@@ -917,6 +946,14 @@ public class DialogTenPatch extends Dialog {
             contentBottom = 0;
             tile = false;
             colorName = null;
+            color1Name = null;
+            color2Name = null;
+            color3Name = null;
+            color4Name = null;
+            offsetX = 0;
+            offsetY = 0;
+            offsetXspeed = 0;
+            offsetYspeed = 0;
         }
     
         public void removeInvalidStretchAreas(boolean horizontal) {
@@ -948,7 +985,12 @@ public class DialogTenPatch extends Dialog {
                         verticalStretchAreas.equals(other.verticalStretchAreas) &&
                         contentLeft == other.contentLeft && contentRight == other.contentRight &&
                         contentTop == other.contentTop && contentBottom == other.contentBottom && tile == other.tile &&
-                        (colorName == null && other.colorName == null || colorName != null && colorName.equals(other.colorName));
+                        offsetX == other.offsetX && offsetY == other.offsetY && offsetXspeed == other.offsetXspeed && offsetYspeed == other.offsetYspeed &&
+                        (colorName == null && other.colorName == null || colorName != null && colorName.equals(other.colorName)) &&
+                        (color1Name == null && other.color1Name == null || color1Name != null && color1Name.equals(other.color1Name)) &&
+                        (color2Name == null && other.color2Name == null || color2Name != null && color2Name.equals(other.color2Name)) &&
+                        (color3Name == null && other.color3Name == null || color3Name != null && color3Name.equals(other.color3Name)) &&
+                        (color4Name == null && other.color4Name == null || color4Name != null && color4Name.equals(other.color4Name));
             } else {
                 return false;
             }
@@ -1016,19 +1058,5 @@ public class DialogTenPatch extends Dialog {
         
         Label label = findActor("nameLabel");
         label.setColor(valid ? skin.getColor("button") : Color.RED);
-    }
-    
-    public void updateColorLabel(ColorData colorData) {
-        Label label = findActor("color-label");
-        Container<Label> container = findActor("color-label-container");
-        if (colorData == null) {
-            label.setText("Color: none");
-            label.setColor(Color.WHITE);
-            container.setColor(Color.BLACK);
-        } else {
-            label.setText("Color: " + colorData.getName());
-            label.setColor(colorData.color);
-            container.setColor(Utils.blackOrWhiteBgColor(colorData.color));
-        }
     }
 }

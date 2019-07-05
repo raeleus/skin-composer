@@ -1020,16 +1020,20 @@ public class JsonData implements Json.Serializable {
     }
     
     public ColorData getColorByName(String tintName) {
+        return getColorByName(tintName, null);
+    }
+    
+    public ColorData getColorByName(String tintName, ColorData defaultValue) {
         ColorData returnValue = null;
-        
+    
         for (ColorData color : colors) {
             if (color.getName().equals(tintName)) {
                 returnValue = color;
                 break;
             }
         }
-        
-        return returnValue;
+    
+        return returnValue != null ? returnValue : defaultValue;
     }
 
     public Array<FontData> getFonts() {

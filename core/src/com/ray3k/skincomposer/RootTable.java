@@ -2640,11 +2640,17 @@ public class RootTable extends Table {
                     drawable.setRightWidth(data.tenPatchData.contentRight);
                     drawable.setTopHeight(data.tenPatchData.contentTop);
                     drawable.setBottomHeight(data.tenPatchData.contentBottom);
-                    if (data.tenPatchData.colorName != null) {
-                        ((TenPatchDrawable) drawable).getColor().set(main.getJsonData().getColorByName(data.tenPatchData.colorName).color);
-                    }
                     if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
                     if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
+                    if (data.tenPatchData.colorName != null) ((TenPatchDrawable) drawable).setColor(main.getJsonData().getColorByName(data.tenPatchData.colorName).color);
+                    if (data.tenPatchData.color1Name != null) ((TenPatchDrawable) drawable).setColor1(main.getJsonData().getColorByName(data.tenPatchData.color1Name).color);
+                    if (data.tenPatchData.color2Name != null) ((TenPatchDrawable) drawable).setColor2(main.getJsonData().getColorByName(data.tenPatchData.color2Name).color);
+                    if (data.tenPatchData.color3Name != null) ((TenPatchDrawable) drawable).setColor3(main.getJsonData().getColorByName(data.tenPatchData.color3Name).color);
+                    if (data.tenPatchData.color4Name != null) ((TenPatchDrawable) drawable).setColor4(main.getJsonData().getColorByName(data.tenPatchData.color4Name).color);
+                    ((TenPatchDrawable) drawable).setOffsetX(data.tenPatchData.offsetX);
+                    ((TenPatchDrawable) drawable).setOffsetY(data.tenPatchData.offsetY);
+                    ((TenPatchDrawable) drawable).setOffsetXspeed(data.tenPatchData.offsetXspeed);
+                    ((TenPatchDrawable) drawable).setOffsetYspeed(data.tenPatchData.offsetYspeed);
                 } else if (data.file.name().matches(".*\\.9\\.[a-zA-Z0-9]*$")) {
                     String name = data.file.name();
                     name = DrawableData.proper(name);
@@ -2972,5 +2978,16 @@ public class RootTable extends Table {
 
     public ObjectMap<String, Drawable> getDrawablePairs() {
         return drawablePairs;
+    }
+    
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        
+        for (var drawable : drawablePairs.values()) {
+            if (drawable instanceof TenPatchDrawable) {
+                ((TenPatchDrawable) drawable).update(delta);
+            }
+        }
     }
 }
