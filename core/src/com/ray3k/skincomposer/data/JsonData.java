@@ -337,6 +337,8 @@ public class JsonData implements Json.Serializable {
                     drawableData.tenPatchData.offsetY = value.getInt("offsetY", 0);
                     drawableData.tenPatchData.offsetXspeed = value.getInt("offsetXspeed", 0);
                     drawableData.tenPatchData.offsetYspeed = value.getInt("offsetYspeed", 0);
+                    drawableData.tenPatchData.frameDuration = value.getFloat("frameDuration", 0);
+                    drawableData.tenPatchData.regionNames = new Array<>(value.get("regions").asStringArray());
     
                     //delete drawables with the same name
                     for (DrawableData originalData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {
@@ -839,6 +841,8 @@ public class JsonData implements Json.Serializable {
                 json.writeValue("offsetY", drawable.tenPatchData.offsetY);
                 json.writeValue("offsetXspeed", drawable.tenPatchData.offsetXspeed);
                 json.writeValue("offsetYspeed", drawable.tenPatchData.offsetYspeed);
+                json.writeValue("frameDuration", drawable.tenPatchData.frameDuration);
+                json.writeValue("regions", drawable.tenPatchData.regionNames, Array.class, String.class);
                 json.writeObjectEnd();
             }
             json.writeObjectEnd();
