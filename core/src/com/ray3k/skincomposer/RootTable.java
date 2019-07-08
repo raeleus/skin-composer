@@ -23,6 +23,7 @@
  ***************************************************************************** */
 package com.ray3k.skincomposer;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ray3k.skincomposer.data.CustomProperty;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -2651,6 +2652,13 @@ public class RootTable extends Table {
                     ((TenPatchDrawable) drawable).setOffsetY(data.tenPatchData.offsetY);
                     ((TenPatchDrawable) drawable).setOffsetXspeed(data.tenPatchData.offsetXspeed);
                     ((TenPatchDrawable) drawable).setOffsetYspeed(data.tenPatchData.offsetYspeed);
+                    ((TenPatchDrawable) drawable).setFrameDuration(data.tenPatchData.frameDuration);
+                    var regions = new Array<TextureRegion>();
+                    for (var name : data.tenPatchData.regionNames) {
+                        regions.add(main.getAtlasData().getAtlas().findRegion(name));
+                    }
+                    ((TenPatchDrawable) drawable).setRegions(regions);
+                    
                 } else if (data.file.name().matches(".*\\.9\\.[a-zA-Z0-9]*$")) {
                     String name = data.file.name();
                     name = DrawableData.proper(name);
@@ -2978,16 +2986,5 @@ public class RootTable extends Table {
 
     public ObjectMap<String, Drawable> getDrawablePairs() {
         return drawablePairs;
-    }
-    
-    @Override
-    public void act(float delta) {
-        super.act(delta);
-        
-        for (var drawable : drawablePairs.values()) {
-            if (drawable instanceof TenPatchDrawable) {
-                ((TenPatchDrawable) drawable).update(delta);
-            }
-        }
     }
 }

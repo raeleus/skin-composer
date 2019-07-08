@@ -30,6 +30,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -222,6 +223,12 @@ public class DialogDrawables extends Dialog {
                     ((TenPatchDrawable) drawable).setOffsetY(data.tenPatchData.offsetY);
                     ((TenPatchDrawable) drawable).setOffsetXspeed(data.tenPatchData.offsetXspeed);
                     ((TenPatchDrawable) drawable).setOffsetYspeed(data.tenPatchData.offsetYspeed);
+                    ((TenPatchDrawable) drawable).setFrameDuration(data.tenPatchData.frameDuration);
+                    var regions = new Array<TextureRegion>();
+                    for (var name : data.tenPatchData.regionNames) {
+                        regions.add(main.getAtlasData().getAtlas().findRegion(name));
+                    }
+                    ((TenPatchDrawable) drawable).setRegions(regions);
                 } else if (data.tiled) {
                     String name = data.file.name();
                     name = DrawableData.proper(name);
