@@ -1,4 +1,6 @@
 ### Skin Composer Version 31 ###
+**Please use TenPatch 4.1.0 with your projects to enable TenPatch functionality:** https://github.com/raeleus/TenPatch
+
 * Added gradient and offset options for scrolling background effects to TenPatch. See "More settings..." in the editor.
 * Added animation editor for TenPatch.
 * Fixed TenPatchDrawable content padding not being displayed in the preview.
