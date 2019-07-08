@@ -131,6 +131,17 @@ public class DialogDrawablesFilter extends Dialog {
                 DialogDrawablesFilter.this.filterOptions.custom = ((CheckBox) actor).isChecked();
             }
         });
+    
+        checkBox = new CheckBox("TenPatch", skin);
+        checkBox.setChecked(this.filterOptions.tenPatch);
+        subTable.add(checkBox);
+        checkBox.addListener(main.getHandListener());
+        checkBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                DialogDrawablesFilter.this.filterOptions.tenPatch = ((CheckBox) actor).isChecked();
+            }
+        });
         
         table.row();
         var image = new Image(skin, "welcome-separator");

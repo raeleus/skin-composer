@@ -1,7 +1,8 @@
 ### Skin Composer Version 31 ###
-* Fixed TenPatchDrawable content padding not being displayed in the preview.
 * Added gradient and offset options for scrolling background effects to TenPatch. See "More settings..." in the editor.
 * Added animation editor for TenPatch.
+* Fixed TenPatchDrawable content padding not being displayed in the preview.
+* Added filter option for TenPatches in the drawables dialog.
 
 ### Skin Composer Version 30 ###
 

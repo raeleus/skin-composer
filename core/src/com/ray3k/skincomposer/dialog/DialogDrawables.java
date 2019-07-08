@@ -1694,6 +1694,13 @@ public class DialogDrawables extends Dialog {
                         continue;
                     }
                 }
+                
+                if (!filterOptions.tenPatch) {
+                    if (drawable.tenPatchData != null) {
+                        iter.remove();
+                        continue;
+                    }
+                }
             }
         }
     }
@@ -2399,6 +2406,7 @@ public class DialogDrawables extends Dialog {
         public boolean tinted = true;
         public boolean tiled = true;
         public boolean custom = true;
+        public boolean tenPatch = true;
         public boolean regularExpression = false;
         public boolean applied = false;
         public String name = "";
@@ -2409,6 +2417,7 @@ public class DialogDrawables extends Dialog {
             tinted = filterOptions.tinted;
             tiled = filterOptions.tiled;
             custom = filterOptions.custom;
+            tenPatch = filterOptions.tenPatch;
             regularExpression = filterOptions.regularExpression;
             applied = filterOptions.applied;
             name = filterOptions.name;

@@ -720,6 +720,7 @@ public class DialogTenPatchAnimation extends Dialog {
         filterOptions.custom = false;
         filterOptions.tiled = false;
         filterOptions.tinted = false;
+        filterOptions.tenPatch = false;
         dialog.setFilterOptions(filterOptions);
     }
     
