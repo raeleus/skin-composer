@@ -14,10 +14,8 @@ import com.ray3k.skincomposer.AnimatedDrawable;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.data.DrawableData;
-import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.utils.AlphanumComparator;
 
-import javax.naming.Name;
 import java.util.Comparator;
 import java.util.regex.Pattern;
 
@@ -757,11 +755,11 @@ public class DialogTenPatchAnimation extends Dialog {
         @Override
         public boolean handle(Event event) {
             if (event instanceof DialogTenPatchAnimationEvent) {
-                settingsUpdated((DialogTenPatchAnimationEvent) event);
+                animationUpdated((DialogTenPatchAnimationEvent) event);
             }
             return false;
         }
         
-        public abstract void settingsUpdated(DialogTenPatchAnimationEvent event);
+        public abstract void animationUpdated(DialogTenPatchAnimationEvent event);
     }
 }

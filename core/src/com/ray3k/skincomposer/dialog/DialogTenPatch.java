@@ -34,10 +34,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.*;
 import com.ray3k.skincomposer.data.DrawableData;
@@ -374,7 +371,7 @@ public class DialogTenPatch extends Dialog {
                 var dialog = new DialogTenPatchAnimation(drawableData, skin, main, dialogDrawables);
                 dialog.addListener(new DialogTenPatchAnimation.DialogTenPatchAnimationListener() {
                     @Override
-                    public void settingsUpdated(DialogTenPatchAnimation.DialogTenPatchAnimationEvent event) {
+                    public void animationUpdated(DialogTenPatchAnimation.DialogTenPatchAnimationEvent event) {
                         updatePreview();
                     }
                 });
@@ -611,6 +608,12 @@ public class DialogTenPatch extends Dialog {
         tenPatchDrawable.setOffsetY(drawableData.tenPatchData.offsetY);
         tenPatchDrawable.setOffsetXspeed(drawableData.tenPatchData.offsetXspeed);
         tenPatchDrawable.setOffsetYspeed(drawableData.tenPatchData.offsetYspeed);
+        var regions = new Array<TextureRegion>();
+        for (var name : drawableData.tenPatchData.regionNames) {
+            regions.add(main.getAtlasData().getAtlas().findRegion(name));
+        }
+        tenPatchDrawable.setRegions(regions);
+        tenPatchDrawable.setFrameDuration(drawableData.tenPatchData.frameDuration);
         
         Table table = findActor("tenPatchTable");
         if (table.getCells().size > 0) {
@@ -868,24 +871,7 @@ public class DialogTenPatch extends Dialog {
         }
         
         public TenPatchData(TenPatchData other) {
-            horizontalStretchAreas = new IntArray(other.horizontalStretchAreas);
-            verticalStretchAreas = new IntArray(other.verticalStretchAreas);
-            contentLeft = other.contentLeft;
-            contentRight = other.contentRight;
-            contentTop = other.contentTop;
-            contentBottom = other.contentBottom;
-            tile = other.tile;
-            colorName = other.colorName;
-            color1Name = other.color1Name;
-            color2Name = other.color2Name;
-            color3Name = other.color3Name;
-            color4Name = other.color4Name;
-            offsetX = other.offsetX;
-            offsetY = other.offsetY;
-            offsetXspeed = other.offsetXspeed;
-            offsetYspeed = other.offsetYspeed;
-            frameDuration = other.frameDuration;
-            regionNames = new Array<>(other.regionNames);
+            set(other);
         }
     
         public void clear() {
@@ -946,6 +932,27 @@ public class DialogTenPatch extends Dialog {
             } else {
                 return false;
             }
+        }
+    
+        public void set(TenPatchData other) {
+            horizontalStretchAreas = new IntArray(other.horizontalStretchAreas);
+            verticalStretchAreas = new IntArray(other.verticalStretchAreas);
+            contentLeft = other.contentLeft;
+            contentRight = other.contentRight;
+            contentTop = other.contentTop;
+            contentBottom = other.contentBottom;
+            tile = other.tile;
+            colorName = other.colorName;
+            color1Name = other.color1Name;
+            color2Name = other.color2Name;
+            color3Name = other.color3Name;
+            color4Name = other.color4Name;
+            offsetX = other.offsetX;
+            offsetY = other.offsetY;
+            offsetXspeed = other.offsetXspeed;
+            offsetYspeed = other.offsetYspeed;
+            frameDuration = other.frameDuration;
+            regionNames = new Array<>(other.regionNames);
         }
     }
     
