@@ -796,7 +796,7 @@ public class Dialog9Patch extends Dialog {
                     case "Drawable":
                           var dialog = main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
                             @Override
-                            public void confirmed(DrawableData drawable) {
+                            public void confirmed(DrawableData drawable, DialogDrawables dialog) {
                                 var image = new Image(drawablePairs.get(drawable));
                                 image.setScaling(Scaling.none);
                                 image.setUserObject("Drawable");
@@ -805,12 +805,12 @@ public class Dialog9Patch extends Dialog {
                             }
 
                             @Override
-                            public void emptied() {
+                            public void emptied(DialogDrawables dialog) {
                                 selectBox.setSelected("None");
                             }
 
                             @Override
-                            public void cancelled() {
+                            public void cancelled(DialogDrawables dialog) {
                                 selectBox.setSelected("None");
                             }
                         }, null);

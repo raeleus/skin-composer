@@ -668,6 +668,37 @@ public class DialogFactory {
         DialogLoading dialog = new DialogLoading("", runnable, main);
         dialog.show(main.getStage());
     }
+    
+    public Dialog showMessageDialog(String title, String text, DialogListener dialogListener) {
+        Dialog dialog = new Dialog(title, main.getSkin(), "bg") {
+            @Override
+            public Dialog show(Stage stage, Action action) {
+                fire(new DialogEvent(DialogEvent.Type.OPEN));
+                return super.show(stage, action);
+            }
+            @Override
+            protected void result(Object object) {
+                fire(new DialogEvent(DialogEvent.Type.CLOSE));
+            }
+        };
+        
+        if (dialogListener != null) {
+            dialog.addListener(dialogListener);
+        }
+        
+        dialog.getTitleTable().getCells().first().padLeft(5.0f);
+        Label label = new Label(text, main.getSkin());
+        label.setAlignment(Align.center);
+        dialog.text(label);
+        dialog.getContentTable().getCells().first().pad(10.0f);
+        dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
+        dialog.button("OK");
+        dialog.key(Input.Keys.ESCAPE, 0);
+        dialog.key(Keys.ENTER, 0);
+        dialog.key(Keys.SPACE, 0);
+        dialog.show(main.getStage());
+        return dialog;
+    }
 
     public Dialog yesNoDialog(String title, String text,
             ConfirmationListener listener, DialogListener dialogListener) {
@@ -699,6 +730,8 @@ public class DialogFactory {
         dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
         dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         dialog.key(Input.Keys.ESCAPE, 1);
+        dialog.key(Keys.ENTER, 0);
+        dialog.key(Keys.SPACE, 0);
         dialog.show(main.getStage());
         return dialog;
     }
@@ -736,6 +769,8 @@ public class DialogFactory {
         dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
         dialog.getButtonTable().getCells().get(2).getActor().addListener(main.getHandListener());
         dialog.key(Input.Keys.ESCAPE, 2);
+        dialog.key(Keys.ENTER, 0);
+        dialog.key(Keys.SPACE, 0);
         dialog.show(main.getStage());
         return dialog;
     }
@@ -1089,8 +1124,8 @@ public class DialogFactory {
         dialog.show(main.getStage());
     }
     
-    public void showDialogTenPatch(DrawableData drawableData, boolean newDrawable, DialogTenPatchListener listener, ObjectMap<DrawableData, Drawable> drawablePairs) {
-        DialogTenPatch dialog = new DialogTenPatch(main, drawableData, newDrawable, drawablePairs);
+    public void showDialogTenPatch(DrawableData drawableData, boolean newDrawable, DialogTenPatchListener listener, DialogDrawables dialogDrawables) {
+        DialogTenPatch dialog = new DialogTenPatch(main, drawableData, newDrawable, dialogDrawables);
         dialog.addListener(listener);
         dialog.show(main.getStage());
     }

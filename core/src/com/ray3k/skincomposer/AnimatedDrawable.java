@@ -107,7 +107,7 @@ public class AnimatedDrawable extends BaseDrawable {
     @Override
     public void draw(Batch batch, float x, float y, float width, float height) {
         if (drawables.size > 0) {
-            drawables.get(index).draw(batch, x, y, width, height);
+            drawables.get(Math.min(index, drawables.size - 1)).draw(batch, x, y, width, height);
         }
     }
     

@@ -32,14 +32,7 @@ import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -47,7 +40,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.*;
-import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
@@ -70,13 +62,13 @@ public class DialogTenPatch extends Dialog {
     private StageResizeListener stageResizeListener;
     private Color previewColor;
     private static final Color DEFAULT_PREVIEW_COLOR = Color.WHITE;
-    private ObjectMap<DrawableData, Drawable> drawablePairs;
+    private DialogDrawables dialogDrawables;
     private DrawableData drawableData;
     private String originalName;
     private boolean newDrawable;
     private FilesDroppedListener filesDroppedListener;
     
-    public DialogTenPatch(Main main, DrawableData drawableData, boolean newDrawable, ObjectMap<DrawableData, Drawable> drawablePairs) {
+    public DialogTenPatch(Main main, DrawableData drawableData, boolean newDrawable, DialogDrawables dialog) {
         super("", main.getSkin(), "dialog");
         this.main = main;
         skin = main.getSkin();
@@ -87,7 +79,7 @@ public class DialogTenPatch extends Dialog {
         temp = new Vector2();
         this.fileHandle = drawableData.file;
         previewColor = new Color(DEFAULT_PREVIEW_COLOR);
-        this.drawablePairs = drawablePairs;
+        dialogDrawables = dialog;
         
         setFillParent(true);
         populate();
@@ -370,12 +362,30 @@ public class DialogTenPatch extends Dialog {
         table = new Table();
         top.add(table).growX();
     
-        table.defaults().space(3);
+        table.defaults().space(3).uniform().fill();
+        table.pad(5);
+    
+        textButton = new TextButton("Animation...", skin);
+        table.add(textButton);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                var dialog = new DialogTenPatchAnimation(drawableData, skin, main, dialogDrawables);
+                dialog.addListener(new DialogTenPatchAnimation.DialogTenPatchAnimationListener() {
+                    @Override
+                    public void settingsUpdated(DialogTenPatchAnimation.DialogTenPatchAnimationEvent event) {
+                        updatePreview();
+                    }
+                });
+                dialog.show(getStage());
+            }
+        });
     
         textButton = new TextButton("More settings...", skin);
-        table.add(textButton).pad(5);
-        table.addListener(main.getHandListener());
-        table.addListener(new ChangeListener() {
+        table.add(textButton);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 var dialog = new DialogTenPatchSettings(drawableData, skin, main);
@@ -559,20 +569,20 @@ public class DialogTenPatch extends Dialog {
             case "Drawable":
                 var dialog = main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
                     @Override
-                    public void confirmed(DrawableData drawable) {
-                        var image = new Image(drawablePairs.get(drawable));
+                    public void confirmed(DrawableData drawable, DialogDrawables dialog) {
+                        var image = new Image(dialogDrawables.drawablePairs.get(drawable));
                         image.setScaling(Scaling.none);
                         image.setColor(previewColor);
                         table.add(image).grow();
                     }
                     
                     @Override
-                    public void emptied() {
+                    public void emptied(DialogDrawables dialog) {
                         selectBox.setSelected("None");
                     }
                     
                     @Override
-                    public void cancelled() {
+                    public void cancelled(DialogDrawables dialog) {
                         selectBox.setSelected("None");
                     }
                 }, null);
@@ -850,7 +860,34 @@ public class DialogTenPatch extends Dialog {
         public int offsetY;
         public int offsetXspeed;
         public int offsetYspeed;
+        public float frameDuration;
+        public Array<String> regionNames = new Array<>();
+    
+        public TenPatchData() {
+            clear();
+        }
         
+        public TenPatchData(TenPatchData other) {
+            horizontalStretchAreas = new IntArray(other.horizontalStretchAreas);
+            verticalStretchAreas = new IntArray(other.verticalStretchAreas);
+            contentLeft = other.contentLeft;
+            contentRight = other.contentRight;
+            contentTop = other.contentTop;
+            contentBottom = other.contentBottom;
+            tile = other.tile;
+            colorName = other.colorName;
+            color1Name = other.color1Name;
+            color2Name = other.color2Name;
+            color3Name = other.color3Name;
+            color4Name = other.color4Name;
+            offsetX = other.offsetX;
+            offsetY = other.offsetY;
+            offsetXspeed = other.offsetXspeed;
+            offsetYspeed = other.offsetYspeed;
+            frameDuration = other.frameDuration;
+            regionNames = new Array<>(other.regionNames);
+        }
+    
         public void clear() {
             horizontalStretchAreas.clear();
             verticalStretchAreas.clear();
@@ -868,6 +905,7 @@ public class DialogTenPatch extends Dialog {
             offsetY = 0;
             offsetXspeed = 0;
             offsetYspeed = 0;
+            frameDuration = 1;
         }
     
         public void removeInvalidStretchAreas(boolean horizontal) {
