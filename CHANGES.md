@@ -5,6 +5,7 @@
 * Added animation editor for TenPatch.
 * Fixed TenPatchDrawable content padding not being displayed in the preview.
 * Added filter option for TenPatches in the drawables dialog.
+* Minor UI Tweaks and bug fixes.
 
 ### Skin Composer Version 30 ###
 

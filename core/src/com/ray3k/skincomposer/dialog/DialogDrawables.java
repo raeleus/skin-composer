@@ -406,6 +406,12 @@ public class DialogDrawables extends Dialog {
         scrollPane.setFlickScroll(false);
         getContentTable().add(scrollPane).grow();
         sortBySelectedMode();
+        scrollPane.addListener(new InputListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                getStage().setScrollFocus(scrollPane);
+            }
+        });
         
         getContentTable().row();
         if (property != null || customProperty != null) {
