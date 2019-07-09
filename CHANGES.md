@@ -8,6 +8,7 @@
 * TenPatches with no stretch areas now preview correctly outside of the editor.
 * Pressing escape in drawables dialog disables the filter.
 * Prevent small fonts from crashing FreeType and Bitmap Font dialogs.
+* Prevent crash when creating a font that requires more than one texture page in Bitmap Font dialog.
 * Minor UI Tweaks and bug fixes.
 
 ### Skin Composer Version 30 ###

@@ -324,53 +324,64 @@ public class Launcher implements DesktopWorker, Lwjgl3WindowListener {
 
     @Override
     public void writeFont(FreeTypeFontGenerator.FreeTypeBitmapFontData data, Array<PixmapPacker.Page> pages, FileHandle target) {
-        var pngTarget = target.sibling(target.nameWithoutExtension() + ".png");
-        
         var info = new BitmapFontWriter.FontInfo();
         data.capHeight--;
         info.face = target.nameWithoutExtension();
         info.padding = new BitmapFontWriter.Padding(1, 1, 1, 1);
 
-        BitmapFontWriter.writePixmaps(pages, target.parent(), target.nameWithoutExtension());
+        var pixmapNames = BitmapFontWriter.writePixmaps(pages, target.parent(), target.nameWithoutExtension());
+        int scaleW;
+        int scaleH;
         
-        var pixmap = new Pixmap(pngTarget);
-        var color = new Color();
-        int newHeight = pixmap.getHeight();
-        boolean foundOpaquePixel = false;
-        for (int y = pixmap.getHeight() - 1; y >= 0 && !foundOpaquePixel; y--) {
-            for (int x = 0; x < pixmap.getWidth(); x++) {
-                color.set(pixmap.getPixel(x, y));
-                if (color.a > 0) {
-                    //add padding to new height
-                    newHeight = y + 2;
-                    foundOpaquePixel = true;
-                    break;
+        if (pixmapNames.length > 1) {
+            //all the images must have the same width and height
+            var pngTarget = target.sibling(pixmapNames[0]);
+            var pixmap = new Pixmap(pngTarget);
+            scaleW = pixmap.getWidth();
+            scaleH = pixmap.getHeight();
+        } else {
+            var pngTarget = target.sibling(pixmapNames[0]);
+
+            //trim whitespace on the image.
+            var pixmap = new Pixmap(pngTarget);
+            var color = new Color();
+            scaleH = pixmap.getHeight();
+            boolean foundOpaquePixel = false;
+            for (int y = pixmap.getHeight() - 1; y >= 0 && !foundOpaquePixel; y--) {
+                for (int x = 0; x < pixmap.getWidth(); x++) {
+                    color.set(pixmap.getPixel(x, y));
+                    if (color.a > 0) {
+                        //add padding to new height
+                        scaleH = y + 2;
+                        foundOpaquePixel = true;
+                        break;
+                    }
                 }
             }
-        }
-        
-        foundOpaquePixel = false;
-        int newWidth = pixmap.getWidth();
-        for (int x = pixmap.getWidth() - 1; x >= 0 && !foundOpaquePixel; x--) {
-            for (int y = 0; y < pixmap.getHeight(); y++) {
-                color.set(pixmap.getPixel(x, y));
-                if (color.a > 0) {
-                    //add padding to new height
-                    newWidth = x + 2;
-                    foundOpaquePixel = true;
-                    break;
+
+            foundOpaquePixel = false;
+            scaleW = pixmap.getWidth();
+            for (int x = pixmap.getWidth() - 1; x >= 0 && !foundOpaquePixel; x--) {
+                for (int y = 0; y < pixmap.getHeight(); y++) {
+                    color.set(pixmap.getPixel(x, y));
+                    if (color.a > 0) {
+                        //add padding to new height
+                        scaleW = x + 2;
+                        foundOpaquePixel = true;
+                        break;
+                    }
                 }
             }
+    
+            var fixedPixmap = new Pixmap(scaleW, scaleH, Pixmap.Format.RGBA8888);
+            fixedPixmap.setBlending(Pixmap.Blending.None);
+            fixedPixmap.drawPixmap(pixmap, 0, 0);
+            PixmapIO.writePNG(pngTarget, fixedPixmap);
+            pixmap.dispose();
+            fixedPixmap.dispose();
         }
         
-        var fixedPixmap = new Pixmap(newWidth, newHeight, Pixmap.Format.RGBA8888);
-        fixedPixmap.setBlending(Pixmap.Blending.None);
-        fixedPixmap.drawPixmap(pixmap, 0, 0);
-        PixmapIO.writePNG(pngTarget, fixedPixmap);
-        
-        BitmapFontWriter.writeFont(data, new String[]{target.nameWithoutExtension() + ".png"}, target, info, newWidth, newHeight);
-        pixmap.dispose();
-        fixedPixmap.dispose();
+        BitmapFontWriter.writeFont(data, pixmapNames, target, info, scaleW, scaleH);
     }
 
     @Override
