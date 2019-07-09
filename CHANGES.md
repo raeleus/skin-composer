@@ -6,6 +6,7 @@
 * Fixed TenPatchDrawable content padding not being displayed in the preview.
 * Added filter option for TenPatches in the drawables dialog.
 * TenPatches with no stretch areas now preview correctly outside of the editor.
+* Pressing escape in drawables dialog disables the filter.
 * Minor UI Tweaks and bug fixes.
 
 ### Skin Composer Version 30 ###

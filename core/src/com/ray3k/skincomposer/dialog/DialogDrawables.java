@@ -430,6 +430,20 @@ public class DialogDrawables extends Dialog {
             button("Close", false);
             getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
         }
+        
+        addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Keys.ESCAPE) {
+                    filterOptions.applied = false;
+                    Button button = findActor("filter");
+                    button.setChecked(false);
+                    sortBySelectedMode();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
