@@ -567,7 +567,22 @@ public class TenPatchWidget extends Stack {
                 }
     
                 @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    super.enter(event, x, y, pointer, fromActor);
+                    if (draggingHandle || widget.newHandle) {
+                        numberLabel.setColor(1,1,1,1);
+                    }
+                }
+    
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    super.exit(event, x, y, pointer, toActor);
+                    numberLabel.setColor(1,1,1,0);
+                }
+    
+                @Override
                 public boolean mouseMoved(InputEvent event, float x, float y) {
+                    
                     var resizeCursor = false;
                     if (widget.stretchMode) {
                         if (widget.horizontalMode) {
