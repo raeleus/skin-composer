@@ -336,34 +336,38 @@ public class TenPatchWidget extends Stack {
                     super.dragStart(event, x, y, pointer);
                     startX = x;
                     startY = y;
-                    
-                    if (!draggingHandle) {
-                        widget.newHandle = true;
-                        if (widget.horizontalMode) {
-                            widget.newHandleStart = (int) ((x - widget.position.x) / widget.zoomScale);
-                            if (widget.newHandleStart < 0) widget.newHandleStart = 0;
-                            if (widget.newHandleStart >= widget.textureRegion.getRegionWidth()) widget.newHandleStart = widget.textureRegion.getRegionWidth() - 1;
-                            widget.newHandleEnd = widget.newHandleStart;
-                        } else {
-                            widget.newHandleStart = (int) ((y - widget.position.y) / widget.zoomScale);
-                            if (widget.newHandleStart < 0) widget.newHandleStart = 0;
-                            if (widget.newHandleStart >= widget.textureRegion.getRegionHeight()) widget.newHandleStart = widget.textureRegion.getRegionHeight() - 1;
-                            widget.newHandleEnd = widget.newHandleStart;
-                        }
-                        
-                        var stretchAreas = widget.horizontalMode ? widget.tenPatchData.horizontalStretchAreas : widget.tenPatchData.verticalStretchAreas;
-                        for (int i = 0; i + 1 < stretchAreas.size; i += 2) {
-                            if (widget.newHandleStart >= stretchAreas.get(i) && widget.newHandleStart <= stretchAreas.get(i + 1)) {
-                                widget.newHandle = false;
-                                break;
+    
+                    if (widget.stretchMode) {
+                        if (!draggingHandle) {
+                            widget.newHandle = true;
+                            if (widget.horizontalMode) {
+                                widget.newHandleStart = (int) ((x - widget.position.x) / widget.zoomScale);
+                                if (widget.newHandleStart < 0) widget.newHandleStart = 0;
+                                if (widget.newHandleStart >= widget.textureRegion.getRegionWidth())
+                                    widget.newHandleStart = widget.textureRegion.getRegionWidth() - 1;
+                                widget.newHandleEnd = widget.newHandleStart;
+                            } else {
+                                widget.newHandleStart = (int) ((y - widget.position.y) / widget.zoomScale);
+                                if (widget.newHandleStart < 0) widget.newHandleStart = 0;
+                                if (widget.newHandleStart >= widget.textureRegion.getRegionHeight())
+                                    widget.newHandleStart = widget.textureRegion.getRegionHeight() - 1;
+                                widget.newHandleEnd = widget.newHandleStart;
                             }
+    
+                            var stretchAreas = widget.horizontalMode ? widget.tenPatchData.horizontalStretchAreas : widget.tenPatchData.verticalStretchAreas;
+                            for (int i = 0; i + 1 < stretchAreas.size; i += 2) {
+                                if (widget.newHandleStart >= stretchAreas.get(i) && widget.newHandleStart <= stretchAreas.get(i + 1)) {
+                                    widget.newHandle = false;
+                                    break;
+                                }
+                            }
+                        } else {
+                            widget.newHandle = false;
                         }
-                    } else {
-                        widget.newHandle = false;
-                    }
-                    
-                    if (widget.newHandle) {
-                        numberLabel.setColor(1,1,1,1);
+        
+                        if (widget.newHandle) {
+                            numberLabel.setColor(1, 1, 1, 1);
+                        }
                     }
                 }
     
