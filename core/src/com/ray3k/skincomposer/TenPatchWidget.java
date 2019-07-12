@@ -640,11 +640,11 @@ public class TenPatchWidget extends Stack {
                     } else {
                         var region = widget.textureRegion;
                         if (widget.horizontalMode) {
-                            if (x >= widget.position.x + widget.tenPatchData.contentLeft * widget.zoomScale && x < widget.position.x + (widget.tenPatchData.contentLeft + 1) * widget.zoomScale) {
+                            if (x >= widget.position.x + (widget.tenPatchData.contentLeft - .5f) * widget.zoomScale && x < widget.position.x + (widget.tenPatchData.contentLeft  + .5f) * widget.zoomScale) {
                                 resizeCursor = true;
                                 draggingHandle = true;
                                 dragIndex = 0;
-                            } else if (x < widget.position.x + (region.getRegionWidth() - widget.tenPatchData.contentRight) * widget.zoomScale && x >= widget.position.x + (region.getRegionWidth() - widget.tenPatchData.contentRight - 1) * widget.zoomScale) {
+                            } else if (x < widget.position.x + (region.getRegionWidth() - widget.tenPatchData.contentRight + .5f) * widget.zoomScale && x >= widget.position.x + (region.getRegionWidth() - widget.tenPatchData.contentRight - .5f) * widget.zoomScale) {
                                 resizeCursor = true;
                                 draggingHandle = true;
                                 dragIndex = 1;
@@ -661,11 +661,11 @@ public class TenPatchWidget extends Stack {
                                 numberLabel.setColor(1,1,1,0);
                             }
                         } else {
-                            if (y >= widget.position.y + widget.tenPatchData.contentBottom * widget.zoomScale && y < widget.position.y + (widget.tenPatchData.contentBottom + 1) * widget.zoomScale) {
+                            if (y >= widget.position.y + (widget.tenPatchData.contentBottom - .5f) * widget.zoomScale && y < widget.position.y + (widget.tenPatchData.contentBottom + .5f) * widget.zoomScale) {
                                 resizeCursor = true;
                                 draggingHandle = true;
                                 dragIndex = 0;
-                            } else if (y < widget.position.y + (region.getRegionHeight() - widget.tenPatchData.contentTop) * widget.zoomScale && y >= widget.position.y + (region.getRegionHeight() - widget.tenPatchData.contentTop - 1) * widget.zoomScale) {
+                            } else if (y < widget.position.y + (region.getRegionHeight() - widget.tenPatchData.contentTop + .5f) * widget.zoomScale && y >= widget.position.y + (region.getRegionHeight() - widget.tenPatchData.contentTop - .5f) * widget.zoomScale) {
                                 resizeCursor = true;
                                 draggingHandle = true;
                                 dragIndex = 1;
