@@ -3,12 +3,15 @@
 
 * Added gradient and offset options for scrolling background effects to TenPatch. See "More settings..." in the editor.
 * Added animation editor for TenPatch.
+* Added number labels for the TenPatch editor handles.
 * Fixed TenPatchDrawable content padding not being displayed in the preview.
 * Added filter option for TenPatches in the drawables dialog.
 * TenPatches with no stretch areas now preview correctly outside of the editor.
 * Pressing escape in drawables dialog disables the filter.
 * Prevent small fonts from crashing FreeType and Bitmap Font dialogs.
 * Prevent crash when creating a font that requires more than one texture page in Bitmap Font dialog.
+* Fixed being unable to set content if handles are squished to the far right or bottom in TenPatch editor.
+* Fixed being able to make a new stretch area while in content mode in Ten Patch.
 * Minor UI Tweaks and bug fixes.
 
 ### Skin Composer Version 30 ###
