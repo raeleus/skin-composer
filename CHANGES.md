@@ -4,6 +4,7 @@
 * Added gradient and offset options for scrolling background effects to TenPatch. See "More settings..." in the editor.
 * Added animation editor for TenPatch.
 * Added number labels for the TenPatch editor handles.
+* Added right click panning and double click content/padding shortcut to NinePatch editor for parity with the TenPatch editor.
 * Fixed TenPatchDrawable content padding not being displayed in the preview.
 * Added filter option for TenPatches in the drawables dialog.
 * TenPatches with no stretch areas now preview correctly outside of the editor.
