@@ -32,7 +32,7 @@ public class DialogTenPatchAnimation extends Dialog {
     private AnimatedDrawable animatedDrawable;
     
     public DialogTenPatchAnimation(DrawableData drawableData, Skin skin, Main main, DialogDrawables dialogDrawables) {
-        super("TenPatch Settings", skin, "bg");
+        super("TenPatch Animation", skin, "bg");
         lastClicked = 0;
         this.drawableData = drawableData;
         workingData = new DrawableData(drawableData);
