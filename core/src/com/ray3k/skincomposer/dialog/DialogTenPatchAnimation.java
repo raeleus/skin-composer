@@ -56,6 +56,13 @@ public class DialogTenPatchAnimation extends Dialog {
         
         Table bottom = new Table();
         bottom.setTouchable(Touchable.enabled);
+        bottom.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                getStage().setKeyboardFocus(null);
+                return super.touchDown(event, x, y, pointer, button);
+            }
+        });
         
         var splitPane = new SplitPane(top, bottom, true, skin);
         root.add(splitPane).grow();
@@ -102,6 +109,15 @@ public class DialogTenPatchAnimation extends Dialog {
             public void changed(ChangeEvent event, Actor actor) {
                 workingData.tenPatchData.frameDuration = (float) spinner.getValue();
                 animatedDrawable.setFrameDuration(workingData.tenPatchData.frameDuration);
+            }
+        });
+        spinner.getTextField().addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.ENTER || keycode == Input.Keys.TAB) {
+                    getStage().setKeyboardFocus(null);
+                }
+                return super.keyDown(event, keycode);
             }
         });
         

@@ -1,3 +1,8 @@
+### Skin Composer Version 32 ###
+**Please use TenPatch 4.1.0 with your projects to enable TenPatch functionality:** https://github.com/raeleus/TenPatch
+
+* Fixed keyboard focus issue in Ten Patch Animation dialog.
+
 ### Skin Composer Version 31 ###
 **Please use TenPatch 4.1.0 with your projects to enable TenPatch functionality:** https://github.com/raeleus/TenPatch
 
