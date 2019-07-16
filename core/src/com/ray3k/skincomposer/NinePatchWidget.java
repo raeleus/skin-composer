@@ -27,17 +27,16 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -314,7 +313,25 @@ public class NinePatchWidget extends Stack {
             }
         };
         dragListener.setTapSquareSize(0);
+        dragListener.setButton(-1);
         addCaptureListener(dragListener);
+    
+        var clickListener = new ClickListener(Input.Buttons.RIGHT){
+            boolean flipOrientation;
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                switch(this.getTapCount()) {
+                    case 1:
+                        break;
+                    case 2:
+                        paddingButton.setChecked(!showContent);
+                        break;
+                }
+            }
+        };
+        clickListener.setTapSquareSize(0);
+        clickListener.setTapCountInterval(.3f);
+        addListener(clickListener);
     }
 
     public float getZoom() {

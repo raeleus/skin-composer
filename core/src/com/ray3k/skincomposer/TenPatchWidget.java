@@ -33,16 +33,13 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.dialog.DialogTenPatch.TenPatchData;
 
 /**
@@ -63,6 +60,7 @@ public class TenPatchWidget extends Stack {
     private boolean newHandle;
     private int newHandleStart;
     private int newHandleEnd;
+    private static Label numberLabel;
     
     public static enum GridMode {
         NONE, LIGHT, DARK
@@ -137,6 +135,29 @@ public class TenPatchWidget extends Stack {
                 horizontalMode = !modeSwitchButton.isChecked();
             }
         });
+    
+        numberLabel = new Label("52", Main.main.getSkin(), "filter");
+        numberLabel.setTouchable(Touchable.disabled);
+        numberLabel.setColor(1, 1, 1, 0);
+        numberLabel.setAlignment(Align.center);
+        table.addActor(numberLabel);
+        var dragListener = new DragListener() {
+            @Override
+            public void drag(InputEvent event, float x, float y, int pointer) {
+                super.drag(event, x, y, pointer);
+                numberLabel.pack();
+                numberLabel.setPosition(x, y, Align.bottom);
+            }
+        
+            @Override
+            public boolean mouseMoved(InputEvent event, float x, float y) {
+                numberLabel.pack();
+                numberLabel.setPosition(x, y, Align.bottom);
+                return super.mouseMoved(event, x, y);
+            }
+        };
+        dragListener.setButton(-1);
+        addListener(dragListener);
     }
 
     public TextureRegion getTextureRegion() {
@@ -315,30 +336,38 @@ public class TenPatchWidget extends Stack {
                     super.dragStart(event, x, y, pointer);
                     startX = x;
                     startY = y;
-                    
-                    if (!draggingHandle) {
-                        widget.newHandle = true;
-                        if (widget.horizontalMode) {
-                            widget.newHandleStart = (int) ((x - widget.position.x) / widget.zoomScale);
-                            if (widget.newHandleStart < 0) widget.newHandleStart = 0;
-                            if (widget.newHandleStart >= widget.textureRegion.getRegionWidth()) widget.newHandleStart = widget.textureRegion.getRegionWidth() - 1;
-                            widget.newHandleEnd = widget.newHandleStart;
-                        } else {
-                            widget.newHandleStart = (int) ((y - widget.position.y) / widget.zoomScale);
-                            if (widget.newHandleStart < 0) widget.newHandleStart = 0;
-                            if (widget.newHandleStart >= widget.textureRegion.getRegionHeight()) widget.newHandleStart = widget.textureRegion.getRegionHeight() - 1;
-                            widget.newHandleEnd = widget.newHandleStart;
-                        }
-                        
-                        var stretchAreas = widget.horizontalMode ? widget.tenPatchData.horizontalStretchAreas : widget.tenPatchData.verticalStretchAreas;
-                        for (int i = 0; i + 1 < stretchAreas.size; i += 2) {
-                            if (widget.newHandleStart >= stretchAreas.get(i) && widget.newHandleStart <= stretchAreas.get(i + 1)) {
-                                widget.newHandle = false;
-                                break;
+    
+                    if (widget.stretchMode) {
+                        if (!draggingHandle) {
+                            widget.newHandle = true;
+                            if (widget.horizontalMode) {
+                                widget.newHandleStart = (int) ((x - widget.position.x) / widget.zoomScale);
+                                if (widget.newHandleStart < 0) widget.newHandleStart = 0;
+                                if (widget.newHandleStart >= widget.textureRegion.getRegionWidth())
+                                    widget.newHandleStart = widget.textureRegion.getRegionWidth() - 1;
+                                widget.newHandleEnd = widget.newHandleStart;
+                            } else {
+                                widget.newHandleStart = (int) ((y - widget.position.y) / widget.zoomScale);
+                                if (widget.newHandleStart < 0) widget.newHandleStart = 0;
+                                if (widget.newHandleStart >= widget.textureRegion.getRegionHeight())
+                                    widget.newHandleStart = widget.textureRegion.getRegionHeight() - 1;
+                                widget.newHandleEnd = widget.newHandleStart;
                             }
+    
+                            var stretchAreas = widget.horizontalMode ? widget.tenPatchData.horizontalStretchAreas : widget.tenPatchData.verticalStretchAreas;
+                            for (int i = 0; i + 1 < stretchAreas.size; i += 2) {
+                                if (widget.newHandleStart >= stretchAreas.get(i) && widget.newHandleStart <= stretchAreas.get(i + 1)) {
+                                    widget.newHandle = false;
+                                    break;
+                                }
+                            }
+                        } else {
+                            widget.newHandle = false;
                         }
-                    } else {
-                        widget.newHandle = false;
+        
+                        if (widget.newHandle) {
+                            numberLabel.setColor(1, 1, 1, 1);
+                        }
                     }
                 }
     
@@ -383,6 +412,7 @@ public class TenPatchWidget extends Stack {
                                 }
                                 
                                 stretchAreas.set(dragIndex, newValue);
+                                numberLabel.setText(stretchAreas.get(dragIndex));
                                 fire(new TenPatchEvent(widget.tenPatchData));
                             } else {
                                 var stretchAreas = widget.tenPatchData.verticalStretchAreas;
@@ -419,6 +449,7 @@ public class TenPatchWidget extends Stack {
                                 }
                                 
                                 stretchAreas.set(dragIndex, newValue);
+                                numberLabel.setText(stretchAreas.get(dragIndex));
                                 fire(new TenPatchEvent(widget.tenPatchData));
                             }
                         } else {
@@ -429,6 +460,7 @@ public class TenPatchWidget extends Stack {
                                     if (newValue > widget.textureRegion.getRegionWidth()) newValue = widget.textureRegion.getRegionWidth();
                                     if (newValue > widget.textureRegion.getRegionWidth() - widget.tenPatchData.contentRight - 1) newValue = widget.textureRegion.getRegionWidth() - widget.tenPatchData.contentRight - 1;
                                     widget.tenPatchData.contentLeft = newValue;
+                                    numberLabel.setText(widget.tenPatchData.contentLeft);
                                     fire(new TenPatchEvent(widget.tenPatchData));
                                 } else {
                                     var newValue = widget.textureRegion.getRegionWidth() - (int) ((x - widget.position.x) / widget.zoomScale);
@@ -436,6 +468,7 @@ public class TenPatchWidget extends Stack {
                                     if (newValue > widget.textureRegion.getRegionWidth()) newValue = widget.textureRegion.getRegionWidth();
                                     if (newValue > widget.textureRegion.getRegionWidth() - widget.tenPatchData.contentLeft - 1) newValue = widget.textureRegion.getRegionWidth() - widget.tenPatchData.contentLeft - 1;
                                     widget.tenPatchData.contentRight = newValue;
+                                    numberLabel.setText(widget.tenPatchData.contentRight);
                                     fire(new TenPatchEvent(widget.tenPatchData));
                                 }
                             } else {
@@ -445,6 +478,7 @@ public class TenPatchWidget extends Stack {
                                     if (newValue > widget.textureRegion.getRegionHeight()) newValue = widget.textureRegion.getRegionHeight();
                                     if (newValue > widget.textureRegion.getRegionHeight() - widget.tenPatchData.contentTop - 1) newValue = widget.textureRegion.getRegionHeight() - widget.tenPatchData.contentTop - 1;
                                     widget.tenPatchData.contentBottom = newValue;
+                                    numberLabel.setText(widget.tenPatchData.contentBottom);
                                     fire(new TenPatchEvent(widget.tenPatchData));
                                 } else {
                                     var newValue = widget.textureRegion.getRegionHeight() - (int) ((y - widget.position.y) / widget.zoomScale);
@@ -452,6 +486,7 @@ public class TenPatchWidget extends Stack {
                                     if (newValue > widget.textureRegion.getRegionHeight()) newValue = widget.textureRegion.getRegionHeight();
                                     if (newValue > widget.textureRegion.getRegionHeight() - widget.tenPatchData.contentBottom - 1) newValue = widget.textureRegion.getRegionHeight() - widget.tenPatchData.contentBottom - 1;
                                     widget.tenPatchData.contentTop = newValue;
+                                    numberLabel.setText(widget.tenPatchData.contentTop);
                                     fire(new TenPatchEvent(widget.tenPatchData));
                                 }
                             }
@@ -480,6 +515,7 @@ public class TenPatchWidget extends Stack {
                             if (newValue < minX) newValue = minX;
                             if (newValue > maxX) newValue = maxX;
                             widget.newHandleEnd = newValue;
+                            numberLabel.setText(newValue);
                         } else {
                             var minY = 0;
                             for (var i = 1; i < widget.tenPatchData.verticalStretchAreas.size; i += 2) {
@@ -503,6 +539,7 @@ public class TenPatchWidget extends Stack {
                             if (newValue < minY) newValue = minY;
                             if (newValue > maxY) newValue = maxY;
                             widget.newHandleEnd = newValue;
+                            numberLabel.setText(newValue);
                         }
                     }
                 }
@@ -517,6 +554,7 @@ public class TenPatchWidget extends Stack {
                         
                         widget.newHandle = false;
                         fire(new TenPatchEvent(widget.tenPatchData));
+                        numberLabel.setColor(1,1,1,0);
                     }
                     
                     draggingHandle = false;
@@ -529,7 +567,22 @@ public class TenPatchWidget extends Stack {
                 }
     
                 @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    super.enter(event, x, y, pointer, fromActor);
+                    if (draggingHandle || widget.newHandle) {
+                        numberLabel.setColor(1,1,1,1);
+                    }
+                }
+    
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    super.exit(event, x, y, pointer, toActor);
+                    numberLabel.setColor(1,1,1,0);
+                }
+    
+                @Override
                 public boolean mouseMoved(InputEvent event, float x, float y) {
+                    
                     var resizeCursor = false;
                     if (widget.stretchMode) {
                         if (widget.horizontalMode) {
@@ -559,8 +612,11 @@ public class TenPatchWidget extends Stack {
                 
                             if (resizeCursor) {
                                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.HorizontalResize);
+                                numberLabel.setColor(1,1,1,1);
+                                numberLabel.setText(stretchAreas.get(dragIndex));
                             } else {
                                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                                numberLabel.setColor(1,1,1,0);
                             }
                         } else {
                             var stretchAreas = widget.tenPatchData.verticalStretchAreas;
@@ -589,18 +645,21 @@ public class TenPatchWidget extends Stack {
                 
                             if (resizeCursor) {
                                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.VerticalResize);
+                                numberLabel.setColor(1,1,1,1);
+                                numberLabel.setText(stretchAreas.get(dragIndex));
                             } else {
                                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                                numberLabel.setColor(1,1,1,0);
                             }
                         }
                     } else {
                         var region = widget.textureRegion;
                         if (widget.horizontalMode) {
-                            if (x >= widget.position.x + widget.tenPatchData.contentLeft * widget.zoomScale && x < widget.position.x + (widget.tenPatchData.contentLeft + 1) * widget.zoomScale) {
+                            if (x >= widget.position.x + (widget.tenPatchData.contentLeft - .5f) * widget.zoomScale && x < widget.position.x + (widget.tenPatchData.contentLeft  + .5f) * widget.zoomScale) {
                                 resizeCursor = true;
                                 draggingHandle = true;
                                 dragIndex = 0;
-                            } else if (x < widget.position.x + (region.getRegionWidth() - widget.tenPatchData.contentRight) * widget.zoomScale && x >= widget.position.x + (region.getRegionWidth() - widget.tenPatchData.contentRight - 1) * widget.zoomScale) {
+                            } else if (x < widget.position.x + (region.getRegionWidth() - widget.tenPatchData.contentRight + .5f) * widget.zoomScale && x >= widget.position.x + (region.getRegionWidth() - widget.tenPatchData.contentRight - .5f) * widget.zoomScale) {
                                 resizeCursor = true;
                                 draggingHandle = true;
                                 dragIndex = 1;
@@ -610,15 +669,18 @@ public class TenPatchWidget extends Stack {
                 
                             if (resizeCursor) {
                                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.HorizontalResize);
+                                numberLabel.setColor(1,1,1,1);
+                                numberLabel.setText(dragIndex == 0 ? widget.tenPatchData.contentLeft : widget.tenPatchData.contentRight);
                             } else {
                                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                                numberLabel.setColor(1,1,1,0);
                             }
                         } else {
-                            if (y >= widget.position.y + widget.tenPatchData.contentBottom * widget.zoomScale && y < widget.position.y + (widget.tenPatchData.contentBottom + 1) * widget.zoomScale) {
+                            if (y >= widget.position.y + (widget.tenPatchData.contentBottom - .5f) * widget.zoomScale && y < widget.position.y + (widget.tenPatchData.contentBottom + .5f) * widget.zoomScale) {
                                 resizeCursor = true;
                                 draggingHandle = true;
                                 dragIndex = 0;
-                            } else if (y < widget.position.y + (region.getRegionHeight() - widget.tenPatchData.contentTop) * widget.zoomScale && y >= widget.position.y + (region.getRegionHeight() - widget.tenPatchData.contentTop - 1) * widget.zoomScale) {
+                            } else if (y < widget.position.y + (region.getRegionHeight() - widget.tenPatchData.contentTop + .5f) * widget.zoomScale && y >= widget.position.y + (region.getRegionHeight() - widget.tenPatchData.contentTop - .5f) * widget.zoomScale) {
                                 resizeCursor = true;
                                 draggingHandle = true;
                                 dragIndex = 1;
@@ -628,8 +690,11 @@ public class TenPatchWidget extends Stack {
                 
                             if (resizeCursor) {
                                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.VerticalResize);
+                                numberLabel.setColor(1,1,1,1);
+                                numberLabel.setText(dragIndex == 0 ? widget.tenPatchData.contentBottom : widget.tenPatchData.contentTop);
                             } else {
                                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                                numberLabel.setColor(1,1,1,0);
                             }
                         }
                     }

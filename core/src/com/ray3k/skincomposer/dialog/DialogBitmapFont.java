@@ -422,6 +422,7 @@ public class DialogBitmapFont extends Dialog {
 
         Spinner spinner = new Spinner(data.size, 1.0, true, Spinner.Orientation.HORIZONTAL, skin);
         spinner.setName("size");
+        spinner.setMinimum(5);
         bottom.add(spinner).left().minWidth(100.0f);
 
         toolTip = new TextTooltip("The size in pixels", main.getTooltipManager(), getSkin());

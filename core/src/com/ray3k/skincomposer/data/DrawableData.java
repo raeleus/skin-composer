@@ -93,7 +93,12 @@ public class DrawableData implements Json.Serializable {
         this.minWidth = drawableData.minWidth;
         this.minHeight = drawableData.minHeight;
         this.customized = drawableData.customized;
-        this.tenPatchData = drawableData.tenPatchData;
+        if (drawableData.tenPatchData == null) {
+            drawableData.tenPatchData = null;
+        } else {
+            if (tenPatchData == null) tenPatchData = new DialogTenPatch.TenPatchData();
+            this.tenPatchData.set(drawableData.tenPatchData);
+        }
     }
 
     @Override

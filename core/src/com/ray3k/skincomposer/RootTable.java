@@ -23,6 +23,7 @@
  ***************************************************************************** */
 package com.ray3k.skincomposer;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ray3k.skincomposer.data.CustomProperty;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -2255,7 +2256,9 @@ public class RootTable extends Table {
                         Tree.Node parentNode = null;
                         for (String line: lines) {
                             Label label = new Label(line, getSkin());
-                            Tree.Node node = new Tree.Node(label);
+                            Tree.Node node = new Tree.Node(label) {
+                            
+                            };
                             if (parentNode == null) {
                                 ((Tree) widget).add(node);
                             } else {
@@ -2634,11 +2637,35 @@ public class RootTable extends Table {
                     var region = atlas.findRegion(DrawableData.proper(data.file.name()));
                     drawable = new TenPatchDrawable(data.tenPatchData.horizontalStretchAreas.toArray(),
                             data.tenPatchData.verticalStretchAreas.toArray(), data.tenPatchData.tile, region);
-                    if (data.tenPatchData.colorName != null) {
-                        ((TenPatchDrawable) drawable).getColor().set(main.getJsonData().getColorByName(data.tenPatchData.colorName).color);
+                    if (((TenPatchDrawable) drawable).horizontalStretchAreas.length == 0) {
+                        ((TenPatchDrawable) drawable).horizontalStretchAreas = new int[] {0, region.getRegionWidth() - 1};
                     }
+                    if (((TenPatchDrawable) drawable).verticalStretchAreas.length == 0) {
+                        ((TenPatchDrawable) drawable).verticalStretchAreas = new int[] {0, region.getRegionHeight() - 1};
+                    }
+                    
+                    drawable.setLeftWidth(data.tenPatchData.contentLeft);
+                    drawable.setRightWidth(data.tenPatchData.contentRight);
+                    drawable.setTopHeight(data.tenPatchData.contentTop);
+                    drawable.setBottomHeight(data.tenPatchData.contentBottom);
                     if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
                     if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
+                    if (data.tenPatchData.colorName != null) ((TenPatchDrawable) drawable).setColor(main.getJsonData().getColorByName(data.tenPatchData.colorName).color);
+                    if (data.tenPatchData.color1Name != null) ((TenPatchDrawable) drawable).setColor1(main.getJsonData().getColorByName(data.tenPatchData.color1Name).color);
+                    if (data.tenPatchData.color2Name != null) ((TenPatchDrawable) drawable).setColor2(main.getJsonData().getColorByName(data.tenPatchData.color2Name).color);
+                    if (data.tenPatchData.color3Name != null) ((TenPatchDrawable) drawable).setColor3(main.getJsonData().getColorByName(data.tenPatchData.color3Name).color);
+                    if (data.tenPatchData.color4Name != null) ((TenPatchDrawable) drawable).setColor4(main.getJsonData().getColorByName(data.tenPatchData.color4Name).color);
+                    ((TenPatchDrawable) drawable).setOffsetX(data.tenPatchData.offsetX);
+                    ((TenPatchDrawable) drawable).setOffsetY(data.tenPatchData.offsetY);
+                    ((TenPatchDrawable) drawable).setOffsetXspeed(data.tenPatchData.offsetXspeed);
+                    ((TenPatchDrawable) drawable).setOffsetYspeed(data.tenPatchData.offsetYspeed);
+                    ((TenPatchDrawable) drawable).setFrameDuration(data.tenPatchData.frameDuration);
+                    var regions = new Array<TextureRegion>();
+                    for (var name : data.tenPatchData.regionNames) {
+                        regions.add(main.getAtlasData().getAtlas().findRegion(name));
+                    }
+                    ((TenPatchDrawable) drawable).setRegions(regions);
+                    
                 } else if (data.file.name().matches(".*\\.9\\.[a-zA-Z0-9]*$")) {
                     String name = data.file.name();
                     name = DrawableData.proper(name);

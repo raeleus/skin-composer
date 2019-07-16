@@ -1,3 +1,26 @@
+### Skin Composer Version 32 ###
+**Please use TenPatch 4.1.0 with your projects to enable TenPatch functionality:** https://github.com/raeleus/TenPatch
+
+* Fixed keyboard focus issue in Ten Patch Animation dialog.
+* Minor UI Tweaks and bug fixes.
+
+### Skin Composer Version 31 ###
+**Please use TenPatch 4.1.0 with your projects to enable TenPatch functionality:** https://github.com/raeleus/TenPatch
+
+* Added gradient and offset options for scrolling background effects to TenPatch. See "More settings..." in the editor.
+* Added animation editor for TenPatch.
+* Added number labels for the TenPatch editor handles.
+* Added right click panning and double click content/padding shortcut to NinePatch editor for parity with the TenPatch editor.
+* Fixed TenPatchDrawable content padding not being displayed in the preview.
+* Added filter option for TenPatches in the drawables dialog.
+* TenPatches with no stretch areas now preview correctly outside of the editor.
+* Pressing escape in drawables dialog disables the filter.
+* Prevent small fonts from crashing FreeType and Bitmap Font dialogs.
+* Prevent crash when creating a font that requires more than one texture page in Bitmap Font dialog.
+* Fixed being unable to set content if handles are squished to the far right or bottom in TenPatch editor.
+* Fixed being able to make a new stretch area while in content mode in Ten Patch.
+* Minor UI Tweaks and bug fixes.
+
 ### Skin Composer Version 30 ###
 
 * Integrated TenPatch functionality as an alternative to 9patch. See https://github.com/raeleus/TenPatch
