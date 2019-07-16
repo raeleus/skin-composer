@@ -51,7 +51,20 @@ task dist(type: Jar) {
     }
 }
 
+task distMac(type: Jar) {
+    archiveName = "skin-composer-mac.jar";
+    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+    from files(project.assetsDir);
+    
+    manifest {
+        attributes ('Main-Class': project.mainClassNameMac)
+    }
+}
+
 dist.dependsOn classes
+distMac.dependsOn classes
 
 // creates application bundle (executable + runtime)
 task jpackageStart(type: Exec, dependsOn: dist) {
