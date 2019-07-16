@@ -34,6 +34,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.ray3k.skincomposer.Main;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;

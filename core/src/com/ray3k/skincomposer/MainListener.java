@@ -24,8 +24,6 @@
 package com.ray3k.skincomposer;
 
 import com.badlogic.gdx.Files;
-import com.ray3k.skincomposer.data.CustomStyle;
-import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -42,23 +40,18 @@ import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.RootTable.RootTableListener;
 import com.ray3k.skincomposer.UndoableManager.DeleteCustomClassUndoable;
 import com.ray3k.skincomposer.UndoableManager.DuplicateCustomClassUndoable;
-import com.ray3k.skincomposer.data.FontData;
-import com.ray3k.skincomposer.data.JsonData;
-import com.ray3k.skincomposer.data.ProjectData;
-import com.ray3k.skincomposer.data.StyleData;
-import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.skincomposer.dialog.DialogCustomClass;
-import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyListener;
-import com.ray3k.skincomposer.data.CustomClass;
-import com.ray3k.skincomposer.data.CustomProperty;
 import com.ray3k.skincomposer.UndoableManager.NewCustomClassUndoable;
+import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
-import com.ray3k.skincomposer.data.DrawableData;
+import com.ray3k.skincomposer.dialog.DialogCustomClass;
 import com.ray3k.skincomposer.dialog.DialogCustomClass.CustomClassListener;
+import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyListener;
 import com.ray3k.skincomposer.dialog.DialogCustomStyle;
+import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
 import com.ray3k.skincomposer.utils.Utils;
+
 import java.io.File;
 import java.util.Locale;
 

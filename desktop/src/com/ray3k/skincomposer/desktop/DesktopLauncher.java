@@ -5,10 +5,11 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.utils.Utils;
-import java.awt.SplashScreen;
+
+import javax.swing.*;
+import java.awt.*;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import javax.swing.JOptionPane;
 
 public class DesktopLauncher extends Launcher {
     public static void main(String[] args) {

@@ -26,6 +26,7 @@ package com.ray3k.skincomposer;
 
 import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.files.FileHandle;
+
 import java.io.PrintStream;
 
 public class TextFileApplicationLogger implements ApplicationLogger {

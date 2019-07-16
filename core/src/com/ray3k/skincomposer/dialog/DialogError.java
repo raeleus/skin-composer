@@ -23,11 +23,11 @@
  ******************************************************************************/
 package com.ray3k.skincomposer.dialog;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.utils.Utils;
+
 import java.io.IOException;
 
 public class DialogError extends Dialog {

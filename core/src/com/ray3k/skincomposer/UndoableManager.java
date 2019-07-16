@@ -26,17 +26,9 @@ package com.ray3k.skincomposer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.utils.Array;
-import com.ray3k.skincomposer.data.AtlasData;
-import com.ray3k.skincomposer.data.ColorData;
-import com.ray3k.skincomposer.data.CustomClass;
-import com.ray3k.skincomposer.data.CustomProperty;
+import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
-import com.ray3k.skincomposer.data.CustomStyle;
-import com.ray3k.skincomposer.data.FontData;
-import com.ray3k.skincomposer.data.FreeTypeFontData;
-import com.ray3k.skincomposer.data.JsonData;
-import com.ray3k.skincomposer.data.StyleData;
-import com.ray3k.skincomposer.data.StyleProperty;
+
 import java.util.Iterator;
 
 public class UndoableManager {
