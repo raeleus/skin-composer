@@ -51,36 +51,50 @@ task dist(type: Jar) {
     }
 }
 
+task distMac(type: Jar) {
+    archiveName = "skin-composer-mac.jar";
+    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+    from files(project.assetsDir);
+    
+    manifest {
+        attributes ('Main-Class': project.mainClassNameMac)
+    }
+}
+
 dist.dependsOn classes
+distMac.dependsOn classes
 
 // creates application bundle (executable + runtime)
 task jpackageStart(type: Exec, dependsOn: dist) {
+    doFirst() {
+        project.delete("${buildDir}/distribution/$project.appName")
+    }
     workingDir project.projectDir
     def commands = [
         "${project.projectDir}/jpackage/bin/jpackage",
-        'create-image',
         '--output', "${buildDir}/distribution",
         '--input', "${buildDir}/libs",
         '--name', project.appName,
         '--main-class', project.mainClassName,
-        '--main-jar', "${project.appName}.jar",
-        '--overwrite'
+        '--main-jar', "${project.appName}.jar"
     ]
     
     if (osName.contains('windows')) {
         commands << '--icon'
         commands << "${project.projectDir}/logo.ico"
-        commands << '--jvm-args'
+        commands << '--java-options'
         commands << "-splash:splash.png"
     } else if (osName.contains('linux')) {
         commands << '--icon'
         commands << "${project.projectDir}/logo.png"
-        commands << '--jvm-args'
+        commands << '--java-options'
         commands << "-splash:splash.png"
     } else if (osName.contains('mac')) {
         commands << '--icon'
         commands << "${project.projectDir}/logo.icns"
-        commands << '--jvm-args'
+        commands << '--java-options'
         commands << "-XstartOnFirstThread"
     }
     
