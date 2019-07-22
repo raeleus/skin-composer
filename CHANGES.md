@@ -1,3 +1,5 @@
+### Skin Composer Version 33 ###
+
 ### Skin Composer Version 32 ###
 **Please use TenPatch 4.1.0 with your projects to enable TenPatch functionality:** https://github.com/raeleus/TenPatch
 
