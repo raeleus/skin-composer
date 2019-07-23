@@ -720,10 +720,10 @@ public class DialogTenPatch extends Dialog {
         if (drawableData.tenPatchData.color2Name != null) tenPatchDrawable.setColor2(main.getJsonData().getColorByName(drawableData.tenPatchData.color2Name).color);
         if (drawableData.tenPatchData.color3Name != null) tenPatchDrawable.setColor3(main.getJsonData().getColorByName(drawableData.tenPatchData.color3Name).color);
         if (drawableData.tenPatchData.color4Name != null) tenPatchDrawable.setColor4(main.getJsonData().getColorByName(drawableData.tenPatchData.color4Name).color);
-        tenPatchDrawable.setOffsetX((float) drawableData.tenPatchData.offsetX +.01f);
-        tenPatchDrawable.setOffsetY((float) drawableData.tenPatchData.offsetY +.01f);
-        tenPatchDrawable.setOffsetXspeed((float) drawableData.tenPatchData.offsetXspeed +.01f);
-        tenPatchDrawable.setOffsetYspeed((float) drawableData.tenPatchData.offsetYspeed +.01f);
+        tenPatchDrawable.setOffsetX(drawableData.tenPatchData.offsetX);
+        tenPatchDrawable.setOffsetY(drawableData.tenPatchData.offsetY);
+        tenPatchDrawable.setOffsetXspeed(drawableData.tenPatchData.offsetXspeed);
+        tenPatchDrawable.setOffsetYspeed(drawableData.tenPatchData.offsetYspeed);
         var regions = new Array<TextureRegion>();
         for (var name : drawableData.tenPatchData.regionNames) {
             regions.add(main.getAtlasData().getAtlas().findRegion(name));
