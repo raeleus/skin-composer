@@ -163,7 +163,7 @@ public class DialogTenPatchAnimation extends Dialog {
                 moveLeft();
             }
         });
-        var textTooltip = new TextTooltip("CTRL + LEFT", main.getTooltipManager(), skin);
+        var textTooltip = new TextTooltip("LEFT ARROW", main.getTooltipManager(), skin);
         button.addListener(textTooltip);
         
         button = new Button(skin, "move-frame-right");
@@ -175,7 +175,7 @@ public class DialogTenPatchAnimation extends Dialog {
                 moveRight();
             }
         });
-        textTooltip = new TextTooltip("CTRL + RIGHT", main.getTooltipManager(), skin);
+        textTooltip = new TextTooltip("RIGHT ARROW", main.getTooltipManager(), skin);
         button.addListener(textTooltip);
         
         subTable.row();
@@ -278,13 +278,9 @@ public class DialogTenPatchAnimation extends Dialog {
                             duplicateSelection();
                         }
                     } else if (keycode == Input.Keys.LEFT) {
-                        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
-                            moveLeft();
-                        }
+                        moveLeft();
                     } else if (keycode == Input.Keys.RIGHT) {
-                        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
-                            moveRight();
-                        }
+                        moveRight();
                     }
                 }
                 return true;
