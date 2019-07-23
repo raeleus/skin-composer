@@ -855,42 +855,42 @@ font-title-export
   index: -1
 green-resizer-handle
   rotate: false
-  xy: 1339, 1494
+  xy: 1350, 1494
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
 green-resizer-handle-pressed
   rotate: false
-  xy: 642, 1366
+  xy: 1306, 1494
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
 green-resizer-minor-handle
   rotate: false
-  xy: 1306, 1494
+  xy: 1317, 1494
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
 green-resizer-minor-handle-over
   rotate: false
-  xy: 1317, 1494
+  xy: 1328, 1494
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
 green-resizer-minor-handle-pressed
   rotate: false
-  xy: 631, 1366
+  xy: 1295, 1494
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
 gren-resizer-handle-over
   rotate: false
-  xy: 1328, 1494
+  xy: 1339, 1494
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
@@ -1590,42 +1590,42 @@ ten-patch-stretch-switch-on-over
   index: -1
 red-resizer-handle
   rotate: false
-  xy: 1350, 1494
+  xy: 1361, 1494
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
 red-resizer-handle-over
   rotate: false
-  xy: 1361, 1494
+  xy: 1372, 1494
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
 red-resizer-handle-pressed
   rotate: false
-  xy: 1284, 1494
+  xy: 337, 1325
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
 red-resizer-minor-handle
   rotate: false
-  xy: 1295, 1494
+  xy: 642, 1366
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
 red-resizer-minor-handle-over
   rotate: false
-  xy: 337, 1325
+  xy: 284, 1247
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
 red-resizer-minor-handle-pressed
   rotate: false
-  xy: 284, 1247
+  xy: 631, 1366
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
@@ -1668,14 +1668,14 @@ resizer-handle
   index: -1
 resizer-handle-over
   rotate: false
-  xy: 708, 1512
+  xy: 603, 1351
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
 resizer-handle-pressed
   rotate: false
-  xy: 603, 1351
+  xy: 1284, 1494
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
@@ -2018,6 +2018,13 @@ ten-patch-stretch-switch-off-over
   xy: 1882, 1533
   size: 53, 25
   orig: 53, 25
+  offset: 0, 0
+  index: -1
+ten-patch-tile
+  rotate: false
+  xy: 708, 1510
+  size: 11, 11
+  orig: 11, 11
   offset: 0, 0
   index: -1
 textfield

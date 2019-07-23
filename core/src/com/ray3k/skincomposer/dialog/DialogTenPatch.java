@@ -477,13 +477,13 @@ public class DialogTenPatch extends Dialog {
         table = new Table();
         top.add(table).growX();
     
-        table.defaults().space(3).uniform().fill();
+        table.defaults().space(3);
         table.pad(5);
     
-        textButton = new TextButton("Animation...", skin);
-        table.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
+        var imageTextButton = new ImageTextButton("Animation...", skin, "ten-patch-animation");
+        table.add(imageTextButton);
+        imageTextButton.addListener(main.getHandListener());
+        imageTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 var dialog = new DialogTenPatchAnimation(drawableData, skin, main, dialogDrawables);
@@ -497,10 +497,10 @@ public class DialogTenPatch extends Dialog {
             }
         });
     
-        textButton = new TextButton("More settings...", skin);
-        table.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
+        imageTextButton = new ImageTextButton("More settings...", skin, "ten-patch-scrolling");
+        table.add(imageTextButton);
+        imageTextButton.addListener(main.getHandListener());
+        imageTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 var dialog = new DialogTenPatchSettings(drawableData, skin, main);
