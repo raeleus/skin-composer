@@ -1,6 +1,7 @@
 ### Skin Composer Version 33 ###
 
 * Added option to duplicate an existing Ten Patch in the Drawables dialog.
+* Added option for preview background color in Ten Patch Animation dialog.
 * Fixed keyboard shortcuts not working in Ten Patch Animation dialog.
 * Changed keyboard shortcut for moving frames to left/right arrow. No longer necessary to hold control.
 * Allow copy/paste of Ten Patch data by pressing Ctrl+C/Ctrl+V respectively in the TenPatchDialog.

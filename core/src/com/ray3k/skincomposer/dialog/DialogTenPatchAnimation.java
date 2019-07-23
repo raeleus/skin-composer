@@ -2,6 +2,7 @@ package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -14,6 +15,7 @@ import com.ray3k.skincomposer.AnimatedDrawable;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.data.DrawableData;
+import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.AlphanumComparator;
 
 import java.util.Comparator;
@@ -74,11 +76,12 @@ public class DialogTenPatchAnimation extends Dialog {
         top.add(label).growX();
         
         top.row();
+        
         animatedDrawable = new AnimatedDrawable(workingData.tenPatchData.frameDuration);
-        Image image = new Image(animatedDrawable);
-        image.setName("animated-image");
-        image.setScaling(Scaling.none);
-        ScrollPane scrollPane = new ScrollPane(image, skin, "animation");
+        var table = new Table();
+        table.setName("animation-table");
+        table.setBackground(skin.newDrawable("white",Color.CLEAR));
+        ScrollPane scrollPane = new ScrollPane(table, skin, "animation");
         scrollPane.setName("animation-scroll-pane");
         scrollPane.setFadeScrollBars(false);
         top.add(scrollPane).grow();
@@ -88,9 +91,14 @@ public class DialogTenPatchAnimation extends Dialog {
                 getStage().setScrollFocus(event.getListenerActor());
             }
         });
+    
+        Image image = new Image(animatedDrawable);
+        image.setName("animated-image");
+        image.setScaling(Scaling.none);
+        table.add(image);
         
         top.row();
-        var table = new Table();
+        table = new Table();
         top.add(table);
         
         table.defaults().space(5);
@@ -118,6 +126,26 @@ public class DialogTenPatchAnimation extends Dialog {
                     getStage().setKeyboardFocus(DialogTenPatchAnimation.this);
                 }
                 return super.keyDown(event, keycode);
+            }
+        });
+    
+        label = new Label("Preview BG:", skin);
+        table.add(label).padLeft(15);
+    
+        var imageButton = new ImageButton(skin, "color");
+        table.add(imageButton);
+        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), colorData -> {
+                    Table table = findActor("animation-table");
+                    if (colorData == null) {
+                        table.setBackground(skin.newDrawable("white", Color.CLEAR));
+                    } else {
+                        table.setBackground(skin.newDrawable("white", colorData.color));
+                    }
+                }, null);
             }
         });
         
