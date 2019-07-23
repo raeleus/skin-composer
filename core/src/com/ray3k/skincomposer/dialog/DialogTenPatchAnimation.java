@@ -59,7 +59,7 @@ public class DialogTenPatchAnimation extends Dialog {
         bottom.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                getStage().setKeyboardFocus(null);
+                getStage().setKeyboardFocus(DialogTenPatchAnimation.this);
                 return super.touchDown(event, x, y, pointer, button);
             }
         });
@@ -115,7 +115,7 @@ public class DialogTenPatchAnimation extends Dialog {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Input.Keys.ENTER || keycode == Input.Keys.TAB) {
-                    getStage().setKeyboardFocus(null);
+                    getStage().setKeyboardFocus(DialogTenPatchAnimation.this);
                 }
                 return super.keyDown(event, keycode);
             }
@@ -262,30 +262,32 @@ public class DialogTenPatchAnimation extends Dialog {
         addListener(new InputListener() {
             @Override
             public boolean keyUp(InputEvent event, int keycode) {
-                if (keycode == Input.Keys.A) {
-                    if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
-                        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
-                            deselectAll();
-                        } else {
-                            selectAll();
+                if (getStage().getKeyboardFocus().equals(DialogTenPatchAnimation.this)) {
+                    if (keycode == Input.Keys.A) {
+                        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
+                            if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
+                                deselectAll();
+                            } else {
+                                selectAll();
+                            }
+                        }
+                    } else if (keycode == Input.Keys.FORWARD_DEL) {
+                        eraseSelection();
+                    } else if (keycode == Input.Keys.D) {
+                        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
+                            duplicateSelection();
+                        }
+                    } else if (keycode == Input.Keys.LEFT) {
+                        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
+                            moveLeft();
+                        }
+                    } else if (keycode == Input.Keys.RIGHT) {
+                        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
+                            moveRight();
                         }
                     }
-                } else if (keycode == Input.Keys.FORWARD_DEL) {
-                    eraseSelection();
-                } else if (keycode == Input.Keys.D) {
-                    if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
-                        duplicateSelection();
-                    }
-                } else if (keycode == Input.Keys.LEFT) {
-                    if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
-                        moveLeft();
-                    }
-                }  else if (keycode == Input.Keys.RIGHT) {
-                    if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
-                        moveRight();
-                    }
                 }
-                    return true;
+                return true;
             }
         });
         

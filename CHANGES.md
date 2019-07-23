@@ -1,6 +1,7 @@
 ### Skin Composer Version 33 ###
 
 * Added option to duplicate an existing Ten Patch in the Drawables dialog.
+* Fixed keyboard shortcuts not working in Ten Patch Animation dialog.
 
 ### Skin Composer Version 32 ###
 **Please use TenPatch 4.1.0 with your projects to enable TenPatch functionality:** https://github.com/raeleus/TenPatch
