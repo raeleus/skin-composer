@@ -271,4 +271,44 @@ public class AtlasData implements Json.Serializable {
         drawables = json.readValue("drawables", Array.class, DrawableData.class, jsonData);
         fontDrawables = json.readValue("fontDrawables", Array.class, DrawableData.class, new Array<DrawableData>(),jsonData);
     }
+    
+    public boolean checkIfNameExists(String name) {
+        return checkIfDrawableNameExists(name) || checkIfFontDrawableNameExists(name);
+    }
+    
+    /**
+     * Returns true if any existing drawable has the indicated name.
+     * @param name
+     * @return
+     */
+    public boolean checkIfDrawableNameExists(String name) {
+        boolean returnValue = false;
+        
+        for (DrawableData drawable : getDrawables()) {
+            if (drawable.name.equals(name)) {
+                returnValue = true;
+                break;
+            }
+        }
+        
+        return returnValue;
+    }
+    
+    /**
+     * Returns true if any existing drawable has the indicated name.
+     * @param name
+     * @return
+     */
+    public boolean checkIfFontDrawableNameExists(String name) {
+        boolean returnValue = false;
+        
+        for (DrawableData drawable : getFontDrawables()) {
+            if (drawable.name.equals(name)) {
+                returnValue = true;
+                break;
+            }
+        }
+        
+        return returnValue;
+    }
 }

@@ -1116,4 +1116,60 @@ public class DialogFactory {
         dialog.addListener(listener);
         dialog.show(main.getStage());
     }
+    
+    public void showDuplicateTenPatchDialog(String title, String message, String defaultText, InputDialogListener listener) {
+        var dialog = new Dialog(title, main.getSkin(), "bg") {
+            @Override
+            protected void result(Object object) {
+                if ((Boolean) object) {
+                    listener.confirmed(((TextField) findActor("textField")).getText());
+                } else {
+                    listener.cancelled();
+                }
+            }
+        };
+        
+        dialog.getTitleTable().getCells().first().padLeft(5.0f);
+        
+        var root = dialog.getContentTable();
+        root.pad(5);
+        
+        root.defaults().space(5.0f);
+        var label = new Label(message, main.getSkin());
+        root.add(label);
+        
+        root.row();
+        var textField = new TextField(defaultText, main.getSkin());
+        textField.setName("textField");
+        textField.setSelection(0, textField.getText().length());
+        root.add(textField).growX();
+        textField.addListener(main.getIbeamListener());
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                TextButton textButton = dialog.findActor("ok-button");
+    
+                boolean disable = !DrawableData.validate(textField.getText()) || (main.getAtlasData().checkIfNameExists(textField.getText()));
+                textButton.setDisabled(disable);
+            }
+        });
+        
+        dialog.getButtonTable().pad(5);
+        dialog.getButtonTable().defaults().space(5).minWidth(100);
+        
+        var button = new TextButton("OK", main.getSkin());
+        button.setName("ok-button");
+        button.setDisabled(true);
+        dialog.button(button, true);
+        button.addListener(main.getHandListener());
+        
+        button = new TextButton("Cancel", main.getSkin());
+        dialog.button(button, false);
+        button.addListener(main.getHandListener());
+        
+        dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
+        
+        dialog.show(main.getStage());
+        main.getStage().setKeyboardFocus(textField);
+    }
 }

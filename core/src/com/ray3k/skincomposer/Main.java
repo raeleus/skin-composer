@@ -57,6 +57,7 @@ import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.tenpatch.TenPatchDrawable;
 
 public class Main extends ApplicationAdapter {
     public final static String VERSION = "33";
@@ -77,7 +78,7 @@ public class Main extends ApplicationAdapter {
     private static Skin skin;
     private DialogFactory dialogFactory;
     private DesktopWorker desktopWorker;
-    private AnimationDrawable loadingAnimation;
+    private TenPatchDrawable loadingAnimation;
     private UndoableManager undoableManager;
     private ProjectData projectData;
     private RootTable rootTable;
@@ -184,7 +185,7 @@ public class Main extends ApplicationAdapter {
             return false;
         });
         
-        loadingAnimation = new AnimationDrawable(skin, "loading-animation", 1 / 30f);
+        loadingAnimation = skin.get("loading-animation", TenPatchDrawable.class);
         
         projectData.getAtlasData().clearTempData();
         handListener = new HandListener();
@@ -253,7 +254,7 @@ public class Main extends ApplicationAdapter {
         return stage;
     }
 
-    public AnimationDrawable getLoadingAnimation() {
+    public TenPatchDrawable getLoadingAnimation() {
         return loadingAnimation;
     }
 
