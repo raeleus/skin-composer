@@ -3,20 +3,19 @@ package com.ray3k.skincomposer.dialog;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
-import com.ray3k.skincomposer.AnimatedDrawable;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.AlphanumComparator;
+import com.ray3k.tenpatch.TenPatchDrawable;
 
 import java.util.Comparator;
 import java.util.regex.Pattern;
@@ -31,7 +30,7 @@ public class DialogTenPatchAnimation extends Dialog {
     private int lastClicked;
     private static final AlphanumComparator alphanumComparator = new AlphanumComparator();
     private DialogDrawables dialogDrawables;
-    private AnimatedDrawable animatedDrawable;
+    private TenPatchDrawable animatedDrawable;
     
     public DialogTenPatchAnimation(DrawableData drawableData, Skin skin, Main main, DialogDrawables dialogDrawables) {
         super("TenPatch Animation", skin, "bg");
@@ -77,7 +76,10 @@ public class DialogTenPatchAnimation extends Dialog {
         
         top.row();
         
-        animatedDrawable = new AnimatedDrawable(workingData.tenPatchData.frameDuration);
+        animatedDrawable = new TenPatchDrawable();
+        animatedDrawable.horizontalStretchAreas = new int[]{};
+        animatedDrawable.verticalStretchAreas = new int[]{};
+        animatedDrawable.setRegion(((SpriteDrawable) dialogDrawables.drawablePairs.get(main.getAtlasData().getDrawable(drawableData.file.nameWithoutExtension()))).getSprite());
         var table = new Table();
         table.setName("animation-table");
         table.setBackground(skin.newDrawable("white",Color.CLEAR));
@@ -562,12 +564,12 @@ public class DialogTenPatchAnimation extends Dialog {
     
     public void refreshAnimation() {
         workingData.tenPatchData.regionNames.clear();
-        var drawables = new Array<Drawable>();
+        var drawables = new Array<TextureRegion>();
         for (var data : regions) {
-            drawables.add(dialogDrawables.drawablePairs.get(data));
+            drawables.add(((SpriteDrawable)dialogDrawables.drawablePairs.get(data)).getSprite());
             workingData.tenPatchData.regionNames.add(data.name);
         }
-        animatedDrawable.setDrawables(drawables);
+        animatedDrawable.setRegions(drawables);
         Image image = findActor("animated-image");
         image.layout();
     }
