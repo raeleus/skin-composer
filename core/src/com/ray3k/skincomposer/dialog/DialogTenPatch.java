@@ -73,7 +73,7 @@ public class DialogTenPatch extends Dialog {
     private boolean newDrawable;
     private FilesDroppedListener filesDroppedListener;
     private static DrawableData copiedDrawableData;
-    private float splitValue = .5f;
+    private float splitValue;
     
     public DialogTenPatch(Main main, DrawableData drawableData, boolean newDrawable, DialogDrawables dialog) {
         super("", main.getSkin(), "dialog");
@@ -87,6 +87,7 @@ public class DialogTenPatch extends Dialog {
         this.fileHandle = drawableData.file;
         previewColor = new Color(DEFAULT_PREVIEW_COLOR);
         dialogDrawables = dialog;
+        splitValue = .75f;
         
         setFillParent(true);
         populate();
@@ -219,6 +220,8 @@ public class DialogTenPatch extends Dialog {
     }
     
     private void populate() {
+        setSize(main.getStage().getWidth(), main.getStage().getHeight());
+        
         var root = getContentTable();
         root.pad(10);
         root.clear();
@@ -643,6 +646,8 @@ public class DialogTenPatch extends Dialog {
         textButton.addListener(main.getHandListener());
         
         updatePreview();
+        layout();
+        tenPatchWidget.zoomAndCenter();
     }
     
     private void createPreview() {
@@ -905,8 +910,6 @@ public class DialogTenPatch extends Dialog {
     @Override
     public Dialog show(Stage stage, Action action) {
         super.show(stage, action);
-        pack();
-        tenPatchWidget.zoomAndCenter();
         Slider slider = findActor("ten-patch-zoom");
         slider.setValue(tenPatchWidget.getZoomScale());
         return this;
