@@ -40,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
@@ -355,10 +356,8 @@ public class DialogTenPatch extends Dialog {
         tenPatchWidget = new TenPatchWidget(skin);
         tenPatchWidget.setTenPatchData(drawableData.tenPatchData);
         
-        var pixmap = loadTextureFile(fileHandle);
         
-        var texture = new Texture(pixmap);
-        pixmap.dispose();
+        var texture = new Texture(drawableData.file);
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         tenPatchWidget.setTextureRegion(new TextureRegion(texture));
         
@@ -548,7 +547,7 @@ public class DialogTenPatch extends Dialog {
         resizer.getRightHandle().addListener(resizeFourArrowListener);
         table.add(resizer).grow();
         
-        tenPatchDrawable = new TenPatchDrawable(new int[0], new int[0], false, tenPatchWidget.getTextureRegion());
+        tenPatchDrawable = new TenPatchDrawable(new int[0], new int[0], false, main.getAtlasData().getAtlas().findRegion(drawableData.file.nameWithoutExtension()));
         if (drawableData.tenPatchData.colorName != null) {
             tenPatchDrawable.getColor().set(main.getJsonData().getColorByName(drawableData.tenPatchData.colorName).color);
         }
@@ -721,10 +720,10 @@ public class DialogTenPatch extends Dialog {
         if (drawableData.tenPatchData.color2Name != null) tenPatchDrawable.setColor2(main.getJsonData().getColorByName(drawableData.tenPatchData.color2Name).color);
         if (drawableData.tenPatchData.color3Name != null) tenPatchDrawable.setColor3(main.getJsonData().getColorByName(drawableData.tenPatchData.color3Name).color);
         if (drawableData.tenPatchData.color4Name != null) tenPatchDrawable.setColor4(main.getJsonData().getColorByName(drawableData.tenPatchData.color4Name).color);
-        tenPatchDrawable.setOffsetX(drawableData.tenPatchData.offsetX);
-        tenPatchDrawable.setOffsetY(drawableData.tenPatchData.offsetY);
-        tenPatchDrawable.setOffsetXspeed(drawableData.tenPatchData.offsetXspeed);
-        tenPatchDrawable.setOffsetYspeed(drawableData.tenPatchData.offsetYspeed);
+        tenPatchDrawable.setOffsetX((float) drawableData.tenPatchData.offsetX +.01f);
+        tenPatchDrawable.setOffsetY((float) drawableData.tenPatchData.offsetY +.01f);
+        tenPatchDrawable.setOffsetXspeed((float) drawableData.tenPatchData.offsetXspeed +.01f);
+        tenPatchDrawable.setOffsetYspeed((float) drawableData.tenPatchData.offsetYspeed +.01f);
         var regions = new Array<TextureRegion>();
         for (var name : drawableData.tenPatchData.regionNames) {
             regions.add(main.getAtlasData().getAtlas().findRegion(name));
@@ -895,8 +894,6 @@ public class DialogTenPatch extends Dialog {
     @Override
     public void act(float delta) {
         super.act(delta);
-        
-        tenPatchDrawable.update(delta);
         
         if (Gdx.input.isKeyJustPressed(Keys.F5)) {
             populate();
