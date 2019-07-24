@@ -6,6 +6,7 @@
 * Fixed keyboard shortcuts not working in Ten Patch Animation dialog.
 * Changed keyboard shortcut for moving frames to left/right arrow. No longer necessary to hold control.
 * Allow copy/paste of Ten Patch data by pressing Ctrl+C/Ctrl+V respectively in the TenPatchDialog.
+* Fixed Ten Patch export not setting default stretch regions if they are not specified in the editor.
 * Minor UI Tweaks and bug fixes.
 
 ### Skin Composer Version 32 ###
