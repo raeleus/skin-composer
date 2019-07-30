@@ -25,7 +25,7 @@ public class DialogTenPatchAnimation extends Dialog {
     private DrawableData workingData;
     private Skin skin;
     private Main main;
-    private Array<DrawableData> regions;
+    private Array<DrawableData> drawableDatas;
     private ButtonGroup<Button> buttonGroup;
     private int lastClicked;
     private static final AlphanumComparator alphanumComparator = new AlphanumComparator();
@@ -40,10 +40,10 @@ public class DialogTenPatchAnimation extends Dialog {
         this.skin = skin;
         this.main = main;
         this.dialogDrawables = dialogDrawables;
-        regions = new Array<>();
+        drawableDatas = new Array<>();
         
         for (var name : workingData.tenPatchData.regionNames) {
-            regions.add(main.getAtlasData().getDrawable(name));
+            drawableDatas.add(main.getAtlasData().getDrawable(name));
         }
         
         this.setFillParent(true);
@@ -332,7 +332,7 @@ public class DialogTenPatchAnimation extends Dialog {
         for (var index : selectedIndexes) {
             if (index - 1 >= 0 && !buttonGroup.getButtons().get(index - 1).isChecked()) {
                 buttonGroup.getButtons().swap(index, index - 1);
-                regions.swap(index, index - 1);
+                drawableDatas.swap(index, index - 1);
                 newIndexes.add(index - 1);
             } else {
                 newIndexes.add(index);
@@ -359,7 +359,7 @@ public class DialogTenPatchAnimation extends Dialog {
         for (var index : selectedIndexes) {
             if (index + 1 < buttonGroup.getButtons().size && !buttonGroup.getButtons().get(index + 1).isChecked()) {
                 buttonGroup.getButtons().swap(index, index + 1);
-                regions.swap(index, index + 1);
+                drawableDatas.swap(index, index + 1);
                 newIndexes.add(index + 1);
             } else {
                 newIndexes.add(index);
@@ -382,7 +382,7 @@ public class DialogTenPatchAnimation extends Dialog {
         }
     
         if (highest == -1) highest = buttonGroup.getButtons().size - 1;
-        regions.insert(highest + 1, drawableData);
+        drawableDatas.insert(highest + 1, drawableData);
         
         var selectedIndexes = new Array<Integer>();
         selectedIndexes.add(highest + 1);
@@ -403,7 +403,7 @@ public class DialogTenPatchAnimation extends Dialog {
         if (highest == -1) highest = buttonGroup.getButtons().size - 1;
         
         for (var drawableData : drawableDatas) {
-            regions.insert(++highest, drawableData);
+            this.drawableDatas.insert(++highest, drawableData);
             
             selectedIndexes.add(highest);
             lastClicked = highest;
@@ -421,7 +421,7 @@ public class DialogTenPatchAnimation extends Dialog {
         selectedIndexes.sort();
         selectedIndexes.reverse();
         for (var index : selectedIndexes) {
-            regions.removeIndex(index);
+            drawableDatas.removeIndex(index);
         }
     
         refresh();
@@ -438,8 +438,8 @@ public class DialogTenPatchAnimation extends Dialog {
         selectedIndexes.reverse();
         checked.reverse();
         for (var index : selectedIndexes) {
-            regions.removeIndex(index);
-            regions.insert(index, (DrawableData) checked.pop().getUserObject());
+            drawableDatas.removeIndex(index);
+            drawableDatas.insert(index, (DrawableData) checked.pop().getUserObject());
         }
         
         refresh(selectedIndexes);
@@ -455,12 +455,12 @@ public class DialogTenPatchAnimation extends Dialog {
             if (index > highest) highest = index;
         }
         
-        if (highest == -1) highest = regions.size - 1;
+        if (highest == -1) highest = drawableDatas.size - 1;
         selectedIndexes.sort();
         selectedIndexes.reverse();
         for (var index : selectedIndexes) {
-            var region = regions.get(index);
-            regions.insert(highest + 1, region);
+            var region = drawableDatas.get(index);
+            drawableDatas.insert(highest + 1, region);
         }
         
         var newIndexes = new Array<Integer>();
@@ -482,7 +482,7 @@ public class DialogTenPatchAnimation extends Dialog {
         for (var button : buttonGroup.getAllChecked()) {
             var index = buttonGroup.getButtons().indexOf(button, false);
             selectedIndexes.add(index);
-            regionsToSort.add(regions.get(index));
+            regionsToSort.add(drawableDatas.get(index));
         }
         
         regionsToSort.sort(new Comparator<DrawableData>() {
@@ -495,8 +495,8 @@ public class DialogTenPatchAnimation extends Dialog {
         selectedIndexes.sort();
         int i = 0;
         for (var index : selectedIndexes) {
-            regions.removeIndex(index);
-            regions.insert(index, regionsToSort.get(i++));
+            drawableDatas.removeIndex(index);
+            drawableDatas.insert(index, regionsToSort.get(i++));
         }
     
         refresh(selectedIndexes);
@@ -509,7 +509,7 @@ public class DialogTenPatchAnimation extends Dialog {
         for (var button : buttonGroup.getAllChecked()) {
             var index = buttonGroup.getButtons().indexOf(button, false);
             selectedIndexes.add(index);
-            regionsToSort.add(regions.get(index));
+            regionsToSort.add(drawableDatas.get(index));
         }
         
         regionsToSort.sort(new Comparator<DrawableData>() {
@@ -522,8 +522,8 @@ public class DialogTenPatchAnimation extends Dialog {
         selectedIndexes.sort();
         int i = 0;
         for (var index : selectedIndexes) {
-            regions.removeIndex(index);
-            regions.insert(index, regionsToSort.get(i++));
+            drawableDatas.removeIndex(index);
+            drawableDatas.insert(index, regionsToSort.get(i++));
         }
         
         refresh(selectedIndexes);
@@ -550,7 +550,7 @@ public class DialogTenPatchAnimation extends Dialog {
     }
     
     public void refresh(Array<Integer> selectedIndexes) {
-        var iter = regions.iterator();
+        var iter = drawableDatas.iterator();
         while (iter.hasNext()) {
             var drawable = iter.next();
             if (!dialogDrawables.drawablePairs.containsKey(drawable)) {
@@ -565,7 +565,7 @@ public class DialogTenPatchAnimation extends Dialog {
     public void refreshAnimation() {
         workingData.tenPatchData.regionNames.clear();
         var drawables = new Array<TextureRegion>();
-        for (var data : regions) {
+        for (var data : drawableDatas) {
             drawables.add(((SpriteDrawable)dialogDrawables.drawablePairs.get(data)).getSprite());
             workingData.tenPatchData.regionNames.add(data.name);
         }
@@ -584,7 +584,7 @@ public class DialogTenPatchAnimation extends Dialog {
         buttonGroup.clear();
         
         var i = 0;
-        for (var region : regions) {
+        for (var region : drawableDatas) {
             var fixDuplicateTouchListener = new ClickListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {

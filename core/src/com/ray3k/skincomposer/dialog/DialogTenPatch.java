@@ -866,6 +866,7 @@ public class DialogTenPatch extends Dialog {
         drawableData.tenPatchData.removeInvalidStretchAreas(false);
     
         updatePreview();
+        pixmap.dispose();
     }
     
     public int[] sanitizeStretchAreas(IntArray stretchAreas, boolean horizontal) {
@@ -977,6 +978,7 @@ public class DialogTenPatch extends Dialog {
         public int offsetYspeed;
         public float frameDuration;
         public Array<String> regionNames = new Array<>();
+        public volatile Array<TextureRegion> regions;
     
         public TenPatchData() {
             clear();
@@ -1065,6 +1067,7 @@ public class DialogTenPatch extends Dialog {
             offsetYspeed = other.offsetYspeed;
             frameDuration = other.frameDuration;
             regionNames = new Array<>(other.regionNames);
+            regions = other.regions == null ? null : new Array<>(other.regions);
         }
     }
     

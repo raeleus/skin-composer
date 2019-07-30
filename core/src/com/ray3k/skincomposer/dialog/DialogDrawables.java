@@ -170,14 +170,21 @@ public class DialogDrawables extends Dialog {
         try {
             drawablePairs.clear();
             
-            if (atlas != null) {
-                atlas.dispose();
-                atlas = null;
-            }
             if (!main.getAtlasData().atlasCurrent) {
+                if (atlas != null) {
+                    atlas.dispose();
+                    atlas = null;
+                }
                 FileHandle defaultsFile = Main.appFolder.child("texturepacker/atlas-internal-settings.json");
                 main.getAtlasData().writeAtlas(defaultsFile);
                 main.getAtlasData().atlasCurrent = true;
+                
+                //clear all regions in any tenPatchData
+                for (var data : main.getAtlasData().getDrawables()) {
+                    if (data.tenPatchData != null) {
+                        data.tenPatchData.regions = null;
+                    }
+                }
             }
             atlas = main.getAtlasData().getAtlas();
 
@@ -208,11 +215,13 @@ public class DialogDrawables extends Dialog {
                     ((TenPatchDrawable) drawable).setOffsetXspeed(data.tenPatchData.offsetXspeed);
                     ((TenPatchDrawable) drawable).setOffsetYspeed(data.tenPatchData.offsetYspeed);
                     ((TenPatchDrawable) drawable).setFrameDuration(data.tenPatchData.frameDuration);
-                    var regions = new Array<TextureRegion>();
-                    for (var name : data.tenPatchData.regionNames) {
-                        regions.add(main.getAtlasData().getAtlas().findRegion(name));
+                    if (data.tenPatchData.regions == null) {
+                        data.tenPatchData.regions = new Array<>();
+                        for (var name : data.tenPatchData.regionNames) {
+                            data.tenPatchData.regions.add(atlas.findRegion(name));
+                        }
                     }
-                    ((TenPatchDrawable) drawable).setRegions(regions);
+                    ((TenPatchDrawable) drawable).setRegions(data.tenPatchData.regions);
                 } else if (data.tiled) {
                     String name = data.file.name();
                     name = DrawableData.proper(name);

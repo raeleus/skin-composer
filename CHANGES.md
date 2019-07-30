@@ -7,6 +7,7 @@
 * Changed keyboard shortcut for moving frames to left/right arrow. No longer necessary to hold control.
 * Allow copy/paste of Ten Patch data by pressing Ctrl+C/Ctrl+V respectively in the TenPatchDialog.
 * Fixed Ten Patch export not setting default stretch regions if they are not specified in the editor.
+* Improved performance of TenPatches when rebuilding the TextureAtlas in the Drawable dialogs and in the main menu.
 * Minor UI Tweaks and bug fixes.
 
 ### Skin Composer Version 32 ###

@@ -2570,14 +2570,20 @@ public class RootTable extends Table {
      */
     public boolean produceAtlas() {
         try {
-            if (atlas != null) {
-                atlas.dispose();
-                atlas = null;
-            }
-            
             if (!main.getProjectData().getAtlasData().atlasCurrent) {
+                if (atlas != null) {
+                    atlas.dispose();
+                    atlas = null;
+                }
                 main.getProjectData().getAtlasData().writeAtlas(Gdx.files.internal("atlas-internal-settings.json"));
                 main.getProjectData().getAtlasData().atlasCurrent = true;
+    
+                //clear all regions in any tenPatchData
+                for (var data : main.getAtlasData().getDrawables()) {
+                    if (data.tenPatchData != null) {
+                        data.tenPatchData.regions = null;
+                    }
+                }
             }
             atlas = main.getProjectData().getAtlasData().getAtlas();
 
@@ -2619,12 +2625,13 @@ public class RootTable extends Table {
                     ((TenPatchDrawable) drawable).setOffsetXspeed(data.tenPatchData.offsetXspeed);
                     ((TenPatchDrawable) drawable).setOffsetYspeed(data.tenPatchData.offsetYspeed);
                     ((TenPatchDrawable) drawable).setFrameDuration(data.tenPatchData.frameDuration);
-                    var regions = new Array<TextureRegion>();
-                    for (var name : data.tenPatchData.regionNames) {
-                        regions.add(main.getAtlasData().getAtlas().findRegion(name));
+                    if (data.tenPatchData.regions == null) {
+                        data.tenPatchData.regions = new Array<>();
+                        for (var name : data.tenPatchData.regionNames) {
+                            data.tenPatchData.regions.add(atlas.findRegion(name));
+                        }
                     }
-                    ((TenPatchDrawable) drawable).setRegions(regions);
-                    
+                    ((TenPatchDrawable) drawable).setRegions(data.tenPatchData.regions);
                 } else if (data.file.name().matches(".*\\.9\\.[a-zA-Z0-9]*$")) {
                     String name = data.file.name();
                     name = DrawableData.proper(name);
