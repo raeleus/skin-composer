@@ -703,6 +703,7 @@ public class DialogDrawables extends Dialog {
 
                 //settings for ten patch drawables
                 else if (drawable.tenPatchData != null) {
+                    //settings for an existing ten patch
                     var button = new Button(getSkin(), "settings-small");
                     button.addListener(main.getHandListener());
                     button.addListener(fixDuplicateTouchListener);
@@ -738,6 +739,7 @@ public class DialogDrawables extends Dialog {
                     TextTooltip toolTip = new TextTooltip("Ten Patch Settings", main.getTooltipManager(), getSkin());
                     button.addListener(toolTip);
     
+                    //duplicate button for an existing ten patch
                     button = new Button(getSkin(), "duplicate-small");
                     button.addListener(main.getHandListener());
                     button.addListener(fixDuplicateTouchListener);
@@ -745,6 +747,24 @@ public class DialogDrawables extends Dialog {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
                             event.setBubbles(false);
+                            var drawableData = new DrawableData();
+                            drawableData.set(drawable);
+        
+                            main.getDialogFactory().showDuplicateTenPatchDialog("Duplicate Ten Patch Drawable", "Please enter the name of the duplicated ten patch drawable", drawable.name, new DialogFactory.InputDialogListener() {
+                                @Override
+                                public void confirmed(String text) {
+                                    drawableData.name = text;
+                                    main.getAtlasData().getDrawables().add(drawableData);
+                                    gatherDrawables();
+                                    produceAtlas();
+                                    sortBySelectedMode();
+                                }
+            
+                                @Override
+                                public void cancelled() {
+                
+                                }
+                            });
                         }
                     });
                     table.add(button);
@@ -1020,6 +1040,7 @@ public class DialogDrawables extends Dialog {
                 }
                 //settings for ten patch drawables
                 else if (drawable.tenPatchData != null) {
+                    //settings button for an existing ten patch
                     var button = new Button(getSkin(), "settings-small");
                     button.addListener(main.getHandListener());
                     button.addListener(fixDuplicateTouchListener);
@@ -1057,6 +1078,7 @@ public class DialogDrawables extends Dialog {
                     TextTooltip toolTip = new TextTooltip("Ten Patch Settings", main.getTooltipManager(), getSkin());
                     button.addListener(toolTip);
     
+                    //duplicate button for an existing ten patch
                     button = new Button(getSkin(), "duplicate-small");
                     button.addListener(main.getHandListener());
                     button.addListener(fixDuplicateTouchListener);
@@ -1074,7 +1096,7 @@ public class DialogDrawables extends Dialog {
                                     main.getAtlasData().getDrawables().add(drawableData);
                                     gatherDrawables();
                                     produceAtlas();
-                                    refreshDrawableDisplay();
+                                    sortBySelectedMode();
                                 }
     
                                 @Override
