@@ -570,6 +570,7 @@ public class DialogTenPatchAnimation extends Dialog {
             workingData.tenPatchData.regionNames.add(data.name);
         }
         animatedDrawable.setRegions(drawables);
+        animatedDrawable.setFrameDuration(workingData.tenPatchData.frameDuration);
         Image image = findActor("animated-image");
         image.layout();
     }
