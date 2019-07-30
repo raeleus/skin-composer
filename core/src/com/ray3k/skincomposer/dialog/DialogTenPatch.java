@@ -1005,7 +1005,7 @@ public class DialogTenPatch extends Dialog {
             offsetY = 0;
             offsetXspeed = 0;
             offsetYspeed = 0;
-            frameDuration = 1;
+            frameDuration = .03f;
         }
     
         public void removeInvalidStretchAreas(boolean horizontal) {
