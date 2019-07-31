@@ -1,5 +1,7 @@
 ### Skin Composer Version 33 ###
+**Please use TenPatch 4.2.0 with your projects to enable TenPatch functionality:** https://github.com/raeleus/TenPatch
 
+* Added PlayMode option to Ten Patch animations. Use this to single play, loop, reverse, and randomize your animations.
 * Added option to duplicate an existing Ten Patch in the Drawables dialog.
 * Fixed dark preview of texture and staggered scrolling at slow speeds in Ten Patch Dialog.
 * Added option for preview background color in Ten Patch Animation dialog.

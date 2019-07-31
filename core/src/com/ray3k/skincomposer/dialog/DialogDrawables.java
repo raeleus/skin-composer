@@ -215,6 +215,7 @@ public class DialogDrawables extends Dialog {
                     ((TenPatchDrawable) drawable).setOffsetXspeed(data.tenPatchData.offsetXspeed);
                     ((TenPatchDrawable) drawable).setOffsetYspeed(data.tenPatchData.offsetYspeed);
                     ((TenPatchDrawable) drawable).setFrameDuration(data.tenPatchData.frameDuration);
+                    ((TenPatchDrawable) drawable).setPlayMode(data.tenPatchData.playMode);
                     if (data.tenPatchData.regions == null) {
                         data.tenPatchData.regions = new Array<>();
                         for (var name : data.tenPatchData.regionNames) {

@@ -6,10 +6,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
+import com.ray3k.skincomposer.HandListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.data.DrawableData;
@@ -81,6 +84,7 @@ public class DialogTenPatchAnimation extends Dialog {
         animatedDrawable.verticalStretchAreas = new int[]{};
         animatedDrawable.setRegion(((SpriteDrawable) dialogDrawables.drawablePairs.get(main.getAtlasData().getDrawable(drawableData.file.nameWithoutExtension()))).getSprite());
         var table = new Table();
+        table.setTouchable(Touchable.enabled);
         table.setName("animation-table");
         table.setBackground(skin.newDrawable("white",Color.CLEAR));
         ScrollPane scrollPane = new ScrollPane(table, skin, "animation");
@@ -98,6 +102,13 @@ public class DialogTenPatchAnimation extends Dialog {
         image.setName("animated-image");
         image.setScaling(Scaling.none);
         table.add(image);
+        table.addListener(main.getHandListener());
+        table.addListener(new ClickListener(-1) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                animatedDrawable.setTime(0);
+            }
+        });
         
         top.row();
         table = new Table();
@@ -128,6 +139,23 @@ public class DialogTenPatchAnimation extends Dialog {
                     getStage().setKeyboardFocus(DialogTenPatchAnimation.this);
                 }
                 return super.keyDown(event, keycode);
+            }
+        });
+    
+        label = new Label("Play Mode:", skin);
+        table.add(label).padLeft(15);
+        
+        var selectBox = new SelectBox<String>(skin);
+        selectBox.setItems("Normal", "Reversed", "Loop", "Loop Reversed", "Loop Ping-Pong", "Loop Random");
+        var values = new Array<>(TenPatchDrawable.PlayMode.values());
+        selectBox.setSelectedIndex(values.indexOf(workingData.tenPatchData.playMode, true));
+        table.add(selectBox);
+        selectBox.addListener(new HandListener());
+        selectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                workingData.tenPatchData.playMode = values.get(selectBox.getSelectedIndex());
+                refreshAnimation();
             }
         });
     
@@ -571,6 +599,8 @@ public class DialogTenPatchAnimation extends Dialog {
         }
         animatedDrawable.setRegions(drawables);
         animatedDrawable.setFrameDuration(workingData.tenPatchData.frameDuration);
+        animatedDrawable.setPlayMode(workingData.tenPatchData.playMode);
+        animatedDrawable.setTime(0);
         Image image = findActor("animated-image");
         image.layout();
     }

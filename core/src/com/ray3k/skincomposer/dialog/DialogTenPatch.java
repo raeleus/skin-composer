@@ -71,7 +71,6 @@ public class DialogTenPatch extends Dialog {
     private DialogDrawables dialogDrawables;
     private DrawableData drawableData;
     private String originalName;
-    private boolean newDrawable;
     private FilesDroppedListener filesDroppedListener;
     private static DrawableData copiedDrawableData;
     private float splitValue;
@@ -81,7 +80,6 @@ public class DialogTenPatch extends Dialog {
         this.main = main;
         skin = main.getSkin();
         this.drawableData = drawableData;
-        this.newDrawable = newDrawable;
         originalName = newDrawable ? "" : drawableData.name;
         zoomToMouse = false;
         temp = new Vector2();
@@ -730,6 +728,7 @@ public class DialogTenPatch extends Dialog {
         }
         tenPatchDrawable.setRegions(regions);
         tenPatchDrawable.setFrameDuration(drawableData.tenPatchData.frameDuration);
+        tenPatchDrawable.setPlayMode(drawableData.tenPatchData.playMode);
         
         Table table = findActor("tenPatchTable");
         if (table.getCells().size > 0) {
@@ -979,6 +978,7 @@ public class DialogTenPatch extends Dialog {
         public float frameDuration;
         public Array<String> regionNames = new Array<>();
         public volatile Array<TextureRegion> regions;
+        public TenPatchDrawable.PlayMode playMode;
     
         public TenPatchData() {
             clear();
@@ -1006,6 +1006,7 @@ public class DialogTenPatch extends Dialog {
             offsetXspeed = 0;
             offsetYspeed = 0;
             frameDuration = .03f;
+            playMode = TenPatchDrawable.PlayMode.LOOP;
         }
     
         public void removeInvalidStretchAreas(boolean horizontal) {
@@ -1068,6 +1069,7 @@ public class DialogTenPatch extends Dialog {
             frameDuration = other.frameDuration;
             regionNames = new Array<>(other.regionNames);
             regions = other.regions == null ? null : new Array<>(other.regions);
+            playMode = other.playMode;
         }
     }
     
