@@ -40,7 +40,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
@@ -52,6 +51,7 @@ import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * @author Raymond Buckley
@@ -354,10 +354,7 @@ public class DialogTenPatch extends Dialog {
         tenPatchWidget = new TenPatchWidget(skin);
         tenPatchWidget.setTenPatchData(drawableData.tenPatchData);
         
-        
-        var texture = new Texture(drawableData.file);
-        texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        tenPatchWidget.setTextureRegion(new TextureRegion(texture));
+        tenPatchWidget.setTextureRegion(loadTextureFile(drawableData.file));
         
         top.add(tenPatchWidget).grow();
         tenPatchWidget.getStretchSwitchButton().addListener(main.getHandListener());
@@ -544,8 +541,13 @@ public class DialogTenPatch extends Dialog {
         resizer.getLeftHandle().addListener(resizeFourArrowListener);
         resizer.getRightHandle().addListener(resizeFourArrowListener);
         table.add(resizer).grow();
-        
-        tenPatchDrawable = new TenPatchDrawable(new int[0], new int[0], false, main.getAtlasData().getAtlas().findRegion(drawableData.file.nameWithoutExtension()));
+    
+        String name = drawableData.file.nameWithoutExtension();
+        var matcher = Pattern.compile(".*(?=\\.9$)").matcher(name);
+        if (matcher.find()) {
+            name = matcher.group();
+        }
+        tenPatchDrawable = new TenPatchDrawable(new int[0], new int[0], false, main.getAtlasData().getAtlas().findRegion(name));
         if (drawableData.tenPatchData.colorName != null) {
             tenPatchDrawable.getColor().set(main.getJsonData().getColorByName(drawableData.tenPatchData.colorName).color);
         }
@@ -757,7 +759,7 @@ public class DialogTenPatch extends Dialog {
         }
     }
     
-    private Pixmap loadTextureFile(FileHandle fileHandle) {
+    private Pixmap loadPixmapFile(FileHandle fileHandle) {
         if (!fileHandle.name().matches("(?i:.*\\.9\\.png)")) {
             return new Pixmap(fileHandle);
         } else {
@@ -770,8 +772,20 @@ public class DialogTenPatch extends Dialog {
         }
     }
     
+    private TextureRegion loadTextureFile(FileHandle fileHandle) {
+        if (!fileHandle.name().matches("(?i:.*\\.9\\.png)")) {
+            var texture = new Texture(fileHandle);
+            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+            return new TextureRegion(texture);
+        } else {
+            var texture = new Texture(fileHandle);
+            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+            return new TextureRegion(texture, 1, 1, texture.getWidth() - 2, texture.getHeight() - 2);
+        }
+    }
+    
     private void saveToImageFile(FileHandle fileHandle) {
-        var source = loadTextureFile(this.fileHandle);
+        var source = loadPixmapFile(this.fileHandle);
         var pixmap = new Pixmap(source.getWidth() + 2, source.getHeight() + 2, source.getFormat());
         pixmap.setBlending(Pixmap.Blending.None);
         
