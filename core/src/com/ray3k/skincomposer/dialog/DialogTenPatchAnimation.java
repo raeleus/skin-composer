@@ -592,10 +592,14 @@ public class DialogTenPatchAnimation extends Dialog {
     
     public void refreshAnimation() {
         workingData.tenPatchData.regionNames.clear();
+        if (workingData.tenPatchData.regions == null) workingData.tenPatchData.regions = new Array<>();
+        workingData.tenPatchData.regions.clear();
         var drawables = new Array<TextureRegion>();
         for (var data : drawableDatas) {
-            drawables.add(((SpriteDrawable)dialogDrawables.drawablePairs.get(data)).getSprite());
+            var sprite = ((SpriteDrawable)dialogDrawables.drawablePairs.get(data)).getSprite();
+            drawables.add(sprite);
             workingData.tenPatchData.regionNames.add(data.name);
+            workingData.tenPatchData.regions.add(sprite);
         }
         animatedDrawable.setRegions(drawables);
         animatedDrawable.setFrameDuration(workingData.tenPatchData.frameDuration);

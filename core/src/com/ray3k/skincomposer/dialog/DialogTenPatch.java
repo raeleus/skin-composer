@@ -724,11 +724,7 @@ public class DialogTenPatch extends Dialog {
         tenPatchDrawable.setOffsetY(drawableData.tenPatchData.offsetY);
         tenPatchDrawable.setOffsetXspeed(drawableData.tenPatchData.offsetXspeed);
         tenPatchDrawable.setOffsetYspeed(drawableData.tenPatchData.offsetYspeed);
-        var regions = new Array<TextureRegion>();
-        for (var name : drawableData.tenPatchData.regionNames) {
-            regions.add(main.getAtlasData().getAtlas().findRegion(name));
-        }
-        tenPatchDrawable.setRegions(regions);
+        tenPatchDrawable.setRegions(drawableData.tenPatchData.regions);
         tenPatchDrawable.setFrameDuration(drawableData.tenPatchData.frameDuration);
         tenPatchDrawable.setPlayMode(drawableData.tenPatchData.playMode);
         
