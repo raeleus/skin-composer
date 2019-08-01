@@ -9,6 +9,7 @@
 * Includes BitmapFont editor and Image font generator like Shoebox
 * Freetype support and custom serializer to generate fonts from Json
 * Nine-Patch editor with batch functions for multiple images
+* Integrated support for [TenPatch](https://github.com/raeleus/TenPatch) allowing for smart-resizing, animated UI's.
 * Implement your own classes allowing for extended Skin functionality
 * VisUI template and sample projects included
 
@@ -25,7 +26,10 @@ See more examples and sample code at [Ray3k](https://ray3k.wordpress.com/artwork
 ### Notes ###
 
 Skin Composer now has a wiki: [start here](https://github.com/raeleus/skin-composer/wiki) to begin learning!
+
 To run Skin Composer on OSX, please see the [wiki](https://github.com/raeleus/skin-composer/wiki/Getting-Started-With-Mac "Getting Started With Mac") for details.
+
+Video tutorials are available on [YouTube](https://www.youtube.com/playlist?list=PLl-_-0fPSXFfHiRAFpmLCuQup10MUJwcA)
 
 ### License ###
 MIT License
