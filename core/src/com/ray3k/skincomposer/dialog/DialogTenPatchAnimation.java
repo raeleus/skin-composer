@@ -32,17 +32,15 @@ public class DialogTenPatchAnimation extends Dialog {
     private ButtonGroup<Button> buttonGroup;
     private int lastClicked;
     private static final AlphanumComparator alphanumComparator = new AlphanumComparator();
-    private DialogDrawables dialogDrawables;
     private TenPatchDrawable animatedDrawable;
     
-    public DialogTenPatchAnimation(DrawableData drawableData, Skin skin, Main main, DialogDrawables dialogDrawables) {
+    public DialogTenPatchAnimation(DrawableData drawableData, Skin skin, Main main) {
         super("TenPatch Animation", skin, "bg");
         lastClicked = 0;
         this.drawableData = drawableData;
         workingData = new DrawableData(drawableData);
         this.skin = skin;
         this.main = main;
-        this.dialogDrawables = dialogDrawables;
         drawableDatas = new Array<>();
         
         for (var name : workingData.tenPatchData.regionNames) {
@@ -82,7 +80,7 @@ public class DialogTenPatchAnimation extends Dialog {
         animatedDrawable = new TenPatchDrawable();
         animatedDrawable.horizontalStretchAreas = new int[]{};
         animatedDrawable.verticalStretchAreas = new int[]{};
-        animatedDrawable.setRegion(((SpriteDrawable) dialogDrawables.drawablePairs.get(main.getAtlasData().getDrawable(drawableData.file.nameWithoutExtension()))).getSprite());
+        animatedDrawable.setRegion(((SpriteDrawable) main.getAtlasData().getDrawablePairs().get(main.getAtlasData().getDrawable(drawableData.file.nameWithoutExtension()))).getSprite());
         var table = new Table();
         table.setTouchable(Touchable.enabled);
         table.setName("animation-table");
@@ -581,7 +579,7 @@ public class DialogTenPatchAnimation extends Dialog {
         var iter = drawableDatas.iterator();
         while (iter.hasNext()) {
             var drawable = iter.next();
-            if (!dialogDrawables.drawablePairs.containsKey(drawable)) {
+            if (!main.getAtlasData().getDrawablePairs().containsKey(drawable)) {
                 iter.remove();
             }
         }
@@ -596,7 +594,7 @@ public class DialogTenPatchAnimation extends Dialog {
         workingData.tenPatchData.regions.clear();
         var drawables = new Array<TextureRegion>();
         for (var data : drawableDatas) {
-            var sprite = ((SpriteDrawable)dialogDrawables.drawablePairs.get(data)).getSprite();
+            var sprite = ((SpriteDrawable)main.getAtlasData().getDrawablePairs().get(data)).getSprite();
             drawables.add(sprite);
             workingData.tenPatchData.regionNames.add(data.name);
             workingData.tenPatchData.regions.add(sprite);
@@ -686,7 +684,7 @@ public class DialogTenPatchAnimation extends Dialog {
             button.add().uniform();
             
             button.row();
-            Image image = new Image(dialogDrawables.drawablePairs.get(region));
+            Image image = new Image(main.getAtlasData().getDrawablePairs().get(region));
             image.setScaling(Scaling.fit);
             button.add(image).colspan(3).expand();
             
@@ -726,7 +724,7 @@ public class DialogTenPatchAnimation extends Dialog {
                 if (drawable.file == null) {
                     main.getDialogFactory().showMessageDialog("Incorrect drawable!", "Incorrect drawable type! Select a \"texture\" drawable.", null);
                 } else {
-                    DialogTenPatchAnimation.this.dialogDrawables.produceAtlas();
+                    main.getAtlasData().produceAtlas();
                     
                     var pattern = Pattern.compile(".+(?=_\\d+$)");
                     var matcher = pattern.matcher(drawable.name);
@@ -734,7 +732,7 @@ public class DialogTenPatchAnimation extends Dialog {
                         var name = matcher.group();
     
                         var matches = new Array<DrawableData>();
-                        for (var drawableData : dialogDrawables.drawablePairs.keys()) {
+                        for (var drawableData : main.getAtlasData().getDrawablePairs().keys()) {
                             if (drawableData.name.matches(Pattern.quote(name) + "_\\d+")) {
                                 matches.add(drawableData);
                             }

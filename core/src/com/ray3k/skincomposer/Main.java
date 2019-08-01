@@ -224,8 +224,7 @@ public class Main extends ApplicationAdapter {
     public void render() {
         Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        loadingAnimation.update(Gdx.graphics.getDeltaTime());
+        
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }

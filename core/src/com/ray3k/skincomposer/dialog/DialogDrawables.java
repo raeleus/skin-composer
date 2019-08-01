@@ -64,8 +64,6 @@ public class DialogDrawables extends Dialog {
     private StyleProperty property;
     private CustomProperty customProperty;
     private Array<DrawableData> drawables;
-    public ObjectMap<DrawableData, Drawable> drawablePairs;
-    private TextureAtlas atlas;
     private Table contentTable;
     private FilesDroppedListener filesDroppedListener;
     private DialogDrawablesListener listener;
@@ -144,12 +142,10 @@ public class DialogDrawables extends Dialog {
         };
         
         main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
-
-        drawablePairs = new ObjectMap<>();
         
         gatherDrawables();
         
-        produceAtlas();
+        main.getAtlasData().produceAtlas();
         
         populate();
     }
@@ -159,109 +155,6 @@ public class DialogDrawables extends Dialog {
      */
     private void gatherDrawables() {
         drawables = new Array<>(main.getAtlasData().getDrawables());
-    }
-    
-    /**
-     * Writes a TextureAtlas based on drawables list. Creates drawables to be
-     * displayed on screen
-     * @return 
-     */
-    public boolean produceAtlas() {
-        try {
-            drawablePairs.clear();
-            
-            if (!main.getAtlasData().atlasCurrent) {
-                if (atlas != null) {
-                    atlas.dispose();
-                    atlas = null;
-                }
-                FileHandle defaultsFile = Main.appFolder.child("texturepacker/atlas-internal-settings.json");
-                main.getAtlasData().writeAtlas(defaultsFile);
-                main.getAtlasData().atlasCurrent = true;
-                
-                //clear all regions in any tenPatchData
-                for (var data : main.getAtlasData().getDrawables()) {
-                    if (data.tenPatchData != null) {
-                        data.tenPatchData.regions = null;
-                    }
-                }
-            }
-            atlas = main.getAtlasData().getAtlas();
-
-            for (DrawableData data : main.getAtlasData().getDrawables()) {
-                Drawable drawable;
-                if (data.customized) {
-                    drawable = getSkin().getDrawable("custom-drawable-skincomposer-image");
-                } else if (data.tenPatchData != null) {
-                    var region = atlas.findRegion(DrawableData.proper(data.file.name()));
-                    drawable = new TenPatchDrawable(data.tenPatchData.horizontalStretchAreas.toArray(),
-                            data.tenPatchData.verticalStretchAreas.toArray(), data.tenPatchData.tile, region);
-                    if (((TenPatchDrawable) drawable).horizontalStretchAreas.length == 0) {
-                        ((TenPatchDrawable) drawable).horizontalStretchAreas = new int[] {0, region.getRegionWidth() - 1};
-                    }
-                    if (((TenPatchDrawable) drawable).verticalStretchAreas.length == 0) {
-                        ((TenPatchDrawable) drawable).verticalStretchAreas = new int[] {0, region.getRegionHeight() - 1};
-                    }
-                    
-                    if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
-                    if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
-                    if (data.tenPatchData.colorName != null) ((TenPatchDrawable) drawable).setColor(main.getJsonData().getColorByName(data.tenPatchData.colorName).color);
-                    if (data.tenPatchData.color1Name != null) ((TenPatchDrawable) drawable).setColor1(main.getJsonData().getColorByName(data.tenPatchData.color1Name).color);
-                    if (data.tenPatchData.color2Name != null) ((TenPatchDrawable) drawable).setColor2(main.getJsonData().getColorByName(data.tenPatchData.color2Name).color);
-                    if (data.tenPatchData.color3Name != null) ((TenPatchDrawable) drawable).setColor3(main.getJsonData().getColorByName(data.tenPatchData.color3Name).color);
-                    if (data.tenPatchData.color4Name != null) ((TenPatchDrawable) drawable).setColor4(main.getJsonData().getColorByName(data.tenPatchData.color4Name).color);
-                    ((TenPatchDrawable) drawable).setOffsetX(data.tenPatchData.offsetX);
-                    ((TenPatchDrawable) drawable).setOffsetY(data.tenPatchData.offsetY);
-                    ((TenPatchDrawable) drawable).setOffsetXspeed(data.tenPatchData.offsetXspeed);
-                    ((TenPatchDrawable) drawable).setOffsetYspeed(data.tenPatchData.offsetYspeed);
-                    ((TenPatchDrawable) drawable).setFrameDuration(data.tenPatchData.frameDuration);
-                    ((TenPatchDrawable) drawable).setPlayMode(data.tenPatchData.playMode);
-                    if (data.tenPatchData.regions == null) {
-                        data.tenPatchData.regions = new Array<>();
-                        for (var name : data.tenPatchData.regionNames) {
-                            data.tenPatchData.regions.add(atlas.findRegion(name));
-                        }
-                    }
-                    ((TenPatchDrawable) drawable).setRegions(data.tenPatchData.regions);
-                } else if (data.tiled) {
-                    String name = data.file.name();
-                    name = DrawableData.proper(name);
-                    drawable = new TiledDrawable(atlas.findRegion(name));
-                    drawable.setMinWidth(data.minWidth);
-                    drawable.setMinHeight(data.minHeight);
-                    ((TiledDrawable) drawable).getColor().set(main.getJsonData().getColorByName(data.tintName).color);
-                } else if (data.file.name().matches(".*\\.9\\.[a-zA-Z0-9]*$")) {
-                    String name = data.file.name();
-                    name = DrawableData.proper(name);
-                    drawable = new NinePatchDrawable(atlas.createPatch(name));
-                    if (data.tint != null) {
-                        drawable = ((NinePatchDrawable) drawable).tint(data.tint);
-                    } else if (data.tintName != null) {
-                        drawable = ((NinePatchDrawable) drawable).tint(main.getJsonData().getColorByName(data.tintName).color);
-                    }
-                    if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
-                    if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
-                } else {
-                    String name = data.file.name();
-                    name = DrawableData.proper(name);
-                    drawable = new SpriteDrawable(atlas.createSprite(name));
-                    if (data.tint != null) {
-                        drawable = ((SpriteDrawable) drawable).tint(data.tint);
-                    } else if (data.tintName != null) {
-                        drawable = ((SpriteDrawable) drawable).tint(main.getJsonData().getColorByName(data.tintName).color);
-                    }
-                    if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
-                    if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
-                }
-                
-                drawablePairs.put(data, drawable);
-            }
-            return true;
-        } catch (Exception e) {
-            Gdx.app.error(getClass().getName(), "Error while attempting to generate drawables.", e);
-            main.getDialogFactory().showDialogError("Atlas Error...","Error while attempting to generate drawables.\n\nOpen log?");
-            return false;
-        }
     }
     
     public void populate() {
@@ -360,7 +253,7 @@ public class DialogDrawables extends Dialog {
                 public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                     Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                     main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
-                    main.getDialogFactory().showDialog9Patch(drawablePairs, new Dialog9Patch.Dialog9PatchListener() {
+                    main.getDialogFactory().showDialog9Patch(main.getAtlasData().getDrawablePairs(), new Dialog9Patch.Dialog9PatchListener() {
                         @Override
                         public void fileSaved(FileHandle fileHandle) {
                             if (fileHandle.exists()) {
@@ -502,7 +395,7 @@ public class DialogDrawables extends Dialog {
             bg.setBackground(getSkin().getDrawable("white"));
             bg.setColor(drawable.bgColor);
             
-            Image image = new Image(drawablePairs.get(drawable));
+            Image image = new Image(main.getAtlasData().getDrawablePairs().get(drawable));
             if (MathUtils.isEqual(zoomSlider.getValue(), 1)) {
                 image.setScaling(Scaling.fit);
                 bg.fill(false);
@@ -605,7 +498,7 @@ public class DialogDrawables extends Dialog {
                                     refreshDrawableDisplay();
                                     main.getProjectData().setChangesSaved(false);
                                     gatherDrawables();
-                                    produceAtlas();
+                                    main.getAtlasData().produceAtlas();
                                     sortBySelectedMode();
                                     getStage().setScrollFocus(scrollPane);
                                     main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
@@ -617,7 +510,7 @@ public class DialogDrawables extends Dialog {
                                     main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
                                     refreshDrawableDisplay();
                                 }
-                            }, DialogDrawables.this);
+                            });
                         }
                     });
                     button.addListener(fixDuplicateTouchListener);
@@ -728,7 +621,7 @@ public class DialogDrawables extends Dialog {
                                     main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
                                     refreshDrawableDisplay();
                                 }
-                            }, DialogDrawables.this);
+                            });
                         }
                     });
                     
@@ -757,7 +650,7 @@ public class DialogDrawables extends Dialog {
                                     drawableData.name = text;
                                     main.getAtlasData().getDrawables().add(drawableData);
                                     gatherDrawables();
-                                    produceAtlas();
+                                    main.getAtlasData().produceAtlas();
                                     sortBySelectedMode();
                                 }
             
@@ -782,7 +675,7 @@ public class DialogDrawables extends Dialog {
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             main.getDialogFactory().showDrawableSettingsDialog(getSkin(), getStage(), drawable, (boolean accepted) -> {
                                 if (accepted) {
-                                    produceAtlas();
+                                    main.getAtlasData().produceAtlas();
                                     refreshDrawableDisplay();
                                 }
                             });
@@ -957,7 +850,7 @@ public class DialogDrawables extends Dialog {
                                     main.getProjectData().getAtlasData().getDrawables().add(drawableData);
                                     main.getProjectData().setChangesSaved(false);
                                     gatherDrawables();
-                                    produceAtlas();
+                                    main.getAtlasData().produceAtlas();
                                     sortBySelectedMode();
                                     getStage().setScrollFocus(scrollPane);
                                     main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
@@ -969,7 +862,7 @@ public class DialogDrawables extends Dialog {
                                     main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
                                     refreshDrawableDisplay();
                                 }
-                            }, DialogDrawables.this);
+                            });
                         }
                     });
                     button.addListener(fixDuplicateTouchListener);
@@ -1058,7 +951,7 @@ public class DialogDrawables extends Dialog {
                                     drawable.set(drawableData);
                                     main.getProjectData().setChangesSaved(false);
                                     gatherDrawables();
-                                    produceAtlas();
+                                    main.getAtlasData().produceAtlas();
                                     sortBySelectedMode();
                                     getStage().setScrollFocus(scrollPane);
                                     main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
@@ -1070,7 +963,7 @@ public class DialogDrawables extends Dialog {
                                     main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
                                     refreshDrawableDisplay();
                                 }
-                            }, DialogDrawables.this);
+                            });
                         }
                     });
     
@@ -1096,7 +989,7 @@ public class DialogDrawables extends Dialog {
                                     drawableData.name = text;
                                     main.getAtlasData().getDrawables().add(drawableData);
                                     gatherDrawables();
-                                    produceAtlas();
+                                    main.getAtlasData().produceAtlas();
                                     sortBySelectedMode();
                                 }
     
@@ -1121,7 +1014,7 @@ public class DialogDrawables extends Dialog {
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             main.getDialogFactory().showDrawableSettingsDialog(getSkin(), getStage(), drawable, (boolean accepted) -> {
                                 if (accepted) {
-                                    produceAtlas();
+                                    main.getAtlasData().produceAtlas();
                                     refreshDrawableDisplay();
                                 }
                             });
@@ -1164,7 +1057,7 @@ public class DialogDrawables extends Dialog {
             bg.setBackground(getSkin().getDrawable("white"));
             bg.setColor(drawable.bgColor);
     
-            Image image = new Image(drawablePairs.get(drawable));
+            Image image = new Image(main.getAtlasData().getDrawablePairs().get(drawable));
             if (MathUtils.isEqual(zoomSlider.getValue(), 1)) {
                 image.setScaling(Scaling.fit);
                 bg.fill(false);
@@ -1230,7 +1123,7 @@ public class DialogDrawables extends Dialog {
                     @Override
                     public boolean remove() {
                         gatherDrawables();
-                        produceAtlas();
+                        main.getAtlasData().produceAtlas();
                         sortBySelectedMode();
                         getStage().setScrollFocus(scrollPane);
                         return super.remove();
@@ -1257,7 +1150,7 @@ public class DialogDrawables extends Dialog {
 
                 approveDialog.text("What is the name of the new tinted drawable?");
 
-                Drawable drawable = drawablePairs.get(drawableData);
+                Drawable drawable = main.getAtlasData().getDrawablePairs().get(drawableData);
                 Drawable preview = null;
                 if (drawable instanceof SpriteDrawable) {
                     preview = ((SpriteDrawable) drawable).tint(colorData.color);
@@ -1301,7 +1194,7 @@ public class DialogDrawables extends Dialog {
                     applyTintedDrawableSettings(drawable, textField.getText());
                     drawable.minWidth = ((Spinner) findActor("minWidth")).getValueAsInt();
                     drawable.minHeight = ((Spinner) findActor("minHeight")).getValueAsInt();
-                    produceAtlas();
+                    main.getAtlasData().produceAtlas();
                     refreshDrawableDisplay();
                 }
                 getStage().setScrollFocus(scrollPane);
@@ -1397,7 +1290,7 @@ public class DialogDrawables extends Dialog {
         updateStyleValuesForRename(oldName, name);
         
         main.getRootTable().refreshStyleProperties(true);
-        main.getRootTable().produceAtlas();
+        main.getAtlasData().produceAtlas();
         main.getRootTable().refreshPreview();
         
         main.getProjectData().setChangesSaved(false);
@@ -1622,7 +1515,7 @@ public class DialogDrawables extends Dialog {
         }
         main.getProjectData().setChangesSaved(false);
         gatherDrawables();
-        produceAtlas();
+        main.getAtlasData().produceAtlas();
         sortBySelectedMode();
         getStage().setScrollFocus(scrollPane);
     }
@@ -1752,14 +1645,14 @@ public class DialogDrawables extends Dialog {
                 }
                 
                 if (!filterOptions.ninePatch) {
-                    if (drawablePairs.get(drawable) instanceof NinePatchDrawable && !drawable.customized && drawable.tint == null && drawable.tintName == null) {
+                    if (main.getAtlasData().getDrawablePairs().get(drawable) instanceof NinePatchDrawable && !drawable.customized && drawable.tint == null && drawable.tintName == null) {
                         iter.remove();
                         continue;
                     }
                 }
                 
                 if (!filterOptions.texture) {
-                    if (drawablePairs.get(drawable) instanceof SpriteDrawable && drawable.tint == null && drawable.tintName == null) {
+                    if (main.getAtlasData().getDrawablePairs().get(drawable) instanceof SpriteDrawable && drawable.tint == null && drawable.tintName == null) {
                         iter.remove();
                         continue;
                     }
@@ -2020,13 +1913,13 @@ public class DialogDrawables extends Dialog {
             gatherDrawables();
             main.getDialogFactory().showDialogLoading(() -> {
                 Gdx.app.postRunnable(() -> {
-                    if (!produceAtlas()) {
+                    if (!main.getAtlasData().produceAtlas()) {
                         showDrawableError();
                         Gdx.app.log(getClass().getName(), "Attempting to reload drawables backup...");
                         main.getAtlasData().getDrawables().clear();
                         main.getAtlasData().getDrawables().addAll(backup);
                         gatherDrawables();
-                        if (produceAtlas()) {
+                        if (main.getAtlasData().produceAtlas()) {
                             Gdx.app.log(getClass().getName(), "Successfully rolled back changes to drawables");
                         } else {
                             Gdx.app.error(getClass().getName(), "Critical failure, could not roll back changes to drawables");
@@ -2111,7 +2004,7 @@ public class DialogDrawables extends Dialog {
                     }
                 }
                 finalizeDrawables(backup, filesToProcess);
-                main.getRootTable().produceAtlas();
+                main.getAtlasData().produceAtlas();
                 main.getRootTable().refreshPreview();
             }
         };
@@ -2164,13 +2057,13 @@ public class DialogDrawables extends Dialog {
 
         main.getDialogFactory().showDialogLoading(() -> {
             Gdx.app.postRunnable(() -> {
-                if (!produceAtlas()) {
+                if (!main.getAtlasData().produceAtlas()) {
                     showDrawableError();
                     Gdx.app.log(getClass().getName(), "Attempting to reload drawables backup...");
                     main.getAtlasData().getDrawables().clear();
                     main.getAtlasData().getDrawables().addAll(backup);
                     gatherDrawables();
-                    if (produceAtlas()) {
+                    if (main.getAtlasData().produceAtlas()) {
                         Gdx.app.log(getClass().getName(), "Successfully rolled back changes to drawables");
                     } else {
                         Gdx.app.error(getClass().getName(), "Critical failure, could not roll back changes to drawables");
@@ -2238,7 +2131,7 @@ public class DialogDrawables extends Dialog {
                         @Override
                         public boolean remove() {
                             gatherDrawables();
-                            produceAtlas();
+                            main.getAtlasData().produceAtlas();
                             sortBySelectedMode();
                             getStage().setScrollFocus(scrollPane);
                             return super.remove();
@@ -2262,7 +2155,7 @@ public class DialogDrawables extends Dialog {
                     dialog.text("What is the name of the new tinted drawable?");
                     dialog.getContentTable().getCells().first().pad(10.0f);
 
-                    Drawable drawable = drawablePairs.get(drawableData);
+                    Drawable drawable = main.getAtlasData().getDrawablePairs().get(drawableData);
                     Drawable preview = null;
                     if (drawable instanceof SpriteDrawable) {
                         preview = ((SpriteDrawable) drawable).tint(color);
@@ -2337,9 +2230,9 @@ public class DialogDrawables extends Dialog {
     @Override
     public boolean remove() {
         scrollPosition = scrollPane.getScrollY();
-        
+
         main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
-        
+
         try {
             if (!main.getAtlasData().atlasCurrent) {
                 FileHandle defaultsFile = Main.appFolder.child("texturepacker/atlas-internal-settings.json");
@@ -2350,12 +2243,7 @@ public class DialogDrawables extends Dialog {
             Gdx.app.error(getClass().getName(), "Error creating atlas upon drawable dialog exit", e);
             main.getDialogFactory().showDialogError("Atlas Error...", "Error creating atlas upon drawable dialog exit.\n\nOpen log?");
         }
-        
-        if (atlas != null) {
-            atlas.dispose();
-            atlas = null;
-        }
-        
+
         fire(new DialogEvent(DialogEvent.Type.CLOSE));
         return super.remove();
     }
@@ -2452,8 +2340,8 @@ public class DialogDrawables extends Dialog {
                 listener.cancelled(this);
             }
         }
-        
-        main.getRootTable().produceAtlas();
+    
+        main.getAtlasData().produceAtlas();
         main.getRootTable().refreshPreview();
     }
 
@@ -2553,16 +2441,5 @@ public class DialogDrawables extends Dialog {
             return super.keyTyped(event, character);
         }
         
-    }
-    
-    @Override
-    public void act(float delta) {
-        super.act(delta);
-        
-        for (var drawable : drawablePairs.values()) {
-            if (drawable instanceof TenPatchDrawable) {
-                ((TenPatchDrawable) drawable).update(delta);
-            }
-        }
     }
 }

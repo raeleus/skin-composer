@@ -68,14 +68,13 @@ public class DialogTenPatch extends Dialog {
     private StageResizeListener stageResizeListener;
     private Color previewColor;
     private static final Color DEFAULT_PREVIEW_COLOR = Color.WHITE;
-    private DialogDrawables dialogDrawables;
     private DrawableData drawableData;
     private String originalName;
     private FilesDroppedListener filesDroppedListener;
     private static DrawableData copiedDrawableData;
     private float splitValue;
     
-    public DialogTenPatch(Main main, DrawableData drawableData, boolean newDrawable, DialogDrawables dialog) {
+    public DialogTenPatch(Main main, DrawableData drawableData, boolean newDrawable) {
         super("", main.getSkin(), "dialog");
         this.main = main;
         skin = main.getSkin();
@@ -85,7 +84,6 @@ public class DialogTenPatch extends Dialog {
         temp = new Vector2();
         this.fileHandle = drawableData.file;
         previewColor = new Color(DEFAULT_PREVIEW_COLOR);
-        dialogDrawables = dialog;
         splitValue = .75f;
         
         setFillParent(true);
@@ -481,7 +479,7 @@ public class DialogTenPatch extends Dialog {
         imageTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                var dialog = new DialogTenPatchAnimation(drawableData, skin, main, dialogDrawables);
+                var dialog = new DialogTenPatchAnimation(drawableData, skin, main);
                 dialog.addListener(new DialogTenPatchAnimation.DialogTenPatchAnimationListener() {
                     @Override
                     public void animationUpdated(DialogTenPatchAnimation.DialogTenPatchAnimationEvent event) {
@@ -683,7 +681,7 @@ public class DialogTenPatch extends Dialog {
                 var dialog = main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
                     @Override
                     public void confirmed(DrawableData drawable, DialogDrawables dialog) {
-                        var image = new Image(dialogDrawables.drawablePairs.get(drawable));
+                        var image = new Image(main.getAtlasData().getDrawablePairs().get(drawable));
                         image.setScaling(Scaling.none);
                         image.setColor(previewColor);
                         table.add(image).grow();

@@ -28,9 +28,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
@@ -41,7 +38,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -93,8 +91,6 @@ public class RootTable extends Table {
             + "\n\n\n" + PARAGRAPH_SAMPLE + "\n\n\n" + PARAGRAPH_SAMPLE + "\n\n\n"
             + PARAGRAPH_SAMPLE;
     private final Array<BitmapFont> previewFonts;
-    private final ObjectMap<String, Drawable> drawablePairs;
-    private TextureAtlas atlas;
     private MenuItem undoButton;
     private MenuItem redoButton;
     private MenuItem recentFilesButton;
@@ -117,9 +113,8 @@ public class RootTable extends Table {
         
         scrollPaneListener = new ScrollPaneListener();
         previewFonts = new Array<>();
-        drawablePairs = new ObjectMap<>();
         
-        produceAtlas();
+        main.getAtlasData().produceAtlas();
         
         main.getStage().addListener(new ShortcutListener(this));
         
@@ -2356,9 +2351,6 @@ public class RootTable extends Table {
                 if (!showMessage) {
                     HorizontalGroup horizontalGroup = new HorizontalGroup();
                     horizontalGroup.wrap();
-                    //todo: resolve the following crash line
-                    //the following causes a crash. LibGDX bug.
-//                    horizontalGroup.space(10.0f);
                     horizontalGroup.wrapSpace(10.0f);
                     previewTable.add(horizontalGroup).grow().pad(10.0f);
 
@@ -2478,7 +2470,7 @@ public class RootTable extends Table {
                                     }
 
                                     if (drawable != null) {
-                                        Image image = new Image(drawablePairs.get(drawable.name));
+                                        Image image = new Image(main.getAtlasData().getDrawablePairs().get(drawable));
                                         container.setActor(image);
                                         
                                         container.addListener(new TextTooltip(drawable.name, main.getTooltipManager(), getSkin()));
@@ -2501,7 +2493,7 @@ public class RootTable extends Table {
                 Object value = styleData.getInheritedValue(field.getName());
                 if (value != null) {
                     if (field.getType().equals(Drawable.class)) {
-                        field.set(returnValue, drawablePairs.get((String) value));
+                        field.set(returnValue, main.getAtlasData().getDrawablePairs().get(main.getAtlasData().getDrawable((String) value)));
                     } else if (field.getType().equals(Color.class)) {
                         for (ColorData data : main.getProjectData().getJsonData().getColors()) {
                             if (value.equals(data.getName())) {
@@ -2560,110 +2552,6 @@ public class RootTable extends Table {
             }
         } finally {
             return returnValue;
-        }
-    }
-    
-    /**
-     * Writes a TextureAtlas based on drawables list. Creates drawables to be
-     * displayed on screen
-     * @return 
-     */
-    public boolean produceAtlas() {
-        try {
-            if (!main.getProjectData().getAtlasData().atlasCurrent) {
-                if (atlas != null) {
-                    atlas.dispose();
-                    atlas = null;
-                }
-                main.getProjectData().getAtlasData().writeAtlas(Gdx.files.internal("atlas-internal-settings.json"));
-                main.getProjectData().getAtlasData().atlasCurrent = true;
-    
-                //clear all regions in any tenPatchData
-                for (var data : main.getAtlasData().getDrawables()) {
-                    if (data.tenPatchData != null) {
-                        data.tenPatchData.regions = null;
-                    }
-                }
-            }
-            atlas = main.getProjectData().getAtlasData().getAtlas();
-
-            for (DrawableData data : main.getProjectData().getAtlasData().getDrawables()) {
-                Drawable drawable;
-                if (data.customized) {
-                    drawable = getSkin().getDrawable("custom-drawable-skincomposer-image");
-                } else if (data.tiled) {
-                    String name = data.file.name();
-                    name = DrawableData.proper(name);
-                    drawable = new TiledDrawable(atlas.findRegion(name));
-                    drawable.setMinWidth(data.minWidth);
-                    drawable.setMinHeight(data.minHeight);
-                    ((TiledDrawable) drawable).getColor().set(main.getJsonData().getColorByName(data.tintName).color);
-                } else if (data.tenPatchData != null) {
-                    var region = atlas.findRegion(DrawableData.proper(data.file.name()));
-                    drawable = new TenPatchDrawable(data.tenPatchData.horizontalStretchAreas.toArray(),
-                            data.tenPatchData.verticalStretchAreas.toArray(), data.tenPatchData.tile, region);
-                    if (((TenPatchDrawable) drawable).horizontalStretchAreas.length == 0) {
-                        ((TenPatchDrawable) drawable).horizontalStretchAreas = new int[] {0, region.getRegionWidth() - 1};
-                    }
-                    if (((TenPatchDrawable) drawable).verticalStretchAreas.length == 0) {
-                        ((TenPatchDrawable) drawable).verticalStretchAreas = new int[] {0, region.getRegionHeight() - 1};
-                    }
-                    
-                    drawable.setLeftWidth(data.tenPatchData.contentLeft);
-                    drawable.setRightWidth(data.tenPatchData.contentRight);
-                    drawable.setTopHeight(data.tenPatchData.contentTop);
-                    drawable.setBottomHeight(data.tenPatchData.contentBottom);
-                    if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
-                    if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
-                    if (data.tenPatchData.colorName != null) ((TenPatchDrawable) drawable).setColor(main.getJsonData().getColorByName(data.tenPatchData.colorName).color);
-                    if (data.tenPatchData.color1Name != null) ((TenPatchDrawable) drawable).setColor1(main.getJsonData().getColorByName(data.tenPatchData.color1Name).color);
-                    if (data.tenPatchData.color2Name != null) ((TenPatchDrawable) drawable).setColor2(main.getJsonData().getColorByName(data.tenPatchData.color2Name).color);
-                    if (data.tenPatchData.color3Name != null) ((TenPatchDrawable) drawable).setColor3(main.getJsonData().getColorByName(data.tenPatchData.color3Name).color);
-                    if (data.tenPatchData.color4Name != null) ((TenPatchDrawable) drawable).setColor4(main.getJsonData().getColorByName(data.tenPatchData.color4Name).color);
-                    ((TenPatchDrawable) drawable).setOffsetX(data.tenPatchData.offsetX);
-                    ((TenPatchDrawable) drawable).setOffsetY(data.tenPatchData.offsetY);
-                    ((TenPatchDrawable) drawable).setOffsetXspeed(data.tenPatchData.offsetXspeed);
-                    ((TenPatchDrawable) drawable).setOffsetYspeed(data.tenPatchData.offsetYspeed);
-                    ((TenPatchDrawable) drawable).setFrameDuration(data.tenPatchData.frameDuration);
-                    ((TenPatchDrawable) drawable).setPlayMode(data.tenPatchData.playMode);
-                    if (data.tenPatchData.regions == null) {
-                        data.tenPatchData.regions = new Array<>();
-                        for (var name : data.tenPatchData.regionNames) {
-                            data.tenPatchData.regions.add(atlas.findRegion(name));
-                        }
-                    }
-                    ((TenPatchDrawable) drawable).setRegions(data.tenPatchData.regions);
-                } else if (data.file.name().matches(".*\\.9\\.[a-zA-Z0-9]*$")) {
-                    String name = data.file.name();
-                    name = DrawableData.proper(name);
-                    drawable = new NinePatchDrawable(atlas.createPatch(name));
-                    if (data.tint != null) {
-                        drawable = ((NinePatchDrawable) drawable).tint(data.tint);
-                    } else if (data.tintName != null) {
-                        drawable = ((NinePatchDrawable) drawable).tint(main.getProjectData().getJsonData().getColorByName(data.tintName).color);
-                    }
-                    if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
-                    if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
-                } else {
-                    String name = data.file.name();
-                    name = DrawableData.proper(name);
-                    drawable = new SpriteDrawable(atlas.createSprite(name));
-                    if (data.tint != null) {
-                        drawable = ((SpriteDrawable) drawable).tint(data.tint);
-                    } else if (data.tintName != null) {
-                        drawable = ((SpriteDrawable) drawable).tint(main.getProjectData().getJsonData().getColorByName(data.tintName).color);
-                    }
-                    if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
-                    if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
-                }
-                
-                drawablePairs.put(data.name, drawable);
-            }
-            return true;
-        } catch (Exception e) {
-            Gdx.app.error(getClass().getName(), "Error while attempting to generate drawables.", e);
-            main.getDialogFactory().showDialogError("Atlas Error...", "Error while attempting to generate drawables.\n\nOpen log?");
-            return false;
         }
     }
     
@@ -2957,8 +2845,15 @@ public class RootTable extends Table {
             return false;
         }
     }
-
-    public ObjectMap<String, Drawable> getDrawablePairs() {
-        return drawablePairs;
+    
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        
+        for (var drawable : main.getAtlasData().getDrawablePairs().values()) {
+            if (drawable instanceof TenPatchDrawable) {
+                ((TenPatchDrawable) drawable).update(delta);
+            }
+        }
     }
 }

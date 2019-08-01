@@ -297,7 +297,7 @@ public class DialogPathErrors extends Dialog {
     protected void result(Object object) {
         if ((boolean) object == true) {
             main.getProjectData().setChangesSaved(false);
-            main.getRootTable().produceAtlas();
+            main.getAtlasData().produceAtlas();
             main.getRootTable().populate();
         } else {
             main.getMainListener().newFile();

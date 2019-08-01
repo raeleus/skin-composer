@@ -451,7 +451,7 @@ public class DialogColors extends Dialog {
         main.getUndoableManager().clearUndoables();
 
         main.getRootTable().refreshStyleProperties(true);
-        main.getRootTable().produceAtlas();
+        main.getAtlasData().produceAtlas();
         main.getRootTable().refreshPreview();
         
         main.getProjectData().setChangesSaved(false);

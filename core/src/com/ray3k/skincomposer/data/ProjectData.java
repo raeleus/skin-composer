@@ -387,7 +387,7 @@ public class ProjectData implements Json.Serializable {
         correctFilePaths();
         
         if (verifyDrawablePaths().size == 0 && verifyFontPaths().size == 0) {
-            main.getRootTable().produceAtlas();
+            main.getAtlasData().produceAtlas();
             main.getRootTable().populate();
         }
         setChangesSaved(true);
@@ -522,7 +522,7 @@ public class ProjectData implements Json.Serializable {
         atlasData.clear();
         saveFile = null;
         if (main != null) {
-            main.getRootTable().produceAtlas();
+            main.getAtlasData().produceAtlas();
             main.getRootTable().populate();
         }
         setChangesSaved(false);

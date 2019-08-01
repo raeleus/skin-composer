@@ -315,7 +315,7 @@ public class UndoableManager {
 
         @Override
         public void undo() {
-            rootTable.produceAtlas();
+            Main.main.getAtlasData().produceAtlas();
             if (oldValue == null || atlasData.getDrawable((String) oldValue) != null) {
                 property.value = oldValue;
             }
@@ -325,7 +325,7 @@ public class UndoableManager {
 
         @Override
         public void redo() {
-            rootTable.produceAtlas();
+            Main.main.getAtlasData().produceAtlas();
             if (newValue == null || atlasData.getDrawable((String) newValue) != null) {
                 property.value = newValue;
             }
@@ -354,7 +354,7 @@ public class UndoableManager {
 
         @Override
         public void undo() {
-            main.getRootTable().produceAtlas();
+            main.getAtlasData().produceAtlas();
             if (oldValue == null || main.getAtlasData().getDrawable(oldValue) != null) {
                 property.setValue(oldValue);
             }
@@ -364,7 +364,7 @@ public class UndoableManager {
 
         @Override
         public void redo() {
-            main.getRootTable().produceAtlas();
+            Main.main.getAtlasData().produceAtlas();
             if (newValue == null || main.getAtlasData().getDrawable(newValue) != null) {
                 property.setValue(newValue);
             }

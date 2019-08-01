@@ -655,7 +655,7 @@ public class MainListener extends RootTableListener {
                     FileHandle defaultsFile = Main.appFolder.child("texturepacker/atlas-internal-settings.json");
                     main.getProjectData().getAtlasData().writeAtlas(defaultsFile);
                     main.getProjectData().getAtlasData().atlasCurrent = true;
-                    main.getRootTable().produceAtlas();
+                    main.getAtlasData().produceAtlas();
                     main.getRootTable().refreshPreview();
                 } catch (Exception e) {
                     main.getDialogFactory().showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);

@@ -1111,8 +1111,8 @@ public class DialogFactory {
         dialog.show(main.getStage());
     }
     
-    public void showDialogTenPatch(DrawableData drawableData, boolean newDrawable, DialogTenPatchListener listener, DialogDrawables dialogDrawables) {
-        DialogTenPatch dialog = new DialogTenPatch(main, drawableData, newDrawable, dialogDrawables);
+    public void showDialogTenPatch(DrawableData drawableData, boolean newDrawable, DialogTenPatchListener listener) {
+        DialogTenPatch dialog = new DialogTenPatch(main, drawableData, newDrawable);
         dialog.addListener(listener);
         dialog.show(main.getStage());
     }

@@ -208,7 +208,7 @@ public class DialogImport extends Dialog {
                     warnings.addAll(newWarnings);
                     main.getProjectData().getAtlasData().atlasCurrent = false;
                     main.getJsonData().checkForPropertyConsistency();
-                    main.getRootTable().produceAtlas();
+                    main.getAtlasData().produceAtlas();
                     main.getRootTable().populate();
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
