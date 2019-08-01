@@ -1607,7 +1607,6 @@ public class DialogDrawables extends Dialog {
                     String name = iter.next();
                     if (name.equals(drawable.name)) {
                         iter.remove();
-                        System.out.println("removed name " + name);
                     }
                 }
                 
@@ -1617,7 +1616,6 @@ public class DialogDrawables extends Dialog {
                         var region = iter2.next();
                         if (((TextureAtlas.AtlasRegion)region).name.equals(drawable.name)) {
                             iter2.remove();
-                            System.out.println("removed region " + region);
                         }
                     }
                 }
