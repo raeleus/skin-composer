@@ -560,10 +560,15 @@ public class DialogColors extends Dialog {
             }
         }
         
-        //tinted drawables
         for (DrawableData drawableData : main.getAtlasData().getDrawables()) {
+            //tinted drawables
             if (drawableData.tintName != null && drawableData.tintName.equals(color.getName())) {
                 drawableData.tintName = newName;
+            }
+            
+            //ten patch drawables
+            else if (drawableData.tenPatchData != null && drawableData.tenPatchData.colorName.equals(color.getName())) {
+                drawableData.tenPatchData.colorName = newName;
             }
         }
         
