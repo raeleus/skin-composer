@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -80,7 +81,13 @@ public class DialogTenPatchAnimation extends Dialog {
         animatedDrawable = new TenPatchDrawable();
         animatedDrawable.horizontalStretchAreas = new int[]{};
         animatedDrawable.verticalStretchAreas = new int[]{};
-        animatedDrawable.setRegion(((SpriteDrawable) main.getAtlasData().getDrawablePairs().get(main.getAtlasData().getDrawable(drawableData.file.nameWithoutExtension()))).getSprite());
+    
+        String name = drawableData.file.nameWithoutExtension();
+        var matcher = Pattern.compile(".*(?=\\.9$)").matcher(name);
+        if (matcher.find()) {
+            name = matcher.group();
+        }
+        animatedDrawable.setRegion(main.getAtlasData().getAtlas().findRegion(name));
         var table = new Table();
         table.setTouchable(Touchable.enabled);
         table.setName("animation-table");
@@ -594,10 +601,17 @@ public class DialogTenPatchAnimation extends Dialog {
         workingData.tenPatchData.regions.clear();
         var drawables = new Array<TextureRegion>();
         for (var data : drawableDatas) {
-            var sprite = ((SpriteDrawable)main.getAtlasData().getDrawablePairs().get(data)).getSprite();
-            drawables.add(sprite);
+    
+            String name = data.file.nameWithoutExtension();
+            var matcher = Pattern.compile(".*(?=\\.9$)").matcher(name);
+            if (matcher.find()) {
+                name = matcher.group();
+            }
+            var region = main.getAtlasData().getAtlas().findRegion(name);
+            
+            drawables.add(region);
             workingData.tenPatchData.regionNames.add(data.name);
-            workingData.tenPatchData.regions.add(sprite);
+            workingData.tenPatchData.regions.add(region);
         }
         animatedDrawable.setRegions(drawables);
         animatedDrawable.setFrameDuration(workingData.tenPatchData.frameDuration);
