@@ -11,6 +11,7 @@
 * Fixed Ten Patch export not setting default stretch regions if they are not specified in the editor.
 * Improved performance of TenPatches when rebuilding the TextureAtlas in the Drawable dialogs and in the main menu.
 * Fixed renaming colors causing Ten Patches to break.
+* Fixed deleting drawables causing Ten Patches to break.
 * Minor UI Tweaks and bug fixes.
 
 ### Skin Composer Version 32 ###

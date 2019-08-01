@@ -1539,6 +1539,7 @@ public class DialogDrawables extends Dialog {
         if (!drawable.customized && drawable.tint == null && drawable.tintName == null && drawable.tenPatchData == null && checkDuplicateDrawables(drawable.file, 1)) {
             showConfirmDeleteDialog(drawable);
         } else {
+            removeRegionFromTenPatches(drawable);
             main.getAtlasData().getDrawables().removeValue(drawable, true);
 
             for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
@@ -1576,6 +1577,7 @@ public class DialogDrawables extends Dialog {
                 if ((boolean) object) {
                     main.getProjectData().setChangesSaved(false);
                     removeDuplicateDrawables(drawable.file);
+                    removeRegionFromTenPatches(drawable);
                     gatherDrawables();
                     sortBySelectedMode();
                 }
@@ -1595,6 +1597,32 @@ public class DialogDrawables extends Dialog {
         dialog.key(Input.Keys.ENTER, true);
         dialog.key(Input.Keys.ESCAPE, false);
         dialog.show(getStage());
+    }
+    
+    private void removeRegionFromTenPatches(DrawableData drawable) {
+        for (var data : main.getAtlasData().getDrawables()) {
+            if (data.tenPatchData != null) {
+                var iter = data.tenPatchData.regionNames.iterator();
+                while (iter.hasNext()) {
+                    String name = iter.next();
+                    if (name.equals(drawable.name)) {
+                        iter.remove();
+                        System.out.println("removed name " + name);
+                    }
+                }
+                
+                if (data.tenPatchData.regions != null) {
+                    var iter2 = data.tenPatchData.regions.iterator();
+                    while (iter2.hasNext()) {
+                        var region = iter2.next();
+                        if (((TextureAtlas.AtlasRegion)region).name.equals(drawable.name)) {
+                            iter2.remove();
+                            System.out.println("removed region " + region);
+                        }
+                    }
+                }
+            }
+        }
     }
     
     /**
