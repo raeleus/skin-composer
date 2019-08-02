@@ -26,17 +26,9 @@ package com.ray3k.skincomposer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.utils.Array;
-import com.ray3k.skincomposer.data.AtlasData;
-import com.ray3k.skincomposer.data.ColorData;
-import com.ray3k.skincomposer.data.CustomClass;
-import com.ray3k.skincomposer.data.CustomProperty;
+import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
-import com.ray3k.skincomposer.data.CustomStyle;
-import com.ray3k.skincomposer.data.FontData;
-import com.ray3k.skincomposer.data.FreeTypeFontData;
-import com.ray3k.skincomposer.data.JsonData;
-import com.ray3k.skincomposer.data.StyleData;
-import com.ray3k.skincomposer.data.StyleProperty;
+
 import java.util.Iterator;
 
 public class UndoableManager {
@@ -323,7 +315,7 @@ public class UndoableManager {
 
         @Override
         public void undo() {
-            rootTable.produceAtlas();
+            Main.main.getAtlasData().produceAtlas();
             if (oldValue == null || atlasData.getDrawable((String) oldValue) != null) {
                 property.value = oldValue;
             }
@@ -333,7 +325,7 @@ public class UndoableManager {
 
         @Override
         public void redo() {
-            rootTable.produceAtlas();
+            Main.main.getAtlasData().produceAtlas();
             if (newValue == null || atlasData.getDrawable((String) newValue) != null) {
                 property.value = newValue;
             }
@@ -362,7 +354,7 @@ public class UndoableManager {
 
         @Override
         public void undo() {
-            main.getRootTable().produceAtlas();
+            main.getAtlasData().produceAtlas();
             if (oldValue == null || main.getAtlasData().getDrawable(oldValue) != null) {
                 property.setValue(oldValue);
             }
@@ -372,7 +364,7 @@ public class UndoableManager {
 
         @Override
         public void redo() {
-            main.getRootTable().produceAtlas();
+            Main.main.getAtlasData().produceAtlas();
             if (newValue == null || main.getAtlasData().getDrawable(newValue) != null) {
                 property.setValue(newValue);
             }

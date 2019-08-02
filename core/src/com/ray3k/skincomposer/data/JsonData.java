@@ -30,15 +30,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin.TintedDrawable;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
-import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -339,6 +332,7 @@ public class JsonData implements Json.Serializable {
                     drawableData.tenPatchData.offsetYspeed = value.getInt("offsetYspeed", 0);
                     drawableData.tenPatchData.frameDuration = value.getFloat("frameDuration", 0);
                     drawableData.tenPatchData.regionNames = new Array<>(value.get("regions").asStringArray());
+                    drawableData.tenPatchData.playMode = TenPatchDrawable.PlayMode.valueOf(value.getString("playMode", "LOOP"));
     
                     //delete drawables with the same name
                     for (DrawableData originalData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {
@@ -814,8 +808,21 @@ public class JsonData implements Json.Serializable {
                 if (drawable.tenPatchData.colorName != null) {
                     json.writeValue("color", drawable.tenPatchData.colorName);
                 }
-                json.writeValue("horizontalStretchAreas", drawable.tenPatchData.horizontalStretchAreas.toArray());
-                json.writeValue("verticalStretchAreas", drawable.tenPatchData.verticalStretchAreas.toArray());
+                
+                if (drawable.tenPatchData.horizontalStretchAreas.size > 0) {
+                    json.writeValue("horizontalStretchAreas", drawable.tenPatchData.horizontalStretchAreas.toArray());
+                } else {
+                    var region = main.getAtlasData().getAtlas().findRegion(drawable.file.nameWithoutExtension());
+                    json.writeValue("horizontalStretchAreas", new int[]{0, region.getRegionWidth() - 1});
+                }
+                
+                if (drawable.tenPatchData.verticalStretchAreas.size > 0) {
+                    json.writeValue("verticalStretchAreas", drawable.tenPatchData.verticalStretchAreas.toArray());
+                } else {
+                    var region = main.getAtlasData().getAtlas().findRegion(drawable.file.nameWithoutExtension());
+                    json.writeValue("verticalStretchAreas", new int[]{0, region.getRegionHeight() - 1});
+                }
+                
                 json.writeValue("tiling", drawable.tenPatchData.tile);
                 if (!MathUtils.isEqual(drawable.minWidth, -1)) json.writeValue("minWidth", drawable.minWidth);
                 else json.writeValue("minWidth", Utils.imageDimensions(drawable.file).x);
@@ -843,6 +850,7 @@ public class JsonData implements Json.Serializable {
                 json.writeValue("offsetYspeed", drawable.tenPatchData.offsetYspeed);
                 json.writeValue("frameDuration", drawable.tenPatchData.frameDuration);
                 json.writeValue("regions", drawable.tenPatchData.regionNames, Array.class, String.class);
+                json.writeValue("playMode", drawable.tenPatchData.playMode);
                 json.writeObjectEnd();
             }
             json.writeObjectEnd();

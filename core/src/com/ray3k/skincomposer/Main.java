@@ -23,59 +23,44 @@
  ******************************************************************************/
 package com.ray3k.skincomposer;
 
-import com.badlogic.gdx.*;
-import com.ray3k.skincomposer.dialog.DialogFactory;
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane.SplitPaneStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip.TextTooltipStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TooltipManager;
-import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
+import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.tenpatch.TenPatchDrawable;
 
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "32";
+    public final static String VERSION = "33";
     public static String newVersion;
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,
@@ -93,7 +78,7 @@ public class Main extends ApplicationAdapter {
     private static Skin skin;
     private DialogFactory dialogFactory;
     private DesktopWorker desktopWorker;
-    private AnimationDrawable loadingAnimation;
+    private TenPatchDrawable loadingAnimation;
     private UndoableManager undoableManager;
     private ProjectData projectData;
     private RootTable rootTable;
@@ -200,7 +185,7 @@ public class Main extends ApplicationAdapter {
             return false;
         });
         
-        loadingAnimation = new AnimationDrawable(skin, "loading-animation", 1 / 30f);
+        loadingAnimation = skin.get("loading-animation", TenPatchDrawable.class);
         
         projectData.getAtlasData().clearTempData();
         handListener = new HandListener();
@@ -239,8 +224,7 @@ public class Main extends ApplicationAdapter {
     public void render() {
         Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        loadingAnimation.update(Gdx.graphics.getDeltaTime());
+        
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }
@@ -269,7 +253,7 @@ public class Main extends ApplicationAdapter {
         return stage;
     }
 
-    public AnimationDrawable getLoadingAnimation() {
+    public TenPatchDrawable getLoadingAnimation() {
         return loadingAnimation;
     }
 

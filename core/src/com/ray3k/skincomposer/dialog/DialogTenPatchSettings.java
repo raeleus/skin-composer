@@ -7,14 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
-
-import javax.xml.crypto.Data;
 
 public class DialogTenPatchSettings extends Dialog {
     private DrawableData drawableData;

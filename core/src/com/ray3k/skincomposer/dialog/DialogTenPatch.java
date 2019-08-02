@@ -24,6 +24,7 @@
 package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -31,11 +32,18 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.*;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.*;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
@@ -43,6 +51,7 @@ import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * @author Raymond Buckley
@@ -59,24 +68,23 @@ public class DialogTenPatch extends Dialog {
     private StageResizeListener stageResizeListener;
     private Color previewColor;
     private static final Color DEFAULT_PREVIEW_COLOR = Color.WHITE;
-    private DialogDrawables dialogDrawables;
     private DrawableData drawableData;
     private String originalName;
-    private boolean newDrawable;
     private FilesDroppedListener filesDroppedListener;
+    private static DrawableData copiedDrawableData;
+    private float splitValue;
     
-    public DialogTenPatch(Main main, DrawableData drawableData, boolean newDrawable, DialogDrawables dialog) {
+    public DialogTenPatch(Main main, DrawableData drawableData, boolean newDrawable) {
         super("", main.getSkin(), "dialog");
         this.main = main;
         skin = main.getSkin();
         this.drawableData = drawableData;
-        this.newDrawable = newDrawable;
         originalName = newDrawable ? "" : drawableData.name;
         zoomToMouse = false;
         temp = new Vector2();
         this.fileHandle = drawableData.file;
         previewColor = new Color(DEFAULT_PREVIEW_COLOR);
-        dialogDrawables = dialog;
+        splitValue = .75f;
         
         setFillParent(true);
         populate();
@@ -103,9 +111,114 @@ public class DialogTenPatch extends Dialog {
         };
     
         main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+    
+        addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (!(event.getTarget() instanceof TextField)) {
+                    getStage().setKeyboardFocus(DialogTenPatch.this);
+                }
+                return super.touchDown(event, x, y, pointer, button);
+            }
+    
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                if (getStage().getKeyboardFocus().equals(DialogTenPatch.this)) {
+                    if (keycode == Input.Keys.C) {
+                        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
+                            showToast("Ten Patch data copied to clipboard!");
+                            copiedDrawableData = new DrawableData(drawableData);
+                        }
+                    } else if (keycode == Keys.V) {
+                        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
+                            if (copiedDrawableData != null) {
+                                showToast("Ten Patch data pasted!");
+                                
+                                var file = drawableData.file;
+                                drawableData.set(copiedDrawableData);
+                                
+                                TextField textField = findActor("nameField");
+                                drawableData.name = textField.getText();
+                                drawableData.file = file;
+                                
+                                var iter = drawableData.tenPatchData.regionNames.iterator();
+                                while (iter.hasNext()) {
+                                    var region = iter.next();
+                                    if (main.getAtlasData().getDrawable(region) == null) {
+                                        iter.remove();
+                                    }
+                                }
+                                
+                                if (drawableData.tenPatchData.contentLeft >= tenPatchWidget.getTextureRegion().getRegionWidth()) {
+                                    drawableData.tenPatchData.contentLeft = tenPatchWidget.getTextureRegion().getRegionWidth() - 1;
+                                }
+    
+                                if (drawableData.tenPatchData.contentRight >= tenPatchWidget.getTextureRegion().getRegionWidth() - drawableData.tenPatchData.contentLeft) {
+                                    drawableData.tenPatchData.contentRight = tenPatchWidget.getTextureRegion().getRegionWidth() - drawableData.tenPatchData.contentLeft - 1;
+                                }
+    
+                                if (drawableData.tenPatchData.contentBottom >= tenPatchWidget.getTextureRegion().getRegionHeight()) {
+                                    drawableData.tenPatchData.contentBottom = tenPatchWidget.getTextureRegion().getRegionHeight() - 1;
+                                }
+    
+                                if (drawableData.tenPatchData.contentTop >= tenPatchWidget.getTextureRegion().getRegionHeight() - drawableData.tenPatchData.contentBottom) {
+                                    drawableData.tenPatchData.contentTop = tenPatchWidget.getTextureRegion().getRegionHeight() - drawableData.tenPatchData.contentBottom - 1;
+                                }
+    
+                                var values = new IntArray();
+                                for (int i = 0; i + 1 < drawableData.tenPatchData.horizontalStretchAreas.size; i += 2) {
+                                    var value = drawableData.tenPatchData.horizontalStretchAreas.get(i);
+                                    if (value < tenPatchWidget.getTextureRegion().getRegionWidth()) {
+                                        values.add(value);
+    
+                                        value = drawableData.tenPatchData.horizontalStretchAreas.get(i + 1);
+                                        if (value >= tenPatchWidget.getTextureRegion().getRegionWidth()) {
+                                            value = tenPatchWidget.getTextureRegion().getRegionWidth();
+                                        }
+                                        values.add(value);
+                                    } else {
+                                        break;
+                                    }
+                                }
+                                drawableData.tenPatchData.horizontalStretchAreas = values;
+    
+                                values = new IntArray();
+                                for (int i = 0; i + 1 < drawableData.tenPatchData.verticalStretchAreas.size; i += 2) {
+                                    var value = drawableData.tenPatchData.verticalStretchAreas.get(i);
+                                    if (value < tenPatchWidget.getTextureRegion().getRegionHeight()) {
+                                        values.add(value);
+            
+                                        value = drawableData.tenPatchData.verticalStretchAreas.get(i + 1);
+                                        if (value >= tenPatchWidget.getTextureRegion().getRegionHeight()) {
+                                            value = tenPatchWidget.getTextureRegion().getRegionHeight();
+                                        }
+                                        values.add(value);
+                                    } else {
+                                        break;
+                                    }
+                                }
+                                drawableData.tenPatchData.verticalStretchAreas = values;
+                                
+                                populate();
+                                tenPatchWidget.zoomAndCenter();
+                            } else {
+                                showToast("No Ten Patch data to paste!");
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+        });
+    
+        if (fileHandle.name().matches("(?i:.*\\.9\\.png)") && newDrawable) {
+            loadPatchesFromFile(fileHandle);
+        }
     }
     
     private void populate() {
+        setSize(main.getStage().getWidth(), main.getStage().getHeight());
+        
         var root = getContentTable();
         root.pad(10);
         root.clear();
@@ -116,6 +229,7 @@ public class DialogTenPatch extends Dialog {
         bottom.setBackground(skin.getDrawable("white"));
         bottom.setTouchable(Touchable.enabled);
         var splitPane = new SplitPane(top, bottom, true, skin);
+        splitPane.setSplitAmount(splitValue);
         root.add(splitPane).grow();
         splitPane.addListener(main.getVerticalResizeArrowListener());
         splitPane.addListener(new DragListener() {
@@ -130,6 +244,8 @@ public class DialogTenPatch extends Dialog {
                 if (event.getListenerActor().equals(event.getTarget())) {
                     tenPatchWidget.center();
                 }
+                
+                splitValue = splitPane.getSplitAmount();
             }
         });
         
@@ -236,12 +352,7 @@ public class DialogTenPatch extends Dialog {
         tenPatchWidget = new TenPatchWidget(skin);
         tenPatchWidget.setTenPatchData(drawableData.tenPatchData);
         
-        var pixmap = loadTextureFile(fileHandle);
-        
-        var texture = new Texture(pixmap);
-        pixmap.dispose();
-        texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        tenPatchWidget.setTextureRegion(new TextureRegion(texture));
+        tenPatchWidget.setTextureRegion(loadTextureFile(drawableData.file));
         
         top.add(tenPatchWidget).grow();
         tenPatchWidget.getStretchSwitchButton().addListener(main.getHandListener());
@@ -359,16 +470,16 @@ public class DialogTenPatch extends Dialog {
         table = new Table();
         top.add(table).growX();
     
-        table.defaults().space(3).uniform().fill();
+        table.defaults().space(3);
         table.pad(5);
     
-        textButton = new TextButton("Animation...", skin);
-        table.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
+        var imageTextButton = new ImageTextButton("Animation...", skin, "ten-patch-animation");
+        table.add(imageTextButton);
+        imageTextButton.addListener(main.getHandListener());
+        imageTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                var dialog = new DialogTenPatchAnimation(drawableData, skin, main, dialogDrawables);
+                var dialog = new DialogTenPatchAnimation(drawableData, skin, main);
                 dialog.addListener(new DialogTenPatchAnimation.DialogTenPatchAnimationListener() {
                     @Override
                     public void animationUpdated(DialogTenPatchAnimation.DialogTenPatchAnimationEvent event) {
@@ -379,10 +490,10 @@ public class DialogTenPatch extends Dialog {
             }
         });
     
-        textButton = new TextButton("More settings...", skin);
-        table.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
+        imageTextButton = new ImageTextButton("More settings...", skin, "ten-patch-scrolling");
+        table.add(imageTextButton);
+        imageTextButton.addListener(main.getHandListener());
+        imageTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 var dialog = new DialogTenPatchSettings(drawableData, skin, main);
@@ -428,8 +539,13 @@ public class DialogTenPatch extends Dialog {
         resizer.getLeftHandle().addListener(resizeFourArrowListener);
         resizer.getRightHandle().addListener(resizeFourArrowListener);
         table.add(resizer).grow();
-        
-        tenPatchDrawable = new TenPatchDrawable(new int[0], new int[0], false, tenPatchWidget.getTextureRegion());
+    
+        String name = drawableData.file.nameWithoutExtension();
+        var matcher = Pattern.compile(".*(?=\\.9$)").matcher(name);
+        if (matcher.find()) {
+            name = matcher.group();
+        }
+        tenPatchDrawable = new TenPatchDrawable(new int[0], new int[0], false, main.getAtlasData().getAtlas().findRegion(name));
         if (drawableData.tenPatchData.colorName != null) {
             tenPatchDrawable.getColor().set(main.getJsonData().getColorByName(drawableData.tenPatchData.colorName).color);
         }
@@ -527,10 +643,8 @@ public class DialogTenPatch extends Dialog {
         textButton.addListener(main.getHandListener());
         
         updatePreview();
-    
-        if (fileHandle.name().matches("(?i:.*\\.9\\.png)") && newDrawable) {
-            loadPatchesFromFile(fileHandle);
-        }
+        layout();
+        tenPatchWidget.zoomAndCenter();
     }
     
     private void createPreview() {
@@ -567,7 +681,7 @@ public class DialogTenPatch extends Dialog {
                 var dialog = main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
                     @Override
                     public void confirmed(DrawableData drawable, DialogDrawables dialog) {
-                        var image = new Image(dialogDrawables.drawablePairs.get(drawable));
+                        var image = new Image(main.getAtlasData().getDrawablePairs().get(drawable));
                         image.setScaling(Scaling.none);
                         image.setColor(previewColor);
                         table.add(image).grow();
@@ -608,12 +722,9 @@ public class DialogTenPatch extends Dialog {
         tenPatchDrawable.setOffsetY(drawableData.tenPatchData.offsetY);
         tenPatchDrawable.setOffsetXspeed(drawableData.tenPatchData.offsetXspeed);
         tenPatchDrawable.setOffsetYspeed(drawableData.tenPatchData.offsetYspeed);
-        var regions = new Array<TextureRegion>();
-        for (var name : drawableData.tenPatchData.regionNames) {
-            regions.add(main.getAtlasData().getAtlas().findRegion(name));
-        }
-        tenPatchDrawable.setRegions(regions);
+        tenPatchDrawable.setRegions(drawableData.tenPatchData.regions);
         tenPatchDrawable.setFrameDuration(drawableData.tenPatchData.frameDuration);
+        tenPatchDrawable.setPlayMode(drawableData.tenPatchData.playMode);
         
         Table table = findActor("tenPatchTable");
         if (table.getCells().size > 0) {
@@ -642,7 +753,7 @@ public class DialogTenPatch extends Dialog {
         }
     }
     
-    private Pixmap loadTextureFile(FileHandle fileHandle) {
+    private Pixmap loadPixmapFile(FileHandle fileHandle) {
         if (!fileHandle.name().matches("(?i:.*\\.9\\.png)")) {
             return new Pixmap(fileHandle);
         } else {
@@ -655,8 +766,20 @@ public class DialogTenPatch extends Dialog {
         }
     }
     
+    private TextureRegion loadTextureFile(FileHandle fileHandle) {
+        if (!fileHandle.name().matches("(?i:.*\\.9\\.png)")) {
+            var texture = new Texture(fileHandle);
+            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+            return new TextureRegion(texture);
+        } else {
+            var texture = new Texture(fileHandle);
+            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+            return new TextureRegion(texture, 1, 1, texture.getWidth() - 2, texture.getHeight() - 2);
+        }
+    }
+    
     private void saveToImageFile(FileHandle fileHandle) {
-        var source = loadTextureFile(this.fileHandle);
+        var source = loadPixmapFile(this.fileHandle);
         var pixmap = new Pixmap(source.getWidth() + 2, source.getHeight() + 2, source.getFormat());
         pixmap.setBlending(Pixmap.Blending.None);
         
@@ -750,6 +873,7 @@ public class DialogTenPatch extends Dialog {
         drawableData.tenPatchData.removeInvalidStretchAreas(false);
     
         updatePreview();
+        pixmap.dispose();
     }
     
     public int[] sanitizeStretchAreas(IntArray stretchAreas, boolean horizontal) {
@@ -779,8 +903,6 @@ public class DialogTenPatch extends Dialog {
     public void act(float delta) {
         super.act(delta);
         
-        tenPatchDrawable.update(delta);
-        
         if (Gdx.input.isKeyJustPressed(Keys.F5)) {
             populate();
             pack();
@@ -793,8 +915,6 @@ public class DialogTenPatch extends Dialog {
     @Override
     public Dialog show(Stage stage, Action action) {
         super.show(stage, action);
-        pack();
-        tenPatchWidget.zoomAndCenter();
         Slider slider = findActor("ten-patch-zoom");
         slider.setValue(tenPatchWidget.getZoomScale());
         return this;
@@ -865,6 +985,8 @@ public class DialogTenPatch extends Dialog {
         public int offsetYspeed;
         public float frameDuration;
         public Array<String> regionNames = new Array<>();
+        public volatile Array<TextureRegion> regions;
+        public TenPatchDrawable.PlayMode playMode;
     
         public TenPatchData() {
             clear();
@@ -891,7 +1013,8 @@ public class DialogTenPatch extends Dialog {
             offsetY = 0;
             offsetXspeed = 0;
             offsetYspeed = 0;
-            frameDuration = 1;
+            frameDuration = .03f;
+            playMode = TenPatchDrawable.PlayMode.LOOP;
         }
     
         public void removeInvalidStretchAreas(boolean horizontal) {
@@ -953,6 +1076,8 @@ public class DialogTenPatch extends Dialog {
             offsetYspeed = other.offsetYspeed;
             frameDuration = other.frameDuration;
             regionNames = new Array<>(other.regionNames);
+            regions = other.regions == null ? null : new Array<>(other.regions);
+            playMode = other.playMode;
         }
     }
     
@@ -1017,5 +1142,20 @@ public class DialogTenPatch extends Dialog {
         
         Label label = findActor("nameLabel");
         label.setColor(valid ? skin.getColor("button") : Color.RED);
+    }
+    
+    public void showToast(String message) {
+        var table = new Table();
+        table.setBackground(skin.getDrawable("textfield"));
+        table.setWidth(getStage().getWidth());
+        table.setHeight(50);
+        table.setPosition(0, 0, Align.topLeft);
+        getStage().addActor(table);
+        
+        table.addAction(Actions.sequence(Actions.delay(.4f), Actions.moveBy(0, 50, .5f, Interpolation.circleOut),Actions.delay(1.5f), Actions.moveBy(0, -50, .5f, Interpolation.circleIn), Actions.removeActor()));
+        
+        var label = new Label(message, skin);
+        table.add(label);
+        table.layout();
     }
 }

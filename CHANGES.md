@@ -1,3 +1,19 @@
+### Skin Composer Version 33 ###
+**Please use TenPatch 4.2.0 with your projects to enable TenPatch functionality:** https://github.com/raeleus/TenPatch
+
+* Added PlayMode option to Ten Patch animations. Use this to single play, loop, reverse, and randomize your animations.
+* Added option to duplicate an existing Ten Patch in the Drawables dialog.
+* Allow copy/paste of Ten Patch data by pressing Ctrl+C/Ctrl+V respectively in the TenPatchDialog.
+* Added option for preview background color in Ten Patch Animation dialog.
+* Changed keyboard shortcut for moving frames to left/right arrow. No longer necessary to hold control.
+* Improved performance of TenPatches when rebuilding the TextureAtlas in the Drawable dialogs and in the main menu.
+* Fixed dark preview of texture and staggered scrolling at slow speeds in Ten Patch Dialog.
+* Fixed keyboard shortcuts not working in Ten Patch Animation dialog.
+* Fixed Ten Patch export not setting default stretch regions if they are not specified in the editor.
+* Fixed renaming colors causing Ten Patches to break.
+* Fixed deleting drawables causing Ten Patches to break.
+* Minor UI Tweaks and bug fixes.
+
 ### Skin Composer Version 32 ###
 **Please use TenPatch 4.1.0 with your projects to enable TenPatch functionality:** https://github.com/raeleus/TenPatch
 

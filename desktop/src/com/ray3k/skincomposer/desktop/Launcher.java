@@ -25,11 +25,7 @@ package com.ray3k.skincomposer.desktop;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Input;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
+import com.badlogic.gdx.backends.lwjgl3.*;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -46,11 +42,13 @@ import com.ray3k.skincomposer.DesktopWorker;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.TextFileApplicationLogger;
 import com.ray3k.skincomposer.utils.Utils;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.system.MemoryStack;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import org.lwjgl.PointerBuffer;
-import org.lwjgl.system.MemoryStack;
+
 import static org.lwjgl.system.MemoryStack.stackPush;
 
 /**

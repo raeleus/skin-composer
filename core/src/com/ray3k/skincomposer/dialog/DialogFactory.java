@@ -32,13 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
@@ -50,16 +44,9 @@ import com.ray3k.skincomposer.UndoableManager;
 import com.ray3k.skincomposer.UndoableManager.DeleteStyleUndoable;
 import com.ray3k.skincomposer.UndoableManager.DuplicateStyleUndoable;
 import com.ray3k.skincomposer.UndoableManager.NewStyleUndoable;
-import com.ray3k.skincomposer.data.CustomClass;
-import com.ray3k.skincomposer.data.CustomProperty;
+import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
-import com.ray3k.skincomposer.data.CustomStyle;
-import com.ray3k.skincomposer.data.DrawableData;
-import com.ray3k.skincomposer.data.FontData;
-import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.data.ProjectData.RecentFile;
-import com.ray3k.skincomposer.data.StyleData;
-import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.Dialog9Patch.Dialog9PatchListener;
 import com.ray3k.skincomposer.dialog.DialogBitmapFont.DialogBitmapFontListener;
 import com.ray3k.skincomposer.dialog.DialogColors.DialogColorsListener;
@@ -1124,9 +1111,65 @@ public class DialogFactory {
         dialog.show(main.getStage());
     }
     
-    public void showDialogTenPatch(DrawableData drawableData, boolean newDrawable, DialogTenPatchListener listener, DialogDrawables dialogDrawables) {
-        DialogTenPatch dialog = new DialogTenPatch(main, drawableData, newDrawable, dialogDrawables);
+    public void showDialogTenPatch(DrawableData drawableData, boolean newDrawable, DialogTenPatchListener listener) {
+        DialogTenPatch dialog = new DialogTenPatch(main, drawableData, newDrawable);
         dialog.addListener(listener);
         dialog.show(main.getStage());
+    }
+    
+    public void showDuplicateTenPatchDialog(String title, String message, String defaultText, InputDialogListener listener) {
+        var dialog = new Dialog(title, main.getSkin(), "bg") {
+            @Override
+            protected void result(Object object) {
+                if ((Boolean) object) {
+                    listener.confirmed(((TextField) findActor("textField")).getText());
+                } else {
+                    listener.cancelled();
+                }
+            }
+        };
+        
+        dialog.getTitleTable().getCells().first().padLeft(5.0f);
+        
+        var root = dialog.getContentTable();
+        root.pad(5);
+        
+        root.defaults().space(5.0f);
+        var label = new Label(message, main.getSkin());
+        root.add(label);
+        
+        root.row();
+        var textField = new TextField(defaultText, main.getSkin());
+        textField.setName("textField");
+        textField.setSelection(0, textField.getText().length());
+        root.add(textField).growX();
+        textField.addListener(main.getIbeamListener());
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                TextButton textButton = dialog.findActor("ok-button");
+    
+                boolean disable = !DrawableData.validate(textField.getText()) || (main.getAtlasData().checkIfNameExists(textField.getText()));
+                textButton.setDisabled(disable);
+            }
+        });
+        
+        dialog.getButtonTable().pad(5);
+        dialog.getButtonTable().defaults().space(5).minWidth(100);
+        
+        var button = new TextButton("OK", main.getSkin());
+        button.setName("ok-button");
+        button.setDisabled(true);
+        dialog.button(button, true);
+        button.addListener(main.getHandListener());
+        
+        button = new TextButton("Cancel", main.getSkin());
+        dialog.button(button, false);
+        button.addListener(main.getHandListener());
+        
+        dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
+        
+        dialog.show(main.getStage());
+        main.getStage().setKeyboardFocus(textField);
     }
 }

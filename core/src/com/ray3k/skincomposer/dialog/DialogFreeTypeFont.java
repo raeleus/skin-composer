@@ -24,7 +24,7 @@
 
 package com.ray3k.skincomposer.dialog;
 
-import com.badlogic.gdx.*;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -39,20 +39,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonWriter;
-import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
-import com.ray3k.skincomposer.data.ColorData;
-import com.ray3k.skincomposer.data.FontData;
-import com.ray3k.skincomposer.data.FreeTypeFontData;
-import com.ray3k.skincomposer.data.StyleData;
-import com.ray3k.skincomposer.data.StyleProperty;
+import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.utils.Utils;
+
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;

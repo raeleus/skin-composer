@@ -2,19 +2,24 @@ package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
-import com.ray3k.skincomposer.AnimatedDrawable;
+import com.ray3k.skincomposer.HandListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.data.DrawableData;
+import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.AlphanumComparator;
+import com.ray3k.tenpatch.TenPatchDrawable;
 
 import java.util.Comparator;
 import java.util.regex.Pattern;
@@ -24,25 +29,23 @@ public class DialogTenPatchAnimation extends Dialog {
     private DrawableData workingData;
     private Skin skin;
     private Main main;
-    private Array<DrawableData> regions;
+    private Array<DrawableData> drawableDatas;
     private ButtonGroup<Button> buttonGroup;
     private int lastClicked;
     private static final AlphanumComparator alphanumComparator = new AlphanumComparator();
-    private DialogDrawables dialogDrawables;
-    private AnimatedDrawable animatedDrawable;
+    private TenPatchDrawable animatedDrawable;
     
-    public DialogTenPatchAnimation(DrawableData drawableData, Skin skin, Main main, DialogDrawables dialogDrawables) {
+    public DialogTenPatchAnimation(DrawableData drawableData, Skin skin, Main main) {
         super("TenPatch Animation", skin, "bg");
         lastClicked = 0;
         this.drawableData = drawableData;
         workingData = new DrawableData(drawableData);
         this.skin = skin;
         this.main = main;
-        this.dialogDrawables = dialogDrawables;
-        regions = new Array<>();
+        drawableDatas = new Array<>();
         
         for (var name : workingData.tenPatchData.regionNames) {
-            regions.add(main.getAtlasData().getDrawable(name));
+            drawableDatas.add(main.getAtlasData().getDrawable(name));
         }
         
         this.setFillParent(true);
@@ -59,7 +62,7 @@ public class DialogTenPatchAnimation extends Dialog {
         bottom.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                getStage().setKeyboardFocus(null);
+                getStage().setKeyboardFocus(DialogTenPatchAnimation.this);
                 return super.touchDown(event, x, y, pointer, button);
             }
         });
@@ -74,11 +77,22 @@ public class DialogTenPatchAnimation extends Dialog {
         top.add(label).growX();
         
         top.row();
-        animatedDrawable = new AnimatedDrawable(workingData.tenPatchData.frameDuration);
-        Image image = new Image(animatedDrawable);
-        image.setName("animated-image");
-        image.setScaling(Scaling.none);
-        ScrollPane scrollPane = new ScrollPane(image, skin, "animation");
+        
+        animatedDrawable = new TenPatchDrawable();
+        animatedDrawable.horizontalStretchAreas = new int[]{};
+        animatedDrawable.verticalStretchAreas = new int[]{};
+    
+        String name = drawableData.file.nameWithoutExtension();
+        var matcher = Pattern.compile(".*(?=\\.9$)").matcher(name);
+        if (matcher.find()) {
+            name = matcher.group();
+        }
+        animatedDrawable.setRegion(main.getAtlasData().getAtlas().findRegion(name));
+        var table = new Table();
+        table.setTouchable(Touchable.enabled);
+        table.setName("animation-table");
+        table.setBackground(skin.newDrawable("white",Color.CLEAR));
+        ScrollPane scrollPane = new ScrollPane(table, skin, "animation");
         scrollPane.setName("animation-scroll-pane");
         scrollPane.setFadeScrollBars(false);
         top.add(scrollPane).grow();
@@ -88,9 +102,21 @@ public class DialogTenPatchAnimation extends Dialog {
                 getStage().setScrollFocus(event.getListenerActor());
             }
         });
+    
+        Image image = new Image(animatedDrawable);
+        image.setName("animated-image");
+        image.setScaling(Scaling.none);
+        table.add(image);
+        table.addListener(main.getHandListener());
+        table.addListener(new ClickListener(-1) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                animatedDrawable.setTime(0);
+            }
+        });
         
         top.row();
-        var table = new Table();
+        table = new Table();
         top.add(table);
         
         table.defaults().space(5);
@@ -115,9 +141,46 @@ public class DialogTenPatchAnimation extends Dialog {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Input.Keys.ENTER || keycode == Input.Keys.TAB) {
-                    getStage().setKeyboardFocus(null);
+                    getStage().setKeyboardFocus(DialogTenPatchAnimation.this);
                 }
                 return super.keyDown(event, keycode);
+            }
+        });
+    
+        label = new Label("Play Mode:", skin);
+        table.add(label).padLeft(15);
+        
+        var selectBox = new SelectBox<String>(skin);
+        selectBox.setItems("Normal", "Reversed", "Loop", "Loop Reversed", "Loop Ping-Pong", "Loop Random");
+        var values = new Array<>(TenPatchDrawable.PlayMode.values());
+        selectBox.setSelectedIndex(values.indexOf(workingData.tenPatchData.playMode, true));
+        table.add(selectBox);
+        selectBox.addListener(new HandListener());
+        selectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                workingData.tenPatchData.playMode = values.get(selectBox.getSelectedIndex());
+                refreshAnimation();
+            }
+        });
+    
+        label = new Label("Preview BG:", skin);
+        table.add(label).padLeft(15);
+    
+        var imageButton = new ImageButton(skin, "color");
+        table.add(imageButton);
+        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), colorData -> {
+                    Table table = findActor("animation-table");
+                    if (colorData == null) {
+                        table.setBackground(skin.newDrawable("white", Color.CLEAR));
+                    } else {
+                        table.setBackground(skin.newDrawable("white", colorData.color));
+                    }
+                }, null);
             }
         });
         
@@ -163,7 +226,7 @@ public class DialogTenPatchAnimation extends Dialog {
                 moveLeft();
             }
         });
-        var textTooltip = new TextTooltip("CTRL + LEFT", main.getTooltipManager(), skin);
+        var textTooltip = new TextTooltip("LEFT ARROW", main.getTooltipManager(), skin);
         button.addListener(textTooltip);
         
         button = new Button(skin, "move-frame-right");
@@ -175,7 +238,7 @@ public class DialogTenPatchAnimation extends Dialog {
                 moveRight();
             }
         });
-        textTooltip = new TextTooltip("CTRL + RIGHT", main.getTooltipManager(), skin);
+        textTooltip = new TextTooltip("RIGHT ARROW", main.getTooltipManager(), skin);
         button.addListener(textTooltip);
         
         subTable.row();
@@ -262,30 +325,28 @@ public class DialogTenPatchAnimation extends Dialog {
         addListener(new InputListener() {
             @Override
             public boolean keyUp(InputEvent event, int keycode) {
-                if (keycode == Input.Keys.A) {
-                    if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
-                        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
-                            deselectAll();
-                        } else {
-                            selectAll();
+                if (getStage().getKeyboardFocus().equals(DialogTenPatchAnimation.this)) {
+                    if (keycode == Input.Keys.A) {
+                        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
+                            if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
+                                deselectAll();
+                            } else {
+                                selectAll();
+                            }
                         }
-                    }
-                } else if (keycode == Input.Keys.FORWARD_DEL) {
-                    eraseSelection();
-                } else if (keycode == Input.Keys.D) {
-                    if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
-                        duplicateSelection();
-                    }
-                } else if (keycode == Input.Keys.LEFT) {
-                    if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
+                    } else if (keycode == Input.Keys.FORWARD_DEL) {
+                        eraseSelection();
+                    } else if (keycode == Input.Keys.D) {
+                        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
+                            duplicateSelection();
+                        }
+                    } else if (keycode == Input.Keys.LEFT) {
                         moveLeft();
-                    }
-                }  else if (keycode == Input.Keys.RIGHT) {
-                    if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
+                    } else if (keycode == Input.Keys.RIGHT) {
                         moveRight();
                     }
                 }
-                    return true;
+                return true;
             }
         });
         
@@ -304,7 +365,7 @@ public class DialogTenPatchAnimation extends Dialog {
         for (var index : selectedIndexes) {
             if (index - 1 >= 0 && !buttonGroup.getButtons().get(index - 1).isChecked()) {
                 buttonGroup.getButtons().swap(index, index - 1);
-                regions.swap(index, index - 1);
+                drawableDatas.swap(index, index - 1);
                 newIndexes.add(index - 1);
             } else {
                 newIndexes.add(index);
@@ -331,7 +392,7 @@ public class DialogTenPatchAnimation extends Dialog {
         for (var index : selectedIndexes) {
             if (index + 1 < buttonGroup.getButtons().size && !buttonGroup.getButtons().get(index + 1).isChecked()) {
                 buttonGroup.getButtons().swap(index, index + 1);
-                regions.swap(index, index + 1);
+                drawableDatas.swap(index, index + 1);
                 newIndexes.add(index + 1);
             } else {
                 newIndexes.add(index);
@@ -354,7 +415,7 @@ public class DialogTenPatchAnimation extends Dialog {
         }
     
         if (highest == -1) highest = buttonGroup.getButtons().size - 1;
-        regions.insert(highest + 1, drawableData);
+        drawableDatas.insert(highest + 1, drawableData);
         
         var selectedIndexes = new Array<Integer>();
         selectedIndexes.add(highest + 1);
@@ -375,7 +436,7 @@ public class DialogTenPatchAnimation extends Dialog {
         if (highest == -1) highest = buttonGroup.getButtons().size - 1;
         
         for (var drawableData : drawableDatas) {
-            regions.insert(++highest, drawableData);
+            this.drawableDatas.insert(++highest, drawableData);
             
             selectedIndexes.add(highest);
             lastClicked = highest;
@@ -393,7 +454,7 @@ public class DialogTenPatchAnimation extends Dialog {
         selectedIndexes.sort();
         selectedIndexes.reverse();
         for (var index : selectedIndexes) {
-            regions.removeIndex(index);
+            drawableDatas.removeIndex(index);
         }
     
         refresh();
@@ -410,8 +471,8 @@ public class DialogTenPatchAnimation extends Dialog {
         selectedIndexes.reverse();
         checked.reverse();
         for (var index : selectedIndexes) {
-            regions.removeIndex(index);
-            regions.insert(index, (DrawableData) checked.pop().getUserObject());
+            drawableDatas.removeIndex(index);
+            drawableDatas.insert(index, (DrawableData) checked.pop().getUserObject());
         }
         
         refresh(selectedIndexes);
@@ -427,12 +488,12 @@ public class DialogTenPatchAnimation extends Dialog {
             if (index > highest) highest = index;
         }
         
-        if (highest == -1) highest = regions.size - 1;
+        if (highest == -1) highest = drawableDatas.size - 1;
         selectedIndexes.sort();
         selectedIndexes.reverse();
         for (var index : selectedIndexes) {
-            var region = regions.get(index);
-            regions.insert(highest + 1, region);
+            var region = drawableDatas.get(index);
+            drawableDatas.insert(highest + 1, region);
         }
         
         var newIndexes = new Array<Integer>();
@@ -454,7 +515,7 @@ public class DialogTenPatchAnimation extends Dialog {
         for (var button : buttonGroup.getAllChecked()) {
             var index = buttonGroup.getButtons().indexOf(button, false);
             selectedIndexes.add(index);
-            regionsToSort.add(regions.get(index));
+            regionsToSort.add(drawableDatas.get(index));
         }
         
         regionsToSort.sort(new Comparator<DrawableData>() {
@@ -467,8 +528,8 @@ public class DialogTenPatchAnimation extends Dialog {
         selectedIndexes.sort();
         int i = 0;
         for (var index : selectedIndexes) {
-            regions.removeIndex(index);
-            regions.insert(index, regionsToSort.get(i++));
+            drawableDatas.removeIndex(index);
+            drawableDatas.insert(index, regionsToSort.get(i++));
         }
     
         refresh(selectedIndexes);
@@ -481,7 +542,7 @@ public class DialogTenPatchAnimation extends Dialog {
         for (var button : buttonGroup.getAllChecked()) {
             var index = buttonGroup.getButtons().indexOf(button, false);
             selectedIndexes.add(index);
-            regionsToSort.add(regions.get(index));
+            regionsToSort.add(drawableDatas.get(index));
         }
         
         regionsToSort.sort(new Comparator<DrawableData>() {
@@ -494,8 +555,8 @@ public class DialogTenPatchAnimation extends Dialog {
         selectedIndexes.sort();
         int i = 0;
         for (var index : selectedIndexes) {
-            regions.removeIndex(index);
-            regions.insert(index, regionsToSort.get(i++));
+            drawableDatas.removeIndex(index);
+            drawableDatas.insert(index, regionsToSort.get(i++));
         }
         
         refresh(selectedIndexes);
@@ -522,10 +583,10 @@ public class DialogTenPatchAnimation extends Dialog {
     }
     
     public void refresh(Array<Integer> selectedIndexes) {
-        var iter = regions.iterator();
+        var iter = drawableDatas.iterator();
         while (iter.hasNext()) {
             var drawable = iter.next();
-            if (!dialogDrawables.drawablePairs.containsKey(drawable)) {
+            if (!main.getAtlasData().getDrawablePairs().containsKey(drawable)) {
                 iter.remove();
             }
         }
@@ -536,12 +597,26 @@ public class DialogTenPatchAnimation extends Dialog {
     
     public void refreshAnimation() {
         workingData.tenPatchData.regionNames.clear();
-        var drawables = new Array<Drawable>();
-        for (var data : regions) {
-            drawables.add(dialogDrawables.drawablePairs.get(data));
+        if (workingData.tenPatchData.regions == null) workingData.tenPatchData.regions = new Array<>();
+        workingData.tenPatchData.regions.clear();
+        var drawables = new Array<TextureRegion>();
+        for (var data : drawableDatas) {
+    
+            String name = data.file.nameWithoutExtension();
+            var matcher = Pattern.compile(".*(?=\\.9$)").matcher(name);
+            if (matcher.find()) {
+                name = matcher.group();
+            }
+            var region = main.getAtlasData().getAtlas().findRegion(name);
+            
+            drawables.add(region);
             workingData.tenPatchData.regionNames.add(data.name);
+            workingData.tenPatchData.regions.add(region);
         }
-        animatedDrawable.setDrawables(drawables);
+        animatedDrawable.setRegions(drawables);
+        animatedDrawable.setFrameDuration(workingData.tenPatchData.frameDuration);
+        animatedDrawable.setPlayMode(workingData.tenPatchData.playMode);
+        animatedDrawable.setTime(0);
         Image image = findActor("animated-image");
         image.layout();
     }
@@ -556,7 +631,7 @@ public class DialogTenPatchAnimation extends Dialog {
         buttonGroup.clear();
         
         var i = 0;
-        for (var region : regions) {
+        for (var region : drawableDatas) {
             var fixDuplicateTouchListener = new ClickListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -623,7 +698,7 @@ public class DialogTenPatchAnimation extends Dialog {
             button.add().uniform();
             
             button.row();
-            Image image = new Image(dialogDrawables.drawablePairs.get(region));
+            Image image = new Image(main.getAtlasData().getDrawablePairs().get(region));
             image.setScaling(Scaling.fit);
             button.add(image).colspan(3).expand();
             
@@ -663,7 +738,7 @@ public class DialogTenPatchAnimation extends Dialog {
                 if (drawable.file == null) {
                     main.getDialogFactory().showMessageDialog("Incorrect drawable!", "Incorrect drawable type! Select a \"texture\" drawable.", null);
                 } else {
-                    DialogTenPatchAnimation.this.dialogDrawables.produceAtlas();
+                    main.getAtlasData().produceAtlas();
                     
                     var pattern = Pattern.compile(".+(?=_\\d+$)");
                     var matcher = pattern.matcher(drawable.name);
@@ -671,7 +746,7 @@ public class DialogTenPatchAnimation extends Dialog {
                         var name = matcher.group();
     
                         var matches = new Array<DrawableData>();
-                        for (var drawableData : dialogDrawables.drawablePairs.keys()) {
+                        for (var drawableData : main.getAtlasData().getDrawablePairs().keys()) {
                             if (drawableData.name.matches(Pattern.quote(name) + "_\\d+")) {
                                 matches.add(drawableData);
                             }

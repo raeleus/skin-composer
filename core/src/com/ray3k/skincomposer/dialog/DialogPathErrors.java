@@ -29,13 +29,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -44,6 +38,7 @@ import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.utils.Utils;
+
 import java.io.File;
 
 public class DialogPathErrors extends Dialog {
@@ -302,7 +297,7 @@ public class DialogPathErrors extends Dialog {
     protected void result(Object object) {
         if ((boolean) object == true) {
             main.getProjectData().setChangesSaved(false);
-            main.getRootTable().produceAtlas();
+            main.getAtlasData().produceAtlas();
             main.getRootTable().populate();
         } else {
             main.getMainListener().newFile();

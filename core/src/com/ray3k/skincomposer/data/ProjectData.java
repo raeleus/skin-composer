@@ -27,11 +27,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.JsonWriter;
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.JsonData.ExportFormat;
 import com.ray3k.skincomposer.utils.Utils;
@@ -391,7 +387,7 @@ public class ProjectData implements Json.Serializable {
         correctFilePaths();
         
         if (verifyDrawablePaths().size == 0 && verifyFontPaths().size == 0) {
-            main.getRootTable().produceAtlas();
+            main.getAtlasData().produceAtlas();
             main.getRootTable().populate();
         }
         setChangesSaved(true);
@@ -526,7 +522,7 @@ public class ProjectData implements Json.Serializable {
         atlasData.clear();
         saveFile = null;
         if (main != null) {
-            main.getRootTable().produceAtlas();
+            main.getAtlasData().produceAtlas();
             main.getRootTable().populate();
         }
         setChangesSaved(false);
