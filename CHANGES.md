@@ -1,5 +1,5 @@
 ### Skin Composer Version 34 ###
-
+* Fixed save files with Ten Patches accidentally saving TextureRegions, causing a crash on load.
 
 ### Skin Composer Version 33 ###
 **Please use TenPatch 4.2.0 with your projects to enable TenPatch functionality:** https://github.com/raeleus/TenPatch
