@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.HandListener;
 import com.ray3k.skincomposer.Main;
@@ -30,6 +31,7 @@ public class DialogTenPatchAnimation extends Dialog {
     private Skin skin;
     private Main main;
     private Array<DrawableData> drawableDatas;
+    private ObjectMap<DrawableData, TextureRegion> drawableToRegionMap;
     private ButtonGroup<Button> buttonGroup;
     private int lastClicked;
     private static final AlphanumComparator alphanumComparator = new AlphanumComparator();
@@ -37,6 +39,7 @@ public class DialogTenPatchAnimation extends Dialog {
     
     public DialogTenPatchAnimation(DrawableData drawableData, Skin skin, Main main) {
         super("TenPatch Animation", skin, "bg");
+        drawableToRegionMap = new ObjectMap<>();
         lastClicked = 0;
         this.drawableData = drawableData;
         workingData = new DrawableData(drawableData);
@@ -46,6 +49,12 @@ public class DialogTenPatchAnimation extends Dialog {
         
         for (var name : workingData.tenPatchData.regionNames) {
             drawableDatas.add(main.getAtlasData().getDrawable(name));
+    
+            if (!drawableToRegionMap.containsKey(drawableData)) {
+                var data = main.getAtlasData().getDrawable(name);
+                var region = main.getAtlasData().getAtlas().findRegion(name);
+                drawableToRegionMap.put(data, region);
+            }
         }
         
         this.setFillParent(true);
@@ -420,6 +429,25 @@ public class DialogTenPatchAnimation extends Dialog {
         var selectedIndexes = new Array<Integer>();
         selectedIndexes.add(highest + 1);
         lastClicked = highest + 1;
+    
+        var iter = drawableDatas.iterator();
+        while (iter.hasNext()) {
+            var drawable = iter.next();
+            if (!main.getAtlasData().getDrawablePairs().containsKey(drawable)) {
+                iter.remove();
+            }
+        }
+    
+        if (!drawableToRegionMap.containsKey(drawableData)) {
+            String name = drawableData.file.nameWithoutExtension();
+            var matcher = Pattern.compile(".*(?=\\.9$)").matcher(name);
+            if (matcher.find()) {
+                name = matcher.group();
+            }
+            var region = main.getAtlasData().getAtlas().findRegion(name);
+            drawableToRegionMap.put(drawableData, region);
+        }
+        
         refresh(selectedIndexes);
     }
     
@@ -440,7 +468,26 @@ public class DialogTenPatchAnimation extends Dialog {
             
             selectedIndexes.add(highest);
             lastClicked = highest;
+    
+            if (!drawableToRegionMap.containsKey(drawableData)) {
+                String name = drawableData.file.nameWithoutExtension();
+                var matcher = Pattern.compile(".*(?=\\.9$)").matcher(name);
+                if (matcher.find()) {
+                    name = matcher.group();
+                }
+                var region = main.getAtlasData().getAtlas().findRegion(name);
+                drawableToRegionMap.put(drawableData, region);
+            }
         }
+    
+        var iter = drawableDatas.iterator();
+        while (iter.hasNext()) {
+            var drawable = iter.next();
+            if (!main.getAtlasData().getDrawablePairs().containsKey(drawable)) {
+                iter.remove();
+            }
+        }
+        
         refresh(selectedIndexes);
     }
     
@@ -583,14 +630,6 @@ public class DialogTenPatchAnimation extends Dialog {
     }
     
     public void refresh(Array<Integer> selectedIndexes) {
-        var iter = drawableDatas.iterator();
-        while (iter.hasNext()) {
-            var drawable = iter.next();
-            if (!main.getAtlasData().getDrawablePairs().containsKey(drawable)) {
-                iter.remove();
-            }
-        }
-        
         refreshAnimation();
         refreshFrames(selectedIndexes);
     }
@@ -601,13 +640,7 @@ public class DialogTenPatchAnimation extends Dialog {
         workingData.tenPatchData.regions.clear();
         var drawables = new Array<TextureRegion>();
         for (var data : drawableDatas) {
-    
-            String name = data.file.nameWithoutExtension();
-            var matcher = Pattern.compile(".*(?=\\.9$)").matcher(name);
-            if (matcher.find()) {
-                name = matcher.group();
-            }
-            var region = main.getAtlasData().getAtlas().findRegion(name);
+            var region = drawableToRegionMap.get(data);
             
             drawables.add(region);
             workingData.tenPatchData.regionNames.add(data.name);
