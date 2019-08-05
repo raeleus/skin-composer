@@ -332,9 +332,7 @@ public class JsonData implements Json.Serializable {
                     drawableData.tenPatchData.offsetYspeed = value.getInt("offsetYspeed", 0);
                     drawableData.tenPatchData.frameDuration = value.getFloat("frameDuration", 0);
                     drawableData.tenPatchData.regionNames = new Array<>(value.get("regions").asStringArray());
-                    if (value.has("playMode")) {
-                        drawableData.tenPatchData.playMode = TenPatchDrawable.PlayMode.valueOf(value.get("playMode").getString("name", "LOOP"));
-                    }
+                    drawableData.tenPatchData.playMode = value.getInt("playMode", TenPatchDrawable.PlayMode.LOOP);
     
                     //delete drawables with the same name
                     for (DrawableData originalData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {
@@ -852,9 +850,7 @@ public class JsonData implements Json.Serializable {
                 json.writeValue("offsetYspeed", drawable.tenPatchData.offsetYspeed);
                 json.writeValue("frameDuration", drawable.tenPatchData.frameDuration);
                 json.writeValue("regions", drawable.tenPatchData.regionNames, Array.class, String.class);
-                json.writeObjectStart("playMode", TenPatchDrawable.PlayMode.class, null);
-                json.writeValue("name", drawable.tenPatchData.playMode.name());
-                json.writeObjectEnd();
+                json.writeValue("playMode", drawable.tenPatchData.playMode);
                 json.writeObjectEnd();
             }
             json.writeObjectEnd();

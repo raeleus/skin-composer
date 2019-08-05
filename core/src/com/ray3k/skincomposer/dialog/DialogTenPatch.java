@@ -986,7 +986,7 @@ public class DialogTenPatch extends Dialog {
         public float frameDuration;
         public Array<String> regionNames = new Array<>();
         public transient Array<TextureRegion> regions;
-        public TenPatchDrawable.PlayMode playMode;
+        public int playMode;
     
         public TenPatchData() {
             clear();
