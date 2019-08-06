@@ -60,7 +60,7 @@ import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "33";
+    public final static String VERSION = "34";
     public static String newVersion;
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,

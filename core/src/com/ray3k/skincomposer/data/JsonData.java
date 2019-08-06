@@ -332,7 +332,7 @@ public class JsonData implements Json.Serializable {
                     drawableData.tenPatchData.offsetYspeed = value.getInt("offsetYspeed", 0);
                     drawableData.tenPatchData.frameDuration = value.getFloat("frameDuration", 0);
                     drawableData.tenPatchData.regionNames = new Array<>(value.get("regions").asStringArray());
-                    drawableData.tenPatchData.playMode = TenPatchDrawable.PlayMode.valueOf(value.getString("playMode", "LOOP"));
+                    drawableData.tenPatchData.playMode = value.getInt("playMode", TenPatchDrawable.PlayMode.LOOP);
     
                     //delete drawables with the same name
                     for (DrawableData originalData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {

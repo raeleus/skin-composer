@@ -365,6 +365,11 @@ public class AtlasData implements Json.Serializable {
                         ((TenPatchDrawable) drawable).verticalStretchAreas = new int[] {0, region.getRegionHeight() - 1};
                     }
                     
+                    drawable.setLeftWidth(data.tenPatchData.contentLeft);
+                    drawable.setRightWidth(data.tenPatchData.contentRight);
+                    drawable.setTopHeight(data.tenPatchData.contentTop);
+                    drawable.setBottomHeight(data.tenPatchData.contentBottom);
+                    
                     if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
                     if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
                     if (data.tenPatchData.colorName != null) ((TenPatchDrawable) drawable).setColor(main.getJsonData().getColorByName(data.tenPatchData.colorName).color);

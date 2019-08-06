@@ -1,3 +1,10 @@
+### Skin Composer Version 34 ###
+**Please use TenPatch 5.0.0 with your projects to enable TenPatch functionality:** https://github.com/raeleus/TenPatch
+
+* Fixed save files with Ten Patches accidentally saving TextureRegions, causing a crash on load.
+* Fixed content padding not showing in main preview for Ten Patches.
+* Fixed export of PlayMode for animated Ten Patches.
+
 ### Skin Composer Version 33 ###
 **Please use TenPatch 4.2.0 with your projects to enable TenPatch functionality:** https://github.com/raeleus/TenPatch
 
