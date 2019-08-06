@@ -52,7 +52,7 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        compile "tenpatch:tenpatch:4.2.1"
+        compile "tenpatch:tenpatch:5.0.0"
     }
 }
 
