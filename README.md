@@ -13,6 +13,8 @@
 * Implement your own classes allowing for extended Skin functionality
 * VisUI template and sample projects included
 
+Download [here](https://github.com/raeleus/skin-composer/releases).
+
 ![Skins Preview](docs/images/skins-preview.png)
 
 See more examples and sample code at [Ray3k](https://ray3k.wordpress.com/artwork/ "Free Scene2D UI Skins")
