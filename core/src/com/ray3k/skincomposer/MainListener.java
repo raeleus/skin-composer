@@ -265,6 +265,9 @@ public class MainListener extends RootTableListener {
             case REFRESH_ATLAS:
                 refreshTextureAtlas();
                 break;
+            case SCENE_COMPOSER:
+                showSceneComposer();
+                break;
             case DOWNLOAD_UPDATE:
                 downloadUpdate();
                 break;
@@ -664,6 +667,10 @@ public class MainListener extends RootTableListener {
                 }
             });
         });
+    }
+    
+    public void showSceneComposer() {
+        main.getDialogFactory().showSceneComposerDialog();
     }
     
     public void downloadUpdate() {

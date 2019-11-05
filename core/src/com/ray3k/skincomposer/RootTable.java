@@ -209,8 +209,9 @@ public class RootTable extends Table {
                 new MenuItem("Colors...", RootTableEnum.COLORS),
                 new MenuItem("Fonts...", RootTableEnum.FONTS),
                 new MenuItem("Drawables...", RootTableEnum.DRAWABLES),
-                new MenuItem("Refresh Atlas", RootTableEnum.REFRESH_ATLAS));
-        menuButton.setShortcuts(null, null, null, null, "F5");
+                new MenuItem("Refresh Atlas", RootTableEnum.REFRESH_ATLAS),
+                new MenuItem("Scene Composer", RootTableEnum.SCENE_COMPOSER));
+        menuButton.setShortcuts(null, null, null, null, "F5", null);
 
         menuButton.addListener(new MenuBarListener(menuButton));
 
@@ -2645,7 +2646,7 @@ public class RootTable extends Table {
         REDO, SETTINGS, COLORS, FONTS, DRAWABLES, ABOUT, CLASS_SELECTED,
         NEW_CLASS, DUPLICATE_CLASS, DELETE_CLASS, RENAME_CLASS, STYLE_SELECTED,
         NEW_STYLE, DUPLICATE_STYLE, DELETE_STYLE, RENAME_STYLE, PREVIEW_PROPERTY,
-        WELCOME, REFRESH_ATLAS, DOWNLOAD_UPDATE, CHECK_FOR_UPDATES_COMPLETE;
+        WELCOME, REFRESH_ATLAS, SCENE_COMPOSER, DOWNLOAD_UPDATE, CHECK_FOR_UPDATES_COMPLETE;
     }
 
     public static class RootTableEvent extends Event {

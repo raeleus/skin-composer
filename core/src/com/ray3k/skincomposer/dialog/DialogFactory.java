@@ -656,6 +656,11 @@ public class DialogFactory {
         dialog.show(main.getStage());
     }
     
+    public void showSceneComposerDialog() {
+        DialogSceneComposer dialog = new DialogSceneComposer();
+        dialog.show(main.getStage());
+    }
+    
     public Dialog showMessageDialog(String title, String text, DialogListener dialogListener) {
         Dialog dialog = new Dialog(title, main.getSkin(), "bg") {
             @Override
