@@ -128,7 +128,7 @@ public class StackedDrawable extends BaseDrawable{
 
     @Override
     public void setMinWidth(float minWidth) {
-        drawable1.setMinHeight(minWidth);
+        drawable1.setMinWidth(minWidth);
         drawable2.setMinWidth(minWidth);
     }
 
