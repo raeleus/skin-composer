@@ -1,0 +1,351 @@
+package com.ray3k.skincomposer;
+
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Align;
+
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
+
+public class PopTable extends Table {
+    private Stage stage;
+    private Image stageBackground;
+    private WidgetGroup group;
+    private final static Vector2 temp = new Vector2();
+    private boolean hideOnUnfocus;
+    private int preferredEdge;
+    private boolean keepSizedWithinStage;
+    
+    public PopTable() {
+        this(new PopTableStyle());
+    }
+    
+    public PopTable(Skin skin) {
+        this(skin.get(PopTableStyle.class));
+    }
+    
+    public PopTable(Skin skin, String style) {
+        this(skin.get(style, PopTableStyle.class));
+    }
+    
+    public PopTable(PopTableStyle style) {
+        setTouchable(Touchable.enabled);
+        
+        stageBackground = new Image(style.stageBackground);
+        stageBackground.setFillParent(true);
+        stageBackground.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                if (hideOnUnfocus) {
+                    hide();
+                }
+            }
+        });
+        
+        setBackground(style.background);
+        
+        hideOnUnfocus = true;
+        preferredEdge = Align.top;
+        keepSizedWithinStage = true;
+    }
+    
+    public void alignToActorEdge(Actor actor, int edge) {
+        float widgetX;
+        switch (edge) {
+            case Align.left:
+            case Align.bottomLeft:
+            case Align.topLeft:
+                widgetX = -getWidth();
+                break;
+            case Align.right:
+            case Align.bottomRight:
+            case Align.topRight:
+                widgetX = actor.getWidth();
+                break;
+            default:
+                widgetX = actor.getWidth() / 2f - getWidth() / 2f;
+                break;
+        }
+    
+        float widgetY;
+        switch (edge) {
+            case Align.bottom:
+            case Align.bottomLeft:
+            case Align.bottomRight:
+                widgetY = -getHeight();
+                break;
+            case Align.top:
+            case Align.topLeft:
+            case Align.topRight:
+                widgetY = actor.getHeight();
+                break;
+            default:
+                widgetY = actor.getHeight() / 2f - getHeight() / 2f;
+                break;
+        }
+    
+        temp.set(widgetX, widgetY);
+        actor.localToStageCoordinates(temp);
+        setPosition(temp.x, temp.y);
+    }
+    
+    private float actorEdgeStageHorizontalDistance(Actor actor, int edge) {
+        temp.set(0, 0);
+        actor.localToStageCoordinates(temp);
+        setPosition(temp.x, temp.y);
+        
+        float returnValue;
+        switch (edge) {
+            case Align.left:
+            case Align.bottomLeft:
+            case Align.topLeft:
+                returnValue = temp.x;
+                break;
+            case Align.right:
+            case Align.bottomRight:
+            case Align.topRight:
+                returnValue = stage.getWidth() - (temp.x + actor.getWidth());
+                break;
+            default:
+                returnValue = 0;
+                break;
+        }
+        
+        return returnValue;
+    }
+    
+    private float actorEdgeStageVerticalDistance(Actor actor, int edge) {
+        temp.set(0, 0);
+        actor.localToStageCoordinates(temp);
+        setPosition(temp.x, temp.y);
+        
+        float returnValue;
+        switch (edge) {
+            case Align.bottom:
+            case Align.bottomLeft:
+            case Align.bottomRight:
+                returnValue = temp.y;
+                break;
+            case Align.top:
+            case Align.topLeft:
+            case Align.topRight:
+                returnValue = stage.getHeight() - (temp.y + actor.getHeight());
+                break;
+            default:
+                returnValue = 0;
+                break;
+        }
+        
+        return returnValue;
+    }
+    
+    public void moveToInsideStage() {
+        if (getStage() != null) {
+            if (getX() < 0) setX(0);
+            else if (getX() + getWidth() > getStage().getWidth()) setX(getStage().getWidth() - getWidth());
+            
+            if (getY() < 0) setY(0);
+            else if (getY() + getHeight() > getStage().getHeight()) setY(getStage().getHeight() - getHeight());
+        }
+    }
+    
+    public boolean isOutsideStage() {
+        return getX() < 0 || getX() + getWidth() > getStage().getWidth() || getY() < 0 || getY() + getHeight() > getStage().getHeight();
+    }
+    
+    public void hide() {
+        hide(fadeOut(.2f));
+    }
+    
+    public void hide(Action action) {
+        group.addAction(sequence(action, Actions.removeActor()));
+    }
+    
+    public void show(Stage stage) {
+        Action action = sequence(alpha(0), fadeIn(.2f));
+        this.show(stage, action);
+    }
+    
+    public void show(Stage stage, Action action) {
+        this.stage = stage;
+        group = new WidgetGroup();
+        group.setFillParent(true);
+        stage.addActor(group);
+        
+        group.addActor(stageBackground);
+        group.addActor(this);
+    
+        pack();
+        
+        if (keepSizedWithinStage) {
+            if (getWidth() > stage.getWidth()) {
+                setWidth(stage.getWidth());
+            }
+            
+            if (getHeight() > stage.getHeight()) {
+                setHeight(stage.getHeight());
+            }
+        }
+        
+        setPosition((int) (stage.getWidth() / 2f - getWidth() / 2f), (int) (stage.getHeight() / 2f - getHeight() / 2f));
+        
+        group.addAction(action);
+    }
+    
+    public static class PopTableStyle {
+        /*Optional*/
+        public Drawable background, stageBackground;
+        
+        public PopTableStyle() {
+        
+        }
+        
+        public PopTableStyle(PopTableStyle style) {
+            background = style.background;
+            stageBackground = style.stageBackground;
+        }
+    }
+    
+    public static class PopTableClickListener extends ClickListener {
+        protected PopTableStyle style;
+        protected PopTable popTable;
+    
+        public PopTableClickListener(Skin skin) {
+            this(skin.get(PopTableStyle.class));
+        }
+        
+        public PopTableClickListener(Skin skin, String style) {
+            this(skin.get(style, PopTableStyle.class));
+        }
+        
+        public PopTableClickListener(PopTableStyle style) {
+            this.style = style;
+            popTable = new PopTable(style);
+        }
+    
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            super.clicked(event, x, y);
+            var stage = event.getListenerActor().getStage();
+            var actor = event.getListenerActor();
+            
+            if (actor instanceof Disableable) {
+                if (((Disableable) actor).isDisabled()) return;
+            }
+            
+            popTable.show(stage);
+            int edge = popTable.getPreferredEdge();
+            
+            popTable.alignToActorEdge(actor, edge);
+            
+            var rightDistance = popTable.actorEdgeStageHorizontalDistance(actor, Align.right);
+            var leftDistance = popTable.actorEdgeStageHorizontalDistance(actor, Align.left);
+            switch (edge) {
+                case Align.left:
+                case Align.topLeft:
+                case Align.bottomLeft:
+                    if (popTable.getX() < 0) {
+                        if (rightDistance > leftDistance) {
+                            edge &= ~Align.left;
+                            edge |= Align.right;
+                            popTable.setWidth(Math.min(popTable.getWidth(), rightDistance));
+                        } else {
+                            popTable.setWidth(Math.min(popTable.getWidth(), leftDistance));
+                        }
+                    }
+                    break;
+                    
+                case Align.right:
+                case Align.bottomRight:
+                case Align.topRight:
+                    if (popTable.getX() + popTable.getWidth() > stage.getWidth()) {
+                        if (leftDistance > rightDistance) {
+                            edge &= ~Align.right;
+                            edge |= Align.left;
+                            popTable.setWidth(Math.min(popTable.getWidth(), leftDistance));
+                        } else {
+                            popTable.setWidth(Math.min(popTable.getWidth(), rightDistance));
+                        }
+                    }
+                    break;
+            }
+            
+            var topDistance = popTable.actorEdgeStageVerticalDistance(actor, Align.top);
+            var bottomDistance = popTable.actorEdgeStageVerticalDistance(actor, Align.bottom);
+            switch (edge) {
+                case Align.bottom:
+                case Align.bottomLeft:
+                case Align.bottomRight:
+                    if (popTable.getY() < 0) {
+                        if (topDistance > bottomDistance) {
+                            edge &= ~Align.bottom;
+                            edge |= Align.top;
+                            popTable.setHeight(Math.min(popTable.getHeight(), topDistance));
+                        } else {
+                            popTable.setHeight(Math.min(popTable.getHeight(), bottomDistance));
+                        }
+                    }
+                    break;
+                    
+                case Align.top:
+                case Align.topLeft:
+                case Align.topRight:
+                    if (popTable.getY() + popTable.getHeight() > stage.getHeight()) {
+                        if (bottomDistance > topDistance) {
+                            edge &= ~Align.top;
+                            edge |= Align.bottom;
+                            popTable.setHeight(Math.min(popTable.getHeight(), bottomDistance));
+                        } else {
+                            popTable.setHeight(Math.min(popTable.getHeight(), topDistance));
+                        }
+                    }
+                    break;
+            }
+            
+            popTable.alignToActorEdge(actor, edge);
+            
+            popTable.moveToInsideStage();
+        }
+    
+        public PopTableStyle getStyle() {
+            return style;
+        }
+    
+        public PopTable getPopTable() {
+            return popTable;
+        }
+    }
+    
+    public boolean isHideOnUnfocus() {
+        return hideOnUnfocus;
+    }
+    
+    public void setHideOnUnfocus(boolean hideOnUnfocus) {
+        this.hideOnUnfocus = hideOnUnfocus;
+    }
+    
+    public int getPreferredEdge() {
+        return preferredEdge;
+    }
+    
+    public void setPreferredEdge(int preferredEdge) {
+        this.preferredEdge = preferredEdge;
+    }
+    
+    public boolean isKeepSizedWithinStage() {
+        return keepSizedWithinStage;
+    }
+    
+    public void setKeepSizedWithinStage(boolean keepSizedWithinStage) {
+        this.keepSizedWithinStage = keepSizedWithinStage;
+    }
+}

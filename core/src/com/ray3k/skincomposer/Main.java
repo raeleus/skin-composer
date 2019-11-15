@@ -85,6 +85,7 @@ public class Main extends ApplicationAdapter {
     private IbeamListener ibeamListener;
     private MainListener mainListener;
     private HandListener handListener;
+    private ScrollFocusListener scrollFocusListener;
     private ResizeArrowListener verticalResizeArrowListener;
     private ResizeArrowListener horizontalResizeArrowListener;
     private TooltipManager tooltipManager;
@@ -189,6 +190,8 @@ public class Main extends ApplicationAdapter {
         
         projectData.getAtlasData().clearTempData();
         handListener = new HandListener();
+        
+        scrollFocusListener = new ScrollFocusListener(stage);
         
         verticalResizeArrowListener = new ResizeArrowListener(true);
         horizontalResizeArrowListener = new ResizeArrowListener(false);
@@ -300,7 +303,11 @@ public class Main extends ApplicationAdapter {
     public HandListener getHandListener() {
         return handListener;
     }
-
+    
+    public ScrollFocusListener getScrollFocusListener() {
+        return scrollFocusListener;
+    }
+    
     public ResizeArrowListener getVerticalResizeArrowListener() {
         return verticalResizeArrowListener;
     }
