@@ -739,7 +739,7 @@ public class Dialog9Patch extends Dialog {
                         main.getDialogFactory().showInputDialog("Text Content", "Enter the text to be displayed inside of the preview:", "Lorem Ipsum", new DialogFactory.InputDialogListener() {
                             @Override
                             public void confirmed(String text) {
-                                main.getDialogFactory().showDialogColors(new StyleProperty(), (ColorData colorData) -> {
+                                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                                     if (colorData == null) {
                                         selectBox.setSelected("None");
                                     } else {
@@ -760,7 +760,7 @@ public class Dialog9Patch extends Dialog {
                         });
                         break;
                     case "Color":
-                        main.getDialogFactory().showDialogColors(new StyleProperty(), (ColorData colorData) -> {
+                        main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                             if (colorData == null) {
                                 selectBox.setSelected("None");
                             } else {

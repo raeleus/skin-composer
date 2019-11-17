@@ -1083,7 +1083,7 @@ public class DialogDrawables extends Dialog {
     }
     
     private void colorSwatchesDialog(DrawableData drawableData) {
-        DialogColors dialog = new DialogColors(main, (StyleProperty) null, true, (ColorData colorData) -> {
+        DialogColors dialog = new DialogColors(main, (StyleProperty) null, true, (colorData, pressedCancel) -> {
             if (colorData != null) {
                 final DrawableData tintedDrawable = new DrawableData(drawableData.file);
                 tintedDrawable.tintName = colorData.getName();
@@ -1380,7 +1380,7 @@ public class DialogDrawables extends Dialog {
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent ce, Actor actor) {
-                DialogColors dialog = new DialogColors(main, (StyleProperty) null, true, (ColorData colorData) -> {
+                DialogColors dialog = new DialogColors(main, (StyleProperty) null, true, (colorData, pressedCancel) -> {
                     Button button = tileDialog.findActor("color-selector");
                     if (colorData != null) {
                         button.setColor(colorData.color);

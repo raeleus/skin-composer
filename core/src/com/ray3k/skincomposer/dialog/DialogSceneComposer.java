@@ -9,8 +9,12 @@ import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.PopTable;
 import com.ray3k.skincomposer.Spinner;
+import com.ray3k.skincomposer.data.DrawableData;
+import com.ray3k.skincomposer.data.StyleData;
+import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
+import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
 import com.ray3k.skincomposer.utils.IntPair;
 
 public class DialogSceneComposer extends Dialog {
@@ -266,7 +270,7 @@ public class DialogSceneComposer extends Dialog {
         horizontalGroup.align(Align.top);
         root.add(horizontalGroup).grow();
         
-        mode = Mode.CELL;
+        mode = Mode.TEXT_BUTTON;
         
         switch(mode) {
             case ROOT:
@@ -326,11 +330,23 @@ public class DialogSceneComposer extends Dialog {
                 textButton = new TextButton("Add Cell to Left", skin, "scene-med");
                 table.add(textButton);
                 textButton.addListener(main.getHandListener());
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAddCellToLeft();
+                    }
+                });
                 textButton.addListener(new TextTooltip("Creates a new cell to the left of the current one.", main.getTooltipManager(), skin, "scene"));
     
                 textButton = new TextButton("Add Cell to Right", skin, "scene-med");
                 table.add(textButton);
                 textButton.addListener(main.getHandListener());
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAddCellToRight();
+                    }
+                });
                 textButton.addListener(new TextTooltip("Creates a new cell to the right of the current one.", main.getTooltipManager(), skin, "scene"));
     
                 table = new Table();
@@ -339,11 +355,23 @@ public class DialogSceneComposer extends Dialog {
                 textButton = new TextButton("Add Row Above", skin, "scene-med");
                 table.add(textButton);
                 textButton.addListener(main.getHandListener());
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAddRowAbove();
+                    }
+                });
                 textButton.addListener(new TextTooltip("Adds a new row above the currently selected one.", main.getTooltipManager(), skin, "scene"));
     
                 textButton = new TextButton("Add Row Below", skin, "scene-med");
                 table.add(textButton);
                 textButton.addListener(main.getHandListener());
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAddRowBelow();
+                    }
+                });
                 textButton.addListener(new TextTooltip("Adds a new row below the currently selected one.", main.getTooltipManager(), skin, "scene"));
     
                 table = new Table();
@@ -469,6 +497,12 @@ public class DialogSceneComposer extends Dialog {
         popTable.add(textField).minWidth(150);
         textField.addListener(main.getIbeamListener());
         textField.addListener(new TextTooltip("The name of the table to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.textButtonName(textField.getText());
+            }
+        });
         textField.addListener(new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
@@ -503,6 +537,12 @@ public class DialogSceneComposer extends Dialog {
         popTable.add(textField).minWidth(150);
         textField.addListener(main.getIbeamListener());
         textField.addListener(new TextTooltip("The text inside of the button.", main.getTooltipManager(), skin, "scene"));
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.textButtonName(textField.getText());
+            }
+        });
         textField.addListener(new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
@@ -530,10 +570,16 @@ public class DialogSceneComposer extends Dialog {
         popTable.add(textButton).minWidth(100);
         textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("Select the style that controls the appearance of the text button.", main.getTooltipManager(), skin, "scene"));
-        textButton.addListener(new ChangeListener() {
+        textButton.addListener(new StyleSelectorPopTable(TextButton.class) {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                popTableClickListener.getPopTable().hide();
+            }
+    
+            @Override
+            public void accepted(StyleData styleData) {
+                events.textButtonStyle(styleData);
             }
         });
     
@@ -556,6 +602,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 textButton.setText(textButton.isChecked() ? "TRUE" : "FALSE");
+                events.textButtonChecked(textButton.isChecked());
             }
         });
     
@@ -600,6 +647,21 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+                    if (!pressedCancel) {
+                        events.textButtonColor(colorData);
+                    }
+                }, new DialogListener() {
+                    @Override
+                    public void opened() {
+        
+                    }
+    
+                    @Override
+                    public void closed() {
+        
+                    }
+                });
             }
         });
     
@@ -613,6 +675,17 @@ public class DialogSceneComposer extends Dialog {
     private EventListener textButtonPaddingListener() {
         var popTableClickListener = new PopTable.PopTableClickListener(skin);
         var popTable = popTableClickListener.getPopTable();
+        
+        var changeListener = new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Spinner padLeft = popTable.findActor("pad-left");
+                Spinner padRight = popTable.findActor("pad-right");
+                Spinner padTop = popTable.findActor("pad-top");
+                Spinner padBottom = popTable.findActor("pad-bottom");
+                events.textButtonPadding((float) padLeft.getValue(), (float)  padRight.getValue(), (float)  padTop.getValue(), (float)  padBottom.getValue());
+            }
+        };
     
         var label = new Label("Padding:", skin, "scene-label-colored");
         popTable.add(label).colspan(2);
@@ -623,44 +696,52 @@ public class DialogSceneComposer extends Dialog {
         popTable.add(label);
     
         var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("pad-left");
         popTable.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The padding on the left of the contents.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         popTable.row();
         label = new Label("Right:", skin, "scene-label-colored");
         popTable.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("pad-right");
         popTable.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The padding on the right of the contents.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         popTable.row();
         label = new Label("Top:", skin, "scene-label-colored");
         popTable.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("pad-top");
         popTable.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The padding on the top of the contents.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         popTable.row();
         label = new Label("Bottom:", skin, "scene-label-colored");
         popTable.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("pad-bottom");
         popTable.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The padding on the bottom of the contents.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         return popTableClickListener;
     }
@@ -682,18 +763,36 @@ public class DialogSceneComposer extends Dialog {
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the top left.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.textButtonAlign(Align.topLeft);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Top", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the top center.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.textButtonAlign(Align.top);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Top-Right", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the top right.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.textButtonAlign(Align.topRight);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         table.row();
@@ -701,18 +800,36 @@ public class DialogSceneComposer extends Dialog {
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the middle left.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.textButtonAlign(Align.left);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Center", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the center.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.textButtonAlign(Align.center);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Right", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the middle right.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.textButtonAlign(Align.right);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         table.row();
@@ -720,18 +837,36 @@ public class DialogSceneComposer extends Dialog {
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the bottom left.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.textButtonAlign(Align.bottomLeft);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Bottom", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the bottom center.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.textButtonAlign(Align.bottom);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Bottom-Right", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the bottom-right.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.textButtonAlign(Align.bottomRight);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         return popTableClickListener;
@@ -753,6 +888,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.textButtonReset();
             }
         });
     
@@ -789,6 +925,12 @@ public class DialogSceneComposer extends Dialog {
                 }
             }
         });
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.tableName(textField.getText());
+            }
+        });
         
         return popTableClickListener;
     }
@@ -817,6 +959,32 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
+                    @Override
+                    public void confirmed(DrawableData drawable, DialogDrawables dialog) {
+                        events.tableBackground(drawable);
+                    }
+    
+                    @Override
+                    public void emptied(DialogDrawables dialog) {
+                        events.tableBackground(null);
+                    }
+    
+                    @Override
+                    public void cancelled(DialogDrawables dialog) {
+        
+                    }
+                }, new DialogListener() {
+                    @Override
+                    public void opened() {
+        
+                    }
+    
+                    @Override
+                    public void closed() {
+        
+                    }
+                });
             }
         });
         
@@ -839,6 +1007,21 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+                    if (!pressedCancel) {
+                        events.tableColor(colorData);
+                    }
+                }, new DialogListener() {
+                    @Override
+                    public void opened() {
+            
+                    }
+        
+                    @Override
+                    public void closed() {
+            
+                    }
+                });
             }
         });
         
@@ -853,6 +1036,17 @@ public class DialogSceneComposer extends Dialog {
         var popTableClickListener = new PopTable.PopTableClickListener(skin);
         var popTable = popTableClickListener.getPopTable();
     
+        var changeListener = new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Spinner padLeft = popTable.findActor("pad-left");
+                Spinner padRight = popTable.findActor("pad-right");
+                Spinner padTop = popTable.findActor("pad-top");
+                Spinner padBottom = popTable.findActor("pad-bottom");
+                events.tablePadding((float) padLeft.getValue(), (float)  padRight.getValue(), (float)  padTop.getValue(), (float)  padBottom.getValue());
+            }
+        };
+        
         var label = new Label("Padding:", skin, "scene-label-colored");
         popTable.add(label).colspan(2);
     
@@ -862,44 +1056,52 @@ public class DialogSceneComposer extends Dialog {
         popTable.add(label);
     
         var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("pad-left");
         popTable.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The padding on the left of the contents.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         popTable.row();
         label = new Label("Right:", skin, "scene-label-colored");
         popTable.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("pad-right");
         popTable.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The padding on the right of the contents.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         popTable.row();
         label = new Label("Top:", skin, "scene-label-colored");
         popTable.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("pad-top");
         popTable.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The padding on the top of the contents.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         popTable.row();
         label = new Label("Bottom:", skin, "scene-label-colored");
         popTable.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("pad-bottom");
         popTable.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The padding on the bottom of the contents.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
         
         return popTableClickListener;
     }
@@ -921,18 +1123,36 @@ public class DialogSceneComposer extends Dialog {
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the top left.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.tableAlignment(Align.topLeft);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Top", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the top center.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.tableAlignment(Align.top);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Top-Right", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the top right.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.tableAlignment(Align.topRight);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         table.row();
@@ -940,18 +1160,36 @@ public class DialogSceneComposer extends Dialog {
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the middle left.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.tableAlignment(Align.left);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Center", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the center.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.tableAlignment(Align.center);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Right", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the middle right.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.tableAlignment(Align.right);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         table.row();
@@ -959,18 +1197,36 @@ public class DialogSceneComposer extends Dialog {
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the bottom left.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.tableAlignment(Align.bottomLeft);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Bottom", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the bottom center.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.tableAlignment(Align.bottom);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Bottom-Right", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the bottom right.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.tableAlignment(Align.bottomRight);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         return popTableClickListener;
@@ -992,6 +1248,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.tableReset();
             }
         });
     
@@ -1027,6 +1284,8 @@ public class DialogSceneComposer extends Dialog {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         popTable.hide();
+                        var intPair = (IntPair) textButton.getUserObject();
+                        events.rootAddTable(intPair.x, intPair.y);
                     }
                 });
                 textButton.addListener(new InputListener() {
@@ -1075,6 +1334,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 table.hide();
+                events.cellDelete();
             }
         });
     
@@ -1097,6 +1357,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 table.hide();
+                events.cellReset();
             }
         });
     
@@ -1107,19 +1368,32 @@ public class DialogSceneComposer extends Dialog {
         var popTableClickListener = new PopTable.PopTableClickListener(skin);
         var popTable = popTableClickListener.getPopTable();
     
+        var changeListener = new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                ImageTextButton uniformX = popTable.findActor("uniform-x");
+                ImageTextButton uniformY = popTable.findActor("uniform-y");
+                events.cellUniform(uniformX.isChecked(), uniformY.isChecked());
+            }
+        };
+        
         var table = new Table();
         popTable.add(table);
     
         table.defaults().left().spaceRight(5);
         var imageTextButton = new ImageTextButton("Uniform X", skin, "scene-checkbox-colored");
+        imageTextButton.setName("uniform-x");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("All cells with Uniform X will share the same width.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(changeListener);
     
         imageTextButton = new ImageTextButton("Uniform Y", skin, "scene-checkbox-colored");
+        imageTextButton.setName("uniform-y");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("All cells with Uniform Y will share the same height.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(changeListener);
     
         return popTableClickListener;
     }
@@ -1131,6 +1405,19 @@ public class DialogSceneComposer extends Dialog {
         var table = new Table();
         popTable.add(table);
     
+        var changeListener = new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Spinner minimumWidth = popTable.findActor("minimum-width");
+                Spinner minimumHeight = popTable.findActor("minimum-height");
+                Spinner maximumWidth = popTable.findActor("maximum-width");
+                Spinner maximumHeight = popTable.findActor("maximum-height");
+                Spinner preferredWidth = popTable.findActor("preferrred-width");
+                Spinner preferredHeight = popTable.findActor("preferred-height");
+                events.cellSize((float) minimumWidth.getValue(), (float) minimumHeight.getValue(), (float) maximumWidth.getValue(), (float) maximumHeight.getValue(), (float) preferredWidth.getValue(), (float) preferredHeight.getValue());
+            }
+        };
+    
         var label = new Label("Minimum:", skin, "scene-label-colored");
         table.add(label).colspan(2);
     
@@ -1140,22 +1427,26 @@ public class DialogSceneComposer extends Dialog {
         table.add(label);
     
         var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("minimum-width");
         table.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The minimum width of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         table.row();
         label = new Label("Height:", skin, "scene-label-colored");
         table.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("minimum-height");
         table.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The minimum height of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         var image = new Image(skin, "scene-menu-divider");
         popTable.add(image).space(10).growY();
@@ -1172,22 +1463,26 @@ public class DialogSceneComposer extends Dialog {
         table.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("maximum-width");
         table.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The maximum width of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         table.row();
         label = new Label("Height:", skin, "scene-label-colored");
         table.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("maximum-height");
         table.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The maximum height of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         image = new Image(skin, "scene-menu-divider");
         popTable.add(image).space(10).growY();
@@ -1204,22 +1499,26 @@ public class DialogSceneComposer extends Dialog {
         table.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("preferred-width");
         table.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The preferred width of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         table.row();
         label = new Label("Height:", skin, "scene-label-colored");
         table.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("preferred-height");
         table.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The preferred height of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         return popTableClickListener;
     }
@@ -1241,18 +1540,36 @@ public class DialogSceneComposer extends Dialog {
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the top left.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.cellAlignment(Align.topLeft);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Top", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the top center.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.cellAlignment(Align.top);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Top-Right", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the top right.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.cellAlignment(Align.topRight);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         table.row();
@@ -1260,18 +1577,36 @@ public class DialogSceneComposer extends Dialog {
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the middle left.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.cellAlignment(Align.left);
+            }
+        });
         buttonGroup.add(imageTextButton);
         
         imageTextButton = new ImageTextButton("Center", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the center.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.cellAlignment(Align.center);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Right", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the middle right.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.cellAlignment(Align.right);
+            }
+        });
         buttonGroup.add(imageTextButton);
         
         table.row();
@@ -1279,18 +1614,36 @@ public class DialogSceneComposer extends Dialog {
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the bottom left.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.cellAlignment(Align.bottomLeft);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Bottom", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the bottom center.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.cellAlignment(Align.bottom);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Bottom-Right", skin, "scene-checkbox-colored");
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the bottom right.", main.getTooltipManager(), skin, "scene"));
+        imageTextButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.cellAlignment(Align.bottomRight);
+            }
+        });
         buttonGroup.add(imageTextButton);
     
         return popTableClickListener;
@@ -1299,49 +1652,28 @@ public class DialogSceneComposer extends Dialog {
     private EventListener cellExpandFillGrowListener() {
         var popTableClickListener = new PopTable.PopTableClickListener(skin);
         var popTable = popTableClickListener.getPopTable();
+        var expandX = new ImageTextButton("Expand X", skin, "scene-checkbox-colored");
+        var expandY = new ImageTextButton("Expand Y", skin, "scene-checkbox-colored");
+        var fillX = new ImageTextButton("Fill X", skin, "scene-checkbox-colored");
+        var fillY = new ImageTextButton("Fill Y", skin, "scene-checkbox-colored");
+        var growX = new ImageTextButton("Grow X", skin, "scene-checkbox-colored");
+        var growY = new ImageTextButton("Grow Y", skin, "scene-checkbox-colored");
     
+        var changeListener = new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.cellExpandFillGrow(expandX.isChecked(), expandY.isChecked(), fillX.isChecked(), fillY.isChecked(), growX.isChecked(), growY.isChecked());
+            }
+        };
+        
         var table = new Table();
         popTable.add(table);
 
         table.defaults().left().spaceRight(5);
-        var expandX = new ImageTextButton("Expand X", skin, "scene-checkbox-colored");
         expandX.setProgrammaticChangeEvents(false);
         table.add(expandX);
         expandX.addListener(main.getHandListener());
         expandX.addListener(new TextTooltip("Expands the width of the cell to the available space.", main.getTooltipManager(), skin, "scene"));
-    
-        var expandY = new ImageTextButton("Expand Y", skin, "scene-checkbox-colored");
-        expandY.setProgrammaticChangeEvents(false);
-        table.add(expandY);
-        expandY.addListener(main.getHandListener());
-        expandY.addListener(new TextTooltip("Expands the height of the cell to the available space.", main.getTooltipManager(), skin, "scene"));
-    
-        table.row();
-        var fillX = new ImageTextButton("Fill X", skin, "scene-checkbox-colored");
-        fillX.setProgrammaticChangeEvents(false);
-        table.add(fillX);
-        fillX.addListener(main.getHandListener());
-        fillX.addListener(new TextTooltip("Stretches the contents to fill the width of the cell.", main.getTooltipManager(), skin, "scene"));
-    
-        var fillY = new ImageTextButton("Fill Y", skin, "scene-checkbox-colored");
-        fillY.setProgrammaticChangeEvents(false);
-        table.add(fillY);
-        fillY.addListener(main.getHandListener());
-        fillY.addListener(new TextTooltip("Stretches the contents to fill the height of the cell.", main.getTooltipManager(), skin, "scene"));
-    
-        table.row();
-        var growX = new ImageTextButton("Grow X", skin, "scene-checkbox-colored");
-        growX.setProgrammaticChangeEvents(false);
-        table.add(growX);
-        growX.addListener(main.getHandListener());
-        growX.addListener(new TextTooltip("Sets the cell to expand and fill across the available width.", main.getTooltipManager(), skin, "scene"));
-    
-        var growY = new ImageTextButton("Grow Y", skin, "scene-checkbox-colored");
-        growY.setProgrammaticChangeEvents(false);
-        table.add(growY);
-        growY.addListener(main.getHandListener());
-        growY.addListener(new TextTooltip("Sets the cell to expand and fill across the available height.", main.getTooltipManager(), skin, "scene"));
-    
         expandX.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -1352,18 +1684,12 @@ public class DialogSceneComposer extends Dialog {
                 }
             }
         });
+        expandX.addListener(changeListener);
     
-        fillX.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if (expandX.isChecked() && fillX.isChecked()) {
-                    growX.setChecked(true);
-                } else {
-                    growX.setChecked(false);
-                }
-            }
-        });
-    
+        expandY.setProgrammaticChangeEvents(false);
+        table.add(expandY);
+        expandY.addListener(main.getHandListener());
+        expandY.addListener(new TextTooltip("Expands the height of the cell to the available space.", main.getTooltipManager(), skin, "scene"));
         expandY.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -1374,7 +1700,29 @@ public class DialogSceneComposer extends Dialog {
                 }
             }
         });
+        expandY.addListener(changeListener);
     
+        table.row();
+        fillX.setProgrammaticChangeEvents(false);
+        table.add(fillX);
+        fillX.addListener(main.getHandListener());
+        fillX.addListener(new TextTooltip("Stretches the contents to fill the width of the cell.", main.getTooltipManager(), skin, "scene"));
+        fillX.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (expandX.isChecked() && fillX.isChecked()) {
+                    growX.setChecked(true);
+                } else {
+                    growX.setChecked(false);
+                }
+            }
+        });
+        fillX.addListener(changeListener);
+    
+        fillY.setProgrammaticChangeEvents(false);
+        table.add(fillY);
+        fillY.addListener(main.getHandListener());
+        fillY.addListener(new TextTooltip("Stretches the contents to fill the height of the cell.", main.getTooltipManager(), skin, "scene"));
         fillY.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -1385,7 +1733,13 @@ public class DialogSceneComposer extends Dialog {
                 }
             }
         });
-        
+        fillY.addListener(changeListener);
+    
+        table.row();
+        growX.setProgrammaticChangeEvents(false);
+        table.add(growX);
+        growX.addListener(main.getHandListener());
+        growX.addListener(new TextTooltip("Sets the cell to expand and fill across the available width.", main.getTooltipManager(), skin, "scene"));
         growX.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -1393,7 +1747,12 @@ public class DialogSceneComposer extends Dialog {
                 fillX.setChecked(growX.isChecked());
             }
         });
+        growX.addListener(changeListener);
     
+        growY.setProgrammaticChangeEvents(false);
+        table.add(growY);
+        growY.addListener(main.getHandListener());
+        growY.addListener(new TextTooltip("Sets the cell to expand and fill across the available height.", main.getTooltipManager(), skin, "scene"));
         growY.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -1401,6 +1760,7 @@ public class DialogSceneComposer extends Dialog {
                 fillY.setChecked(growY.isChecked());
             }
         });
+        growY.addListener(changeListener);
         
         return popTableClickListener;
     }
@@ -1408,6 +1768,22 @@ public class DialogSceneComposer extends Dialog {
     private EventListener cellPaddingSpacingListener() {
         var popTableClickListener = new PopTable.PopTableClickListener(skin);
         var popTable = popTableClickListener.getPopTable();
+        
+        var changeListener = new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Spinner paddingLeft = popTable.findActor("padding-left");
+                Spinner paddingRight = popTable.findActor("padding-right");
+                Spinner paddingTop = popTable.findActor("padding-top");
+                Spinner paddingBottom = popTable.findActor("padding-bottom");
+                Spinner spacingLeft = popTable.findActor("spacing-left");
+                Spinner spacingRight = popTable.findActor("spacing-right");
+                Spinner spacingTop = popTable.findActor("spacing-top");
+                Spinner spacingBottom = popTable.findActor("spacing-bottom");
+                
+                events.cellPaddingSpacing((float) paddingLeft.getValue(), (float) paddingRight.getValue(), (float) paddingTop.getValue(), (float) paddingBottom.getValue(), (float) spacingLeft.getValue(), (float) spacingRight.getValue(), (float) spacingTop.getValue(), (float) spacingBottom.getValue());
+            }
+        };
         
         var table = new Table();
         popTable.add(table);
@@ -1421,44 +1797,52 @@ public class DialogSceneComposer extends Dialog {
         table.add(label);
     
         var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("padding-left");
         table.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The padding to the left of the cell. Stacks with other cell padding.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
         
         table.row();
         label = new Label("Right:", skin, "scene-label-colored");
         table.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("padding-right");
         table.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The padding to the right of the cell. Stacks with other cell padding.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         table.row();
         label = new Label("Top:", skin, "scene-label-colored");
         table.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("padding-top");
         table.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The padding to the top of the cell. Stacks with other cell padding.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         table.row();
         label = new Label("Bottom:", skin, "scene-label-colored");
         table.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("padding-bottom");
         table.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The padding to the bottom of the cell. Stacks with other cell padding.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         var image = new Image(skin, "scene-menu-divider");
         popTable.add(image).space(10).growY();
@@ -1475,44 +1859,52 @@ public class DialogSceneComposer extends Dialog {
         table.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("spacing-left");
         table.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The spacing to the left of the cell. Does not stack with other cell spacing.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         table.row();
         label = new Label("Right:", skin, "scene-label-colored");
         table.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("spacing-right");
         table.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The spacing to the right of the cell. Does not stack with other cell spacing.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         table.row();
         label = new Label("Top:", skin, "scene-label-colored");
         table.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("spacing-top");
         table.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The spacing to the top of the cell. Does not stack with other cell spacing.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
     
         table.row();
         label = new Label("Bottom:", skin, "scene-label-colored");
         table.add(label);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+        spinner.setName("spacing-bottom");
         table.add(spinner);
         spinner.getTextField().addListener(main.getIbeamListener());
         spinner.getButtonMinus().addListener(main.getHandListener());
         spinner.getButtonPlus().addListener(main.getHandListener());
         spinner.addListener(new TextTooltip("The spacing to the bottom of the cell. Does not stack with other cell spacing.", main.getTooltipManager(), skin, "scene"));
+        spinner.addListener(changeListener);
         
         return popTableClickListener;
     }
@@ -1525,6 +1917,7 @@ public class DialogSceneComposer extends Dialog {
         scrollPane.setScrollingDisabled(true, false);
         scrollPane.setFlickScroll(false);
         scrollPane.addListener(main.getScrollFocusListener());
+        
         
         var popTableClickListener = new PopTable.PopTableClickListener(skin) {
             @Override
@@ -1560,6 +1953,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.BUTTON);
             }
         });
     
@@ -1572,6 +1966,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.CHECK_BOX);
             }
         });
     
@@ -1584,6 +1979,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.IMAGE);
             }
         });
     
@@ -1596,6 +1992,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.IMAGE_BUTTON);
             }
         });
     
@@ -1608,6 +2005,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.IMAGE_TEXT_BUTTON);
             }
         });
     
@@ -1620,6 +2018,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.LABEL);
             }
         });
     
@@ -1632,6 +2031,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.LIST);
             }
         });
     
@@ -1644,6 +2044,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.PROGRESS_BAR);
             }
         });
     
@@ -1656,6 +2057,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.SELECT_BOX);
             }
         });
     
@@ -1668,6 +2070,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.SLIDER);
             }
         });
     
@@ -1680,6 +2083,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.TEXT_BUTTON);
             }
         });
     
@@ -1692,6 +2096,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.TEXT_FIELD);
             }
         });
     
@@ -1704,6 +2109,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.TEXT_AREA);
             }
         });
     
@@ -1716,6 +2122,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.TOUCH_PAD);
             }
         });
     
@@ -1736,6 +2143,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.CONTAINER);
             }
         });
         
@@ -1748,6 +2156,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.HORIZONTAL_GROUP);
             }
         });
     
@@ -1760,6 +2169,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.SCROLL_PANE);
             }
         });
     
@@ -1772,6 +2182,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.STACK);
             }
         });
         
@@ -1784,6 +2195,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.SPLIT_PANE);
             }
         });
     
@@ -1796,6 +2208,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.TABLE);
             }
         });
     
@@ -1808,6 +2221,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.TREE);
             }
         });
     
@@ -1820,6 +2234,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
+                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.VERTICAL_GROUP);
             }
         });
         

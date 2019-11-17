@@ -1,6 +1,5 @@
 package com.ray3k.skincomposer;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -8,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -167,6 +167,7 @@ public class PopTable extends Table {
     }
     
     public void hide(Action action) {
+        fire(new TableHiddenEvent());
         group.addAction(sequence(action, Actions.removeActor()));
     }
     
@@ -216,7 +217,6 @@ public class PopTable extends Table {
     }
     
     public static class PopTableClickListener extends ClickListener {
-        protected PopTableStyle style;
         protected PopTable popTable;
     
         public PopTableClickListener(Skin skin) {
@@ -228,8 +228,13 @@ public class PopTable extends Table {
         }
         
         public PopTableClickListener(PopTableStyle style) {
-            this.style = style;
             popTable = new PopTable(style);
+            popTable.addListener(new TableHiddenListener() {
+                @Override
+                public void tableHidden(Event event) {
+                    PopTableClickListener.this.tableHidden(event);
+                }
+            });
         }
     
         @Override
@@ -316,13 +321,34 @@ public class PopTable extends Table {
             popTable.moveToInsideStage();
         }
     
-        public PopTableStyle getStyle() {
-            return style;
-        }
-    
         public PopTable getPopTable() {
             return popTable;
         }
+    
+        /**
+         * Override this method to be performed when the popTable is hidden or dismissed.
+         */
+        public void tableHidden(Event event) {
+        
+        }
+    }
+    
+    public static class TableHiddenEvent extends Event {
+    
+    }
+    
+    public static abstract class TableHiddenListener implements EventListener {
+        @Override
+        public boolean handle(Event event) {
+            if (event instanceof TableHiddenEvent) {
+                tableHidden(event);
+                return true;
+            } else{
+                return false;
+            }
+        }
+        
+        public abstract void tableHidden(Event event);
     }
     
     public boolean isHideOnUnfocus() {
@@ -348,4 +374,5 @@ public class PopTable extends Table {
     public void setKeepSizedWithinStage(boolean keepSizedWithinStage) {
         this.keepSizedWithinStage = keepSizedWithinStage;
     }
+
 }

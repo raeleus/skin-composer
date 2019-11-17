@@ -592,7 +592,7 @@ public class DialogTenPatch extends Dialog {
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColors(new StyleProperty(), colorData -> {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                     if (colorData == null) {
                         previewColor.set(DEFAULT_PREVIEW_COLOR);
                     } else {
@@ -613,7 +613,7 @@ public class DialogTenPatch extends Dialog {
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColors(new StyleProperty(), colorData -> {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                     if (colorData == null) {
                         bottom.setColor(Color.WHITE);
                     } else {

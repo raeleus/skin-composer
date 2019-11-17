@@ -2485,7 +2485,7 @@ public class RootTable extends Table {
         }
     }
     
-    private <T> T createPreviewStyle(Class<T> clazz, StyleData styleData) {
+    public <T> T createPreviewStyle(Class<T> clazz, StyleData styleData) {
         T returnValue = null;
         try {
             returnValue = ClassReflection.newInstance(clazz);

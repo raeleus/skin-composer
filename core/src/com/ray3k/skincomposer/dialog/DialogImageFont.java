@@ -644,7 +644,7 @@ public class DialogImageFont extends Dialog {
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColors(new StyleProperty(), (ColorData colorData) -> {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                     if (colorData != null) {
                         var textArea = (TextArea) findActor("preview");
                         previewStyle.fontColor = colorData.color;
@@ -661,7 +661,7 @@ public class DialogImageFont extends Dialog {
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColors(new StyleProperty(), (ColorData colorData) -> {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                     if (colorData != null) {
                         var textArea = (TextArea) findActor("preview");
                         previewStyle.background = ((NinePatchDrawable) previewStyle.background).tint(colorData.color);

@@ -94,7 +94,7 @@ public class DialogTenPatchSettings extends Dialog {
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColors(new StyleProperty(), colorData -> {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
 
                     if (colorData == null) {
                         workingData.tenPatchData.colorName = null;
@@ -124,7 +124,7 @@ public class DialogTenPatchSettings extends Dialog {
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColors(new StyleProperty(), colorData -> {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                 
                     if (colorData == null) {
                         workingData.tenPatchData.color2Name = null;
@@ -152,7 +152,7 @@ public class DialogTenPatchSettings extends Dialog {
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColors(new StyleProperty(), colorData -> {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                 
                     if (colorData == null) {
                         workingData.tenPatchData.color3Name = null;
@@ -181,7 +181,7 @@ public class DialogTenPatchSettings extends Dialog {
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColors(new StyleProperty(), colorData -> {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                 
                     if (colorData == null) {
                         workingData.tenPatchData.color1Name = null;
@@ -209,7 +209,7 @@ public class DialogTenPatchSettings extends Dialog {
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColors(new StyleProperty(), colorData -> {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                 
                     if (colorData == null) {
                         workingData.tenPatchData.color4Name = null;

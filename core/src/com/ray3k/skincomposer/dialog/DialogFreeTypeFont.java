@@ -671,7 +671,7 @@ public class DialogFreeTypeFont extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 TextButton textButton = (TextButton) actor;
                 
-                main.getDialogFactory().showDialogColors(new StyleProperty(), (ColorData colorData) -> {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                     if (colorData != null) {
                         textButton.setText(colorData.getName());
                         textButton.setUserObject(colorData);
@@ -778,7 +778,7 @@ public class DialogFreeTypeFont extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 TextButton textButton = (TextButton) actor;
                 
-                main.getDialogFactory().showDialogColors(new StyleProperty(), (ColorData colorData) -> {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                     if (colorData != null) {
                         textButton.setText(colorData.getName());
                         textButton.setUserObject(colorData);
@@ -907,7 +907,7 @@ public class DialogFreeTypeFont extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 TextButton textButton = (TextButton) actor;
                 
-                main.getDialogFactory().showDialogColors(new StyleProperty(), (ColorData colorData) -> {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                     if (colorData != null) {
                         textButton.setText(colorData.getName());
                         textButton.setUserObject(colorData);

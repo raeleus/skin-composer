@@ -609,6 +609,7 @@ public class DialogColors extends Dialog {
 
     @Override
     protected void result(Object object) {
+        boolean pressedCancel = false;
         if (styleProperty != null) {
             if (object instanceof ColorData) {
                 main.getProjectData().setChangesSaved(false);
@@ -621,6 +622,8 @@ public class DialogColors extends Dialog {
                     ColorUndoable undoable = new ColorUndoable(main.getRootTable(), main.getJsonData(), styleProperty, styleProperty.value, null);
                     main.getUndoableManager().addUndoable(undoable, true);
                 } else {
+                    pressedCancel = true;
+                    
                     boolean hasColor = false;
                     for (ColorData color : main.getJsonData().getColors()) {
                         if (color.getName().equals(styleProperty.value)) {
@@ -650,6 +653,8 @@ public class DialogColors extends Dialog {
                     main.getUndoableManager().addUndoable(undoable, true);
                     main.getRootTable().refreshStyleProperties(true);
                 } else {
+                    pressedCancel = true;
+                    
                     boolean hasColor = false;
                     for (ColorData color : main.getJsonData().getColors()) {
                         if (color.getName().equals(customProperty.getValue())) {
@@ -669,9 +674,9 @@ public class DialogColors extends Dialog {
         
         if (listener != null) {
             if (object instanceof ColorData) {
-                listener.handle((ColorData) object);
+                listener.handle((ColorData) object, pressedCancel);
             } else {
-                listener.handle(null);
+                listener.handle(null, pressedCancel);
             }
         }
     }
@@ -708,7 +713,7 @@ public class DialogColors extends Dialog {
     }
     
     public static interface DialogColorsListener {
-        public void handle(ColorData colorData);
+        public void handle(ColorData colorData, boolean cancelled);
     }
 
     @Override

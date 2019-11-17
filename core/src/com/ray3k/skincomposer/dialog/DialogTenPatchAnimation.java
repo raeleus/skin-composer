@@ -176,7 +176,7 @@ public class DialogTenPatchAnimation extends Dialog {
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColors(new StyleProperty(), colorData -> {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                     Table table = findActor("animation-table");
                     if (colorData == null) {
                         table.setBackground(skin.newDrawable("white", Color.CLEAR));
