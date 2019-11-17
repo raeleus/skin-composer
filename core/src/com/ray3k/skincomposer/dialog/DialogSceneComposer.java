@@ -540,7 +540,7 @@ public class DialogSceneComposer extends Dialog {
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                events.textButtonName(textField.getText());
+                events.textButtonText(textField.getText());
             }
         });
         textField.addListener(new InputListener() {
@@ -625,6 +625,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 textButton.setText(textButton.isChecked() ? "TRUE" : "FALSE");
+                events.textButtonDisabled(textButton.isChecked());
             }
         });
     
