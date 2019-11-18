@@ -14,7 +14,7 @@ public class TablePaddingUndoable implements SceneComposerUndoable {
         this.paddingTop = paddingTop;
         this.paddingBottom = paddingBottom;
         var dialog = DialogSceneComposer.dialog;
-        table = (Table) dialog.selectedActor;
+        table = (Table) dialog.selectedObject;
         previousPaddingLeft = table.getPadLeft();
         previousPaddingRight = table.getPadRight();
         previousPaddingTop = table.getPadTop();

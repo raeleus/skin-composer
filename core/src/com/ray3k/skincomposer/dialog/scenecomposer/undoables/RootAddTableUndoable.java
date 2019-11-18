@@ -10,8 +10,7 @@ public class RootAddTableUndoable implements SceneComposerUndoable {
     private Table table;
     private DialogSceneComposer dialog;
     private DialogSceneComposerModel model;
-    private Actor previousSelected;
-    private DialogSceneComposer.Mode previousMode;
+    private Object previousSelected;
     private int columns;
     private int rows;
     
@@ -29,8 +28,7 @@ public class RootAddTableUndoable implements SceneComposerUndoable {
             }
         }
         
-        previousSelected = dialog.selectedActor;
-        previousMode = dialog.mode;
+        previousSelected = dialog.selectedObject;
         this.columns = columns;
         this.rows = rows;
     }
@@ -38,17 +36,17 @@ public class RootAddTableUndoable implements SceneComposerUndoable {
     @Override
     public void undo() {
         model.stage.getRoot().removeActor(table);
-        dialog.selectedActor = previousSelected;
-        dialog.mode = previousMode;
+        dialog.selectedObject = previousSelected;
         dialog.populateProperties();
+        dialog.populatePath();
     }
     
     @Override
     public void redo() {
         model.stage.addActor(table);
-        dialog.selectedActor = table;
-        dialog.mode = DialogSceneComposer.Mode.TABLE;
+        dialog.selectedObject = table;
         dialog.populateProperties();
+        dialog.populatePath();
     }
     
     @Override

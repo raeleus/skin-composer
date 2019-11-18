@@ -12,7 +12,7 @@ public class TableAlignmentUndoable implements SceneComposerUndoable {
     public TableAlignmentUndoable(int alignment) {
         this.alignment = alignment;
         var dialog = DialogSceneComposer.dialog;
-        table = (Table) dialog.selectedActor;
+        table = (Table) dialog.selectedObject;
         previousAlignment = table.getAlign();
     }
     

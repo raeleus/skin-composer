@@ -14,7 +14,7 @@ public class TableBackgroundUndoable implements SceneComposerUndoable {
     
     public TableBackgroundUndoable(DrawableData drawableData) {
         var dialog = DialogSceneComposer.dialog;
-        table = (Table) dialog.selectedActor;
+        table = (Table) dialog.selectedObject;
         this.drawableData = drawableData;
         objectMap = (ObjectMap<String, Object>) table.getUserObject();
         previousDrawableData = (DrawableData) objectMap.get("background");

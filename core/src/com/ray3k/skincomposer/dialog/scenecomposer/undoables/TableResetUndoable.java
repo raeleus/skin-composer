@@ -21,7 +21,7 @@ public class TableResetUndoable implements SceneComposerUndoable {
     
     public TableResetUndoable() {
         var dialog = DialogSceneComposer.dialog;
-        table = (Table) dialog.selectedActor;
+        table = (Table) dialog.selectedObject;
         previousName = table.getName();
         previousPaddingLeft = table.getPadLeft();
         previousPaddingRight = table.getPadRight();

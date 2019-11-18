@@ -10,7 +10,7 @@ public class TableNameUndoable implements  SceneComposerUndoable {
     
     public TableNameUndoable(String name) {
         var dialog = DialogSceneComposer.dialog;
-        table = (Table) dialog.selectedActor;
+        table = (Table) dialog.selectedObject;
         this.name = name;
         previousName = table.getName();
     }

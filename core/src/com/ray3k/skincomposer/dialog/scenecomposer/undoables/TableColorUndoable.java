@@ -15,7 +15,7 @@ public class TableColorUndoable implements SceneComposerUndoable {
     public TableColorUndoable(ColorData colorData) {
         this.colorData = colorData;
         var dialog = DialogSceneComposer.dialog;
-        table = (Table) dialog.selectedActor;
+        table = (Table) dialog.selectedObject;
         objectMap = (ObjectMap<String, Object>) table.getUserObject();
         previousColorData = (ColorData) objectMap.get("color");
     }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.PopTable;
 import com.ray3k.skincomposer.Spinner;
@@ -35,8 +36,9 @@ public class DialogSceneComposer extends Dialog {
     private TextTooltip redoTooltip;
     private TextButton undoButton;
     private TextButton redoButton;
-    public Actor selectedActor;
+    public Object selectedObject;
     private Table propertiesTable;
+    private Table pathTable;
     
     public DialogSceneComposer() {
         super("", Main.main.getSkin(), "scene");
@@ -47,7 +49,7 @@ public class DialogSceneComposer extends Dialog {
         model = new DialogSceneComposerModel(this);
     
         mode = Mode.ROOT;
-        selectedActor = model.stage.getRoot();
+        selectedObject = model.stage.getRoot();
         
         setFillParent(true);
         
@@ -276,10 +278,11 @@ public class DialogSceneComposer extends Dialog {
         
         bottom.row();
         table = new Table();
-        table.setClip(true);
-        bottom.add(table).growX().minHeight(0).space(3);
+        pathTable = table;
+        scrollPane = new ScrollPane(table, skin, "scene");
+        bottom.add(scrollPane).growX().minHeight(0).space(3);
         
-        populatePath(table);
+        populatePath();
         
         updateUndoRedo();
     }
@@ -322,6 +325,11 @@ public class DialogSceneComposer extends Dialog {
         horizontalGroup.wrap();
         horizontalGroup.align(Align.top);
         root.add(horizontalGroup).grow();
+        
+        if (selectedObject == model.stage.getRoot()) mode = Mode.ROOT;
+        else if (selectedObject instanceof Table) mode = Mode.TABLE;
+        else if (selectedObject instanceof Cell) mode = Mode.CELL;
+        else if (selectedObject instanceof TextButton) mode = Mode.TEXT_BUTTON;
         
         switch(mode) {
             case ROOT:
@@ -1349,13 +1357,14 @@ public class DialogSceneComposer extends Dialog {
                 textButton.setUserObject(new IntPair(i, j));
                 table.add(textButton);
                 buttons[i][j] = textButton;
+                int testI = i, testJ = j;
                 textButton.addListener(main.getHandListener());
                 textButton.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         popTable.hide();
                         var intPair = (IntPair) textButton.getUserObject();
-                        events.rootAddTable(intPair.x, intPair.y);
+                        events.rootAddTable(intPair.x + 1, intPair.y + 1);
                     }
                 });
                 textButton.addListener(new InputListener() {
@@ -2320,19 +2329,130 @@ public class DialogSceneComposer extends Dialog {
         return popTableClickListener;
     }
     
-    private void populatePath(Table root) {
-        var textButton = new TextButton("Root", skin, "scene-small");
-        root.add(textButton);
-        textButton.addListener(main.getHandListener());
+    public void populatePath() {
+        var root = pathTable;
+        root.clear();
         
-        var image = new Image(skin, "scene-icon-path-seperator");
-        root.add(image);
+        var objects = new Array<Object>();
+        objects.add(selectedObject);
         
-        var selectBox = new SelectBox<String>(skin, "scene");
-        selectBox.setItems("hello", "goodbye", "nightmare", "discord");
-        root.add(selectBox).expandX().right();
-        selectBox.addListener(main.getHandListener());
-        selectBox.getList().addListener(main.getHandListener());
+        var object = selectedObject;
+        
+        while (object != null) {
+            if (object instanceof Actor) {
+                var actor = (Actor) object;
+                object = actor.getParent();
+                if (object != null) objects.add(object);
+            } else if (object instanceof Cell) {
+                var cell = (Cell) object;
+                object = cell.getTable();
+                objects.add(object);
+            } else {
+                object = null;
+            }
+        }
+        
+        while (objects.size > 0) {
+            object = objects.pop();
+            
+            var type = object.getClass().getSimpleName();
+            var name = type;
+            if (object instanceof Actor) {
+                var actor = (Actor) object;
+                if (actor.getName() != null) name = actor.getName() + " (" + type + ")";
+            }
+            
+            var textButton = new TextButton(name, skin, "scene-small");
+            textButton.setUserObject(object);
+            root.add(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    selectedObject = textButton.getUserObject();
+                    populateProperties();
+                    populatePath();
+                }
+            });
+            
+            if (objects.size > 0) {
+                var image = new Image(skin, "scene-icon-path-seperator");
+                root.add(image);
+            }
+        }
+    
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        var popSubTable = new Table();
+        var scrollPane = new ScrollPane(popSubTable, skin, "scene");
+        popTable.add(scrollPane).grow();
+        
+        if (selectedObject instanceof Table) {
+            var table = (Table) selectedObject;
+            if (table.getCells().size > 0) {
+                var image = new Image(skin, "scene-icon-path-child-seperator");
+                root.add(image);
+    
+                var textButton = new TextButton("Select Child", skin, "scene-small");
+                root.add(textButton);
+                textButton.addListener(main.getHandListener());
+                
+                int row = 0;
+                for (var cell : table.getCells()) {
+                    var textButton1 = new TextButton("Cell (" + cell.getColumn() + "," + cell.getRow() + ")", skin, "scene-small");
+                    if (cell.getRow() > row) {
+                        popSubTable.row();
+                        row++;
+                    }
+                    popSubTable.add(textButton1);
+                    textButton1.addListener(main.getHandListener());
+                    textButton1.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            selectedObject = cell;
+                            populateProperties();
+                            populatePath();
+                            popTable.hide();
+                        }
+                    });
+                }
+                textButton.addListener(popTableClickListener);
+            }
+        } else if (selectedObject instanceof Group) {
+            var group = (Group) selectedObject;
+            if (group.getChildren().size > 0) {
+                var image = new Image(skin, "scene-icon-path-child-seperator");
+                root.add(image);
+    
+                var textButton = new TextButton("Select Child", skin, "scene-small");
+                root.add(textButton);
+                textButton.addListener(main.getHandListener());
+    
+                for (var child : group.getChildren()) {
+                    var type = child.getClass().getSimpleName();
+                    var name = type;
+                    if (child instanceof Actor) {
+                        var actor = (Actor) child;
+                        if (actor.getName() != null) name = actor.getName() + " (" + type + ")";
+                    }
+                    var textButton1 = new TextButton(name, skin, "scene-small");
+                    popSubTable.add(textButton1).row();
+                    textButton1.addListener(main.getHandListener());
+                    textButton1.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            selectedObject = child;
+                            populateProperties();
+                            populatePath();
+                            popTable.hide();
+                        }
+                    });
+                }
+                textButton.addListener(popTableClickListener);
+            }
+        }
+        
+        root.add().growX();
     }
     
     @Override
