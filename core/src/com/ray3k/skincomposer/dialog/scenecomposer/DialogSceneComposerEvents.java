@@ -36,20 +36,21 @@ public class DialogSceneComposerEvents {
     }
     
     public void menuRefresh() {
+        System.out.println(dialog.model.stage.getRoot());
     }
     
     public void menuClear() {
-        var undoable = new MenuClearUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new MenuClearUndoable());
     }
     
     public void menuUndo() {
         dialog.model.undo();
+        dialog.updateUndoRedo();
     }
     
     public void menuRedo() {
         dialog.model.redo();
+        dialog.updateUndoRedo();
     }
     
     public void menuMode() {
@@ -60,171 +61,122 @@ public class DialogSceneComposerEvents {
         dialog.showHelpDialog();
     }
     
-    public void rootAddTable(int columns, int rows) {
-        var undoable = new RootAddTableUndoable();
+    private void processUndoable(SceneComposerUndoable undoable) {
         dialog.model.undoables.add(undoable);
+        dialog.model.redoables.clear();
         undoable.redo();
+        dialog.updateUndoRedo();
+    }
+    
+    public void rootAddTable(int columns, int rows) {
+        processUndoable(new RootAddTableUndoable(columns, rows));
     }
     
     public void tableName(String name) {
-        var undoable = new TableNameUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new TableNameUndoable(name));
     }
     
     public void tableBackground(DrawableData background) {
-        var undoable = new TableBackgroundUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new TableBackgroundUndoable(background));
     }
     
     public void tableColor(ColorData color) {
-        var undoable = new TableColorUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new TableColorUndoable(color));
     }
     
     public void tablePadding(float paddingLeft, float paddingRight, float paddingTop, float paddingBottom) {
-        var undoable = new TablePaddingUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new TablePaddingUndoable(paddingLeft, paddingRight, paddingTop, paddingBottom));
     }
     
     public void tableAlignment(int alignment) {
-        var undoable = new TableAlignmentUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new TableAlignmentUndoable(alignment));
     }
     
     public void tableReset() {
-        var undoable = new TableResetUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new TableResetUndoable());
     }
     
     public void cellAddWidget(WidgetType widgetType) {
-        var undoable = new CellAddWidgetUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new CellAddWidgetUndoable());
     }
     
     public void cellAddCellToLeft() {
-        var undoable = new CellAddWidgetUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new CellAddWidgetUndoable());
     }
     
     public void cellAddCellToRight() {
-        var undoable = new CellAddCellToRightUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new CellAddCellToRightUndoable());
     }
     
     public void cellAddRowAbove() {
-        var undoable = new CellAddRowAboveUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new CellAddRowAboveUndoable());
     }
     
     public void cellAddRowBelow() {
-        var undoable = new CellAddRowBelowUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new CellAddRowBelowUndoable());
     }
     
     public void cellPaddingSpacing(float paddingLeft, float paddingRight, float paddingTop, float paddingBottom, float spacingLeft, float spacingRight, float spacingTop, float spacingBottom) {
-        var undoable = new CellPaddingSpacingUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new CellPaddingSpacingUndoable());
     }
     
     public void cellExpandFillGrow(boolean expandX, boolean expandY, boolean fillX, boolean fillY, boolean growX, boolean growY) {
-        var undoable = new CellExpandFillGrowUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new CellExpandFillGrowUndoable());
     }
     
     public void cellAlignment(int alignment) {
-        var undoable = new CellAlignmentUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new CellAlignmentUndoable());
     }
     
     public void cellSize(float minWidth, float minHeight, float maxWidth, float maxHeight, float preferredWidth, float preferredHeight) {
-        var undoable = new CellSizeUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new CellSizeUndoable());
     }
     
     public void cellUniform(boolean uniformX, boolean uniformY) {
-        var undoable = new CellUniformUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new CellUniformUndoable());
     }
     
     public void cellReset() {
-        var undoable = new CellResetUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new CellResetUndoable());
     }
     
     public void cellDelete() {
-        var undoable = new CellDeleteUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new CellDeleteUndoable());
     }
     
     public void textButtonName(String name) {
-        var undoable = new TextButtonNameUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new TextButtonNameUndoable());
     }
     
     public void textButtonText(String text) {
-        var undoable = new TextButtonTextUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new TextButtonTextUndoable());
     }
     
     public void textButtonStyle(StyleData styleData) {
-        var undoable = new TextButtonStyleUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new TextButtonStyleUndoable());
     }
     
     public void textButtonChecked(boolean checked) {
-        var undoable = new TextButtonCheckedUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new TextButtonCheckedUndoable());
     }
     
     public void textButtonDisabled(boolean disabled) {
-        var undoable = new TextButtonAlignUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new TextButtonDisabledUndoable());
     }
     
     public void textButtonColor(ColorData colorData) {
-        var undoable = new TextButtonColorUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new TextButtonColorUndoable());
     }
     
     public void textButtonPadding(float paddingLeft, float paddingRight, float paddingTop, float paddingBottom) {
-        var undoable = new TextButtonPaddingUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new TextButtonPaddingUndoable());
     }
     
     public void textButtonAlign(int alignment) {
-        var undoable = new TextButtonAlignUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new TextButtonAlignUndoable());
     }
     
     public void textButtonReset() {
-        var undoable = new TextButtonResetUndoable();
-        dialog.model.undoables.add(undoable);
-        undoable.redo();
+        processUndoable(new TextButtonResetUndoable());
     }
 }

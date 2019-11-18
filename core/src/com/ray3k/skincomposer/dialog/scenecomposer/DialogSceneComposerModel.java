@@ -9,7 +9,7 @@ import com.ray3k.skincomposer.dialog.scenecomposer.undoables.SceneComposerUndoab
 
 public class DialogSceneComposerModel {
     private DialogSceneComposer dialog;
-    private Stage stage;
+    public Stage stage;
     public Array<SceneComposerUndoable> undoables;
     public Array<SceneComposerUndoable> redoables;
     
@@ -36,14 +36,6 @@ public class DialogSceneComposerModel {
     
             undoable.redo();
         }
-    }
-    
-    public void clear() {
-        stage.clear();
-    }
-    
-    public void addBaseTable() {
-    
     }
     
     /**

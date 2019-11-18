@@ -1,6 +1,8 @@
 package com.ray3k.skincomposer.dialog;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -18,21 +20,34 @@ import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
 import com.ray3k.skincomposer.utils.IntPair;
 
 public class DialogSceneComposer extends Dialog {
+    public static DialogSceneComposer dialog;
     private Skin skin;
     private Main main;
-    private enum Mode {
-        ROOT, TABLE, CELL, TEXT_BUTTON
+    public enum Mode {
+        ROOT, BUTTON, CHECK_BOX, IMAGE, IMAGE_BUTTON, IMAGE_TEXT_BUTTON, LABEL, LIST, PROGRESS_BAR, SELECT_BOX, SLIDER,
+        TEXT_BUTTON, TEXT_FIELD, TEXT_AREA, TOUCH_PAD, CONTAINER, HORIZONTAL_GROUP, SCROLL_PANE, STACK, SPLIT_PANE,
+        TABLE, CELL, TREE, VERTICAL_GROUP
     }
-    private Mode mode;
+    public Mode mode;
     public DialogSceneComposerEvents events;
     public DialogSceneComposerModel model;
+    private TextTooltip undoTooltip;
+    private TextTooltip redoTooltip;
+    private TextButton undoButton;
+    private TextButton redoButton;
+    public Actor selectedActor;
+    private Table propertiesTable;
     
     public DialogSceneComposer() {
         super("", Main.main.getSkin(), "scene");
+        dialog = this;
         main = Main.main;
         skin = main.getSkin();
         events = new DialogSceneComposerEvents(this);
         model = new DialogSceneComposerModel(this);
+    
+        mode = Mode.ROOT;
+        selectedActor = model.stage.getRoot();
         
         setFillParent(true);
         
@@ -136,6 +151,7 @@ public class DialogSceneComposer extends Dialog {
         table.add(image).space(10);
     
         textButton = new TextButton("Undo", skin, "scene-menu-button");
+        undoButton = textButton;
         table.add(textButton);
         textButton.addListener(main.getHandListener());
         textButton.addListener(new ChangeListener() {
@@ -144,8 +160,10 @@ public class DialogSceneComposer extends Dialog {
                 events.menuUndo();
             }
         });
+        undoTooltip = new TextTooltip("", main.getTooltipManager(), skin, "scene");
     
         textButton = new TextButton("Redo", skin, "scene-menu-button");
+        redoButton = textButton;
         table.add(textButton);
         textButton.addListener(main.getHandListener());
         textButton.addListener(new ChangeListener() {
@@ -154,6 +172,7 @@ public class DialogSceneComposer extends Dialog {
                 events.menuRedo();
             }
         });
+        redoTooltip = new TextTooltip("", main.getTooltipManager(), skin, "scene");
     
         image = new Image(skin, "scene-menu-divider");
         table.add(image).space(10);
@@ -240,6 +259,7 @@ public class DialogSceneComposer extends Dialog {
     
         bottom.row();
         table = new Table();
+        propertiesTable = table;
         var scrollPane = new ScrollPane(table, skin, "scene");
         scrollPane.setName("scroll-properties");
         scrollPane.setFlickScroll(false);
@@ -248,7 +268,7 @@ public class DialogSceneComposer extends Dialog {
         bottom.add(scrollPane).grow();
         scrollPane.addListener(main.getScrollFocusListener());
         
-        populateProperties(table);
+        populateProperties();
     
         bottom.row();
         image = new Image(skin, "scene-path-border");
@@ -260,17 +280,48 @@ public class DialogSceneComposer extends Dialog {
         bottom.add(table).growX().minHeight(0).space(3);
         
         populatePath(table);
+        
+        updateUndoRedo();
     }
     
-    private void populateProperties(Table root) {
+    public void updateUndoRedo() {
+        if (model.undoables.size > 0) {
+            undoButton.setDisabled(false);
+            undoTooltip.getActor().setText(model.undoables.peek().getUndoString());
+            undoTooltip.getContainer().pack();
+            undoButton.addListener(undoTooltip);
+            undoButton.addListener(main.getHandListener());
+        } else {
+            undoButton.setDisabled(true);
+            undoTooltip.hide();
+            undoButton.removeListener(undoTooltip);
+            undoButton.removeListener(main.getHandListener());
+            Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+        }
+    
+        if (model.redoables.size > 0) {
+            redoButton.setDisabled(false);
+            redoTooltip.getActor().setText(model.redoables.peek().getRedoString());
+            redoTooltip.getContainer().pack();
+            redoButton.addListener(redoTooltip);
+            redoButton.addListener(main.getHandListener());
+        } else {
+            redoButton.setDisabled(true);
+            redoTooltip.hide();
+            redoButton.removeListener(redoTooltip);
+            redoButton.removeListener(main.getHandListener());
+            Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+        }
+    }
+    
+    public void populateProperties() {
+        var root = propertiesTable;
         root.clear();
         
         var horizontalGroup = new HorizontalGroup();
         horizontalGroup.wrap();
         horizontalGroup.align(Align.top);
         root.add(horizontalGroup).grow();
-        
-        mode = Mode.TEXT_BUTTON;
         
         switch(mode) {
             case ROOT:
@@ -761,6 +812,7 @@ public class DialogSceneComposer extends Dialog {
         table.defaults().space(10).left().uniformX();
         var buttonGroup = new ButtonGroup<ImageTextButton>();
         var imageTextButton = new ImageTextButton("Top-Left", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the top left.", main.getTooltipManager(), skin, "scene"));
@@ -773,6 +825,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Top", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the top center.", main.getTooltipManager(), skin, "scene"));
@@ -785,6 +838,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Top-Right", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the top right.", main.getTooltipManager(), skin, "scene"));
@@ -798,6 +852,7 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         imageTextButton = new ImageTextButton("Left", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the middle left.", main.getTooltipManager(), skin, "scene"));
@@ -810,6 +865,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Center", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the center.", main.getTooltipManager(), skin, "scene"));
@@ -822,6 +878,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Right", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the middle right.", main.getTooltipManager(), skin, "scene"));
@@ -835,6 +892,7 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         imageTextButton = new ImageTextButton("Bottom-Left", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the bottom left.", main.getTooltipManager(), skin, "scene"));
@@ -847,6 +905,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Bottom", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the bottom center.", main.getTooltipManager(), skin, "scene"));
@@ -859,6 +918,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Bottom-Right", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the bottom-right.", main.getTooltipManager(), skin, "scene"));
@@ -1121,6 +1181,7 @@ public class DialogSceneComposer extends Dialog {
         table.defaults().space(10).left().uniformX();
         var buttonGroup = new ButtonGroup<ImageTextButton>();
         var imageTextButton = new ImageTextButton("Top-Left", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the top left.", main.getTooltipManager(), skin, "scene"));
@@ -1133,6 +1194,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Top", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the top center.", main.getTooltipManager(), skin, "scene"));
@@ -1145,6 +1207,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Top-Right", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the top right.", main.getTooltipManager(), skin, "scene"));
@@ -1158,6 +1221,7 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         imageTextButton = new ImageTextButton("Left", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the middle left.", main.getTooltipManager(), skin, "scene"));
@@ -1170,6 +1234,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Center", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the center.", main.getTooltipManager(), skin, "scene"));
@@ -1182,6 +1247,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Right", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the middle right.", main.getTooltipManager(), skin, "scene"));
@@ -1195,6 +1261,7 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         imageTextButton = new ImageTextButton("Bottom-Left", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the bottom left.", main.getTooltipManager(), skin, "scene"));
@@ -1207,6 +1274,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Bottom", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the bottom center.", main.getTooltipManager(), skin, "scene"));
@@ -1219,6 +1287,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Bottom-Right", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents to the bottom right.", main.getTooltipManager(), skin, "scene"));
@@ -1538,6 +1607,7 @@ public class DialogSceneComposer extends Dialog {
         table.defaults().space(10).left().uniformX();
         var buttonGroup = new ButtonGroup<ImageTextButton>();
         var imageTextButton = new ImageTextButton("Top-Left", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the top left.", main.getTooltipManager(), skin, "scene"));
@@ -1550,6 +1620,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Top", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the top center.", main.getTooltipManager(), skin, "scene"));
@@ -1562,6 +1633,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Top-Right", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the top right.", main.getTooltipManager(), skin, "scene"));
@@ -1575,6 +1647,7 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         imageTextButton = new ImageTextButton("Left", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the middle left.", main.getTooltipManager(), skin, "scene"));
@@ -1587,6 +1660,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
         
         imageTextButton = new ImageTextButton("Center", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the center.", main.getTooltipManager(), skin, "scene"));
@@ -1599,6 +1673,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Right", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the middle right.", main.getTooltipManager(), skin, "scene"));
@@ -1612,6 +1687,7 @@ public class DialogSceneComposer extends Dialog {
         
         table.row();
         imageTextButton = new ImageTextButton("Bottom-Left", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the bottom left.", main.getTooltipManager(), skin, "scene"));
@@ -1624,6 +1700,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Bottom", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the bottom center.", main.getTooltipManager(), skin, "scene"));
@@ -1636,6 +1713,7 @@ public class DialogSceneComposer extends Dialog {
         buttonGroup.add(imageTextButton);
     
         imageTextButton = new ImageTextButton("Bottom-Right", skin, "scene-checkbox-colored");
+        imageTextButton.setProgrammaticChangeEvents(false);
         table.add(imageTextButton);
         imageTextButton.addListener(main.getHandListener());
         imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the bottom right.", main.getTooltipManager(), skin, "scene"));
