@@ -1,28 +1,41 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.ray3k.skincomposer.dialog.DialogSceneComposer;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 
 public class TableNameUndoable implements  SceneComposerUndoable {
-    private Table table;
+    private DialogSceneComposerModel.SimTable table;
     private String name;
     private String previousName;
+    private DialogSceneComposer dialog;
     
     public TableNameUndoable(String name) {
-        var dialog = DialogSceneComposer.dialog;
-        table = (Table) dialog.selectedObject;
+        dialog = DialogSceneComposer.dialog;
+        table = (DialogSceneComposerModel.SimTable) dialog.simActor;
         this.name = name;
-        previousName = table.getName();
+        previousName = table.name;
     }
     
     @Override
     public void undo() {
-        table.setName(previousName);
+        table.name = previousName;
+        
+        if (dialog.simActor != table) {
+            dialog.simActor = table;
+            dialog.populateProperties();
+        }
+        dialog.populatePath();
     }
     
     @Override
     public void redo() {
-        table.setName(name);
+        table.name = name;
+        
+        if (dialog.simActor != table) {
+            dialog.simActor = table;
+            dialog.populateProperties();
+        }
+        dialog.populatePath();
     }
     
     @Override

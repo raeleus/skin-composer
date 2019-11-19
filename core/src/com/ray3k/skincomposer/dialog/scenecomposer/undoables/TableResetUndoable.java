@@ -1,53 +1,59 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.dialog.DialogSceneComposer;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 
 public class TableResetUndoable implements SceneComposerUndoable {
-    private Table table;
-    private float previousPaddingLeft, previousPaddingRight, previousPaddingTop, previousPaddingBottom;
-    private String name;
+    private DialogSceneComposerModel.SimTable table;
+    private float previousPadLeft, previousPadRight, previousPadTop, previousPadBottom;
     private String previousName;
-    private ColorData colorData;
     private ColorData previousColorData;
-    private ObjectMap<String, Object> objectMap;
-    private DrawableData previousDrawableData;
+    private DrawableData previousBackground;
     private int previousAlignment;
+    private DialogSceneComposer dialog;
     
     public TableResetUndoable() {
-        var dialog = DialogSceneComposer.dialog;
-        table = (Table) dialog.selectedObject;
-        previousName = table.getName();
-        previousPaddingLeft = table.getPadLeft();
-        previousPaddingRight = table.getPadRight();
-        previousPaddingTop = table.getPadTop();
-        previousPaddingBottom = table.getPadBottom();
-        objectMap = (ObjectMap<String, Object>) table.getUserObject();
-        previousColorData = (ColorData) objectMap.get("color");
-        previousDrawableData = (DrawableData) objectMap.get("background");
-        previousAlignment = table.getAlign();
+        dialog = DialogSceneComposer.dialog;
+        table = (DialogSceneComposerModel.SimTable) dialog.simActor;
+        previousName = table.name;
+        previousPadLeft = table.padLeft;
+        previousPadRight = table.padRight;
+        previousPadTop = table.padTop;
+        previousPadBottom = table.padBottom;
+        previousColorData = table.color;
+        previousBackground = table.background;
+        previousAlignment = table.alignment;
     }
     
     @Override
     public void undo() {
-        table.pad(previousPaddingTop, previousPaddingLeft, previousPaddingBottom, previousPaddingRight);
-        table.setName(previousName);
-        table.setColor(previousColorData == null ? Color.WHITE : previousColorData.color);
-        objectMap.put("color", previousColorData);
-        objectMap.put("background", previousDrawableData);
-        table.setBackground(previousDrawableData == null ? null : Main.main.getAtlasData().getDrawablePairs().get(previousDrawableData));
-        table.align(previousAlignment);
+        table.padLeft = previousPadLeft;
+        table.padRight = previousPadRight;
+        table.padTop = previousPadTop;
+        table.padBottom = previousPadBottom;
+        table.name = previousName;
+        table.color = previousColorData;
+        table.background = previousBackground;
+        table.alignment = previousAlignment;
+    
+        if (dialog.simActor != table) {
+            dialog.simActor = table;
+            dialog.populateProperties();
+            dialog.populatePath();
+        }
     }
     
     @Override
     public void redo() {
         table.reset();
-        objectMap.clear();
+    
+        if (dialog.simActor != table) {
+            dialog.simActor = table;
+            dialog.populateProperties();
+            dialog.populatePath();
+        }
     }
     
     @Override

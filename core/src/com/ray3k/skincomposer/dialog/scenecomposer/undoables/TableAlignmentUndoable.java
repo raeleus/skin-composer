@@ -1,29 +1,43 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.dialog.DialogSceneComposer;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 
 public class TableAlignmentUndoable implements SceneComposerUndoable {
-    private Table table;
+    private DialogSceneComposerModel.SimTable table;
     private int alignment;
     private int previousAlignment;
+    private DialogSceneComposer dialog;
     
     public TableAlignmentUndoable(int alignment) {
+        dialog = DialogSceneComposer.dialog;
+        
         this.alignment = alignment;
-        var dialog = DialogSceneComposer.dialog;
-        table = (Table) dialog.selectedObject;
-        previousAlignment = table.getAlign();
+        table = (DialogSceneComposerModel.SimTable) dialog.simActor;
+        previousAlignment = table.alignment;
     }
     
     @Override
     public void undo() {
-        table.align(previousAlignment);
+        table.alignment = previousAlignment;
+        
+        if (dialog.simActor != table) {
+            dialog.simActor = table;
+            dialog.populateProperties();
+            dialog.populatePath();
+        }
     }
     
     @Override
     public void redo() {
-        table.align(alignment);
+        table.alignment = alignment;
+        
+        if (dialog.simActor != table) {
+            dialog.simActor = table;
+            dialog.populateProperties();
+            dialog.populatePath();
+        }
     }
     
     @Override

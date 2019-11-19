@@ -36,7 +36,7 @@ public class DialogSceneComposer extends Dialog {
     private TextTooltip redoTooltip;
     private TextButton undoButton;
     private TextButton redoButton;
-    public Object selectedObject;
+    public DialogSceneComposerModel.SimActor simActor;
     private Table propertiesTable;
     private Table pathTable;
     
@@ -49,7 +49,7 @@ public class DialogSceneComposer extends Dialog {
         model = new DialogSceneComposerModel(this);
     
         mode = Mode.ROOT;
-        selectedObject = model.stage.getRoot();
+        simActor = model.root;
         
         setFillParent(true);
         
@@ -326,10 +326,10 @@ public class DialogSceneComposer extends Dialog {
         horizontalGroup.align(Align.top);
         root.add(horizontalGroup).grow();
         
-        if (selectedObject == model.stage.getRoot()) mode = Mode.ROOT;
-        else if (selectedObject instanceof Table) mode = Mode.TABLE;
-        else if (selectedObject instanceof Cell) mode = Mode.CELL;
-        else if (selectedObject instanceof TextButton) mode = Mode.TEXT_BUTTON;
+        if (simActor == model.root) mode = Mode.ROOT;
+        else if (simActor instanceof DialogSceneComposerModel.SimTable) mode = Mode.TABLE;
+        else if (simActor instanceof DialogSceneComposerModel.SimCell) mode = Mode.CELL;
+        else if (simActor instanceof DialogSceneComposerModel.SimTextButton) mode = Mode.TEXT_BUTTON;
         
         switch(mode) {
             case ROOT:
@@ -2333,19 +2333,14 @@ public class DialogSceneComposer extends Dialog {
         var root = pathTable;
         root.clear();
         
-        var objects = new Array<Object>();
-        objects.add(selectedObject);
+        var objects = new Array<DialogSceneComposerModel.SimActor>();
+        objects.add(simActor);
         
-        var object = selectedObject;
+        var object = simActor;
         
         while (object != null) {
-            if (object instanceof Actor) {
-                var actor = (Actor) object;
-                object = actor.getParent();
-                if (object != null) objects.add(object);
-            } else if (object instanceof Cell) {
-                var cell = (Cell) object;
-                object = cell.getTable();
+            if (object.parent != null) {
+                object = object.parent;
                 objects.add(object);
             } else {
                 object = null;
@@ -2355,21 +2350,14 @@ public class DialogSceneComposer extends Dialog {
         while (objects.size > 0) {
             object = objects.pop();
             
-            var type = object.getClass().getSimpleName();
-            var name = type;
-            if (object instanceof Actor) {
-                var actor = (Actor) object;
-                if (actor.getName() != null) name = actor.getName() + " (" + type + ")";
-            }
-            
-            var textButton = new TextButton(name, skin, "scene-small");
+            var textButton = new TextButton(object.toString(), skin, "scene-small");
             textButton.setUserObject(object);
             root.add(textButton);
             textButton.addListener(main.getHandListener());
             textButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    selectedObject = textButton.getUserObject();
+                    simActor = (DialogSceneComposerModel.SimActor) textButton.getUserObject();
                     populateProperties();
                     populatePath();
                 }
@@ -2387,9 +2375,9 @@ public class DialogSceneComposer extends Dialog {
         var scrollPane = new ScrollPane(popSubTable, skin, "scene");
         popTable.add(scrollPane).grow();
         
-        if (selectedObject instanceof Table) {
-            var table = (Table) selectedObject;
-            if (table.getCells().size > 0) {
+        if (simActor instanceof DialogSceneComposerModel.SimTable) {
+            var table = (DialogSceneComposerModel.SimTable) simActor;
+            if (table.cells.size > 0) {
                 var image = new Image(skin, "scene-icon-path-child-seperator");
                 root.add(image);
     
@@ -2398,9 +2386,9 @@ public class DialogSceneComposer extends Dialog {
                 textButton.addListener(main.getHandListener());
                 
                 int row = 0;
-                for (var cell : table.getCells()) {
-                    var textButton1 = new TextButton("Cell (" + cell.getColumn() + "," + cell.getRow() + ")", skin, "scene-small");
-                    if (cell.getRow() > row) {
+                for (var cell : table.cells) {
+                    var textButton1 = new TextButton(cell.toString(), skin, "scene-small");
+                    if (cell.row > row) {
                         popSubTable.row();
                         row++;
                     }
@@ -2409,7 +2397,7 @@ public class DialogSceneComposer extends Dialog {
                     textButton1.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
-                            selectedObject = cell;
+                            simActor = cell;
                             populateProperties();
                             populatePath();
                             popTable.hide();
@@ -2418,9 +2406,9 @@ public class DialogSceneComposer extends Dialog {
                 }
                 textButton.addListener(popTableClickListener);
             }
-        } else if (selectedObject instanceof Group) {
-            var group = (Group) selectedObject;
-            if (group.getChildren().size > 0) {
+        } else if (simActor instanceof DialogSceneComposerModel.SimGroup) {
+            var group = (DialogSceneComposerModel.SimGroup) simActor;
+            if (group.children.size > 0) {
                 var image = new Image(skin, "scene-icon-path-child-seperator");
                 root.add(image);
     
@@ -2428,20 +2416,14 @@ public class DialogSceneComposer extends Dialog {
                 root.add(textButton);
                 textButton.addListener(main.getHandListener());
     
-                for (var child : group.getChildren()) {
-                    var type = child.getClass().getSimpleName();
-                    var name = type;
-                    if (child instanceof Actor) {
-                        var actor = (Actor) child;
-                        if (actor.getName() != null) name = actor.getName() + " (" + type + ")";
-                    }
-                    var textButton1 = new TextButton(name, skin, "scene-small");
+                for (var child : group.children) {
+                    var textButton1 = new TextButton(child.toString(), skin, "scene-small");
                     popSubTable.add(textButton1).row();
                     textButton1.addListener(main.getHandListener());
                     textButton1.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
-                            selectedObject = child;
+                            simActor = child;
                             populateProperties();
                             populatePath();
                             popTable.hide();

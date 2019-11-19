@@ -36,7 +36,7 @@ public class DialogSceneComposerEvents {
     }
     
     public void menuRefresh() {
-        System.out.println(dialog.model.stage.getRoot());
+    
     }
     
     public void menuClear() {
@@ -101,7 +101,7 @@ public class DialogSceneComposerEvents {
     }
     
     public void cellAddCellToLeft() {
-        processUndoable(new CellAddWidgetUndoable());
+        processUndoable(new CellAddCellToLeftUndoable());
     }
     
     public void cellAddCellToRight() {

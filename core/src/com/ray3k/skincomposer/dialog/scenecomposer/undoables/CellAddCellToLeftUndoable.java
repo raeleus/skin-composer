@@ -8,7 +8,7 @@ public class CellAddCellToLeftUndoable implements SceneComposerUndoable {
     
     @Override
     public void redo() {
-    
+
     }
     
     @Override
