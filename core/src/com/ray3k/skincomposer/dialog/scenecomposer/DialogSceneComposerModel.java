@@ -4,8 +4,11 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
+import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.dialog.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.undoables.SceneComposerUndoable;
+
+import java.util.Comparator;
 
 public class DialogSceneComposerModel {
     private DialogSceneComposer dialog;
@@ -82,6 +85,26 @@ public class DialogSceneComposerModel {
             padBottom = 0;
             alignment = Align.center;
         }
+        
+        public void sort() {
+            cells.sort(new Comparator<SimCell>() {
+                @Override
+                public int compare(SimCell o1, SimCell o2) {
+                    if (o2.row < o1.row) {
+                        return 1;
+                    } else if (o2.row > o1.row) {
+                        return -1;
+                    } else if (o2.column < o1.column) {
+                        return 1;
+                    } else if (o2.column > o1.column) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                }
+            });
+            System.out.println(cells);
+        }
     }
     
     public static class SimCell extends SimActor {
@@ -114,7 +137,7 @@ public class DialogSceneComposerModel {
     
         @Override
         public String toString() {
-            return "Cell (" + row + "," + column + ")";
+            return "Cell (" + column + "," + row + ")";
         }
         
         public void reset() {
@@ -148,6 +171,35 @@ public class DialogSceneComposerModel {
     }
     
     public static class SimTextButton extends SimActor {
-    
+        public String name;
+        public String text;
+        public StyleData style;
+        public boolean checked;
+        public boolean disabled;
+        public ColorData color;
+        public float padLeft;
+        public float padRight;
+        public float padTop;
+        public float padBottom;
+        public int alignment = Align.center;
+        
+        @Override
+        public String toString() {
+            return name == null ? "TextButton" : name + " (TextButton)";
+        }
+        
+        public void reset() {
+            name = null;
+            text = null;
+            style = null;
+            checked = false;
+            disabled = false;
+            color = null;
+            padLeft = 0;
+            padRight = 0;
+            padTop = 0;
+            padBottom = 0;
+            alignment = Align.center;
+        }
     }
 }

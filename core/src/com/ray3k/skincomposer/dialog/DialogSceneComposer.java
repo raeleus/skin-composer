@@ -1491,7 +1491,7 @@ public class DialogSceneComposer extends Dialog {
                 Spinner minimumHeight = popTable.findActor("minimum-height");
                 Spinner maximumWidth = popTable.findActor("maximum-width");
                 Spinner maximumHeight = popTable.findActor("maximum-height");
-                Spinner preferredWidth = popTable.findActor("preferrred-width");
+                Spinner preferredWidth = popTable.findActor("preferred-width");
                 Spinner preferredHeight = popTable.findActor("preferred-height");
                 events.cellSize((float) minimumWidth.getValue(), (float) minimumHeight.getValue(), (float) maximumWidth.getValue(), (float) maximumHeight.getValue(), (float) preferredWidth.getValue(), (float) preferredHeight.getValue());
             }
@@ -2430,6 +2430,30 @@ public class DialogSceneComposer extends Dialog {
                         }
                     });
                 }
+                textButton.addListener(popTableClickListener);
+            }
+        } else if (simActor instanceof DialogSceneComposerModel.SimCell) {
+            var cell = (DialogSceneComposerModel.SimCell) simActor;
+            if (cell.child != null) {
+                var image = new Image(skin, "scene-icon-path-child-seperator");
+                root.add(image);
+    
+                var textButton = new TextButton("Select Child", skin, "scene-small");
+                root.add(textButton);
+                textButton.addListener(main.getHandListener());
+    
+                var textButton1 = new TextButton(cell.child.toString(), skin, "scene-small");
+                popSubTable.add(textButton1);
+                textButton1.addListener(main.getHandListener());
+                textButton1.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        simActor = cell.child;
+                        populateProperties();
+                        populatePath();
+                        popTable.hide();
+                    }
+                });
                 textButton.addListener(popTableClickListener);
             }
         }

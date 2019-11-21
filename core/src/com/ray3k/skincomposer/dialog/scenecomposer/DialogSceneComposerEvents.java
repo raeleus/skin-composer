@@ -97,7 +97,7 @@ public class DialogSceneComposerEvents {
     }
     
     public void cellAddWidget(WidgetType widgetType) {
-        processUndoable(new CellAddWidgetUndoable());
+        processUndoable(new CellAddWidgetUndoable(widgetType));
     }
     
     public void cellAddCellToLeft() {
@@ -116,24 +116,24 @@ public class DialogSceneComposerEvents {
         processUndoable(new CellAddRowBelowUndoable());
     }
     
-    public void cellPaddingSpacing(float paddingLeft, float paddingRight, float paddingTop, float paddingBottom, float spacingLeft, float spacingRight, float spacingTop, float spacingBottom) {
-        processUndoable(new CellPaddingSpacingUndoable());
+    public void cellPaddingSpacing(float paddingLeft, float paddingRight, float paddingTop, float paddingBottom, float spaceLeft, float spaceRight, float spaceTop, float spaceBottom) {
+        processUndoable(new CellPaddingSpacingUndoable(paddingLeft, paddingRight, paddingTop, paddingBottom, spaceLeft, spaceRight, spaceTop, spaceBottom));
     }
     
     public void cellExpandFillGrow(boolean expandX, boolean expandY, boolean fillX, boolean fillY, boolean growX, boolean growY) {
-        processUndoable(new CellExpandFillGrowUndoable());
+        processUndoable(new CellExpandFillGrowUndoable(expandX, expandY, fillX, fillY, growX, growY));
     }
     
     public void cellAlignment(int alignment) {
-        processUndoable(new CellAlignmentUndoable());
+        processUndoable(new CellAlignmentUndoable(alignment));
     }
     
     public void cellSize(float minWidth, float minHeight, float maxWidth, float maxHeight, float preferredWidth, float preferredHeight) {
-        processUndoable(new CellSizeUndoable());
+        processUndoable(new CellSizeUndoable(minWidth, minHeight, maxWidth, maxHeight, preferredWidth, preferredHeight));
     }
     
     public void cellUniform(boolean uniformX, boolean uniformY) {
-        processUndoable(new CellUniformUndoable());
+        processUndoable(new CellUniformUndoable(uniformX, uniformY));
     }
     
     public void cellReset() {
