@@ -149,38 +149,42 @@ public class DialogSceneComposerEvents {
     }
     
     public void textButtonName(String name) {
-        processUndoable(new TextButtonNameUndoable());
+        processUndoable(new TextButtonNameUndoable(name));
     }
     
     public void textButtonText(String text) {
-        processUndoable(new TextButtonTextUndoable());
+        processUndoable(new TextButtonTextUndoable(text));
     }
     
-    public void textButtonStyle(StyleData styleData) {
-        processUndoable(new TextButtonStyleUndoable());
+    public void textButtonStyle(StyleData style) {
+        processUndoable(new TextButtonStyleUndoable(style));
     }
     
     public void textButtonChecked(boolean checked) {
-        processUndoable(new TextButtonCheckedUndoable());
+        processUndoable(new TextButtonCheckedUndoable(checked));
     }
     
     public void textButtonDisabled(boolean disabled) {
-        processUndoable(new TextButtonDisabledUndoable());
+        processUndoable(new TextButtonDisabledUndoable(disabled));
     }
     
     public void textButtonColor(ColorData colorData) {
-        processUndoable(new TextButtonColorUndoable());
+        processUndoable(new TextButtonColorUndoable(colorData));
     }
     
     public void textButtonPadding(float paddingLeft, float paddingRight, float paddingTop, float paddingBottom) {
-        processUndoable(new TextButtonPaddingUndoable());
+        processUndoable(new TextButtonPaddingUndoable(paddingLeft, paddingRight, paddingTop, paddingBottom));
     }
     
     public void textButtonAlign(int alignment) {
-        processUndoable(new TextButtonAlignUndoable());
+        processUndoable(new TextButtonAlignmentUndoable(alignment));
     }
     
     public void textButtonReset() {
         processUndoable(new TextButtonResetUndoable());
+    }
+    
+    public void textButtonDelete() {
+        processUndoable(new TextButtonDeleteUndoable());
     }
 }

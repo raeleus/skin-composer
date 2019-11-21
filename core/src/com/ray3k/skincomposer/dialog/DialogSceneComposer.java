@@ -539,6 +539,12 @@ public class DialogSceneComposer extends Dialog {
                 textButton.addListener(main.getHandListener());
                 textButton.addListener(textButtonResetListener());
                 textButton.addListener(new TextTooltip("Resets the settings of the TextButton to their defaults.", main.getTooltipManager(), skin, "scene"));
+    
+                textButton = new TextButton("Delete", skin, "scene-med");
+                horizontalGroup.addActor(textButton);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(textButtonDeleteListener());
+                textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
                 break;
         }
     }
@@ -967,6 +973,29 @@ public class DialogSceneComposer extends Dialog {
             }
         });
     
+        return popTableClickListener;
+    }
+    
+    private EventListener textButtonDeleteListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to delete this textButton?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("DELETE", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Removes this TextButton from its parent.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.textButtonDelete();
+            }
+        });
+        
         return popTableClickListener;
     }
     

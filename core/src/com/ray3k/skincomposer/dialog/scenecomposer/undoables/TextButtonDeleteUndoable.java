@@ -1,31 +1,29 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 
-import com.ray3k.skincomposer.data.ColorData;
-import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.dialog.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 
-public class TableDeleteUndoable implements SceneComposerUndoable {
-    private DialogSceneComposerModel.SimTable table;
+public class TextButtonDeleteUndoable implements SceneComposerUndoable {
+    private DialogSceneComposerModel.SimTextButton textButton;
     private DialogSceneComposerModel.SimActor parent;
     private DialogSceneComposer dialog;
     
-    public TableDeleteUndoable() {
+    public TextButtonDeleteUndoable() {
         dialog = DialogSceneComposer.dialog;
-        table = (DialogSceneComposerModel.SimTable) dialog.simActor;
-        parent = table.parent;
+        textButton = (DialogSceneComposerModel.SimTextButton) dialog.simActor;
+        parent = textButton.parent;
     }
     
     @Override
     public void undo() {
         if (parent instanceof DialogSceneComposerModel.SimCell) {
-            ((DialogSceneComposerModel.SimCell) parent).child = table;
+            ((DialogSceneComposerModel.SimCell) parent).child = textButton;
         } else if (parent instanceof DialogSceneComposerModel.SimGroup) {
-            ((DialogSceneComposerModel.SimGroup) parent).children.add(table);
+            ((DialogSceneComposerModel.SimGroup) parent).children.add(textButton);
         }
         
-        if (dialog.simActor != table) {
-            dialog.simActor = table;
+        if (dialog.simActor != textButton) {
+            dialog.simActor = textButton;
             dialog.populateProperties();
             dialog.populatePath();
         }
@@ -36,7 +34,7 @@ public class TableDeleteUndoable implements SceneComposerUndoable {
         if (parent instanceof DialogSceneComposerModel.SimCell) {
             ((DialogSceneComposerModel.SimCell) parent).child = null;
         } else if (parent instanceof DialogSceneComposerModel.SimGroup) {
-            ((DialogSceneComposerModel.SimGroup) parent).children.removeValue(table, true);
+            ((DialogSceneComposerModel.SimGroup) parent).children.removeValue(textButton, true);
         }
         
         if (dialog.simActor != parent) {
@@ -48,11 +46,11 @@ public class TableDeleteUndoable implements SceneComposerUndoable {
     
     @Override
     public String getRedoString() {
-        return "Redo \"Delete Table\"";
+        return "Redo \"Delete TextButton\"";
     }
     
     @Override
     public String getUndoString() {
-        return "Undo \"Delete Table\"";
+        return "Undo \"Delete TextButton\"";
     }
 }
