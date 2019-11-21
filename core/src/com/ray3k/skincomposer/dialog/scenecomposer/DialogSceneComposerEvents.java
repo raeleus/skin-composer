@@ -96,6 +96,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new TableResetUndoable());
     }
     
+    public void tableDelete() {
+        processUndoable(new TableDeleteUndoable());
+    }
+    
     public void cellAddWidget(WidgetType widgetType) {
         processUndoable(new CellAddWidgetUndoable(widgetType));
     }

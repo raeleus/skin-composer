@@ -369,12 +369,18 @@ public class DialogSceneComposer extends Dialog {
                 textButton.addListener(main.getHandListener());
                 textButton.addListener(tableAlignListener());
                 textButton.addListener(new TextTooltip("The alignment of the entire contents inside the table.", main.getTooltipManager(), skin, "scene"));
-        
+    
                 textButton = new TextButton("Reset", skin, "scene-med");
                 horizontalGroup.addActor(textButton);
                 textButton.addListener(main.getHandListener());
                 textButton.addListener(tableResetListener());
                 textButton.addListener(new TextTooltip("Resets all options back to their defaults.", main.getTooltipManager(), skin, "scene"));
+    
+                textButton = new TextButton("Delete", skin, "scene-med");
+                horizontalGroup.addActor(textButton);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(tableDeleteListener());
+                textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
                 break;
             case CELL:
                 textButton = new TextButton("Add Widget", skin, "scene-med");
@@ -1313,10 +1319,10 @@ public class DialogSceneComposer extends Dialog {
     private EventListener tableResetListener() {
         var popTableClickListener = new PopTable.PopTableClickListener(skin);
         var popTable = popTableClickListener.getPopTable();
-    
-        var label = new Label("Are you sure you want to reset this cell?", skin, "scene-label-colored");
+        
+        var label = new Label("Are you sure you want to reset this table?", skin, "scene-label-colored");
         popTable.add(label);
-    
+        
         popTable.row();
         var textButton = new TextButton("RESET", skin, "scene-small");
         popTable.add(textButton).minWidth(100);
@@ -1329,11 +1335,32 @@ public class DialogSceneComposer extends Dialog {
                 events.tableReset();
             }
         });
-    
+        
         return popTableClickListener;
     }
     
-    
+    private EventListener tableDeleteListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to delete this table?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("DELETE", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Removes this table from its parent.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.tableDelete();
+            }
+        });
+        
+        return popTableClickListener;
+    }
     
     private EventListener rootAddTableListener() {
         var popTableClickListener = new PopTable.PopTableClickListener(skin, "dark");
