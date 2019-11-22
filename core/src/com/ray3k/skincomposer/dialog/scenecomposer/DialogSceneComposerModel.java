@@ -5,7 +5,6 @@ import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleData;
-import com.ray3k.skincomposer.dialog.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.undoables.SceneComposerUndoable;
 
 import java.util.Comparator;

@@ -58,6 +58,7 @@ import com.ray3k.skincomposer.dialog.DialogFreeTypeFont.DialogFreeTypeFontListen
 import com.ray3k.skincomposer.dialog.DialogImageFont.ImageFontListener;
 import com.ray3k.skincomposer.dialog.DialogTenPatch.DialogTenPatchListener;
 import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 
 public class DialogFactory {
     private static DialogFactory instance;

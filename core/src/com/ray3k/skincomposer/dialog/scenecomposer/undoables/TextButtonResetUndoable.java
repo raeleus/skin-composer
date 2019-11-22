@@ -2,7 +2,7 @@ package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.StyleData;
-import com.ray3k.skincomposer.dialog.DialogSceneComposer;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 
 public class TextButtonResetUndoable implements SceneComposerUndoable {

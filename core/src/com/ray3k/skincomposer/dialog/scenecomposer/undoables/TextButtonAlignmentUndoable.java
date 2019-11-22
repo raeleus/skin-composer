@@ -1,7 +1,7 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.skincomposer.dialog.DialogSceneComposer;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 
 public class TextButtonAlignmentUndoable implements SceneComposerUndoable {

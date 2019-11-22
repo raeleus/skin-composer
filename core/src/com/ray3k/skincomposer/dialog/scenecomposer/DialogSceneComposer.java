@@ -1,4 +1,4 @@
-package com.ray3k.skincomposer.dialog;
+package com.ray3k.skincomposer.dialog.scenecomposer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -15,9 +15,8 @@ import com.ray3k.skincomposer.Spinner;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
-import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
-import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
+import com.ray3k.skincomposer.dialog.DialogDrawables;
+import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.utils.IntPair;
 
 public class DialogSceneComposer extends Dialog {
