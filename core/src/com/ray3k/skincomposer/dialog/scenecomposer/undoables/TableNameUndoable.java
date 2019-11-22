@@ -12,6 +12,9 @@ public class TableNameUndoable implements  SceneComposerUndoable {
     public TableNameUndoable(String name) {
         dialog = DialogSceneComposer.dialog;
         table = (DialogSceneComposerModel.SimTable) dialog.simActor;
+        if (name != null && name.equals("")) {
+            name = null;
+        }
         this.name = name;
         previousName = table.name;
     }

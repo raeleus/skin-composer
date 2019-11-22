@@ -41,11 +41,11 @@ public class TableColorUndoable implements SceneComposerUndoable {
     
     @Override
     public String getRedoString() {
-        return "Redo \"Table Color: " + color.getName() + "\"";
+        return "Redo \"Table Color: " + (color == null ? "No Color" : color.getName()) + "\"";
     }
     
     @Override
     public String getUndoString() {
-        return "Undo \"Table Color: " + color.getName() + "\"";
+        return "Undo \"Table Color: " + (color == null ? "No Color" : color.getName()) + "\"";
     }
 }
