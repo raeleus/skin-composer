@@ -45,16 +45,17 @@ public class DialogSceneComposerEvents {
     
     public void menuUndo() {
         dialog.model.undo();
-        dialog.updateUndoRedo();
+        dialog.updateMenuUndoRedo();
     }
     
     public void menuRedo() {
         dialog.model.redo();
-        dialog.updateUndoRedo();
+        dialog.updateMenuUndoRedo();
     }
     
-    public void menuMode() {
-    
+    public void menuView(DialogSceneComposer.View view) {
+        dialog.view = view;
+        dialog.updateMenuView();
     }
     
     public void menuHelp() {
@@ -65,7 +66,7 @@ public class DialogSceneComposerEvents {
         dialog.model.undoables.add(undoable);
         dialog.model.redoables.clear();
         undoable.redo();
-        dialog.updateUndoRedo();
+        dialog.updateMenuUndoRedo();
     }
     
     public void rootAddTable(int columns, int rows) {

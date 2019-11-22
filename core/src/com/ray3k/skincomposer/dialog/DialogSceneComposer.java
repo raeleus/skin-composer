@@ -30,12 +30,17 @@ public class DialogSceneComposer extends Dialog {
         TABLE, CELL, TREE, VERTICAL_GROUP
     }
     public Mode mode;
+    public enum View {
+        LIVE, EDIT, OUTLINE
+    }
+    public View view;
     public DialogSceneComposerEvents events;
     public DialogSceneComposerModel model;
     private TextTooltip undoTooltip;
     private TextTooltip redoTooltip;
     private TextButton undoButton;
     private TextButton redoButton;
+    private TextButton viewButton;
     public DialogSceneComposerModel.SimActor simActor;
     private Table propertiesTable;
     private Table pathTable;
@@ -49,6 +54,7 @@ public class DialogSceneComposer extends Dialog {
         model = new DialogSceneComposerModel(this);
     
         mode = Mode.ROOT;
+        view = View.LIVE;
         simActor = model.root;
         
         setFillParent(true);
@@ -179,49 +185,11 @@ public class DialogSceneComposer extends Dialog {
         image = new Image(skin, "scene-menu-divider");
         table.add(image).space(10);
     
-        textButton = new TextButton("Mode: Outline", skin, "scene-menu-button");
+        textButton = new TextButton("", skin, "scene-menu-button");
+        viewButton = textButton;
         table.add(textButton).expandX().right().space(5);
         textButton.addListener(main.getHandListener());
-        
-        var popTableClickListener = new PopTable.PopTableClickListener(skin);
-        textButton.addListener(popTableClickListener);
-        
-        var popTable = popTableClickListener.getPopTable();
-        label = new Label("Choose a mode:", skin, "scene-label-colored");
-        popTable.add(label);
-        
-        popTable.row();
-        textButton = new TextButton("Edit", skin, "scene-med");
-        popTable.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-            }
-        });
-    
-        popTable.row();
-        textButton = new TextButton("Live", skin, "scene-med");
-        popTable.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-            }
-        });
-    
-        popTable.row();
-        textButton = new TextButton("Outline", skin, "scene-med");
-        popTable.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-            }
-        });
+        textButton.addListener(menuViewListener());
     
         textButton = new TextButton("?", skin, "scene-menu-button");
         table.add(textButton);
@@ -284,10 +252,72 @@ public class DialogSceneComposer extends Dialog {
         
         populatePath();
         
-        updateUndoRedo();
+        updateMenuUndoRedo();
+        updateMenuView();
     }
     
-    public void updateUndoRedo() {
+    private EventListener menuViewListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        var label = new Label("Choose a view:", skin, "scene-label-colored");
+        popTable.add(label);
+    
+        popTable.row();
+        var textButton = new TextButton("Edit", skin, "scene-med");
+        popTable.add(textButton);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Widget highlights on mouse over. Clicks resolve widget selection.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.menuView(View.EDIT);
+            }
+        });
+    
+        popTable.row();
+        textButton = new TextButton("Live", skin, "scene-med");
+        popTable.add(textButton);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Widgets behave exactly as they do in a live libGDX project.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.menuView(View.LIVE);
+            }
+        });
+    
+        popTable.row();
+        textButton = new TextButton("Outline", skin, "scene-med");
+        popTable.add(textButton);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Debug outlines are enabled. Widget highlights on mouse over. Clicks resolve widget selection.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.menuView(View.OUTLINE);
+            }
+        });
+        return popTableClickListener;
+    }
+    
+    public void updateMenuView() {
+        switch(view) {
+            case EDIT:
+                viewButton.setText("View: Edit");
+                break;
+            case LIVE:
+                viewButton.setText("View: Live");
+                break;
+            case OUTLINE:
+                viewButton.setText("View: Outline");
+                break;
+        }
+    }
+    
+    public void updateMenuUndoRedo() {
         if (model.undoables.size > 0) {
             undoButton.setDisabled(false);
             undoTooltip.getActor().setText(model.undoables.peek().getUndoString());
