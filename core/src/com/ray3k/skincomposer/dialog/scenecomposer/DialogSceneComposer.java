@@ -414,10 +414,10 @@ public class DialogSceneComposer extends Dialog {
                 textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
                 break;
             case CELL:
-                textButton = new TextButton("Add Widget", skin, "scene-med");
+                textButton = new TextButton("Set Widget", skin, "scene-med");
                 horizontalGroup.addActor(textButton);
                 textButton.addListener(main.getHandListener());
-                textButton.addListener(cellAddWidgetListener());
+                textButton.addListener(cellSetWidgetListener());
                 textButton.addListener(new TextTooltip("Creates a new widget and sets it as the contents of this cell.", main.getTooltipManager(), skin, "scene"));
     
                 var table = new Table();
@@ -473,6 +473,12 @@ public class DialogSceneComposer extends Dialog {
                 table = new Table();
                 horizontalGroup.addActor(table);
     
+                textButton = new TextButton("Column Span", skin, "scene-med");
+                horizontalGroup.addActor(textButton);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(cellColSpanListener());
+                textButton.addListener(new TextTooltip("Sets the column span of the current cell.", main.getTooltipManager(), skin, "scene"));
+                
                 textButton = new TextButton("Padding / Spacing", skin, "scene-med");
                 horizontalGroup.addActor(textButton);
                 textButton.addListener(main.getHandListener());
@@ -1648,560 +1654,732 @@ public class DialogSceneComposer extends Dialog {
     }
     
     private EventListener cellUniformListener() {
-        var popTableClickListener = new PopTable.PopTableClickListener(skin);
-        var popTable = popTableClickListener.getPopTable();
-    
-        var changeListener = new ChangeListener() {
+        var simCell = (DialogSceneComposerModel.SimCell) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                ImageTextButton uniformX = popTable.findActor("uniform-x");
-                ImageTextButton uniformY = popTable.findActor("uniform-y");
-                events.cellUniform(uniformX.isChecked(), uniformY.isChecked());
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+    
+                var changeListener = new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        ImageTextButton uniformX = popTable.findActor("uniform-x");
+                        ImageTextButton uniformY = popTable.findActor("uniform-y");
+                        events.cellUniform(uniformX.isChecked(), uniformY.isChecked());
+                    }
+                };
+    
+                var table = new Table();
+                popTable.add(table);
+    
+                table.defaults().left().spaceRight(5);
+                var imageTextButton = new ImageTextButton("Uniform X", skin, "scene-checkbox-colored");
+                imageTextButton.setName("uniform-x");
+                imageTextButton.setChecked(simCell.uniformX);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("All cells with Uniform X will share the same width.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(changeListener);
+    
+                imageTextButton = new ImageTextButton("Uniform Y", skin, "scene-checkbox-colored");
+                imageTextButton.setName("uniform-y");
+                imageTextButton.setChecked(simCell.uniformY);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("All cells with Uniform Y will share the same height.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(changeListener);
             }
         };
         
-        var table = new Table();
-        popTable.add(table);
-    
-        table.defaults().left().spaceRight(5);
-        var imageTextButton = new ImageTextButton("Uniform X", skin, "scene-checkbox-colored");
-        imageTextButton.setName("uniform-x");
-        table.add(imageTextButton);
-        imageTextButton.addListener(main.getHandListener());
-        imageTextButton.addListener(new TextTooltip("All cells with Uniform X will share the same width.", main.getTooltipManager(), skin, "scene"));
-        imageTextButton.addListener(changeListener);
-    
-        imageTextButton = new ImageTextButton("Uniform Y", skin, "scene-checkbox-colored");
-        imageTextButton.setName("uniform-y");
-        table.add(imageTextButton);
-        imageTextButton.addListener(main.getHandListener());
-        imageTextButton.addListener(new TextTooltip("All cells with Uniform Y will share the same height.", main.getTooltipManager(), skin, "scene"));
-        imageTextButton.addListener(changeListener);
+        popTableClickListener.update();
     
         return popTableClickListener;
     }
     
     private EventListener cellSizeListener() {
-        var popTableClickListener = new PopTable.PopTableClickListener(skin);
-        var popTable = popTableClickListener.getPopTable();
-    
-        var table = new Table();
-        popTable.add(table);
-    
-        var changeListener = new ChangeListener() {
+        var simCell = (DialogSceneComposerModel.SimCell) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Spinner minimumWidth = popTable.findActor("minimum-width");
-                Spinner minimumHeight = popTable.findActor("minimum-height");
-                Spinner maximumWidth = popTable.findActor("maximum-width");
-                Spinner maximumHeight = popTable.findActor("maximum-height");
-                Spinner preferredWidth = popTable.findActor("preferred-width");
-                Spinner preferredHeight = popTable.findActor("preferred-height");
-                events.cellSize((float) minimumWidth.getValue(), (float) minimumHeight.getValue(), (float) maximumWidth.getValue(), (float) maximumHeight.getValue(), (float) preferredWidth.getValue(), (float) preferredHeight.getValue());
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+    
+                var table = new Table();
+                popTable.add(table);
+    
+                var changeListener = new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        Spinner minimumWidth = popTable.findActor("minimum-width");
+                        Spinner minimumHeight = popTable.findActor("minimum-height");
+                        Spinner maximumWidth = popTable.findActor("maximum-width");
+                        Spinner maximumHeight = popTable.findActor("maximum-height");
+                        Spinner preferredWidth = popTable.findActor("preferred-width");
+                        Spinner preferredHeight = popTable.findActor("preferred-height");
+                        events.cellSize((float) minimumWidth.getValue(), (float) minimumHeight.getValue(), (float) maximumWidth.getValue(), (float) maximumHeight.getValue(), (float) preferredWidth.getValue(), (float) preferredHeight.getValue());
+                    }
+                };
+    
+                var label = new Label("Minimum:", skin, "scene-label-colored");
+                table.add(label).colspan(2);
+    
+                table.row();
+                table.defaults().right().spaceRight(5);
+                label = new Label("Width:", skin, "scene-label-colored");
+                table.add(label);
+    
+                var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("minimum-width");
+                spinner.setValue(simCell.minWidth);
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The minimum width of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+    
+                table.row();
+                label = new Label("Height:", skin, "scene-label-colored");
+                table.add(label);
+    
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("minimum-height");
+                spinner.setValue(simCell.minHeight);
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The minimum height of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+    
+                var image = new Image(skin, "scene-menu-divider");
+                popTable.add(image).space(10).growY();
+    
+                table = new Table();
+                popTable.add(table);
+    
+                label = new Label("Maximum:", skin, "scene-label-colored");
+                table.add(label).colspan(2);
+    
+                table.row();
+                table.defaults().right().spaceRight(5);
+                label = new Label("Width:", skin, "scene-label-colored");
+                table.add(label);
+    
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("maximum-width");
+                spinner.setValue(simCell.maxWidth);
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The maximum width of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+    
+                table.row();
+                label = new Label("Height:", skin, "scene-label-colored");
+                table.add(label);
+    
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("maximum-height");
+                spinner.setValue(simCell.maxHeight);
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The maximum height of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+    
+                image = new Image(skin, "scene-menu-divider");
+                popTable.add(image).space(10).growY();
+    
+                table = new Table();
+                popTable.add(table);
+    
+                label = new Label("Preferred:", skin, "scene-label-colored");
+                table.add(label).colspan(2);
+    
+                table.row();
+                table.defaults().right().spaceRight(5);
+                label = new Label("Width:", skin, "scene-label-colored");
+                table.add(label);
+    
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("preferred-width");
+                spinner.setValue(simCell.preferredWidth);
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The preferred width of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+    
+                table.row();
+                label = new Label("Height:", skin, "scene-label-colored");
+                table.add(label);
+    
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("preferred-height");
+                spinner.setValue(simCell.preferredHeight);
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The preferred height of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
             }
         };
-    
-        var label = new Label("Minimum:", skin, "scene-label-colored");
-        table.add(label).colspan(2);
-    
-        table.row();
-        table.defaults().right().spaceRight(5);
-        label = new Label("Width:", skin, "scene-label-colored");
-        table.add(label);
-    
-        var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
-        spinner.setName("minimum-width");
-        table.add(spinner);
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.addListener(new TextTooltip("The minimum width of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
-        spinner.addListener(changeListener);
-    
-        table.row();
-        label = new Label("Height:", skin, "scene-label-colored");
-        table.add(label);
-    
-        spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
-        spinner.setName("minimum-height");
-        table.add(spinner);
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.addListener(new TextTooltip("The minimum height of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
-        spinner.addListener(changeListener);
-    
-        var image = new Image(skin, "scene-menu-divider");
-        popTable.add(image).space(10).growY();
-    
-        table = new Table();
-        popTable.add(table);
-    
-        label = new Label("Maximum:", skin, "scene-label-colored");
-        table.add(label).colspan(2);
-    
-        table.row();
-        table.defaults().right().spaceRight(5);
-        label = new Label("Width:", skin, "scene-label-colored");
-        table.add(label);
-    
-        spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
-        spinner.setName("maximum-width");
-        table.add(spinner);
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.addListener(new TextTooltip("The maximum width of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
-        spinner.addListener(changeListener);
-    
-        table.row();
-        label = new Label("Height:", skin, "scene-label-colored");
-        table.add(label);
-    
-        spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
-        spinner.setName("maximum-height");
-        table.add(spinner);
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.addListener(new TextTooltip("The maximum height of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
-        spinner.addListener(changeListener);
-    
-        image = new Image(skin, "scene-menu-divider");
-        popTable.add(image).space(10).growY();
-    
-        table = new Table();
-        popTable.add(table);
-    
-        label = new Label("Preferred:", skin, "scene-label-colored");
-        table.add(label).colspan(2);
-    
-        table.row();
-        table.defaults().right().spaceRight(5);
-        label = new Label("Width:", skin, "scene-label-colored");
-        table.add(label);
-    
-        spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
-        spinner.setName("preferred-width");
-        table.add(spinner);
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.addListener(new TextTooltip("The preferred width of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
-        spinner.addListener(changeListener);
-    
-        table.row();
-        label = new Label("Height:", skin, "scene-label-colored");
-        table.add(label);
-    
-        spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
-        spinner.setName("preferred-height");
-        table.add(spinner);
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.addListener(new TextTooltip("The preferred height of the contents of the cell.", main.getTooltipManager(), skin, "scene"));
-        spinner.addListener(changeListener);
+        
+        popTableClickListener.update();
     
         return popTableClickListener;
     }
     
     private EventListener cellAlignmentListener() {
-        var popTableClickListener = new PopTable.PopTableClickListener(skin);
-        var popTable = popTableClickListener.getPopTable();
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var simCell = (DialogSceneComposerModel.SimCell) simActor;
+                var popTable = getPopTable();
+                popTable.clearChildren();
     
-        var table = new Table();
-        popTable.add(table);
+                var table = new Table();
+                popTable.add(table);
     
-        var label = new Label("Alignment:", skin, "scene-label-colored");
-        table.add(label).colspan(3);
+                var label = new Label("Alignment:", skin, "scene-label-colored");
+                table.add(label).colspan(3);
+    
+                table.row();
+                table.defaults().space(10).left().uniformX();
+                var buttonGroup = new ButtonGroup<ImageTextButton>();
+                var imageTextButton = new ImageTextButton("Top-Left", skin, "scene-checkbox-colored");
+                var topLeft = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the top left.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAlignment(Align.topLeft);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+    
+                imageTextButton = new ImageTextButton("Top", skin, "scene-checkbox-colored");
+                var top = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the top center.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAlignment(Align.top);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+    
+                imageTextButton = new ImageTextButton("Top-Right", skin, "scene-checkbox-colored");
+                var topRight = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the top right.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAlignment(Align.topRight);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+    
+                table.row();
+                imageTextButton = new ImageTextButton("Left", skin, "scene-checkbox-colored");
+                var left = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the middle left.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAlignment(Align.left);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+    
+                imageTextButton = new ImageTextButton("Center", skin, "scene-checkbox-colored");
+                var center = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the center.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAlignment(Align.center);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+    
+                imageTextButton = new ImageTextButton("Right", skin, "scene-checkbox-colored");
+                var right = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the middle right.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAlignment(Align.right);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+    
+                table.row();
+                imageTextButton = new ImageTextButton("Bottom-Left", skin, "scene-checkbox-colored");
+                var bottomLeft = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the bottom left.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAlignment(Align.bottomLeft);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+    
+                imageTextButton = new ImageTextButton("Bottom", skin, "scene-checkbox-colored");
+                var bottom = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the bottom center.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAlignment(Align.bottom);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+    
+                imageTextButton = new ImageTextButton("Bottom-Right", skin, "scene-checkbox-colored");
+                var bottomRight = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the bottom right.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAlignment(Align.bottomRight);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+    
+                switch (simCell.alignment) {
+                    case Align.topLeft:
+                        topLeft.setChecked(true);
+                        break;
+                    case Align.top:
+                        top.setChecked(true);
+                        break;
+                    case Align.topRight:
+                        topRight.setChecked(true);
+                        break;
+                    case Align.right:
+                        right.setChecked(true);
+                        break;
+                    case Align.bottomRight:
+                        bottomRight.setChecked(true);
+                        break;
+                    case Align.bottom:
+                        bottom.setChecked(true);
+                        break;
+                    case Align.bottomLeft:
+                        bottomLeft.setChecked(true);
+                        break;
+                    case Align.left:
+                        left.setChecked(true);
+                        break;
+                    case Align.center:
+                        center.setChecked(true);
+                        break;
+                }
+            }
+        };
         
-        table.row();
-        table.defaults().space(10).left().uniformX();
-        var buttonGroup = new ButtonGroup<ImageTextButton>();
-        var imageTextButton = new ImageTextButton("Top-Left", skin, "scene-checkbox-colored");
-        imageTextButton.setProgrammaticChangeEvents(false);
-        table.add(imageTextButton);
-        imageTextButton.addListener(main.getHandListener());
-        imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the top left.", main.getTooltipManager(), skin, "scene"));
-        imageTextButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                events.cellAlignment(Align.topLeft);
-            }
-        });
-        buttonGroup.add(imageTextButton);
-    
-        imageTextButton = new ImageTextButton("Top", skin, "scene-checkbox-colored");
-        imageTextButton.setProgrammaticChangeEvents(false);
-        table.add(imageTextButton);
-        imageTextButton.addListener(main.getHandListener());
-        imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the top center.", main.getTooltipManager(), skin, "scene"));
-        imageTextButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                events.cellAlignment(Align.top);
-            }
-        });
-        buttonGroup.add(imageTextButton);
-    
-        imageTextButton = new ImageTextButton("Top-Right", skin, "scene-checkbox-colored");
-        imageTextButton.setProgrammaticChangeEvents(false);
-        table.add(imageTextButton);
-        imageTextButton.addListener(main.getHandListener());
-        imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the top right.", main.getTooltipManager(), skin, "scene"));
-        imageTextButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                events.cellAlignment(Align.topRight);
-            }
-        });
-        buttonGroup.add(imageTextButton);
-    
-        table.row();
-        imageTextButton = new ImageTextButton("Left", skin, "scene-checkbox-colored");
-        imageTextButton.setProgrammaticChangeEvents(false);
-        table.add(imageTextButton);
-        imageTextButton.addListener(main.getHandListener());
-        imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the middle left.", main.getTooltipManager(), skin, "scene"));
-        imageTextButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                events.cellAlignment(Align.left);
-            }
-        });
-        buttonGroup.add(imageTextButton);
-        
-        imageTextButton = new ImageTextButton("Center", skin, "scene-checkbox-colored");
-        imageTextButton.setProgrammaticChangeEvents(false);
-        table.add(imageTextButton);
-        imageTextButton.addListener(main.getHandListener());
-        imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the center.", main.getTooltipManager(), skin, "scene"));
-        imageTextButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                events.cellAlignment(Align.center);
-            }
-        });
-        buttonGroup.add(imageTextButton);
-    
-        imageTextButton = new ImageTextButton("Right", skin, "scene-checkbox-colored");
-        imageTextButton.setProgrammaticChangeEvents(false);
-        table.add(imageTextButton);
-        imageTextButton.addListener(main.getHandListener());
-        imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the middle right.", main.getTooltipManager(), skin, "scene"));
-        imageTextButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                events.cellAlignment(Align.right);
-            }
-        });
-        buttonGroup.add(imageTextButton);
-        
-        table.row();
-        imageTextButton = new ImageTextButton("Bottom-Left", skin, "scene-checkbox-colored");
-        imageTextButton.setProgrammaticChangeEvents(false);
-        table.add(imageTextButton);
-        imageTextButton.addListener(main.getHandListener());
-        imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the bottom left.", main.getTooltipManager(), skin, "scene"));
-        imageTextButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                events.cellAlignment(Align.bottomLeft);
-            }
-        });
-        buttonGroup.add(imageTextButton);
-    
-        imageTextButton = new ImageTextButton("Bottom", skin, "scene-checkbox-colored");
-        imageTextButton.setProgrammaticChangeEvents(false);
-        table.add(imageTextButton);
-        imageTextButton.addListener(main.getHandListener());
-        imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the bottom center.", main.getTooltipManager(), skin, "scene"));
-        imageTextButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                events.cellAlignment(Align.bottom);
-            }
-        });
-        buttonGroup.add(imageTextButton);
-    
-        imageTextButton = new ImageTextButton("Bottom-Right", skin, "scene-checkbox-colored");
-        imageTextButton.setProgrammaticChangeEvents(false);
-        table.add(imageTextButton);
-        imageTextButton.addListener(main.getHandListener());
-        imageTextButton.addListener(new TextTooltip("Align the contents of the cell to the bottom right.", main.getTooltipManager(), skin, "scene"));
-        imageTextButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                events.cellAlignment(Align.bottomRight);
-            }
-        });
-        buttonGroup.add(imageTextButton);
+        popTableClickListener.update();
     
         return popTableClickListener;
     }
     
     private EventListener cellExpandFillGrowListener() {
-        var popTableClickListener = new PopTable.PopTableClickListener(skin);
-        var popTable = popTableClickListener.getPopTable();
-        var expandX = new ImageTextButton("Expand X", skin, "scene-checkbox-colored");
-        var expandY = new ImageTextButton("Expand Y", skin, "scene-checkbox-colored");
-        var fillX = new ImageTextButton("Fill X", skin, "scene-checkbox-colored");
-        var fillY = new ImageTextButton("Fill Y", skin, "scene-checkbox-colored");
-        var growX = new ImageTextButton("Grow X", skin, "scene-checkbox-colored");
-        var growY = new ImageTextButton("Grow Y", skin, "scene-checkbox-colored");
-    
-        var changeListener = new ChangeListener() {
+        var simCell = (DialogSceneComposerModel.SimCell) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                events.cellExpandFillGrow(expandX.isChecked(), expandY.isChecked(), fillX.isChecked(), fillY.isChecked(), growX.isChecked(), growY.isChecked());
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var expandX = new ImageTextButton("Expand X", skin, "scene-checkbox-colored");
+                var expandY = new ImageTextButton("Expand Y", skin, "scene-checkbox-colored");
+                var fillX = new ImageTextButton("Fill X", skin, "scene-checkbox-colored");
+                var fillY = new ImageTextButton("Fill Y", skin, "scene-checkbox-colored");
+                var growX = new ImageTextButton("Grow X", skin, "scene-checkbox-colored");
+                var growY = new ImageTextButton("Grow Y", skin, "scene-checkbox-colored");
+    
+                var changeListener = new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellExpandFillGrow(expandX.isChecked(), expandY.isChecked(), fillX.isChecked(), fillY.isChecked(), growX.isChecked(), growY.isChecked());
+                    }
+                };
+    
+                var table = new Table();
+                popTable.add(table);
+    
+                table.defaults().left().spaceRight(5);
+                expandX.setChecked(simCell.expandX);
+                expandX.setProgrammaticChangeEvents(false);
+                table.add(expandX);
+                expandX.addListener(main.getHandListener());
+                expandX.addListener(new TextTooltip("Expands the width of the cell to the available space.", main.getTooltipManager(), skin, "scene"));
+                expandX.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        if (expandX.isChecked() && fillX.isChecked()) {
+                            growX.setChecked(true);
+                        } else {
+                            growX.setChecked(false);
+                        }
+                    }
+                });
+                expandX.addListener(changeListener);
+
+                expandY.setChecked(simCell.expandY);
+                expandY.setProgrammaticChangeEvents(false);
+                table.add(expandY);
+                expandY.addListener(main.getHandListener());
+                expandY.addListener(new TextTooltip("Expands the height of the cell to the available space.", main.getTooltipManager(), skin, "scene"));
+                expandY.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        if (expandY.isChecked() && fillY.isChecked()) {
+                            growY.setChecked(true);
+                        } else {
+                            growY.setChecked(false);
+                        }
+                    }
+                });
+                expandY.addListener(changeListener);
+    
+                table.row();
+                fillX.setChecked(simCell.fillX);
+                fillX.setProgrammaticChangeEvents(false);
+                table.add(fillX);
+                fillX.addListener(main.getHandListener());
+                fillX.addListener(new TextTooltip("Stretches the contents to fill the width of the cell.", main.getTooltipManager(), skin, "scene"));
+                fillX.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        if (expandX.isChecked() && fillX.isChecked()) {
+                            growX.setChecked(true);
+                        } else {
+                            growX.setChecked(false);
+                        }
+                    }
+                });
+                fillX.addListener(changeListener);
+    
+                fillY.setChecked(simCell.fillY);
+                fillY.setProgrammaticChangeEvents(false);
+                table.add(fillY);
+                fillY.addListener(main.getHandListener());
+                fillY.addListener(new TextTooltip("Stretches the contents to fill the height of the cell.", main.getTooltipManager(), skin, "scene"));
+                fillY.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        if (expandY.isChecked() && fillY.isChecked()) {
+                            growY.setChecked(true);
+                        } else {
+                            growY.setChecked(false);
+                        }
+                    }
+                });
+                fillY.addListener(changeListener);
+    
+                table.row();
+                growX.setChecked(simCell.growX);
+                growX.setProgrammaticChangeEvents(false);
+                table.add(growX);
+                growX.addListener(main.getHandListener());
+                growX.addListener(new TextTooltip("Sets the cell to expand and fill across the available width.", main.getTooltipManager(), skin, "scene"));
+                growX.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        expandX.setChecked(growX.isChecked());
+                        fillX.setChecked(growX.isChecked());
+                    }
+                });
+                growX.addListener(changeListener);
+    
+                growY.setChecked(simCell.growY);
+                growY.setProgrammaticChangeEvents(false);
+                table.add(growY);
+                growY.addListener(main.getHandListener());
+                growY.addListener(new TextTooltip("Sets the cell to expand and fill across the available height.", main.getTooltipManager(), skin, "scene"));
+                growY.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        expandY.setChecked(growY.isChecked());
+                        fillY.setChecked(growY.isChecked());
+                    }
+                });
+                growY.addListener(changeListener);
             }
         };
         
-        var table = new Table();
-        popTable.add(table);
-
-        table.defaults().left().spaceRight(5);
-        expandX.setProgrammaticChangeEvents(false);
-        table.add(expandX);
-        expandX.addListener(main.getHandListener());
-        expandX.addListener(new TextTooltip("Expands the width of the cell to the available space.", main.getTooltipManager(), skin, "scene"));
-        expandX.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if (expandX.isChecked() && fillX.isChecked()) {
-                    growX.setChecked(true);
-                } else {
-                    growX.setChecked(false);
-                }
-            }
-        });
-        expandX.addListener(changeListener);
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
     
-        expandY.setProgrammaticChangeEvents(false);
-        table.add(expandY);
-        expandY.addListener(main.getHandListener());
-        expandY.addListener(new TextTooltip("Expands the height of the cell to the available space.", main.getTooltipManager(), skin, "scene"));
-        expandY.addListener(new ChangeListener() {
+    private EventListener cellColSpanListener() {
+        var simCell = (DialogSceneComposerModel.SimCell) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if (expandY.isChecked() && fillY.isChecked()) {
-                    growY.setChecked(true);
-                } else {
-                    growY.setChecked(false);
-                }
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                
+                update();
             }
-        });
-        expandY.addListener(changeListener);
-    
-        table.row();
-        fillX.setProgrammaticChangeEvents(false);
-        table.add(fillX);
-        fillX.addListener(main.getHandListener());
-        fillX.addListener(new TextTooltip("Stretches the contents to fill the width of the cell.", main.getTooltipManager(), skin, "scene"));
-        fillX.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if (expandX.isChecked() && fillX.isChecked()) {
-                    growX.setChecked(true);
-                } else {
-                    growX.setChecked(false);
-                }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var table = new Table();
+                popTable.add(table);
+                
+                var label = new Label("Column Span:", skin, "scene-label-colored");
+                table.add(label).colspan(2);
+                
+                table.row();
+                
+                var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setValue(simCell.colSpan);
+                spinner.setMinimum(1);
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The column span of the cell.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellColSpan(spinner.getValueAsInt());
+                    }
+                });
             }
-        });
-        fillX.addListener(changeListener);
-    
-        fillY.setProgrammaticChangeEvents(false);
-        table.add(fillY);
-        fillY.addListener(main.getHandListener());
-        fillY.addListener(new TextTooltip("Stretches the contents to fill the height of the cell.", main.getTooltipManager(), skin, "scene"));
-        fillY.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if (expandY.isChecked() && fillY.isChecked()) {
-                    growY.setChecked(true);
-                } else {
-                    growY.setChecked(false);
-                }
-            }
-        });
-        fillY.addListener(changeListener);
-    
-        table.row();
-        growX.setProgrammaticChangeEvents(false);
-        table.add(growX);
-        growX.addListener(main.getHandListener());
-        growX.addListener(new TextTooltip("Sets the cell to expand and fill across the available width.", main.getTooltipManager(), skin, "scene"));
-        growX.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                expandX.setChecked(growX.isChecked());
-                fillX.setChecked(growX.isChecked());
-            }
-        });
-        growX.addListener(changeListener);
-    
-        growY.setProgrammaticChangeEvents(false);
-        table.add(growY);
-        growY.addListener(main.getHandListener());
-        growY.addListener(new TextTooltip("Sets the cell to expand and fill across the available height.", main.getTooltipManager(), skin, "scene"));
-        growY.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                expandY.setChecked(growY.isChecked());
-                fillY.setChecked(growY.isChecked());
-            }
-        });
-        growY.addListener(changeListener);
+        };
+        
+        popTableClickListener.update();
         
         return popTableClickListener;
     }
     
     private EventListener cellPaddingSpacingListener() {
-        var popTableClickListener = new PopTable.PopTableClickListener(skin);
-        var popTable = popTableClickListener.getPopTable();
-        
-        var changeListener = new ChangeListener() {
+        var simCell = (DialogSceneComposerModel.SimCell) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Spinner paddingLeft = popTable.findActor("padding-left");
-                Spinner paddingRight = popTable.findActor("padding-right");
-                Spinner paddingTop = popTable.findActor("padding-top");
-                Spinner paddingBottom = popTable.findActor("padding-bottom");
-                Spinner spacingLeft = popTable.findActor("spacing-left");
-                Spinner spacingRight = popTable.findActor("spacing-right");
-                Spinner spacingTop = popTable.findActor("spacing-top");
-                Spinner spacingBottom = popTable.findActor("spacing-bottom");
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
                 
-                events.cellPaddingSpacing((float) paddingLeft.getValue(), (float) paddingRight.getValue(), (float) paddingTop.getValue(), (float) paddingBottom.getValue(), (float) spacingLeft.getValue(), (float) spacingRight.getValue(), (float) spacingTop.getValue(), (float) spacingBottom.getValue());
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+    
+                var changeListener = new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        Spinner paddingLeft = popTable.findActor("padding-left");
+                        Spinner paddingRight = popTable.findActor("padding-right");
+                        Spinner paddingTop = popTable.findActor("padding-top");
+                        Spinner paddingBottom = popTable.findActor("padding-bottom");
+                        Spinner spacingLeft = popTable.findActor("spacing-left");
+                        Spinner spacingRight = popTable.findActor("spacing-right");
+                        Spinner spacingTop = popTable.findActor("spacing-top");
+                        Spinner spacingBottom = popTable.findActor("spacing-bottom");
+            
+                        events.cellPaddingSpacing((float) paddingLeft.getValue(), (float) paddingRight.getValue(), (float) paddingTop.getValue(), (float) paddingBottom.getValue(), (float) spacingLeft.getValue(), (float) spacingRight.getValue(), (float) spacingTop.getValue(), (float) spacingBottom.getValue());
+                    }
+                };
+    
+                var table = new Table();
+                popTable.add(table);
+    
+                var label = new Label("Padding:", skin, "scene-label-colored");
+                table.add(label).colspan(2);
+    
+                table.row();
+                table.defaults().right().spaceRight(5);
+                label = new Label("Left:", skin, "scene-label-colored");
+                table.add(label);
+    
+                var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setValue(simCell.padLeft);
+                spinner.setName("padding-left");
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The padding to the left of the cell. Stacks with other cell padding.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+    
+                table.row();
+                label = new Label("Right:", skin, "scene-label-colored");
+                table.add(label);
+    
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setValue(simCell.padRight);
+                spinner.setName("padding-right");
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The padding to the right of the cell. Stacks with other cell padding.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+    
+                table.row();
+                label = new Label("Top:", skin, "scene-label-colored");
+                table.add(label);
+    
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setValue(simCell.padTop);
+                spinner.setName("padding-top");
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The padding to the top of the cell. Stacks with other cell padding.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+    
+                table.row();
+                label = new Label("Bottom:", skin, "scene-label-colored");
+                table.add(label);
+    
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setValue(simCell.padBottom);
+                spinner.setName("padding-bottom");
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The padding to the bottom of the cell. Stacks with other cell padding.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+    
+                var image = new Image(skin, "scene-menu-divider");
+                popTable.add(image).space(10).growY();
+    
+                table = new Table();
+                popTable.add(table);
+    
+                label = new Label("Spacing:", skin, "scene-label-colored");
+                table.add(label).colspan(2);
+    
+                table.row();
+                table.defaults().right().spaceRight(5);
+                label = new Label("Left:", skin, "scene-label-colored");
+                table.add(label);
+    
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setValue(simCell.spaceLeft);
+                spinner.setName("spacing-left");
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The spacing to the left of the cell. Does not stack with other cell spacing.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+    
+                table.row();
+                label = new Label("Right:", skin, "scene-label-colored");
+                table.add(label);
+    
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setValue(simCell.spaceRight);
+                spinner.setName("spacing-right");
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The spacing to the right of the cell. Does not stack with other cell spacing.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+    
+                table.row();
+                label = new Label("Top:", skin, "scene-label-colored");
+                table.add(label);
+    
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setValue(simCell.spaceTop);
+                spinner.setName("spacing-top");
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The spacing to the top of the cell. Does not stack with other cell spacing.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+    
+                table.row();
+                label = new Label("Bottom:", skin, "scene-label-colored");
+                table.add(label);
+    
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setValue(simCell.spaceBottom);
+                spinner.setName("spacing-bottom");
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The spacing to the bottom of the cell. Does not stack with other cell spacing.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
             }
         };
         
-        var table = new Table();
-        popTable.add(table);
-        
-        var label = new Label("Padding:", skin, "scene-label-colored");
-        table.add(label).colspan(2);
-    
-        table.row();
-        table.defaults().right().spaceRight(5);
-        label = new Label("Left:", skin, "scene-label-colored");
-        table.add(label);
-    
-        var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
-        spinner.setName("padding-left");
-        table.add(spinner);
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.addListener(new TextTooltip("The padding to the left of the cell. Stacks with other cell padding.", main.getTooltipManager(), skin, "scene"));
-        spinner.addListener(changeListener);
-        
-        table.row();
-        label = new Label("Right:", skin, "scene-label-colored");
-        table.add(label);
-    
-        spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
-        spinner.setName("padding-right");
-        table.add(spinner);
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.addListener(new TextTooltip("The padding to the right of the cell. Stacks with other cell padding.", main.getTooltipManager(), skin, "scene"));
-        spinner.addListener(changeListener);
-    
-        table.row();
-        label = new Label("Top:", skin, "scene-label-colored");
-        table.add(label);
-    
-        spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
-        spinner.setName("padding-top");
-        table.add(spinner);
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.addListener(new TextTooltip("The padding to the top of the cell. Stacks with other cell padding.", main.getTooltipManager(), skin, "scene"));
-        spinner.addListener(changeListener);
-    
-        table.row();
-        label = new Label("Bottom:", skin, "scene-label-colored");
-        table.add(label);
-    
-        spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
-        spinner.setName("padding-bottom");
-        table.add(spinner);
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.addListener(new TextTooltip("The padding to the bottom of the cell. Stacks with other cell padding.", main.getTooltipManager(), skin, "scene"));
-        spinner.addListener(changeListener);
-    
-        var image = new Image(skin, "scene-menu-divider");
-        popTable.add(image).space(10).growY();
-        
-        table = new Table();
-        popTable.add(table);
-    
-        label = new Label("Spacing:", skin, "scene-label-colored");
-        table.add(label).colspan(2);
-    
-        table.row();
-        table.defaults().right().spaceRight(5);
-        label = new Label("Left:", skin, "scene-label-colored");
-        table.add(label);
-    
-        spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
-        spinner.setName("spacing-left");
-        table.add(spinner);
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.addListener(new TextTooltip("The spacing to the left of the cell. Does not stack with other cell spacing.", main.getTooltipManager(), skin, "scene"));
-        spinner.addListener(changeListener);
-    
-        table.row();
-        label = new Label("Right:", skin, "scene-label-colored");
-        table.add(label);
-    
-        spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
-        spinner.setName("spacing-right");
-        table.add(spinner);
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.addListener(new TextTooltip("The spacing to the right of the cell. Does not stack with other cell spacing.", main.getTooltipManager(), skin, "scene"));
-        spinner.addListener(changeListener);
-    
-        table.row();
-        label = new Label("Top:", skin, "scene-label-colored");
-        table.add(label);
-    
-        spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
-        spinner.setName("spacing-top");
-        table.add(spinner);
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.addListener(new TextTooltip("The spacing to the top of the cell. Does not stack with other cell spacing.", main.getTooltipManager(), skin, "scene"));
-        spinner.addListener(changeListener);
-    
-        table.row();
-        label = new Label("Bottom:", skin, "scene-label-colored");
-        table.add(label);
-    
-        spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
-        spinner.setName("spacing-bottom");
-        table.add(spinner);
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.addListener(new TextTooltip("The spacing to the bottom of the cell. Does not stack with other cell spacing.", main.getTooltipManager(), skin, "scene"));
-        spinner.addListener(changeListener);
+        popTableClickListener.update();
         
         return popTableClickListener;
     }
     
-    private PopTable.PopTableClickListener cellAddWidgetListener() {
+    private PopTable.PopTableClickListener cellSetWidgetListener() {
         var table = new Table();
         var scrollPane = new ScrollPane(table, skin, "scene");
         var scrollFocus = scrollPane;
@@ -2244,8 +2422,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.BUTTON);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.BUTTON, popTable);
             }
         });
     
@@ -2257,8 +2434,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.CHECK_BOX);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.CHECK_BOX, popTable);
             }
         });
     
@@ -2270,8 +2446,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.IMAGE);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.IMAGE, popTable);
             }
         });
     
@@ -2283,8 +2458,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.IMAGE_BUTTON);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.IMAGE_BUTTON, popTable);
             }
         });
     
@@ -2296,8 +2470,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.IMAGE_TEXT_BUTTON);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.IMAGE_TEXT_BUTTON, popTable);
             }
         });
     
@@ -2309,8 +2482,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.LABEL);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.LABEL, popTable);
             }
         });
     
@@ -2322,8 +2494,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.LIST);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.LIST, popTable);
             }
         });
     
@@ -2335,8 +2506,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.PROGRESS_BAR);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.PROGRESS_BAR, popTable);
             }
         });
     
@@ -2348,8 +2518,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.SELECT_BOX);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.SELECT_BOX, popTable);
             }
         });
     
@@ -2361,8 +2530,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.SLIDER);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.SLIDER, popTable);
             }
         });
     
@@ -2374,8 +2542,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.TEXT_BUTTON);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.TEXT_BUTTON, popTable);
             }
         });
     
@@ -2387,8 +2554,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.TEXT_FIELD);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.TEXT_FIELD, popTable);
             }
         });
     
@@ -2400,8 +2566,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.TEXT_AREA);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.TEXT_AREA, popTable);
             }
         });
     
@@ -2413,8 +2578,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.TOUCH_PAD);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.TOUCH_PAD, popTable);
             }
         });
     
@@ -2434,8 +2598,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.CONTAINER);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.CONTAINER, popTable);
             }
         });
         
@@ -2447,8 +2610,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.HORIZONTAL_GROUP);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.HORIZONTAL_GROUP, popTable);
             }
         });
     
@@ -2460,8 +2622,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.SCROLL_PANE);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.SCROLL_PANE, popTable);
             }
         });
     
@@ -2473,8 +2634,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.STACK);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.STACK, popTable);
             }
         });
         
@@ -2486,8 +2646,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.SPLIT_PANE);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.SPLIT_PANE, popTable);
             }
         });
     
@@ -2499,8 +2658,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.TABLE);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.TABLE, popTable);
             }
         });
     
@@ -2512,8 +2670,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.TREE);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.TREE, popTable);
             }
         });
     
@@ -2525,12 +2682,74 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                popTable.hide();
-                events.cellAddWidget(DialogSceneComposerEvents.WidgetType.VERTICAL_GROUP);
+                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.VERTICAL_GROUP, popTable);
             }
         });
         
         return popTableClickListener;
+    }
+    
+    public Dialog showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType widgetType, PopTable popTable) {
+        var simCell = (DialogSceneComposerModel.SimCell) simActor;
+        if (simCell.child == null) {
+            popTable.hide();
+            events.cellSetWidget(widgetType);
+            return null;
+        } else {
+            var dialog = new Dialog("", skin, "scene-dialog") {
+                @Override
+                protected void result(Object object) {
+                    if ((Boolean) object) {
+                        popTable.hide();
+                        events.cellSetWidget(widgetType);
+                    }
+                }
+            };
+    
+            var root = dialog.getTitleTable();
+            root.clear();
+    
+            root.add().uniform();
+    
+            var label = new Label("Confirm Overwrite Widget", skin, "scene-title");
+            root.add(label).expandX();
+    
+            var button = new Button(skin, "scene-close");
+            root.add(button).uniform();
+            button.addListener(main.getHandListener());
+            button.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    dialog.hide();
+                }
+            });
+    
+            root = dialog.getContentTable();
+            root.pad(10);
+    
+            label = new Label("This will overwrite the existing widget in the cell.\nAre you okay with that?", skin, "scene-label-colored");
+            label.setWrap(true);
+            label.setAlignment(Align.center);
+            root.add(label).growX();
+    
+            dialog.getButtonTable().defaults().uniformX();
+            var textButton = new TextButton("OK", skin, "scene-med");
+            dialog.button(textButton, true);
+            textButton.addListener(main.getHandListener());
+    
+            textButton = new TextButton("Cancel", skin, "scene-med");
+            dialog.button(textButton, false);
+            textButton.addListener(main.getHandListener());
+            
+            dialog.key(Input.Keys.ENTER, true).key(Input.Keys.SPACE, true);
+            dialog.key(Input.Keys.ESCAPE, false);
+    
+            dialog.show(getStage());
+            dialog.setSize(500, 200);
+            dialog.setPosition((int) (getStage().getWidth() / 2f - dialog.getWidth() / 2f), (int) (getStage().getHeight() / 2f - dialog.getHeight() / 2f));
+    
+            return dialog;
+        }
     }
     
     public void populatePath() {
@@ -2596,7 +2815,7 @@ public class DialogSceneComposer extends Dialog {
                         popSubTable.row();
                         row++;
                     }
-                    popSubTable.add(textButton1);
+                    popSubTable.add(textButton1).colspan(cell.colSpan).fillX();
                     textButton1.addListener(main.getHandListener());
                     textButton1.addListener(new ChangeListener() {
                         @Override

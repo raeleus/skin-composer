@@ -4,13 +4,13 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 
-public class CellAddWidgetUndoable implements SceneComposerUndoable {
+public class CellSetWidgetUndoable implements SceneComposerUndoable {
     private DialogSceneComposerModel.SimCell cell;
     private DialogSceneComposer dialog;
     private DialogSceneComposerModel.SimActor newWidget;
     private DialogSceneComposerModel.SimActor previousWidget;
     
-    public CellAddWidgetUndoable(DialogSceneComposerEvents.WidgetType widgetType) {
+    public CellSetWidgetUndoable(DialogSceneComposerEvents.WidgetType widgetType) {
         dialog = DialogSceneComposer.dialog;
         cell = (DialogSceneComposerModel.SimCell) dialog.simActor;
         
@@ -46,11 +46,11 @@ public class CellAddWidgetUndoable implements SceneComposerUndoable {
     
     @Override
     public String getRedoString() {
-        return "Redo \"Add Widget to Cell\"";
+        return "Redo \"Set Widget to Cell\"";
     }
     
     @Override
     public String getUndoString() {
-        return "Undo \"Add Widget to Cell\"";
+        return "Undo \"Set Widget to Cell\"";
     }
 }

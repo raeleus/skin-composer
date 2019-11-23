@@ -102,7 +102,6 @@ public class DialogSceneComposerModel {
                     }
                 }
             });
-            System.out.println(cells);
         }
     }
     
@@ -133,6 +132,7 @@ public class DialogSceneComposerModel {
         public float preferredHeight;
         public boolean uniformX;
         public boolean uniformY;
+        public int colSpan = 1;
     
         @Override
         public String toString() {
@@ -166,6 +166,7 @@ public class DialogSceneComposerModel {
             preferredHeight = 0;
             uniformX = false;
             uniformY = false;
+            colSpan = 1;
         }
     }
     

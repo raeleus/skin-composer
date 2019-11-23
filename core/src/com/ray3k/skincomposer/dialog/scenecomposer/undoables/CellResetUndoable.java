@@ -30,6 +30,7 @@ public class CellResetUndoable implements SceneComposerUndoable {
     private float previousPreferredHeight;
     private boolean previousUniformX;
     private boolean previousUniformY;
+    private int previousColSpan;
     
     public CellResetUndoable() {
         dialog = DialogSceneComposer.dialog;
@@ -59,6 +60,7 @@ public class CellResetUndoable implements SceneComposerUndoable {
         previousPreferredHeight = cell.preferredHeight;
         previousUniformX = cell.uniformX;
         previousUniformY = cell.uniformY;
+        previousColSpan = cell.colSpan;
     }
     
     @Override
@@ -87,6 +89,7 @@ public class CellResetUndoable implements SceneComposerUndoable {
         cell.preferredHeight = previousPreferredHeight;
         cell.uniformX = previousUniformX;
         cell.uniformY = previousUniformY;
+        cell.colSpan = previousColSpan;
     
         if (dialog.simActor != cell) {
             dialog.simActor = cell;

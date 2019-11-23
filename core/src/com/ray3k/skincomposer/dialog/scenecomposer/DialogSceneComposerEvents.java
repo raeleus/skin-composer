@@ -100,8 +100,8 @@ public class DialogSceneComposerEvents {
         processUndoable(new TableDeleteUndoable());
     }
     
-    public void cellAddWidget(WidgetType widgetType) {
-        processUndoable(new CellAddWidgetUndoable(widgetType));
+    public void cellSetWidget(WidgetType widgetType) {
+        processUndoable(new CellSetWidgetUndoable(widgetType));
     }
     
     public void cellAddCellToLeft() {
@@ -138,6 +138,10 @@ public class DialogSceneComposerEvents {
     
     public void cellUniform(boolean uniformX, boolean uniformY) {
         processUndoable(new CellUniformUndoable(uniformX, uniformY));
+    }
+    
+    public void cellColSpan(int colSpan) {
+        processUndoable(new ColSpanUndoable(colSpan));
     }
     
     public void cellReset() {
