@@ -693,37 +693,10 @@ public class DialogSceneComposer extends Dialog {
     
     private EventListener textButtonStyleListener() {
         var simTextButton = (DialogSceneComposerModel.SimTextButton) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+        var popTableClickListener = new StyleSelectorPopTable(TextButton.class, simTextButton.style == null ? "default" : simTextButton.style.name) {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                update();
-            }
-            
-            public void update() {
-                var popperTable = getPopTable();
-                popperTable.clearChildren();
-    
-                var label = new Label("Style:", skin, "scene-label-colored");
-                popperTable.add(label);
-    
-                popperTable.row();
-                var textButton = new TextButton(simTextButton.style == null ? "default" : simTextButton.style.name, skin, "scene-small");
-                popperTable.add(textButton).minWidth(100);
-                textButton.addListener(main.getHandListener());
-                textButton.addListener(new TextTooltip("Select the style that controls the appearance of the text button.", main.getTooltipManager(), skin, "scene"));
-                textButton.addListener(new StyleSelectorPopTable(TextButton.class) {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        super.clicked(event, x, y);
-                        popperTable.hide();
-                    }
-        
-                    @Override
-                    public void accepted(StyleData styleData) {
-                        events.textButtonStyle(styleData);
-                    }
-                });
+            public void accepted(StyleData styleData) {
+                events.textButtonStyle(styleData);
             }
         };
     

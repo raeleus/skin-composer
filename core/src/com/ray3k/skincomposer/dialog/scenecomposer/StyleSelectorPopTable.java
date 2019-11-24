@@ -15,11 +15,12 @@ public class StyleSelectorPopTable extends PopTable.PopTableClickListener {
     private ScrollPane scrollFocus;
     private Cell previewCell;
     
-    public StyleSelectorPopTable(Class clazz) {
+    public StyleSelectorPopTable(Class clazz, String selectedStyle) {
         super(Main.main.getSkin());
         main = Main.main;
         skin = main.getSkin();
         
+        popTable.pad(15);
         var label = new Label(clazz.getSimpleName() + " Styles", skin, "scene-label-colored");
         popTable.add(label).colspan(2);
         
@@ -39,6 +40,7 @@ public class StyleSelectorPopTable extends PopTable.PopTableClickListener {
             listNames.add(style.name);
         }
         list.setItems(listNames);
+        list.setSelected(selectedStyle);
         table.add(list);
         list.addListener(main.getHandListener());
     
