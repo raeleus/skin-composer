@@ -13,6 +13,9 @@ public class TextButtonTextUndoable implements SceneComposerUndoable {
         this.text = text;
         dialog = DialogSceneComposer.dialog;
         textButton = (DialogSceneComposerModel.SimTextButton) dialog.simActor;
+        if (text != null && text.equals("")) {
+            this.text = null;
+        }
         previousText = textButton.text;
     }
     
