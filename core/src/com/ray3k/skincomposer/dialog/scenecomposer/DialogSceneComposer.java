@@ -2,6 +2,7 @@ package com.ray3k.skincomposer.dialog.scenecomposer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.scenes.scene2d.*;
@@ -99,7 +100,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                events.menuImport();
+                showImportDialog();
             }
         });
     
@@ -109,7 +110,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                events.menuExport();
+                showExportDialog();
             }
         });
     
@@ -119,7 +120,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                events.menuSettings();
+                showSettingsDialog();
             }
         });
     
@@ -3090,6 +3091,17 @@ public class DialogSceneComposer extends Dialog {
         var textButton = new TextButton("Browse", skin, "scene-small");
         table.add(textButton);
         textButton.addListener(main.getHandListener());
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                var file = main.getDesktopWorker().openDialog("Import Template...", main.getProjectData().getLastOpenSavePath(), new String[] {"*.json"}, "JSON Files (*.json)");
+            
+                if (file != null) {
+                    textField.setText(file.getPath());
+                    textField.setCursorPosition(textField.getText().length());
+                }
+            }
+        });
         
         dialog.getContentTable().row();
         table = new Table();
@@ -3102,6 +3114,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                events.dialogImportImportTemplate(Gdx.files.absolute(textField.getText()));
                 dialog.hide();
             }
         });
@@ -3148,6 +3161,17 @@ public class DialogSceneComposer extends Dialog {
         var textButton = new TextButton("Save Template", skin, "scene-med");
         table.add(textButton).uniformX().fillX();
         textButton.addListener(main.getHandListener());
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                var file = main.getDesktopWorker().saveDialog("Export Template...", main.getProjectData().getLastOpenSavePath(), new String[] {"*.json"}, "JSON Files (*.json)");
+                events.dialogExportSaveTemplate(new FileHandle(file));
+    
+                if (file != null) {
+                    dialog.hide();
+                }
+            }
+        });
         
         label = new Label("A template to be imported into Scene Composer", skin, "scene-label-colored");
         table.add(label).expandX().left();
@@ -3156,6 +3180,17 @@ public class DialogSceneComposer extends Dialog {
         textButton = new TextButton("Save to JAVA", skin, "scene-med");
         table.add(textButton).uniformX().fillX();
         textButton.addListener(main.getHandListener());
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                var file = main.getDesktopWorker().saveDialog("Export Java...", main.getProjectData().getLastOpenSavePath(), new String[] {"*.java"}, "Java Files (*.java)");
+                events.dialogExportSaveJava(new FileHandle(file));
+                
+                if (file != null) {
+                    dialog.hide();
+                }
+            }
+        });
     
         label = new Label("A file to be added directly into your project", skin, "scene-label-colored");
         table.add(label).expandX().left();
@@ -3164,6 +3199,13 @@ public class DialogSceneComposer extends Dialog {
         textButton = new TextButton("Copy to Clipboard", skin, "scene-med");
         table.add(textButton).uniformX().fillX();
         textButton.addListener(main.getHandListener());
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.dialogExportClipboard();
+                dialog.hide();
+            }
+        });
     
         label = new Label("A minimal version to be pasted into your existing code", skin, "scene-label-colored");
         table.add(label).expandX().left();

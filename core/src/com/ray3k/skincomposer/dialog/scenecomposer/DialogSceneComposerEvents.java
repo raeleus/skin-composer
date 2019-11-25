@@ -1,5 +1,7 @@
 package com.ray3k.skincomposer.dialog.scenecomposer;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleData;
@@ -14,20 +16,9 @@ public class DialogSceneComposerEvents {
     
     private DialogSceneComposer dialog;
     
-    public DialogSceneComposerEvents(DialogSceneComposer dialog) {
-        this.dialog = dialog;
-    }
-    
-    public void menuImport() {
-        dialog.showImportDialog();
-    }
-    
-    public void menuExport() {
-        dialog.showExportDialog();
-    }
-    
-    public void menuSettings() {
-        dialog.showSettingsDialog();
+    public DialogSceneComposerEvents() {
+        this.dialog = DialogSceneComposer.dialog;
+        this.dialog.events = this;
     }
     
     public void menuQuit() {
@@ -59,6 +50,38 @@ public class DialogSceneComposerEvents {
     
     public void menuHelp() {
         dialog.showHelpDialog();
+    }
+    
+    public void dialogImportImportTemplate(FileHandle loadFile) {
+    
+    }
+    
+    public void dialogExportSaveTemplate(FileHandle saveFile) {
+    
+    }
+    
+    public void dialogExportSaveJava(FileHandle saveFile) {
+    
+    }
+    
+    public void dialogExportClipboard() {
+    
+    }
+    
+    public void dialogSettingsPackage(String packageName) {
+    
+    }
+    
+    public void dialogSettingsClass(String className) {
+    
+    }
+    
+    public void dialogSettingsSkinPath(String skinPath) {
+    
+    }
+    
+    public void dialogSettingsBackgroundColor(ColorData color) {
+    
     }
     
     private void processUndoable(SceneComposerUndoable undoable) {
