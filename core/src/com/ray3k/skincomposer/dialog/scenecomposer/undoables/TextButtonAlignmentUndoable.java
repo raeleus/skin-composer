@@ -27,6 +27,7 @@ public class TextButtonAlignmentUndoable implements SceneComposerUndoable {
             dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.model.updatePreview();
     }
     
     @Override
@@ -38,6 +39,7 @@ public class TextButtonAlignmentUndoable implements SceneComposerUndoable {
             dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.model.updatePreview();
     }
     
     @Override

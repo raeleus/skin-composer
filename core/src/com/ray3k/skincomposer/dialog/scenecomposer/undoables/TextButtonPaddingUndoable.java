@@ -34,6 +34,7 @@ public class TextButtonPaddingUndoable implements SceneComposerUndoable {
             dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.model.updatePreview();
     }
     
     @Override
@@ -48,6 +49,7 @@ public class TextButtonPaddingUndoable implements SceneComposerUndoable {
             dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.model.updatePreview();
     }
     
     @Override

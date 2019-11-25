@@ -51,6 +51,7 @@ public class CellExpandFillGrowUndoable implements SceneComposerUndoable {
             dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.model.updatePreview();
     }
     
     @Override
@@ -67,6 +68,7 @@ public class CellExpandFillGrowUndoable implements SceneComposerUndoable {
             dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.model.updatePreview();
     }
     
     @Override

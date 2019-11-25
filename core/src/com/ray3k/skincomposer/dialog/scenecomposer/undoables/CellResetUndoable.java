@@ -96,6 +96,7 @@ public class CellResetUndoable implements SceneComposerUndoable {
             dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.model.updatePreview();
     }
     
     @Override
@@ -107,6 +108,7 @@ public class CellResetUndoable implements SceneComposerUndoable {
             dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.model.updatePreview();
     }
     
     @Override

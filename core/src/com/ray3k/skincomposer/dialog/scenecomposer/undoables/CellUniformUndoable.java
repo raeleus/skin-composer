@@ -31,6 +31,7 @@ public class CellUniformUndoable implements SceneComposerUndoable {
             dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.model.updatePreview();
     }
     
     @Override
@@ -43,6 +44,7 @@ public class CellUniformUndoable implements SceneComposerUndoable {
             dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.model.updatePreview();
     }
     
     @Override

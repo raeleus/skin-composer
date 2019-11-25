@@ -207,6 +207,8 @@ public class DialogSceneComposer extends Dialog {
         top.setTouchable(Touchable.enabled);
         top.setBackground(skin.getDrawable("white"));
         
+        top.add(model.preview).grow();
+        
         var bottom = new Table() {
             @Override
             public float getMinHeight() {
@@ -394,7 +396,7 @@ public class DialogSceneComposer extends Dialog {
                 textButton.addListener(main.getHandListener());
                 textButton.addListener(tablePaddingListener());
                 textButton.addListener(new TextTooltip("The padding around all of the contents inside the table.", main.getTooltipManager(), skin, "scene"));
-        
+    
                 textButton = new TextButton("Align", skin, "scene-med");
                 horizontalGroup.addActor(textButton);
                 textButton.addListener(main.getHandListener());

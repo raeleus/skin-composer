@@ -38,6 +38,7 @@ public class CellAddCellToRightUndoable implements SceneComposerUndoable {
             dialog.populateProperties();
         }
         dialog.populatePath();
+        dialog.model.updatePreview();
     }
     
     @Override
@@ -56,6 +57,7 @@ public class CellAddCellToRightUndoable implements SceneComposerUndoable {
             dialog.populateProperties();
         }
         dialog.populatePath();
+        dialog.model.updatePreview();
     }
     
     @Override

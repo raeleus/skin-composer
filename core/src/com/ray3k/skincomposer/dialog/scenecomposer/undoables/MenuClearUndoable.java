@@ -21,6 +21,7 @@ public class MenuClearUndoable implements SceneComposerUndoable {
         dialog.simActor = previousGroup;
         dialog.populateProperties();
         dialog.populatePath();
+        dialog.model.updatePreview();
     }
     
     @Override
@@ -30,6 +31,7 @@ public class MenuClearUndoable implements SceneComposerUndoable {
         dialog.simActor = group;
         dialog.populateProperties();
         dialog.populatePath();
+        dialog.model.updatePreview();
     }
     
     @Override

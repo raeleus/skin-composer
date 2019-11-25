@@ -3,13 +3,13 @@ package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 
-public class ColSpanUndoable implements SceneComposerUndoable {
+public class CellColSpanUndoable implements SceneComposerUndoable {
     private DialogSceneComposerModel.SimCell cell;
     private DialogSceneComposer dialog;
     private int colSpan;
     private int previousColSpan;
     
-    public ColSpanUndoable(int colSpan) {
+    public CellColSpanUndoable(int colSpan) {
         this.colSpan = colSpan;
         dialog = DialogSceneComposer.dialog;
         cell = (DialogSceneComposerModel.SimCell) dialog.simActor;
@@ -26,6 +26,7 @@ public class ColSpanUndoable implements SceneComposerUndoable {
             dialog.populateProperties();
         }
         dialog.populatePath();
+        dialog.model.updatePreview();
     }
     
     @Override
@@ -37,6 +38,7 @@ public class ColSpanUndoable implements SceneComposerUndoable {
             dialog.populateProperties();
         }
         dialog.populatePath();
+        dialog.model.updatePreview();
     }
     
     @Override

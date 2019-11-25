@@ -52,6 +52,7 @@ public class CellDeleteUndoable implements SceneComposerUndoable {
             dialog.populateProperties();
         }
         dialog.populatePath();
+        dialog.model.updatePreview();
     }
     
     @Override
@@ -74,6 +75,7 @@ public class CellDeleteUndoable implements SceneComposerUndoable {
             dialog.populateProperties();
         }
         dialog.populatePath();
+        dialog.model.updatePreview();
     }
     
     @Override

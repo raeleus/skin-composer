@@ -141,7 +141,7 @@ public class DialogSceneComposerEvents {
     }
     
     public void cellColSpan(int colSpan) {
-        processUndoable(new ColSpanUndoable(colSpan));
+        processUndoable(new CellColSpanUndoable(colSpan));
     }
     
     public void cellReset() {
