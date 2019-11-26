@@ -30,7 +30,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.ray3k.skincomposer.dialog.DialogTenPatch;
 import com.ray3k.skincomposer.utils.Utils;
 
-public class DrawableData implements Json.Serializable {
+public class DrawableData {
 
     public static String proper(String name) {
         return name.replaceFirst("(\\.9)?\\.[a-zA-Z0-9]*$", "");
@@ -119,39 +119,5 @@ public class DrawableData implements Json.Serializable {
                     (tenPatchData == null && dd.tenPatchData == null || tenPatchData != null && tenPatchData.equals(dd.tenPatchData));
         }
         return false;
-    }
-
-    @Override
-    public void write(Json json) {
-        if (file != null) {
-            json.writeValue("file", file.path());
-        } else {
-            json.writeValue("file", (String) null);
-        }
-        json.writeValue("bgColor", bgColor);
-        json.writeValue("tint", tint);
-        json.writeValue("tintName", tintName);
-        json.writeValue("name", name);
-        json.writeValue("tiled", tiled);
-        json.writeValue("minWidth", minWidth);
-        json.writeValue("minHeight", minHeight);
-        json.writeValue("customized", customized);
-        json.writeValue("tenPatchData", tenPatchData);
-    }
-
-    @Override
-    public void read(Json json, JsonValue jsonData) {
-        if (!jsonData.get("file").isNull()) {
-            file = new FileHandle(jsonData.getString("file"));
-        }
-        bgColor = json.readValue("bgColor", Color.class, jsonData);
-        tint = json.readValue("tint", Color.class, jsonData);
-        tintName = json.readValue("tintName", String.class, jsonData);
-        name = json.readValue("name", String.class, jsonData);
-        tiled = json.readValue("tiled", Boolean.class, false, jsonData);
-        minWidth = json.readValue("minWidth", Float.class, -1f, jsonData);
-        minHeight = json.readValue("minHeight", Float.class, -1f, jsonData);
-        customized = json.readValue("customized", Boolean.class, false, jsonData);
-        tenPatchData = json.readValue("tenPatchData", DialogTenPatch.TenPatchData.class, jsonData);
     }
 }

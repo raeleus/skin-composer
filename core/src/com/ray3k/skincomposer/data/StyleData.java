@@ -55,14 +55,14 @@ import com.ray3k.skincomposer.Main;
 
 import java.util.Arrays;
 
-public class StyleData implements Json.Serializable {
+public class StyleData {
     public String name = "";
     public Class clazz;
     public OrderedMap<String,StyleProperty> properties;
     public boolean deletable;
     public String parent;
-    public JsonData jsonData;
-    private Main main;
+    public transient JsonData jsonData;
+    private transient Main main;
 
     @Override
     public String toString() {
@@ -269,29 +269,6 @@ public class StyleData implements Json.Serializable {
     
     public static boolean validate(String name) {
         return name != null && !name.matches("^\\d.*|^-.*|.*\\s.*|.*[^a-zA-Z\\d\\s-_ñáéíóúüÑÁÉÍÓÚÜ].*|^$");
-    }
-
-    @Override
-    public void write(Json json) {
-        json.writeValue("name", name);
-        json.writeValue("clazz", clazz.getName());
-        json.writeValue("properties", properties);
-        json.writeValue("deletable", deletable);
-        json.writeValue("parent", parent);
-    }
-
-    @Override
-    public void read(Json json, JsonValue jsonData) {
-        name = jsonData.getString("name");
-        properties = json.readValue("properties", OrderedMap.class, jsonData);
-        deletable = jsonData.getBoolean("deletable");
-        try {
-            clazz = ClassReflection.forName(jsonData.getString("clazz"));
-        } catch (ReflectionException ex) {
-            Gdx.app.error(getClass().toString(), "Error reading from serialized object" , ex);
-            main.getDialogFactory().showDialogError("Read Error...","Error reading from serialized object.\n\nOpen log?");
-        }
-        parent = jsonData.getString("parent", null);
     }
 
     public void resetProperties() {

@@ -45,8 +45,23 @@ public class ProjectData implements Json.Serializable {
     private final JsonData jsonData;
     private final AtlasData atlasData;
     private String loadedVersion;
+    private Json json;
     
     public ProjectData() {
+        json = new Json(JsonWriter.OutputType.minimal);
+        json.setSerializer(FileHandle.class, new Json.Serializer<FileHandle>() {
+            @Override
+            public void write(Json json, FileHandle object, Class knownType) {
+                json.writeValue(object.path());
+            }
+        
+            @Override
+            public FileHandle read(Json json, JsonValue jsonData, Class type) {
+                return new FileHandle(jsonData.asString());
+            }
+        });
+        json.setUsePrototypes(false);
+        
         jsonData = new JsonData();
         atlasData = new AtlasData();
         
@@ -351,8 +366,6 @@ public class ProjectData implements Json.Serializable {
         
         saveFile = file;
         putRecentFile(file.path());
-        Json json = new Json(JsonWriter.OutputType.minimal);
-        json.setUsePrototypes(false);
         file.writeString(json.prettyPrint(this), false, "UTF8");
         setChangesSaved(true);
     }
@@ -362,7 +375,6 @@ public class ProjectData implements Json.Serializable {
     }
     
     public void load(FileHandle file) {
-        Json json = new Json(JsonWriter.OutputType.minimal);
         ProjectData instance = json.fromJson(ProjectData.class, file.reader("UTF8"));
         newProject = instance.newProject;
         jsonData.set(instance.jsonData);
