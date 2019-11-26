@@ -2340,8 +2340,10 @@ public class DialogSceneComposer extends Dialog {
         popTable.add(scrollPane).grow();
     
         var textButton = new TextButton("Button", skin, "scene-med");
+        var valid = main.getJsonData().classHasValidStyles(Button.class);
+        textButton.setDisabled(!valid);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        if (valid) textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("Buttons are the most basic component to UI design. These are clickable widgets that can perform a certain action such as starting a game or activating a power.", main.getTooltipManager(), skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
@@ -2352,8 +2354,10 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         textButton = new TextButton("CheckBox", skin, "scene-med");
+        valid = main.getJsonData().classHasValidStyles(CheckBox.class);
+        textButton.setDisabled(!valid);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        if (valid) textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("CheckBoxes are great for setting/displaying boolean values for an options screen.", main.getTooltipManager(), skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
@@ -2376,8 +2380,10 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         textButton = new TextButton("ImageButton", skin, "scene-med");
+        valid = main.getJsonData().classHasValidStyles(ImageButton.class);
+        textButton.setDisabled(!valid);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        if (valid) textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("A Button with an image graphic in it. The image can change depending on the state of the button.", main.getTooltipManager(), skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
@@ -2388,8 +2394,10 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         textButton = new TextButton("ImageTextButton", skin, "scene-med");
+        valid = main.getJsonData().classHasValidStyles(ImageTextButton.class);
+        textButton.setDisabled(!valid);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        if (valid) textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("A Button with an image graphic followed by text in it. The image and text color can change depending on the state of the button.", main.getTooltipManager(), skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
@@ -2400,8 +2408,10 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         textButton = new TextButton("Label", skin, "scene-med");
+        valid = main.getJsonData().classHasValidStyles(Label.class);
+        textButton.setDisabled(!valid);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        if (valid) textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("The most common way to display text in your layouts. Wrapping and ellipses options help mitigate sizing issues in small spaces.", main.getTooltipManager(), skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
@@ -2412,8 +2422,10 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         textButton = new TextButton("List", skin, "scene-med");
+        valid = main.getJsonData().classHasValidStyles(List.class);
+        textButton.setDisabled(!valid);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        if (valid) textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("List presents text options in a clickable menu.", main.getTooltipManager(), skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
@@ -2424,8 +2436,10 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         textButton = new TextButton("ProgressBar", skin, "scene-med");
+        valid = main.getJsonData().classHasValidStyles(ProgressBar.class);
+        textButton.setDisabled(!valid);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        if (valid) textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("Commonly used to display loading progress or as a health/mana indicator in HUD's.", main.getTooltipManager(), skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
@@ -2436,8 +2450,10 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         textButton = new TextButton("SelectBox", skin, "scene-med");
+        valid = main.getJsonData().classHasValidStyles(SelectBox.class);
+        textButton.setDisabled(!valid);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        if (valid) textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("SelectBox is a kind of button that displays a selectable option list when opened.", main.getTooltipManager(), skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
@@ -2448,8 +2464,10 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         textButton = new TextButton("Slider", skin, "scene-med");
+        valid = main.getJsonData().classHasValidStyles(Slider.class);
+        textButton.setDisabled(!valid);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        if (valid) textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("Slider is a kind of user interactable ProgressBar that allows a user to select a value along a sliding scale.", main.getTooltipManager(), skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
@@ -2460,8 +2478,10 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         textButton = new TextButton("TextButton", skin, "scene-med");
+        valid = main.getJsonData().classHasValidStyles(TextButton.class);
+        textButton.setDisabled(!valid);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        if (valid) textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("A kind of button that contains a text element inside of it. The text color can change depending on the state of the button.", main.getTooltipManager(), skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
@@ -2472,8 +2492,10 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         textButton = new TextButton("TextField", skin, "scene-med");
+        valid = main.getJsonData().classHasValidStyles(TextField.class);
+        textButton.setDisabled(!valid);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        if (valid) textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("TextFields are the primary way of getting text input from the user.", main.getTooltipManager(), skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
@@ -2484,8 +2506,10 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         textButton = new TextButton("TextArea", skin, "scene-med");
+        valid = main.getJsonData().classHasValidStyles(TextField.class);
+        textButton.setDisabled(!valid);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        if (valid) textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("TextAreas are a multiline version of a TextField.", main.getTooltipManager(), skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
@@ -2495,10 +2519,12 @@ public class DialogSceneComposer extends Dialog {
         });
     
         table.row();
-        textButton = new TextButton("TouchPad", skin, "scene-med");
+        textButton = new TextButton("Touchpad", skin, "scene-med");
+        valid = main.getJsonData().classHasValidStyles(Touchpad.class);
+        textButton.setDisabled(!valid);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new TextTooltip("TouchPad is a UI element common to mobile games. It is used lieu of keyboard input, for example.", main.getTooltipManager(), skin, "scene"));
+        if (valid) textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Touchpad is a UI element common to mobile games. It is used lieu of keyboard input, for example.", main.getTooltipManager(), skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -2564,8 +2590,10 @@ public class DialogSceneComposer extends Dialog {
         
         table.row();
         textButton = new TextButton("SplitPane", skin, "scene-med");
+        valid = main.getJsonData().classHasValidStyles(SplitPane.class);
+        textButton.setDisabled(!valid);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        if (valid) textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("An organizational layout that allows the user to adjust the width or height of two widgets next to each other.", main.getTooltipManager(), skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
@@ -2588,8 +2616,10 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         textButton = new TextButton("Tree", skin, "scene-med");
+        valid = main.getJsonData().classHasValidStyles(Tree.class);
+        textButton.setDisabled(!valid);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        if (valid) textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("Tree is an organizational widget that allows collapsing and expanding elements like file structures.", main.getTooltipManager(), skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override

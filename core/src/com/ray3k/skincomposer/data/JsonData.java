@@ -1051,6 +1051,16 @@ public class JsonData implements Json.Serializable {
         return false;
     }
     
+    public boolean classHasValidStyles(Class clazz) {
+        for (var style : classStyleMap.get(clazz)) {
+            if (style.hasAllNullFields() || !style.hasMandatoryFields()) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
     public Array<ColorData> getColors() {
         return colors;
     }
