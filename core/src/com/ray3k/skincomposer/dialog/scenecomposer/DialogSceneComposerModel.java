@@ -373,6 +373,46 @@ public class DialogSceneComposerModel {
         }
     }
     
+    public static class SimButton extends SimActor {
+    
+    }
+    
+    public static class SimCheckBox extends SimActor {
+    
+    }
+    
+    public static class SimImage extends SimActor {
+    
+    }
+    
+    public static class SimImageButton extends SimActor {
+    
+    }
+    
+    public static class SimImageTextButton extends SimActor {
+    
+    }
+    
+    public static class SimLabel extends SimActor {
+    
+    }
+    
+    public static class SimList extends SimActor {
+    
+    }
+    
+    public static class SimProgressBar extends SimActor {
+    
+    }
+    
+    public static class SimSelectBox extends SimActor {
+    
+    }
+    
+    public static class SimSlider extends SimActor {
+    
+    }
+    
     public static class SimTextButton extends SimActor {
         public String name;
         public String text;
@@ -413,5 +453,45 @@ public class DialogSceneComposerModel {
             padTop = 0;
             padBottom = 0;
         }
+    }
+    
+    public static class SimTextField extends SimActor {
+    
+    }
+    
+    public static class SimTextArea extends SimActor {
+    
+    }
+    
+    public static class SimTouchPad extends SimActor {
+    
+    }
+    
+    public static class SimContainer extends SimActor {
+    
+    }
+    
+    public static class SimHorizontalGroup extends SimActor {
+    
+    }
+    
+    public static class SimScrollPane extends SimActor {
+    
+    }
+    
+    public static class SimStack extends SimActor {
+    
+    }
+    
+    public static class SimSplitPane extends SimActor {
+    
+    }
+    
+    public static class SimTree extends SimActor {
+    
+    }
+    
+    public static class SimVerticalGroup extends SimActor {
+    
     }
 }
