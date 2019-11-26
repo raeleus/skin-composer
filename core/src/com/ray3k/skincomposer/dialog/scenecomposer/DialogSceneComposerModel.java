@@ -28,7 +28,6 @@ public class DialogSceneComposerModel {
     public DialogSceneComposerModel() {
         undoables = new Array<>();
         redoables = new Array<>();
-        root = new SimGroup();
         preview = new Group();
         main = Main.main;
     
@@ -75,6 +74,9 @@ public class DialogSceneComposerModel {
             }
         });
         json.setOutputType(JsonWriter.OutputType.json);
+        
+        root = new SimGroup();
+        assignParentRecursive(root);
     }
     
     public static void saveToJson(FileHandle saveFile) {
@@ -200,54 +202,26 @@ public class DialogSceneComposerModel {
         return actor;
     }
     
-    private static long generateSerial(SimActor root) {
-        long serial;
-        boolean unique;
-        
-        do {
-            serial = MathUtils.random(1l, Long.MAX_VALUE);
-            unique = !checkSerialEqualityRecursive(root, serial);
-        } while (!unique);
-        
-        return serial;
-    }
-    
-    private static boolean checkSerialEqualityRecursive(SimActor actor,  long serial) {
-        return findSimActorRecursive(actor, serial) != null;
-    }
-    
-    private static SimActor findSimActorRecursive(SimActor parent, long serial) {
-        if (parent == null) return null;
-        
-        if (parent.serial == serial) {
-            return parent;
-        }
-        
-        if (parent instanceof SimGroup) {
+    public static void assignParentRecursive(SimActor parent) {
+        if (parent instanceof SimCell) {
+            var child = ((SimCell) parent).child;
+            child.parent = parent;
+            assignParentRecursive(child);
+        } else if (parent instanceof SimGroup) {
             for (var child : ((SimGroup) parent).children) {
-                var target = findSimActorRecursive(child, serial);
-                if (target != null) return target;
+                child.parent = parent;
+                assignParentRecursive(child);
             }
         } else if (parent instanceof SimTable) {
-            for (var cell : ((SimTable) parent).cells) {
-                var target = findSimActorRecursive(cell, serial);
-                if (target != null) return target;
+            for (var child : ((SimTable) parent).cells) {
+                child.parent = parent;
+                assignParentRecursive(child);
             }
-        } else if (parent instanceof SimCell) {
-            return findSimActorRecursive(((SimCell) parent).child, serial);
         }
-        return null;
     }
     
     public static class SimActor {
-        public SimActor() {
-            var model = DialogSceneComposer.dialog.model;
-            if (model != null) {
-                serial = generateSerial(model.root);
-            }
-        }
         public transient SimActor parent;
-        public long serial;
     }
     
     public static class SimGroup extends SimActor {
