@@ -186,6 +186,12 @@ public class DialogSceneComposerModel {
             if (simTextButton.style != null && simTextButton.style.hasMandatoryFields()) {
                 var style = main.getRootTable().createPreviewStyle(TextButton.TextButtonStyle.class, simTextButton.style);
                 var textButton = new TextButton(simTextButton.text == null ? "" : simTextButton.text, style);
+                textButton.setChecked(simTextButton.checked);
+                textButton.setDisabled(simTextButton.disabled);
+                if (simTextButton.color != null) {
+                    textButton.setColor(simTextButton.color.color);
+                }
+                textButton.pad(simTextButton.padTop, simTextButton.padLeft, simTextButton.padBottom, simTextButton.padRight);
                 textButton.addListener(main.getHandListener());
                 actor = textButton;
             }
@@ -378,7 +384,6 @@ public class DialogSceneComposerModel {
         public float padRight;
         public float padTop;
         public float padBottom;
-        public int alignment = Align.center;
     
         public SimTextButton() {
             var styles = Main.main.getJsonData().getClassStyleMap().get(TextButton.class);
@@ -407,7 +412,6 @@ public class DialogSceneComposerModel {
             padRight = 0;
             padTop = 0;
             padBottom = 0;
-            alignment = Align.center;
         }
     }
 }

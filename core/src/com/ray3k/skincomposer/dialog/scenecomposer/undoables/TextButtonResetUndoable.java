@@ -12,7 +12,6 @@ public class TextButtonResetUndoable implements SceneComposerUndoable {
     private String previousName;
     private ColorData previousColorData;
     private StyleData previousStyle;
-    private int previousAlignment;
     private String previousText;
     private DialogSceneComposer dialog;
     
@@ -25,7 +24,6 @@ public class TextButtonResetUndoable implements SceneComposerUndoable {
         previousPadTop = textButton.padTop;
         previousPadBottom = textButton.padBottom;
         previousColorData = textButton.color;
-        previousAlignment = textButton.alignment;
         previousChecked = textButton.checked;
         previousDisabled = textButton.disabled;
         previousStyle = textButton.style;
@@ -40,7 +38,6 @@ public class TextButtonResetUndoable implements SceneComposerUndoable {
         textButton.padBottom = previousPadBottom;
         textButton.name = previousName;
         textButton.color = previousColorData;
-        textButton.alignment = previousAlignment;
         textButton.checked = previousChecked;
         textButton.disabled = previousDisabled;
         textButton.style = previousStyle;

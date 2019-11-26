@@ -207,10 +207,6 @@ public class DialogSceneComposerEvents {
         processUndoable(new TextButtonPaddingUndoable(paddingLeft, paddingRight, paddingTop, paddingBottom));
     }
     
-    public void textButtonAlign(int alignment) {
-        processUndoable(new TextButtonAlignmentUndoable(alignment));
-    }
-    
     public void textButtonReset() {
         processUndoable(new TextButtonResetUndoable());
     }
