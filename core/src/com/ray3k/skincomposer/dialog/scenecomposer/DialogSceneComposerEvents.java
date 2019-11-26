@@ -1,7 +1,7 @@
 package com.ray3k.skincomposer.dialog.scenecomposer;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
+import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleData;
@@ -18,7 +18,6 @@ public class DialogSceneComposerEvents {
     
     public DialogSceneComposerEvents() {
         this.dialog = DialogSceneComposer.dialog;
-        this.dialog.events = this;
     }
     
     public void menuQuit() {
@@ -53,15 +52,20 @@ public class DialogSceneComposerEvents {
     }
     
     public void dialogImportImportTemplate(FileHandle loadFile) {
-    
+        Main.main.getProjectData().setLastImportExportPath(loadFile.path());
+        DialogSceneComposerModel.loadFromJson(loadFile);
+        dialog.model.updatePreview();
+        dialog.populatePath();
+        dialog.populateProperties();
     }
     
     public void dialogExportSaveTemplate(FileHandle saveFile) {
-    
+        Main.main.getProjectData().setLastImportExportPath(saveFile.path());
+        DialogSceneComposerModel.saveToJson(saveFile);
     }
     
     public void dialogExportSaveJava(FileHandle saveFile) {
-    
+        Main.main.getProjectData().setLastImportExportPath(saveFile.path());
     }
     
     public void dialogExportClipboard() {

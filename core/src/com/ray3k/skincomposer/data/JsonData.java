@@ -1214,6 +1214,16 @@ public class JsonData implements Json.Serializable {
         return data;
     }
     
+    public StyleData findStyle(Class clazz, String styleName) {
+        var styles = getClassStyleMap().get(clazz);
+        for (var style : styles) {
+            if (style.name.equals(styleName)) {
+                return style;
+            }
+        }
+        return null;
+    }
+    
     public StyleData copyStyle(StyleData original, String styleName) {
         Array<StyleData> styles = getClassStyleMap().get(original.clazz);
         StyleData data = new StyleData(original, styleName, main);

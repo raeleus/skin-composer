@@ -1,32 +1,91 @@
 package com.ray3k.skincomposer.dialog.scenecomposer;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.dialog.scenecomposer.undoables.SceneComposerUndoable;
 
+import java.util.Locale;
+
 public class DialogSceneComposerModel {
-    private DialogSceneComposer dialog;
-    private Main main;
-    public Array<SceneComposerUndoable> undoables;
-    public Array<SceneComposerUndoable> redoables;
+    private transient Main main;
+    public transient Array<SceneComposerUndoable> undoables;
+    public transient Array<SceneComposerUndoable> redoables;
     public SimGroup root;
-    public Group preview;
+    public transient Group preview;
+    private static Json json;
     
-    public DialogSceneComposerModel(DialogSceneComposer dialog) {
-        this.dialog = dialog;
+    public DialogSceneComposerModel() {
         undoables = new Array<>();
         redoables = new Array<>();
         root = new SimGroup();
         preview = new Group();
         main = Main.main;
+    
+        json = new Json();
+        json.setSerializer(ColorData.class, new Json.Serializer<>() {
+            @Override
+            public void write(Json json, ColorData object, Class knownType) {
+                json.writeValue(object.getName());
+            }
+
+            @Override
+            public ColorData read(Json json, JsonValue jsonData, Class type) {
+                return Main.main.getJsonData().getColorByName(jsonData.asString());
+            }
+        });
+        json.setSerializer(DrawableData.class, new Json.Serializer<>() {
+            @Override
+            public void write(Json json, DrawableData object, Class knownType) {
+                json.writeValue(object.name);
+            }
+
+            @Override
+            public DrawableData read(Json json, JsonValue jsonData, Class type) {
+                return Main.main.getAtlasData().getDrawable(jsonData.asString());
+            }
+        });
+        json.setSerializer(StyleData.class, new Json.Serializer<>() {
+            @Override
+            public void write(Json json, StyleData object, Class knownType) {
+                json.writeObjectStart();
+                json.writeValue("class", object.clazz.getName());
+                json.writeValue("name", object.name);
+                json.writeObjectEnd();
+            }
+
+            @Override
+            public StyleData read(Json json, JsonValue jsonData, Class type) {
+                try {
+                    return Main.main.getJsonData().findStyle(ClassReflection.forName(jsonData.getString("class")), jsonData.getString("name"));
+                } catch (ReflectionException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+        });
+        json.setOutputType(JsonWriter.OutputType.json);
+    }
+    
+    public static void saveToJson(FileHandle saveFile) {
+        if (!saveFile.extension().toLowerCase(Locale.ROOT).equals("json")) {
+            saveFile = saveFile.sibling(saveFile.nameWithoutExtension() + ".json");
+        }
+        saveFile.writeString(json.prettyPrint(DialogSceneComposer.dialog.model), false);
+    }
+    
+    public static void loadFromJson(FileHandle loadFile) {
+        DialogSceneComposer.dialog.model = json.fromJson(DialogSceneComposerModel.class, loadFile);
     }
     
     public void undo() {
@@ -135,8 +194,54 @@ public class DialogSceneComposerModel {
         return actor;
     }
     
+    private static long generateSerial(SimActor root) {
+        long serial;
+        boolean unique;
+        
+        do {
+            serial = MathUtils.random(1l, Long.MAX_VALUE);
+            unique = !checkSerialEqualityRecursive(root, serial);
+        } while (!unique);
+        
+        return serial;
+    }
+    
+    private static boolean checkSerialEqualityRecursive(SimActor actor,  long serial) {
+        return findSimActorRecursive(actor, serial) != null;
+    }
+    
+    private static SimActor findSimActorRecursive(SimActor parent, long serial) {
+        if (parent == null) return null;
+        
+        if (parent.serial == serial) {
+            return parent;
+        }
+        
+        if (parent instanceof SimGroup) {
+            for (var child : ((SimGroup) parent).children) {
+                var target = findSimActorRecursive(child, serial);
+                if (target != null) return target;
+            }
+        } else if (parent instanceof SimTable) {
+            for (var cell : ((SimTable) parent).cells) {
+                var target = findSimActorRecursive(cell, serial);
+                if (target != null) return target;
+            }
+        } else if (parent instanceof SimCell) {
+            return findSimActorRecursive(((SimCell) parent).child, serial);
+        }
+        return null;
+    }
+    
     public static class SimActor {
-        public SimActor parent;
+        public SimActor() {
+            var model = DialogSceneComposer.dialog.model;
+            if (model != null) {
+                serial = generateSerial(model.root);
+            }
+        }
+        public transient SimActor parent;
+        public long serial;
     }
     
     public static class SimGroup extends SimActor {

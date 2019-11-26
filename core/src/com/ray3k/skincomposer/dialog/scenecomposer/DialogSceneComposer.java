@@ -52,8 +52,8 @@ public class DialogSceneComposer extends Dialog {
         dialog = this;
         main = Main.main;
         skin = main.getSkin();
-        events = new DialogSceneComposerEvents(this);
-        model = new DialogSceneComposerModel(this);
+        events = new DialogSceneComposerEvents();
+        model = new DialogSceneComposerModel();
     
         mode = Mode.ROOT;
         view = View.LIVE;
@@ -3094,7 +3094,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                var file = main.getDesktopWorker().openDialog("Import Template...", main.getProjectData().getLastOpenSavePath(), new String[] {"*.json"}, "JSON Files (*.json)");
+                var file = main.getDesktopWorker().openDialog("Import Template...", main.getProjectData().getLastImportExportPath(), new String[] {"*.json"}, "JSON Files (*.json)");
             
                 if (file != null) {
                     textField.setText(file.getPath());
@@ -3164,7 +3164,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                var file = main.getDesktopWorker().saveDialog("Export Template...", main.getProjectData().getLastOpenSavePath(), new String[] {"*.json"}, "JSON Files (*.json)");
+                var file = main.getDesktopWorker().saveDialog("Export Template...", main.getProjectData().getLastImportExportPath(), new String[] {"*.json"}, "JSON Files (*.json)");
                 events.dialogExportSaveTemplate(new FileHandle(file));
     
                 if (file != null) {
@@ -3183,7 +3183,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                var file = main.getDesktopWorker().saveDialog("Export Java...", main.getProjectData().getLastOpenSavePath(), new String[] {"*.java"}, "Java Files (*.java)");
+                var file = main.getDesktopWorker().saveDialog("Export Java...", main.getProjectData().getLastImportExportPath(), new String[] {"*.java"}, "Java Files (*.java)");
                 events.dialogExportSaveJava(new FileHandle(file));
                 
                 if (file != null) {
