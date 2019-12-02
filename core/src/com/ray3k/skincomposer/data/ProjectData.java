@@ -57,9 +57,30 @@ public class ProjectData implements Json.Serializable {
         
             @Override
             public FileHandle read(Json json, JsonValue jsonData, Class type) {
+                if (jsonData.isNull()) return null;
                 return new FileHandle(jsonData.asString());
             }
         });
+        
+        json.setSerializer(Class.class, new Json.Serializer<>() {
+            @Override
+            public void write(Json json, Class object, Class knownType) {
+                json.writeValue(object.getName());
+            }
+    
+            @Override
+            public Class read(Json json, JsonValue jsonData, Class type) {
+                if (jsonData.isNull()) return null;
+                
+                try {
+                    return Class.forName(jsonData.asString());
+                } catch (ClassNotFoundException e) {
+                    return null;
+                }
+            }
+        });
+        
+        json.setIgnoreUnknownFields(true);
         json.setUsePrototypes(false);
         
         jsonData = new JsonData();
