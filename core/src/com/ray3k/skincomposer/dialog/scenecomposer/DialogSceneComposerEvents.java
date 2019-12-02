@@ -179,6 +179,106 @@ public class DialogSceneComposerEvents {
         processUndoable(new CellDeleteUndoable());
     }
     
+    public void buttonName(String name) {
+        processUndoable(new ButtonNameUndoable(name));
+    }
+    
+    public void buttonStyle(StyleData style) {
+        processUndoable(new ButtonStyleUndoable(style));
+    }
+    
+    public void buttonChecked(boolean checked) {
+        processUndoable(new ButtonCheckedUndoable(checked));
+    }
+    
+    public void buttonDisabled(boolean disabled) {
+        processUndoable(new ButtonDisabledUndoable(disabled));
+    }
+    
+    public void buttonColor(ColorData colorData) {
+        processUndoable(new ButtonColorUndoable(colorData));
+    }
+    
+    public void buttonPadding(float paddingLeft, float paddingRight, float paddingTop, float paddingBottom) {
+        processUndoable(new ButtonPaddingUndoable(paddingLeft, paddingRight, paddingTop, paddingBottom));
+    }
+    
+    public void buttonReset() {
+        processUndoable(new ButtonResetUndoable());
+    }
+    
+    public void buttonDelete() {
+        processUndoable(new ButtonDeleteUndoable());
+    }
+    
+    public void imageButtonName(String name) {
+        processUndoable(new ImageButtonNameUndoable(name));
+    }
+    
+    public void imageButtonStyle(StyleData style) {
+        processUndoable(new ImageButtonStyleUndoable(style));
+    }
+    
+    public void imageButtonChecked(boolean checked) {
+        processUndoable(new ImageButtonCheckedUndoable(checked));
+    }
+    
+    public void imageButtonDisabled(boolean disabled) {
+        processUndoable(new ImageButtonDisabledUndoable(disabled));
+    }
+    
+    public void imageButtonColor(ColorData colorData) {
+        processUndoable(new ImageButtonColorUndoable(colorData));
+    }
+    
+    public void imageButtonPadding(float paddingLeft, float paddingRight, float paddingTop, float paddingBottom) {
+        processUndoable(new ImageButtonPaddingUndoable(paddingLeft, paddingRight, paddingTop, paddingBottom));
+    }
+    
+    public void imageButtonReset() {
+        processUndoable(new ImageButtonResetUndoable());
+    }
+    
+    public void imageButtonDelete() {
+        processUndoable(new ImageButtonDeleteUndoable());
+    }
+    
+    public void imageTextButtonName(String name) {
+        processUndoable(new ImageTextButtonNameUndoable(name));
+    }
+    
+    public void imageTextButtonText(String text) {
+        processUndoable(new ImageTextButtonTextUndoable(text));
+    }
+    
+    public void imageTextButtonStyle(StyleData style) {
+        processUndoable(new ImageTextButtonStyleUndoable(style));
+    }
+    
+    public void imageTextButtonChecked(boolean checked) {
+        processUndoable(new ImageTextButtonCheckedUndoable(checked));
+    }
+    
+    public void imageTextButtonDisabled(boolean disabled) {
+        processUndoable(new ImageTextButtonDisabledUndoable(disabled));
+    }
+    
+    public void imageTextButtonColor(ColorData colorData) {
+        processUndoable(new ImageTextButtonColorUndoable(colorData));
+    }
+    
+    public void imageTextButtonPadding(float paddingLeft, float paddingRight, float paddingTop, float paddingBottom) {
+        processUndoable(new ImageTextButtonPaddingUndoable(paddingLeft, paddingRight, paddingTop, paddingBottom));
+    }
+    
+    public void imageTextButtonReset() {
+        processUndoable(new ImageTextButtonResetUndoable());
+    }
+    
+    public void imageTextButtonDelete() {
+        processUndoable(new ImageTextButtonDeleteUndoable());
+    }
+    
     public void textButtonName(String name) {
         processUndoable(new TextButtonNameUndoable(name));
     }

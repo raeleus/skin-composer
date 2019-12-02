@@ -202,6 +202,48 @@ public class DialogSceneComposerModel {
                 textButton.addListener(main.getHandListener());
                 actor = textButton;
             }
+        } else if (simActor instanceof SimButton) {
+            var simButton = (SimButton) simActor;
+            if (simButton.style != null && simButton.style.hasMandatoryFields()) {
+                var style = main.getRootTable().createPreviewStyle(Button.ButtonStyle.class, simButton.style);
+                var button = new Button(style);
+                button.setChecked(simButton.checked);
+                button.setDisabled(simButton.disabled);
+                if (simButton.color != null) {
+                    button.setColor(simButton.color.color);
+                }
+                button.pad(simButton.padTop, simButton.padLeft, simButton.padBottom, simButton.padRight);
+                button.addListener(main.getHandListener());
+                actor = button;
+            }
+        }  else if (simActor instanceof SimImageButton) {
+            var simImageButton = (SimImageButton) simActor;
+            if (simImageButton.style != null && simImageButton.style.hasMandatoryFields()) {
+                var style = main.getRootTable().createPreviewStyle(ImageButton.ImageButtonStyle.class, simImageButton.style);
+                var imageButton = new ImageButton(style);
+                imageButton.setChecked(simImageButton.checked);
+                imageButton.setDisabled(simImageButton.disabled);
+                if (simImageButton.color != null) {
+                    imageButton.setColor(simImageButton.color.color);
+                }
+                imageButton.pad(simImageButton.padTop, simImageButton.padLeft, simImageButton.padBottom, simImageButton.padRight);
+                imageButton.addListener(main.getHandListener());
+                actor = imageButton;
+            }
+        } else if (simActor instanceof SimImageTextButton) {
+            var simImageTextButton = (SimImageTextButton) simActor;
+            if (simImageTextButton.style != null && simImageTextButton.style.hasMandatoryFields()) {
+                var style = main.getRootTable().createPreviewStyle(ImageTextButton.ImageTextButtonStyle.class, simImageTextButton.style);
+                var textButton = new ImageTextButton(simImageTextButton.text == null ? "" : simImageTextButton.text, style);
+                textButton.setChecked(simImageTextButton.checked);
+                textButton.setDisabled(simImageTextButton.disabled);
+                if (simImageTextButton.color != null) {
+                    textButton.setColor(simImageTextButton.color.color);
+                }
+                textButton.pad(simImageTextButton.padTop, simImageTextButton.padLeft, simImageTextButton.padBottom, simImageTextButton.padRight);
+                textButton.addListener(main.getHandListener());
+                actor = textButton;
+            }
         }
         
         return actor;
