@@ -1,11 +1,9 @@
 package com.ray3k.skincomposer.dialog.scenecomposer;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
@@ -24,6 +22,13 @@ public class DialogSceneComposerModel {
     public SimGroup root;
     public transient Group preview;
     private static Json json;
+    
+    public enum Interpol {
+        LINEAR, SMOOTH, SMOOTH2, SMOOTHER, FADE, POW2, POW2IN, SLOW_FAST, POW2OUT, FAST_SLOW, POW2IN_INVERSE,
+        POW2OUT_INVERSE, POW3, POW3IN, POW3OUT, POW3IN_INVERSE, POW3OUT_INVERSE, POW4, POW4IN, POW4OUT, POW5, POW5IN,
+        POW5OUT, SINE, SINE_IN, SINE_OUT, EXP10, EXP10_IN, EXP10_OUT, EXP5, EXP5IN, EXP5OUT, CIRCLE, CIRCLE_IN,
+        CIRCLE_OUT, ELASTIC, ELASTIC_IN, ELASTIC_OUT, SWING, SWING_IN, SWING_OUT, BOUNCE, BOUNCE_IN, BOUNCE_OUT
+    }
     
     public DialogSceneComposerModel() {
         undoables = new Array<>();
@@ -203,17 +208,14 @@ public class DialogSceneComposerModel {
     }
     
     public static void assignParentRecursive(SimActor parent) {
-        if (parent instanceof SimCell) {
-            var child = ((SimCell) parent).child;
+        if (parent instanceof  SimSingleChild) {
+            var child = ((SimSingleChild) parent).getChild();
             child.parent = parent;
             assignParentRecursive(child);
-        } else if (parent instanceof SimGroup) {
-            for (var child : ((SimGroup) parent).children) {
-                child.parent = parent;
-                assignParentRecursive(child);
-            }
-        } else if (parent instanceof SimTable) {
-            for (var child : ((SimTable) parent).cells) {
+        }
+        
+        if (parent instanceof SimMultipleChildren) {
+            for (var child : ((SimMultipleChildren) parent).getChildren()) {
                 child.parent = parent;
                 assignParentRecursive(child);
             }
@@ -224,7 +226,15 @@ public class DialogSceneComposerModel {
         public transient SimActor parent;
     }
     
-    public static class SimGroup extends SimActor {
+    public interface SimSingleChild {
+        SimActor getChild();
+    }
+    
+    public interface SimMultipleChildren {
+        Array<? extends SimActor> getChildren();
+    }
+    
+    public static class SimGroup extends SimActor implements SimMultipleChildren {
         public Array<SimActor> children = new Array<>();
     
         @Override
@@ -235,9 +245,14 @@ public class DialogSceneComposerModel {
         public void reset() {
             children.clear();
         }
+    
+        @Override
+        public Array<SimActor> getChildren() {
+            return children;
+        }
     }
     
-    public static class SimTable extends SimActor {
+    public static class SimTable extends SimActor implements SimMultipleChildren {
         public Array<SimCell> cells = new Array<>();
         public String name;
         public DrawableData background;
@@ -280,9 +295,14 @@ public class DialogSceneComposerModel {
                 }
             });
         }
+    
+        @Override
+        public Array<SimCell> getChildren() {
+            return cells;
+        }
     }
     
-    public static class SimCell extends SimActor {
+    public static class SimCell extends SimActor implements SimSingleChild {
         public SimActor child;
         public int row;
         public int column;
@@ -345,46 +365,386 @@ public class DialogSceneComposerModel {
             uniformY = false;
             colSpan = 1;
         }
+    
+        @Override
+        public SimActor getChild() {
+            return child;
+        }
     }
     
     public static class SimButton extends SimActor {
+        public String name;
+        public StyleData style;
+        public boolean checked;
+        public boolean disabled;
+        public ColorData color;
+        public float padLeft;
+        public float padRight;
+        public float padTop;
+        public float padBottom;
     
+        public SimButton() {
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "Button" : name + " (Button)";
+        }
+    
+        public void reset() {
+            name = null;
+            style = null;
+            checked = false;
+            disabled = false;
+            color = null;
+            padLeft = 0;
+            padRight = 0;
+            padTop = 0;
+            padBottom = 0;
+        }
     }
     
     public static class SimCheckBox extends SimActor {
+        public String name;
+        public StyleData style;
+        public boolean disabled;
+        public String text;
+        public ColorData color;
+        public float padLeft;
+        public float padRight;
+        public float padTop;
+        public float padBottom;
     
+        public SimCheckBox() {
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "CheckBox" : name + " (CheckBox)";
+        }
+    
+        public void reset() {
+            name = null;
+            style = null;
+            disabled = false;
+            text = null;
+            color = null;
+            padLeft = 0;
+            padRight = 0;
+            padTop = 0;
+            padBottom = 0;
+        }
     }
     
     public static class SimImage extends SimActor {
+        public String name;
+        public DrawableData drawable;
+        public Scaling scaling = Scaling.stretch;
     
+        @Override
+        public String toString() {
+            return name == null ? "Image" : name + " (Image)";
+        }
+    
+        public void reset() {
+            name = null;
+            drawable = null;
+            scaling  = Scaling.stretch;
+        }
     }
     
     public static class SimImageButton extends SimActor {
+        public String name;
+        public StyleData style;
+        public boolean checked;
+        public boolean disabled;
+        public ColorData color;
+        public float padLeft;
+        public float padRight;
+        public float padTop;
+        public float padBottom;
     
+        public SimImageButton() {
+            var styles = Main.main.getJsonData().getClassStyleMap().get(ImageButton.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "ImageButton" : name + " (ImageButton)";
+        }
+    
+        public void reset() {
+            name = null;
+            style = null;
+            checked = false;
+            disabled = false;
+            color = null;
+            padLeft = 0;
+            padRight = 0;
+            padTop = 0;
+            padBottom = 0;
+        }
     }
     
     public static class SimImageTextButton extends SimActor {
+        public String name;
+        public String text;
+        public StyleData style;
+        public boolean checked;
+        public boolean disabled;
+        public ColorData color;
+        public float padLeft;
+        public float padRight;
+        public float padTop;
+        public float padBottom;
     
+        public SimImageTextButton() {
+            var styles = Main.main.getJsonData().getClassStyleMap().get(ImageTextButton.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "ImageTextButton" : name + " (ImageTextButton)";
+        }
+    
+        public void reset() {
+            name = null;
+            text = null;
+            style = null;
+            checked = false;
+            disabled = false;
+            color = null;
+            padLeft = 0;
+            padRight = 0;
+            padTop = 0;
+            padBottom = 0;
+        }
     }
     
     public static class SimLabel extends SimActor {
+        public String name;
+        public StyleData style;
+        public String text;
+        public int textAlignment = Align.left;
+        public boolean ellipsis;
+        public String ellipsisString = "...";
+        public boolean wrap;
+        public ColorData color;
     
+        public SimLabel() {
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "Label" : name + " (Label)";
+        }
+    
+        public void reset() {
+            name = null;
+            style = null;
+            text = null;
+            textAlignment = Align.left;
+            ellipsis = false;
+            ellipsisString = "...";
+            wrap = false;
+            color = null;
+        }
     }
     
     public static class SimList extends SimActor {
+        public String name;
+        public StyleData style;
+        public Array<String> list = new Array<>();
     
+        public SimList() {
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "List" : name + " (List)";
+        }
+    
+        public void reset() {
+            name = null;
+            style = null;
+            list.clear();
+        }
     }
     
     public static class SimProgressBar extends SimActor {
+        public String name;
+        public StyleData style;
+        public boolean disabled;
+        public float value;
+        public float minimum;
+        public float maximum = 100;
+        public float increment = 1;
+        public boolean vertical;
+        public float animationDuration;
+        public Interpol animateInterpolation = Interpol.LINEAR;
+        public boolean round;
+        public Interpol visualInterpolation = Interpol.LINEAR;
     
+        public SimProgressBar() {
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "ProgressBar" : name + " (ProgressBar)";
+        }
+    
+        public void reset() {
+            name = null;
+            style = null;
+            disabled = false;
+            value = 0;
+            minimum = 0;
+            maximum = 100;
+            increment = 1;
+            vertical = false;
+            animationDuration = 0;
+            animateInterpolation = Interpol.LINEAR;
+            round = true;
+            visualInterpolation = Interpol.LINEAR;
+        }
     }
     
     public static class SimSelectBox extends SimActor {
+        public String name;
+        public StyleData style;
+        public boolean disabled;
+        public int maxListCount;
+        public Array<String> list = new Array<>();
+        public int alignment = Align.center;
+        public int selected;
+        public boolean scrollingDisabled;
     
+        public SimSelectBox() {
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "SelectBox" : name + " (SelectBox)";
+        }
+    
+        public void reset() {
+            name = null;
+            style = null;
+            disabled = false;
+            maxListCount = 0;
+            list.clear();
+            alignment = Align.center;
+            selected = 0;
+            scrollingDisabled = false;
+        }
     }
     
     public static class SimSlider extends SimActor {
+        public String name;
+        public StyleData style;
+        public boolean disabled;
+        public float value;
+        public float minimum;
+        public float maximum = 100;
+        public float increment = 1;
+        public boolean vertical;
+        public float animationDuration;
+        public Interpol animateInterpolation = Interpol.LINEAR;
+        public boolean round;
+        public Interpol visualInterpolation = Interpol.LINEAR;
     
+        public SimSlider() {
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "Slider" : name + " (Slider)";
+        }
+    
+        public void reset() {
+            name = null;
+            style = null;
+            disabled = false;
+            value = 0;
+            minimum = 0;
+            maximum = 100;
+            increment = 1;
+            vertical = false;
+            animationDuration = 0;
+            animateInterpolation = Interpol.LINEAR;
+            round = true;
+            visualInterpolation = Interpol.LINEAR;
+        }
     }
     
     public static class SimTextButton extends SimActor {
@@ -430,42 +790,500 @@ public class DialogSceneComposerModel {
     }
     
     public static class SimTextField extends SimActor {
+        public String name;
+        public StyleData style;
+        public String text;
+        public String passwordCharacter = "*";
+        public boolean passwordMode;
+        public int alignment = Align.center;
+        public boolean disabled;
+        public int cursorPosition;
+        public int selectionStart;
+        public int selectionEnd;
+        public boolean selectAll;
+        public boolean focusTraversal;
+        public int maxLength;
+        public String messageText;
     
+        public SimTextField() {
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "TextField" : name + " (TextField)";
+        }
+    
+        public void reset() {
+            name = null;
+            style = null;
+            text = null;
+            passwordCharacter = "*";
+            passwordMode = false;
+            alignment = Align.center;
+            disabled = false;
+            cursorPosition = 0;
+            selectionStart = 0;
+            selectionEnd = 0;
+            selectAll = false;
+            focusTraversal = false;
+            maxLength = 0;
+            messageText = null;
+        }
     }
     
     public static class SimTextArea extends SimActor {
+        public String name;
+        public StyleData style;
+        public String text;
+        public String passwordCharacter = "*";
+        public boolean passwordMode;
+        public int alignment = Align.center;
+        public boolean disabled;
+        public int cursorPosition;
+        public int selectionStart;
+        public int selectionEnd;
+        public boolean selectAll;
+        public boolean focusTraversal;
+        public int maxLength;
+        public String messageText;
+        public int preferredRows;
     
+        public SimTextArea() {
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "TextArea" : name + " (TextArea)";
+        }
+    
+        public void reset() {
+            name = null;
+            style = null;
+            text = null;
+            passwordCharacter = "*";
+            passwordMode = false;
+            alignment = Align.center;
+            disabled = false;
+            cursorPosition = 0;
+            selectionStart = 0;
+            selectionEnd = 0;
+            selectAll = false;
+            focusTraversal = false;
+            maxLength = 0;
+            messageText = null;
+            preferredRows = 0;
+        }
     }
     
     public static class SimTouchPad extends SimActor {
+        public String name;
+        public StyleData style;
+        public float deadZone;
+        public boolean resetOnTouchUp = true;
     
+        public SimTouchPad() {
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "TouchPad" : name + " (TouchPad)";
+        }
+    
+        public void reset() {
+            name = null;
+            style = null;
+            deadZone = 0;
+            resetOnTouchUp = true;
+        }
     }
     
-    public static class SimContainer extends SimActor {
+    public static class SimContainer extends SimActor implements SimSingleChild {
+        public String name;
+        public int alignment = Align.center;
+        public DrawableData background;
+        public boolean fillX;
+        public boolean fillY;
+        public float minWidth = -1;
+        public float minHeight = -1;
+        public float maxWidth = -1;
+        public float maxHeight = -1;
+        public float preferredWidth = -1;
+        public float preferredHeight = -1;
+        public float padLeft;
+        public float padRight;
+        public float padTop;
+        public float padBottom;
+        public SimActor child;
     
+        public SimContainer() {
+        
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "Container" : name + " (Container)";
+        }
+    
+        public void reset() {
+            name = null;
+            alignment = Align.center;
+            background = null;
+            fillX = false;
+            fillY = false;
+            minWidth = -1;
+            minHeight = -1;
+            maxWidth = -1;
+            maxHeight = -1;
+            preferredWidth = -1;
+            preferredHeight = -1;
+            padLeft = 0;
+            padRight = 0;
+            padTop = 0;
+            padBottom = 0;
+            child = null;
+        }
+    
+        @Override
+        public SimActor getChild() {
+            return child;
+        }
     }
     
-    public static class SimHorizontalGroup extends SimActor {
+    public static class SimHorizontalGroup extends SimActor implements SimMultipleChildren {
+        public String name;
+        public int alignment = Align.center;
+        public boolean expand;
+        public float fill;
+        public float padLeft;
+        public float padRight;
+        public float padTop;
+        public float padBottom;
+        public boolean reverse;
+        public int rowAlignment = Align.center;
+        public float space;
+        public boolean wrap;
+        public float wrapSpace;
+        public Array<SimActor> children = new Array<>();
     
+        public SimHorizontalGroup() {
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "HorizontalGroup" : name + " (HorizontalGroup)";
+        }
+    
+        public void reset() {
+            name = null;
+            alignment = Align.center;
+            expand = false;
+            fill = 0;
+            padLeft = 0;
+            padRight = 0;
+            padTop = 0;
+            padBottom = 0;
+            reverse = false;
+            rowAlignment = Align.center;
+            space = 0;
+            wrap = false;
+            wrapSpace = 0;
+            children.clear();
+        }
+    
+        @Override
+        public Array<SimActor> getChildren() {
+            return children;
+        }
     }
     
-    public static class SimScrollPane extends SimActor {
+    public static class SimScrollPane extends SimActor implements SimSingleChild {
+        public String name;
+        public StyleData style;
+        public boolean fadeScrollBars = true;
+        public SimActor child;
+        public boolean clamp;
+        public boolean flickScroll = true;
+        public float flingTime = 1f;
+        public boolean forceScrollX;
+        public boolean forceScrollY;
+        public boolean overScrollX = true;
+        public boolean overScrollY = true;
+        public float overScrollDistance = 50;
+        public float overScrollSpeedMin = 30;
+        public float overScrollSpeedMax = 200;
+        public boolean scrollBarBottom = true;
+        public boolean scrollBarRight = true;
+        public boolean scrollBarsOnTop;
+        public boolean scrollBarsVisible = true;
+        public boolean scrollBarTouch = true;
+        public boolean scrollingDisabledX;
+        public boolean scrollingDisabledY;
+        public boolean smoothScrolling = true;
+        public boolean variableSizeKnobs = true;
     
+        public SimScrollPane() {
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "ScrollPane" : name + " (ScrollPane)";
+        }
+    
+        public void reset() {
+            name = null;
+            style = null;
+            fadeScrollBars = true;
+            child = null;
+            clamp = false;
+            flickScroll = true;
+            flingTime = 1f;
+            forceScrollX = false;
+            forceScrollY = false;
+            overScrollX = true;
+            overScrollY = true;
+            overScrollDistance = 50;
+            overScrollSpeedMin = 30;
+            overScrollSpeedMax = 200;
+            scrollBarBottom = true;
+            scrollBarRight = true;
+            scrollBarsOnTop = false;
+            scrollBarsVisible = true;
+            scrollBarTouch = true;
+            scrollingDisabledX = false;
+            scrollingDisabledY = false;
+            smoothScrolling = true;
+            variableSizeKnobs = true;
+        }
+    
+        @Override
+        public SimActor getChild() {
+            return child;
+        }
     }
     
-    public static class SimStack extends SimActor {
+    public static class SimStack extends SimActor implements SimMultipleChildren {
+        public String name;
+        public Array<SimActor> children = new Array<>();
     
+        public SimStack() {
+        
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "Stack" : name + " (Stack)";
+        }
+    
+        public void reset() {
+            name = null;
+            children.clear();
+        }
+    
+        @Override
+        public Array<SimActor> getChildren() {
+            return children;
+        }
     }
     
-    public static class SimSplitPane extends SimActor {
+    public static class SimSplitPane extends SimActor implements SimMultipleChildren {
+        public String name;
+        public StyleData style;
+        public SimActor childFirst;
+        public SimActor childSecond;
+        public boolean vertical;
+        public float split = .5f;
+        public float splitMin;
+        public float splitMax = 1;
+        public transient Array<SimActor> tempChildren = new Array<>();
     
+        public SimSplitPane() {
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "SplitPane" : name + " (SplitPane)";
+        }
+    
+        public void reset() {
+            name = null;
+            style = null;
+            childFirst = null;
+            childSecond = null;
+            vertical = false;
+            split = .5f;
+            splitMin = 0;
+            splitMax = 1;
+            tempChildren.clear();
+        }
+    
+        @Override
+        public Array<SimActor> getChildren() {
+            tempChildren.clear();
+            tempChildren.add(childFirst, childSecond);
+            return tempChildren;
+        }
     }
     
-    public static class SimTree extends SimActor {
+    public static class SimNode extends SimActor implements  SimSingleChild, SimMultipleChildren {
+        public SimActor actor;
+        public Array<SimNode> nodes = new Array<>();
+        public boolean expanded;
     
+        public SimNode() {
+        }
+    
+        @Override
+        public String toString() {
+            return "Node";
+        }
+    
+        public void reset() {
+            actor = null;
+            nodes.clear();
+            expanded = false;
+        }
+    
+        @Override
+        public SimActor getChild() {
+            return actor;
+        }
+    
+        @Override
+        public Array<SimNode> getChildren() {
+            return nodes;
+        }
     }
     
-    public static class SimVerticalGroup extends SimActor {
+    public static class SimTree extends SimActor implements SimMultipleChildren {
+        public String name;
+        public StyleData style;
+        public Array<SimNode> children = new Array<>();
+        public float padLeft;
+        public float padRight;
+        public float iconSpaceLeft = 2;
+        public float iconSpaceRight = 2;
+        public float indentSpacing;
+        public float ySpacing = 4;
     
+        public SimTree() {
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "Tree" : name + " (Tree)";
+        }
+    
+        public void reset() {
+            name = null;
+            style = null;
+            children.clear();
+            padLeft = 0;
+            padRight = 0;
+            iconSpaceLeft = 2;
+            iconSpaceRight = 2;
+            indentSpacing = 0;
+            ySpacing = 4;
+        }
+    
+        @Override
+        public Array<SimNode> getChildren() {
+            return children;
+        }
+    }
+    
+    public static class SimVerticalGroup extends SimActor implements SimMultipleChildren {
+        public String name;
+        public int alignment = Align.center;
+        public boolean expand;
+        public float fill;
+        public float padLeft;
+        public float padRight;
+        public float padTop;
+        public float padBottom;
+        public boolean reverse;
+        public int columnAlignment = Align.center;
+        public float space;
+        public boolean wrap;
+        public float wrapSpace;
+        public Array<SimActor> children = new Array<>();
+    
+        public SimVerticalGroup() {
+        
+        }
+    
+        @Override
+        public String toString() {
+            return name == null ? "VerticalGroup" : name + " (VerticalGroup)";
+        }
+    
+        public void reset() {
+            name = null;
+            alignment = Align.center;
+            expand = false;
+            fill = 0;
+            padLeft = 0;
+            padRight = 0;
+            padTop = 0;
+            padBottom = 0;
+            reverse = false;
+            columnAlignment = Align.center;
+            space = 0;
+            wrap = false;
+            wrapSpace = 0;
+            children.clear();
+        }
+    
+        @Override
+        public Array<SimActor> getChildren() {
+            return children;
+        }
     }
 }
