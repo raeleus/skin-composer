@@ -3,13 +3,13 @@ package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 
-public class TouchPadPaddingUndoable implements SceneComposerUndoable {
+public class TouchPadDeadZoneUndoable implements SceneComposerUndoable {
     private DialogSceneComposerModel.SimTouchPad touchPad;
     private float deadZone;
     private float previousDeadZone;
     private DialogSceneComposer dialog;
     
-    public TouchPadPaddingUndoable(float deadZone) {
+    public TouchPadDeadZoneUndoable(float deadZone) {
         this.deadZone = deadZone;
 
         dialog = DialogSceneComposer.dialog;
