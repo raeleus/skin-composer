@@ -4,13 +4,13 @@ import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 
-public class ImageBackgroundUndoable implements SceneComposerUndoable {
+public class ImageDrawableUndoable implements SceneComposerUndoable {
     private DialogSceneComposerModel.SimImage image;
     private DrawableData drawable;
     private DrawableData previousDrawable;
     private DialogSceneComposer dialog;
     
-    public ImageBackgroundUndoable(DrawableData drawable) {
+    public ImageDrawableUndoable(DrawableData drawable) {
         dialog = DialogSceneComposer.dialog;
         image = (DialogSceneComposerModel.SimImage) dialog.simActor;
         this.drawable = drawable;

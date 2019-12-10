@@ -453,8 +453,8 @@ public class DialogSceneComposerEvents {
         processUndoable(new HorizontalGroupWrapUndoable(wrap));
    }
    
-   public void imageBackground(DrawableData background) {
-        processUndoable(new ImageBackgroundUndoable(background));
+   public void imageDrawable(DrawableData drawable) {
+        processUndoable(new ImageDrawableUndoable(drawable));
    }
    
    public void imageDelete() {

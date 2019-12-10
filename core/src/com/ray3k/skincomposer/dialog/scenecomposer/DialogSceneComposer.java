@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.PopTable;
 import com.ray3k.skincomposer.Spinner;
@@ -764,26 +765,31 @@ public class DialogSceneComposer extends Dialog {
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(imageNameListener());
             textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Drawable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(imageDrawableListener());
             textButton.addListener(new TextTooltip("Sets the drawable to be drawn as the Image.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Scaling", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(imageScalingListener());
             textButton.addListener(new TextTooltip("Sets the scaling strategy of the Image when it's stretched or squeezed.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(imageResetListener());
             textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(imageDeleteListener());
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimLabel) {
             var textButton = new TextButton("Name", skin, "scene-med");
@@ -2865,7 +2871,7 @@ public class DialogSceneComposer extends Dialog {
         var popTableClickListener = new PopTable.PopTableClickListener(skin);
         var popTable = popTableClickListener.getPopTable();
         
-        var label = new Label("Are you sure you want to reset this cell?", skin, "scene-label-colored");
+        var label = new Label("Are you sure you want to reset this TextButton?", skin, "scene-label-colored");
         popTable.add(label);
         
         popTable.row();
@@ -4972,6 +4978,220 @@ public class DialogSceneComposer extends Dialog {
         
         return popTableClickListener;
     }
+    
+    private EventListener imageNameListener() {
+        var simImage = (DialogSceneComposerModel.SimImage) simActor;
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Name:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                textField.setText(simImage.name);
+                popTable.add(textField).minWidth(150);
+                textField.addListener(main.getIbeamListener());
+                textField.addListener(new TextTooltip("The name of the Image to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+                textField.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.imageName(textField.getText());
+                    }
+                });
+                textField.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        if (keycode == Input.Keys.ENTER) {
+                            popTable.hide();
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+                
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener imageDrawableListener() {
+        var simImage = (DialogSceneComposerModel.SimImage) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+    
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+        
+                var label = new Label("Drawable:", skin, "scene-label-colored");
+                popTable.add(label);
+        
+                popTable.row();
+                var stack = new Stack();
+                popTable.add(stack).minSize(100).maxSize(300).grow();
+                var background = new Image(skin, "scene-tile-ten");
+                stack.add(background);
+                Image image;
+                if (simImage.drawable != null) {
+                    image = new Image(main.getAtlasData().drawablePairs.get(simImage.drawable));
+                } else {
+                    image = new Image((Drawable) null);
+                }
+                stack.add(image);
+        
+                popTable.row();
+                var textButton = new TextButton("Select Drawable", skin, "scene-small");
+                popTable.add(textButton).minWidth(100);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(new TextTooltip("The background drawable for the table.", main.getTooltipManager(), skin, "scene"));
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        popTable.hide();
+                        main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
+                            @Override
+                            public void confirmed(DrawableData drawable, DialogDrawables dialog) {
+                                events.imageDrawable(drawable);
+                                image.setDrawable(main.getAtlasData().drawablePairs.get(drawable));
+                            }
+    
+                            @Override
+                            public void emptied(DialogDrawables dialog) {
+                                events.imageDrawable(null);
+                                image.setDrawable(null);
+                            }
+    
+                            @Override
+                            public void cancelled(DialogDrawables dialog) {
+        
+                            }
+                        }, new DialogListener() {
+                            @Override
+                            public void opened() {
+    
+                            }
+    
+                            @Override
+                            public void closed() {
+        
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    
+        popTableClickListener.update();
+    
+        return popTableClickListener;
+    }
+    
+    private EventListener imageScalingListener() {
+        var simImage = (DialogSceneComposerModel.SimImage) simActor;
+        var selectBox = new SelectBox<Scaling>(skin, "scene");
+        selectBox.setItems(Scaling.none, Scaling.fill, Scaling.fillX, Scaling.fillY, Scaling.fit, Scaling.stretch, Scaling.stretchX, Scaling.stretchY);
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Scaling:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                selectBox.setSelected(simImage.scaling);
+                popTable.add(selectBox);
+                selectBox.addListener(main.getHandListener());
+                selectBox.addListener(new TextTooltip("The scaling strategy applied to the image.", main.getTooltipManager(), skin, "scene"));
+                selectBox.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.imageScaling(selectBox.getSelected());
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener imageResetListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to reset this Image?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("RESET", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Resets the settings of the Image to their defaults.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.imageReset();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener imageDeleteListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to delete this Image?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("DELETE", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Removes this Image from its parent.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.imageDelete();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    
     
     public Dialog showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType widgetType, PopTable popTable) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;
