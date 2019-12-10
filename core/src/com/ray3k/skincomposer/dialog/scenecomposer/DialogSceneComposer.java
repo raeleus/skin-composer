@@ -468,6 +468,12 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(cellColSpanListener());
             textButton.addListener(new TextTooltip("Sets the column span of the current cell.", main.getTooltipManager(), skin, "scene"));
         
+            textButton = new TextButton("Alignment", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(cellAlignmentListener());
+            textButton.addListener(new TextTooltip("Sets the alignment of the contents.", main.getTooltipManager(), skin, "scene"));
+            
             textButton = new TextButton("Padding / Spacing", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
