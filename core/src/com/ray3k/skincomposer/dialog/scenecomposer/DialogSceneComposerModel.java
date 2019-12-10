@@ -284,9 +284,11 @@ public class DialogSceneComposerModel {
             }
         } else if (simActor instanceof SimImage) {
             var simImage = (SimImage) simActor;
-            var image = new Image(main.getAtlasData().getDrawablePairs().get(simImage.drawable));
-            image.setScaling(simImage.scaling);
-            actor = image;
+            if (simImage.drawable != null) {
+                var image = new Image(main.getAtlasData().getDrawablePairs().get(simImage.drawable));
+                image.setScaling(simImage.scaling);
+                actor = image;
+            }
         } else if (simActor instanceof SimLabel) {
             var simLabel = (SimLabel) simActor;
             var style = main.getRootTable().createPreviewStyle(Label.LabelStyle.class, simLabel.style);
@@ -320,16 +322,18 @@ public class DialogSceneComposerModel {
             actor = progressBar;
         } else if (simActor instanceof SimSelectBox) {
             var sim = (SimSelectBox) simActor;
-            var style = main.getRootTable().createPreviewStyle(SelectBox.SelectBoxStyle.class, sim.style);
-            var selectBox = new SelectBox<String>(style);
-            selectBox.setName(sim.name);
-            selectBox.setDisabled(sim.disabled);
-            selectBox.setMaxListCount(sim.maxListCount);
-            selectBox.setItems(sim.list);
-            selectBox.setAlignment(sim.alignment);
-            selectBox.setSelectedIndex(sim.selected);
-            selectBox.setScrollingDisabled(sim.scrollingDisabled);
-            actor = selectBox;
+            if (sim.list.size > 0) {
+                var style = main.getRootTable().createPreviewStyle(SelectBox.SelectBoxStyle.class, sim.style);
+                var selectBox = new SelectBox<String>(style);
+                selectBox.setName(sim.name);
+                selectBox.setDisabled(sim.disabled);
+                selectBox.setMaxListCount(sim.maxListCount);
+                selectBox.setItems(sim.list);
+                selectBox.setAlignment(sim.alignment);
+                selectBox.setSelectedIndex(sim.selected);
+                selectBox.setScrollingDisabled(sim.scrollingDisabled);
+                actor = selectBox;
+            }
         } else if (simActor instanceof SimSlider) {
             var sim = (SimSlider) simActor;
             var style = main.getRootTable().createPreviewStyle(Slider.SliderStyle.class, sim.style);
@@ -731,7 +735,7 @@ public class DialogSceneComposerModel {
         public boolean checked;
     
         public SimCheckBox() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            var styles = Main.main.getJsonData().getClassStyleMap().get(CheckBox.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -870,7 +874,7 @@ public class DialogSceneComposerModel {
         public ColorData color;
     
         public SimLabel() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Label.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -903,7 +907,7 @@ public class DialogSceneComposerModel {
         public Array<String> list = new Array<>();
     
         public SimList() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            var styles = Main.main.getJsonData().getClassStyleMap().get(List.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -940,9 +944,9 @@ public class DialogSceneComposerModel {
         public Interpol visualInterpolation = Interpol.LINEAR;
     
         public SimProgressBar() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            var styles = Main.main.getJsonData().getClassStyleMap().get(ProgressBar.class);
             for (var style : styles) {
-                if (style.name.equals("default")) {
+                if (style.name.equals("default-horizontal")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
                         this.style = style;
                     }
@@ -982,7 +986,7 @@ public class DialogSceneComposerModel {
         public boolean scrollingDisabled;
     
         public SimSelectBox() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            var styles = Main.main.getJsonData().getClassStyleMap().get(SelectBox.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -1024,9 +1028,9 @@ public class DialogSceneComposerModel {
         public Interpol visualInterpolation = Interpol.LINEAR;
     
         public SimSlider() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Slider.class);
             for (var style : styles) {
-                if (style.name.equals("default")) {
+                if (style.name.equals("default-horizontal")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
                         this.style = style;
                     }
@@ -1114,7 +1118,7 @@ public class DialogSceneComposerModel {
         public String messageText;
     
         public SimTextField() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            var styles = Main.main.getJsonData().getClassStyleMap().get(TextField.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -1165,7 +1169,7 @@ public class DialogSceneComposerModel {
         public int preferredRows;
     
         public SimTextArea() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            var styles = Main.main.getJsonData().getClassStyleMap().get(TextField.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -1206,7 +1210,7 @@ public class DialogSceneComposerModel {
         public boolean resetOnTouchUp = true;
     
         public SimTouchPad() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Touchpad.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -1354,7 +1358,7 @@ public class DialogSceneComposerModel {
         public boolean variableSizeKnobs = true;
     
         public SimScrollPane() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            var styles = Main.main.getJsonData().getClassStyleMap().get(ScrollPane.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -1437,9 +1441,9 @@ public class DialogSceneComposerModel {
         public transient Array<SimActor> tempChildren = new Array<>();
     
         public SimSplitPane() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            var styles = Main.main.getJsonData().getClassStyleMap().get(SplitPane.class);
             for (var style : styles) {
-                if (style.name.equals("default")) {
+                if (style.name.equals("default-horizontal")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
                         this.style = style;
                     }
@@ -1518,7 +1522,7 @@ public class DialogSceneComposerModel {
         public float ySpacing = 4;
     
         public SimTree() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Tree.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {

@@ -706,6 +706,767 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(main.getHandListener());
             textButton.addListener(imageTextButtonDeleteListener());
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimCheckBox) {
+            var textButton = new TextButton("Name", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Style", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the CheckBox.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Text", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the text inside of the CheckBox.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Checked", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets whether the CheckBox is checked initially.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Color", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the color of the CheckBox.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Padding", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the padding of the contents of the CheckBox.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Disabled", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets whether the CheckBox is disabled initially.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimImage) {
+            var textButton = new TextButton("Name", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Drawable", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the drawable to be drawn as the Image.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Scaling", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the scaling strategy of the Image when it's stretched or squeezed.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimLabel) {
+            var textButton = new TextButton("Name", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Style", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the Label.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Text", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the text inside of the Label.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Color", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Changes the color of the text in the Label.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Text Alignment", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the alignment of the text when the Label is larger than it's minimum size.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Ellipsis", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Enabling ellipsis allows the Label to be shortened and appends ellipsis characters (eg. \"...\")", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Wrap", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Allows the text to be wrapped to the next line if it exceeds the width of the Label.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimList) {
+            var textButton = new TextButton("Name", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Style", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the List.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Text List", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the text entries for the List.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimProgressBar) {
+            var textButton = new TextButton("Name", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Style", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the ProgressBar.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Value Settings", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the value, minimum, maximum, and increment of the ProgressBar.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Orientation", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Change the orientation of the ProgressBar.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Animation", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Change the progress animation as it increases or decreases.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Round", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Rounds the drawable positions to integers.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Disabled", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets whether the ProgressBar is disabled initially.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimSelectBox) {
+            var textButton = new TextButton("Name", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Style", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the SelectBox.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Text List", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the text entries for the SelectBox.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Max List Count", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("The maximum visible entries.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Alignment", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("The alignment of the text in the SelectBox.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Selected", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Choose the selected item.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Scrolling", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Choose if scrolling is enabled.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Disabled", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets whether the SelectBox is disabled initially.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimSlider) {
+            var textButton = new TextButton("Name", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Style", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the Slider.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Value Settings", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the value, minimum, maximum, and increment of the Slider.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Orientation", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Change the orientation of the Slider.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Animation", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Change the progress animation as it increases or decreases.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Round", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Rounds the drawable positions to integers.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Disabled", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets whether the button is disabled initially.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimTextArea) {
+            var textButton = new TextButton("Name", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Style", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the TextArea.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Text", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the text inside of the TextArea.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Message Text", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("The text to be shown while there is no text, and the TextArea is not focused.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Password", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Enable password mode and set the password character.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Selection", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the cursor position and selected range.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Alignment", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the alignment of the typed text.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Focus Traversal", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Enable traversal to the next TextArea by using the TAB key.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Max Length", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the maximum length of the typed text.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Preferred Rows", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the preferred number of lines.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Disabled", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets whether the TextArea is disabled initially.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimTextField) {
+            var textButton = new TextButton("Name", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Style", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the TextField.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Text", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the text inside of the TextField.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Text", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the text inside of the TextField.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Message Text", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("The text to be shown while there is no text, and the TextField is not focused.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Password", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Enable password mode and set the password character.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Selection", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the cursor position and selected range.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Alignment", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the alignment of the typed text.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Focus Traversal", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Enable traversal to the next TextField by using the TAB key.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Max Length", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the maximum length of the typed text.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Disabled", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets whether the TextField is disabled initially.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimTouchPad) {
+            var textButton = new TextButton("Name", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Style", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the TouchPad.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Dead Zone", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Change the dead zone that does not react to user input.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Reset on Touch Up", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Enable the reset of the touch pad position upon the release of the widget.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimContainer) {
+            var textButton = new TextButton("Name", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Set Widget", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the widget assigned to this Container.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Background", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the background of the Container.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Fill", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the fill of the widget.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Size", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the size of the widget.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Padding", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the padding of the widget.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Alignment", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the alignment of the widget.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimHorizontalGroup) {
+            var textButton = new TextButton("Name", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Add Child", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Adds a widget to the HorizontalGroup", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Expand", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the widgets to expand to the available space", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Fill", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the fill amount of the widgets.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Padding", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the padding of the widgets.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Space", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the space between the widgets.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Wrap", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set whether widgets will wrap to the next line when the width is decreased.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Alignment", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the alignment of the widgets", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Reverse", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Reverse the display order of the widgets.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimScrollPane) {
+            var textButton = new TextButton("Name", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Style", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the ScrollPane.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Set Widget", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Knobs", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Scrolling", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimSplitPane) {
+            var textButton = new TextButton("Name", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Style", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the style that controls the appearance of the SplitPane.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Set First Widget", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the first widget applied to the SplitPane", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Set Second Widget", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the second widget applied to the SplitPane", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Orientation", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the orientation of the SplitPane.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Split", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the split, splitMin, and splitMax values.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimStack) {
+            var textButton = new TextButton("Name", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Add Child", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Add a child to the Stack.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimNode) {
+            var textButton = new TextButton("Set Widget", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the widget applied to this Node.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Add Node", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Adds a new child Node to this Node.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Icon", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Select the Drawable applied as an icon to the Node.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Options", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Change the expanded and selected values.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimTree) {
+            var textButton = new TextButton("Name", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Style", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the Tree.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Add Node", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Padding", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Spacing", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
+        } else if (simActor instanceof DialogSceneComposerModel.SimVerticalGroup) {
+            var textButton = new TextButton("Name", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Style", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the VerticalGroup.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Add Child", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Adds a widget to the VerticalGroup.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Expand", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the widgets to expand to the available space.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Fill", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the fill amount of the widgets.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Padding", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the padding of the widgets.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Space", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the space between the widgets.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Wrap", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set whether widgets will wrap to the next line when the height is decreased.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Alignment", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Set the alignment of the widgets", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Reverse", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Reverse the display order of the widgets.", main.getTooltipManager(), skin, "scene"));
+            
+            textButton = new TextButton("Reset", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(imageTextButtonResetListener());
+            textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Delete", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         }
     }
     
