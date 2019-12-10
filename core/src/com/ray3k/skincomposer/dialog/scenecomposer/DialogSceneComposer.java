@@ -710,46 +710,55 @@ public class DialogSceneComposer extends Dialog {
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(checkBoxNameListener());
             textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(checkBoxStyleListener());
             textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the CheckBox.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Text", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(checkBoxTextListener());
             textButton.addListener(new TextTooltip("Sets the text inside of the CheckBox.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Checked", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(checkBoxCheckedListener());
             textButton.addListener(new TextTooltip("Sets whether the CheckBox is checked initially.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Color", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(checkBoxColorListener());
             textButton.addListener(new TextTooltip("Sets the color of the CheckBox.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Padding", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(checkBoxPaddingListener());
             textButton.addListener(new TextTooltip("Sets the padding of the contents of the CheckBox.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Disabled", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(checkBoxDisabledListener());
             textButton.addListener(new TextTooltip("Sets whether the CheckBox is disabled initially.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(checkBoxResetListener());
             textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(checkBoxDeleteListener());
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimImage) {
             var textButton = new TextButton("Name", skin, "scene-med");
@@ -1654,7 +1663,7 @@ public class DialogSceneComposer extends Dialog {
                 });
                 
                 popTable.row();
-                label = new Label("white", skin, "scene-label-colored");
+                label = new Label(simButton.color == null ? "white" : simButton.color.getName(), skin, "scene-label-colored");
                 popTable.add(label);
             }
         };
@@ -1985,7 +1994,7 @@ public class DialogSceneComposer extends Dialog {
                 });
                 
                 popTable.row();
-                label = new Label("white", skin, "scene-label-colored");
+                label = new Label(simImageButton.color == null ? "white" : simImageButton.color.getName(), skin, "scene-label-colored");
                 popTable.add(label);
             }
         };
@@ -2368,7 +2377,7 @@ public class DialogSceneComposer extends Dialog {
                 });
                 
                 popTable.row();
-                label = new Label("white", skin, "scene-label-colored");
+                label = new Label(simImageTextButton.color == null ? "white" : simImageTextButton.color.getName(), skin, "scene-label-colored");
                 popTable.add(label);
             }
         };
@@ -2751,7 +2760,7 @@ public class DialogSceneComposer extends Dialog {
                 });
                 
                 popTable.row();
-                label = new Label("white", skin, "scene-label-colored");
+                label = new Label(simTextButton.color == null ? "white" : simTextButton.color.getName(), skin, "scene-label-colored");
                 popTable.add(label);
             }
         };
@@ -4575,6 +4584,389 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.VERTICAL_GROUP, popTable);
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener checkBoxNameListener() {
+        var simCheckBox = (DialogSceneComposerModel.SimCheckBox) simActor;
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Name:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                textField.setText(simCheckBox.name);
+                popTable.add(textField).minWidth(150);
+                textField.addListener(main.getIbeamListener());
+                textField.addListener(new TextTooltip("The name of the CheckBox to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+                textField.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.checkBoxName(textField.getText());
+                    }
+                });
+                textField.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        if (keycode == Input.Keys.ENTER) {
+                            popTable.hide();
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+                
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener checkBoxStyleListener() {
+        var simCheckBox = (DialogSceneComposerModel.SimCheckBox) simActor;
+        var popTableClickListener = new StyleSelectorPopTable(CheckBox.class, simCheckBox.style == null ? "default" : simCheckBox.style.name) {
+            @Override
+            public void accepted(StyleData styleData) {
+                events.checkBoxStyle(styleData);
+            }
+        };
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener checkBoxTextListener() {
+        var simCheckBox = (DialogSceneComposerModel.SimCheckBox) simActor;
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Text:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                textField.setText(simCheckBox.text);
+                popTable.add(textField).minWidth(150);
+                textField.addListener(main.getIbeamListener());
+                textField.addListener(new TextTooltip("The text inside of the CheckBox.", main.getTooltipManager(), skin, "scene"));
+                textField.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.checkBoxText(textField.getText());
+                    }
+                });
+                textField.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        if (keycode == Input.Keys.ENTER) {
+                            popTable.hide();
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+                
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener checkBoxCheckedListener() {
+        var simCheckBox = (DialogSceneComposerModel.SimCheckBox) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Checked:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                var textButton = new TextButton(simCheckBox.checked ? "TRUE" : "FALSE", skin, "scene-small");
+                textButton.setChecked(simCheckBox.checked);
+                popTable.add(textButton).minWidth(100);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(new TextTooltip("Whether the CheckBox is checked initially.", main.getTooltipManager(), skin, "scene"));
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        textButton.setText(textButton.isChecked() ? "TRUE" : "FALSE");
+                        events.checkBoxChecked(textButton.isChecked());
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener checkBoxColorListener() {
+        var simCheckBox = (DialogSceneComposerModel.SimCheckBox) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+    
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+        
+                var label = new Label("Color:", skin, "scene-label-colored");
+                popTable.add(label);
+        
+                popTable.row();
+                var imageButton = new ImageButton(skin, "scene-color");
+                imageButton.getImage().setColor(simCheckBox.color == null ? Color.WHITE : simCheckBox.color.color);
+                popTable.add(imageButton).minWidth(100);
+                imageButton.addListener(main.getHandListener());
+                imageButton.addListener(new TextTooltip("Select the color of the CheckBox.", main.getTooltipManager(), skin, "scene"));
+                imageButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        popTable.hide();
+                        main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+                            if (!pressedCancel) {
+                                events.checkBoxColor(colorData);
+                            }
+                        }, new DialogListener() {
+                            @Override
+                            public void opened() {
+    
+                            }
+    
+                            @Override
+                            public void closed() {
+        
+                            }
+                        });
+                    }
+                });
+        
+                popTable.row();
+                label = new Label(simCheckBox.color == null ? "white" : simCheckBox.color.getName(), skin, "scene-label-colored");
+                popTable.add(label);
+            }
+        };
+    
+        popTableClickListener.update();
+    
+        return popTableClickListener;
+    }
+    
+    private EventListener checkBoxPaddingListener() {
+        var simCheckBox = (DialogSceneComposerModel.SimCheckBox) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var changeListener = new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        Spinner padLeft = popTable.findActor("pad-left");
+                        Spinner padRight = popTable.findActor("pad-right");
+                        Spinner padTop = popTable.findActor("pad-top");
+                        Spinner padBottom = popTable.findActor("pad-bottom");
+                        events.checkBoxPadding((float) padLeft.getValue(), (float) padRight.getValue(), (float) padTop.getValue(), (float) padBottom.getValue());
+                    }
+                };
+                
+                var label = new Label("Padding:", skin, "scene-label-colored");
+                popTable.add(label).colspan(2);
+                
+                popTable.row();
+                popTable.defaults().right().spaceRight(5);
+                label = new Label("Left:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("pad-left");
+                spinner.setValue(simCheckBox.padLeft);
+                popTable.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The padding on the left of the contents.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+                
+                popTable.row();
+                label = new Label("Right:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("pad-right");
+                spinner.setValue(simCheckBox.padRight);
+                popTable.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The padding on the right of the contents.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+                
+                popTable.row();
+                label = new Label("Top:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("pad-top");
+                spinner.setValue(simCheckBox.padTop);
+                popTable.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The padding on the top of the contents.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+                
+                popTable.row();
+                label = new Label("Bottom:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("pad-bottom");
+                spinner.setValue(simCheckBox.padBottom);
+                popTable.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The padding on the bottom of the contents.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener checkBoxDisabledListener() {
+        var simCheckBox = (DialogSceneComposerModel.SimCheckBox) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+    
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+        
+                var label = new Label("Disabled:", skin, "scene-label-colored");
+                popTable.add(label);
+        
+                popTable.row();
+                var textButton = new TextButton(simCheckBox.disabled ? "TRUE" : "FALSE", skin, "scene-small");
+                textButton.setChecked(simCheckBox.disabled);
+                popTable.add(textButton).minWidth(100);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(new TextTooltip("Whether the CheckBox is disabled initially.", main.getTooltipManager(), skin, "scene"));
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        textButton.setText(textButton.isChecked() ? "TRUE" : "FALSE");
+                        events.checkBoxDisabled(textButton.isChecked());
+                    }
+                });
+            }
+        };
+    
+        popTableClickListener.update();
+    
+        return popTableClickListener;
+    }
+    
+    private EventListener checkBoxResetListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to reset this CheckBox?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("RESET", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Resets the settings of the TextButton to their defaults.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.checkBoxReset();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener checkBoxDeleteListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to delete this CheckBox?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("DELETE", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Removes this CheckBox from its parent.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.checkBoxDelete();
             }
         });
         

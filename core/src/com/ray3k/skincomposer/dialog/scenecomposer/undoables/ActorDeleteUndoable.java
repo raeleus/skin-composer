@@ -10,6 +10,7 @@ public class ActorDeleteUndoable implements SceneComposerUndoable {
     
     public ActorDeleteUndoable() {
         dialog = DialogSceneComposer.dialog;
+        actor = dialog.simActor;
         parent = actor.parent;
     }
     
