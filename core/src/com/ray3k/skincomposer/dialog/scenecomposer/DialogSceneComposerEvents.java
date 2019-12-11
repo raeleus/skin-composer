@@ -489,7 +489,7 @@ public class DialogSceneComposerEvents {
         processUndoable(new LabelEllipsisUndoable(ellipsis, ellipsisString));
    }
    
-   public void labelname(String name) {
+   public void labelName(String name) {
         processUndoable(new LabelNameUndoable(name));
    }
    

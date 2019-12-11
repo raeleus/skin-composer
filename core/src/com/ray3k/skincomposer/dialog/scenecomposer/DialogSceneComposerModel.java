@@ -291,38 +291,44 @@ public class DialogSceneComposerModel {
             }
         } else if (simActor instanceof SimLabel) {
             var simLabel = (SimLabel) simActor;
-            var style = main.getRootTable().createPreviewStyle(Label.LabelStyle.class, simLabel.style);
-            var label = new Label(simLabel.text == null ? "" : simLabel.text, style);
-            label.setName(simLabel.name);
-            label.setAlignment(simLabel.textAlignment);
-            if (simLabel.ellipsis) {
-                label.setEllipsis(simLabel.ellipsisString);
+            if (simLabel.style != null && simLabel.style.hasMandatoryFields()) {
+                var style = main.getRootTable().createPreviewStyle(Label.LabelStyle.class, simLabel.style);
+                var label = new Label(simLabel.text == null ? "" : simLabel.text, style);
+                label.setName(simLabel.name);
+                label.setAlignment(simLabel.textAlignment);
+                if (simLabel.ellipsis) {
+                    label.setEllipsis(simLabel.ellipsisString);
+                }
+                label.setWrap(simLabel.wrap);
+                if (simLabel.color != null) label.setColor(simLabel.color.color);
+                actor = label;
             }
-            label.setWrap(simLabel.wrap);
-            if (simLabel.color != null) label.setColor(simLabel.color.color);
-            actor = label;
         } else if (simActor instanceof SimList) {
             var simList = (SimList) simActor;
-            var style = main.getRootTable().createPreviewStyle(List.ListStyle.class, simList.style);
-            var list = new List<String>(style);
-            list.setName(simList.name);
-            list.setItems(simList.list);
-            actor = list;
+            if (simList.style != null && simList.style.hasMandatoryFields()) {
+                var style = main.getRootTable().createPreviewStyle(List.ListStyle.class, simList.style);
+                var list = new List<String>(style);
+                list.setName(simList.name);
+                list.setItems(simList.list);
+                actor = list;
+            }
         } else if (simActor instanceof SimProgressBar) {
             var sim = (SimProgressBar) simActor;
-            var style = main.getRootTable().createPreviewStyle(ProgressBar.ProgressBarStyle.class, sim.style);
-            var progressBar = new ProgressBar(sim.minimum, sim.maximum, sim.increment, sim.vertical, style);
-            progressBar.setName(sim.name);
-            progressBar.setDisabled(sim.disabled);
-            progressBar.setValue(sim.value);
-            progressBar.setAnimateDuration(sim.animationDuration);
-            progressBar.setAnimateInterpolation(sim.animateInterpolation.interpolation);
-            progressBar.setRound(sim.round);
-            progressBar.setVisualInterpolation(sim.visualInterpolation.interpolation);
-            actor = progressBar;
+            if (sim.style != null && sim.style.hasMandatoryFields()) {
+                var style = main.getRootTable().createPreviewStyle(ProgressBar.ProgressBarStyle.class, sim.style);
+                var progressBar = new ProgressBar(sim.minimum, sim.maximum, sim.increment, sim.vertical, style);
+                progressBar.setName(sim.name);
+                progressBar.setDisabled(sim.disabled);
+                progressBar.setValue(sim.value);
+                progressBar.setAnimateDuration(sim.animationDuration);
+                progressBar.setAnimateInterpolation(sim.animateInterpolation.interpolation);
+                progressBar.setRound(sim.round);
+                progressBar.setVisualInterpolation(sim.visualInterpolation.interpolation);
+                actor = progressBar;
+            }
         } else if (simActor instanceof SimSelectBox) {
             var sim = (SimSelectBox) simActor;
-            if (sim.list.size > 0) {
+            if (sim.list.size > 0 && sim.style != null && sim.style.hasMandatoryFields()) {
                 var style = main.getRootTable().createPreviewStyle(SelectBox.SelectBoxStyle.class, sim.style);
                 var selectBox = new SelectBox<String>(style);
                 selectBox.setName(sim.name);
@@ -336,61 +342,69 @@ public class DialogSceneComposerModel {
             }
         } else if (simActor instanceof SimSlider) {
             var sim = (SimSlider) simActor;
-            var style = main.getRootTable().createPreviewStyle(Slider.SliderStyle.class, sim.style);
-            var slider = new Slider(sim.minimum, sim.maximum, sim.increment, sim.vertical, style);
-            slider.setName(sim.name);
-            slider.setDisabled(sim.disabled);
-            slider.setValue(sim.value);
-            slider.setAnimateDuration(sim.animationDuration);
-            slider.setAnimateInterpolation(sim.animateInterpolation.interpolation);
-            slider.setRound(sim.round);
-            slider.setVisualInterpolation(sim.visualInterpolation.interpolation);
-            actor = slider;
+            if (sim.style != null && sim.style.hasMandatoryFields()) {
+                var style = main.getRootTable().createPreviewStyle(Slider.SliderStyle.class, sim.style);
+                var slider = new Slider(sim.minimum, sim.maximum, sim.increment, sim.vertical, style);
+                slider.setName(sim.name);
+                slider.setDisabled(sim.disabled);
+                slider.setValue(sim.value);
+                slider.setAnimateDuration(sim.animationDuration);
+                slider.setAnimateInterpolation(sim.animateInterpolation.interpolation);
+                slider.setRound(sim.round);
+                slider.setVisualInterpolation(sim.visualInterpolation.interpolation);
+                actor = slider;
+            }
         } else if (simActor instanceof SimTextField) {
             var sim = (SimTextField) simActor;
-            var style = main.getRootTable().createPreviewStyle(TextField.TextFieldStyle.class, sim.style);
-            var textField = new TextField(sim.text == null ? "" : sim.text, style);
-            textField.setName(sim.name);
-            textField.setPasswordCharacter(sim.passwordCharacter);
-            textField.setPasswordMode(sim.passwordMode);
-            textField.setAlignment(sim.alignment);
-            textField.setDisabled(sim.disabled);
-            textField.setCursorPosition(sim.cursorPosition);
-            if (sim.selectAll) {
-                textField.setSelection(0, textField.getText().length() - 1);
-            } else {
-                textField.setSelection(sim.selectionStart, sim.selectionEnd);
+            if (sim.style != null && sim.style.hasMandatoryFields()) {
+                var style = main.getRootTable().createPreviewStyle(TextField.TextFieldStyle.class, sim.style);
+                var textField = new TextField(sim.text == null ? "" : sim.text, style);
+                textField.setName(sim.name);
+                textField.setPasswordCharacter(sim.passwordCharacter);
+                textField.setPasswordMode(sim.passwordMode);
+                textField.setAlignment(sim.alignment);
+                textField.setDisabled(sim.disabled);
+                textField.setCursorPosition(sim.cursorPosition);
+                if (sim.selectAll) {
+                    textField.setSelection(0, textField.getText().length() - 1);
+                } else {
+                    textField.setSelection(sim.selectionStart, sim.selectionEnd);
+                }
+                textField.setFocusTraversal(sim.focusTraversal);
+                textField.setMaxLength(sim.maxLength);
+                textField.setMessageText(sim.messageText);
+                actor = textField;
             }
-            textField.setFocusTraversal(sim.focusTraversal);
-            textField.setMaxLength(sim.maxLength);
-            textField.setMessageText(sim.messageText);
-            actor = textField;
         } else if (simActor instanceof SimTextArea) {
             var sim = (SimTextArea) simActor;
-            var style = main.getRootTable().createPreviewStyle(TextField.TextFieldStyle.class, sim.style);
-            var textArea = new TextArea(sim.text == null ? "" : sim.text, style);
-            textArea.setName(sim.name);
-            textArea.setPasswordCharacter(sim.passwordCharacter);
-            textArea.setPasswordMode(sim.passwordMode);
-            textArea.setAlignment(sim.alignment);
-            textArea.setDisabled(sim.disabled);
-            textArea.setCursorPosition(sim.cursorPosition);
-            if (sim.selectAll) {
-                textArea.setSelection(0, textArea.getText().length() - 1);
-            } else {
-                textArea.setSelection(sim.selectionStart, sim.selectionEnd);
+            if (sim.style != null && sim.style.hasMandatoryFields()) {
+                var style = main.getRootTable().createPreviewStyle(TextField.TextFieldStyle.class, sim.style);
+                var textArea = new TextArea(sim.text == null ? "" : sim.text, style);
+                textArea.setName(sim.name);
+                textArea.setPasswordCharacter(sim.passwordCharacter);
+                textArea.setPasswordMode(sim.passwordMode);
+                textArea.setAlignment(sim.alignment);
+                textArea.setDisabled(sim.disabled);
+                textArea.setCursorPosition(sim.cursorPosition);
+                if (sim.selectAll) {
+                    textArea.setSelection(0, textArea.getText().length() - 1);
+                } else {
+                    textArea.setSelection(sim.selectionStart, sim.selectionEnd);
+                }
+                textArea.setFocusTraversal(sim.focusTraversal);
+                textArea.setMaxLength(sim.maxLength);
+                textArea.setMessageText(sim.messageText);
+                textArea.setPrefRows(sim.preferredRows);
+                actor = textArea;
             }
-            textArea.setFocusTraversal(sim.focusTraversal);
-            textArea.setMaxLength(sim.maxLength);
-            textArea.setMessageText(sim.messageText);
-            textArea.setPrefRows(sim.preferredRows);
-            actor = textArea;
         } else if (simActor instanceof SimTouchPad) {
             var sim = (SimTouchPad) simActor;
-            var style = main.getRootTable().createPreviewStyle(Touchpad.TouchpadStyle.class, sim.style);
-            var touchPad = new Touchpad(sim.deadZone, style);
-            touchPad.setResetOnTouchUp(sim.resetOnTouchUp);
-            actor = touchPad;
+            if (sim.style != null && sim.style.hasMandatoryFields()) {
+                var style = main.getRootTable().createPreviewStyle(Touchpad.TouchpadStyle.class, sim.style);
+                var touchPad = new Touchpad(sim.deadZone, style);
+                touchPad.setResetOnTouchUp(sim.resetOnTouchUp);
+                actor = touchPad;
+            }
         } else if (simActor instanceof SimContainer) {
             var sim = (SimContainer) simActor;
             var container = new Container();
@@ -432,24 +446,26 @@ public class DialogSceneComposerModel {
             actor = horizontalGroup;
         } else if (simActor instanceof SimScrollPane) {
             var sim = (SimScrollPane) simActor;
-            var style = main.getRootTable().createPreviewStyle(ScrollPane.ScrollPaneStyle.class, sim.style);
-            var scrollPane = new ScrollPane(createPreviewWidget(sim.child), style);
-            scrollPane.setName(sim.name);
-            scrollPane.setFadeScrollBars(sim.fadeScrollBars);
-            scrollPane.setClamp(sim.clamp);
-            scrollPane.setFlickScroll(sim.flickScroll);
-            scrollPane.setFlingTime(sim.flingTime);
-            scrollPane.setForceScroll(sim.forceScrollX, sim.forceScrollY);
-            scrollPane.setOverscroll(sim.overScrollX, sim.overScrollY);
-            scrollPane.setupOverscroll(sim.overScrollDistance, sim.overScrollSpeedMin, sim.overScrollSpeedMax);
-            scrollPane.setScrollBarPositions(sim.scrollBarBottom, sim.scrollBarRight);
-            scrollPane.setScrollbarsOnTop(sim.scrollBarsOnTop);
-            scrollPane.setScrollbarsVisible(sim.scrollBarsVisible);
-            scrollPane.setScrollBarTouch(sim.scrollBarTouch);
-            scrollPane.setScrollingDisabled(sim.scrollingDisabledX, sim.scrollingDisabledY);
-            scrollPane.setSmoothScrolling(sim.smoothScrolling);
-            scrollPane.setVariableSizeKnobs(sim.variableSizeKnobs);
-            actor = scrollPane;
+            if (sim.style != null && sim.style.hasMandatoryFields()) {
+                var style = main.getRootTable().createPreviewStyle(ScrollPane.ScrollPaneStyle.class, sim.style);
+                var scrollPane = new ScrollPane(createPreviewWidget(sim.child), style);
+                scrollPane.setName(sim.name);
+                scrollPane.setFadeScrollBars(sim.fadeScrollBars);
+                scrollPane.setClamp(sim.clamp);
+                scrollPane.setFlickScroll(sim.flickScroll);
+                scrollPane.setFlingTime(sim.flingTime);
+                scrollPane.setForceScroll(sim.forceScrollX, sim.forceScrollY);
+                scrollPane.setOverscroll(sim.overScrollX, sim.overScrollY);
+                scrollPane.setupOverscroll(sim.overScrollDistance, sim.overScrollSpeedMin, sim.overScrollSpeedMax);
+                scrollPane.setScrollBarPositions(sim.scrollBarBottom, sim.scrollBarRight);
+                scrollPane.setScrollbarsOnTop(sim.scrollBarsOnTop);
+                scrollPane.setScrollbarsVisible(sim.scrollBarsVisible);
+                scrollPane.setScrollBarTouch(sim.scrollBarTouch);
+                scrollPane.setScrollingDisabled(sim.scrollingDisabledX, sim.scrollingDisabledY);
+                scrollPane.setSmoothScrolling(sim.smoothScrolling);
+                scrollPane.setVariableSizeKnobs(sim.variableSizeKnobs);
+                actor = scrollPane;
+            }
         } else if (simActor instanceof SimStack) {
             var sim = (SimStack) simActor;
             var stack = new Stack();
@@ -460,23 +476,27 @@ public class DialogSceneComposerModel {
             actor = stack;
         } else if (simActor instanceof SimSplitPane) {
             var sim = (SimSplitPane) simActor;
-            var style = main.getRootTable().createPreviewStyle(SplitPane.SplitPaneStyle.class, sim.style);
-            var splitPane = new SplitPane(createPreviewWidget(sim.childFirst), createPreviewWidget(sim.childSecond), sim.vertical, style);
-            splitPane.setName(sim.name);
-            splitPane.setSplitAmount(sim.split);
-            splitPane.setMinSplitAmount(sim.splitMin);
-            splitPane.setMaxSplitAmount(sim.splitMax);
+            if (sim.style != null && sim.style.hasMandatoryFields()) {
+                var style = main.getRootTable().createPreviewStyle(SplitPane.SplitPaneStyle.class, sim.style);
+                var splitPane = new SplitPane(createPreviewWidget(sim.childFirst), createPreviewWidget(sim.childSecond), sim.vertical, style);
+                splitPane.setName(sim.name);
+                splitPane.setSplitAmount(sim.split);
+                splitPane.setMinSplitAmount(sim.splitMin);
+                splitPane.setMaxSplitAmount(sim.splitMax);
+            }
         } else if (simActor instanceof SimTree) {
             var sim = (SimTree) simActor;
-            var style = main.getRootTable().createPreviewStyle(Tree.TreeStyle.class, sim.style);
-            var tree = new Tree(style);
-            tree.setName(sim.name);
-            tree.setPadding(sim.padLeft, sim.padRight);
-            tree.setIconSpacing(sim.iconSpaceLeft, sim.iconSpaceRight);
-            tree.setIndentSpacing(sim.indentSpacing);
-            tree.setYSpacing(sim.ySpacing);
-            for (var child : sim.children) {
-                tree.add(createPreviewNode(child));
+            if (sim.style != null && sim.style.hasMandatoryFields()) {
+                var style = main.getRootTable().createPreviewStyle(Tree.TreeStyle.class, sim.style);
+                var tree = new Tree(style);
+                tree.setName(sim.name);
+                tree.setPadding(sim.padLeft, sim.padRight);
+                tree.setIconSpacing(sim.iconSpaceLeft, sim.iconSpaceRight);
+                tree.setIndentSpacing(sim.indentSpacing);
+                tree.setYSpacing(sim.ySpacing);
+                for (var child : sim.children) {
+                    tree.add(createPreviewNode(child));
+                }
             }
         } else if (simActor instanceof SimVerticalGroup) {
             var sim = (SimVerticalGroup) simActor;
@@ -712,6 +732,14 @@ public class DialogSceneComposerModel {
         public void reset() {
             name = null;
             style = null;
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
             checked = false;
             disabled = false;
             color = null;
@@ -753,6 +781,14 @@ public class DialogSceneComposerModel {
         public void reset() {
             name = null;
             style = null;
+            var styles = Main.main.getJsonData().getClassStyleMap().get(CheckBox.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
             disabled = false;
             text = null;
             color = null;
@@ -892,6 +928,14 @@ public class DialogSceneComposerModel {
         public void reset() {
             name = null;
             style = null;
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Label.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
             text = null;
             textAlignment = Align.left;
             ellipsis = false;
@@ -1091,6 +1135,14 @@ public class DialogSceneComposerModel {
             name = null;
             text = null;
             style = null;
+            var styles = Main.main.getJsonData().getClassStyleMap().get(TextButton.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
             checked = false;
             disabled = false;
             color = null;
