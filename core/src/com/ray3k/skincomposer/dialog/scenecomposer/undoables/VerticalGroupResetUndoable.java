@@ -63,8 +63,8 @@ public class VerticalGroupResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != verticalGroup) {
             dialog.simActor = verticalGroup;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -75,8 +75,8 @@ public class VerticalGroupResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != verticalGroup) {
             dialog.simActor = verticalGroup;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

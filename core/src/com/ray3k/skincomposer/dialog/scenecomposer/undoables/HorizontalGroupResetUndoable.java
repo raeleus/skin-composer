@@ -63,8 +63,8 @@ public class HorizontalGroupResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != horizontalGroup) {
             dialog.simActor = horizontalGroup;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -75,8 +75,8 @@ public class HorizontalGroupResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != horizontalGroup) {
             dialog.simActor = horizontalGroup;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

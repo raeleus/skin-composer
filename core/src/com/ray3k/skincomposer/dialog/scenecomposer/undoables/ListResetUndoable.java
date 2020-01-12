@@ -31,8 +31,8 @@ public class ListResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != list) {
             dialog.simActor = list;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -43,8 +43,8 @@ public class ListResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != list) {
             dialog.simActor = list;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

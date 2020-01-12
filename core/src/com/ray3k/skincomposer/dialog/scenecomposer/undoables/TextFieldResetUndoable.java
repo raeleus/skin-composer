@@ -62,8 +62,8 @@ public class TextFieldResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != textField) {
             dialog.simActor = textField;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -74,8 +74,8 @@ public class TextFieldResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != textField) {
             dialog.simActor = textField;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

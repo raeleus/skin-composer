@@ -26,8 +26,8 @@ public class StackResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != stack) {
             dialog.simActor = stack;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -38,8 +38,8 @@ public class StackResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != stack) {
             dialog.simActor = stack;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

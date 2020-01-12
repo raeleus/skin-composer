@@ -88,8 +88,8 @@ public class ScrollPaneResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != scrollPane) {
             dialog.simActor = scrollPane;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -100,8 +100,8 @@ public class ScrollPaneResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != scrollPane) {
             dialog.simActor = scrollPane;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

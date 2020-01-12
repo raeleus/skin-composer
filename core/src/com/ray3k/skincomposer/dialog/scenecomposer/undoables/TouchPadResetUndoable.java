@@ -31,8 +31,8 @@ public class TouchPadResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != touchPad) {
             dialog.simActor = touchPad;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -43,8 +43,8 @@ public class TouchPadResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != touchPad) {
             dialog.simActor = touchPad;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

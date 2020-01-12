@@ -48,8 +48,8 @@ public class TreeResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != tree) {
             dialog.simActor = tree;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -60,8 +60,8 @@ public class TreeResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != tree) {
             dialog.simActor = tree;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

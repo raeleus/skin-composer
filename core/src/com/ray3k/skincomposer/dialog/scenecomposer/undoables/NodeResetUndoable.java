@@ -36,8 +36,8 @@ public class NodeResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != node) {
             dialog.simActor = node;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -48,8 +48,8 @@ public class NodeResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != node) {
             dialog.simActor = node;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

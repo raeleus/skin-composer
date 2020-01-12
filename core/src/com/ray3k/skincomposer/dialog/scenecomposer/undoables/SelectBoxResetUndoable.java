@@ -45,8 +45,8 @@ public class SelectBoxResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != selectBox) {
             dialog.simActor = selectBox;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -57,8 +57,8 @@ public class SelectBoxResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != selectBox) {
             dialog.simActor = selectBox;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

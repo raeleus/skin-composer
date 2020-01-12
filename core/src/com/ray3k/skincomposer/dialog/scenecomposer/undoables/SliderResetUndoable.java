@@ -55,8 +55,8 @@ public class SliderResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != slider) {
             dialog.simActor = slider;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -67,8 +67,8 @@ public class SliderResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != slider) {
             dialog.simActor = slider;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

@@ -43,8 +43,8 @@ public class SplitPaneResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != splitPane) {
             dialog.simActor = splitPane;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -55,8 +55,8 @@ public class SplitPaneResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != splitPane) {
             dialog.simActor = splitPane;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

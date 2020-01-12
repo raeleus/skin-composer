@@ -44,8 +44,8 @@ public class ImageButtonResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != button) {
             dialog.simActor = button;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -56,8 +56,8 @@ public class ImageButtonResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != button) {
             dialog.simActor = button;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

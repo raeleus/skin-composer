@@ -55,8 +55,8 @@ public class ProgressBarResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != progressBar) {
             dialog.simActor = progressBar;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -67,8 +67,8 @@ public class ProgressBarResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != progressBar) {
             dialog.simActor = progressBar;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

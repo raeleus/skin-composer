@@ -41,8 +41,8 @@ public class TableResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != table) {
             dialog.simActor = table;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -53,8 +53,8 @@ public class TableResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != table) {
             dialog.simActor = table;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

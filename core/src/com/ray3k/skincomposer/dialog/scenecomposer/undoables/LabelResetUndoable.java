@@ -45,8 +45,8 @@ public class LabelResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != label) {
             dialog.simActor = label;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -57,8 +57,8 @@ public class LabelResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != label) {
             dialog.simActor = label;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

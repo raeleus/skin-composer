@@ -94,8 +94,8 @@ public class CellResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != cell) {
             dialog.simActor = cell;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -106,8 +106,8 @@ public class CellResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != cell) {
             dialog.simActor = cell;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

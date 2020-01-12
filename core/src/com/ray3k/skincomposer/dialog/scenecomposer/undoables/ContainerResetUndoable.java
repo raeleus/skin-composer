@@ -66,8 +66,8 @@ public class ContainerResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != container) {
             dialog.simActor = container;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -78,8 +78,8 @@ public class ContainerResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != container) {
             dialog.simActor = container;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

@@ -51,8 +51,8 @@ public class CheckBoxResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != checkBox) {
             dialog.simActor = checkBox;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
@@ -63,8 +63,8 @@ public class CheckBoxResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != checkBox) {
             dialog.simActor = checkBox;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     

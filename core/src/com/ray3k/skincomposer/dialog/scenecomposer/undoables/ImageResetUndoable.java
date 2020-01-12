@@ -42,8 +42,8 @@ public class ImageResetUndoable implements SceneComposerUndoable {
         if (dialog.simActor != image) {
             dialog.simActor = image;
             dialog.populateProperties();
-            dialog.populatePath();
         }
+        dialog.populatePath();
         dialog.model.updatePreview();
     }
     
