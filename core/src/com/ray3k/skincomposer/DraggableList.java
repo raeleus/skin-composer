@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
@@ -18,7 +19,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class DraggableList extends WidgetGroup {
     private DraggableListStyle style;
     private Table table;
-    private Array<Actor> actors;
+    protected Array<Actor> actors;
     private ObjectMap<Actor, Actor> dragActors;
     private ObjectMap<Actor, Actor> validDragActors;
     private ObjectMap<Actor, Actor> invalidDragActors;
@@ -182,6 +183,7 @@ public class DraggableList extends WidgetGroup {
                     }
                     actors.insert(Math.min(newIndex, actors.size), payloadActor);
                     updateTable();
+                    fire(new ChangeEvent());
                 }
             });
         }
@@ -189,6 +191,7 @@ public class DraggableList extends WidgetGroup {
         
         for (int i = 0; i < actors.size + 1; i++) {
             Button button = new Button(dividerStyle);
+            button.setProgrammaticChangeEvents(false);
             button.setVisible(false);
             addActor(button);
             dividers.add(button);
