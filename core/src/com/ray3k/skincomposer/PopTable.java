@@ -1,5 +1,6 @@
 package com.ray3k.skincomposer;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -7,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -23,6 +23,7 @@ public class PopTable extends Table {
     private boolean hideOnUnfocus;
     private int preferredEdge;
     private boolean keepSizedWithinStage;
+    private boolean automaticallyResized;
     
     public PopTable() {
         this(new PopTableStyle());
@@ -56,6 +57,7 @@ public class PopTable extends Table {
         hideOnUnfocus = true;
         preferredEdge = Align.top;
         keepSizedWithinStage = true;
+        automaticallyResized = true;
     }
     
     public void alignToActorEdge(Actor actor, int edge) {
@@ -229,6 +231,7 @@ public class PopTable extends Table {
         
         public PopTableClickListener(PopTableStyle style) {
             popTable = new PopTable(style);
+            popTable.automaticallyResized = false;
             popTable.addListener(new TableHiddenListener() {
                 @Override
                 public void tableHidden(Event event) {
@@ -374,5 +377,27 @@ public class PopTable extends Table {
     public void setKeepSizedWithinStage(boolean keepSizedWithinStage) {
         this.keepSizedWithinStage = keepSizedWithinStage;
     }
-
+    
+    public boolean isAutomaticallyResized() {
+        return automaticallyResized;
+    }
+    
+    public void setAutomaticallyResized(boolean automaticallyResized) {
+        this.automaticallyResized = automaticallyResized;
+    }
+    
+    @Override
+    public void layout() {
+        super.layout();
+        if (automaticallyResized) {
+            var centerX = getX(Align.center);
+            var centerY = getY(Align.center);
+            pack();
+            if (keepSizedWithinStage) {
+                moveToInsideStage();
+            }
+            setPosition(centerX, centerY, Align.center);
+            setPosition(MathUtils.floor(getX()), MathUtils.floor(getY()));
+        }
+    }
 }
