@@ -127,6 +127,12 @@ public class DraggableTextList extends DraggableList {
         return buttonGroup;
     }
     
+    @Override
+    public void clearChildren() {
+        super.clearChildren();
+        buttonGroup.clear();
+    }
+    
     public static class DraggableTextListStyle extends DraggableListStyle {
         public BitmapFont font;
         /** Optional. */

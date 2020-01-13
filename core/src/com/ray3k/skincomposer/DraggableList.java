@@ -99,7 +99,6 @@ public class DraggableList extends WidgetGroup {
     
     @Override
     public void clearChildren() {
-        super.clearChildren();
         actors.clear();
         dragActors.clear();
         validDragActors.clear();
