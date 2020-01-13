@@ -88,7 +88,6 @@ public class DraggableTextList extends DraggableList {
         for (Actor actor : actors) {
             TextButton textButton = (TextButton) actor;
             returnValue.add(textButton.getText().toString());
-            System.out.println(textButton.getText());
         }
         return returnValue;
     }
