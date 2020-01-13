@@ -83,6 +83,14 @@ public class DraggableTextList extends DraggableList {
         }
     }
     
+    public Array<String> getTexts() {
+        var returnValue = new Array<String>();
+        for (TextButton textButton : buttonGroup.getButtons()) {
+            returnValue.add(textButton.getText().toString());
+        }
+        return returnValue;
+    }
+    
     @Override
     @Deprecated
     public void add(Actor actor) {
