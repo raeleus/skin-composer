@@ -160,6 +160,20 @@ public class PopTable extends Table {
         }
     }
     
+    private void resizeWindowWithinStage() {
+        if (getWidth() > stage.getWidth()) {
+            setWidth(stage.getWidth());
+        }
+    
+        if (getHeight() > stage.getHeight()) {
+            setHeight(stage.getHeight());
+        }
+
+        invalidateHierarchy();
+        
+        moveToInsideStage();
+    }
+    
     public boolean isOutsideStage() {
         return getX() < 0 || getX() + getWidth() > getStage().getWidth() || getY() < 0 || getY() + getHeight() > getStage().getHeight();
     }
@@ -190,13 +204,7 @@ public class PopTable extends Table {
         pack();
         
         if (keepSizedWithinStage) {
-            if (getWidth() > stage.getWidth()) {
-                setWidth(stage.getWidth());
-            }
-            
-            if (getHeight() > stage.getHeight()) {
-                setHeight(stage.getHeight());
-            }
+            resizeWindowWithinStage();
         }
         
         setPosition((int) (stage.getWidth() / 2f - getWidth() / 2f), (int) (stage.getHeight() / 2f - getHeight() / 2f));
@@ -231,7 +239,6 @@ public class PopTable extends Table {
         
         public PopTableClickListener(PopTableStyle style) {
             popTable = new PopTable(style);
-            popTable.automaticallyResized = false;
             popTable.addListener(new TableHiddenListener() {
                 @Override
                 public void tableHidden(Event event) {
@@ -388,16 +395,16 @@ public class PopTable extends Table {
     
     @Override
     public void layout() {
-        super.layout();
         if (automaticallyResized) {
             var centerX = getX(Align.center);
             var centerY = getY(Align.center);
             pack();
-            if (keepSizedWithinStage) {
-                moveToInsideStage();
-            }
             setPosition(centerX, centerY, Align.center);
             setPosition(MathUtils.floor(getX()), MathUtils.floor(getY()));
+            if (keepSizedWithinStage) {
+                resizeWindowWithinStage();
+            }
         }
+        super.layout();
     }
 }
