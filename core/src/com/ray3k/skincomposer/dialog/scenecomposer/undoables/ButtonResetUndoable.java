@@ -12,7 +12,6 @@ public class ButtonResetUndoable implements SceneComposerUndoable {
     private String previousName;
     private ColorData previousColorData;
     private StyleData previousStyle;
-    private String previousText;
     private DialogSceneComposer dialog;
     
     public ButtonResetUndoable() {
