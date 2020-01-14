@@ -7,12 +7,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
+import com.ray3k.skincomposer.DraggableTextList;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.PopTable;
 import com.ray3k.skincomposer.Spinner;
@@ -21,6 +23,7 @@ import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogDrawables;
 import com.ray3k.skincomposer.dialog.DialogListener;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimList;
 import com.ray3k.skincomposer.utils.IntPair;
 
 public class DialogSceneComposer extends Dialog {
@@ -855,26 +858,31 @@ public class DialogSceneComposer extends Dialog {
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(listNameListener());
             textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(listStyleListener());
             textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the List.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Text List", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(listTextListListener());
             textButton.addListener(new TextTooltip("Set the text entries for the List.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(listButtonResetListener());
             textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(listButtonDeleteListener());
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimProgressBar) {
             var textButton = new TextButton("Name", skin, "scene-med");
@@ -5713,6 +5721,201 @@ public class DialogSceneComposer extends Dialog {
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
                 events.labelDelete();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener listNameListener() {
+        var simList = (DialogSceneComposerModel.SimList) simActor;
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Name:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                textField.setText(simList.name);
+                popTable.add(textField).minWidth(150);
+                textField.addListener(main.getIbeamListener());
+                textField.addListener(new TextTooltip("The name of the List to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+                textField.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.listName(textField.getText());
+                    }
+                });
+                textField.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        if (keycode == Input.Keys.ENTER) {
+                            popTable.hide();
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+                
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener listStyleListener() {
+        var simList = (DialogSceneComposerModel.SimList) simActor;
+        var popTableClickListener = new StyleSelectorPopTable(List.class, simList.style == null ? "default" : simList.style.name) {
+            @Override
+            public void accepted(StyleData styleData) {
+                events.listStyle(styleData);
+            }
+        };
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener listTextListListener() {
+        var simList = (DialogSceneComposerModel.SimList) simActor;
+        var textField = new TextField("", skin, "scene");
+        textField.setFocusTraversal(false);
+        var draggableTextList = new DraggableTextList(true, skin, "scene-unchecked");
+        draggableTextList.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.listList(draggableTextList.getTexts());
+            }
+        });
+        var scrollPane = new ScrollPane(draggableTextList, skin, "scene");
+        scrollPane.setFadeScrollBars(false);
+        scrollPane.addListener(main.getScrollFocusListener());
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            {
+                textField.addListener(main.getIbeamListener());
+                textField.addListener(new TextTooltip("The text to add to the list.", main.getTooltipManager(), skin, "scene"));
+                textField.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        if (keycode == Input.Keys.ENTER) {
+                            addItem(textField.getText());
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+            }
+            
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("List Entries:\n(Drag to change order)", skin, "scene-label-colored");
+                label.setAlignment(Align.center);
+                popTable.add(label).colspan(2);
+                
+                popTable.row();
+                draggableTextList.clearChildren();
+                draggableTextList.addAllTexts(simList.list);
+                popTable.add(scrollPane).colspan(2).minHeight(150).growX();
+    
+                popTable.row();
+                label = new Label("Add New Item:", skin, "scene-label-colored");
+                popTable.add(label).colspan(2).padTop(10);
+                
+                popTable.row();
+                textField.setText("");
+                popTable.add(textField).minWidth(150);
+                
+                var textButton = new Button(skin, "scene-plus");
+                popTable.add(textButton);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        addItem(textField.getText());
+                    }
+                });
+                
+                getStage().setKeyboardFocus(textField);
+                getStage().setScrollFocus(scrollPane);
+            }
+            
+            public void addItem(String item) {
+                draggableTextList.addText(item);
+                events.listList(draggableTextList.getTexts());
+                update();
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener listButtonResetListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to reset this List?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("RESET", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Resets the settings of the List to their defaults.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.listReset();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener listButtonDeleteListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to delete this List?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("DELETE", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Removes this List from its parent.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.listDelete();
             }
         });
         
