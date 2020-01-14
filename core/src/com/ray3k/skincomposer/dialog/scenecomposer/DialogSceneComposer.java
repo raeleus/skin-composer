@@ -5808,6 +5808,8 @@ public class DialogSceneComposer extends Dialog {
         scrollPane.addListener(main.getScrollFocusListener());
         var popTableClickListener = new PopTable.PopTableClickListener(skin) {
             {
+                popTable.setAutomaticallyResized(true);
+                
                 textField.addListener(main.getIbeamListener());
                 textField.addListener(new TextTooltip("The text to add to the list.", main.getTooltipManager(), skin, "scene"));
                 textField.addListener(new InputListener() {
