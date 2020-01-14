@@ -154,6 +154,13 @@ public class DraggableList extends WidgetGroup {
                     for (Button divider : dividers) {
                         divider.setVisible(false);
                     }
+                    
+                    if (target == null) {
+                        Actor payloadActor = (Actor) payload.getObject();
+                        actors.removeValue(payloadActor, true);
+                        updateTable();
+                        fire(new ChangeEvent());
+                    }
                 }
             });
             dragAndDrop.addTarget(new Target(actor) {
