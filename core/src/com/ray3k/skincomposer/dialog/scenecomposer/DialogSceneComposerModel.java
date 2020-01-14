@@ -969,6 +969,14 @@ public class DialogSceneComposerModel {
         public void reset() {
             name = null;
             style = null;
+            var styles = Main.main.getJsonData().getClassStyleMap().get(List.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
             list.clear();
         }
     }
