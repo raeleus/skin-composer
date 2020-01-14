@@ -104,6 +104,7 @@ public class DraggableList extends WidgetGroup {
         dragActors.clear();
         validDragActors.clear();
         invalidDragActors.clear();
+        updateTable();
     }
     
     private void updateTable() {
@@ -252,9 +253,8 @@ public class DraggableList extends WidgetGroup {
     public void layout() {
         table.setSize(getWidth(), getHeight());
         table.layout();
-    
         
-        for (int i = 0; i < dividers.size; i++) {
+        if (actors.size > 0) for (int i = 0; i < dividers.size; i++) {
             Button button = dividers.get(i);
             Actor actor;
             if (vertical) {
