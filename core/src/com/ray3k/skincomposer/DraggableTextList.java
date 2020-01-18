@@ -124,6 +124,14 @@ public class DraggableTextList extends DraggableList {
         return buttonGroup.getCheckedIndex();
     }
     
+    public void setSelected(String text) {
+        buttonGroup.setChecked(text);
+    }
+    
+    public void setSelected(int index) {
+        buttonGroup.getButtons().get(index).setChecked(true);
+    }
+    
     public ButtonGroup getButtonGroup() {
         return buttonGroup;
     }
