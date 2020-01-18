@@ -8,17 +8,22 @@ public class ProgressBarMaximumUndoable implements SceneComposerUndoable {
     private DialogSceneComposer dialog;
     private float maximum;
     private float previousMaximum;
+    private float value;
+    private float previousValue;
     
     public ProgressBarMaximumUndoable(float maximum) {
         this.maximum = maximum;
         dialog = DialogSceneComposer.dialog;
         progressBar = (DialogSceneComposerModel.SimProgressBar) dialog.simActor;
         previousMaximum = progressBar.maximum;
+        previousValue = progressBar.value;
+        value = previousValue < maximum ? previousValue : maximum;
     }
     
     @Override
     public void undo() {
         progressBar.maximum = previousMaximum;
+        progressBar.value = previousValue;
         
         if (dialog.simActor != progressBar) {
             dialog.simActor = progressBar;
@@ -31,6 +36,7 @@ public class ProgressBarMaximumUndoable implements SceneComposerUndoable {
     @Override
     public void redo() {
         progressBar.maximum = maximum;
+        progressBar.value = value;
         
         if (dialog.simActor != progressBar) {
             dialog.simActor = progressBar;

@@ -23,6 +23,7 @@ import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogDrawables;
 import com.ray3k.skincomposer.dialog.DialogListener;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.Interpol;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimList;
 import com.ray3k.skincomposer.utils.IntPair;
 
@@ -888,46 +889,55 @@ public class DialogSceneComposer extends Dialog {
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(progressBarNameListener());
             textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(progressBarStyleListener());
             textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the ProgressBar.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Value Settings", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(progressBarValueSettingsListener());
             textButton.addListener(new TextTooltip("Set the value, minimum, maximum, and increment of the ProgressBar.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Orientation", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(progressBarOrientationListener());
             textButton.addListener(new TextTooltip("Change the orientation of the ProgressBar.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Animation", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(progressBarAnimationListener());
             textButton.addListener(new TextTooltip("Change the progress animation as it increases or decreases.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Round", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(progressBarRoundListener());
             textButton.addListener(new TextTooltip("Rounds the drawable positions to integers.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Disabled", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(progressBarDisabledListener());
             textButton.addListener(new TextTooltip("Sets whether the ProgressBar is disabled initially.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(progressBarResetListener());
             textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(progressBarDeleteListener());
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimSelectBox) {
             var textButton = new TextButton("Name", skin, "scene-med");
@@ -5924,7 +5934,412 @@ public class DialogSceneComposer extends Dialog {
         return popTableClickListener;
     }
     
+    private EventListener progressBarNameListener() {
+        var simList = (DialogSceneComposerModel.SimProgressBar) simActor;
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Name:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                textField.setText(simList.name);
+                popTable.add(textField).minWidth(150);
+                textField.addListener(main.getIbeamListener());
+                textField.addListener(new TextTooltip("The name of the ProgressBar to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+                textField.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.progressBarName(textField.getText());
+                    }
+                });
+                textField.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        if (keycode == Input.Keys.ENTER) {
+                            popTable.hide();
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+                
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
     
+    private EventListener progressBarStyleListener() {
+        var simProgressBar = (DialogSceneComposerModel.SimProgressBar) simActor;
+        var popTableClickListener = new StyleSelectorPopTable(ProgressBar.class, simProgressBar.style == null ? "default-horizontal" : simProgressBar.style.name) {
+            @Override
+            public void accepted(StyleData styleData) {
+                events.progressBarStyle(styleData);
+            }
+        };
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener progressBarValueSettingsListener() {
+        var simProgressBar = (DialogSceneComposerModel.SimProgressBar) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var table = new Table();
+                popTable.add(table);
+                
+                var label = new Label("Value:", skin, "scene-label-colored");
+                table.add(label);
+                
+                var valueSpinner = new Spinner(simProgressBar.value, simProgressBar.increment, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                valueSpinner.setMinimum(simProgressBar.minimum);
+                valueSpinner.setMaximum(simProgressBar.maximum);
+                table.add(valueSpinner).width(100).uniformX();
+                valueSpinner.getTextField().addListener(main.getIbeamListener());
+                valueSpinner.getButtonMinus().addListener(main.getHandListener());
+                valueSpinner.getButtonPlus().addListener(main.getHandListener());
+                valueSpinner.addListener(new TextTooltip("The value of the ProgressBar.", main.getTooltipManager(), skin, "scene"));
+                valueSpinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.progressBarValue((float) valueSpinner.getValue());
+                    }
+                });
+    
+                table.row();
+                label = new Label("Minimum:", skin, "scene-label-colored");
+                table.add(label);
+    
+                var minimumSpinner = new Spinner(simProgressBar.minimum, 1, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                minimumSpinner.setMaximum(simProgressBar.maximum);
+                var maximumSpinner = new Spinner(simProgressBar.maximum, 1, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                maximumSpinner.setMinimum(simProgressBar.minimum);
+                table.add(minimumSpinner).uniformX().fillX();
+                minimumSpinner.getTextField().addListener(main.getIbeamListener());
+                minimumSpinner.getButtonMinus().addListener(main.getHandListener());
+                minimumSpinner.getButtonPlus().addListener(main.getHandListener());
+                minimumSpinner.addListener(new TextTooltip("The minimum value of the ProgressBar.", main.getTooltipManager(), skin, "scene"));
+                minimumSpinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.progressBarMinimum((float) minimumSpinner.getValue());
+                        if (valueSpinner.getValue() < minimumSpinner.getValue()) {
+                            valueSpinner.setValue(simProgressBar.minimum);
+                        }
+                        maximumSpinner.setMinimum(simProgressBar.minimum);
+                    }
+                });
+    
+                table.row();
+                label = new Label("Maximum:", skin, "scene-label-colored");
+                table.add(label);
+    
+                maximumSpinner.setValue(simProgressBar.maximum);
+                table.add(maximumSpinner).uniformX().fillX();
+                maximumSpinner.getTextField().addListener(main.getIbeamListener());
+                maximumSpinner.getButtonMinus().addListener(main.getHandListener());
+                maximumSpinner.getButtonPlus().addListener(main.getHandListener());
+                maximumSpinner.addListener(new TextTooltip("The maximum value of the ProgressBar.", main.getTooltipManager(), skin, "scene"));
+                maximumSpinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.progressBarMaximum((float) maximumSpinner.getValue());
+                        if (valueSpinner.getValue() > maximumSpinner.getValue()) {
+                            valueSpinner.setValue(simProgressBar.maximum);
+                        }
+                        minimumSpinner.setMaximum(simProgressBar.maximum);
+                    }
+                });
+    
+                table.row();
+                label = new Label("Increment:", skin, "scene-label-colored");
+                table.add(label);
+    
+                var incrementSpinner = new Spinner(0, 1, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                incrementSpinner.setValue(simProgressBar.increment);
+                table.add(incrementSpinner).uniformX().fillX();
+                incrementSpinner.getTextField().addListener(main.getIbeamListener());
+                incrementSpinner.getButtonMinus().addListener(main.getHandListener());
+                incrementSpinner.getButtonPlus().addListener(main.getHandListener());
+                incrementSpinner.addListener(new TextTooltip("The increment value of the ProgressBar.", main.getTooltipManager(), skin, "scene"));
+                incrementSpinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.progressBarIncrement((float) incrementSpinner.getValue());
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener progressBarOrientationListener() {
+        var simProgressBar = (DialogSceneComposerModel.SimProgressBar) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Orientation:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                var draggableTextList = new DraggableTextList(true, skin, "scene");
+                draggableTextList.setDraggable(false);
+                draggableTextList.addAllTexts("Horizontal", "Vertical");
+                draggableTextList.setSelected(simProgressBar.vertical ? 1 : 0);
+                popTable.add(draggableTextList);
+                draggableTextList.addListener(main.getHandListener());
+                draggableTextList.addListener(new TextTooltip("The orientation of the ProgressBar.", main.getTooltipManager(), skin, "scene"));
+                draggableTextList.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.progressBarVertical(draggableTextList.getSelectedIndex() == 1);
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener progressBarAnimationListener() {
+        var simProgressBar = (DialogSceneComposerModel.SimProgressBar) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var table = new Table();
+                popTable.add(table);
+                
+                table.defaults().spaceRight(5);
+                var label = new Label("Interpolation:", skin, "scene-label-colored");
+                table.add(label).right();
+                
+                var animateSelectBox = new SelectBox<Interpol>(skin, "scene");
+                animateSelectBox.setItems(Interpol.values());
+                animateSelectBox.setSelected(simProgressBar.animateInterpolation);
+                table.add(animateSelectBox);
+                animateSelectBox.addListener(main.getHandListener());
+                animateSelectBox.getList().addListener(main.getHandListener());
+                animateSelectBox.addListener(new TextTooltip("The Interpolation of the ProgressBar animation as it changes values.", main.getTooltipManager(), skin, "scene"));
+                animateSelectBox.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.progressBarAnimateInterpolation(animateSelectBox.getSelected());
+                    }
+                });
+                
+                table.row();
+                label = new Label("Interpolation:", skin, "scene-label-colored");
+                table.add(label).right();
+    
+                var visualSelectBox = new SelectBox<Interpol>(skin, "scene");
+                visualSelectBox.setItems(Interpol.values());
+                visualSelectBox.setSelected(simProgressBar.visualInterpolation);
+                table.add(visualSelectBox);
+                visualSelectBox.addListener(main.getHandListener());
+                visualSelectBox.getList().addListener(main.getHandListener());
+                visualSelectBox.addListener(new TextTooltip("The visual Interpolation of the ProgressBar animation as it changes values.", main.getTooltipManager(), skin, "scene"));
+                visualSelectBox.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.progressBarVisualInterpolation(visualSelectBox.getSelected());
+                    }
+                });
+                
+                table.row();
+                label = new Label("Animation Duration:", skin, "scene-label-colored");
+                table.add(label).right();
+                
+                var durationSpinner = new Spinner(simProgressBar.animationDuration, 1, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                durationSpinner.setMinimum(0);
+                table.add(durationSpinner).left();
+                durationSpinner.getTextField().addListener(main.getIbeamListener());
+                durationSpinner.getButtonMinus().addListener(main.getHandListener());
+                durationSpinner.getButtonPlus().addListener(main.getHandListener());
+                durationSpinner.addListener(new TextTooltip("The animation duration of the ProgressBar as the value changes.", main.getTooltipManager(), skin, "scene"));
+                durationSpinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.progressBarAnimationDuration((float) durationSpinner.getValue());
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener progressBarRoundListener() {
+        var simProgressBar = (DialogSceneComposerModel.SimProgressBar) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Round:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                var textButton = new TextButton(simProgressBar.round ? "TRUE" : "FALSE", skin, "scene-small");
+                textButton.setChecked(simProgressBar.round);
+                popTable.add(textButton).minWidth(100);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(new TextTooltip("Whether the ProgressBar inner positions are rounded to integer.", main.getTooltipManager(), skin, "scene"));
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        textButton.setText(textButton.isChecked() ? "TRUE" : "FALSE");
+                        events.progressBarRound(textButton.isChecked());
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener progressBarDisabledListener() {
+        var simProgressBar = (DialogSceneComposerModel.SimProgressBar) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Disabled:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                var textButton = new TextButton(simProgressBar.disabled ? "TRUE" : "FALSE", skin, "scene-small");
+                textButton.setChecked(simProgressBar.disabled);
+                popTable.add(textButton).minWidth(100);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(new TextTooltip("Whether the ProgressBar is disabled initially.", main.getTooltipManager(), skin, "scene"));
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        textButton.setText(textButton.isChecked() ? "TRUE" : "FALSE");
+                        events.progressBarDisabled(textButton.isChecked());
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener progressBarResetListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to reset this List?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("RESET", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Resets the settings of the ProgressBar to their defaults.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.progressBarReset();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener progressBarDeleteListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to delete this ProgressBar?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("DELETE", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Removes this ProgressBar from its parent.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.progressBarDelete();
+            }
+        });
+        
+        return popTableClickListener;
+    }
     
     public Dialog showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType widgetType, PopTable popTable) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;

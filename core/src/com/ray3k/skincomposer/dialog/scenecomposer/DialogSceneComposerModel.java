@@ -992,7 +992,7 @@ public class DialogSceneComposerModel {
         public boolean vertical;
         public float animationDuration;
         public Interpol animateInterpolation = Interpol.LINEAR;
-        public boolean round;
+        public boolean round = true;
         public Interpol visualInterpolation = Interpol.LINEAR;
     
         public SimProgressBar() {
@@ -1024,6 +1024,15 @@ public class DialogSceneComposerModel {
             animateInterpolation = Interpol.LINEAR;
             round = true;
             visualInterpolation = Interpol.LINEAR;
+    
+            var styles = Main.main.getJsonData().getClassStyleMap().get(ProgressBar.class);
+            for (var style : styles) {
+                if (style.name.equals("default-horizontal")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
         }
     }
     
