@@ -27,6 +27,7 @@ public class DraggableList extends WidgetGroup {
     private ButtonStyle dividerStyle;
     private Array<Button> dividers;
     private boolean vertical;
+    private boolean draggable;
     
     public DraggableList(boolean vertical, Skin skin) {
         this(vertical, skin, vertical ? "default-vertical" : "default-horizontal");
@@ -37,6 +38,7 @@ public class DraggableList extends WidgetGroup {
     }
     
     public DraggableList(boolean vertical, DraggableListStyle style) {
+        draggable = true;
         this.vertical = vertical;
         this.style = style;
         
@@ -118,7 +120,7 @@ public class DraggableList extends WidgetGroup {
         for (Actor actor : actors) {
             if (vertical) table.row();
             table.add(actor);
-            dragAndDrop.addSource(new Source(actor) {
+            if (draggable) dragAndDrop.addSource(new Source(actor) {
                 @Override
                 public Payload dragStart(InputEvent event, float x, float y, int pointer) {
                     actor.setVisible(false);
@@ -319,6 +321,15 @@ public class DraggableList extends WidgetGroup {
     
     public Table getTable() {
         return table;
+    }
+    
+    public boolean isDraggable() {
+        return draggable;
+    }
+    
+    public void setDraggable(boolean draggable) {
+        this.draggable = draggable;
+        updateTable();
     }
     
     public DraggableListStyle getStyle() {
