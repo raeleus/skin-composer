@@ -34,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
+import com.ray3k.skincomposer.utils.Utils;
 
 import java.math.BigDecimal;
 
@@ -264,6 +265,10 @@ public class Spinner extends Table {
     
     public double getValue() {
         return value.doubleValue();
+    }
+    
+    public boolean isInt() {
+        return Utils.isIntegerValue(value);
     }
     
     public int getValueAsInt() {
