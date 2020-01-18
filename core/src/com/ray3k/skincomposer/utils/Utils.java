@@ -41,6 +41,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -395,5 +396,9 @@ public class Utils {
     public static String sanitizeFilePath(String path) {
         var file = new FileHandle(path);
         return file.path();
+    }
+    
+    public static boolean isIntegerValue(BigDecimal bigDecimal) {
+        return bigDecimal.signum() == 0 || bigDecimal.scale() <= 0 || bigDecimal.stripTrailingZeros().scale() <= 0;
     }
 }
