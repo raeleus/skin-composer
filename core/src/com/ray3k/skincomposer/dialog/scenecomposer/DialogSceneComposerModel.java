@@ -1094,7 +1094,7 @@ public class DialogSceneComposerModel {
         public boolean vertical;
         public float animationDuration;
         public Interpol animateInterpolation = Interpol.LINEAR;
-        public boolean round;
+        public boolean round = true;
         public Interpol visualInterpolation = Interpol.LINEAR;
     
         public SimSlider() {

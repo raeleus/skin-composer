@@ -997,46 +997,55 @@ public class DialogSceneComposer extends Dialog {
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(sliderNameListener());
             textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(sliderStyleListener());
             textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the Slider.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Value Settings", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(sliderValueSettingsListener());
             textButton.addListener(new TextTooltip("Set the value, minimum, maximum, and increment of the Slider.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Orientation", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(sliderOrientationListener());
             textButton.addListener(new TextTooltip("Change the orientation of the Slider.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Animation", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(sliderAnimationListener());
             textButton.addListener(new TextTooltip("Change the progress animation as it increases or decreases.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Round", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(sliderRoundListener());
             textButton.addListener(new TextTooltip("Rounds the drawable positions to integers.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Disabled", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(sliderDisabledListener());
             textButton.addListener(new TextTooltip("Sets whether the button is disabled initially.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(sliderResetListener());
             textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(sliderDeleteListener());
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimTextArea) {
             var textButton = new TextButton("Name", skin, "scene-med");
@@ -6851,6 +6860,414 @@ public class DialogSceneComposer extends Dialog {
         
         return popTableClickListener;
     }
+    
+    private EventListener sliderNameListener() {
+        var simSlider = (DialogSceneComposerModel.SimSlider) simActor;
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Name:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                textField.setText(simSlider.name);
+                popTable.add(textField).minWidth(150);
+                textField.addListener(main.getIbeamListener());
+                textField.addListener(new TextTooltip("The name of the Slider to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+                textField.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.sliderName(textField.getText());
+                    }
+                });
+                textField.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        if (keycode == Input.Keys.ENTER) {
+                            popTable.hide();
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+                
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener sliderStyleListener() {
+        var simSlider = (DialogSceneComposerModel.SimSlider) simActor;
+        var popTableClickListener = new StyleSelectorPopTable(Slider.class, simSlider.style == null ? "default-horizontal" : simSlider.style.name) {
+            @Override
+            public void accepted(StyleData styleData) {
+                events.sliderStyle(styleData);
+            }
+        };
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener sliderValueSettingsListener() {
+        var simSlider = (DialogSceneComposerModel.SimSlider) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var table = new Table();
+                popTable.add(table);
+                
+                var label = new Label("Value:", skin, "scene-label-colored");
+                table.add(label);
+                
+                var valueSpinner = new Spinner(simSlider.value, simSlider.increment, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                valueSpinner.setMinimum(simSlider.minimum);
+                valueSpinner.setMaximum(simSlider.maximum);
+                table.add(valueSpinner).width(100).uniformX();
+                valueSpinner.getTextField().addListener(main.getIbeamListener());
+                valueSpinner.getButtonMinus().addListener(main.getHandListener());
+                valueSpinner.getButtonPlus().addListener(main.getHandListener());
+                valueSpinner.addListener(new TextTooltip("The value of the Slider.", main.getTooltipManager(), skin, "scene"));
+                valueSpinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.sliderValue((float) valueSpinner.getValue());
+                    }
+                });
+                
+                table.row();
+                label = new Label("Minimum:", skin, "scene-label-colored");
+                table.add(label);
+                
+                var minimumSpinner = new Spinner(simSlider.minimum, 1, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                minimumSpinner.setMaximum(simSlider.maximum);
+                var maximumSpinner = new Spinner(simSlider.maximum, 1, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                maximumSpinner.setMinimum(simSlider.minimum);
+                table.add(minimumSpinner).uniformX().fillX();
+                minimumSpinner.getTextField().addListener(main.getIbeamListener());
+                minimumSpinner.getButtonMinus().addListener(main.getHandListener());
+                minimumSpinner.getButtonPlus().addListener(main.getHandListener());
+                minimumSpinner.addListener(new TextTooltip("The minimum value of the Slider.", main.getTooltipManager(), skin, "scene"));
+                minimumSpinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.sliderMinimum((float) minimumSpinner.getValue());
+                        if (valueSpinner.getValue() < minimumSpinner.getValue()) {
+                            valueSpinner.setValue(simSlider.minimum);
+                        }
+                        maximumSpinner.setMinimum(simSlider.minimum);
+                    }
+                });
+                
+                table.row();
+                label = new Label("Maximum:", skin, "scene-label-colored");
+                table.add(label);
+                
+                maximumSpinner.setValue(simSlider.maximum);
+                table.add(maximumSpinner).uniformX().fillX();
+                maximumSpinner.getTextField().addListener(main.getIbeamListener());
+                maximumSpinner.getButtonMinus().addListener(main.getHandListener());
+                maximumSpinner.getButtonPlus().addListener(main.getHandListener());
+                maximumSpinner.addListener(new TextTooltip("The maximum value of the Slider.", main.getTooltipManager(), skin, "scene"));
+                maximumSpinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.sliderMaximum((float) maximumSpinner.getValue());
+                        if (valueSpinner.getValue() > maximumSpinner.getValue()) {
+                            valueSpinner.setValue(simSlider.maximum);
+                        }
+                        minimumSpinner.setMaximum(simSlider.maximum);
+                    }
+                });
+                
+                table.row();
+                label = new Label("Increment:", skin, "scene-label-colored");
+                table.add(label);
+                
+                var incrementSpinner = new Spinner(0, 1, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                incrementSpinner.setValue(simSlider.increment);
+                table.add(incrementSpinner).uniformX().fillX();
+                incrementSpinner.getTextField().addListener(main.getIbeamListener());
+                incrementSpinner.getButtonMinus().addListener(main.getHandListener());
+                incrementSpinner.getButtonPlus().addListener(main.getHandListener());
+                incrementSpinner.addListener(new TextTooltip("The increment value of the Slider.", main.getTooltipManager(), skin, "scene"));
+                incrementSpinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.sliderIncrement((float) incrementSpinner.getValue());
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener sliderOrientationListener() {
+        var simSlider = (DialogSceneComposerModel.SimSlider) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Orientation:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                var draggableTextList = new DraggableTextList(true, skin, "scene");
+                draggableTextList.setDraggable(false);
+                draggableTextList.addAllTexts("Horizontal", "Vertical");
+                draggableTextList.setSelected(simSlider.vertical ? 1 : 0);
+                popTable.add(draggableTextList);
+                draggableTextList.addListener(main.getHandListener());
+                draggableTextList.addListener(new TextTooltip("The orientation of the Slider.", main.getTooltipManager(), skin, "scene"));
+                draggableTextList.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.sliderVertical(draggableTextList.getSelectedIndex() == 1);
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener sliderAnimationListener() {
+        var simSlider = (DialogSceneComposerModel.SimSlider) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var table = new Table();
+                popTable.add(table);
+                
+                table.defaults().spaceRight(5);
+                var label = new Label("Interpolation:", skin, "scene-label-colored");
+                table.add(label).right();
+                
+                var animateSelectBox = new SelectBox<Interpol>(skin, "scene");
+                animateSelectBox.setItems(Interpol.values());
+                animateSelectBox.setSelected(simSlider.animateInterpolation);
+                table.add(animateSelectBox);
+                animateSelectBox.addListener(main.getHandListener());
+                animateSelectBox.getList().addListener(main.getHandListener());
+                animateSelectBox.addListener(new TextTooltip("The Interpolation of the Slider animation as it changes values.", main.getTooltipManager(), skin, "scene"));
+                animateSelectBox.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.sliderAnimateInterpolation(animateSelectBox.getSelected());
+                    }
+                });
+                
+                table.row();
+                label = new Label("Interpolation:", skin, "scene-label-colored");
+                table.add(label).right();
+                
+                var visualSelectBox = new SelectBox<Interpol>(skin, "scene");
+                visualSelectBox.setItems(Interpol.values());
+                visualSelectBox.setSelected(simSlider.visualInterpolation);
+                table.add(visualSelectBox);
+                visualSelectBox.addListener(main.getHandListener());
+                visualSelectBox.getList().addListener(main.getHandListener());
+                visualSelectBox.addListener(new TextTooltip("The visual Interpolation of the Slider animation as it changes values.", main.getTooltipManager(), skin, "scene"));
+                visualSelectBox.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.sliderVisualInterpolation(visualSelectBox.getSelected());
+                    }
+                });
+                
+                table.row();
+                label = new Label("Animation Duration:", skin, "scene-label-colored");
+                table.add(label).right();
+                
+                var durationSpinner = new Spinner(simSlider.animationDuration, 1, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                durationSpinner.setMinimum(0);
+                table.add(durationSpinner).left();
+                durationSpinner.getTextField().addListener(main.getIbeamListener());
+                durationSpinner.getButtonMinus().addListener(main.getHandListener());
+                durationSpinner.getButtonPlus().addListener(main.getHandListener());
+                durationSpinner.addListener(new TextTooltip("The animation duration of the Slider as the value changes.", main.getTooltipManager(), skin, "scene"));
+                durationSpinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.sliderAnimationDuration((float) durationSpinner.getValue());
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener sliderRoundListener() {
+        var simSlider = (DialogSceneComposerModel.SimSlider) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Round:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                var textButton = new TextButton(simSlider.round ? "TRUE" : "FALSE", skin, "scene-small");
+                textButton.setChecked(simSlider.round);
+                popTable.add(textButton).minWidth(100);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(new TextTooltip("Whether the Slider inner positions are rounded to integer.", main.getTooltipManager(), skin, "scene"));
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        textButton.setText(textButton.isChecked() ? "TRUE" : "FALSE");
+                        events.sliderRound(textButton.isChecked());
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener sliderDisabledListener() {
+        var simSlider = (DialogSceneComposerModel.SimSlider) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Disabled:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                var textButton = new TextButton(simSlider.disabled ? "TRUE" : "FALSE", skin, "scene-small");
+                textButton.setChecked(simSlider.disabled);
+                popTable.add(textButton).minWidth(100);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(new TextTooltip("Whether the Slider is disabled initially.", main.getTooltipManager(), skin, "scene"));
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        textButton.setText(textButton.isChecked() ? "TRUE" : "FALSE");
+                        events.sliderDisabled(textButton.isChecked());
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener sliderResetListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to reset this List?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("RESET", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Resets the settings of the Slider to their defaults.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.sliderReset();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener sliderDeleteListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to delete this ProgressBar?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("DELETE", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Removes this Slider from its parent.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.sliderDelete();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
     
     public Dialog showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType widgetType, PopTable popTable) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;
