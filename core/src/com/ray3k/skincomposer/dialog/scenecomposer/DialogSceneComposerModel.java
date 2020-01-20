@@ -1071,6 +1071,15 @@ public class DialogSceneComposerModel {
             alignment = Align.center;
             selected = 0;
             scrollingDisabled = false;
+    
+            var styles = Main.main.getJsonData().getClassStyleMap().get(SelectBox.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
         }
     }
     
@@ -1117,6 +1126,15 @@ public class DialogSceneComposerModel {
             animateInterpolation = Interpol.LINEAR;
             round = true;
             visualInterpolation = Interpol.LINEAR;
+    
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Slider.class);
+            for (var style : styles) {
+                if (style.name.equals("default-horizontal")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
         }
     }
     
@@ -1217,6 +1235,15 @@ public class DialogSceneComposerModel {
             focusTraversal = false;
             maxLength = 0;
             messageText = null;
+    
+            var styles = Main.main.getJsonData().getClassStyleMap().get(TextField.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
         }
     }
     
@@ -1269,6 +1296,15 @@ public class DialogSceneComposerModel {
             maxLength = 0;
             messageText = null;
             preferredRows = 0;
+    
+            var styles = Main.main.getJsonData().getClassStyleMap().get(TextField.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
         }
     }
     
@@ -1299,6 +1335,15 @@ public class DialogSceneComposerModel {
             style = null;
             deadZone = 0;
             resetOnTouchUp = true;
+    
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Touchpad.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
         }
     }
     
@@ -1466,6 +1511,15 @@ public class DialogSceneComposerModel {
             scrollingDisabledY = false;
             smoothScrolling = true;
             variableSizeKnobs = true;
+    
+            var styles = Main.main.getJsonData().getClassStyleMap().get(ScrollPane.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
         }
     
         @Override
@@ -1535,6 +1589,15 @@ public class DialogSceneComposerModel {
             splitMin = 0;
             splitMax = 1;
             tempChildren.clear();
+    
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Stack.class);
+            for (var style : styles) {
+                if (style.name.equals("default-horizontal")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
         }
     
         @Override
@@ -1616,6 +1679,15 @@ public class DialogSceneComposerModel {
             iconSpaceRight = 2;
             indentSpacing = 0;
             ySpacing = 4;
+    
+            var styles = Main.main.getJsonData().getClassStyleMap().get(Tree.class);
+            for (var style : styles) {
+                if (style.name.equals("default")) {
+                    if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
+                        this.style = style;
+                    }
+                }
+            }
         }
     
         @Override
