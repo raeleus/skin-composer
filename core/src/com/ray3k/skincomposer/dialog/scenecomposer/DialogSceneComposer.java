@@ -943,51 +943,55 @@ public class DialogSceneComposer extends Dialog {
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(selectBoxNameListener());
             textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(selectBoxStyleListener());
             textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the SelectBox.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Text List", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(selectBoxTextListListener());
             textButton.addListener(new TextTooltip("Set the text entries for the SelectBox.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Max List Count", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(selectBoxMaxListCountListener());
             textButton.addListener(new TextTooltip("The maximum visible entries.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Alignment", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(selectBoxAlignmentListener());
             textButton.addListener(new TextTooltip("The alignment of the text in the SelectBox.", main.getTooltipManager(), skin, "scene"));
-    
-            textButton = new TextButton("Selected", skin, "scene-med");
-            horizontalGroup.addActor(textButton);
-            textButton.addListener(main.getHandListener());
-            textButton.addListener(new TextTooltip("Choose the selected item.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Scrolling", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(selectBoxScrollingListener());
             textButton.addListener(new TextTooltip("Choose if scrolling is enabled.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Disabled", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(selectBoxDisabledListener());
             textButton.addListener(new TextTooltip("Sets whether the SelectBox is disabled initially.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(selectBoxResetListener());
             textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(selectBoxDeleteListener());
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimSlider) {
             var textButton = new TextButton("Name", skin, "scene-med");
@@ -6335,6 +6339,513 @@ public class DialogSceneComposer extends Dialog {
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
                 events.progressBarDelete();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener selectBoxNameListener() {
+        var simSelectBox = (DialogSceneComposerModel.SimSelectBox) simActor;
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Name:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                textField.setText(simSelectBox.name);
+                popTable.add(textField).minWidth(150);
+                textField.addListener(main.getIbeamListener());
+                textField.addListener(new TextTooltip("The name of the SelectBox to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+                textField.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.selectBoxName(textField.getText());
+                    }
+                });
+                textField.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        if (keycode == Input.Keys.ENTER) {
+                            popTable.hide();
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+                
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener selectBoxStyleListener() {
+        var simSelectBox = (DialogSceneComposerModel.SimSelectBox) simActor;
+        var popTableClickListener = new StyleSelectorPopTable(SelectBox.class, simSelectBox.style == null ? "default" : simSelectBox.style.name) {
+            @Override
+            public void accepted(StyleData styleData) {
+                events.selectBoxStyle(styleData);
+            }
+        };
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener selectBoxTextListListener() {
+        var simSelectBox = (DialogSceneComposerModel.SimSelectBox) simActor;
+        var textField = new TextField("", skin, "scene");
+        textField.setFocusTraversal(false);
+        var draggableTextList = new DraggableTextList(true, skin, "scene");
+        draggableTextList.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.selectBoxSelected(draggableTextList.getSelectedIndex());
+                events.selectBoxList(draggableTextList.getTexts());
+            }
+        });
+        var scrollPane = new ScrollPane(draggableTextList, skin, "scene");
+        scrollPane.setFadeScrollBars(false);
+        scrollPane.addListener(main.getScrollFocusListener());
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            {
+                popTable.setAutomaticallyResized(true);
+                
+                textField.addListener(main.getIbeamListener());
+                textField.addListener(new TextTooltip("The text to add to the list.", main.getTooltipManager(), skin, "scene"));
+                textField.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        if (keycode == Input.Keys.ENTER) {
+                            addItem(textField.getText());
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+            }
+            
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("List Entries:\nDrag to change order\nClick the default option", skin, "scene-label-colored");
+                label.setAlignment(Align.center);
+                popTable.add(label).colspan(2);
+                
+                popTable.row();
+                draggableTextList.clearChildren();
+                draggableTextList.addAllTexts(simSelectBox.list);
+                if (draggableTextList.getTexts().size > 0) {
+                    draggableTextList.setSelected(simSelectBox.selected);
+                }
+                popTable.add(scrollPane).colspan(2).minHeight(150).growX();
+                
+                popTable.row();
+                label = new Label("Add New Item:", skin, "scene-label-colored");
+                popTable.add(label).colspan(2).padTop(10);
+                
+                popTable.row();
+                textField.setText("");
+                popTable.add(textField).minWidth(150);
+                
+                var textButton = new Button(skin, "scene-plus");
+                popTable.add(textButton);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        addItem(textField.getText());
+                    }
+                });
+                
+                getStage().setKeyboardFocus(textField);
+                getStage().setScrollFocus(scrollPane);
+            }
+            
+            public void addItem(String item) {
+                draggableTextList.addText(item);
+                events.selectBoxList(draggableTextList.getTexts());
+                update();
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener selectBoxMaxListCountListener() {
+        var simSelectBox = (DialogSceneComposerModel.SimSelectBox) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var table = new Table();
+                popTable.add(table);
+                
+                var label = new Label("Max List Count:", skin, "scene-label-colored");
+                table.add(label).right();
+                
+                var valueSpinner = new Spinner(simSelectBox.maxListCount, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                valueSpinner.setMinimum(0);
+                table.add(valueSpinner).width(100).left();
+                valueSpinner.getTextField().addListener(main.getIbeamListener());
+                valueSpinner.getButtonMinus().addListener(main.getHandListener());
+                valueSpinner.getButtonPlus().addListener(main.getHandListener());
+                valueSpinner.addListener(new TextTooltip("The maximum visible entries in the list.", main.getTooltipManager(), skin, "scene"));
+                valueSpinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.selectBoxMaxListCount(valueSpinner.getValueAsInt());
+                    }
+                });
+                
+                table.row();
+                label = new Label("(Set to 0 to show as many as possible)", skin, "scene-label-colored");
+                table.add(label).colspan(2);
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener selectBoxAlignmentListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var simSelectBox = (DialogSceneComposerModel.SimSelectBox) simActor;
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var table = new Table();
+                popTable.add(table);
+                
+                var label = new Label("Alignment:", skin, "scene-label-colored");
+                table.add(label).colspan(3);
+
+                table.row();
+                table.defaults().space(10).left().uniformX();
+                var buttonGroup = new ButtonGroup<ImageTextButton>();
+                var imageTextButton = new ImageTextButton("Top-Left", skin, "scene-checkbox-colored");
+                var topLeft = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the SelectBox to the top left.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.selectBoxAlignment(Align.topLeft);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                imageTextButton = new ImageTextButton("Top", skin, "scene-checkbox-colored");
+                var top = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the SelectBox to the top center.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.selectBoxAlignment(Align.top);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                imageTextButton = new ImageTextButton("Top-Right", skin, "scene-checkbox-colored");
+                var topRight = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the SelectBox to the top right.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.selectBoxAlignment(Align.topRight);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                table.row();
+                imageTextButton = new ImageTextButton("Left", skin, "scene-checkbox-colored");
+                var left = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the SelectBox to the middle left.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.selectBoxAlignment(Align.left);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                imageTextButton = new ImageTextButton("Center", skin, "scene-checkbox-colored");
+                var center = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the SelectBox to the center.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.selectBoxAlignment(Align.center);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                imageTextButton = new ImageTextButton("Right", skin, "scene-checkbox-colored");
+                var right = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the SelectBox to the middle right.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.selectBoxAlignment(Align.right);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                table.row();
+                imageTextButton = new ImageTextButton("Bottom-Left", skin, "scene-checkbox-colored");
+                var bottomLeft = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the SelectBox to the bottom left.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.selectBoxAlignment(Align.bottomLeft);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                imageTextButton = new ImageTextButton("Bottom", skin, "scene-checkbox-colored");
+                var bottom = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the SelectBox to the bottom center.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.selectBoxAlignment(Align.bottom);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                imageTextButton = new ImageTextButton("Bottom-Right", skin, "scene-checkbox-colored");
+                var bottomRight = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the SelectBox to the bottom right.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.selectBoxAlignment(Align.bottomRight);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                switch (simSelectBox.alignment) {
+                    case Align.topLeft:
+                        topLeft.setChecked(true);
+                        break;
+                    case Align.top:
+                        top.setChecked(true);
+                        break;
+                    case Align.topRight:
+                        topRight.setChecked(true);
+                        break;
+                    case Align.right:
+                        right.setChecked(true);
+                        break;
+                    case Align.bottomRight:
+                        bottomRight.setChecked(true);
+                        break;
+                    case Align.bottom:
+                        bottom.setChecked(true);
+                        break;
+                    case Align.bottomLeft:
+                        bottomLeft.setChecked(true);
+                        break;
+                    case Align.left:
+                        left.setChecked(true);
+                        break;
+                    case Align.center:
+                        center.setChecked(true);
+                        break;
+                }
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener selectBoxScrollingListener() {
+        var simSelectBox = (DialogSceneComposerModel.SimSelectBox) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Scrolling Disabled:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                var textButton = new TextButton(simSelectBox.scrollingDisabled ? "TRUE" : "FALSE", skin, "scene-small");
+                textButton.setChecked(simSelectBox.scrollingDisabled);
+                popTable.add(textButton).minWidth(100);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(new TextTooltip("Whether the SelectBox scrolling is diabled", main.getTooltipManager(), skin, "scene"));
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        textButton.setText(textButton.isChecked() ? "TRUE" : "FALSE");
+                        events.selectBoxScrollingDisabled(textButton.isChecked());
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener selectBoxDisabledListener() {
+        var simSelectBox = (DialogSceneComposerModel.SimSelectBox) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Disabled:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                var textButton = new TextButton(simSelectBox.disabled ? "TRUE" : "FALSE", skin, "scene-small");
+                textButton.setChecked(simSelectBox.disabled);
+                popTable.add(textButton).minWidth(100);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(new TextTooltip("Whether the SelectBox is disabled initially.", main.getTooltipManager(), skin, "scene"));
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        textButton.setText(textButton.isChecked() ? "TRUE" : "FALSE");
+                        events.selectBoxDisabled(textButton.isChecked());
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener selectBoxResetListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to reset this SelectBox?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("RESET", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Resets the settings of the SelectBox to their defaults.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.selectBoxReset();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener selectBoxDeleteListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to delete this SelectBox?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("DELETE", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Removes this SelectBox from its parent.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.selectBoxDelete();
             }
         });
         
