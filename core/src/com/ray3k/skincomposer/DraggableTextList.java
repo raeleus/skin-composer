@@ -142,6 +142,15 @@ public class DraggableTextList extends DraggableList {
         buttonGroup.clear();
     }
     
+    @Override
+    protected void updateTable() {
+        super.updateTable();
+        buttonGroup.clear();
+        for (var actor : actors) {
+            buttonGroup.add((TextButton) actor);
+        }
+    }
+    
     public static class DraggableTextListStyle extends DraggableListStyle {
         public BitmapFont font;
         /** Optional. */

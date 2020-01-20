@@ -109,7 +109,7 @@ public class DraggableList extends WidgetGroup {
         updateTable();
     }
     
-    private void updateTable() {
+    protected void updateTable() {
         dragAndDrop.clear();
         for (Button divider : dividers) {
             removeActor(divider);
