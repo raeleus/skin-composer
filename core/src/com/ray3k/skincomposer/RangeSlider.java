@@ -224,6 +224,10 @@ public class RangeSlider extends WidgetGroup {
             if (lockToIntegerPositions) knobEnd.setPosition(MathUtils.round(knobEnd.getX()),
                     MathUtils.round(knobEnd.getY()));
         }
+        
+        if (MathUtils.isEqual(valueBegin, valueEnd) && MathUtils.isEqual(valueEnd, maximum)) {
+            swapActor(getChildren().indexOf(knobBegin, true), getChildren().size - 1);
+        }
     }
     
     @Override
