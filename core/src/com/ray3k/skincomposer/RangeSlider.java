@@ -3,9 +3,7 @@ package com.ray3k.skincomposer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -92,6 +90,7 @@ public class RangeSlider extends WidgetGroup {
     
             @Override
             public void drag(InputEvent event, float x, float y, int pointer) {
+                float previousValue = valueBegin;
                 float padLeft = style.background == null ? 0 : style.background.getLeftWidth();
                 float padRight = style.background == null ? 0 : style.background.getRightWidth();
                 float padBottom = style.background == null ? 0 : style.background.getTopHeight();
@@ -106,15 +105,20 @@ public class RangeSlider extends WidgetGroup {
                 } else {
                     valueBegin = MathUtils.clamp((temp.y - padBottom) / innerHeight * (maximum - minimum), minimum, valueEnd);
                 }
-                visualValueBegin = snap(valueBegin, increment);
-                updateKnobs();
-                fire(new ChangeEvent());
+                valueBegin = snap(valueBegin, increment);
+                visualValueBegin = valueBegin;
+                if (!MathUtils.isEqual(valueBegin, previousValue)) {
+                    updateKnobs();
+                    fire(new ValueBeginChangeEvent(valueBegin));
+                    fire(new ChangeEvent());
+                }
             }
     
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer) {
                 knobBegin.setTouchable(Touchable.enabled);
                 knobBegin.setChecked(false);
+                fire(new ValueBeginChangeEvent(valueBegin));
                 fire(new ChangeEvent());
             }
         });
@@ -142,6 +146,7 @@ public class RangeSlider extends WidgetGroup {
     
             @Override
             public void drag(InputEvent event, float x, float y, int pointer) {
+                float previousValue = valueEnd;
                 float padLeft = style.background == null ? 0 : style.background.getLeftWidth();
                 float padRight = style.background == null ? 0 : style.background.getRightWidth();
                 float padBottom = style.background == null ? 0 : style.background.getTopHeight();
@@ -156,15 +161,20 @@ public class RangeSlider extends WidgetGroup {
                 } else {
                     valueEnd = MathUtils.clamp((temp.y - padBottom) / innerHeight * (maximum - minimum), valueBegin, maximum);
                 }
-                visualValueEnd = snap(valueEnd, increment);
-                updateKnobs();
-                fire(new ChangeEvent());
+                valueEnd = snap(valueEnd, increment);
+                visualValueEnd = valueEnd;
+                if (!MathUtils.isEqual(valueEnd, previousValue)) {
+                    updateKnobs();
+                    fire(new ValueEndChangeEvent(valueEnd));
+                    fire(new ChangeEvent());
+                }
             }
     
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer) {
                 knobEnd.setTouchable(Touchable.enabled);
                 knobEnd.setChecked(false);
+                fire(new ValueEndChangeEvent(valueEnd));
                 fire(new ChangeEvent());
             }
         });
@@ -291,6 +301,42 @@ public class RangeSlider extends WidgetGroup {
         float first = whole * increment;
         float second = first + increment;
         return value - first < second - value ? first : second;
+    }
+    
+    public static class ValueBeginChangeEvent extends Event {
+        public float value;
+        public ValueBeginChangeEvent(float value) {
+            this.value = value;
+        }
+    }
+    
+    public static class ValueEndChangeEvent extends Event {
+        public float value;
+        public ValueEndChangeEvent(float value) {
+            this.value = value;
+        }
+    }
+    
+    public static abstract class ValueBeginChangeListener implements EventListener {
+        public boolean handle (Event event) {
+            if (!(event instanceof ValueBeginChangeEvent)) return false;
+            changed((ValueBeginChangeEvent) event, ((ValueBeginChangeEvent) event).value, event.getTarget());
+            return false;
+        }
+    
+        /** @param actor The event target, which is the actor that emitted the change event. */
+        abstract public void changed (ValueBeginChangeEvent event, float valueBegin, Actor actor);
+    }
+    
+    public static abstract class ValueEndChangeListener implements EventListener {
+        public boolean handle (Event event) {
+            if (!(event instanceof ValueEndChangeEvent)) return false;
+            changed((ValueEndChangeEvent)event, ((ValueEndChangeEvent) event).value, event.getTarget());
+            return false;
+        }
+        
+        /** @param actor The event target, which is the actor that emitted the change event. */
+        abstract public void changed (ValueEndChangeEvent event, float valueEnd, Actor actor);
     }
     
     public static class RangeSliderStyle {
