@@ -43,7 +43,6 @@ public class RangeSlider extends WidgetGroup {
     }
     
     public RangeSlider(RangeSliderStyle style) {
-        //todo:disable change listener on knobs.
         minimum = 0;
         maximum = 1;
         valueBegin = 0f;
@@ -181,15 +180,16 @@ public class RangeSlider extends WidgetGroup {
     private void updateKnobs() {
         float padLeft = style.background == null ? 0 : style.background.getLeftWidth();
         float padRight = style.background == null ? 0 : style.background.getRightWidth();
-        float padBottom = style.background == null ? 0 : style.background.getTopHeight();
-        float padTop = style.background == null ? 0 : style.background.getBottomHeight();
+        float padBottom = style.background == null ? 0 : style.background.getBottomHeight();
+        float padTop = style.background == null ? 0 : style.background.getTopHeight();
         float innerWidth = MathUtils.clamp(getWidth() - padLeft - padRight, 0, getWidth());
         float innerHeight = MathUtils.clamp(getHeight() - padBottom - padTop, 0, getHeight());
     
         if (!vertical) {
-            progressKnob.setX(padLeft + visualValueBegin / (maximum - minimum) * innerWidth - knobBegin.getPrefWidth() / 2f);
-            progressKnob.setY(padBottom + innerHeight / 2f - progressKnob.getPrefHeight() / 2f);
-            progressKnob.setWidth(padLeft + (visualValueEnd - visualValueBegin) / (maximum - minimum) * innerWidth + knobBegin.getPrefWidth() / 2f);
+            progressKnob.setX(padLeft + visualValueBegin / (maximum - minimum) * innerWidth);
+            System.out.println(padBottom);
+            progressKnob.setY(padBottom);
+            progressKnob.setWidth(padLeft + (visualValueEnd - visualValueBegin) / (maximum - minimum) * innerWidth);
             
             knobBegin.setX(padLeft + visualValueBegin / (maximum - minimum) * innerWidth - knobBegin.getPrefWidth() / 2f);
             knobBegin.setY(padBottom + innerHeight / 2f - knobBegin.getPrefHeight() / 2f);
@@ -250,6 +250,7 @@ public class RangeSlider extends WidgetGroup {
     public void setValueBegin(float valueBegin) {
         this.valueBegin = valueBegin;
         this.visualValueBegin = snap(valueBegin, increment);
+        updateKnobs();
     }
     
     public float getValueEnd() {
@@ -258,6 +259,8 @@ public class RangeSlider extends WidgetGroup {
     
     public void setValueEnd(float valueEnd) {
         this.valueEnd = valueEnd;
+        this.visualValueEnd = snap(valueEnd, increment);
+        updateKnobs();
     }
     
     public float getVisualValueBegin() {
