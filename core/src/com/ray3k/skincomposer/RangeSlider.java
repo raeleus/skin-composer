@@ -187,8 +187,7 @@ public class RangeSlider extends WidgetGroup {
     
         if (!vertical) {
             progressKnob.setX(padLeft + visualValueBegin / (maximum - minimum) * innerWidth);
-            System.out.println(padBottom);
-            progressKnob.setY(padBottom);
+            progressKnob.setY(padBottom + MathUtils.round(innerHeight / 2f - progressKnob.getPrefHeight() / 2f));
             progressKnob.setWidth(padLeft + (visualValueEnd - visualValueBegin) / (maximum - minimum) * innerWidth);
             
             knobBegin.setX(padLeft + visualValueBegin / (maximum - minimum) * innerWidth - knobBegin.getPrefWidth() / 2f);
