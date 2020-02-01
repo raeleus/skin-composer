@@ -2,6 +2,7 @@ package com.ray3k.skincomposer.dialog.scenecomposer;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -366,7 +367,7 @@ public class DialogSceneComposerModel {
                 textField.setDisabled(sim.disabled);
                 textField.setCursorPosition(sim.cursorPosition);
                 if (sim.selectAll) {
-                    textField.setSelection(0, textField.getText().length() - 1);
+                    textField.setSelection(0, Math.max(textField.getText().length() - 1, 0));
                 } else {
                     textField.setSelection(sim.selectionStart, sim.selectionEnd);
                 }
@@ -1200,7 +1201,7 @@ public class DialogSceneComposerModel {
         public int selectionStart;
         public int selectionEnd;
         public boolean selectAll;
-        public boolean focusTraversal;
+        public boolean focusTraversal = true;
         public int maxLength;
         public String messageText;
     
@@ -1232,7 +1233,7 @@ public class DialogSceneComposerModel {
             selectionStart = 0;
             selectionEnd = 0;
             selectAll = false;
-            focusTraversal = false;
+            focusTraversal = true;
             maxLength = 0;
             messageText = null;
     
