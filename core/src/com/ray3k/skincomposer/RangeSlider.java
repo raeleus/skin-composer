@@ -11,11 +11,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Scaling;
 
-public class RangeSlider extends WidgetGroup {
+public class RangeSlider extends WidgetGroup implements Disableable {
     private float minimum;
     private float maximum;
     private float valueBegin;
@@ -31,6 +32,7 @@ public class RangeSlider extends WidgetGroup {
     private boolean vertical;
     private boolean lockToIntegerPositions;
     private static final Vector2 temp = new Vector2();
+    private boolean disabled;
     
     public RangeSlider(Skin skin) {
         this(skin, "default-horizontal");
@@ -65,6 +67,7 @@ public class RangeSlider extends WidgetGroup {
         knobStyle.over = style.knobBeginOver;
         knobStyle.down = style.knobBeginDown;
         knobStyle.checked = style.knobBeginDown;
+        knobStyle.disabled = style.knobBeginDisabled;
         knobBegin = new Button(knobStyle);
         knobBegin.setProgrammaticChangeEvents(false);
         addActor(knobBegin);
@@ -83,43 +86,49 @@ public class RangeSlider extends WidgetGroup {
             
             @Override
             public void dragStart(InputEvent event, float x, float y, int pointer) {
-                knobBegin.setTouchable(Touchable.disabled);
-                knobBegin.setChecked(true);
-                swapActor(getChildren().indexOf(knobBegin, true), getChildren().size - 1);
+                if (!disabled) {
+                    knobBegin.setTouchable(Touchable.disabled);
+                    knobBegin.setChecked(true);
+                    swapActor(getChildren().indexOf(knobBegin, true), getChildren().size - 1);
+                }
             }
     
             @Override
             public void drag(InputEvent event, float x, float y, int pointer) {
-                float previousValue = valueBegin;
-                float padLeft = style.background == null ? 0 : style.background.getLeftWidth();
-                float padRight = style.background == null ? 0 : style.background.getRightWidth();
-                float padBottom = style.background == null ? 0 : style.background.getTopHeight();
-                float padTop = style.background == null ? 0 : style.background.getBottomHeight();
-                float innerWidth = MathUtils.clamp(getWidth() - padLeft - padRight, 0, getWidth());
-                float innerHeight = MathUtils.clamp(getHeight() - padBottom - padTop, 0, getHeight());
-                temp.set(Gdx.input.getX(), Gdx.input.getY());
-                background.screenToLocalCoordinates(temp);
-                
-                if (!vertical) {
-                    valueBegin = MathUtils.clamp((temp.x - padLeft) / innerWidth * (maximum - minimum), minimum, valueEnd);
-                } else {
-                    valueBegin = MathUtils.clamp((temp.y - padBottom) / innerHeight * (maximum - minimum), minimum, valueEnd);
-                }
-                valueBegin = snap(valueBegin, increment);
-                visualValueBegin = valueBegin;
-                if (!MathUtils.isEqual(valueBegin, previousValue)) {
-                    updateKnobs();
-                    fire(new ValueBeginChangeEvent(valueBegin));
-                    fire(new ChangeEvent());
+                if (!disabled) {
+                    float previousValue = valueBegin;
+                    float padLeft = style.background == null ? 0 : style.background.getLeftWidth();
+                    float padRight = style.background == null ? 0 : style.background.getRightWidth();
+                    float padBottom = style.background == null ? 0 : style.background.getTopHeight();
+                    float padTop = style.background == null ? 0 : style.background.getBottomHeight();
+                    float innerWidth = MathUtils.clamp(getWidth() - padLeft - padRight, 0, getWidth());
+                    float innerHeight = MathUtils.clamp(getHeight() - padBottom - padTop, 0, getHeight());
+                    temp.set(Gdx.input.getX(), Gdx.input.getY());
+                    background.screenToLocalCoordinates(temp);
+    
+                    if (!vertical) {
+                        valueBegin = MathUtils.clamp((temp.x - padLeft) / innerWidth * (maximum - minimum), minimum, valueEnd);
+                    } else {
+                        valueBegin = MathUtils.clamp((temp.y - padBottom) / innerHeight * (maximum - minimum), minimum, valueEnd);
+                    }
+                    valueBegin = snap(valueBegin, increment);
+                    visualValueBegin = valueBegin;
+                    if (!MathUtils.isEqual(valueBegin, previousValue)) {
+                        updateKnobs();
+                        fire(new ValueBeginChangeEvent(valueBegin));
+                        fire(new ChangeEvent());
+                    }
                 }
             }
     
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer) {
-                knobBegin.setTouchable(Touchable.enabled);
-                knobBegin.setChecked(false);
-                fire(new ValueBeginChangeEvent(valueBegin));
-                fire(new ChangeEvent());
+                if (!disabled) {
+                    knobBegin.setTouchable(Touchable.enabled);
+                    knobBegin.setChecked(false);
+                    fire(new ValueBeginChangeEvent(valueBegin));
+                    fire(new ChangeEvent());
+                }
             }
         });
     
@@ -128,6 +137,7 @@ public class RangeSlider extends WidgetGroup {
         knobStyle.over = style.knobEndOver;
         knobStyle.down = style.knobEndDown;
         knobStyle.checked = style.knobEndDown;
+        knobStyle.disabled = style.knobEndDisabled;
         knobEnd = new Button(knobStyle);
         knobEnd.setProgrammaticChangeEvents(false);
         addActor(knobEnd);
@@ -139,43 +149,49 @@ public class RangeSlider extends WidgetGroup {
     
             @Override
             public void dragStart(InputEvent event, float x, float y, int pointer) {
-                knobEnd.setTouchable(Touchable.disabled);
-                knobEnd.setChecked(true);
-                swapActor(getChildren().indexOf(knobEnd, true), getChildren().size - 1);
+                if (!disabled) {
+                    knobEnd.setTouchable(Touchable.disabled);
+                    knobEnd.setChecked(true);
+                    swapActor(getChildren().indexOf(knobEnd, true), getChildren().size - 1);
+                }
             }
     
             @Override
             public void drag(InputEvent event, float x, float y, int pointer) {
-                float previousValue = valueEnd;
-                float padLeft = style.background == null ? 0 : style.background.getLeftWidth();
-                float padRight = style.background == null ? 0 : style.background.getRightWidth();
-                float padBottom = style.background == null ? 0 : style.background.getTopHeight();
-                float padTop = style.background == null ? 0 : style.background.getBottomHeight();
-                float innerWidth = MathUtils.clamp(getWidth() - padLeft - padRight, 0, getWidth());
-                float innerHeight = MathUtils.clamp(getHeight() - padBottom - padTop, 0, getHeight());
-                temp.set(Gdx.input.getX(), Gdx.input.getY());
-                background.screenToLocalCoordinates(temp);
-        
-                if (!vertical) {
-                    valueEnd = MathUtils.clamp((temp.x - padLeft) / innerWidth * (maximum - minimum), valueBegin, maximum);
-                } else {
-                    valueEnd = MathUtils.clamp((temp.y - padBottom) / innerHeight * (maximum - minimum), valueBegin, maximum);
-                }
-                valueEnd = snap(valueEnd, increment);
-                visualValueEnd = valueEnd;
-                if (!MathUtils.isEqual(valueEnd, previousValue)) {
-                    updateKnobs();
-                    fire(new ValueEndChangeEvent(valueEnd));
-                    fire(new ChangeEvent());
+                if (!disabled) {
+                    float previousValue = valueEnd;
+                    float padLeft = style.background == null ? 0 : style.background.getLeftWidth();
+                    float padRight = style.background == null ? 0 : style.background.getRightWidth();
+                    float padBottom = style.background == null ? 0 : style.background.getTopHeight();
+                    float padTop = style.background == null ? 0 : style.background.getBottomHeight();
+                    float innerWidth = MathUtils.clamp(getWidth() - padLeft - padRight, 0, getWidth());
+                    float innerHeight = MathUtils.clamp(getHeight() - padBottom - padTop, 0, getHeight());
+                    temp.set(Gdx.input.getX(), Gdx.input.getY());
+                    background.screenToLocalCoordinates(temp);
+    
+                    if (!vertical) {
+                        valueEnd = MathUtils.clamp((temp.x - padLeft) / innerWidth * (maximum - minimum), valueBegin, maximum);
+                    } else {
+                        valueEnd = MathUtils.clamp((temp.y - padBottom) / innerHeight * (maximum - minimum), valueBegin, maximum);
+                    }
+                    valueEnd = snap(valueEnd, increment);
+                    visualValueEnd = valueEnd;
+                    if (!MathUtils.isEqual(valueEnd, previousValue)) {
+                        updateKnobs();
+                        fire(new ValueEndChangeEvent(valueEnd));
+                        fire(new ChangeEvent());
+                    }
                 }
             }
     
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer) {
-                knobEnd.setTouchable(Touchable.enabled);
-                knobEnd.setChecked(false);
-                fire(new ValueEndChangeEvent(valueEnd));
-                fire(new ChangeEvent());
+                if (!disabled) {
+                    knobEnd.setTouchable(Touchable.enabled);
+                    knobEnd.setChecked(false);
+                    fire(new ValueEndChangeEvent(valueEnd));
+                    fire(new ChangeEvent());
+                }
             }
         });
     }
@@ -227,6 +243,18 @@ public class RangeSlider extends WidgetGroup {
         
         if (MathUtils.isEqual(valueBegin, valueEnd) && MathUtils.isEqual(valueEnd, maximum)) {
             swapActor(getChildren().indexOf(knobBegin, true), getChildren().size - 1);
+        }
+        
+        if (disabled) {
+            background.setDrawable(style.backgroundDisabled);
+            knobBegin.setDisabled(true);
+            knobEnd.setDisabled(true);
+            progressKnob.setDrawable(style.progressKnobDisabled);
+        } else {
+            background.setDrawable(style.background);
+            knobBegin.setDisabled(false);
+            knobEnd.setDisabled(false);
+            progressKnob.setDrawable(style.progressKnob);
         }
     }
     
@@ -307,6 +335,17 @@ public class RangeSlider extends WidgetGroup {
         return value - first < second - value ? first : second;
     }
     
+    @Override
+    public void setDisabled(boolean isDisabled) {
+        disabled = isDisabled;
+        updateKnobs();
+    }
+    
+    @Override
+    public boolean isDisabled() {
+        return disabled;
+    }
+    
     public static class ValueBeginChangeEvent extends Event {
         public float value;
         public ValueBeginChangeEvent(float value) {
@@ -353,5 +392,9 @@ public class RangeSlider extends WidgetGroup {
         public Drawable knobEndUp;
         public Drawable knobEndOver;
         public Drawable knobEndDown;
+        public Drawable backgroundDisabled;
+        public Drawable progressKnobDisabled;
+        public Drawable knobBeginDisabled;
+        public Drawable knobEndDisabled;
     }
 }
