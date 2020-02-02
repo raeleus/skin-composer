@@ -905,7 +905,7 @@ public class DialogSceneComposerEvents {
         processUndoable(new TextAreaPasswordModeUndoable(passwordMode));
     }
     
-    public void textAreaPreferredRow(int preferredRow) {
+    public void textAreaPreferredRows(int preferredRow) {
         processUndoable(new TextAreaPreferredRowUndoable(preferredRow));
     }
     
