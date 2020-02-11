@@ -3,6 +3,8 @@ package com.ray3k.skincomposer;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.FloatArray;
+import space.earlygrey.shapedrawer.JoinType;
+import space.earlygrey.shapedrawer.ShapeDrawer;
 
 /**
  * Contains functions for drawing graphs of {@link Interpolation} instances. Use the default interpolations or create

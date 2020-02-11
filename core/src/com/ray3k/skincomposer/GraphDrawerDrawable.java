@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import space.earlygrey.shapedrawer.JoinType;
 import space.earlygrey.shapedrawer.ShapeDrawer;
+import space.earlygrey.shapedrawer.scene2d.ShapeDrawerDrawable;
 
 /**
  * A convenience class that allows you to implement GraphDrawer in your Scene2D.UI layouts.
