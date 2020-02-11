@@ -234,8 +234,10 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-        rootTable.fire(new StageResizeEvent(width, height));
+        if (width != 0 && height != 0) {
+            stage.getViewport().update(width, height, true);
+            rootTable.fire(new StageResizeEvent(width, height));
+        }
     }
 
     @Override
