@@ -54,7 +54,7 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.github.raeleus.TenPatch:tenpatch:5.0.0"
-        implementation "space.earlygrey:shapedrawer:2.1.0"
+        implementation "space.earlygrey:shapedrawer:2.2.0"
     }
 }
 
