@@ -6243,8 +6243,7 @@ public class DialogSceneComposer extends Dialog {
         var scrollPane = new ScrollPane(table, skin, "scene");
         var listener = new PopTable.PopTableClickListener(skin) {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
+            public void tableShown(Event event) {
                 getStage().setScrollFocus(scrollPane);
                 for (var graphDrawerDrawable : graphDrawerDrawables) {
                     graphDrawerDrawable.setColor(Color.BLACK);

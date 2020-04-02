@@ -183,8 +183,8 @@ public class PopTable extends Table {
     }
     
     public void hide(Action action) {
-        fire(new TableHiddenEvent());
         group.addAction(sequence(action, Actions.removeActor()));
+        fire(new TableHiddenEvent());
     }
     
     public void show(Stage stage) {
@@ -210,6 +210,7 @@ public class PopTable extends Table {
         setPosition((int) (stage.getWidth() / 2f - getWidth() / 2f), (int) (stage.getHeight() / 2f - getHeight() / 2f));
         
         group.addAction(action);
+        fire(new TableShownEvent());
     }
     
     public static class PopTableStyle {
@@ -240,6 +241,11 @@ public class PopTable extends Table {
         public PopTableClickListener(PopTableStyle style) {
             popTable = new PopTable(style);
             popTable.addListener(new TableHiddenListener() {
+                @Override
+                public void tableShown(Event event) {
+                    PopTableClickListener.this.tableShown(event);
+                }
+                
                 @Override
                 public void tableHidden(Event event) {
                     PopTableClickListener.this.tableHidden(event);
@@ -338,9 +344,20 @@ public class PopTable extends Table {
         /**
          * Override this method to be performed when the popTable is hidden or dismissed.
          */
+        public void tableShown(Event event) {
+        
+        }
+        
+        /**
+         * Override this method to be performed when the popTable is hidden or dismissed.
+         */
         public void tableHidden(Event event) {
         
         }
+    }
+    
+    public static class TableShownEvent extends Event {
+    
     }
     
     public static class TableHiddenEvent extends Event {
@@ -353,11 +370,15 @@ public class PopTable extends Table {
             if (event instanceof TableHiddenEvent) {
                 tableHidden(event);
                 return true;
-            } else{
+            } else if (event instanceof TableShownEvent) {
+                tableShown(event);
+                return true;
+            } else {
                 return false;
             }
         }
         
+        public abstract void tableShown(Event event);
         public abstract void tableHidden(Event event);
     }
     
