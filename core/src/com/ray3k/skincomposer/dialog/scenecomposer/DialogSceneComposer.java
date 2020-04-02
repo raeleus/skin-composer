@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.*;
+import com.ray3k.skincomposer.PopTable.PopTableClickListener;
 import com.ray3k.skincomposer.RangeSlider.ValueBeginChangeEvent;
 import com.ray3k.skincomposer.RangeSlider.ValueBeginChangeListener;
 import com.ray3k.skincomposer.RangeSlider.ValueEndChangeEvent;
@@ -26,10 +28,13 @@ import com.ray3k.skincomposer.dialog.DialogDrawables;
 import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.Interpol;
 import com.ray3k.skincomposer.utils.IntPair;
+import space.earlygrey.shapedrawer.GraphDrawer;
+import space.earlygrey.shapedrawer.scene2d.GraphDrawerDrawable;
 
 public class DialogSceneComposer extends Dialog {
     public static DialogSceneComposer dialog;
     private Skin skin;
+    private GraphDrawer graphDrawer;
     private Main main;
     public enum View {
         LIVE, EDIT, OUTLINE
@@ -51,6 +56,7 @@ public class DialogSceneComposer extends Dialog {
         dialog = this;
         main = Main.main;
         skin = main.getSkin();
+        graphDrawer = main.getGraphDrawer();
         events = new DialogSceneComposerEvents();
         model = new DialogSceneComposerModel();
         
@@ -6194,43 +6200,19 @@ public class DialogSceneComposer extends Dialog {
                 popTable.add(table);
                 
                 table.defaults().spaceRight(5);
-                var label = new Label("Interpolation:", skin, "scene-label-colored");
-                table.add(label).right();
-                
-                var animateSelectBox = new SelectBox<Interpol>(skin, "scene");
-                animateSelectBox.setItems(Interpol.values());
-                animateSelectBox.setSelected(simProgressBar.animateInterpolation);
-                table.add(animateSelectBox);
-                animateSelectBox.addListener(main.getHandListener());
-                animateSelectBox.getList().addListener(main.getHandListener());
-                animateSelectBox.addListener(new TextTooltip("The Interpolation of the ProgressBar animation as it changes values.", main.getTooltipManager(), skin, "scene"));
-                animateSelectBox.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        events.progressBarAnimateInterpolation(animateSelectBox.getSelected());
-                    }
-                });
+                var textButton = new TextButton("Animate Interpolation", skin, "scene-med");
+                table.add(textButton).uniformX().fillX().colspan(2);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(interpolationListener(selection -> events.progressBarAnimateInterpolation(selection)));
                 
                 table.row();
-                label = new Label("Interpolation:", skin, "scene-label-colored");
-                table.add(label).right();
-    
-                var visualSelectBox = new SelectBox<Interpol>(skin, "scene");
-                visualSelectBox.setItems(Interpol.values());
-                visualSelectBox.setSelected(simProgressBar.visualInterpolation);
-                table.add(visualSelectBox);
-                visualSelectBox.addListener(main.getHandListener());
-                visualSelectBox.getList().addListener(main.getHandListener());
-                visualSelectBox.addListener(new TextTooltip("The visual Interpolation of the ProgressBar animation as it changes values.", main.getTooltipManager(), skin, "scene"));
-                visualSelectBox.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        events.progressBarVisualInterpolation(visualSelectBox.getSelected());
-                    }
-                });
+                textButton = new TextButton("Visual Interpolation", skin, "scene-med");
+                table.add(textButton).uniformX().fillX().colspan(2);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(interpolationListener(selection -> events.progressBarVisualInterpolation(selection)));
                 
                 table.row();
-                label = new Label("Animation Duration:", skin, "scene-label-colored");
+                var label = new Label("Animation Duration:", skin, "scene-label-colored");
                 table.add(label).right();
                 
                 var durationSpinner = new Spinner(simProgressBar.animationDuration, 1, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");
@@ -6252,6 +6234,77 @@ public class DialogSceneComposer extends Dialog {
         popTableClickListener.update();
         
         return popTableClickListener;
+    }
+    
+    private PopTableClickListener interpolationListener(InterpolationSelected interpolationSelected) {
+        var graphDrawerDrawables = new Array<GraphDrawerDrawable>();
+        
+        var table = new Table();
+        var scrollPane = new ScrollPane(table, skin, "scene");
+        var listener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                getStage().setScrollFocus(scrollPane);
+                for (var graphDrawerDrawable : graphDrawerDrawables) {
+                    graphDrawerDrawable.setColor(Color.BLACK);
+                }
+            }
+    
+            @Override
+            public void tableHidden(Event event) {
+                for (var graphDrawerDrawable : graphDrawerDrawables) {
+                    graphDrawerDrawable.setColor(Color.CLEAR);
+                }
+            }
+        };
+        var popTable = listener.getPopTable();
+        
+        scrollPane.setFadeScrollBars(false);
+        popTable.add(scrollPane);
+        
+        table.defaults().space(5);
+        for (Interpol interpol : Interpol.values()) {
+            var button = new Button(skin, "scene-med");
+            table.add(button).growX();
+            
+            var stack = new Stack();
+            button.add(stack).size(50);
+            
+            var image = new Image(skin.getDrawable("white"));
+            stack.add(image);
+            
+            var graphDrawerDrawable = new GraphDrawerDrawable(graphDrawer);
+            graphDrawerDrawable.setColor(Color.BLACK);
+            graphDrawerDrawable.setInterpolation(interpol.interpolation);
+            graphDrawerDrawable.setSamples(10);
+            graphDrawerDrawables.add(graphDrawerDrawable);
+            image = new Image(graphDrawerDrawable);
+            var container = new Container(image);
+            container.pad(5).fill();
+            stack.add(container);
+            
+            var label = new Label(interpol.toString(), skin, "scene-label");
+            button.add(label).expandX().left().space(5);
+            button.addListener(main.getHandListener());
+            button.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    popTable.hide();
+                    interpolationSelected.selected(interpol);
+                }
+            });
+            
+            table.row();
+        }
+        
+        getStage().setScrollFocus(scrollPane);
+        
+        return listener;
+    }
+    
+    private interface InterpolationSelected {
+        public void selected(Interpol selection);
     }
     
     private EventListener progressBarRoundListener() {
@@ -7108,43 +7161,19 @@ public class DialogSceneComposer extends Dialog {
                 popTable.add(table);
                 
                 table.defaults().spaceRight(5);
-                var label = new Label("Interpolation:", skin, "scene-label-colored");
-                table.add(label).right();
-                
-                var animateSelectBox = new SelectBox<Interpol>(skin, "scene");
-                animateSelectBox.setItems(Interpol.values());
-                animateSelectBox.setSelected(simSlider.animateInterpolation);
-                table.add(animateSelectBox);
-                animateSelectBox.addListener(main.getHandListener());
-                animateSelectBox.getList().addListener(main.getHandListener());
-                animateSelectBox.addListener(new TextTooltip("The Interpolation of the Slider animation as it changes values.", main.getTooltipManager(), skin, "scene"));
-                animateSelectBox.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        events.sliderAnimateInterpolation(animateSelectBox.getSelected());
-                    }
-                });
+                var textButton = new TextButton("Animate Interpolation", skin, "scene-med");
+                table.add(textButton).uniformX().fillX().colspan(2);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(interpolationListener(selection -> events.sliderAnimateInterpolation(selection)));
                 
                 table.row();
-                label = new Label("Interpolation:", skin, "scene-label-colored");
-                table.add(label).right();
-                
-                var visualSelectBox = new SelectBox<Interpol>(skin, "scene");
-                visualSelectBox.setItems(Interpol.values());
-                visualSelectBox.setSelected(simSlider.visualInterpolation);
-                table.add(visualSelectBox);
-                visualSelectBox.addListener(main.getHandListener());
-                visualSelectBox.getList().addListener(main.getHandListener());
-                visualSelectBox.addListener(new TextTooltip("The visual Interpolation of the Slider animation as it changes values.", main.getTooltipManager(), skin, "scene"));
-                visualSelectBox.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        events.sliderVisualInterpolation(visualSelectBox.getSelected());
-                    }
-                });
+                textButton = new TextButton("Visual Interpolation", skin, "scene-med");
+                table.add(textButton).uniformX().fillX().colspan(2);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(interpolationListener(selection -> events.sliderVisualInterpolation(selection)));
                 
                 table.row();
-                label = new Label("Animation Duration:", skin, "scene-label-colored");
+                var label = new Label("Animation Duration:", skin, "scene-label-colored");
                 table.add(label).right();
                 
                 var durationSpinner = new Spinner(simSlider.animationDuration, 1, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");

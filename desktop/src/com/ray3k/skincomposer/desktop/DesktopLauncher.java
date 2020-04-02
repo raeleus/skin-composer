@@ -17,6 +17,7 @@ public class DesktopLauncher extends Launcher {
         config.setResizable(true);
         config.useVsync(true);
         config.setWindowedMode(800, 800);
+        config.setBackBufferConfig(8, 8, 8, 8, 16, 0, 10);
         var desktopLauncher = new DesktopLauncher();
         config.setWindowListener(desktopLauncher);
         config.setTitle("Skin Composer - New Project*");

@@ -26,28 +26,35 @@ public class DialogSceneComposerModel {
     private static Json json;
     
     public enum Interpol {
-        LINEAR(Interpolation.linear), SMOOTH(Interpolation.smooth), SMOOTH2(Interpolation.smooth2),
-        SMOOTHER(Interpolation.smoother), FADE(Interpolation.fade), POW2(Interpolation.pow2),
-        POW2IN(Interpolation.pow2In), SLOW_FAST(Interpolation.slowFast), POW2OUT(Interpolation.pow2Out),
-        FAST_SLOW(Interpolation.fastSlow), POW2IN_INVERSE(Interpolation.pow2In),
-        POW2OUT_INVERSE(Interpolation.pow2OutInverse), POW3(Interpolation.pow3), POW3IN(Interpolation.pow3In),
-        POW3OUT(Interpolation.pow3Out), POW3IN_INVERSE(Interpolation.pow3InInverse),
-        POW3OUT_INVERSE(Interpolation.pow3OutInverse), POW4(Interpolation.pow4), POW4IN(Interpolation.pow4In),
-        POW4OUT(Interpolation.pow4Out), POW5(Interpolation.pow5), POW5IN(Interpolation.pow5In),
-        POW5OUT(Interpolation.pow5Out), SINE(Interpolation.sine), SINE_IN(Interpolation.sineIn),
-        SINE_OUT(Interpolation.sineOut), EXP10(Interpolation.exp10), EXP10_IN(Interpolation.exp10In),
-        EXP10_OUT(Interpolation.exp10Out), EXP5(Interpolation.exp5), EXP5IN(Interpolation.exp5In),
-        EXP5OUT(Interpolation.exp5Out), CIRCLE(Interpolation.circle), CIRCLE_IN(Interpolation.circleIn),
-        CIRCLE_OUT(Interpolation.circleOut), ELASTIC(Interpolation.elastic), ELASTIC_IN(Interpolation.elasticIn),
-        ELASTIC_OUT(Interpolation.elasticOut), SWING(Interpolation.swing), SWING_IN(Interpolation.swingIn),
-        SWING_OUT(Interpolation.swingOut), BOUNCE(Interpolation.bounce), BOUNCE_IN(Interpolation.bounceIn),
-        BOUNCE_OUT(Interpolation.bounceOut);
-        
-        Interpol(Interpolation interpolation) {
-            this.interpolation = interpolation;
-        }
+        LINEAR(Interpolation.linear, "Linear"), SMOOTH(Interpolation.smooth, "Smooth"), SMOOTH2(Interpolation.smooth2, "Smooth 2"),
+        SMOOTHER(Interpolation.smoother, "Smoother"), FADE(Interpolation.fade, "Fade"), POW2(Interpolation.pow2, "Pow 2"),
+        POW2IN(Interpolation.pow2In, "Pow 2 In"), SLOW_FAST(Interpolation.slowFast, "Slow Fast"), POW2OUT(Interpolation.pow2Out, "Pow 2 Out"),
+        FAST_SLOW(Interpolation.fastSlow, "Fast Slow"), POW2IN_INVERSE(Interpolation.pow2In, "Pow 2 In Inverse"),
+        POW2OUT_INVERSE(Interpolation.pow2OutInverse, "Pow 2 Out Inverse"), POW3(Interpolation.pow3, "Pow 3"), POW3IN(Interpolation.pow3In, "Pow 3 In"),
+        POW3OUT(Interpolation.pow3Out, "Pow 3 Out"), POW3IN_INVERSE(Interpolation.pow3InInverse, "Pow 3 In Inverse"),
+        POW3OUT_INVERSE(Interpolation.pow3OutInverse, "Pow 3 Out Inverse"), POW4(Interpolation.pow4, "Pow 4"), POW4IN(Interpolation.pow4In, "Pow 4 In"),
+        POW4OUT(Interpolation.pow4Out, "Pow 4 Out"), POW5(Interpolation.pow5, "Pow 5"), POW5IN(Interpolation.pow5In, "Pow 5 In"),
+        POW5OUT(Interpolation.pow5Out, "Pow 5 Out"), SINE(Interpolation.sine, "Sine"), SINE_IN(Interpolation.sineIn, "Sine In"),
+        SINE_OUT(Interpolation.sineOut, "Sine Out"), EXP10(Interpolation.exp10, "Exp 10"), EXP10_IN(Interpolation.exp10In, "Exp 10 In"),
+        EXP10_OUT(Interpolation.exp10Out, "Exp 10 Out"), EXP5(Interpolation.exp5, "Exp 5"), EXP5IN(Interpolation.exp5In, "Exp 5 In"),
+        EXP5OUT(Interpolation.exp5Out, "Exp 5 Out"), CIRCLE(Interpolation.circle, "Circle"), CIRCLE_IN(Interpolation.circleIn, "Circle In"),
+        CIRCLE_OUT(Interpolation.circleOut, "Circle Out"), ELASTIC(Interpolation.elastic, "Elastic"), ELASTIC_IN(Interpolation.elasticIn, "Elastic In"),
+        ELASTIC_OUT(Interpolation.elasticOut, "Elastic Out"), SWING(Interpolation.swing, "Swing"), SWING_IN(Interpolation.swingIn, "Swing In"),
+        SWING_OUT(Interpolation.swingOut, "Swing Out"), BOUNCE(Interpolation.bounce, "Bounce"), BOUNCE_IN(Interpolation.bounceIn, "Bounce In"),
+        BOUNCE_OUT(Interpolation.bounceOut, " Bounce Out");
         
         public Interpolation interpolation;
+        public String text;
+        
+        Interpol(Interpolation interpolation, String text) {
+            this.interpolation = interpolation;
+            this.text = text;
+        }
+    
+        @Override
+        public String toString() {
+            return text;
+        }
     }
     
     public DialogSceneComposerModel() {

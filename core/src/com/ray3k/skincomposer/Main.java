@@ -58,6 +58,8 @@ import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.tenpatch.TenPatchDrawable;
+import space.earlygrey.shapedrawer.GraphDrawer;
+import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class Main extends ApplicationAdapter {
     public final static String VERSION = "35";
@@ -76,6 +78,8 @@ public class Main extends ApplicationAdapter {
         WindowStyle.class};
     private Stage stage;
     private static Skin skin;
+    private ShapeDrawer shapeDrawer;
+    private GraphDrawer graphDrawer;
     private DialogFactory dialogFactory;
     private DesktopWorker desktopWorker;
     private TenPatchDrawable loadingAnimation;
@@ -109,6 +113,9 @@ public class Main extends ApplicationAdapter {
         skin = new FreetypeSkin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
+        
+        shapeDrawer = new ShapeDrawer(stage.getBatch(), skin.getRegion("white"));
+        graphDrawer = new GraphDrawer(shapeDrawer);
         
         initDefaults();
         
@@ -265,7 +272,15 @@ public class Main extends ApplicationAdapter {
     public Skin getSkin() {
         return skin;
     }
-
+    
+    public ShapeDrawer getShapeDrawer() {
+        return shapeDrawer;
+    }
+    
+    public GraphDrawer getGraphDrawer() {
+        return graphDrawer;
+    }
+    
     public UndoableManager getUndoableManager() {
         return undoableManager;
     }
