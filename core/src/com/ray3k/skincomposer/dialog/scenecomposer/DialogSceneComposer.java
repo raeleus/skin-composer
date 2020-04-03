@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -26,7 +25,9 @@ import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogDrawables;
 import com.ray3k.skincomposer.dialog.DialogListener;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents.WidgetType;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.Interpol;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimContainer;
 import com.ray3k.skincomposer.utils.IntPair;
 import space.earlygrey.shapedrawer.GraphDrawer;
 import space.earlygrey.shapedrawer.scene2d.GraphDrawerDrawable;
@@ -416,7 +417,8 @@ public class DialogSceneComposer extends Dialog {
             var textButton = new TextButton("Set Widget", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
-            textButton.addListener(cellSetWidgetListener());
+            textButton.addListener(setWidgetListener(
+                    (widgetType, popTable) -> showConfirmCellSetWidgetDialog(widgetType, popTable)));
             textButton.addListener(new TextTooltip("Creates a new widget and sets it as the contents of this cell.", main.getTooltipManager(), skin, "scene"));
         
             var table = new Table();
@@ -1237,46 +1239,55 @@ public class DialogSceneComposer extends Dialog {
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(containerNameListener());
             textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Set Widget", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(setWidgetListener((widgetType, popTable) -> showConfirmContainerSetWidgetDialog(widgetType, popTable)));
             textButton.addListener(new TextTooltip("Set the widget assigned to this Container.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Background", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(containerBackgroundListener());
             textButton.addListener(new TextTooltip("Set the background of the Container.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Fill", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(containerFillListener());
             textButton.addListener(new TextTooltip("Set the fill of the widget.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Size", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(containerSizeListener());
             textButton.addListener(new TextTooltip("Set the size of the widget.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Padding", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(containerPaddingListener());
             textButton.addListener(new TextTooltip("Set the padding of the widget.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Alignment", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(containerAlignmentListener());
             textButton.addListener(new TextTooltip("Set the alignment of the widget.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(containerResetListener());
             textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(containerDeleteListener());
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimHorizontalGroup) {
             var textButton = new TextButton("Name", skin, "scene-med");
@@ -4328,7 +4339,11 @@ public class DialogSceneComposer extends Dialog {
         return popTableClickListener;
     }
     
-    private PopTable.PopTableClickListener cellSetWidgetListener() {
+    public static interface WidgetSelectedListener {
+        public void widgetSelected(WidgetType widgetType, PopTable popTable);
+    }
+    
+    private PopTable.PopTableClickListener setWidgetListener(WidgetSelectedListener widgetSelectedListener) {
         var table = new Table();
         var scrollPane = new ScrollPane(table, skin, "scene");
         var scrollFocus = scrollPane;
@@ -4373,7 +4388,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.BUTTON, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.BUTTON, popTable);
             }
         });
     
@@ -4387,7 +4402,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.CHECK_BOX, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.CHECK_BOX, popTable);
             }
         });
     
@@ -4399,7 +4414,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.IMAGE, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.IMAGE, popTable);
             }
         });
     
@@ -4413,7 +4428,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.IMAGE_BUTTON, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.IMAGE_BUTTON, popTable);
             }
         });
     
@@ -4427,7 +4442,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.IMAGE_TEXT_BUTTON, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.IMAGE_TEXT_BUTTON, popTable);
             }
         });
     
@@ -4441,7 +4456,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.LABEL, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.LABEL, popTable);
             }
         });
     
@@ -4455,7 +4470,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.LIST, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.LIST, popTable);
             }
         });
     
@@ -4469,7 +4484,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.PROGRESS_BAR, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.PROGRESS_BAR, popTable);
             }
         });
     
@@ -4483,7 +4498,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.SELECT_BOX, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.SELECT_BOX, popTable);
             }
         });
     
@@ -4497,7 +4512,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.SLIDER, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.SLIDER, popTable);
             }
         });
     
@@ -4511,7 +4526,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.TEXT_BUTTON, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.TEXT_BUTTON, popTable);
             }
         });
     
@@ -4525,7 +4540,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.TEXT_FIELD, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.TEXT_FIELD, popTable);
             }
         });
     
@@ -4539,7 +4554,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.TEXT_AREA, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.TEXT_AREA, popTable);
             }
         });
     
@@ -4553,7 +4568,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.TOUCH_PAD, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.TOUCH_PAD, popTable);
             }
         });
     
@@ -4573,7 +4588,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.CONTAINER, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.CONTAINER, popTable);
             }
         });
         
@@ -4585,7 +4600,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.HORIZONTAL_GROUP, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.HORIZONTAL_GROUP, popTable);
             }
         });
     
@@ -4597,7 +4612,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.SCROLL_PANE, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.SCROLL_PANE, popTable);
             }
         });
     
@@ -4609,7 +4624,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.STACK, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.STACK, popTable);
             }
         });
         
@@ -4623,7 +4638,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.SPLIT_PANE, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.SPLIT_PANE, popTable);
             }
         });
     
@@ -4635,7 +4650,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.TABLE, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.TABLE, popTable);
             }
         });
     
@@ -4649,7 +4664,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.TREE, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.TREE, popTable);
             }
         });
     
@@ -4661,7 +4676,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType.VERTICAL_GROUP, popTable);
+                widgetSelectedListener.widgetSelected(WidgetType.VERTICAL_GROUP, popTable);
             }
         });
         
@@ -8739,7 +8754,657 @@ public class DialogSceneComposer extends Dialog {
         return popTableClickListener;
     }
     
-    public Dialog showConfirmCellSetWidgetDialog(DialogSceneComposerEvents.WidgetType widgetType, PopTable popTable) {
+    private EventListener containerNameListener() {
+        var simContainer = (DialogSceneComposerModel.SimContainer) simActor;
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Name:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                textField.setText(simContainer.name);
+                popTable.add(textField).minWidth(150);
+                textField.addListener(main.getIbeamListener());
+                textField.addListener(new TextTooltip("The name of the Container to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+                textField.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.containerName(textField.getText());
+                    }
+                });
+                textField.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        if (keycode == Input.Keys.ENTER) {
+                            popTable.hide();
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+                
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener containerBackgroundListener() {
+        var simContainer = (DialogSceneComposerModel.SimContainer) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Background:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                var stack = new Stack();
+                popTable.add(stack).minSize(100).maxSize(300).grow();
+                var background = new Image(skin, "scene-tile-ten");
+                stack.add(background);
+                Image image;
+                if (simContainer.background != null) {
+                    image = new Image(main.getAtlasData().drawablePairs.get(simContainer.background));
+                } else {
+                    image = new Image((Drawable) null);
+                }
+                stack.add(image);
+                
+                popTable.row();
+                var textButton = new TextButton("Select Drawable", skin, "scene-small");
+                popTable.add(textButton).minWidth(100);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(new TextTooltip("The background drawable for the container.", main.getTooltipManager(), skin, "scene"));
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        popTable.hide();
+                        main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
+                            @Override
+                            public void confirmed(DrawableData drawable, DialogDrawables dialog) {
+                                events.containerBackground(drawable);
+                                image.setDrawable(main.getAtlasData().drawablePairs.get(drawable));
+                            }
+                            
+                            @Override
+                            public void emptied(DialogDrawables dialog) {
+                                events.containerBackground(null);
+                                image.setDrawable(null);
+                            }
+                            
+                            @Override
+                            public void cancelled(DialogDrawables dialog) {
+                            
+                            }
+                        }, new DialogListener() {
+                            @Override
+                            public void opened() {
+                            
+                            }
+                            
+                            @Override
+                            public void closed() {
+                            
+                            }
+                        });
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener containerFillListener() {
+        var simContainer = (DialogSceneComposerModel.SimContainer) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var fillX = new ImageTextButton("Fill X", skin, "scene-checkbox-colored");
+                var fillY = new ImageTextButton("Fill Y", skin, "scene-checkbox-colored");
+                
+                var changeListener = new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.containerFill(fillX.isChecked(), fillY.isChecked());
+                    }
+                };
+                
+                var table = new Table();
+                popTable.add(table);
+                
+                table.defaults().left().spaceRight(5);
+                fillX.setChecked(simContainer.fillX);
+                fillX.setProgrammaticChangeEvents(false);
+                table.add(fillX);
+                fillX.addListener(main.getHandListener());
+                fillX.addListener(new TextTooltip("Stretches the contents to fill the width of the cell.", main.getTooltipManager(), skin, "scene"));
+                fillX.addListener(changeListener);
+                
+                fillY.setChecked(simContainer.fillY);
+                fillY.setProgrammaticChangeEvents(false);
+                table.add(fillY);
+                fillY.addListener(main.getHandListener());
+                fillY.addListener(new TextTooltip("Stretches the contents to fill the height of the container.", main.getTooltipManager(), skin, "scene"));
+                fillY.addListener(changeListener);
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener containerSizeListener() {
+        var simContainer = (DialogSceneComposerModel.SimContainer) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var table = new Table();
+                popTable.add(table);
+                
+                var changeListener = new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        Spinner minimumWidth = popTable.findActor("minimum-width");
+                        Spinner minimumHeight = popTable.findActor("minimum-height");
+                        Spinner maximumWidth = popTable.findActor("maximum-width");
+                        Spinner maximumHeight = popTable.findActor("maximum-height");
+                        Spinner preferredWidth = popTable.findActor("preferred-width");
+                        Spinner preferredHeight = popTable.findActor("preferred-height");
+                        events.containerSize((float) minimumWidth.getValue(), (float) minimumHeight.getValue(), (float) maximumWidth.getValue(), (float) maximumHeight.getValue(), (float) preferredWidth.getValue(), (float) preferredHeight.getValue());
+                    }
+                };
+                
+                var label = new Label("Minimum:", skin, "scene-label-colored");
+                table.add(label).colspan(2);
+                
+                table.row();
+                table.defaults().right().spaceRight(5);
+                label = new Label("Width:", skin, "scene-label-colored");
+                table.add(label);
+                
+                var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("minimum-width");
+                spinner.setValue(simContainer.minWidth);
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The minimum width of the contents of the container.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+                
+                table.row();
+                label = new Label("Height:", skin, "scene-label-colored");
+                table.add(label);
+                
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("minimum-height");
+                spinner.setValue(simContainer.minHeight);
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The minimum height of the contents of the container.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+                
+                var image = new Image(skin, "scene-menu-divider");
+                popTable.add(image).space(10).growY();
+                
+                table = new Table();
+                popTable.add(table);
+                
+                label = new Label("Maximum:", skin, "scene-label-colored");
+                table.add(label).colspan(2);
+                
+                table.row();
+                table.defaults().right().spaceRight(5);
+                label = new Label("Width:", skin, "scene-label-colored");
+                table.add(label);
+                
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("maximum-width");
+                spinner.setValue(simContainer.maxWidth);
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The maximum width of the contents of the container.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+                
+                table.row();
+                label = new Label("Height:", skin, "scene-label-colored");
+                table.add(label);
+                
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("maximum-height");
+                spinner.setValue(simContainer.maxHeight);
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The maximum height of the contents of the container.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+                
+                image = new Image(skin, "scene-menu-divider");
+                popTable.add(image).space(10).growY();
+                
+                table = new Table();
+                popTable.add(table);
+                
+                label = new Label("Preferred:", skin, "scene-label-colored");
+                table.add(label).colspan(2);
+                
+                table.row();
+                table.defaults().right().spaceRight(5);
+                label = new Label("Width:", skin, "scene-label-colored");
+                table.add(label);
+                
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("preferred-width");
+                spinner.setValue(simContainer.preferredWidth);
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The preferred width of the contents of the container.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+                
+                table.row();
+                label = new Label("Height:", skin, "scene-label-colored");
+                table.add(label);
+                
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("preferred-height");
+                spinner.setValue(simContainer.preferredHeight);
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The preferred height of the contents of the container.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener containerPaddingListener() {
+        var simContainer = (DialogSceneComposerModel.SimContainer) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var changeListener = new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        Spinner paddingLeft = popTable.findActor("padding-left");
+                        Spinner paddingRight = popTable.findActor("padding-right");
+                        Spinner paddingTop = popTable.findActor("padding-top");
+                        Spinner paddingBottom = popTable.findActor("padding-bottom");
+                        
+                        events.containerPadding((float) paddingLeft.getValue(), (float) paddingRight.getValue(), (float) paddingTop.getValue(), (float) paddingBottom.getValue());
+                    }
+                };
+                
+                var table = new Table();
+                popTable.add(table);
+                
+                var label = new Label("Padding:", skin, "scene-label-colored");
+                table.add(label).colspan(2);
+                
+                table.row();
+                table.defaults().right().spaceRight(5);
+                label = new Label("Left:", skin, "scene-label-colored");
+                table.add(label);
+                
+                var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setValue(simContainer.padLeft);
+                spinner.setName("padding-left");
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The padding on the left of the container.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+                
+                table.row();
+                label = new Label("Right:", skin, "scene-label-colored");
+                table.add(label);
+                
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setValue(simContainer.padRight);
+                spinner.setName("padding-right");
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The padding on the right of the container.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+                
+                table.row();
+                label = new Label("Top:", skin, "scene-label-colored");
+                table.add(label);
+                
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setValue(simContainer.padTop);
+                spinner.setName("padding-top");
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The padding on the top of the container.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+                
+                table.row();
+                label = new Label("Bottom:", skin, "scene-label-colored");
+                table.add(label);
+                
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setValue(simContainer.padBottom);
+                spinner.setName("padding-bottom");
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The padding on the bottom of the container.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(changeListener);
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener containerAlignmentListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var simContainer = (DialogSceneComposerModel.SimContainer) simActor;
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var table = new Table();
+                popTable.add(table);
+                
+                var label = new Label("Alignment:", skin, "scene-label-colored");
+                table.add(label).colspan(3);
+                
+                table.row();
+                table.defaults().space(10).left().uniformX();
+                var buttonGroup = new ButtonGroup<ImageTextButton>();
+                var imageTextButton = new ImageTextButton("Top-Left", skin, "scene-checkbox-colored");
+                var topLeft = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the container to the top left.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.containerAlignment(Align.topLeft);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                imageTextButton = new ImageTextButton("Top", skin, "scene-checkbox-colored");
+                var top = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the container to the top center.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.containerAlignment(Align.top);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                imageTextButton = new ImageTextButton("Top-Right", skin, "scene-checkbox-colored");
+                var topRight = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the container to the top right.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.containerAlignment(Align.topRight);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                table.row();
+                imageTextButton = new ImageTextButton("Left", skin, "scene-checkbox-colored");
+                var left = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the container to the middle left.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.containerAlignment(Align.left);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                imageTextButton = new ImageTextButton("Center", skin, "scene-checkbox-colored");
+                var center = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the container to the center.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.containerAlignment(Align.center);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                imageTextButton = new ImageTextButton("Right", skin, "scene-checkbox-colored");
+                var right = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the container to the middle right.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.containerAlignment(Align.right);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                table.row();
+                imageTextButton = new ImageTextButton("Bottom-Left", skin, "scene-checkbox-colored");
+                var bottomLeft = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the container to the bottom left.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.containerAlignment(Align.bottomLeft);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                imageTextButton = new ImageTextButton("Bottom", skin, "scene-checkbox-colored");
+                var bottom = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the container to the bottom center.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.containerAlignment(Align.bottom);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                imageTextButton = new ImageTextButton("Bottom-Right", skin, "scene-checkbox-colored");
+                var bottomRight = imageTextButton;
+                imageTextButton.setProgrammaticChangeEvents(false);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Align the contents of the container to the bottom right.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.containerAlignment(Align.bottomRight);
+                    }
+                });
+                buttonGroup.add(imageTextButton);
+                
+                switch (simContainer.alignment) {
+                    case Align.topLeft:
+                        topLeft.setChecked(true);
+                        break;
+                    case Align.top:
+                        top.setChecked(true);
+                        break;
+                    case Align.topRight:
+                        topRight.setChecked(true);
+                        break;
+                    case Align.right:
+                        right.setChecked(true);
+                        break;
+                    case Align.bottomRight:
+                        bottomRight.setChecked(true);
+                        break;
+                    case Align.bottom:
+                        bottom.setChecked(true);
+                        break;
+                    case Align.bottomLeft:
+                        bottomLeft.setChecked(true);
+                        break;
+                    case Align.left:
+                        left.setChecked(true);
+                        break;
+                    case Align.center:
+                        center.setChecked(true);
+                        break;
+                }
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener containerResetListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var table = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to reset this container?", skin, "scene-label-colored");
+        table.add(label);
+        
+        table.row();
+        var textButton = new TextButton("RESET", skin, "scene-small");
+        table.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Resets all of the settings of the container to their defaults.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                table.hide();
+                events.containerReset();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener containerDeleteListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var table = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to delete this container?", skin, "scene-label-colored");
+        table.add(label);
+        
+        table.row();
+        var textButton = new TextButton("DELETE", skin, "scene-small");
+        table.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Deletes the container and its contents.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                table.hide();
+                events.containerDelete();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    public Dialog showConfirmCellSetWidgetDialog(WidgetType widgetType, PopTable popTable) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;
         if (simCell.child == null) {
             popTable.hide();
@@ -8798,6 +9463,69 @@ public class DialogSceneComposer extends Dialog {
             dialog.setSize(500, 200);
             dialog.setPosition((int) (getStage().getWidth() / 2f - dialog.getWidth() / 2f), (int) (getStage().getHeight() / 2f - dialog.getHeight() / 2f));
     
+            return dialog;
+        }
+    }
+    
+    public Dialog showConfirmContainerSetWidgetDialog(WidgetType widgetType, PopTable popTable) {
+        var simcContainer = (DialogSceneComposerModel.SimContainer) simActor;
+        if (simcContainer.child == null) {
+            popTable.hide();
+            events.containerSetWidget(widgetType);
+            return null;
+        } else {
+            var dialog = new Dialog("", skin, "scene-dialog") {
+                @Override
+                protected void result(Object object) {
+                    if ((Boolean) object) {
+                        popTable.hide();
+                        events.containerSetWidget(widgetType);
+                    }
+                }
+            };
+            
+            var root = dialog.getTitleTable();
+            root.clear();
+            
+            root.add().uniform();
+            
+            var label = new Label("Confirm Overwrite Widget", skin, "scene-title");
+            root.add(label).expandX();
+            
+            var button = new Button(skin, "scene-close");
+            root.add(button).uniform();
+            button.addListener(main.getHandListener());
+            button.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    dialog.hide();
+                }
+            });
+            
+            root = dialog.getContentTable();
+            root.pad(10);
+            
+            label = new Label("This will overwrite the existing widget in the container.\nAre you okay with that?", skin, "scene-label-colored");
+            label.setWrap(true);
+            label.setAlignment(Align.center);
+            root.add(label).growX();
+            
+            dialog.getButtonTable().defaults().uniformX();
+            var textButton = new TextButton("OK", skin, "scene-med");
+            dialog.button(textButton, true);
+            textButton.addListener(main.getHandListener());
+            
+            textButton = new TextButton("Cancel", skin, "scene-med");
+            dialog.button(textButton, false);
+            textButton.addListener(main.getHandListener());
+            
+            dialog.key(Input.Keys.ENTER, true).key(Input.Keys.SPACE, true);
+            dialog.key(Input.Keys.ESCAPE, false);
+            
+            dialog.show(getStage());
+            dialog.setSize(500, 200);
+            dialog.setPosition((int) (getStage().getWidth() / 2f - dialog.getWidth() / 2f), (int) (getStage().getHeight() / 2f - dialog.getHeight() / 2f));
+            
             return dialog;
         }
     }
@@ -8922,6 +9650,30 @@ public class DialogSceneComposer extends Dialog {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         simActor = cell.child;
+                        populateProperties();
+                        populatePath();
+                        popTable.hide();
+                    }
+                });
+                textButton.addListener(popTableClickListener);
+            }
+        } else if (simActor instanceof SimContainer) {
+            var container = (DialogSceneComposerModel.SimContainer) simActor;
+            if (container.child != null) {
+                var image = new Image(skin, "scene-icon-path-child-seperator");
+                root.add(image);
+        
+                var textButton = new TextButton("Select Child", skin, "scene-small");
+                root.add(textButton);
+                textButton.addListener(main.getHandListener());
+        
+                var textButton1 = new TextButton(container.child.toString(), skin, "scene-small");
+                popSubTable.add(textButton1);
+                textButton1.addListener(main.getHandListener());
+                textButton1.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        simActor = container.child;
                         populateProperties();
                         populatePath();
                         popTable.hide();
