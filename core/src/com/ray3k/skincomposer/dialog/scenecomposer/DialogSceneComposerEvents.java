@@ -1005,7 +1005,7 @@ public class DialogSceneComposerEvents {
         processUndoable(new TouchPadNameUndoable(name));
     }
     
-    public void touchPadPadding(float deadZone) {
+    public void touchPadDeadZone(float deadZone) {
         processUndoable(new TouchPadDeadZoneUndoable(deadZone));
     }
     

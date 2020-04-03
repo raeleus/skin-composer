@@ -1209,31 +1209,37 @@ public class DialogSceneComposer extends Dialog {
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(touchPadNameListener());
             textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(touchPadStyleListener());
             textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the TouchPad.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Dead Zone", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(touchPadDeadZoneListener());
             textButton.addListener(new TextTooltip("Change the dead zone that does not react to user input.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Reset on Touch Up", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(touchPadResetOnTouchUpListener());
             textButton.addListener(new TextTooltip("Enable the reset of the touch pad position upon the release of the widget.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(touchPadResetListener());
             textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(touchPadDeleteListener());
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimContainer) {
             var textButton = new TextButton("Name", skin, "scene-med");
@@ -8748,6 +8754,194 @@ public class DialogSceneComposer extends Dialog {
             public void changed(ChangeEvent event, Actor actor) {
                 popTable.hide();
                 events.textFieldDelete();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener touchPadNameListener() {
+        var simTouchPad = (DialogSceneComposerModel.SimTouchPad) simActor;
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Name:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                textField.setText(simTouchPad.name);
+                popTable.add(textField).minWidth(150);
+                textField.addListener(main.getIbeamListener());
+                textField.addListener(new TextTooltip("The name of the TouchPad to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+                textField.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.touchPadName(textField.getText());
+                    }
+                });
+                textField.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        if (keycode == Input.Keys.ENTER) {
+                            popTable.hide();
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+                
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener touchPadStyleListener() {
+        var simTouchPad = (DialogSceneComposerModel.SimTouchPad) simActor;
+        var popTableClickListener = new StyleSelectorPopTable(Touchpad.class, simTouchPad.style == null ? "default" : simTouchPad.style.name) {
+            @Override
+            public void accepted(StyleData styleData) {
+                events.touchPadStyle(styleData);
+            }
+        };
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener touchPadDeadZoneListener() {
+        var simTouchPad = (DialogSceneComposerModel.SimTouchPad) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var table = new Table();
+                popTable.add(table);
+                
+                table.defaults().right().spaceRight(5);
+                var label = new Label("Dead Zone:", skin, "scene-label-colored");
+                table.add(label);
+                
+                var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setValue(simTouchPad.deadZone);
+                table.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The dead zone that does not react to user input.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.touchPadDeadZone(spinner.getValueAsInt());
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener touchPadResetOnTouchUpListener() {
+        var simTouchPad = (DialogSceneComposerModel.SimTouchPad) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var table = new Table();
+                popTable.add(table);
+                
+                table.defaults().left().spaceRight(5);
+                var imageTextButton = new ImageTextButton("Reset on Touch Up", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simTouchPad.resetOnTouchUp);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Reset the position of the TouchPad on release of the widget.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.touchPadResetOnTouchUp(imageTextButton.isChecked());
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener touchPadResetListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to reset this TouchPad?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("RESET", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Resets the settings of the TouchPad to their defaults.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.touchPadReset();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener touchPadDeleteListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to delete this TouchPad?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("DELETE", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Removes this TouchPad from its parent.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.touchPadDelete();
             }
         });
         
