@@ -29,6 +29,7 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents.Wid
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.Interpol;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimContainer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimMultipleChildren;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimSingleChild;
 import com.ray3k.skincomposer.utils.IntPair;
 import space.earlygrey.shapedrawer.GraphDrawer;
 import space.earlygrey.shapedrawer.scene2d.GraphDrawerDrawable;
@@ -10594,67 +10595,63 @@ public class DialogSceneComposer extends Dialog {
                 }
                 textButton.addListener(popTableClickListener);
             }
-        } else if (simActor instanceof DialogSceneComposerModel.SimCell) {
-            var cell = (DialogSceneComposerModel.SimCell) simActor;
-            if (cell.child != null) {
-                var image = new Image(skin, "scene-icon-path-child-seperator");
-                root.add(image);
-    
-                var textButton = new TextButton(cell.child.toString(), skin, "scene-small");
-                root.add(textButton);
-                textButton.addListener(main.getHandListener());
-                textButton.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        simActor = cell.child;
-                        populateProperties();
-                        populatePath();
-                    }
-                });
-            }
-        } else if (simActor instanceof SimContainer) {
-            var container = (DialogSceneComposerModel.SimContainer) simActor;
-            if (container.child != null) {
+        } else if (simActor instanceof SimSingleChild) {
+            var simSingleChild = (SimSingleChild) simActor;
+            if (simSingleChild.getChild() != null) {
                 var image = new Image(skin, "scene-icon-path-child-seperator");
                 root.add(image);
         
-                var textButton = new TextButton(container.child.toString(), skin, "scene-small");
+                var textButton = new TextButton(simSingleChild.getChild().toString(), skin, "scene-small");
                 root.add(textButton);
                 textButton.addListener(main.getHandListener());
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        simActor = container.child;
+                        simActor = simSingleChild.getChild();
                         populateProperties();
                         populatePath();
                     }
                 });
             }
         } else if (simActor instanceof SimMultipleChildren) {
-            var group = (SimMultipleChildren) simActor;
-            if (group.getChildren().size > 0) {
+            var simMultipleChildren = (SimMultipleChildren) simActor;
+            if (simMultipleChildren.getChildren().size > 0) {
                 var image = new Image(skin, "scene-icon-path-child-seperator");
                 root.add(image);
         
-                var textButton = new TextButton("Select Child", skin, "scene-small");
-                root.add(textButton);
-                textButton.addListener(main.getHandListener());
-        
-                for (var child : group.getChildren()) {
-                    var textButton1 = new TextButton(child.toString(), skin, "scene-small");
-                    popSubTable.add(textButton1).row();
-                    textButton1.addListener(main.getHandListener());
-                    textButton1.addListener(new ChangeListener() {
+                if (simMultipleChildren.getChildren().size == 1) {
+                    var textButton = new TextButton(simMultipleChildren.getChildren().first().toString(), skin, "scene-small");
+                    root.add(textButton);
+                    textButton.addListener(main.getHandListener());
+                    textButton.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
-                            simActor = child;
+                            simActor = simMultipleChildren.getChildren().first();
                             populateProperties();
                             populatePath();
-                            popTable.hide();
                         }
                     });
+                } else {
+                    var textButton = new TextButton("Select Child", skin, "scene-small");
+                    root.add(textButton);
+                    textButton.addListener(main.getHandListener());
+    
+                    for (var child : simMultipleChildren.getChildren()) {
+                        var textButton1 = new TextButton(child.toString(), skin, "scene-small");
+                        popSubTable.add(textButton1).row();
+                        textButton1.addListener(main.getHandListener());
+                        textButton1.addListener(new ChangeListener() {
+                            @Override
+                            public void changed(ChangeEvent event, Actor actor) {
+                                simActor = child;
+                                populateProperties();
+                                populatePath();
+                                popTable.hide();
+                            }
+                        });
+                    }
+                    textButton.addListener(popTableClickListener);
                 }
-                textButton.addListener(popTableClickListener);
             }
         }
     
