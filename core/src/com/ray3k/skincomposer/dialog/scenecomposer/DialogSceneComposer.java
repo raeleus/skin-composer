@@ -9639,23 +9639,17 @@ public class DialogSceneComposer extends Dialog {
                 var image = new Image(skin, "scene-icon-path-child-seperator");
                 root.add(image);
     
-                var textButton = new TextButton("Select Child", skin, "scene-small");
+                var textButton = new TextButton(cell.child.toString(), skin, "scene-small");
                 root.add(textButton);
                 textButton.addListener(main.getHandListener());
-    
-                var textButton1 = new TextButton(cell.child.toString(), skin, "scene-small");
-                popSubTable.add(textButton1);
-                textButton1.addListener(main.getHandListener());
-                textButton1.addListener(new ChangeListener() {
+                textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         simActor = cell.child;
                         populateProperties();
                         populatePath();
-                        popTable.hide();
                     }
                 });
-                textButton.addListener(popTableClickListener);
             }
         } else if (simActor instanceof SimContainer) {
             var container = (DialogSceneComposerModel.SimContainer) simActor;
@@ -9663,23 +9657,17 @@ public class DialogSceneComposer extends Dialog {
                 var image = new Image(skin, "scene-icon-path-child-seperator");
                 root.add(image);
         
-                var textButton = new TextButton("Select Child", skin, "scene-small");
+                var textButton = new TextButton(container.child.toString(), skin, "scene-small");
                 root.add(textButton);
                 textButton.addListener(main.getHandListener());
-        
-                var textButton1 = new TextButton(container.child.toString(), skin, "scene-small");
-                popSubTable.add(textButton1);
-                textButton1.addListener(main.getHandListener());
-                textButton1.addListener(new ChangeListener() {
+                textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         simActor = container.child;
                         populateProperties();
                         populatePath();
-                        popTable.hide();
                     }
                 });
-                textButton.addListener(popTableClickListener);
             }
         }
         
