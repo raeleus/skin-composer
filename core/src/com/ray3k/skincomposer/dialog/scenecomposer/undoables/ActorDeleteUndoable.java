@@ -2,6 +2,8 @@ package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimMultipleChildren;
 
 public class ActorDeleteUndoable implements SceneComposerUndoable {
     private DialogSceneComposerModel.SimActor actor;
@@ -18,8 +20,8 @@ public class ActorDeleteUndoable implements SceneComposerUndoable {
     public void undo() {
         if (parent instanceof DialogSceneComposerModel.SimCell) {
             ((DialogSceneComposerModel.SimCell) parent).child = actor;
-        } else if (parent instanceof DialogSceneComposerModel.SimGroup) {
-            ((DialogSceneComposerModel.SimGroup) parent).children.add(actor);
+        } else if (parent instanceof SimMultipleChildren) {
+            ((SimMultipleChildren) parent).addChild(actor);
         }
         
         if (dialog.simActor != actor) {
@@ -34,8 +36,8 @@ public class ActorDeleteUndoable implements SceneComposerUndoable {
     public void redo() {
         if (parent instanceof DialogSceneComposerModel.SimCell) {
             ((DialogSceneComposerModel.SimCell) parent).child = null;
-        } else if (parent instanceof DialogSceneComposerModel.SimGroup) {
-            ((DialogSceneComposerModel.SimGroup) parent).children.removeValue(actor, true);
+        } else if (parent instanceof SimMultipleChildren) {
+            ((SimMultipleChildren) parent).removeChild(actor);
         }
         
         if (dialog.simActor != parent) {

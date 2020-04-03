@@ -393,8 +393,8 @@ public class DialogSceneComposerEvents {
         processUndoable(new HorizontalGroupAlignmentUndoable(alignment));
     }
     
-    public void horizontalGroupChildren() {
-    
+    public void horizontalGroupAddChild(WidgetType widgetType) {
+        processUndoable(new HorizontalGroupAddChildUndoable(widgetType));
     }
     
     public void horizontalGroupDelete() {
@@ -405,7 +405,7 @@ public class DialogSceneComposerEvents {
         processUndoable(new HorizontalGroupExpandUndoable(expand));
     }
     
-    public void horizontalGroupFill(float fill) {
+    public void horizontalGroupFill(boolean fill) {
         processUndoable(new HorizontalGroupFillUndoable(fill));
     }
     

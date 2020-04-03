@@ -10,7 +10,7 @@ public class HorizontalGroupResetUndoable implements SceneComposerUndoable {
     private String previousName;
     private int previousAlignment;
     private boolean previousExpand;
-    private float previousFill;
+    private boolean previousFill;
     private float previousPadLeft;
     private float previousPadRight;
     private float previousPadTop;

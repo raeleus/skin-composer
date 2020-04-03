@@ -6,10 +6,10 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 public class HorizontalGroupFillUndoable implements SceneComposerUndoable {
     private DialogSceneComposerModel.SimHorizontalGroup horizontalGroup;
     private DialogSceneComposer dialog;
-    private float fill;
-    private float previousFill;
+    private boolean fill;
+    private boolean previousFill;
     
-    public HorizontalGroupFillUndoable(float fill) {
+    public HorizontalGroupFillUndoable(boolean fill) {
         this.fill = fill;
         dialog = DialogSceneComposer.dialog;
         horizontalGroup = (DialogSceneComposerModel.SimHorizontalGroup) dialog.simActor;

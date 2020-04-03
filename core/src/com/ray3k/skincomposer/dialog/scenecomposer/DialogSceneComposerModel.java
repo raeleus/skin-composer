@@ -438,7 +438,7 @@ public class DialogSceneComposerModel {
             var horizontalGroup = new HorizontalGroup();
             horizontalGroup.align(sim.alignment);
             horizontalGroup.expand(sim.expand);
-            horizontalGroup.fill(sim.fill);
+            horizontalGroup.fill(sim.fill ? 1f : 0f);
             horizontalGroup.padLeft(sim.padLeft);
             horizontalGroup.padRight(sim.padRight);
             horizontalGroup.padTop(sim.padTop);
@@ -570,6 +570,8 @@ public class DialogSceneComposerModel {
     
     public interface SimMultipleChildren {
         Array<? extends SimActor> getChildren();
+        void addChild(SimActor simActor);
+        void removeChild(SimActor simActor);
     }
     
     public static class SimGroup extends SimActor implements SimMultipleChildren {
@@ -587,6 +589,16 @@ public class DialogSceneComposerModel {
         @Override
         public Array<SimActor> getChildren() {
             return children;
+        }
+    
+        @Override
+        public void addChild(SimActor simActor) {
+            children.add(simActor);
+        }
+    
+        @Override
+        public void removeChild(SimActor simActor) {
+            children.removeValue(simActor, true);
         }
     }
     
@@ -637,6 +649,16 @@ public class DialogSceneComposerModel {
         @Override
         public Array<SimCell> getChildren() {
             return cells;
+        }
+    
+        @Override
+        public void addChild(SimActor simActor) {
+            cells.add((SimCell) simActor);
+        }
+    
+        @Override
+        public void removeChild(SimActor simActor) {
+            cells.removeValue((SimCell) simActor, true);
         }
     }
     
@@ -1411,7 +1433,7 @@ public class DialogSceneComposerModel {
         public String name;
         public int alignment = Align.center;
         public boolean expand;
-        public float fill;
+        public boolean fill;
         public float padLeft;
         public float padRight;
         public float padTop;
@@ -1435,7 +1457,7 @@ public class DialogSceneComposerModel {
             name = null;
             alignment = Align.center;
             expand = false;
-            fill = 0;
+            fill = false;
             padLeft = 0;
             padRight = 0;
             padTop = 0;
@@ -1451,6 +1473,16 @@ public class DialogSceneComposerModel {
         @Override
         public Array<SimActor> getChildren() {
             return children;
+        }
+    
+        @Override
+        public void addChild(SimActor simActor) {
+            children.add(simActor);
+        }
+    
+        @Override
+        public void removeChild(SimActor simActor) {
+            children.removeValue(simActor, true);
         }
     }
     
@@ -1558,6 +1590,16 @@ public class DialogSceneComposerModel {
         public Array<SimActor> getChildren() {
             return children;
         }
+    
+        @Override
+        public void addChild(SimActor simActor) {
+            children.add(simActor);
+        }
+    
+        @Override
+        public void removeChild(SimActor simActor) {
+            children.removeValue(simActor, true);
+        }
     }
     
     public static class SimSplitPane extends SimActor implements SimMultipleChildren {
@@ -1614,6 +1656,18 @@ public class DialogSceneComposerModel {
             tempChildren.add(childFirst, childSecond);
             return tempChildren;
         }
+    
+        @Override
+        public void addChild(SimActor simActor) {
+            if (childFirst == null) childFirst = simActor;
+            else if (childSecond == null) childSecond = simActor;
+        }
+    
+        @Override
+        public void removeChild(SimActor simActor) {
+            if (childFirst == simActor) childFirst = null;
+            else if (childSecond == simActor) childSecond = null;
+        }
     }
     
     public static class SimNode extends SimActor implements  SimSingleChild, SimMultipleChildren {
@@ -1647,6 +1701,16 @@ public class DialogSceneComposerModel {
         @Override
         public Array<SimNode> getChildren() {
             return nodes;
+        }
+    
+        @Override
+        public void addChild(SimActor simActor) {
+            nodes.add((SimNode) simActor);
+        }
+    
+        @Override
+        public void removeChild(SimActor simActor) {
+            nodes.removeValue((SimNode) simActor, true);
         }
     }
     
@@ -1702,6 +1766,16 @@ public class DialogSceneComposerModel {
         public Array<SimNode> getChildren() {
             return children;
         }
+    
+        @Override
+        public void addChild(SimActor simActor) {
+            children.add((SimNode) simActor);
+        }
+    
+        @Override
+        public void removeChild(SimActor simActor) {
+            children.removeValue((SimNode) simActor, true);
+        }
     }
     
     public static class SimVerticalGroup extends SimActor implements SimMultipleChildren {
@@ -1749,6 +1823,16 @@ public class DialogSceneComposerModel {
         @Override
         public Array<SimActor> getChildren() {
             return children;
+        }
+    
+        @Override
+        public void addChild(SimActor simActor) {
+            children.add(simActor);
+        }
+    
+        @Override
+        public void removeChild(SimActor simActor) {
+            children.removeValue(simActor, true);
         }
     }
 }
