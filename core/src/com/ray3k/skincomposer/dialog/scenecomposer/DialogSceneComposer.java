@@ -9551,7 +9551,7 @@ public class DialogSceneComposer extends Dialog {
         while (objects.size > 0) {
             object = objects.pop();
             
-            var textButton = new TextButton(object.toString(), skin, "scene-small");
+            var textButton = new TextButton(object.toString(), skin, object == simActor? "scene-small-highlighted" : "scene-small");
             textButton.setUserObject(object);
             root.add(textButton);
             textButton.addListener(main.getHandListener());
