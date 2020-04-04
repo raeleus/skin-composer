@@ -6,10 +6,10 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 public class VerticalGroupFillUndoable implements SceneComposerUndoable {
     private DialogSceneComposerModel.SimVerticalGroup verticalGroup;
     private DialogSceneComposer dialog;
-    private float fill;
-    private float previousFill;
+    private boolean fill;
+    private boolean previousFill;
     
-    public VerticalGroupFillUndoable(float fill) {
+    public VerticalGroupFillUndoable(boolean fill) {
         this.fill = fill;
         dialog = DialogSceneComposer.dialog;
         verticalGroup = (DialogSceneComposerModel.SimVerticalGroup) dialog.simActor;

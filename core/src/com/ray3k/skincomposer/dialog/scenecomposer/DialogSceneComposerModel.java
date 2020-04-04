@@ -511,7 +511,7 @@ public class DialogSceneComposerModel {
             var verticalGroup = new VerticalGroup();
             verticalGroup.align(sim.alignment);
             verticalGroup.expand(sim.expand);
-            verticalGroup.fill(sim.fill);
+            verticalGroup.fill(sim.fill ? 1f : 0f);
             verticalGroup.padLeft(sim.padLeft);
             verticalGroup.padRight(sim.padRight);
             verticalGroup.padTop(sim.padTop);
@@ -1782,7 +1782,7 @@ public class DialogSceneComposerModel {
         public String name;
         public int alignment = Align.center;
         public boolean expand;
-        public float fill;
+        public boolean fill;
         public float padLeft;
         public float padRight;
         public float padTop;
@@ -1807,7 +1807,7 @@ public class DialogSceneComposerModel {
             name = null;
             alignment = Align.center;
             expand = false;
-            fill = 0;
+            fill = false;
             padLeft = 0;
             padRight = 0;
             padTop = 0;

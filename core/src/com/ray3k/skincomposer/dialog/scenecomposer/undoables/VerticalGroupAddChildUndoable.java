@@ -5,15 +5,16 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimHorizontalGroup;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimVerticalGroup;
 
-public class HorizontalGroupAddChildUndoable implements SceneComposerUndoable {
-    private SimHorizontalGroup horizontalGroup;
+public class VerticalGroupAddChildUndoable implements SceneComposerUndoable {
+    private SimVerticalGroup verticalGroup;
     private DialogSceneComposer dialog;
     private SimActor newWidget;
     
-    public HorizontalGroupAddChildUndoable(DialogSceneComposerEvents.WidgetType widgetType) {
+    public VerticalGroupAddChildUndoable(DialogSceneComposerEvents.WidgetType widgetType) {
         dialog = DialogSceneComposer.dialog;
-        horizontalGroup = (SimHorizontalGroup) dialog.simActor;
+        verticalGroup = (SimVerticalGroup) dialog.simActor;
         
         switch (widgetType) {
             case BUTTON:
@@ -83,15 +84,15 @@ public class HorizontalGroupAddChildUndoable implements SceneComposerUndoable {
                 newWidget = new DialogSceneComposerModel.SimVerticalGroup();
                 break;
         }
-        newWidget.parent = horizontalGroup;
+        newWidget.parent = verticalGroup;
     }
     
     @Override
     public void undo() {
-        horizontalGroup.children.removeValue(newWidget, true);
+        verticalGroup.children.removeValue(newWidget, true);
         
-        if (dialog.simActor != horizontalGroup) {
-            dialog.simActor = horizontalGroup;
+        if (dialog.simActor != verticalGroup) {
+            dialog.simActor = verticalGroup;
             dialog.populateProperties();
         }
         dialog.populatePath();
@@ -100,7 +101,7 @@ public class HorizontalGroupAddChildUndoable implements SceneComposerUndoable {
     
     @Override
     public void redo() {
-        horizontalGroup.children.add(newWidget);
+        verticalGroup.children.add(newWidget);
         
         if (dialog.simActor != newWidget) {
             dialog.simActor = newWidget;
@@ -112,11 +113,11 @@ public class HorizontalGroupAddChildUndoable implements SceneComposerUndoable {
     
     @Override
     public String getRedoString() {
-        return "Redo \"Add Widget for HorizontalGroup\"";
+        return "Redo \"Add Widget for VerticalGroup\"";
     }
     
     @Override
     public String getUndoString() {
-        return "Undo \"Add Widget for HorizontalGroup\"";
+        return "Undo \"Add Widget for VerticalGroup\"";
     }
 }

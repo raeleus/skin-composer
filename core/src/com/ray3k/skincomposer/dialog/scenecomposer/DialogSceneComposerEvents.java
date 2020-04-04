@@ -1069,8 +1069,8 @@ public class DialogSceneComposerEvents {
         processUndoable(new VerticalGroupAlignmentUndoable(alignment));
     }
     
-    public void verticalGroupChildren() {
-    
+    public void verticalGroupAddChild(WidgetType widgetType) {
+        processUndoable(new VerticalGroupAddChildUndoable(widgetType));
     }
     
     public void verticalGroupDelete() {
@@ -1081,7 +1081,7 @@ public class DialogSceneComposerEvents {
         processUndoable(new VerticalGroupExpandUndoable(expand));
     }
     
-    public void verticalGroupFill(float fill) {
+    public void verticalGroupFill(boolean fill) {
         processUndoable(new VerticalGroupFillUndoable(fill));
     }
     
@@ -1113,7 +1113,7 @@ public class DialogSceneComposerEvents {
         processUndoable(new VerticalGroupReverseUndoable(reverse));
     }
     
-    public void verticalGroupRowAlignment(int columnAlignment) {
+    public void verticalGroupColumnAlignment(int columnAlignment) {
         processUndoable(new VerticalGroupColumnAlignmentUndoable(columnAlignment));
     }
     
