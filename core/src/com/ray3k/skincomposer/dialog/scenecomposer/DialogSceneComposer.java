@@ -29,6 +29,7 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents.Wid
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.Interpol;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimMultipleChildren;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimSingleChild;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimStack;
 import com.ray3k.skincomposer.utils.IntPair;
 import space.earlygrey.shapedrawer.GraphDrawer;
 import space.earlygrey.shapedrawer.scene2d.GraphDrawerDrawable;
@@ -1442,21 +1443,25 @@ public class DialogSceneComposer extends Dialog {
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(stackNameListener());
             textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Add Child", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(setWidgetListener(this::stackAddChild));
             textButton.addListener(new TextTooltip("Add a child to the Stack.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(stackResetListener());
             textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(stackDeleteListener());
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimNode) {
             var textButton = new TextButton("Set Widget", skin, "scene-med");
@@ -11592,7 +11597,7 @@ public class DialogSceneComposer extends Dialog {
         var textButton = new TextButton("RESET", skin, "scene-small");
         popTable.add(textButton).minWidth(100);
         textButton.addListener(main.getHandListener());
-        textButton.addListener(new TextTooltip("Resets the settings of the TouchPad to their defaults.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new TextTooltip("Resets the settings of the ScrollPane to their defaults.", main.getTooltipManager(), skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -11616,6 +11621,110 @@ public class DialogSceneComposer extends Dialog {
         popTable.add(textButton).minWidth(100);
         textButton.addListener(main.getHandListener());
         textButton.addListener(new TextTooltip("Removes this TouchPad from its parent.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.scrollPaneDelete();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener stackNameListener() {
+        var simStack = (SimStack) simActor;
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Name:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                textField.setText(simStack.name);
+                popTable.add(textField).minWidth(150);
+                textField.addListener(main.getIbeamListener());
+                textField.addListener(new TextTooltip("The name of the Stack to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+                textField.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.stackName(textField.getText());
+                    }
+                });
+                textField.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        if (keycode == Input.Keys.ENTER) {
+                            popTable.hide();
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+                
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    public void stackAddChild(WidgetType widgetType, PopTable popTable) {
+        popTable.hide();
+        events.stackAddChild(widgetType);
+    }
+    
+    private EventListener stackResetListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to reset this Stack?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("RESET", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Resets the settings of the Stack to their defaults.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.stackReset();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener stackDeleteListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to delete this Stack?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("DELETE", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Removes this Stack from its parent.", main.getTooltipManager(), skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

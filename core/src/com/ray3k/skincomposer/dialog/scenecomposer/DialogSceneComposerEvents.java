@@ -849,8 +849,8 @@ public class DialogSceneComposerEvents {
         processUndoable(new SplitPaneVerticalUndoable(vertical));
     }
     
-    public void stackChildren() {
-    
+    public void stackAddChild(WidgetType widgetType) {
+        processUndoable(new StackAddChildUndoable(widgetType));
     }
     
     public void stackDelete() {
