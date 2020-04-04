@@ -3,22 +3,22 @@ package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 
-public class ScrollPaneForceOverScrollXUndoable implements SceneComposerUndoable {
+public class ScrollPaneOverScrollYUndoable implements SceneComposerUndoable {
     private DialogSceneComposerModel.SimScrollPane scrollPane;
     private DialogSceneComposer dialog;
-    private boolean overScrollX;
-    private boolean previousOverScrollX;
+    private boolean overScrollY;
+    private boolean previousOverScrollY;
     
-    public ScrollPaneForceOverScrollXUndoable(boolean overScrollX) {
-        this.overScrollX = overScrollX;
+    public ScrollPaneOverScrollYUndoable(boolean overScrollY) {
+        this.overScrollY = overScrollY;
         dialog = DialogSceneComposer.dialog;
         scrollPane = (DialogSceneComposerModel.SimScrollPane) dialog.simActor;
-        previousOverScrollX = scrollPane.overScrollX;
+        previousOverScrollY = scrollPane.overScrollY;
     }
     
     @Override
     public void undo() {
-        scrollPane.overScrollX = previousOverScrollX;
+        scrollPane.overScrollY = previousOverScrollY;
         
         if (dialog.simActor != scrollPane) {
             dialog.simActor = scrollPane;
@@ -30,7 +30,7 @@ public class ScrollPaneForceOverScrollXUndoable implements SceneComposerUndoable
     
     @Override
     public void redo() {
-        scrollPane.overScrollX = overScrollX;
+        scrollPane.overScrollY = overScrollY;
         
         if (dialog.simActor != scrollPane) {
             dialog.simActor = scrollPane;
@@ -42,11 +42,11 @@ public class ScrollPaneForceOverScrollXUndoable implements SceneComposerUndoable
     
     @Override
     public String getRedoString() {
-        return "Redo \"ScrollPane over scroll X " + overScrollX + "\"";
+        return "Redo \"ScrollPane over scroll Y " + overScrollY + "\"";
     }
     
     @Override
     public String getUndoString() {
-        return "Undo \"ScrollPane over scroll X " + overScrollX + "\"";
+        return "Undo \"ScrollPane over scroll Y " + overScrollY + "\"";
     }
 }

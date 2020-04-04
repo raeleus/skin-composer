@@ -633,12 +633,12 @@ public class DialogSceneComposerEvents {
         processUndoable(new ScrollPaneFlingTimeUndoable(flingTime));
    }
    
-   public void scrollPaneForceOverScrollX(boolean forceOverScrollX) {
-        processUndoable(new ScrollPaneForceOverScrollXUndoable(forceOverScrollX));
+   public void scrollPaneOverScrollX(boolean overScrollX) {
+        processUndoable(new ScrollPaneOverScrollXUndoable(overScrollX));
    }
    
-   public void scrollPaneForceOverScrollY(boolean forceOverScrollY) {
-        processUndoable(new ScrollPaneForceOverScrollYUndoable(forceOverScrollY));
+   public void scrollPaneOverScrollY(boolean overScrollY) {
+        processUndoable(new ScrollPaneOverScrollYUndoable(overScrollY));
    }
    
    public void scrollPaneForceScrollX(boolean forceScrollX) {

@@ -1360,36 +1360,43 @@ public class DialogSceneComposer extends Dialog {
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(scrollPaneNameListener());
             textButton.addListener(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(scrollPaneStyleListener());
             textButton.addListener(new TextTooltip("Sets the style that controls the appearance of the ScrollPane.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Set Widget", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
-            textButton.addListener(new TextTooltip("", main.getTooltipManager(), skin, "scene"));
+            textButton.addListener(setWidgetListener(this::showConfirmScrollPaneSetWidgetDialog));
+            textButton.addListener(new TextTooltip("Set the widget assigned to this ScrollPane.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Knobs", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
-            textButton.addListener(new TextTooltip("", main.getTooltipManager(), skin, "scene"));
+            textButton.addListener(scrollPaneKnobsListener());
+            textButton.addListener(new TextTooltip("Knob and Scroll Bar settings.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Scrolling", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
-            textButton.addListener(new TextTooltip("", main.getTooltipManager(), skin, "scene"));
+            textButton.addListener(scrollPaneScrollListener());
+            textButton.addListener(new TextTooltip("Scroll settings.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(scrollPaneResetListener());
             textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(scrollPaneDeleteListener());
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimSplitPane) {
             var textButton = new TextButton("Name", skin, "scene-med");
@@ -11177,6 +11184,449 @@ public class DialogSceneComposer extends Dialog {
         events.verticalGroupAddChild(widgetType);
     }
     
+    private EventListener scrollPaneNameListener() {
+        var simScrollPane = (DialogSceneComposerModel.SimScrollPane) simActor;
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Name:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                textField.setText(simScrollPane.name);
+                popTable.add(textField).minWidth(150);
+                textField.addListener(main.getIbeamListener());
+                textField.addListener(new TextTooltip("The name of the ScrollPane to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+                textField.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneName(textField.getText());
+                    }
+                });
+                textField.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        if (keycode == Input.Keys.ENTER) {
+                            popTable.hide();
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+                
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener scrollPaneStyleListener() {
+        var simScrollPane = (DialogSceneComposerModel.SimScrollPane) simActor;
+        var popTableClickListener = new StyleSelectorPopTable(ScrollPane.class, simScrollPane.style == null ? "default" : simScrollPane.style.name) {
+            @Override
+            public void accepted(StyleData styleData) {
+                events.scrollPaneStyle(styleData);
+            }
+        };
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener scrollPaneKnobsListener() {
+        var simScrollPane = (DialogSceneComposerModel.SimScrollPane) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                popTable.pad(10);
+                var table = new Table();
+                popTable.add(table).space(5).left();
+                
+                table.defaults().left().expandX();
+                var imageTextButton = new ImageTextButton("Variable Size Knobs", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.variableSizeKnobs);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Scroll knobs are sized based on getMaxX() or getMaxY()", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneVariableSizeKnobs(((ImageTextButton) actor).isChecked());
+                    }
+                });
+                
+                table.row();
+                imageTextButton = new ImageTextButton("Fade Scroll Bars", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.fadeScrollBars);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Scrollbars don't reduce the scrollable size and fade out if not used.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneFadeScrollBars(((ImageTextButton) actor).isChecked());
+                    }
+                });
+                
+                table.row();
+                imageTextButton = new ImageTextButton("Visible", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.scrollBarsVisible);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Shows or hides the scrollbars when Fade Scroll Bars is activated.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneScrollBarsOnTop(((ImageTextButton) actor).isChecked());
+                    }
+                });
+                
+                table.row();
+                imageTextButton = new ImageTextButton("Scroll Bars On Top", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.scrollBarsOnTop);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Scrollbars don't reduce the scrollable size and fade out if not used.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneScrollBarsOnTop(((ImageTextButton) actor).isChecked());
+                    }
+                });
+                
+                popTable.row();
+                table = new Table();
+                popTable.add(table);
+                
+                table.defaults().space(5).fillX();
+                var label = new Label("Horizontal Scroll Position: ", skin, "scene-label-colored");
+                table.add(label);
+                
+                var selectBox = new SelectBox<String>(skin, "scene");
+                selectBox.setItems("Top", "Bottom");
+                selectBox.setSelectedIndex(simScrollPane.scrollBarBottom ? 1 : 0);
+                table.add(selectBox);
+                selectBox.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneScrollBarBottom(((SelectBox) actor).getSelectedIndex() == 1);
+                    }
+                });
+                
+                table.row();
+                label = new Label("Vertical Scroll Position: ", skin, "scene-label-colored");
+                table.add(label);
+                
+                selectBox = new SelectBox<>(skin, "scene");
+                selectBox.setItems("Left", "Right");
+                selectBox.setSelectedIndex(simScrollPane.scrollBarRight ? 1 : 0);
+                table.add(selectBox);
+                selectBox.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneScrollBarRight(((SelectBox) actor).getSelectedIndex() == 1);
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener scrollPaneScrollListener() {
+        var simScrollPane = (DialogSceneComposerModel.SimScrollPane) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var table = new Table();
+                popTable.add(table);
+                
+                table.defaults().left().spaceRight(5);
+                var imageTextButton = new ImageTextButton("Clamp", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.clamp);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Scroll knobs are sized based on getMaxX() or getMaxY()", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneClamp(((ImageTextButton) actor).isChecked());
+                    }
+                });
+                
+                table.row();
+                imageTextButton = new ImageTextButton("Flick Scroll", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.flickScroll);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Scrollbars don't reduce the scrollable size and fade out if not used.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneFlickScroll(((ImageTextButton) actor).isChecked());
+                    }
+                });
+    
+                table.row();
+                var subTable = new Table();
+                table.add(subTable);
+                
+                var label = new Label("Fling Time:", skin, "scene-label-colored");
+                subTable.add(label).space(5);
+                
+                var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("pad-left");
+                spinner.setValue(simScrollPane.flingTime);
+                subTable.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The padding on the left of the contents.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneFlingTime((float) ((Spinner) actor).getValue());
+                    }
+                });
+                
+                table.row();
+                imageTextButton = new ImageTextButton("Over Scroll X", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.overScrollX);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Shows or hides the scrollbars when Fade Scroll Bars is activated.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneOverScrollX(((ImageTextButton) actor).isChecked());
+                    }
+                });
+    
+                table.row();
+                imageTextButton = new ImageTextButton("Over Scroll Y", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.overScrollY);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Scrollbars don't reduce the scrollable size and fade out if not used.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneOverScrollY(((ImageTextButton) actor).isChecked());
+                    }
+                });
+    
+                table.row();
+                subTable = new Table();
+                table.add(subTable);
+    
+                label = new Label("Over Scroll Distance:", skin, "scene-label-colored");
+                subTable.add(label).spaceRight(5);
+    
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("pad-left");
+                spinner.setValue(simScrollPane.overScrollDistance);
+                subTable.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The padding on the left of the contents.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneOverScrollDistance((float) ((Spinner) actor).getValue());
+                    }
+                });
+    
+                subTable.row();
+                label = new Label("Overscroll Speed Min:", skin, "scene-label-colored");
+                subTable.add(label).spaceRight(5);
+    
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("pad-left");
+                spinner.setValue(simScrollPane.overScrollSpeedMin);
+                subTable.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The minimum speed that scroll returns to the widget bounds when overscroll is enabled.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneOverScrollSpeedMin((float) ((Spinner) actor).getValue());
+                    }
+                });
+    
+                subTable.row();
+                label = new Label("Overscroll Speed Max:", skin, "scene-label-colored");
+                subTable.add(label).spaceRight(5);
+    
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                spinner.setName("pad-left");
+                spinner.setValue(simScrollPane.overScrollSpeedMax);
+                subTable.add(spinner);
+                spinner.getTextField().addListener(main.getIbeamListener());
+                spinner.getButtonMinus().addListener(main.getHandListener());
+                spinner.getButtonPlus().addListener(main.getHandListener());
+                spinner.addListener(new TextTooltip("The maximum speed that scroll returns to the widget bounds when overscroll is enabled.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneOverScrollSpeedMax((float) ((Spinner) actor).getValue());
+                    }
+                });
+    
+                table.row();
+                imageTextButton = new ImageTextButton("Force Horizontal Scroll", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.forceScrollX);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Forces the horizontal scroll bar to be enabled.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneForceScrollX(((ImageTextButton) actor).isChecked());
+                    }
+                });
+    
+                table.row();
+                imageTextButton = new ImageTextButton("Force Vertical Scroll", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.forceScrollY);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Forces the vertical scroll bar to be enabled.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneForceScrollY(((ImageTextButton) actor).isChecked());
+                    }
+                });
+    
+                table.row();
+                imageTextButton = new ImageTextButton("Horizontal Scrolling Disabled", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.scrollingDisabledX);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Horizontal Scrolling is disabled.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneScrollingDisabledX(((ImageTextButton) actor).isChecked());
+                    }
+                });
+    
+                table.row();
+                imageTextButton = new ImageTextButton("Vertical Scrolling Disabled", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.scrollingDisabledY);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Vertical scrolling is disabled.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneScrollingDisabledY(((ImageTextButton) actor).isChecked());
+                    }
+                });
+    
+                table.row();
+                imageTextButton = new ImageTextButton("Smooth Scrolling", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.smoothScrolling);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Scrolling is interpolated instead of jumping to position immediately.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneSmoothScrolling(((ImageTextButton) actor).isChecked());
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener scrollPaneResetListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to reset this ScrollPane?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("RESET", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Resets the settings of the TouchPad to their defaults.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.scrollPaneReset();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener scrollPaneDeleteListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to delete this ScrollPane?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("DELETE", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Removes this TouchPad from its parent.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.scrollPaneDelete();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
     public Dialog showConfirmCellSetWidgetDialog(WidgetType widgetType, PopTable popTable) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;
         if (simCell.child == null) {
@@ -11241,8 +11691,8 @@ public class DialogSceneComposer extends Dialog {
     }
     
     public Dialog showConfirmContainerSetWidgetDialog(WidgetType widgetType, PopTable popTable) {
-        var simcContainer = (DialogSceneComposerModel.SimContainer) simActor;
-        if (simcContainer.child == null) {
+        var simContainer = (DialogSceneComposerModel.SimContainer) simActor;
+        if (simContainer.child == null) {
             popTable.hide();
             events.containerSetWidget(widgetType);
             return null;
@@ -11279,6 +11729,69 @@ public class DialogSceneComposer extends Dialog {
             root.pad(10);
             
             label = new Label("This will overwrite the existing widget in the container.\nAre you okay with that?", skin, "scene-label-colored");
+            label.setWrap(true);
+            label.setAlignment(Align.center);
+            root.add(label).growX();
+            
+            dialog.getButtonTable().defaults().uniformX();
+            var textButton = new TextButton("OK", skin, "scene-med");
+            dialog.button(textButton, true);
+            textButton.addListener(main.getHandListener());
+            
+            textButton = new TextButton("Cancel", skin, "scene-med");
+            dialog.button(textButton, false);
+            textButton.addListener(main.getHandListener());
+            
+            dialog.key(Input.Keys.ENTER, true).key(Input.Keys.SPACE, true);
+            dialog.key(Input.Keys.ESCAPE, false);
+            
+            dialog.show(getStage());
+            dialog.setSize(500, 200);
+            dialog.setPosition((int) (getStage().getWidth() / 2f - dialog.getWidth() / 2f), (int) (getStage().getHeight() / 2f - dialog.getHeight() / 2f));
+            
+            return dialog;
+        }
+    }
+    
+    public Dialog showConfirmScrollPaneSetWidgetDialog(WidgetType widgetType, PopTable popTable) {
+        var simScrollPane = (DialogSceneComposerModel.SimScrollPane) simActor;
+        if (simScrollPane.child == null) {
+            popTable.hide();
+            events.scrollPaneSetWidget(widgetType);
+            return null;
+        } else {
+            var dialog = new Dialog("", skin, "scene-dialog") {
+                @Override
+                protected void result(Object object) {
+                    if ((Boolean) object) {
+                        popTable.hide();
+                        events.scrollPaneSetWidget(widgetType);
+                    }
+                }
+            };
+            
+            var root = dialog.getTitleTable();
+            root.clear();
+            
+            root.add().uniform();
+            
+            var label = new Label("Confirm Overwrite Widget", skin, "scene-title");
+            root.add(label).expandX();
+            
+            var button = new Button(skin, "scene-close");
+            root.add(button).uniform();
+            button.addListener(main.getHandListener());
+            button.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    dialog.hide();
+                }
+            });
+            
+            root = dialog.getContentTable();
+            root.pad(10);
+            
+            label = new Label("This will overwrite the existing widget in the ScrollPane.\nAre you okay with that?", skin, "scene-label-colored");
             label.setWrap(true);
             label.setAlignment(Align.center);
             root.add(label).growX();
