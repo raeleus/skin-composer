@@ -11317,6 +11317,58 @@ public class DialogSceneComposer extends Dialog {
                         events.scrollPaneScrollBarsOnTop(((ImageTextButton) actor).isChecked());
                     }
                 });
+    
+                table.row();
+                imageTextButton = new ImageTextButton("Force Horizontal Scroll", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.forceScrollX);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Forces the horizontal scroll bar to be enabled.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneForceScrollX(((ImageTextButton) actor).isChecked());
+                    }
+                });
+    
+                table.row();
+                imageTextButton = new ImageTextButton("Force Vertical Scroll", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.forceScrollY);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Forces the vertical scroll bar to be enabled.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneForceScrollY(((ImageTextButton) actor).isChecked());
+                    }
+                });
+    
+                table.row();
+                imageTextButton = new ImageTextButton("Horizontal Scrolling Disabled", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.scrollingDisabledX);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Horizontal Scrolling is disabled.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneScrollingDisabledX(((ImageTextButton) actor).isChecked());
+                    }
+                });
+    
+                table.row();
+                imageTextButton = new ImageTextButton("Vertical Scrolling Disabled", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.scrollingDisabledY);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Vertical scrolling is disabled.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneScrollingDisabledY(((ImageTextButton) actor).isChecked());
+                    }
+                });
                 
                 popTable.row();
                 table = new Table();
@@ -11380,7 +11432,7 @@ public class DialogSceneComposer extends Dialog {
                 imageTextButton.setChecked(simScrollPane.clamp);
                 table.add(imageTextButton);
                 imageTextButton.addListener(main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Scroll knobs are sized based on getMaxX() or getMaxY()", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new TextTooltip("Prevents scrolling out of the widget's bounds when using flick Scroll.", main.getTooltipManager(), skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -11393,7 +11445,7 @@ public class DialogSceneComposer extends Dialog {
                 imageTextButton.setChecked(simScrollPane.flickScroll);
                 table.add(imageTextButton);
                 imageTextButton.addListener(main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Scrollbars don't reduce the scrollable size and fade out if not used.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new TextTooltip("Allow users to scroll by flicking the contents of the ScrollPanel", main.getTooltipManager(), skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -11415,7 +11467,7 @@ public class DialogSceneComposer extends Dialog {
                 spinner.getTextField().addListener(main.getIbeamListener());
                 spinner.getButtonMinus().addListener(main.getHandListener());
                 spinner.getButtonPlus().addListener(main.getHandListener());
-                spinner.addListener(new TextTooltip("The padding on the left of the contents.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(new TextTooltip("The amount of time in seconds that a fling will continue to scroll.", main.getTooltipManager(), skin, "scene"));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -11428,7 +11480,7 @@ public class DialogSceneComposer extends Dialog {
                 imageTextButton.setChecked(simScrollPane.overScrollX);
                 table.add(imageTextButton);
                 imageTextButton.addListener(main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Shows or hides the scrollbars when Fade Scroll Bars is activated.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new TextTooltip("The widget can be scrolled passed the bounds horizontally and will snap back into place if flick scroll is enabled.", main.getTooltipManager(), skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -11441,7 +11493,7 @@ public class DialogSceneComposer extends Dialog {
                 imageTextButton.setChecked(simScrollPane.overScrollY);
                 table.add(imageTextButton);
                 imageTextButton.addListener(main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Scrollbars don't reduce the scrollable size and fade out if not used.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new TextTooltip("The widget can be scrolled passed the bounds vertically and will snap back into place if flick scroll is enabled.", main.getTooltipManager(), skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -11463,7 +11515,7 @@ public class DialogSceneComposer extends Dialog {
                 spinner.getTextField().addListener(main.getIbeamListener());
                 spinner.getButtonMinus().addListener(main.getHandListener());
                 spinner.getButtonPlus().addListener(main.getHandListener());
-                spinner.addListener(new TextTooltip("The padding on the left of the contents.", main.getTooltipManager(), skin, "scene"));
+                spinner.addListener(new TextTooltip("The distance in pixels that the user is allowed to scroll beyond the bounds if overscroll is enabled.", main.getTooltipManager(), skin, "scene"));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -11506,58 +11558,6 @@ public class DialogSceneComposer extends Dialog {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         events.scrollPaneOverScrollSpeedMax((float) ((Spinner) actor).getValue());
-                    }
-                });
-    
-                table.row();
-                imageTextButton = new ImageTextButton("Force Horizontal Scroll", skin, "scene-checkbox-colored");
-                imageTextButton.setChecked(simScrollPane.forceScrollX);
-                table.add(imageTextButton);
-                imageTextButton.addListener(main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Forces the horizontal scroll bar to be enabled.", main.getTooltipManager(), skin, "scene"));
-                imageTextButton.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        events.scrollPaneForceScrollX(((ImageTextButton) actor).isChecked());
-                    }
-                });
-    
-                table.row();
-                imageTextButton = new ImageTextButton("Force Vertical Scroll", skin, "scene-checkbox-colored");
-                imageTextButton.setChecked(simScrollPane.forceScrollY);
-                table.add(imageTextButton);
-                imageTextButton.addListener(main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Forces the vertical scroll bar to be enabled.", main.getTooltipManager(), skin, "scene"));
-                imageTextButton.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        events.scrollPaneForceScrollY(((ImageTextButton) actor).isChecked());
-                    }
-                });
-    
-                table.row();
-                imageTextButton = new ImageTextButton("Horizontal Scrolling Disabled", skin, "scene-checkbox-colored");
-                imageTextButton.setChecked(simScrollPane.scrollingDisabledX);
-                table.add(imageTextButton);
-                imageTextButton.addListener(main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Horizontal Scrolling is disabled.", main.getTooltipManager(), skin, "scene"));
-                imageTextButton.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        events.scrollPaneScrollingDisabledX(((ImageTextButton) actor).isChecked());
-                    }
-                });
-    
-                table.row();
-                imageTextButton = new ImageTextButton("Vertical Scrolling Disabled", skin, "scene-checkbox-colored");
-                imageTextButton.setChecked(simScrollPane.scrollingDisabledY);
-                table.add(imageTextButton);
-                imageTextButton.addListener(main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Vertical scrolling is disabled.", main.getTooltipManager(), skin, "scene"));
-                imageTextButton.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        events.scrollPaneScrollingDisabledY(((ImageTextButton) actor).isChecked());
                     }
                 });
     
