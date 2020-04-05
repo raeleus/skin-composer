@@ -121,6 +121,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new TableAlignmentUndoable(alignment));
     }
     
+    public void tableSetCells(int columns, int rows) {
+        processUndoable(new TableSetCellsUndoable(columns, rows));
+    }
+    
     public void tableReset() {
         processUndoable(new TableResetUndoable());
     }

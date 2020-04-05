@@ -394,12 +394,18 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(main.getHandListener());
             textButton.addListener(tablePaddingListener());
             textButton.addListener(new TextTooltip("The padding around all of the contents inside the table.", main.getTooltipManager(), skin, "scene"));
-        
+    
             textButton = new TextButton("Align", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
             textButton.addListener(tableAlignListener());
             textButton.addListener(new TextTooltip("The alignment of the entire contents inside the table.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Set Cells", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(tableSetCellsListener());
+            textButton.addListener(new TextTooltip("Sets the cells for this table. This will erase the existing contents.", main.getTooltipManager(), skin, "scene"));
         
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -3491,6 +3497,67 @@ public class DialogSceneComposer extends Dialog {
         return popTableClickListener;
     }
     
+    private EventListener tableSetCellsListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin, "dark");
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Erase contents\nand create\nnew cells:", skin, "scene-label");
+        label.setAlignment(Align.center);
+        popTable.add(label);
+        label.addListener(new TextTooltip("Sets the cells for this table. This will erase the existing contents.", main.getTooltipManager(), skin, "scene"));
+        
+        popTable.row();
+        var table = new Table();
+        popTable.add(table);
+        
+        table.pad(10).padTop(0);
+        var buttons = new Button[6][6];
+        for (int j = 0; j < 6; j++) {
+            table.row();
+            for (int i = 0; i < 6; i++) {
+                var textButton = new Button(skin, "scene-table");
+                textButton.setProgrammaticChangeEvents(false);
+                textButton.setUserObject(new IntPair(i, j));
+                table.add(textButton);
+                buttons[i][j] = textButton;
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        popTable.hide();
+                        var intPair = (IntPair) textButton.getUserObject();
+                        events.tableSetCells(intPair.x + 1, intPair.y + 1);
+                    }
+                });
+                textButton.addListener(new InputListener() {
+                    @Override
+                    public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                        var intPair = (IntPair) textButton.getUserObject();
+                        for (int y1 = 0; y1 < 6; y1++) {
+                            for (int x1 = 0; x1 < 6; x1++) {
+                                buttons[x1][y1].setChecked(y1 <= intPair.y && x1 <= intPair.x);
+                            }
+                        }
+                        textButton.setChecked(true);
+                    }
+                });
+            }
+        }
+        
+        table.setTouchable(Touchable.enabled);
+        table.addListener(new InputListener() {
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                for (int y1 = 0; y1 < 6; y1++) {
+                    for (int x1 = 0; x1 < 6; x1++) {
+                        buttons[x1][y1].setChecked(false);
+                    }
+                }
+            }
+        });
+        return popTableClickListener;
+    }
+    
     private EventListener tableResetListener() {
         var popTableClickListener = new PopTable.PopTableClickListener(skin);
         var popTable = popTableClickListener.getPopTable();
@@ -3559,7 +3626,6 @@ public class DialogSceneComposer extends Dialog {
                 textButton.setUserObject(new IntPair(i, j));
                 table.add(textButton);
                 buttons[i][j] = textButton;
-                int testI = i, testJ = j;
                 textButton.addListener(main.getHandListener());
                 textButton.addListener(new ClickListener() {
                     @Override
