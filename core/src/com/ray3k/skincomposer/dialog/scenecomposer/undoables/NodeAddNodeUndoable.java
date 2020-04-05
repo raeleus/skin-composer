@@ -1,28 +1,27 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
-import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimNode;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimTree;
 
-public class TreeAddNodeUndoable implements SceneComposerUndoable {
-    private DialogSceneComposerModel.SimTree tree;
+public class NodeAddNodeUndoable implements SceneComposerUndoable {
+    private SimNode node;
     private SimNode child;
     private DialogSceneComposer dialog;
     
-    public TreeAddNodeUndoable() {
+    public NodeAddNodeUndoable() {
         dialog = DialogSceneComposer.dialog;
-        tree = (SimTree) dialog.simActor;
+        node = (SimNode) dialog.simActor;
         child = new SimNode();
-        child.parent = tree;
+        child.parent = node;
     }
     
     @Override
     public void undo() {
-        tree.children.removeValue(child, true);
-    
-        if (dialog.simActor != tree) {
-            dialog.simActor = tree;
+        node.nodes.removeValue(child, true);
+        
+        if (dialog.simActor != node) {
+            dialog.simActor = node;
             dialog.populateProperties();
         }
         dialog.populatePath();
@@ -31,8 +30,8 @@ public class TreeAddNodeUndoable implements SceneComposerUndoable {
     
     @Override
     public void redo() {
-        tree.children.add(child);
-    
+        node.nodes.add(child);
+        
         if (dialog.simActor != child) {
             dialog.simActor = child;
             dialog.populateProperties();
@@ -43,11 +42,11 @@ public class TreeAddNodeUndoable implements SceneComposerUndoable {
     
     @Override
     public String getRedoString() {
-        return "Redo \"Add node to Tree\"";
+        return "Redo \"Add node to node.\"";
     }
     
     @Override
     public String getUndoString() {
-        return "Undo \"Add node to Tree\"";
+        return "Undo \"Add node to node.\"";
     }
 }

@@ -509,6 +509,7 @@ public class DialogSceneComposerModel {
                         tree.add(node);
                     }
                 }
+                actor = tree;
             }
         } else if (simActor instanceof SimVerticalGroup) {
             var sim = (SimVerticalGroup) simActor;
@@ -535,10 +536,11 @@ public class DialogSceneComposerModel {
     }
     
     public Tree.Node createPreviewNode(SimNode simNode) {
-        if (simNode.icon != null) {
+        if (simNode.actor != null) {
             var node = new GenericNode();
-            node.setActor(createPreviewWidget(simNode.actor));
-            node.setIcon(main.getAtlasData().drawablePairs.get(simNode.icon));
+            Actor actor = createPreviewWidget(simNode.actor);
+            if (actor != null) node.setActor(actor);
+            if (simNode.icon != null) node.setIcon(main.getAtlasData().drawablePairs.get(simNode.icon));
             node.setSelectable(simNode.selectable);
             for (var child : simNode.nodes) {
                 Tree.Node newNode = createPreviewNode(child);
@@ -1685,7 +1687,7 @@ public class DialogSceneComposerModel {
         }
     }
     
-    public static class SimNode extends SimActor implements  SimMultipleChildren {
+    public static class SimNode extends SimActor implements SimMultipleChildren {
         public SimActor actor;
         public Array<SimNode> nodes = new Array<>();
         public boolean expanded;

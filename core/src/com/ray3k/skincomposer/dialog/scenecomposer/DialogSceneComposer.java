@@ -1482,31 +1482,42 @@ public class DialogSceneComposer extends Dialog {
             var textButton = new TextButton("Set Widget", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(setWidgetListener(this::showConfirmNodeSetWidgetDialog));
             textButton.addListener(new TextTooltip("Set the widget applied to this Node.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Add Node", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    events.nodeAddNode();
+                }
+            });
             textButton.addListener(new TextTooltip("Adds a new child Node to this Node.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Icon", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(nodeIconListener());
             textButton.addListener(new TextTooltip("Select the Drawable applied as an icon to the Node.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Options", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(nodeOptionsListener());
             textButton.addListener(new TextTooltip("Change the expanded and selected values.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(nodeResetListener());
             textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(nodeDeleteListener());
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof SimTree) {
             var textButton = new TextButton("Name", skin, "scene-med");
@@ -1530,19 +1541,19 @@ public class DialogSceneComposer extends Dialog {
                     events.treeAddNode();
                 }
             });
-            textButton.addListener(new TextTooltip("", main.getTooltipManager(), skin, "scene"));
+            textButton.addListener(new TextTooltip("Adds a new node to this tree.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Padding", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
             textButton.addListener(treePaddingListener());
-            textButton.addListener(new TextTooltip("", main.getTooltipManager(), skin, "scene"));
+            textButton.addListener(new TextTooltip("Sets the padding for the tree.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Spacing", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
             textButton.addListener(treeSpacingListener());
-            textButton.addListener(new TextTooltip("", main.getTooltipManager(), skin, "scene"));
+            textButton.addListener(new TextTooltip("Sets the spacing for the tree nodes.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -12320,6 +12331,241 @@ public class DialogSceneComposer extends Dialog {
         });
         
         return popTableClickListener;
+    }
+    
+    private EventListener nodeIconListener() {
+        var simNode = (SimNode) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Drawable:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                var stack = new Stack();
+                popTable.add(stack).minSize(100).maxSize(300).grow();
+                var background = new Image(skin, "scene-tile-ten");
+                stack.add(background);
+                Image image;
+                if (simNode.icon != null) {
+                    image = new Image(main.getAtlasData().drawablePairs.get(simNode.icon));
+                } else {
+                    image = new Image((Drawable) null);
+                }
+                stack.add(image);
+                
+                popTable.row();
+                var textButton = new TextButton("Select Drawable", skin, "scene-small");
+                popTable.add(textButton).minWidth(100);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(new TextTooltip("The background drawable for the table.", main.getTooltipManager(), skin, "scene"));
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        popTable.hide();
+                        main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
+                            @Override
+                            public void confirmed(DrawableData drawable, DialogDrawables dialog) {
+                                events.nodeIcon(drawable);
+                                image.setDrawable(main.getAtlasData().drawablePairs.get(drawable));
+                            }
+                            
+                            @Override
+                            public void emptied(DialogDrawables dialog) {
+                                events.nodeIcon(null);
+                                image.setDrawable(null);
+                            }
+                            
+                            @Override
+                            public void cancelled(DialogDrawables dialog) {
+                            
+                            }
+                        }, new DialogListener() {
+                            @Override
+                            public void opened() {
+                            
+                            }
+                            
+                            @Override
+                            public void closed() {
+                            
+                            }
+                        });
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener nodeOptionsListener() {
+        var simNode = (SimNode) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                popTable.pad(10);
+                var table = new Table();
+                popTable.add(table).space(5);
+                
+                table.defaults().left().expandX();
+                var imageTextButton = new ImageTextButton("Expanded", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simNode.expanded);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Sets whether the children are expanded and visible.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.nodeExpanded(((ImageTextButton) actor).isChecked());
+                    }
+                });
+                
+                table.row();
+                imageTextButton = new ImageTextButton("Selectable", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simNode.selectable);
+                table.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Sets whether this node can be selected.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.nodeSelectable(((ImageTextButton) actor).isChecked());
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener nodeResetListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to reset this Node?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("RESET", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Resets the settings of the Node to its defaults.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.nodeReset();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener nodeDeleteListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to delete this Node?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("DELETE", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Removes this Node from its parent.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.nodeDelete();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    public Dialog showConfirmNodeSetWidgetDialog(WidgetType widgetType, PopTable popTable) {
+        var simNode = (SimNode) simActor;
+        if (simNode.actor == null) {
+            popTable.hide();
+            events.nodeSetWidget(widgetType);
+            return null;
+        } else {
+            var dialog = new Dialog("", skin, "scene-dialog") {
+                @Override
+                protected void result(Object object) {
+                    if ((Boolean) object) {
+                        popTable.hide();
+                        events.nodeSetWidget(widgetType);
+                    }
+                }
+            };
+            
+            var root = dialog.getTitleTable();
+            root.clear();
+            
+            root.add().uniform();
+            
+            var label = new Label("Confirm Overwrite Widget", skin, "scene-title");
+            root.add(label).expandX();
+            
+            var button = new Button(skin, "scene-close");
+            root.add(button).uniform();
+            button.addListener(main.getHandListener());
+            button.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    dialog.hide();
+                }
+            });
+            
+            root = dialog.getContentTable();
+            root.pad(10);
+            
+            label = new Label("This will overwrite the existing widget in the node.\nAre you okay with that?", skin, "scene-label-colored");
+            label.setWrap(true);
+            label.setAlignment(Align.center);
+            root.add(label).growX();
+            
+            dialog.getButtonTable().defaults().uniformX();
+            var textButton = new TextButton("OK", skin, "scene-med");
+            dialog.button(textButton, true);
+            textButton.addListener(main.getHandListener());
+            
+            textButton = new TextButton("Cancel", skin, "scene-med");
+            dialog.button(textButton, false);
+            textButton.addListener(main.getHandListener());
+            
+            dialog.key(Input.Keys.ENTER, true).key(Input.Keys.SPACE, true);
+            dialog.key(Input.Keys.ESCAPE, false);
+            
+            dialog.show(getStage());
+            dialog.setSize(500, 200);
+            dialog.setPosition((int) (getStage().getWidth() / 2f - dialog.getWidth() / 2f), (int) (getStage().getHeight() / 2f - dialog.getHeight() / 2f));
+            
+            return dialog;
+        }
     }
     
     public Dialog showConfirmCellSetWidgetDialog(WidgetType widgetType, PopTable popTable) {

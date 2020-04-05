@@ -553,8 +553,8 @@ public class DialogSceneComposerEvents {
         processUndoable(new NodeSelectableUndoable(selectable));
    }
    
-   public void nodeSetNodes() {
-   
+   public void nodeAddNode() {
+        processUndoable(new NodeAddNodeUndoable());
    }
    
    public void nodeSetWidget(WidgetType widgetType) {
