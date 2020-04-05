@@ -1025,8 +1025,8 @@ public class DialogSceneComposerEvents {
         processUndoable(new TouchPadStyleUndoable(style));
     }
     
-    public void treeChildren() {
-    
+    public void treeAddNode() {
+        processUndoable(new TreeAddNodeUndoable());
     }
     
     public void treeDelete() {

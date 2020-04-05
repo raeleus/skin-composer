@@ -1,29 +1,25 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 
-import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimNode;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimTree;
 
-public class TreeChildrenUndoable implements SceneComposerUndoable {
+public class TreeAddNodeUndoable implements SceneComposerUndoable {
     private DialogSceneComposerModel.SimTree tree;
-    private Array<DialogSceneComposerModel.SimNode> children;
-    private Array<DialogSceneComposerModel.SimNode> previousChildren;
+    private SimNode child;
     private DialogSceneComposer dialog;
     
-    public TreeChildrenUndoable(Array<DialogSceneComposerModel.SimNode> children) {
-        this.children = new Array<>(children);
+    public TreeAddNodeUndoable() {
         dialog = DialogSceneComposer.dialog;
-        tree = (DialogSceneComposerModel.SimTree) dialog.simActor;
-        if (children != null && children.equals("")) {
-            this.children = null;
-        }
-        previousChildren = new Array<>(tree.children);
+        tree = (SimTree) dialog.simActor;
+        child = new SimNode();
+        child.parent = tree;
     }
     
     @Override
     public void undo() {
-        tree.children.clear();
-        tree.children.addAll(previousChildren);
+        tree.children.removeValue(child, true);
     
         if (dialog.simActor != tree) {
             dialog.simActor = tree;
@@ -35,8 +31,7 @@ public class TreeChildrenUndoable implements SceneComposerUndoable {
     
     @Override
     public void redo() {
-        tree.children.clear();
-        tree.children.addAll(children);
+        tree.children.add(child);
     
         if (dialog.simActor != tree) {
             dialog.simActor = tree;
@@ -48,11 +43,11 @@ public class TreeChildrenUndoable implements SceneComposerUndoable {
     
     @Override
     public String getRedoString() {
-        return "Redo \"Tree children\"";
+        return "Redo \"Add node to Tree\"";
     }
     
     @Override
     public String getUndoString() {
-        return "Undo \"Tree children\"";
+        return "Undo \"Add node to Tree\"";
     }
 }

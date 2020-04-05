@@ -504,7 +504,10 @@ public class DialogSceneComposerModel {
                 tree.setIndentSpacing(sim.indentSpacing);
                 tree.setYSpacing(sim.ySpacing);
                 for (var child : sim.children) {
-                    tree.add(createPreviewNode(child));
+                    Tree.Node node = createPreviewNode(child);
+                    if (node != null) {
+                        tree.add(node);
+                    }
                 }
             }
         } else if (simActor instanceof SimVerticalGroup) {
@@ -532,14 +535,20 @@ public class DialogSceneComposerModel {
     }
     
     public Tree.Node createPreviewNode(SimNode simNode) {
-        var node = new GenericNode();
-        node.setActor(createPreviewWidget(simNode.actor));
-        node.setIcon(main.getAtlasData().drawablePairs.get(simNode.icon));
-        node.setSelectable(simNode.selectable);
-        for (var child : simNode.nodes) {
-            node.add(createPreviewNode(child));
+        if (simNode.icon != null) {
+            var node = new GenericNode();
+            node.setActor(createPreviewWidget(simNode.actor));
+            node.setIcon(main.getAtlasData().drawablePairs.get(simNode.icon));
+            node.setSelectable(simNode.selectable);
+            for (var child : simNode.nodes) {
+                Tree.Node newNode = createPreviewNode(child);
+                if (newNode != null) {
+                    node.add(newNode);
+                }
+            }
+            return node;
         }
-        return node;
+        return null;
     }
     
     public class GenericNode extends Tree.Node {
@@ -1676,7 +1685,7 @@ public class DialogSceneComposerModel {
         }
     }
     
-    public static class SimNode extends SimActor implements  SimSingleChild, SimMultipleChildren {
+    public static class SimNode extends SimActor implements  SimMultipleChildren {
         public SimActor actor;
         public Array<SimNode> nodes = new Array<>();
         public boolean expanded;
@@ -1700,23 +1709,23 @@ public class DialogSceneComposerModel {
         }
     
         @Override
-        public SimActor getChild() {
-            return actor;
-        }
-    
-        @Override
-        public Array<SimNode> getChildren() {
-            return nodes;
+        public Array<SimActor> getChildren() {
+            Array<SimActor> actors = new Array<>();
+            actors.addAll(nodes);
+            if (actor != null) actors.add(actor);
+            return actors;
         }
     
         @Override
         public void addChild(SimActor simActor) {
-            nodes.add((SimNode) simActor);
+            if (simActor instanceof SimNode) nodes.add((SimNode) simActor);
+            else if (actor == null) actor = simActor;
         }
     
         @Override
         public void removeChild(SimActor simActor) {
-            nodes.removeValue((SimNode) simActor, true);
+            if (simActor instanceof SimNode) nodes.removeValue((SimNode) simActor, true);
+            else if (actor == simActor) actor = null;
         }
     }
     
