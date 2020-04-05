@@ -50,6 +50,7 @@ public class DialogSceneComposer extends Dialog {
     public DialogSceneComposerModel.SimActor simActor;
     private Table propertiesTable;
     private Table pathTable;
+    public Table previewTable;
     
     public DialogSceneComposer() {
         super("", Main.main.getSkin(), "scene");
@@ -208,11 +209,11 @@ public class DialogSceneComposer extends Dialog {
         });
         
         root.row();
-        var top = new Table();
-        top.setTouchable(Touchable.enabled);
-        top.setBackground(skin.getDrawable("white"));
+        previewTable = new Table();
+        previewTable.setTouchable(Touchable.enabled);
+        previewTable.setBackground(skin.getDrawable("white"));
         
-        top.add(model.preview).grow();
+        previewTable.add(model.preview).grow();
         
         var bottom = new Table() {
             @Override
@@ -223,7 +224,7 @@ public class DialogSceneComposer extends Dialog {
         bottom.setTouchable(Touchable.enabled);
         bottom.setBackground(skin.getDrawable("scene-bg"));
 
-        var splitPane = new SplitPane(top, bottom, true, skin, "scene-vertical");
+        var splitPane = new SplitPane(previewTable, bottom, true, skin, "scene-vertical");
         splitPane.setMinSplitAmount(0);
         root.add(splitPane).grow();
         splitPane.addListener(main.getVerticalResizeArrowListener());
@@ -370,6 +371,12 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(main.getHandListener());
             textButton.addListener(rootAddTableListener());
             textButton.addListener(new TextTooltip("Creates a table with the specified number of rows and columns.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Background Color", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(rootBackgroundColorListener());
+            textButton.addListener(new TextTooltip("Sets the background color of the app.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimTable) {
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -3685,6 +3692,60 @@ public class DialogSceneComposer extends Dialog {
             }
         });
     
+        return popTableClickListener;
+    }
+    
+    private EventListener rootBackgroundColorListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Color:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                var imageButton = new ImageButton(skin, "scene-color");
+                imageButton.getImage().setColor(model.backgroundColor == null ? Color.WHITE : model.backgroundColor.color);
+                popTable.add(imageButton).minWidth(100);
+                imageButton.addListener(main.getHandListener());
+                imageButton.addListener(new TextTooltip("Select the color of the background.", main.getTooltipManager(), skin, "scene"));
+                imageButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        popTable.hide();
+                        main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+                            if (!pressedCancel) {
+                                events.rootBackgroundColor(colorData);
+                            }
+                        }, new DialogListener() {
+                            @Override
+                            public void opened() {
+                            
+                            }
+                            
+                            @Override
+                            public void closed() {
+                            
+                            }
+                        });
+                    }
+                });
+                
+                popTable.row();
+                label = new Label(model.backgroundColor == null ? "white" : model.backgroundColor.getName(), skin, "scene-label-colored");
+                popTable.add(label);
+            }
+        };
+        
+        popTableClickListener.update();
+        
         return popTableClickListener;
     }
     

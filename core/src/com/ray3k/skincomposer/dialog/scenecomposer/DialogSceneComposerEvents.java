@@ -1,6 +1,7 @@
 package com.ray3k.skincomposer.dialog.scenecomposer;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.Main;
@@ -99,6 +100,10 @@ public class DialogSceneComposerEvents {
     
     public void rootAddTable(int columns, int rows) {
         processUndoable(new RootAddTableUndoable(columns, rows));
+    }
+    
+    public void rootBackgroundColor(ColorData color) {
+        processUndoable(new RootBackgroundColorUndoable(color));
     }
     
     public void tableName(String name) {

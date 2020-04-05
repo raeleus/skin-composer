@@ -1,6 +1,7 @@
 package com.ray3k.skincomposer.dialog.scenecomposer;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -22,6 +23,7 @@ public class DialogSceneComposerModel {
     public transient Array<SceneComposerUndoable> undoables;
     public transient Array<SceneComposerUndoable> redoables;
     public SimGroup root;
+    public ColorData backgroundColor;
     public transient Group preview;
     private static Json json;
     
