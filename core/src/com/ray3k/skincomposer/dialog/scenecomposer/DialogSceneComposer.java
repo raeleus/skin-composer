@@ -26,10 +26,7 @@ import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogDrawables;
 import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents.WidgetType;
-import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.Interpol;
-import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimMultipleChildren;
-import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimSingleChild;
-import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimStack;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.*;
 import com.ray3k.skincomposer.utils.IntPair;
 import space.earlygrey.shapedrawer.GraphDrawer;
 import space.earlygrey.shapedrawer.scene2d.GraphDrawerDrawable;
@@ -1403,41 +1400,53 @@ public class DialogSceneComposer extends Dialog {
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(splitPaneNameListener());
             textButton.addListener(new TextTooltip("Set the name of the widget to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(splitPaneStyleListener());
             textButton.addListener(new TextTooltip("Set the style that controls the appearance of the SplitPane.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Set First Widget", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(setWidgetListener((widgetType, popTable) -> {
+                showConfirmSplitPaneSetWidgetDialog(widgetType, popTable, true);
+            }));
             textButton.addListener(new TextTooltip("Set the first widget applied to the SplitPane", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Set Second Widget", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(setWidgetListener((widgetType, popTable) -> {
+                showConfirmSplitPaneSetWidgetDialog(widgetType, popTable, false);
+            }));
             textButton.addListener(new TextTooltip("Set the second widget applied to the SplitPane", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Orientation", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(splitPaneOrientationListener());
             textButton.addListener(new TextTooltip("Set the orientation of the SplitPane.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Split", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(splitPaneSplitListener());
             textButton.addListener(new TextTooltip("Set the split, splitMin, and splitMax values.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(splitPaneResetListener());
             textButton.addListener(new TextTooltip("Resets the settings of the widget to its defaults.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
+            textButton.addListener(splitPaneDeleteListener());
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimStack) {
             var textButton = new TextButton("Name", skin, "scene-med");
@@ -11481,7 +11490,7 @@ public class DialogSceneComposer extends Dialog {
                 });
                 
                 table.row();
-                imageTextButton = new ImageTextButton("Over Scroll X", skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Overscroll X", skin, "scene-checkbox-colored");
                 imageTextButton.setChecked(simScrollPane.overScrollX);
                 table.add(imageTextButton);
                 imageTextButton.addListener(main.getHandListener());
@@ -11494,7 +11503,7 @@ public class DialogSceneComposer extends Dialog {
                 });
     
                 table.row();
-                imageTextButton = new ImageTextButton("Over Scroll Y", skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Overscroll Y", skin, "scene-checkbox-colored");
                 imageTextButton.setChecked(simScrollPane.overScrollY);
                 table.add(imageTextButton);
                 imageTextButton.addListener(main.getHandListener());
@@ -11510,7 +11519,7 @@ public class DialogSceneComposer extends Dialog {
                 subTable = new Table();
                 table.add(subTable);
     
-                label = new Label("Over Scroll Distance:", skin, "scene-label-colored");
+                label = new Label("Overscroll Distance:", skin, "scene-label-colored");
                 subTable.add(label).spaceRight(5);
     
                 spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
@@ -11736,6 +11745,256 @@ public class DialogSceneComposer extends Dialog {
         return popTableClickListener;
     }
     
+    private EventListener splitPaneNameListener() {
+        var simSplitPane = (DialogSceneComposerModel.SimSplitPane) simActor;
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+                
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Name:", skin, "scene-label-colored");
+                popTable.add(label);
+                
+                popTable.row();
+                textField.setText(simSplitPane.name);
+                popTable.add(textField).minWidth(150);
+                textField.addListener(main.getIbeamListener());
+                textField.addListener(new TextTooltip("The name of the SplitPane to allow for convenient searching via Group#findActor().", main.getTooltipManager(), skin, "scene"));
+                textField.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.splitPaneName(textField.getText());
+                    }
+                });
+                textField.addListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode) {
+                        if (keycode == Input.Keys.ENTER) {
+                            popTable.hide();
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+                
+                getStage().setKeyboardFocus(textField);
+                textField.setSelection(0, textField.getText().length());
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener splitPaneStyleListener() {
+        var simSplitPane = (DialogSceneComposerModel.SimSplitPane) simActor;
+        var popTableClickListener = new StyleSelectorPopTable(SplitPane.class, simSplitPane.style == null ? "default-horizontal" : simSplitPane.style.name) {
+            @Override
+            public void accepted(StyleData styleData) {
+                events.splitPaneStyle(styleData);
+            }
+        };
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener splitPaneOrientationListener() {
+        var simSplitPane = (DialogSceneComposerModel.SimSplitPane) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                popTable.pad(10);
+                var table = new Table();
+                popTable.add(table).space(5);
+                
+                table.defaults().left().expandX();
+                ButtonGroup buttonGroup = new ButtonGroup();
+                var imageTextButton = new ImageTextButton("Horizontal", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(!simSplitPane.vertical);
+                table.add(imageTextButton);
+                buttonGroup.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Horizontal orientation of the widgets.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        if (true) events.splitPaneVertical(false);
+                    }
+                });
+                
+                table.row();
+                imageTextButton = new ImageTextButton("Vertical", skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simSplitPane.vertical);
+                table.add(imageTextButton);
+                buttonGroup.add(imageTextButton);
+                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Vertical orientation of the widgets.", main.getTooltipManager(), skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        if (true) events.splitPaneVertical(true);
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener splitPaneSplitListener() {
+        var simSplitPane = (DialogSceneComposerModel.SimSplitPane) simActor;
+        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Split:", skin, "scene-label-colored");
+                popTable.add(label).spaceRight(5);
+                
+                var splitSpinner = new Spinner(0, .1f, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                var splitMinSpinner = new Spinner(0, .1f, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                var splitMaxSpinner = new Spinner(0, .1f, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                splitSpinner.setName("pad-left");
+                splitSpinner.setValue(simSplitPane.split);
+                splitSpinner.setMinimum((double) simSplitPane.splitMin);
+                splitSpinner.setMaximum((double) simSplitPane.splitMax);
+                popTable.add(splitSpinner);
+                splitSpinner.getTextField().addListener(main.getIbeamListener());
+                splitSpinner.getButtonMinus().addListener(main.getHandListener());
+                splitSpinner.getButtonPlus().addListener(main.getHandListener());
+                splitSpinner.addListener(new TextTooltip("The distance in pixels that the user is allowed to scroll beyond the bounds if overscroll is enabled.", main.getTooltipManager(), skin, "scene"));
+                splitSpinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.splitPaneSplit((float) ((Spinner) actor).getValue());
+                    }
+                });
+    
+                popTable.row();
+                label = new Label("Split Min:", skin, "scene-label-colored");
+                popTable.add(label).spaceRight(5);
+                
+                splitMinSpinner.setName("pad-left");
+                splitMinSpinner.setValue(simSplitPane.splitMin);
+                splitMinSpinner.setMinimum(0);
+                splitMinSpinner.setMaximum(simSplitPane.splitMax);
+                popTable.add(splitMinSpinner);
+                splitMinSpinner.getTextField().addListener(main.getIbeamListener());
+                splitMinSpinner.getButtonMinus().addListener(main.getHandListener());
+                splitMinSpinner.getButtonPlus().addListener(main.getHandListener());
+                splitMinSpinner.addListener(new TextTooltip("The minimum speed that scroll returns to the widget bounds when overscroll is enabled.", main.getTooltipManager(), skin, "scene"));
+                splitMinSpinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.splitPaneSplitMin((float) ((Spinner) actor).getValue());
+                        splitSpinner.setMinimum(splitMinSpinner.getValue());
+                        splitMaxSpinner.setMinimum(splitMinSpinner.getValue());
+                    }
+                });
+    
+                popTable.row();
+                label = new Label("Split Max:", skin, "scene-label-colored");
+                popTable.add(label).spaceRight(5);
+                
+                splitMaxSpinner.setName("pad-left");
+                splitMaxSpinner.setValue(simSplitPane.splitMax);
+                splitMaxSpinner.setMinimum(simSplitPane.splitMin);
+                splitMaxSpinner.setMaximum(1);
+                popTable.add(splitMaxSpinner);
+                splitMaxSpinner.getTextField().addListener(main.getIbeamListener());
+                splitMaxSpinner.getButtonMinus().addListener(main.getHandListener());
+                splitMaxSpinner.getButtonPlus().addListener(main.getHandListener());
+                splitMaxSpinner.addListener(new TextTooltip("The maximum speed that scroll returns to the widget bounds when overscroll is enabled.", main.getTooltipManager(), skin, "scene"));
+                splitMaxSpinner.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.splitPaneSplitMax((float) ((Spinner) actor).getValue());
+                        splitSpinner.setMaximum(splitMaxSpinner.getValue());
+                        splitMinSpinner.setMaximum(splitMaxSpinner.getValue());
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener splitPaneResetListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to reset this SplitPane?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("RESET", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Resets the settings of the SplitPane to their defaults.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.splitPaneReset();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
+    private EventListener splitPaneDeleteListener() {
+        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTable = popTableClickListener.getPopTable();
+        
+        var label = new Label("Are you sure you want to delete this ScrollPane?", skin, "scene-label-colored");
+        popTable.add(label);
+        
+        popTable.row();
+        var textButton = new TextButton("DELETE", skin, "scene-small");
+        popTable.add(textButton).minWidth(100);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Removes this TouchPad from its parent.", main.getTooltipManager(), skin, "scene"));
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                popTable.hide();
+                events.scrollPaneDelete();
+            }
+        });
+        
+        return popTableClickListener;
+    }
+    
     public Dialog showConfirmCellSetWidgetDialog(WidgetType widgetType, PopTable popTable) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;
         if (simCell.child == null) {
@@ -11901,6 +12160,77 @@ public class DialogSceneComposer extends Dialog {
             root.pad(10);
             
             label = new Label("This will overwrite the existing widget in the ScrollPane.\nAre you okay with that?", skin, "scene-label-colored");
+            label.setWrap(true);
+            label.setAlignment(Align.center);
+            root.add(label).growX();
+            
+            dialog.getButtonTable().defaults().uniformX();
+            var textButton = new TextButton("OK", skin, "scene-med");
+            dialog.button(textButton, true);
+            textButton.addListener(main.getHandListener());
+            
+            textButton = new TextButton("Cancel", skin, "scene-med");
+            dialog.button(textButton, false);
+            textButton.addListener(main.getHandListener());
+            
+            dialog.key(Input.Keys.ENTER, true).key(Input.Keys.SPACE, true);
+            dialog.key(Input.Keys.ESCAPE, false);
+            
+            dialog.show(getStage());
+            dialog.setSize(500, 200);
+            dialog.setPosition((int) (getStage().getWidth() / 2f - dialog.getWidth() / 2f), (int) (getStage().getHeight() / 2f - dialog.getHeight() / 2f));
+            
+            return dialog;
+        }
+    }
+    
+    public Dialog showConfirmSplitPaneSetWidgetDialog(WidgetType widgetType, PopTable popTable, boolean firstWidget) {
+        var simSplitPane = (SimSplitPane) simActor;
+        if (firstWidget && simSplitPane.childFirst == null) {
+            popTable.hide();
+            events.splitPaneChildFirst(widgetType);
+            return null;
+        } else if (!firstWidget && simSplitPane.childSecond == null){
+            popTable.hide();
+            events.splitPaneChildSecond(widgetType);
+            return null;
+        } else {
+            var dialog = new Dialog("", skin, "scene-dialog") {
+                @Override
+                protected void result(Object object) {
+                    if ((Boolean) object) {
+                        popTable.hide();
+                        if (firstWidget) {
+                            events.splitPaneChildFirst(widgetType);
+                        } else {
+                            events.splitPaneChildSecond(widgetType);
+                        }
+                    }
+                }
+            };
+            
+            var root = dialog.getTitleTable();
+            root.clear();
+            
+            root.add().uniform();
+            
+            var label = new Label("Confirm Overwrite Widget", skin, "scene-title");
+            root.add(label).expandX();
+            
+            var button = new Button(skin, "scene-close");
+            root.add(button).uniform();
+            button.addListener(main.getHandListener());
+            button.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    dialog.hide();
+                }
+            });
+            
+            root = dialog.getContentTable();
+            root.pad(10);
+            
+            label = new Label("This will overwrite the existing widget in the cell.\nAre you okay with that?", skin, "scene-label-colored");
             label.setWrap(true);
             label.setAlignment(Align.center);
             root.add(label).growX();

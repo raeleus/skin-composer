@@ -491,6 +491,7 @@ public class DialogSceneComposerModel {
                 splitPane.setSplitAmount(sim.split);
                 splitPane.setMinSplitAmount(sim.splitMin);
                 splitPane.setMaxSplitAmount(sim.splitMax);
+                actor = splitPane;
             }
         } else if (simActor instanceof SimTree) {
             var sim = (SimTree) simActor;
@@ -1653,7 +1654,12 @@ public class DialogSceneComposerModel {
         @Override
         public Array<SimActor> getChildren() {
             tempChildren.clear();
-            tempChildren.add(childFirst, childSecond);
+            if (childFirst != null) {
+                tempChildren.add(childFirst);
+            }
+            if (childSecond != null) {
+                tempChildren.add(childSecond);
+            }
             return tempChildren;
         }
     
