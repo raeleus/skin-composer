@@ -20,7 +20,7 @@ public class DialogSceneComposerModel {
     private transient Main main;
     public transient Array<SceneComposerUndoable> undoables;
     public transient Array<SceneComposerUndoable> redoables;
-    public SimRootGroup root;
+    public static SimRootGroup rootActor;
     public transient Group preview;
     private static Json json;
     
@@ -133,8 +133,8 @@ public class DialogSceneComposerModel {
         json.addClassTag("Tree", SimTree.class);
         json.addClassTag("VerticalGroup", SimVerticalGroup.class);
         
-        root = new SimRootGroup();
-        assignParentRecursive(root);
+        if (rootActor == null) rootActor = new SimRootGroup();
+        assignParentRecursive(rootActor);
     }
     
     public static void saveToJson(FileHandle saveFile) {
@@ -169,7 +169,7 @@ public class DialogSceneComposerModel {
     public void updatePreview() {
         preview.clearChildren();
         
-        for (var simActor : root.children) {
+        for (var simActor : rootActor.children) {
             var actor = createPreviewWidget(simActor);
             if (actor != null) {
                 preview.addActor(actor);
@@ -200,7 +200,7 @@ public class DialogSceneComposerModel {
             
             table.align(simTable.alignment);
             
-            if (simTable.parent == root) {
+            if (simTable.parent == rootActor) {
                 table.setFillParent(true);
             }
             
@@ -587,8 +587,10 @@ public class DialogSceneComposerModel {
     public static void assignParentRecursive(SimActor parent) {
         if (parent instanceof  SimSingleChild) {
             var child = ((SimSingleChild) parent).getChild();
-            child.parent = parent;
-            assignParentRecursive(child);
+            if (child != null) {
+                child.parent = parent;
+                assignParentRecursive(child);
+            }
         }
         
         if (parent instanceof SimMultipleChildren) {

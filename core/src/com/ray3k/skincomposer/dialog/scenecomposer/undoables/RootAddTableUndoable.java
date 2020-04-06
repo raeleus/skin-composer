@@ -4,6 +4,8 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimRootGroup;
 
+import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.rootActor;
+
 public class RootAddTableUndoable implements SceneComposerUndoable {
     private DialogSceneComposerModel.SimTable table;
     private DialogSceneComposer dialog;
@@ -36,7 +38,7 @@ public class RootAddTableUndoable implements SceneComposerUndoable {
     
     @Override
     public void undo() {
-        model.root.children.removeValue(table, true);
+        rootActor.children.removeValue(table, true);
         
         if (dialog.simActor != group) {
             dialog.simActor = group;
@@ -48,7 +50,7 @@ public class RootAddTableUndoable implements SceneComposerUndoable {
     
     @Override
     public void redo() {
-        model.root.children.add(table);
+        rootActor.children.add(table);
         
         if (dialog.simActor != table) {
             dialog.simActor = table;

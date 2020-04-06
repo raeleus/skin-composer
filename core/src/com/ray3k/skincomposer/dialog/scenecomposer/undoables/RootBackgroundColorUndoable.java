@@ -5,6 +5,8 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimRootGroup;
 
+import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.rootActor;
+
 public class RootBackgroundColorUndoable implements SceneComposerUndoable {
     private DialogSceneComposer dialog;
     private DialogSceneComposerModel model;
@@ -17,19 +19,19 @@ public class RootBackgroundColorUndoable implements SceneComposerUndoable {
         model = dialog.model;
         group = (SimRootGroup) dialog.simActor;
         
-        colorPrevious = model.root.backgroundColor;
+        colorPrevious = rootActor.backgroundColor;
         color = newColor;
     }
     
     @Override
     public void undo() {
-        model.root.backgroundColor = colorPrevious;
+        rootActor.backgroundColor = colorPrevious;
         dialog.previewTable.setColor(colorPrevious.color);
     }
     
     @Override
     public void redo() {
-        model.root.backgroundColor = color;
+        rootActor.backgroundColor = color;
         dialog.previewTable.setColor(color.color);
     }
     

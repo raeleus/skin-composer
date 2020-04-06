@@ -31,6 +31,8 @@ import com.ray3k.skincomposer.utils.IntPair;
 import space.earlygrey.shapedrawer.GraphDrawer;
 import space.earlygrey.shapedrawer.scene2d.GraphDrawerDrawable;
 
+import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.rootActor;
+
 public class DialogSceneComposer extends Dialog {
     public static DialogSceneComposer dialog;
     private Skin skin;
@@ -62,7 +64,7 @@ public class DialogSceneComposer extends Dialog {
         model = new DialogSceneComposerModel();
         
         view = View.LIVE;
-        simActor = model.root;
+        simActor = rootActor;
         
         setFillParent(true);
         
@@ -263,6 +265,7 @@ public class DialogSceneComposer extends Dialog {
         
         updateMenuUndoRedo();
         updateMenuView();
+        model.updatePreview();
     }
     
     private EventListener menuViewListener() {
@@ -3452,7 +3455,7 @@ public class DialogSceneComposer extends Dialog {
                 
                 popTable.row();
                 var imageButton = new ImageButton(skin, "scene-color");
-                imageButton.getImage().setColor(model.root.backgroundColor == null ? Color.WHITE : model.root.backgroundColor.color);
+                imageButton.getImage().setColor(rootActor.backgroundColor == null ? Color.WHITE : rootActor.backgroundColor.color);
                 popTable.add(imageButton).minWidth(100);
                 imageButton.addListener(main.getHandListener());
                 imageButton.addListener(new TextTooltip("Select the color of the background.", main.getTooltipManager(), skin, "scene"));
@@ -3479,7 +3482,7 @@ public class DialogSceneComposer extends Dialog {
                 });
                 
                 popTable.row();
-                label = new Label(model.root.backgroundColor == null ? "white" : model.root.backgroundColor.getName(), skin, "scene-label-colored");
+                label = new Label(rootActor.backgroundColor == null ? "white" : rootActor.backgroundColor.getName(), skin, "scene-label-colored");
                 popTable.add(label);
             }
         };
