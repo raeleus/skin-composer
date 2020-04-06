@@ -1691,7 +1691,7 @@ public class DialogSceneComposer extends Dialog {
     
     private EventListener buttonStyleListener() {
         var simButton = (DialogSceneComposerModel.SimButton) simActor;
-        var popTableClickListener = new StyleSelectorPopTable(TextButton.class, simButton.style == null ? "default" : simButton.style.name) {
+        var popTableClickListener = new StyleSelectorPopTable(Button.class, simButton.style == null ? "default" : simButton.style.name) {
             @Override
             public void accepted(StyleData styleData) {
                 events.buttonStyle(styleData);
