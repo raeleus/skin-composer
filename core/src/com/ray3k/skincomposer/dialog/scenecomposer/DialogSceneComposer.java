@@ -387,7 +387,7 @@ public class DialogSceneComposer extends Dialog {
             textButton = new TextButton("Background", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
-            textButton.addListener(tableBackgroundListener());
+            textButton.addListener(selectDrawableListener(((SimTable) simActor).background, "The background image for the table.",events::tableBackground));
             textButton.addListener(new TextTooltip("Sets the background drawable for the table.", main.getTooltipManager(), skin, "scene"));
         
             textButton = new TextButton("Color", skin, "scene-med");
@@ -801,7 +801,7 @@ public class DialogSceneComposer extends Dialog {
             textButton = new TextButton("Drawable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
-            textButton.addListener(imageDrawableListener());
+            textButton.addListener(selectDrawableListener(((SimImage) simActor).drawable, "The selected drawable for the image.",events::imageDrawable));
             textButton.addListener(new TextTooltip("Sets the drawable to be drawn as the Image.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Scaling", skin, "scene-med");
@@ -1269,7 +1269,7 @@ public class DialogSceneComposer extends Dialog {
             textButton = new TextButton("Background", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
-            textButton.addListener(containerBackgroundListener());
+            textButton.addListener(selectDrawableListener(((SimContainer) simActor).background, "The background image of the Container.",events::containerBackground));
             textButton.addListener(new TextTooltip("Set the background of the Container.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Fill", skin, "scene-med");
@@ -1506,7 +1506,7 @@ public class DialogSceneComposer extends Dialog {
             textButton = new TextButton("Icon", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
-            textButton.addListener(nodeIconListener());
+            textButton.addListener(selectDrawableListener(((SimNode) simActor).icon, "The selected drawable for the icon.",events::nodeIcon));
             textButton.addListener(new TextTooltip("Select the Drawable applied as an icon to the Node.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Options", skin, "scene-med");
@@ -2969,82 +2969,6 @@ public class DialogSceneComposer extends Dialog {
     
                 getStage().setKeyboardFocus(textField);
                 textField.setSelection(0, textField.getText().length());
-            }
-        };
-        
-        popTableClickListener.update();
-        
-        return popTableClickListener;
-    }
-    
-    private EventListener tableBackgroundListener() {
-        var simTable = (DialogSceneComposerModel.SimTable) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                update();
-            }
-            
-            public void update() {
-                var popTable = getPopTable();
-                popTable.clearChildren();
-    
-                var label = new Label("Background:", skin, "scene-label-colored");
-                popTable.add(label);
-    
-                popTable.row();
-                var stack = new Stack();
-                popTable.add(stack).minSize(100).maxSize(300).grow();
-                var background = new Image(skin, "scene-tile-ten");
-                stack.add(background);
-                Image image;
-                if (simTable.background != null) {
-                    image = new Image(main.getAtlasData().drawablePairs.get(simTable.background));
-                } else {
-                    image = new Image((Drawable) null);
-                }
-                stack.add(image);
-    
-                popTable.row();
-                var textButton = new TextButton("Select Drawable", skin, "scene-small");
-                popTable.add(textButton).minWidth(100);
-                textButton.addListener(main.getHandListener());
-                textButton.addListener(new TextTooltip("The background drawable for the table.", main.getTooltipManager(), skin, "scene"));
-                textButton.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        popTable.hide();
-                        main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
-                            @Override
-                            public void confirmed(DrawableData drawable, DialogDrawables dialog) {
-                                events.tableBackground(drawable);
-                                image.setDrawable(main.getAtlasData().drawablePairs.get(drawable));
-                            }
-                
-                            @Override
-                            public void emptied(DialogDrawables dialog) {
-                                events.tableBackground(null);
-                                image.setDrawable(null);
-                            }
-                
-                            @Override
-                            public void cancelled(DialogDrawables dialog) {
-                    
-                            }
-                        }, new DialogListener() {
-                            @Override
-                            public void opened() {
-                    
-                            }
-                
-                            @Override
-                            public void closed() {
-                    
-                            }
-                        });
-                    }
-                });
             }
         };
         
@@ -5025,8 +4949,7 @@ public class DialogSceneComposer extends Dialog {
         return popTableClickListener;
     }
     
-    private EventListener imageDrawableListener() {
-        var simImage = (DialogSceneComposerModel.SimImage) simActor;
+    private EventListener selectDrawableListener(DrawableData originalDrawable, String toolTipText, DrawableSelected drawableSelected) {
         var popTableClickListener = new PopTable.PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -5047,8 +4970,8 @@ public class DialogSceneComposer extends Dialog {
                 var background = new Image(skin, "scene-tile-ten");
                 stack.add(background);
                 Image image;
-                if (simImage.drawable != null) {
-                    image = new Image(main.getAtlasData().drawablePairs.get(simImage.drawable));
+                if (originalDrawable != null) {
+                    image = new Image(main.getAtlasData().drawablePairs.get(originalDrawable));
                 } else {
                     image = new Image((Drawable) null);
                 }
@@ -5058,22 +4981,23 @@ public class DialogSceneComposer extends Dialog {
                 var textButton = new TextButton("Select Drawable", skin, "scene-small");
                 popTable.add(textButton).minWidth(100);
                 textButton.addListener(main.getHandListener());
-                textButton.addListener(new TextTooltip("The background drawable for the table.", main.getTooltipManager(), skin, "scene"));
+                textButton.addListener(new TextTooltip(toolTipText, main.getTooltipManager(), skin, "scene"));
                 textButton.addListener(new ChangeListener() {
+                    boolean confirmed;
+                    DrawableData drawableData;
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         popTable.hide();
                         main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
                             @Override
                             public void confirmed(DrawableData drawable, DialogDrawables dialog) {
-                                events.imageDrawable(drawable);
-                                image.setDrawable(main.getAtlasData().drawablePairs.get(drawable));
+                                confirmed = true;
+                                drawableData = drawable;
                             }
     
                             @Override
                             public void emptied(DialogDrawables dialog) {
-                                events.imageDrawable(null);
-                                image.setDrawable(null);
+                                confirmed = false;
                             }
     
                             @Override
@@ -5088,7 +5012,13 @@ public class DialogSceneComposer extends Dialog {
     
                             @Override
                             public void closed() {
-        
+                                if (confirmed) {
+                                    drawableSelected.selected(drawableData);
+                                    image.setDrawable(main.getAtlasData().drawablePairs.get(drawableData));
+                                } else {
+                                    drawableSelected.selected(null);
+                                    image.setDrawable(null);
+                                }
                             }
                         });
                     }
@@ -5099,6 +5029,10 @@ public class DialogSceneComposer extends Dialog {
         popTableClickListener.update();
     
         return popTableClickListener;
+    }
+    
+    private static interface DrawableSelected {
+        public void selected(DrawableData drawableData);
     }
     
     private EventListener imageScalingListener() {
@@ -8487,82 +8421,6 @@ public class DialogSceneComposer extends Dialog {
         return popTableClickListener;
     }
     
-    private EventListener containerBackgroundListener() {
-        var simContainer = (DialogSceneComposerModel.SimContainer) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                update();
-            }
-            
-            public void update() {
-                var popTable = getPopTable();
-                popTable.clearChildren();
-                
-                var label = new Label("Background:", skin, "scene-label-colored");
-                popTable.add(label);
-                
-                popTable.row();
-                var stack = new Stack();
-                popTable.add(stack).minSize(100).maxSize(300).grow();
-                var background = new Image(skin, "scene-tile-ten");
-                stack.add(background);
-                Image image;
-                if (simContainer.background != null) {
-                    image = new Image(main.getAtlasData().drawablePairs.get(simContainer.background));
-                } else {
-                    image = new Image((Drawable) null);
-                }
-                stack.add(image);
-                
-                popTable.row();
-                var textButton = new TextButton("Select Drawable", skin, "scene-small");
-                popTable.add(textButton).minWidth(100);
-                textButton.addListener(main.getHandListener());
-                textButton.addListener(new TextTooltip("The background drawable for the container.", main.getTooltipManager(), skin, "scene"));
-                textButton.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        popTable.hide();
-                        main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
-                            @Override
-                            public void confirmed(DrawableData drawable, DialogDrawables dialog) {
-                                events.containerBackground(drawable);
-                                image.setDrawable(main.getAtlasData().drawablePairs.get(drawable));
-                            }
-                            
-                            @Override
-                            public void emptied(DialogDrawables dialog) {
-                                events.containerBackground(null);
-                                image.setDrawable(null);
-                            }
-                            
-                            @Override
-                            public void cancelled(DialogDrawables dialog) {
-                            
-                            }
-                        }, new DialogListener() {
-                            @Override
-                            public void opened() {
-                            
-                            }
-                            
-                            @Override
-                            public void closed() {
-                            
-                            }
-                        });
-                    }
-                });
-            }
-        };
-        
-        popTableClickListener.update();
-        
-        return popTableClickListener;
-    }
-    
     private EventListener containerFillListener() {
         var simContainer = (DialogSceneComposerModel.SimContainer) simActor;
         var popTableClickListener = new PopTable.PopTableClickListener(skin) {
@@ -11379,82 +11237,6 @@ public class DialogSceneComposer extends Dialog {
                 });
             }
         };
-        return popTableClickListener;
-    }
-    
-    private EventListener nodeIconListener() {
-        var simNode = (SimNode) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                update();
-            }
-            
-            public void update() {
-                var popTable = getPopTable();
-                popTable.clearChildren();
-                
-                var label = new Label("Drawable:", skin, "scene-label-colored");
-                popTable.add(label);
-                
-                popTable.row();
-                var stack = new Stack();
-                popTable.add(stack).minSize(100).maxSize(300).grow();
-                var background = new Image(skin, "scene-tile-ten");
-                stack.add(background);
-                Image image;
-                if (simNode.icon != null) {
-                    image = new Image(main.getAtlasData().drawablePairs.get(simNode.icon));
-                } else {
-                    image = new Image((Drawable) null);
-                }
-                stack.add(image);
-                
-                popTable.row();
-                var textButton = new TextButton("Select Drawable", skin, "scene-small");
-                popTable.add(textButton).minWidth(100);
-                textButton.addListener(main.getHandListener());
-                textButton.addListener(new TextTooltip("The background drawable for the table.", main.getTooltipManager(), skin, "scene"));
-                textButton.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        popTable.hide();
-                        main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
-                            @Override
-                            public void confirmed(DrawableData drawable, DialogDrawables dialog) {
-                                events.nodeIcon(drawable);
-                                image.setDrawable(main.getAtlasData().drawablePairs.get(drawable));
-                            }
-                            
-                            @Override
-                            public void emptied(DialogDrawables dialog) {
-                                events.nodeIcon(null);
-                                image.setDrawable(null);
-                            }
-                            
-                            @Override
-                            public void cancelled(DialogDrawables dialog) {
-                            
-                            }
-                        }, new DialogListener() {
-                            @Override
-                            public void opened() {
-                            
-                            }
-                            
-                            @Override
-                            public void closed() {
-                            
-                            }
-                        });
-                    }
-                });
-            }
-        };
-        
-        popTableClickListener.update();
-        
         return popTableClickListener;
     }
     
