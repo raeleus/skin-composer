@@ -539,6 +539,8 @@ public class DialogSceneComposerModel {
             var node = new GenericNode();
             Actor actor = createPreviewWidget(simNode.actor);
             if (actor != null) node.setActor(actor);
+            if (actor == null) return null;
+            node.setActor(actor);
             if (simNode.icon != null) node.setIcon(main.getAtlasData().drawablePairs.get(simNode.icon));
             node.setSelectable(simNode.selectable);
             for (var child : simNode.nodes) {
