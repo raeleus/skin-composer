@@ -2,19 +2,20 @@ package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimRootGroup;
 
 public class RootAddTableUndoable implements SceneComposerUndoable {
     private DialogSceneComposerModel.SimTable table;
     private DialogSceneComposer dialog;
     private DialogSceneComposerModel model;
-    private DialogSceneComposerModel.SimGroup group;
+    private SimRootGroup group;
     private int columns;
     private int rows;
     
     public RootAddTableUndoable(int columns, int rows) {
         dialog = DialogSceneComposer.dialog;
         model = dialog.model;
-        group = (DialogSceneComposerModel.SimGroup) dialog.simActor;
+        group = (SimRootGroup) dialog.simActor;
         
         table = new DialogSceneComposerModel.SimTable();
         table.parent = group;

@@ -1,35 +1,35 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 
-import com.badlogic.gdx.graphics.Color;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimRootGroup;
 
 public class RootBackgroundColorUndoable implements SceneComposerUndoable {
     private DialogSceneComposer dialog;
     private DialogSceneComposerModel model;
-    private DialogSceneComposerModel.SimGroup group;
+    private SimRootGroup group;
     private ColorData color;
     private ColorData colorPrevious;
     
     public RootBackgroundColorUndoable(ColorData newColor) {
         dialog = DialogSceneComposer.dialog;
         model = dialog.model;
-        group = (DialogSceneComposerModel.SimGroup) dialog.simActor;
+        group = (SimRootGroup) dialog.simActor;
         
-        colorPrevious = model.backgroundColor;
+        colorPrevious = model.root.backgroundColor;
         color = newColor;
     }
     
     @Override
     public void undo() {
-        model.backgroundColor = colorPrevious;
+        model.root.backgroundColor = colorPrevious;
         dialog.previewTable.setColor(colorPrevious.color);
     }
     
     @Override
     public void redo() {
-        model.backgroundColor = color;
+        model.root.backgroundColor = color;
         dialog.previewTable.setColor(color.color);
     }
     

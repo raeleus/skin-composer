@@ -2,6 +2,7 @@ package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimRootGroup;
 
 public class TableDeleteUndoable implements SceneComposerUndoable {
     private DialogSceneComposerModel.SimTable table;
@@ -18,8 +19,8 @@ public class TableDeleteUndoable implements SceneComposerUndoable {
     public void undo() {
         if (parent instanceof DialogSceneComposerModel.SimCell) {
             ((DialogSceneComposerModel.SimCell) parent).child = table;
-        } else if (parent instanceof DialogSceneComposerModel.SimGroup) {
-            ((DialogSceneComposerModel.SimGroup) parent).children.add(table);
+        } else if (parent instanceof SimRootGroup) {
+            ((SimRootGroup) parent).children.add(table);
         }
         
         if (dialog.simActor != table) {
@@ -34,8 +35,8 @@ public class TableDeleteUndoable implements SceneComposerUndoable {
     public void redo() {
         if (parent instanceof DialogSceneComposerModel.SimCell) {
             ((DialogSceneComposerModel.SimCell) parent).child = null;
-        } else if (parent instanceof DialogSceneComposerModel.SimGroup) {
-            ((DialogSceneComposerModel.SimGroup) parent).children.removeValue(table, true);
+        } else if (parent instanceof SimRootGroup) {
+            ((SimRootGroup) parent).children.removeValue(table, true);
         }
         
         if (dialog.simActor != parent) {

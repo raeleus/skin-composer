@@ -1,17 +1,17 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
-import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimRootGroup;
 
 public class MenuClearUndoable implements SceneComposerUndoable {
     private DialogSceneComposer dialog;
-    private DialogSceneComposerModel.SimGroup group;
-    private DialogSceneComposerModel.SimGroup previousGroup;
+    private SimRootGroup group;
+    private SimRootGroup previousGroup;
     
     public MenuClearUndoable() {
         dialog = DialogSceneComposer.dialog;
         previousGroup = dialog.model.root;
-        group = new DialogSceneComposerModel.SimGroup();
+        group = new SimRootGroup();
     }
     
     @Override

@@ -1,9 +1,7 @@
 package com.ray3k.skincomposer.dialog.scenecomposer;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -22,8 +20,7 @@ public class DialogSceneComposerModel {
     private transient Main main;
     public transient Array<SceneComposerUndoable> undoables;
     public transient Array<SceneComposerUndoable> redoables;
-    public SimGroup root;
-    public ColorData backgroundColor;
+    public SimRootGroup root;
     public transient Group preview;
     private static Json json;
     
@@ -109,7 +106,7 @@ public class DialogSceneComposerModel {
         });
         json.setOutputType(JsonWriter.OutputType.json);
         
-        root = new SimGroup();
+        root = new SimRootGroup();
         assignParentRecursive(root);
     }
     
@@ -588,8 +585,9 @@ public class DialogSceneComposerModel {
         void removeChild(SimActor simActor);
     }
     
-    public static class SimGroup extends SimActor implements SimMultipleChildren {
+    public static class SimRootGroup extends SimActor implements SimMultipleChildren {
         public Array<SimActor> children = new Array<>();
+        public ColorData backgroundColor;
     
         @Override
         public String toString() {

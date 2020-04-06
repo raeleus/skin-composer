@@ -365,7 +365,7 @@ public class DialogSceneComposer extends Dialog {
         horizontalGroup.align(Align.top);
         root.add(horizontalGroup).grow();
     
-        if (simActor instanceof DialogSceneComposerModel.SimGroup) {
+        if (simActor instanceof SimRootGroup) {
             var textButton = new TextButton("Add Table", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -3528,7 +3528,7 @@ public class DialogSceneComposer extends Dialog {
                 
                 popTable.row();
                 var imageButton = new ImageButton(skin, "scene-color");
-                imageButton.getImage().setColor(model.backgroundColor == null ? Color.WHITE : model.backgroundColor.color);
+                imageButton.getImage().setColor(model.root.backgroundColor == null ? Color.WHITE : model.root.backgroundColor.color);
                 popTable.add(imageButton).minWidth(100);
                 imageButton.addListener(main.getHandListener());
                 imageButton.addListener(new TextTooltip("Select the color of the background.", main.getTooltipManager(), skin, "scene"));
@@ -3555,7 +3555,7 @@ public class DialogSceneComposer extends Dialog {
                 });
                 
                 popTable.row();
-                label = new Label(model.backgroundColor == null ? "white" : model.backgroundColor.getName(), skin, "scene-label-colored");
+                label = new Label(model.root.backgroundColor == null ? "white" : model.root.backgroundColor.getName(), skin, "scene-label-colored");
                 popTable.add(label);
             }
         };
