@@ -10,6 +10,8 @@ import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.dialog.scenecomposer.undoables.*;
 
+import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.rootActor;
+
 public class DialogSceneComposerEvents {
     public enum WidgetType {
         BUTTON, CHECK_BOX, IMAGE, IMAGE_BUTTON, IMAGE_TEXT_BUTTON, LABEL, LIST, PROGRESS_BAR, SELECT_BOX, SLIDER,
@@ -57,6 +59,7 @@ public class DialogSceneComposerEvents {
     public void dialogImportImportTemplate(FileHandle loadFile) {
         Main.main.getProjectData().setLastImportExportPath(loadFile.path());
         DialogSceneComposerModel.loadFromJson(loadFile);
+        dialog.simActor = rootActor;
         dialog.model.updatePreview();
         dialog.populatePath();
         dialog.populateProperties();

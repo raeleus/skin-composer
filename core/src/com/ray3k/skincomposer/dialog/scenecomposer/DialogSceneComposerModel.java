@@ -89,7 +89,7 @@ public class DialogSceneComposerModel {
             @Override
             public void write(Json json, StyleData object, Class knownType) {
                 json.writeObjectStart();
-                json.writeValue("class", object.clazz.getName());
+                json.writeValue("clazz", object.clazz.getName());
                 json.writeValue("name", object.name);
                 json.writeObjectEnd();
             }
@@ -97,7 +97,7 @@ public class DialogSceneComposerModel {
             @Override
             public StyleData read(Json json, JsonValue jsonData, Class type) {
                 try {
-                    return Main.main.getJsonData().findStyle(ClassReflection.forName(jsonData.getString("class")), jsonData.getString("name"));
+                    return Main.main.getJsonData().findStyle(ClassReflection.forName(jsonData.getString("clazz")), jsonData.getString("name"));
                 } catch (ReflectionException e) {
                     e.printStackTrace();
                     return null;
@@ -141,11 +141,12 @@ public class DialogSceneComposerModel {
         if (!saveFile.extension().toLowerCase(Locale.ROOT).equals("json")) {
             saveFile = saveFile.sibling(saveFile.nameWithoutExtension() + ".json");
         }
-        saveFile.writeString(json.prettyPrint(DialogSceneComposer.dialog.model), false);
+        saveFile.writeString(json.prettyPrint(rootActor), false);
     }
     
     public static void loadFromJson(FileHandle loadFile) {
-        DialogSceneComposer.dialog.model = json.fromJson(DialogSceneComposerModel.class, loadFile);
+        rootActor = json.fromJson(SimRootGroup.class, loadFile);
+        assignParentRecursive(rootActor);
     }
     
     public void undo() {
@@ -200,9 +201,7 @@ public class DialogSceneComposerModel {
             
             table.align(simTable.alignment);
             
-            if (simTable.parent == rootActor) {
-                table.setFillParent(true);
-            }
+            table.setFillParent(simTable.fillParent);
             
             int row = 0;
             for (var simCell : simTable.cells) {
@@ -654,6 +653,7 @@ public class DialogSceneComposerModel {
         public float padTop;
         public float padBottom;
         public int alignment = Align.center;
+        public boolean fillParent;
     
         @Override
         public String toString() {

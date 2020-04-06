@@ -21,6 +21,7 @@ public class RootAddTableUndoable implements SceneComposerUndoable {
         
         table = new DialogSceneComposerModel.SimTable();
         table.parent = group;
+        table.fillParent = true;
         
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
