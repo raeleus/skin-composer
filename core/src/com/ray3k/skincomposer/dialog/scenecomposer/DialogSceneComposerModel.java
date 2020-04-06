@@ -105,6 +105,33 @@ public class DialogSceneComposerModel {
             }
         });
         json.setOutputType(JsonWriter.OutputType.json);
+        json.setUsePrototypes(false);
+        json.addClassTag("Actor", SimActor.class);
+        json.addClassTag("Button", SimButton.class);
+        json.addClassTag("Cell", SimCell.class);
+        json.addClassTag("CheckBox", SimCheckBox.class);
+        json.addClassTag("Container", SimContainer.class);
+        json.addClassTag("HorizontalGroup", SimHorizontalGroup.class);
+        json.addClassTag("Image", SimImage.class);
+        json.addClassTag("ImageButton", SimImageButton.class);
+        json.addClassTag("ImageTextButton", SimImageTextButton.class);
+        json.addClassTag("Label", SimLabel.class);
+        json.addClassTag("List", SimList.class);
+        json.addClassTag("Node", SimNode.class);
+        json.addClassTag("ProgressBar", SimProgressBar.class);
+        json.addClassTag("Root", SimRootGroup.class);
+        json.addClassTag("ScrollPane", SimScrollPane.class);
+        json.addClassTag("SelectBox", SimSelectBox.class);
+        json.addClassTag("Slider", SimSlider.class);
+        json.addClassTag("SplitPane", SimSplitPane.class);
+        json.addClassTag("Stack", SimStack.class);
+        json.addClassTag("Table", SimTable.class);
+        json.addClassTag("TextArea", SimTextArea.class);
+        json.addClassTag("TextButton", SimTextButton.class);
+        json.addClassTag("TextField", SimTextField.class);
+        json.addClassTag("TouchPad", SimTouchPad.class);
+        json.addClassTag("Tree", SimTree.class);
+        json.addClassTag("VerticalGroup", SimVerticalGroup.class);
         
         root = new SimRootGroup();
         assignParentRecursive(root);
@@ -538,7 +565,6 @@ public class DialogSceneComposerModel {
         if (simNode.actor != null) {
             var node = new GenericNode();
             Actor actor = createPreviewWidget(simNode.actor);
-            if (actor != null) node.setActor(actor);
             if (actor == null) return null;
             node.setActor(actor);
             if (simNode.icon != null) node.setIcon(main.getAtlasData().drawablePairs.get(simNode.icon));
