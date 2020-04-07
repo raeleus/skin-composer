@@ -617,6 +617,9 @@ public class DialogSceneComposerModel {
     public static class SimRootGroup extends SimActor implements SimMultipleChildren {
         public Array<SimActor> children = new Array<>();
         public ColorData backgroundColor;
+        public String skinPath = "skin.json";
+        public String packageString = "com.mygdx.game";
+        public String classString = "Core";
     
         @Override
         public String toString() {

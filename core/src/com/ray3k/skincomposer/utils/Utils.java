@@ -401,4 +401,17 @@ public class Utils {
     public static boolean isIntegerValue(BigDecimal bigDecimal) {
         return bigDecimal.signum() == 0 || bigDecimal.scale() <= 0 || bigDecimal.stripTrailingZeros().scale() <= 0;
     }
+    
+    public static boolean isEqual(float... values) {
+        if (values.length > 0) {
+            float first = values[0];
+            for (int i = 1; i < values.length; i++) {
+                float value = values[i];
+                if (!MathUtils.isEqual(first, value)) return false;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

@@ -374,12 +374,6 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(main.getHandListener());
             textButton.addListener(rootAddTableListener());
             textButton.addListener(new TextTooltip("Creates a table with the specified number of rows and columns.", main.getTooltipManager(), skin, "scene"));
-    
-            textButton = new TextButton("Background Color", skin, "scene-med");
-            horizontalGroup.addActor(textButton);
-            textButton.addListener(main.getHandListener());
-            textButton.addListener(rootBackgroundColorListener());
-            textButton.addListener(new TextTooltip("Sets the background color of the app.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimTable) {
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -11995,34 +11989,74 @@ public class DialogSceneComposer extends Dialog {
         label = new Label("Package", skin, "scene-label-colored");
         table.add(label);
         
-        var textField = new TextField("", skin, "scene");
+        var textField = new TextField(rootActor.packageString, skin, "scene");
         var keyboardFocus = textField;
         table.add(textField).width(300).uniformX();
         textField.addListener(main.getIbeamListener());
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.dialogSettingsPackage(((TextField) actor).getText());
+            }
+        });
     
         table.row();
         label = new Label("Class", skin, "scene-label-colored");
         table.add(label);
     
-        textField = new TextField("", skin, "scene");
+        textField = new TextField(rootActor.classString, skin, "scene");
         table.add(textField).uniformX().fillX();
         textField.addListener(main.getIbeamListener());
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.dialogSettingsClass(((TextField) actor).getText());
+            }
+        });
     
         table.row();
         label = new Label("Skin Path", skin, "scene-label-colored");
         table.add(label);
     
-        textField = new TextField("", skin, "scene");
+        textField = new TextField(rootActor.skinPath, skin, "scene");
         table.add(textField).uniformX().fillX();
         textField.addListener(main.getIbeamListener());
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                events.dialogSettingsSkinPath(((TextField) actor).getText());
+            }
+        });
     
         table.row();
         label = new Label("Background Color", skin, "scene-label-colored");
         table.add(label);
     
         var imageButton = new ImageButton(new ImageButton.ImageButtonStyle(skin.get("scene-color", ImageButton.ImageButtonStyle.class)));
+        imageButton.getImage().setColor(rootActor.backgroundColor == null ? Color.WHITE : rootActor.backgroundColor.color);
         table.add(imageButton).left();
         imageButton.addListener(main.getHandListener());
+        imageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+                    if (!pressedCancel) {
+                        events.rootBackgroundColor(colorData);
+                        imageButton.getImage().setColor(colorData == null ? Color.WHITE : colorData.color);
+                    }
+                }, new DialogListener() {
+                    @Override
+                    public void opened() {
+            
+                    }
+        
+                    @Override
+                    public void closed() {
+            
+                    }
+                });
+            }
+        });
         
         dialog.getContentTable().row();
         table = new Table();
