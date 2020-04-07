@@ -11996,7 +11996,7 @@ public class DialogSceneComposer extends Dialog {
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                events.dialogSettingsPackage(((TextField) actor).getText());
+                events.rootPackage(((TextField) actor).getText());
             }
         });
     
@@ -12010,7 +12010,7 @@ public class DialogSceneComposer extends Dialog {
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                events.dialogSettingsClass(((TextField) actor).getText());
+                events.rootClass(((TextField) actor).getText());
             }
         });
     
@@ -12024,7 +12024,7 @@ public class DialogSceneComposer extends Dialog {
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                events.dialogSettingsSkinPath(((TextField) actor).getText());
+                events.rootSkinPath(((TextField) actor).getText());
             }
         });
     

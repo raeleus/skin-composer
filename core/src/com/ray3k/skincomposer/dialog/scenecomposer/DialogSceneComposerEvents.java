@@ -79,20 +79,16 @@ public class DialogSceneComposerEvents {
     
     }
     
-    public void dialogSettingsPackage(String packageName) {
-    
+    public void rootPackage(String packageName) {
+        processUndoable(new RootPackageUndoable(packageName));
     }
     
-    public void dialogSettingsClass(String className) {
-    
+    public void rootClass(String className) {
+        processUndoable(new RootClassUndoable(className));
     }
     
-    public void dialogSettingsSkinPath(String skinPath) {
-    
-    }
-    
-    public void dialogSettingsBackgroundColor(ColorData color) {
-    
+    public void rootSkinPath(String skinPath) {
+        processUndoable(new RootSkinPathUndoable(skinPath));
     }
     
     private void processUndoable(SceneComposerUndoable undoable) {
