@@ -612,14 +612,12 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("touchPad", variables);
-            if (!usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T(skin$3L)", Touchpad.class, variableName,
-                        touchPad.style.name.equals("default") ? "" : ", \"" + touchPad.style.name + "\"");
-            } else {
-                builder.addStatement("$1T $2L = new $1T(skin$3L)", Touchpad.class, variableName,
-                        touchPad.style.name.equals("default") ? "" : ", \"" + touchPad.style.name + "\"");
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T ", Touchpad.class);
+            builder.addStatement("$2L = new $1T($Lf, skin$3L)", variableName, Touchpad.class, touchPad.deadZone,
+                    touchPad.style.name.equals("default") ? "" : ", \"" + touchPad.style.name + "\"");
+                
             if (touchPad.name != null) builder.addStatement("$L.setName($L)", variableName, touchPad.name);
+            if (!touchPad.resetOnTouchUp) builder.addStatement("$L.setResetOnTouchUp($L)", variableName, false);
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimContainer) {
