@@ -11,19 +11,18 @@ import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.*;
 import com.ray3k.skincomposer.utils.Utils;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
-import jdk.jshell.execution.Util;
-import space.earlygrey.shapedrawer.ShapeDrawer;
+import com.squareup.javapoet.*;
 
 import javax.lang.model.element.Modifier;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.rootActor;
 
 public class DialogSceneComposerJavaBuilder {
+    private static ClassName nodeClassName;
+    
     public static String generateJavaFile() {
+        nodeClassName = ClassName.get(rootActor.packageString + "." + rootActor.classString, "BasicNode");
+        
         TypeSpec typeSpec = TypeSpec.classBuilder(rootActor.classString)
                 .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(ApplicationAdapter.class)
@@ -884,15 +883,62 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("tree", variables);
-            if (!usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T(skin$3L)", Tree.class, variableName,
-                        tree.style.name.equals("default") ? "" : ", \"" + tree.style.name + "\"");
-            } else {
-                builder.addStatement("$1T $2L = new $1T(skin$3L)", Tree.class, variableName,
-                        tree.style.name.equals("default") ? "" : ", \"" + tree.style.name + "\"");
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T ", Tree.class);
+            builder.addStatement("$L = new $T(skin$L)", variableName, Tree.class,
+                    tree.style.name.equals("default") ? "" : ", \"" + tree.style.name + "\"");
+            
             if (tree.name != null) builder.addStatement("$L.setName($L)", variableName, tree.name);
+            if (!MathUtils.isZero(tree.padLeft) || !MathUtils.isZero(tree.padLeft)) {
+                if (MathUtils.isEqual(tree.padLeft, tree.padRight)) {
+                    builder.addStatement("$L.setPadding($Lf)", variableName, tree.padLeft);
+                } else {
+                    builder.addStatement("$L.setPadding($Lf, $Lf)", variableName, tree.padLeft, tree.padRight);
+                }
+            }
+            
+            if (!MathUtils.isEqual(2f, tree.iconSpaceLeft) || !MathUtils.isZero(2f, tree.iconSpaceRight)) {
+                builder.addStatement("$L.setIconSpacing($Lf, $Lf)", variableName, tree.iconSpaceLeft, tree.iconSpaceRight);
+            }
+            
+            if (!MathUtils.isZero(tree.indentSpacing)) builder.addStatement("$L.setIndentSpacing($Lf)", variableName, tree.indentSpacing);
+            if (!MathUtils.isEqual(4f, tree.ySpacing)) builder.addStatement("$L.setYSpacing($Lf)", variableName, tree.ySpacing);
+            
+            for (var node : tree.children) {
+                var pair = createWidget(node, variables, usedVariables);
+                if (pair != null) {
+                    builder.add(pair.codeBlock);
+                    builder.addStatement("$L.add($L)", variableName, pair.name);
+                    variables.removeValue(pair.name, false);
+                    usedVariables.add(pair.name);
+                }
+            }
     
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimNode) {
+            var node = (SimNode) actor;
+    
+            WidgetNamePair pair = createWidget(node.actor, variables, usedVariables);
+            if (pair == null) return null;
+            
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("node", variables);
+            if (!usedVariables.contains(variableName)) builder.add("$T ", nodeClassName);
+            builder.addStatement("$L = new $T($L)", variableName, nodeClassName, pair.name);
+            variables.removeValue(pair.name, false);
+            usedVariables.add(pair.name);
+            if (node.icon != null) builder.addStatement("$L.setIcon(skin.getDrawable($S))", variableName, node.icon.name);
+            if (!node.selectable) builder.addStatement("$L.setSelectable($L)", variableName, false);
+    
+            for (var child : node.nodes) {
+                var nodePair = createWidget(child, variables, usedVariables);
+                if (nodePair != null) {
+                    builder.add(nodePair.codeBlock);
+                    builder.addStatement("$L.add($L)", variableName, nodePair.name);
+                    variables.removeValue(nodePair.name, false);
+                    usedVariables.add(nodePair.name);
+                }
+            }
+            
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimVerticalGroup) {
             var verticalGroup = (SimVerticalGroup) actor;
