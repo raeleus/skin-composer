@@ -361,7 +361,7 @@ public class DialogSceneComposerJavaBuilder {
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimImageTextButton) {
-            var imageTextButton = (SimTextButton) actor;
+            var imageTextButton = (SimImageTextButton) actor;
             if (imageTextButton.style == null) return null;
     
             var builder = CodeBlock.builder();
@@ -520,14 +520,33 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("textButton", variables);
-            if (!usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T(skin$3L)", TextButton.class, variableName,
-                        textButton.style.name.equals("default") ? "" : ", \"" + textButton.style.name + "\"");
-            } else {
-                builder.addStatement("$1T $2L = new $1T(skin$3L)", TextButton.class, variableName,
-                        textButton.style.name.equals("default") ? "" : ", \"" + textButton.style.name + "\"");
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T ", TextButton.class);
+            builder.addStatement("$L = new $T($S, skin$3L)", variableName, TextButton.class, textButton.text,
+                    textButton.style.name.equals("default") ? "" : ", \"" + textButton.style.name + "\"");
+    
             if (textButton.name != null) builder.addStatement("$L.setName($L)", variableName, textButton.name);
+            if (textButton.checked) builder.addStatement("$L.setChecked($L)", variableName, true);
+            if (textButton.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
+            if (textButton.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, textButton.color.getName());
+    
+            if (!Utils.isEqual(0, textButton.padLeft, textButton.padRight, textButton.padTop, textButton.padBottom)) {
+                if (Utils.isEqual(textButton.padLeft, textButton.padRight, textButton.padTop, textButton.padBottom)) {
+                    builder.addStatement("$L.pad($L)", variableName, textButton.padLeft);
+                } else {
+                    if (!MathUtils.isZero(textButton.padLeft)) {
+                        builder.addStatement("$L.padLeft($L)", variableName, textButton.padLeft);
+                    }
+                    if (!MathUtils.isZero(textButton.padRight)) {
+                        builder.addStatement("$L.padRight($L)", variableName, textButton.padRight);
+                    }
+                    if (!MathUtils.isZero(textButton.padTop)) {
+                        builder.addStatement("$L.padTop($L)", variableName, textButton.padTop);
+                    }
+                    if (!MathUtils.isZero(textButton.padBottom)) {
+                        builder.addStatement("$L.padBottom($L)", variableName, textButton.padBottom);
+                    }
+                }
+            }
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimTextField) {
