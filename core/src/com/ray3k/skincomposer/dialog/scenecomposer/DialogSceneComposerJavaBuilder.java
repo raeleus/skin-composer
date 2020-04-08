@@ -400,14 +400,20 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("label", variables);
-            if (usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T(skin$3L)", Label.class, variableName,
-                        label.style.name.equals("default") ? "" : ", \"" + label.style.name + "\"");
-            } else {
-                builder.addStatement("$1T $2L = new $1T(skin$3L)", Label.class, variableName,
-                        label.style.name.equals("default") ? "" : ", \"" + label.style.name + "\"");
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T ", Label.class);
+            builder.addStatement("$L = new $T($S, skin$L)", variableName, Label.class, label.text,
+                    label.style.name.equals("default") ? "" : ", \"" + label.style.name + "\"");
+                
             if (label.name != null) builder.addStatement("$L.setName($L)", variableName, label.name);
+            
+            if (label.textAlignment != Align.left) {
+                builder.add(".align($T.$L)", Align.class, alignmentToName(label.textAlignment));
+            }
+    
+            if (label.ellipsis) builder.addStatement("$L.setEllipsis($L)", variableName, true);
+            if (label.ellipsisString != null) builder.addStatement("$L.setEllipsis($L)", variableName, label.ellipsisString);
+            if (label.wrap) builder.addStatement("$L.setWrap($L)", variableName, true);
+            if (label.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, label.color.getName());
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimList) {
@@ -416,7 +422,7 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("list", variables);
-            if (usedVariables.contains(variableName)) {
+            if (!usedVariables.contains(variableName)) {
                 builder.addStatement("$2L = new $1T(skin$3L)", List.class, variableName,
                         list.style.name.equals("default") ? "" : ", \"" + list.style.name + "\"");
             } else {
@@ -432,7 +438,7 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("progressBar", variables);
-            if (usedVariables.contains(variableName)) {
+            if (!usedVariables.contains(variableName)) {
                 builder.addStatement("$2L = new $1T(skin$3L)", ProgressBar.class, variableName,
                         progressBar.style.name.equals("default") ? "" : ", \"" + progressBar.style.name + "\"");
             } else {
@@ -448,7 +454,7 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("selectBox", variables);
-            if (usedVariables.contains(variableName)) {
+            if (!usedVariables.contains(variableName)) {
                 builder.addStatement("$2L = new $1T(skin$3L)", SelectBox.class, variableName,
                         selectBox.style.name.equals("default") ? "" : ", \"" + selectBox.style.name + "\"");
             } else {
@@ -464,7 +470,7 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("slider", variables);
-            if (usedVariables.contains(variableName)) {
+            if (!usedVariables.contains(variableName)) {
                 builder.addStatement("$2L = new $1T(skin$3L)", Slider.class, variableName,
                         slider.style.name.equals("default") ? "" : ", \"" + slider.style.name + "\"");
             } else {
@@ -480,7 +486,7 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("textButton", variables);
-            if (usedVariables.contains(variableName)) {
+            if (!usedVariables.contains(variableName)) {
                 builder.addStatement("$2L = new $1T(skin$3L)", TextButton.class, variableName,
                         textButton.style.name.equals("default") ? "" : ", \"" + textButton.style.name + "\"");
             } else {
@@ -496,7 +502,7 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("textField", variables);
-            if (usedVariables.contains(variableName)) {
+            if (!usedVariables.contains(variableName)) {
                 builder.addStatement("$2L = new $1T(skin$3L)", TextField.class, variableName,
                         textField.style.name.equals("default") ? "" : ", \"" + textField.style.name + "\"");
             } else {
@@ -512,7 +518,7 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("textArea", variables);
-            if (usedVariables.contains(variableName)) {
+            if (!usedVariables.contains(variableName)) {
                 builder.addStatement("$2L = new $1T(skin$3L)", TextArea.class, variableName,
                         textArea.style.name.equals("default") ? "" : ", \"" + textArea.style.name + "\"");
             } else {
@@ -528,7 +534,7 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("touchPad", variables);
-            if (usedVariables.contains(variableName)) {
+            if (!usedVariables.contains(variableName)) {
                 builder.addStatement("$2L = new $1T(skin$3L)", Touchpad.class, variableName,
                         touchPad.style.name.equals("default") ? "" : ", \"" + touchPad.style.name + "\"");
             } else {
@@ -543,7 +549,7 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("container", variables);
-            if (usedVariables.contains(variableName)) {
+            if (!usedVariables.contains(variableName)) {
                 builder.addStatement("$2L = new $1T(skin$3L)", Container.class);
             } else {
                 builder.addStatement("$1T $2L = new $1T(skin$3L)", Container.class);
@@ -556,7 +562,7 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("horizontalGroup", variables);
-            if (usedVariables.contains(variableName)) {
+            if (!usedVariables.contains(variableName)) {
                 builder.addStatement("$2L = new $1T(skin$3L)", HorizontalGroup.class, variableName);
             } else {
                 builder.addStatement("$1T $2L = new $1T(skin$3L)", HorizontalGroup.class, variableName);
@@ -570,7 +576,7 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("scrollPane", variables);
-            if (usedVariables.contains(variableName)) {
+            if (!usedVariables.contains(variableName)) {
                 builder.addStatement("$2L = new $1T(skin$3L)", ScrollPane.class, variableName,
                         scrollPane.style.name.equals("default") ? "" : ", \"" + scrollPane.style.name + "\"");
             } else {
@@ -585,7 +591,7 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("stack", variables);
-            if (usedVariables.contains(variableName)) {
+            if (!usedVariables.contains(variableName)) {
                 builder.addStatement("$2L = new $1T()", Stack.class, variableName);
             } else {
                 builder.addStatement("$1T $2L = new $1T()", Stack.class, variableName);
@@ -599,7 +605,7 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("splitPane", variables);
-            if (usedVariables.contains(variableName)) {
+            if (!usedVariables.contains(variableName)) {
                 builder.addStatement("$2L = new $1T(skin$3L)", SplitPane.class, variableName,
                         splitPane.style.name.equals("default") ? "" : ", \"" + splitPane.style.name + "\"");
             } else {
@@ -615,7 +621,7 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("tree", variables);
-            if (usedVariables.contains(variableName)) {
+            if (!usedVariables.contains(variableName)) {
                 builder.addStatement("$2L = new $1T(skin$3L)", Tree.class, variableName,
                         tree.style.name.equals("default") ? "" : ", \"" + tree.style.name + "\"");
             } else {
@@ -630,7 +636,7 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("verticalGroup", variables);
-            if (usedVariables.contains(variableName)) {
+            if (!usedVariables.contains(variableName)) {
                 builder.addStatement("$2L = new $1T()", VerticalGroup.class, variableName);
             } else {
                 builder.addStatement("$1T $2L = new $1T()", VerticalGroup.class, variableName);
