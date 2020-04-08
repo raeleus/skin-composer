@@ -447,12 +447,11 @@ public class DialogSceneComposerJavaBuilder {
             var variableName = createVariableName("progressBar", variables);
             if (!usedVariables.contains(variableName)) builder.add("$T ", ProgressBar.class);
             builder.addStatement("$L = new $T($L, $L, $L, $L, skin$L)", variableName, ProgressBar.class,
-                    progressBar.minimum, progressBar.maximum, progressBar.increment, progressBar.increment,
+                    progressBar.minimum, progressBar.maximum, progressBar.increment, progressBar.vertical,
                     progressBar.style.name.equals("default") ? "" : ", \"" + progressBar.style.name + "\"");
             
             if (progressBar.name != null) builder.addStatement("$L.setName($L)", variableName, progressBar.name);
             if (MathUtils.isZero(progressBar.value)) builder.addStatement("$L.setValue($Lf)", variableName, progressBar.value);
-            if (progressBar.vertical) builder.addStatement("$L.setVertical($L)", variableName, progressBar.vertical);
             if (MathUtils.isZero(progressBar.animationDuration)) builder.addStatement("$L.setAnimationDuration($Lf)", variableName, progressBar.animationDuration);
             if (progressBar.animateInterpolation != null) builder.addStatement("$L.setAnimateInterpolation($T.$L)", variableName,
                     Interpolation.class, progressBar.animateInterpolation.code);
@@ -499,14 +498,20 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("slider", variables);
-            if (!usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T(skin$3L)", Slider.class, variableName,
-                        slider.style.name.equals("default") ? "" : ", \"" + slider.style.name + "\"");
-            } else {
-                builder.addStatement("$1T $2L = new $1T(skin$3L)", Slider.class, variableName,
-                        slider.style.name.equals("default") ? "" : ", \"" + slider.style.name + "\"");
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T ", Slider.class);
+            builder.addStatement("$L = new $T($L, $L, $L, $L, skin$L)", variableName, Slider.class,
+                    slider.minimum, slider.maximum, slider.increment, slider.vertical,
+                    slider.style.name.equals("default") ? "" : ", \"" + slider.style.name + "\"");
+    
             if (slider.name != null) builder.addStatement("$L.setName($L)", variableName, slider.name);
+            if (slider.disabled) builder.addStatement("$L.setDisabled($L)", variableName, slider.disabled);
+            if (MathUtils.isZero(slider.value)) builder.addStatement("$L.setValue($Lf)", variableName, slider.value);
+            if (MathUtils.isZero(slider.animationDuration)) builder.addStatement("$L.setAnimationDuration($Lf)", variableName, slider.animationDuration);
+            if (slider.animateInterpolation != null) builder.addStatement("$L.setAnimateInterpolation($T.$L)", variableName,
+                    Interpolation.class, slider.animateInterpolation.code);
+            if (slider.round) builder.addStatement("$L.setRound($L)", variableName, slider.round);
+            if (slider.visualInterpolation != null) builder.addStatement("$L.setVisualInterpolation($T.$L)", variableName,
+                    Interpolation.class, slider.visualInterpolation.code);
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimTextButton) {
