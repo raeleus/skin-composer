@@ -561,13 +561,13 @@ public class DialogSceneComposerJavaBuilder {
             
             if (textField.name != null) builder.addStatement("$L.setName($L)", variableName, textField.name);
             if (textField.passwordCharacter != '•') builder.addStatement("$L.setPasswordCharacter($L)", variableName, textField.passwordCharacter);
-            if (textField.passwordMode) builder.addStatement("$L.setPasswordMode($L)", variableName, textField.passwordMode);
+            if (textField.passwordMode) builder.addStatement("$L.setPasswordMode($L)", variableName, true);
             
             if (textField.alignment != Align.left) {
                 builder.add(".align($T.$L)", Align.class, alignmentToName(textField.alignment));
             }
     
-            if (textField.disabled) builder.addStatement("$L.setDisabled($L)", variableName, textField.disabled);
+            if (textField.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
             if (textField.cursorPosition != 0) builder.addStatement("$L.setCursorPosition($L)", variableName, textField.cursorPosition);
             if (textField.selectAll) builder.addStatement("$L.setSelection($L, $L)", variableName, 0, textField.text.length());
             else if (textField.selectionStart != 0 || textField.selectionEnd != 0)
@@ -583,14 +583,27 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("textArea", variables);
-            if (!usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T(skin$3L)", TextArea.class, variableName,
-                        textArea.style.name.equals("default") ? "" : ", \"" + textArea.style.name + "\"");
-            } else {
-                builder.addStatement("$1T $2L = new $1T(skin$3L)", TextArea.class, variableName,
-                        textArea.style.name.equals("default") ? "" : ", \"" + textArea.style.name + "\"");
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T ", TextArea.class);
+            builder.addStatement("$L = new $T($S, skin$L)", variableName, TextArea.class, textArea.text,
+                    textArea.style.name.equals("default") ? "" : ", \"" + textArea.style.name + "\"");
+    
             if (textArea.name != null) builder.addStatement("$L.setName($L)", variableName, textArea.name);
+            if (textArea.passwordCharacter != '•') builder.addStatement("$L.setPasswordCharacter($L)", variableName, textArea.passwordCharacter);
+            if (textArea.passwordMode) builder.addStatement("$L.setPasswordMode($L)", true);
+    
+            if (textArea.alignment != Align.left) {
+                builder.add(".align($T.$L)", Align.class, alignmentToName(textArea.alignment));
+            }
+    
+            if (textArea.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
+            if (textArea.cursorPosition != 0) builder.addStatement("$L.setCursorPosition($L)", variableName, textArea.cursorPosition);
+            if (textArea.selectAll) builder.addStatement("$L.setSelection($L, $L)", variableName, 0, textArea.text.length());
+            else if (textArea.selectionStart != 0 || textArea.selectionEnd != 0)
+                builder.addStatement("$L.setSelection($L, $L)", variableName, textArea.selectionStart, textArea.selectionEnd);
+            if (!textArea.focusTraversal) builder.addStatement("$L.setFocusTraversal($L)", variableName, false);
+            if (textArea.maxLength != 0) builder.addStatement("$L.setMaxLength($L)", variableName, textArea.maxLength);
+            if (textArea.messageText != null) builder.addStatement("$L.setCursorPosition($L)", variableName, textArea.messageText);
+            if (textArea.preferredRows > 0) builder.addStatement("$L.setPreferredRows($L)", variableName, textArea.preferredRows);
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimTouchPad) {
