@@ -365,14 +365,33 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("imageTextButton", variables);
-            if (usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T(skin$3L)", TextButton.class, variableName,
-                        imageTextButton.style.name.equals("default") ? "" : ", \"" + imageTextButton.style.name + "\"");
-            } else {
-                builder.addStatement("$1T $2L = new $1T(skin$3L)", TextButton.class, variableName,
-                        imageTextButton.style.name.equals("default") ? "" : ", \"" + imageTextButton.style.name + "\"");
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T ", ImageTextButton.class);
+            builder.addStatement("$L = new $T($S, skin$3L)", variableName, ImageTextButton.class, imageTextButton.text,
+                    imageTextButton.style.name.equals("default") ? "" : ", \"" + imageTextButton.style.name + "\"");
+            
             if (imageTextButton.name != null) builder.addStatement("$L.setName($L)", variableName, imageTextButton.name);
+            if (imageTextButton.checked) builder.addStatement("$L.setChecked($L)", variableName, true);
+            if (imageTextButton.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
+            if (imageTextButton.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, imageTextButton.color.getName());
+    
+            if (!Utils.isEqual(0, imageTextButton.padLeft, imageTextButton.padRight, imageTextButton.padTop, imageTextButton.padBottom)) {
+                if (Utils.isEqual(imageTextButton.padLeft, imageTextButton.padRight, imageTextButton.padTop, imageTextButton.padBottom)) {
+                    builder.addStatement("$L.pad($L)", variableName, imageTextButton.padLeft);
+                } else {
+                    if (!MathUtils.isZero(imageTextButton.padLeft)) {
+                        builder.addStatement("$L.padLeft($L)", variableName, imageTextButton.padLeft);
+                    }
+                    if (!MathUtils.isZero(imageTextButton.padRight)) {
+                        builder.addStatement("$L.padRight($L)", variableName, imageTextButton.padRight);
+                    }
+                    if (!MathUtils.isZero(imageTextButton.padTop)) {
+                        builder.addStatement("$L.padTop($L)", variableName, imageTextButton.padTop);
+                    }
+                    if (!MathUtils.isZero(imageTextButton.padBottom)) {
+                        builder.addStatement("$L.padBottom($L)", variableName, imageTextButton.padBottom);
+                    }
+                }
+            }
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimLabel) {
