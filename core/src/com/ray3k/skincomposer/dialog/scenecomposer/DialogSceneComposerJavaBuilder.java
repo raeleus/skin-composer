@@ -713,19 +713,60 @@ public class DialogSceneComposerJavaBuilder {
                 builder.addStatement("$L.setActor($L)", variableName, pair.name);
             }
     
-    
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimHorizontalGroup) {
             var horizontalGroup = (SimHorizontalGroup) actor;
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("horizontalGroup", variables);
-            if (!usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T(skin$3L)", HorizontalGroup.class, variableName);
-            } else {
-                builder.addStatement("$1T $2L = new $1T(skin$3L)", HorizontalGroup.class, variableName);
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T ", HorizontalGroup.class);
+            builder.addStatement("$L = new $T()", variableName, HorizontalGroup.class);
+            
             if (horizontalGroup.name != null) builder.addStatement("$L.setName($L)", variableName, horizontalGroup.name);
+    
+            if (horizontalGroup.alignment != Align.center) {
+                builder.addStatement("$L.align($T.$L)", variableName, Align.class, alignmentToName(horizontalGroup.alignment));
+            }
+    
+            if (horizontalGroup.expand) builder.addStatement("$L.expand()", variableName);
+            if (horizontalGroup.fill) builder.addStatement("$L.fill()", variableName);
+    
+            if (!Utils.isEqual(0, horizontalGroup.padLeft, horizontalGroup.padRight, horizontalGroup.padTop, horizontalGroup.padBottom)) {
+                if (Utils.isEqual(horizontalGroup.padLeft, horizontalGroup.padRight, horizontalGroup.padTop, horizontalGroup.padBottom)) {
+                    builder.add("$L.pad($L)", variableName, horizontalGroup.padLeft);
+                } else {
+                    if (!MathUtils.isZero(horizontalGroup.padLeft)) {
+                        builder.add("$L.padLeft($Lf)", variableName, horizontalGroup.padLeft);
+                    }
+                    if (!MathUtils.isZero(horizontalGroup.padRight)) {
+                        builder.add("$L.padRight($Lf)", variableName, horizontalGroup.padRight);
+                    }
+                    if (!MathUtils.isZero(horizontalGroup.padTop)) {
+                        builder.add("$L.padTop($Lf)", variableName, horizontalGroup.padTop);
+                    }
+                    if (!MathUtils.isZero(horizontalGroup.padBottom)) {
+                        builder.add("$L.padBottom($Lf)", variableName, horizontalGroup.padBottom);
+                    }
+                }
+            }
+    
+            if (horizontalGroup.reverse) builder.addStatement("$L.reverse()", variableName);
+    
+            if (horizontalGroup.rowAlignment != Align.center) {
+                builder.addStatement("$L.align($T.$L)", variableName, Align.class, alignmentToName(horizontalGroup.rowAlignment));
+            }
+    
+            if (!MathUtils.isZero(horizontalGroup.space)) builder.addStatement("$L.space($Lf)", variableName, horizontalGroup.space);
+            if (horizontalGroup.wrap) builder.addStatement("$L.wrap()", variableName);
+            if (!MathUtils.isZero(horizontalGroup.wrapSpace)) builder.addStatement("$L.wrapSpace($Lf)", variableName, horizontalGroup.wrapSpace);
+
+            for (var child : horizontalGroup.children) {
+                WidgetNamePair pair = createWidget(child, variables, usedVariables);
+                if (pair != null) {
+                    builder.add(pair.codeBlock);
+                    builder.addStatement("$L.addActor($L)", variableName, pair.name);
+                }
+            }
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimScrollPane) {
