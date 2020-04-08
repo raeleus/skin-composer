@@ -467,14 +467,30 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("selectBox", variables);
-            if (!usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T(skin$3L)", SelectBox.class, variableName,
-                        selectBox.style.name.equals("default") ? "" : ", \"" + selectBox.style.name + "\"");
-            } else {
-                builder.addStatement("$1T $2L = new $1T(skin$3L)", SelectBox.class, variableName,
-                        selectBox.style.name.equals("default") ? "" : ", \"" + selectBox.style.name + "\"");
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T<String> ", SelectBox.class);
+            builder.addStatement("$L = new $T(skin$L)", variableName, SelectBox.class,
+                    selectBox.style.name.equals("default") ? "" : ", \"" + selectBox.style.name + "\"");
+            
             if (selectBox.name != null) builder.addStatement("$L.setName($L)", variableName, selectBox.name);
+            if (selectBox.disabled) builder.addStatement("$L.setDisabled($L)", variableName, selectBox.disabled);
+            if (selectBox.maxListCount != 0) builder.addStatement("$L.setMaxListCount($L)", variableName, selectBox.maxListCount);
+    
+            if (selectBox.list.size > 0) {
+                builder.add("$L.setItems(", variableName);
+                boolean addComma = false;
+                for (var item : selectBox.list) {
+                    builder.add((addComma ? ", " : "") + "$S", item);
+                    addComma = true;
+                }
+                builder.addStatement(")");
+            }
+    
+            if (selectBox.alignment != Align.center) {
+                builder.add(".align($T.$L)", Align.class, alignmentToName(selectBox.alignment));
+            }
+    
+            if (selectBox.selected != 0) builder.addStatement("$L.setSelected($L)", variableName, selectBox.selected);
+            if (selectBox.scrollingDisabled) builder.addStatement("$L.setScrollingDisabled($L)", variableName, selectBox.scrollingDisabled);
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimSlider) {
