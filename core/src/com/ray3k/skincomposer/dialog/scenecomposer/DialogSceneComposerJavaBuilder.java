@@ -3,16 +3,11 @@ package com.ray3k.skincomposer.dialog.scenecomposer;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StringBuilder;
-import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
-import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimButton;
-import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimRootGroup;
-import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimTable;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.*;
 import com.ray3k.skincomposer.utils.Utils;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
@@ -52,10 +47,10 @@ public class DialogSceneComposerJavaBuilder {
                 .returns(void.class).build();
     }
     
-    private static WidgetNamePair createWidget(SimActor simActor, Array<String> variables) {
-        if (simActor == null) return null;
-        else if (simActor instanceof SimRootGroup) {
-            var simRootGroup = (SimRootGroup) simActor;
+    private static WidgetNamePair createWidget(SimActor actor, Array<String> variables) {
+        if (actor == null) return null;
+        else if (actor instanceof SimRootGroup) {
+            var simRootGroup = (SimRootGroup) actor;
             var builder = CodeBlock.builder();
             
             for (var child : simRootGroup.children) {
@@ -65,8 +60,8 @@ public class DialogSceneComposerJavaBuilder {
             }
             
             return new WidgetNamePair(builder.build(), null);
-        } else if (simActor instanceof SimTable) {
-            var table = (SimTable) simActor;
+        } else if (actor instanceof SimTable) {
+            var table = (SimTable) actor;
             var builder = CodeBlock.builder();
             var variableName = createVariableName("table", variables);
             builder.addStatement("$1T $2L = new $1T()", Table.class, variableName);
@@ -238,8 +233,8 @@ public class DialogSceneComposerJavaBuilder {
             }
             
             return new WidgetNamePair(builder.build(), variableName);
-        } else if (simActor instanceof SimButton) {
-            var button = (SimButton) simActor;
+        } else if (actor instanceof SimButton) {
+            var button = (SimButton) actor;
             if (button.style == null) return null;
             
             var builder = CodeBlock.builder();
@@ -269,6 +264,223 @@ public class DialogSceneComposerJavaBuilder {
                 }
             }
             
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimCheckBox) {
+            var checkBox = (SimCheckBox) actor;
+            if (checkBox.style == null) return null;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("checkBox", variables);
+            builder.addStatement("$1T $2L = new $1T($3S, skin$4L)", CheckBox.class, variableName, checkBox.text,checkBox.style.name.equals("default") ? "" : ", \"" + checkBox.style.name + "\"");
+            if (checkBox.name != null) builder.addStatement("$L.setName($L)", variableName, checkBox.name);
+            if (checkBox.checked) builder.addStatement("$L.setChecked($L)", variableName, true);
+            if (checkBox.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
+            if (checkBox.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, checkBox.color.getName());
+    
+            if (!Utils.isEqual(0, checkBox.padLeft, checkBox.padRight, checkBox.padTop, checkBox.padBottom)) {
+                if (Utils.isEqual(checkBox.padLeft, checkBox.padRight, checkBox.padTop, checkBox.padBottom)) {
+                    builder.addStatement("$L.pad($L)", variableName, checkBox.padLeft);
+                } else {
+                    if (!MathUtils.isZero(checkBox.padLeft)) {
+                        builder.addStatement("$L.padLeft($L)", variableName, checkBox.padLeft);
+                    }
+                    if (!MathUtils.isZero(checkBox.padRight)) {
+                        builder.addStatement("$L.padRight($L)", variableName, checkBox.padRight);
+                    }
+                    if (!MathUtils.isZero(checkBox.padTop)) {
+                        builder.addStatement("$L.padTop($L)", variableName, checkBox.padTop);
+                    }
+                    if (!MathUtils.isZero(checkBox.padBottom)) {
+                        builder.addStatement("$L.padBottom($L)", variableName, checkBox.padBottom);
+                    }
+                }
+            }
+            
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimImage) {
+            var image = (SimImage) actor;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("image", variables);
+            builder.addStatement("$1T $2L = new $1T()", Image.class, variableName);
+            if (image.name != null) builder.addStatement("$L.setName($L)", variableName, image.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimImageButton) {
+            var imageButton = (SimImageButton) actor;
+            if (imageButton.style == null) return null;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("imageButton", variables);
+            builder.addStatement("$1T $2L = new $1T(skin$3L)", ImageButton.class, variableName, imageButton.style.name.equals("default") ? "" : ", \"" + imageButton.style.name + "\"");
+            if (imageButton.name != null) builder.addStatement("$L.setName($L)", variableName, imageButton.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimImageTextButton) {
+            var imageTextButton = (SimTextButton) actor;
+            if (imageTextButton.style == null) return null;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("imageTextButton", variables);
+            builder.addStatement("$1T $2L = new $1T(skin$3L)", TextButton.class, variableName, imageTextButton.style.name.equals("default") ? "" : ", \"" + imageTextButton.style.name + "\"");
+            if (imageTextButton.name != null) builder.addStatement("$L.setName($L)", variableName, imageTextButton.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimLabel) {
+            var label = (SimLabel) actor;
+            if (label.style == null) return null;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("label", variables);
+            builder.addStatement("$1T $2L = new $1T(skin$3L)", Label.class, variableName, label.style.name.equals("default") ? "" : ", \"" + label.style.name + "\"");
+            if (label.name != null) builder.addStatement("$L.setName($L)", variableName, label.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimList) {
+            var list = (SimList) actor;
+            if (list.style == null) return null;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("list", variables);
+            builder.addStatement("$1T $2L = new $1T(skin$3L)", List.class, variableName, list.style.name.equals("default") ? "" : ", \"" + list.style.name + "\"");
+            if (list.name != null) builder.addStatement("$L.setName($L)", variableName, list.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimProgressBar) {
+            var progressBar = (SimProgressBar) actor;
+            if (progressBar.style == null) return null;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("progressBar", variables);
+            builder.addStatement("$1T $2L = new $1T(skin$3L)", ProgressBar.class, variableName, progressBar.style.name.equals("default") ? "" : ", \"" + progressBar.style.name + "\"");
+            if (progressBar.name != null) builder.addStatement("$L.setName($L)", variableName, progressBar.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimSelectBox) {
+            var selectBox = (SimSelectBox) actor;
+            if (selectBox.style == null) return null;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("selectBox", variables);
+            builder.addStatement("$1T $2L = new $1T(skin$3L)", SelectBox.class, variableName, selectBox.style.name.equals("default") ? "" : ", \"" + selectBox.style.name + "\"");
+            if (selectBox.name != null) builder.addStatement("$L.setName($L)", variableName, selectBox.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimSlider) {
+            var slider = (SimSlider) actor;
+            if (slider.style == null) return null;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("slider", variables);
+            builder.addStatement("$1T $2L = new $1T(skin$3L)", Slider.class, variableName, slider.style.name.equals("default") ? "" : ", \"" + slider.style.name + "\"");
+            if (slider.name != null) builder.addStatement("$L.setName($L)", variableName, slider.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimTextButton) {
+            var textButton = (SimTextButton) actor;
+            if (textButton.style == null) return null;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("textButton", variables);
+            builder.addStatement("$1T $2L = new $1T(skin$3L)", TextButton.class, variableName, textButton.style.name.equals("default") ? "" : ", \"" + textButton.style.name + "\"");
+            if (textButton.name != null) builder.addStatement("$L.setName($L)", variableName, textButton.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimTextField) {
+            var textField = (SimTextField) actor;
+            if (textField.style == null) return null;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("textField", variables);
+            builder.addStatement("$1T $2L = new $1T(skin$3L)", TextField.class, variableName, textField.style.name.equals("default") ? "" : ", \"" + textField.style.name + "\"");
+            if (textField.name != null) builder.addStatement("$L.setName($L)", variableName, textField.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimTextArea) {
+            var textArea = (SimTextArea) actor;
+            if (textArea.style == null) return null;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("textArea", variables);
+            builder.addStatement("$1T $2L = new $1T(skin$3L)", TextArea.class, variableName, textArea.style.name.equals("default") ? "" : ", \"" + textArea.style.name + "\"");
+            if (textArea.name != null) builder.addStatement("$L.setName($L)", variableName, textArea.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimTouchPad) {
+            var touchPad = (SimTouchPad) actor;
+            if (touchPad.style == null) return null;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("touchPad", variables);
+            builder.addStatement("$1T $2L = new $1T(skin$3L)", Touchpad.class, variableName, touchPad.style.name.equals("default") ? "" : ", \"" + touchPad.style.name + "\"");
+            if (touchPad.name != null) builder.addStatement("$L.setName($L)", variableName, touchPad.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimContainer) {
+            var container = (SimContainer) actor;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("container", variables);
+            builder.addStatement("$1T $2L = new $1T(skin$3L)", Container.class);
+            if (container.name != null) builder.addStatement("$L.setName($L)", variableName, container.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimHorizontalGroup) {
+            var horizontalGroup = (SimHorizontalGroup) actor;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("horizontalGroup", variables);
+            builder.addStatement("$1T $2L = new $1T(skin$3L)", HorizontalGroup.class, variableName);
+            if (horizontalGroup.name != null) builder.addStatement("$L.setName($L)", variableName, horizontalGroup.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimScrollPane) {
+            var scrollPane = (SimScrollPane) actor;
+            if (scrollPane.style == null) return null;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("scrollPane", variables);
+            builder.addStatement("$1T $2L = new $1T(skin$3L)", ScrollPane.class, variableName, scrollPane.style.name.equals("default") ? "" : ", \"" + scrollPane.style.name + "\"");
+            if (scrollPane.name != null) builder.addStatement("$L.setName($L)", variableName, scrollPane.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimStack) {
+            var stack = (SimStack) actor;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("stack", variables);
+            builder.addStatement("$1T $2L = new $1T()", Stack.class, variableName);
+            if (stack.name != null) builder.addStatement("$L.setName($L)", variableName, stack.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimSplitPane) {
+            var splitPane = (SimSplitPane) actor;
+            if (splitPane.style == null) return null;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("splitPane", variables);
+            builder.addStatement("$1T $2L = new $1T(skin$3L)", SplitPane.class, variableName, splitPane.style.name.equals("default") ? "" : ", \"" + splitPane.style.name + "\"");
+            if (splitPane.name != null) builder.addStatement("$L.setName($L)", variableName, splitPane.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimTree) {
+            var tree = (SimTree) actor;
+            if (tree.style == null) return null;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("tree", variables);
+            builder.addStatement("$1T $2L = new $1T(skin$3L)", Tree.class, variableName, tree.style.name.equals("default") ? "" : ", \"" + tree.style.name + "\"");
+            if (tree.name != null) builder.addStatement("$L.setName($L)", variableName, tree.name);
+    
+            return new WidgetNamePair(builder.build(), variableName);
+        } else if (actor instanceof SimVerticalGroup) {
+            var verticalGroup = (SimVerticalGroup) actor;
+    
+            var builder = CodeBlock.builder();
+            var variableName = createVariableName("verticalGroup", variables);
+            builder.addStatement("$1T $2L = new $1T()", VerticalGroup.class, variableName);
+            if (verticalGroup.name != null) builder.addStatement("$L.setName($L)", variableName, verticalGroup.name);
+    
             return new WidgetNamePair(builder.build(), variableName);
         } else {
             return null;
