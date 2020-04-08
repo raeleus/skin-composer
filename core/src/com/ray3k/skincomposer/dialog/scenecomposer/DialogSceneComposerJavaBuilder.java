@@ -831,12 +831,20 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("stack", variables);
-            if (!usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T()", Stack.class, variableName);
-            } else {
-                builder.addStatement("$1T $2L = new $1T()", Stack.class, variableName);
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T ", Stack.class);
+            builder.addStatement("$L = new $T()", variableName, Stack.class);
+            
             if (stack.name != null) builder.addStatement("$L.setName($L)", variableName, stack.name);
+    
+            for (var child : stack.children) {
+                WidgetNamePair pair = createWidget(child, variables, usedVariables);
+                if (pair != null) {
+                    builder.add(pair.codeBlock);
+                    builder.addStatement("$L.addActor($L)", variableName, pair.name);
+                    variables.removeValue(pair.name, false);
+                    usedVariables.add(pair.name);
+                }
+            }
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimSplitPane) {
