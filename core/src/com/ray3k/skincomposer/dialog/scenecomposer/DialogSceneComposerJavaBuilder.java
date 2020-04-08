@@ -853,14 +853,29 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("splitPane", variables);
-            if (!usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T(skin$3L)", SplitPane.class, variableName,
-                        splitPane.style.name.equals("default") ? "" : ", \"" + splitPane.style.name + "\"");
-            } else {
-                builder.addStatement("$1T $2L = new $1T(skin$3L)", SplitPane.class, variableName,
-                        splitPane.style.name.equals("default") ? "" : ", \"" + splitPane.style.name + "\"");
+            
+            WidgetNamePair pair1 = createWidget(splitPane.childFirst, variables, usedVariables);
+            if (pair1 != null) {
+                builder.add(pair1.codeBlock);
+                variables.removeValue(pair1.name, false);
+                usedVariables.add(pair1.name);
             }
+            WidgetNamePair pair2 = createWidget(splitPane.childFirst, variables, usedVariables);
+            if (pair2 != null) {
+                builder.add(pair2.codeBlock);
+                variables.removeValue(pair2.name, false);
+                usedVariables.add(pair2.name);
+            }
+            if (!usedVariables.contains(variableName)) builder.add("$T ", SplitPane.class);
+            builder.add("$L = new $T(", variableName, SplitPane.class)
+                    .add("$L, $L, $L, skin", pair1 == null? null : pair1.name, pair2 == null? null : pair2.name, splitPane.vertical)
+                    .addStatement("$L)", splitPane.style.name.equals("default-horizontal") || splitPane.style.name.equals("default-vertical") ? "" : ", \"" + splitPane.style.name + "\"");
+            
+            
             if (splitPane.name != null) builder.addStatement("$L.setName($L)", variableName, splitPane.name);
+            if (MathUtils.isEqual(.5f, splitPane.split)) builder.addStatement("$L.setSplit($L)", variableName, splitPane.split);
+            if (MathUtils.isZero(splitPane.splitMin)) builder.addStatement("$L.setMinSplitAmount($L)", variableName, splitPane.splitMin);
+            if (MathUtils.isEqual(1, splitPane.splitMax)) builder.addStatement("$L.setMaxSplitAmount($L)", variableName, splitPane.splitMax);
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimTree) {
