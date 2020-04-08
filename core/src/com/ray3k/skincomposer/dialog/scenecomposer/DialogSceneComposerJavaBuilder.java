@@ -625,12 +625,94 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("container", variables);
-            if (!usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T(skin$3L)", Container.class);
-            } else {
-                builder.addStatement("$1T $2L = new $1T(skin$3L)", Container.class);
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T ", Container.class);
+            builder.addStatement("$L = new $T()", variableName, Container.class);
+            
             if (container.name != null) builder.addStatement("$L.setName($L)", variableName, container.name);
+    
+            if (container.alignment != Align.center) {
+                builder.addStatement("$L.align($T.$L)", variableName, Align.class, alignmentToName(container.alignment));
+            }
+    
+            if (container.fillX && container.fillY) {
+                builder.add("$L.fill(true)", variableName);
+            } else if (container.fillX) {
+                builder.add("$L.fillX(true)", variableName);
+            } else if (container.fillY) {
+                builder.add("$L.fill(true)", variableName);
+            }
+    
+            boolean minWidth = false, minHeight = false, maxWidth = false, maxHeight = false, preferredWidth = false, preferredHeight = false;
+            if (Utils.isEqual(container.minWidth, container.minHeight, container.maxWidth, container.maxHeight, container.preferredWidth,
+                    container.preferredHeight) && !Utils.isEqual(-1, container.minWidth)) {
+                builder.add("$L.size($L)", variableName, container.minWidth);
+                minWidth = true; minHeight = true; maxWidth = true; maxHeight = true; preferredWidth = true; preferredHeight = true;
+            }
+            if (!minWidth && !maxWidth && !preferredWidth && Utils.isEqual(container.minWidth, container.maxWidth, container.preferredWidth) && !Utils.isEqual(-1, container.minWidth)) {
+                builder.add("$L.width($L)", variableName, container.minWidth);
+                minWidth = true; maxWidth = true; preferredWidth = true;
+            }
+            if (!minHeight && !maxHeight && !preferredHeight && Utils.isEqual(container.minHeight, container.maxHeight, container.preferredHeight) && !Utils.isEqual(-1, container.minHeight)) {
+                builder.add("$L.height($L)", variableName, container.minHeight);
+                minHeight = true; maxHeight = true; preferredHeight = true;
+            }
+            if (!minWidth && !minHeight && Utils.isEqual(container.minWidth, container.minHeight) && !Utils.isEqual(-1, container.minWidth)) {
+                builder.add("$L.minSize($L)", variableName, container.minWidth);
+                minWidth = true; minHeight = true;
+            }
+            if (!maxWidth && !maxHeight && Utils.isEqual(container.maxWidth, container.maxHeight) && !Utils.isEqual(-1, container.maxWidth)) {
+                builder.add("$L.maxSize($L)", variableName, container.maxWidth);
+                maxWidth = true; maxHeight = true;
+            }
+            if (!preferredWidth && !preferredHeight && Utils.isEqual(container.preferredWidth, container.preferredHeight) && !Utils.isEqual(-1,
+                    container.preferredWidth)) {
+                builder.add("$L.preferredSize($L)", variableName, container.preferredWidth);
+                preferredWidth = true; preferredHeight = true;
+            }
+            if (!minWidth && !Utils.isEqual(-1, container.minWidth)) {
+                builder.add("$L.minWidth($L)", variableName, container.minWidth);
+            }
+            if (!minHeight && !Utils.isEqual(-1, container.minHeight)) {
+                builder.add("$L.minHeight($L)", variableName, container.minHeight);
+            }
+            if (!maxWidth && !Utils.isEqual(-1, container.maxWidth)) {
+                builder.add("$L.maxWidth($L)", variableName, container.maxWidth);
+            }
+            if (!maxHeight && !Utils.isEqual(-1, container.maxHeight)) {
+                builder.add("$L.maxHeight($L)", variableName, container.maxHeight);
+            }
+            if (!preferredWidth && !Utils.isEqual(-1, container.preferredWidth)) {
+                builder.add("$L.preferredWidth($L)", variableName, container.preferredWidth);
+            }
+            if (!preferredHeight && !Utils.isEqual(-1, container.preferredHeight)) {
+                builder.add("$L.preferredHeight($L)", variableName, container.preferredHeight);
+            }
+    
+            if (!Utils.isEqual(0, container.padLeft, container.padRight, container.padTop, container.padBottom)) {
+                if (Utils.isEqual(container.padLeft, container.padRight, container.padTop, container.padBottom)) {
+                    builder.add("$L.pad($L)", variableName, container.padLeft);
+                } else {
+                    if (!MathUtils.isZero(container.padLeft)) {
+                        builder.add("$L.padLeft($Lf)", variableName, container.padLeft);
+                    }
+                    if (!MathUtils.isZero(container.padRight)) {
+                        builder.add("$L.padRight($Lf)", variableName, container.padRight);
+                    }
+                    if (!MathUtils.isZero(container.padTop)) {
+                        builder.add("$L.padTop($Lf)", variableName, container.padTop);
+                    }
+                    if (!MathUtils.isZero(container.padBottom)) {
+                        builder.add("$L.padBottom($Lf)", variableName, container.padBottom);
+                    }
+                }
+            }
+    
+            WidgetNamePair pair = createWidget(container.child, variables, usedVariables);
+            if (pair != null) {
+                builder.add(pair.codeBlock);
+                builder.addStatement("$L.setActor($L)", variableName, pair.name);
+            }
+    
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimHorizontalGroup) {
