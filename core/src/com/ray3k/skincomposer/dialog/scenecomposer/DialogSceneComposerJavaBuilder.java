@@ -422,14 +422,20 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("list", variables);
-            if (!usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T(skin$3L)", List.class, variableName,
-                        list.style.name.equals("default") ? "" : ", \"" + list.style.name + "\"");
-            } else {
-                builder.addStatement("$1T $2L = new $1T(skin$3L)", List.class, variableName,
-                        list.style.name.equals("default") ? "" : ", \"" + list.style.name + "\"");
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T<String> ", List.class);
+            builder.addStatement("$L = new $T<String>(skin$L)", variableName, List.class,
+                    list.style.name.equals("default") ? "" : ", \"" + list.style.name + "\"");
+            
             if (list.name != null) builder.addStatement("$L.setName($L)", variableName, list.name);
+            if (list.list.size > 0) {
+                builder.add("$L.setItems(", variableName);
+                boolean addComma = false;
+                for (var item : list.list) {
+                    builder.add((addComma ? ", " : "") + "$S", item);
+                    addComma = true;
+                }
+                builder.addStatement(")");
+            }
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimProgressBar) {
