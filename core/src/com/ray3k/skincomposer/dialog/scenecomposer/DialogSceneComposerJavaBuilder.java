@@ -945,12 +945,56 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("verticalGroup", variables);
-            if (!usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T()", VerticalGroup.class, variableName);
-            } else {
-                builder.addStatement("$1T $2L = new $1T()", VerticalGroup.class, variableName);
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T ", HorizontalGroup.class);
+            builder.addStatement("$L = new $T()", variableName, HorizontalGroup.class);
+    
             if (verticalGroup.name != null) builder.addStatement("$L.setName($L)", variableName, verticalGroup.name);
+    
+            if (verticalGroup.alignment != Align.center) {
+                builder.addStatement("$L.align($T.$L)", variableName, Align.class, alignmentToName(verticalGroup.alignment));
+            }
+    
+            if (verticalGroup.expand) builder.addStatement("$L.expand()", variableName);
+            if (verticalGroup.fill) builder.addStatement("$L.fill()", variableName);
+    
+            if (!Utils.isEqual(0, verticalGroup.padLeft, verticalGroup.padRight, verticalGroup.padTop, verticalGroup.padBottom)) {
+                if (Utils.isEqual(verticalGroup.padLeft, verticalGroup.padRight, verticalGroup.padTop, verticalGroup.padBottom)) {
+                    builder.add("$L.pad($L)", variableName, verticalGroup.padLeft);
+                } else {
+                    if (!MathUtils.isZero(verticalGroup.padLeft)) {
+                        builder.add("$L.padLeft($Lf)", variableName, verticalGroup.padLeft);
+                    }
+                    if (!MathUtils.isZero(verticalGroup.padRight)) {
+                        builder.add("$L.padRight($Lf)", variableName, verticalGroup.padRight);
+                    }
+                    if (!MathUtils.isZero(verticalGroup.padTop)) {
+                        builder.add("$L.padTop($Lf)", variableName, verticalGroup.padTop);
+                    }
+                    if (!MathUtils.isZero(verticalGroup.padBottom)) {
+                        builder.add("$L.padBottom($Lf)", variableName, verticalGroup.padBottom);
+                    }
+                }
+            }
+    
+            if (verticalGroup.reverse) builder.addStatement("$L.reverse()", variableName);
+    
+            if (verticalGroup.columnAlignment != Align.center) {
+                builder.addStatement("$L.align($T.$L)", variableName, Align.class, alignmentToName(verticalGroup.columnAlignment));
+            }
+    
+            if (!MathUtils.isZero(verticalGroup.space)) builder.addStatement("$L.space($Lf)", variableName, verticalGroup.space);
+            if (verticalGroup.wrap) builder.addStatement("$L.wrap()", variableName);
+            if (!MathUtils.isZero(verticalGroup.wrapSpace)) builder.addStatement("$L.wrapSpace($Lf)", variableName, verticalGroup.wrapSpace);
+    
+            for (var child : verticalGroup.children) {
+                WidgetNamePair pair = createWidget(child, variables, usedVariables);
+                if (pair != null) {
+                    builder.add(pair.codeBlock);
+                    builder.addStatement("$L.addActor($L)", variableName, pair.name);
+                    variables.removeValue(pair.name, false);
+                    usedVariables.add(pair.name);
+                }
+            }
     
             return new WidgetNamePair(builder.build(), variableName);
         } else {
