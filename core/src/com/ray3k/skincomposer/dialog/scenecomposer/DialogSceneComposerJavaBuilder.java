@@ -68,11 +68,8 @@ public class DialogSceneComposerJavaBuilder {
             var table = (SimTable) actor;
             var builder = CodeBlock.builder();
             var variableName = createVariableName("table", variables);
-            if (usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T()", Table.class, variableName);
-            } else {
-                builder.addStatement("$1T $2L = new $1T()", Table.class, variableName);
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T ", Table.class);
+            builder.addStatement("$L = new $T()", variableName, Table.class);
             if (table.name != null) builder.addStatement("$L.setName($L)", variableName, table.name);
             if (table.background != null) builder.addStatement("$L.setBackground(skin.getDrawable($S))", variableName, table.background.name);
             if (table.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, table.color.getName());
@@ -251,13 +248,10 @@ public class DialogSceneComposerJavaBuilder {
             
             var builder = CodeBlock.builder();
             var variableName = createVariableName("button", variables);
-            if (usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T(skin$3L)", Button.class, variableName,
-                        button.style.name.equals("default") ? "" : ", \"" + button.style.name + "\"");
-            } else {
-                builder.addStatement("$1T $2L = new $1T(skin$3L)", Button.class, variableName,
-                        button.style.name.equals("default") ? "" : ", \"" + button.style.name + "\"");
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T ", Button.class);
+            builder.addStatement("$L = new $T(skin$L)", variableName, Button.class,
+                    button.style.name.equals("default") ? "" : ", \"" + button.style.name + "\"");
+            
             if (button.name != null) builder.addStatement("$L.setName($L)", variableName, button.name);
             if (button.checked) builder.addStatement("$L.setChecked($L)", variableName, true);
             if (button.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
@@ -289,13 +283,10 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("checkBox", variables);
-            if (usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T($3S, skin$4L)", CheckBox.class, variableName, checkBox.text,
-                        checkBox.style.name.equals("default") ? "" : ", \"" + checkBox.style.name + "\"");
-            } else {
-                builder.addStatement("$1T $2L = new $1T($3S, skin$4L)", CheckBox.class, variableName, checkBox.text,
-                        checkBox.style.name.equals("default") ? "" : ", \"" + checkBox.style.name + "\"");
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T ", CheckBox.class);
+            builder.addStatement("$L = new $T($S, skin$L)", variableName, CheckBox.class, checkBox.text,
+                    checkBox.style.name.equals("default") ? "" : ", \"" + checkBox.style.name + "\"");
+            
             if (checkBox.name != null) builder.addStatement("$L.setName($L)", variableName, checkBox.name);
             if (checkBox.checked) builder.addStatement("$L.setChecked($L)", variableName, true);
             if (checkBox.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
@@ -323,15 +314,14 @@ public class DialogSceneComposerJavaBuilder {
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimImage) {
             var image = (SimImage) actor;
-    
+            if (image.drawable == null) return null;
+            
             var builder = CodeBlock.builder();
             var variableName = createVariableName("image", variables);
-            if (usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T()", Image.class, variableName);
-            } else {
-                builder.addStatement("$1T $2L = new $1T()", Image.class, variableName);
-            }
+            if (usedVariables.contains(variableName)) builder.add("$T", Image.class);
+            builder.addStatement("$L = new $T($S)", variableName, Image.class, image.drawable.name);
             if (image.name != null) builder.addStatement("$L.setName($L)", variableName, image.name);
+            if (image.scaling != null) builder.addStatement("$L.setName($L)", variableName, image.scaling.name());
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimImageButton) {
