@@ -321,7 +321,7 @@ public class DialogSceneComposerJavaBuilder {
             if (usedVariables.contains(variableName)) builder.add("$T", Image.class);
             builder.addStatement("$L = new $T($S)", variableName, Image.class, image.drawable.name);
             if (image.name != null) builder.addStatement("$L.setName($L)", variableName, image.name);
-            if (image.scaling != null) builder.addStatement("$L.setName($L)", variableName, image.scaling.name());
+            if (image.scaling != null) builder.addStatement("$L.setScaling($L)", variableName, image.scaling.name());
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimImageButton) {
@@ -330,14 +330,33 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("imageButton", variables);
-            if (usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T(skin$3L)", ImageButton.class, variableName,
-                        imageButton.style.name.equals("default") ? "" : ", \"" + imageButton.style.name + "\"");
-            } else {
-                builder.addStatement("$1T $2L = new $1T(skin$3L)", ImageButton.class, variableName,
-                        imageButton.style.name.equals("default") ? "" : ", \"" + imageButton.style.name + "\"");
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T", ImageButton.class);
+            builder.addStatement("$L = new $T(skin$L)", variableName, ImageButton.class,
+                    imageButton.style.name.equals("default") ? "" : ", \"" + imageButton.style.name + "\"");
+            
             if (imageButton.name != null) builder.addStatement("$L.setName($L)", variableName, imageButton.name);
+            if (imageButton.checked) builder.addStatement("$L.setChecked($L)", variableName, true);
+            if (imageButton.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
+            if (imageButton.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, imageButton.color.getName());
+    
+            if (!Utils.isEqual(0, imageButton.padLeft, imageButton.padRight, imageButton.padTop, imageButton.padBottom)) {
+                if (Utils.isEqual(imageButton.padLeft, imageButton.padRight, imageButton.padTop, imageButton.padBottom)) {
+                    builder.addStatement("$L.pad($L)", variableName, imageButton.padLeft);
+                } else {
+                    if (!MathUtils.isZero(imageButton.padLeft)) {
+                        builder.addStatement("$L.padLeft($L)", variableName, imageButton.padLeft);
+                    }
+                    if (!MathUtils.isZero(imageButton.padRight)) {
+                        builder.addStatement("$L.padRight($L)", variableName, imageButton.padRight);
+                    }
+                    if (!MathUtils.isZero(imageButton.padTop)) {
+                        builder.addStatement("$L.padTop($L)", variableName, imageButton.padTop);
+                    }
+                    if (!MathUtils.isZero(imageButton.padBottom)) {
+                        builder.addStatement("$L.padBottom($L)", variableName, imageButton.padBottom);
+                    }
+                }
+            }
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimImageTextButton) {
