@@ -711,6 +711,8 @@ public class DialogSceneComposerJavaBuilder {
             if (pair != null) {
                 builder.add(pair.codeBlock);
                 builder.addStatement("$L.setActor($L)", variableName, pair.name);
+                variables.removeValue(pair.name, false);
+                usedVariables.add(pair.name);
             }
     
             return new WidgetNamePair(builder.build(), variableName);
@@ -765,6 +767,8 @@ public class DialogSceneComposerJavaBuilder {
                 if (pair != null) {
                     builder.add(pair.codeBlock);
                     builder.addStatement("$L.addActor($L)", variableName, pair.name);
+                    variables.removeValue(pair.name, false);
+                    usedVariables.add(pair.name);
                 }
             }
     
@@ -775,14 +779,51 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("scrollPane", variables);
-            if (!usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T(skin$3L)", ScrollPane.class, variableName,
-                        scrollPane.style.name.equals("default") ? "" : ", \"" + scrollPane.style.name + "\"");
-            } else {
-                builder.addStatement("$1T $2L = new $1T(skin$3L)", ScrollPane.class, variableName,
-                        scrollPane.style.name.equals("default") ? "" : ", \"" + scrollPane.style.name + "\"");
+            if (!usedVariables.contains(variableName)) builder.add("$T ", ScrollPane.class);
+    
+            WidgetNamePair pair = createWidget(scrollPane.child, variables, usedVariables);
+            if (pair != null) {
+                builder.add(pair.codeBlock);
+                variables.removeValue(pair.name, false);
+                usedVariables.add(pair.name);
             }
-            if (scrollPane.name != null) builder.addStatement("$L.setName($L)", variableName, scrollPane.name);
+            builder.add("$L = new $T(", variableName, ScrollPane.class);
+            if (pair != null) builder.add("$L, skin", pair.name);
+            else builder.add("skin");
+            builder.addStatement("$L)", scrollPane.style.name.equals("default") ? "" : ", \"" + scrollPane.style.name + "\"");
+    
+            if (!scrollPane.fadeScrollBars) builder.addStatement("$L.setfadeScrollBars($L)", variableName, false);
+            if (!scrollPane.fadeScrollBars) builder.addStatement("$L.setfadeScrollBars($L)", variableName, false);
+            if (scrollPane.clamp) builder.addStatement("$L.setClamp($L)", variableName, true);
+            if (!scrollPane.flickScroll) builder.addStatement("$L.setFlickScrollBars($L)", variableName, false);
+            if (MathUtils.isEqual(scrollPane.flingTime, 1f)) builder.addStatement("$L.setFlingTime($Lf)", variableName, scrollPane.flingTime);
+            
+            if (scrollPane.forceScrollX || scrollPane.forceScrollY) {
+                builder.addStatement("$L.setForceScroll($L, $L)", variableName, scrollPane.forceScrollX, scrollPane.forceScrollY);
+            }
+            
+            if (!scrollPane.overScrollX || !scrollPane.overScrollY) {
+                builder.addStatement("$L.setOverScroll($L, $L)", variableName, scrollPane.forceScrollX, scrollPane.forceScrollY);
+            }
+            
+            if (!MathUtils.isEqual(50f, scrollPane.overScrollDistance) || !MathUtils.isEqual(30f, scrollPane.overScrollSpeedMin) || !MathUtils.isEqual(200f, scrollPane.overScrollSpeedMax)) {
+                builder.addStatement("$L.setupOverscroll($L, $L, $L)", scrollPane.overScrollDistance, scrollPane.overScrollSpeedMin, scrollPane.overScrollSpeedMax);
+            }
+            
+            if (!scrollPane.scrollBarBottom || !scrollPane.scrollBarRight) {
+                builder.addStatement("$L.setScrollBarPositions($L, $L)", scrollPane.scrollBarBottom, scrollPane.scrollBarRight);
+            }
+    
+            if (scrollPane.scrollBarsOnTop) builder.addStatement("$L.setScrollBarsOnTop($L)", variableName, true);
+            if (!scrollPane.scrollBarsVisible) builder.addStatement("$L.setScrollBarsVisible($L)", variableName, false);
+            if (!scrollPane.scrollBarTouch) builder.addStatement("$L.setScrollBarTouch($L)", variableName, false);
+    
+            if (scrollPane.scrollingDisabledX || scrollPane.scrollingDisabledY) {
+                builder.addStatement("$L.setScrollingDisabled($L, $L)", scrollPane.scrollingDisabledX, scrollPane.scrollingDisabledY);
+            }
+    
+            if (!scrollPane.smoothScrolling) builder.addStatement("$L.setSmoothScrolling($L)", variableName, false);
+            if (!scrollPane.variableSizeKnobs) builder.addStatement("$L.setVariableSizeKnobs($L)", variableName, false);
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimStack) {
