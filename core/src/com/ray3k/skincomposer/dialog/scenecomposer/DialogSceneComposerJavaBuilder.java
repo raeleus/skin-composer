@@ -555,14 +555,26 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("textField", variables);
-            if (!usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T(skin$3L)", TextField.class, variableName,
+            if (!usedVariables.contains(variableName)) builder.add("$T ", TextField.class);
+                builder.addStatement("$L = new $T($S, skin$L)", variableName, TextField.class, textField.text,
                         textField.style.name.equals("default") ? "" : ", \"" + textField.style.name + "\"");
-            } else {
-                builder.addStatement("$1T $2L = new $1T(skin$3L)", TextField.class, variableName,
-                        textField.style.name.equals("default") ? "" : ", \"" + textField.style.name + "\"");
-            }
+            
             if (textField.name != null) builder.addStatement("$L.setName($L)", variableName, textField.name);
+            if (textField.passwordCharacter != '•') builder.addStatement("$L.setPasswordCharacter($L)", variableName, textField.passwordCharacter);
+            if (textField.passwordMode) builder.addStatement("$L.setPasswordMode($L)", variableName, textField.passwordMode);
+            
+            if (textField.alignment != Align.left) {
+                builder.add(".align($T.$L)", Align.class, alignmentToName(textField.alignment));
+            }
+    
+            if (textField.disabled) builder.addStatement("$L.setDisabled($L)", variableName, textField.disabled);
+            if (textField.cursorPosition != 0) builder.addStatement("$L.setCursorPosition($L)", variableName, textField.cursorPosition);
+            if (textField.selectAll) builder.addStatement("$L.setSelection($L, $L)", variableName, 0, textField.text.length());
+            else if (textField.selectionStart != 0 || textField.selectionEnd != 0)
+                builder.addStatement("$L.setSelection($L, $L)", variableName, textField.selectionStart, textField.selectionEnd);
+            if (!textField.focusTraversal) builder.addStatement("$L.setFocusTraversal($L)", variableName, false);
+            if (textField.maxLength != 0) builder.addStatement("$L.setMaxLength($L)", variableName, textField.maxLength);
+            if (textField.messageText != null) builder.addStatement("$L.setCursorPosition($L)", variableName, textField.messageText);
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimTextArea) {

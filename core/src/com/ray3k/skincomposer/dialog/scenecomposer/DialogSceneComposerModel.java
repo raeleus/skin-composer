@@ -1284,7 +1284,7 @@ public class DialogSceneComposerModel {
         public String name;
         public StyleData style;
         public String text;
-        public char passwordCharacter = '*';
+        public char passwordCharacter = '•';
         public boolean passwordMode;
         public int alignment = Align.center;
         public boolean disabled;
@@ -1316,7 +1316,7 @@ public class DialogSceneComposerModel {
             name = null;
             style = null;
             text = null;
-            passwordCharacter = '*';
+            passwordCharacter = '•';
             passwordMode = false;
             alignment = Align.center;
             disabled = false;
@@ -1343,7 +1343,7 @@ public class DialogSceneComposerModel {
         public String name;
         public StyleData style;
         public String text;
-        public char passwordCharacter = '*';
+        public char passwordCharacter = '•';
         public boolean passwordMode;
         public int alignment = Align.center;
         public boolean disabled;
@@ -1376,7 +1376,7 @@ public class DialogSceneComposerModel {
             name = null;
             style = null;
             text = null;
-            passwordCharacter = '*';
+            passwordCharacter = '•';
             passwordMode = false;
             alignment = Align.center;
             disabled = false;
