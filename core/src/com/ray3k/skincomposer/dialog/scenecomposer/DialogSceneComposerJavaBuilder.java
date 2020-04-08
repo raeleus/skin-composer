@@ -1,6 +1,7 @@
 package com.ray3k.skincomposer.dialog.scenecomposer;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -444,14 +445,20 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("progressBar", variables);
-            if (!usedVariables.contains(variableName)) {
-                builder.addStatement("$2L = new $1T(skin$3L)", ProgressBar.class, variableName,
-                        progressBar.style.name.equals("default") ? "" : ", \"" + progressBar.style.name + "\"");
-            } else {
-                builder.addStatement("$1T $2L = new $1T(skin$3L)", ProgressBar.class, variableName,
-                        progressBar.style.name.equals("default") ? "" : ", \"" + progressBar.style.name + "\"");
-            }
+            if (!usedVariables.contains(variableName)) builder.add("$T ", ProgressBar.class);
+            builder.addStatement("$L = new $T($L, $L, $L, $L, skin$L)", variableName, ProgressBar.class,
+                    progressBar.minimum, progressBar.maximum, progressBar.increment, progressBar.increment,
+                    progressBar.style.name.equals("default") ? "" : ", \"" + progressBar.style.name + "\"");
+            
             if (progressBar.name != null) builder.addStatement("$L.setName($L)", variableName, progressBar.name);
+            if (MathUtils.isZero(progressBar.value)) builder.addStatement("$L.setValue($Lf)", variableName, progressBar.value);
+            if (progressBar.vertical) builder.addStatement("$L.setVertical($L)", variableName, progressBar.vertical);
+            if (MathUtils.isZero(progressBar.animationDuration)) builder.addStatement("$L.setAnimationDuration($Lf)", variableName, progressBar.animationDuration);
+            if (progressBar.animateInterpolation != null) builder.addStatement("$L.setAnimateInterpolation($T.$L)", variableName,
+                    Interpolation.class, progressBar.animateInterpolation.code);
+            if (progressBar.round) builder.addStatement("$L.setRound($L)", variableName, progressBar.round);
+            if (progressBar.visualInterpolation != null) builder.addStatement("$L.setVisualInterpolation($T.$L)", variableName,
+                    Interpolation.class, progressBar.visualInterpolation.code);
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimSelectBox) {

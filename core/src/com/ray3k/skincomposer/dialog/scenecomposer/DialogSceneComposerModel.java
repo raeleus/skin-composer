@@ -25,29 +25,46 @@ public class DialogSceneComposerModel {
     private static Json json;
     
     public enum Interpol {
-        LINEAR(Interpolation.linear, "Linear"), SMOOTH(Interpolation.smooth, "Smooth"), SMOOTH2(Interpolation.smooth2, "Smooth 2"),
-        SMOOTHER(Interpolation.smoother, "Smoother"), FADE(Interpolation.fade, "Fade"), POW2(Interpolation.pow2, "Pow 2"),
-        POW2IN(Interpolation.pow2In, "Pow 2 In"), SLOW_FAST(Interpolation.slowFast, "Slow Fast"), POW2OUT(Interpolation.pow2Out, "Pow 2 Out"),
-        FAST_SLOW(Interpolation.fastSlow, "Fast Slow"), POW2IN_INVERSE(Interpolation.pow2In, "Pow 2 In Inverse"),
-        POW2OUT_INVERSE(Interpolation.pow2OutInverse, "Pow 2 Out Inverse"), POW3(Interpolation.pow3, "Pow 3"), POW3IN(Interpolation.pow3In, "Pow 3 In"),
-        POW3OUT(Interpolation.pow3Out, "Pow 3 Out"), POW3IN_INVERSE(Interpolation.pow3InInverse, "Pow 3 In Inverse"),
-        POW3OUT_INVERSE(Interpolation.pow3OutInverse, "Pow 3 Out Inverse"), POW4(Interpolation.pow4, "Pow 4"), POW4IN(Interpolation.pow4In, "Pow 4 In"),
-        POW4OUT(Interpolation.pow4Out, "Pow 4 Out"), POW5(Interpolation.pow5, "Pow 5"), POW5IN(Interpolation.pow5In, "Pow 5 In"),
-        POW5OUT(Interpolation.pow5Out, "Pow 5 Out"), SINE(Interpolation.sine, "Sine"), SINE_IN(Interpolation.sineIn, "Sine In"),
-        SINE_OUT(Interpolation.sineOut, "Sine Out"), EXP10(Interpolation.exp10, "Exp 10"), EXP10_IN(Interpolation.exp10In, "Exp 10 In"),
-        EXP10_OUT(Interpolation.exp10Out, "Exp 10 Out"), EXP5(Interpolation.exp5, "Exp 5"), EXP5IN(Interpolation.exp5In, "Exp 5 In"),
-        EXP5OUT(Interpolation.exp5Out, "Exp 5 Out"), CIRCLE(Interpolation.circle, "Circle"), CIRCLE_IN(Interpolation.circleIn, "Circle In"),
-        CIRCLE_OUT(Interpolation.circleOut, "Circle Out"), ELASTIC(Interpolation.elastic, "Elastic"), ELASTIC_IN(Interpolation.elasticIn, "Elastic In"),
-        ELASTIC_OUT(Interpolation.elasticOut, "Elastic Out"), SWING(Interpolation.swing, "Swing"), SWING_IN(Interpolation.swingIn, "Swing In"),
-        SWING_OUT(Interpolation.swingOut, "Swing Out"), BOUNCE(Interpolation.bounce, "Bounce"), BOUNCE_IN(Interpolation.bounceIn, "Bounce In"),
-        BOUNCE_OUT(Interpolation.bounceOut, " Bounce Out");
+        LINEAR(Interpolation.linear, "Linear", "linear"), SMOOTH(Interpolation.smooth, "Smooth", "smooth"), SMOOTH2(
+                Interpolation.smooth2, "Smooth 2", "smooth2"),
+        SMOOTHER(Interpolation.smoother, "Smoother", "smoother"), FADE(Interpolation.fade, "Fade", "fade"), POW2(
+                Interpolation.pow2, "Pow 2", "pow2"),
+        POW2IN(Interpolation.pow2In, "Pow 2 In", "pow2In"), SLOW_FAST(Interpolation.slowFast, "Slow Fast",
+                "slowFast"), POW2OUT(Interpolation.pow2Out, "Pow 2 Out", "pow2Out"),
+        FAST_SLOW(Interpolation.fastSlow, "Fast Slow", "fastSlow"), POW2IN_INVERSE(Interpolation.pow2In,
+                "Pow 2 In Inverse", "pow2In"),
+        POW2OUT_INVERSE(Interpolation.pow2OutInverse, "Pow 2 Out Inverse", "pow2OutInverse"), POW3(Interpolation.pow3,
+                "Pow 3", "pow3"), POW3IN(Interpolation.pow3In, "Pow 3 In", "pow3In"),
+        POW3OUT(Interpolation.pow3Out, "Pow 3 Out", "pow3Out"), POW3IN_INVERSE(Interpolation.pow3InInverse,
+                "Pow 3 In Inverse", "pow3InInverse"),
+        POW3OUT_INVERSE(Interpolation.pow3OutInverse, "Pow 3 Out Inverse", "pow3OutInverse"), POW4(Interpolation.pow4,
+                "Pow 4", "pow4"), POW4IN(Interpolation.pow4In, "Pow 4 In", "pow4In"),
+        POW4OUT(Interpolation.pow4Out, "Pow 4 Out", "pow4Out"), POW5(Interpolation.pow5, "Pow 5", "pow5"), POW5IN(
+                Interpolation.pow5In, "Pow 5 In", "pow5In"),
+        POW5OUT(Interpolation.pow5Out, "Pow 5 Out", "pow5Out"), SINE(Interpolation.sine, "Sine", "sine"), SINE_IN(
+                Interpolation.sineIn, "Sine In", "sineIn"),
+        SINE_OUT(Interpolation.sineOut, "Sine Out", "sineOut"), EXP10(Interpolation.exp10, "Exp 10", "exp10"), EXP10_IN(
+                Interpolation.exp10In, "Exp 10 In", "exp10In"),
+        EXP10_OUT(Interpolation.exp10Out, "Exp 10 Out", "exp10Out"), EXP5(Interpolation.exp5, "Exp 5", "exp5"), EXP5IN(
+                Interpolation.exp5In, "Exp 5 In", "exp5In"),
+        EXP5OUT(Interpolation.exp5Out, "Exp 5 Out", "exp5Out"), CIRCLE(Interpolation.circle, "Circle",
+                "circle"), CIRCLE_IN(Interpolation.circleIn, "Circle In", "circleIn"),
+        CIRCLE_OUT(Interpolation.circleOut, "Circle Out", "circleOut"), ELASTIC(Interpolation.elastic, "Elastic",
+                "elastic"), ELASTIC_IN(Interpolation.elasticIn, "Elastic In", "elasticIn"),
+        ELASTIC_OUT(Interpolation.elasticOut, "Elastic Out", "elasticOut"), SWING(Interpolation.swing, "Swing",
+                "swing"), SWING_IN(Interpolation.swingIn, "Swing In", "swingIn"),
+        SWING_OUT(Interpolation.swingOut, "Swing Out", "swingOut"), BOUNCE(Interpolation.bounce, "Bounce",
+                "bounce"), BOUNCE_IN(Interpolation.bounceIn, "Bounce In", "bounceIn"),
+        BOUNCE_OUT(Interpolation.bounceOut, " Bounce Out", "bounceOut");
         
         public Interpolation interpolation;
         public String text;
+        public String code;
         
-        Interpol(Interpolation interpolation, String text) {
+        Interpol(Interpolation interpolation, String text, String code) {
             this.interpolation = interpolation;
             this.text = text;
+            this.code = code;
         }
     
         @Override
