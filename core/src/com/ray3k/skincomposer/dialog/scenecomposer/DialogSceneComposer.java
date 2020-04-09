@@ -1323,7 +1323,7 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(horizontalGroupExpandFillGrowListener());
             textButton.addListener(new TextTooltip("Set the widgets to expand to the available space", main.getTooltipManager(), skin, "scene"));
     
-            textButton = new TextButton("Padding", skin, "scene-med");
+            textButton = new TextButton("Padding/Spacing", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
             textButton.addListener(horizontalGroupPaddingSpacingListener());
@@ -1589,11 +1589,11 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(verticalGroupExpandFillGrowListener());
             textButton.addListener(new TextTooltip("Set the widgets to expand to the available space.", main.getTooltipManager(), skin, "scene"));
     
-            textButton = new TextButton("Padding", skin, "scene-med");
+            textButton = new TextButton("Padding/Spacing", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
             textButton.addListener(verticalGroupPaddingSpacingListener());
-            textButton.addListener(new TextTooltip("Set the padding of the widgets.", main.getTooltipManager(), skin, "scene"));
+            textButton.addListener(new TextTooltip("Set the padding/spacing of the widgets.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Wrap", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -9134,12 +9134,8 @@ public class DialogSceneComposer extends Dialog {
                 table = new Table();
                 popTable.add(table);
                 
-                label = new Label("Spacing:", skin, "scene-label-colored");
-                table.add(label).colspan(2);
-                
-                table.row();
                 table.defaults().right().spaceRight(5);
-                label = new Label("Left:", skin, "scene-label-colored");
+                label = new Label("Spacing:", skin, "scene-label-colored");
                 table.add(label);
                 
                 spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
@@ -9875,12 +9871,8 @@ public class DialogSceneComposer extends Dialog {
                 table = new Table();
                 popTable.add(table);
                 
-                label = new Label("Spacing:", skin, "scene-label-colored");
-                table.add(label).colspan(2);
-                
-                table.row();
                 table.defaults().right().spaceRight(5);
-                label = new Label("Left:", skin, "scene-label-colored");
+                label = new Label("Spacing:", skin, "scene-label-colored");
                 table.add(label);
                 
                 spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
@@ -11908,7 +11900,9 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 var file = main.getDesktopWorker().saveDialog("Export Template...", main.getProjectData().getLastImportExportPath(), new String[] {"*.json"}, "JSON Files (*.json)");
-                events.dialogExportSaveTemplate(new FileHandle(file));
+                if (file != null) {
+                    events.dialogExportSaveTemplate(new FileHandle(file));
+                }
     
                 if (file != null) {
                     dialog.hide();
@@ -11927,9 +11921,10 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 var file = main.getDesktopWorker().saveDialog("Export Java...", main.getProjectData().getLastImportExportPath(), new String[] {"*.java"}, "Java Files (*.java)");
-                events.dialogExportSaveJava(new FileHandle(file));
-                
+                var fileHandle = new FileHandle(file);
                 if (file != null) {
+                    if (!fileHandle.extension().equalsIgnoreCase("java")) fileHandle = fileHandle.sibling(fileHandle.name() + ".java");
+                    events.dialogExportSaveJava(fileHandle);
                     dialog.hide();
                 }
             }

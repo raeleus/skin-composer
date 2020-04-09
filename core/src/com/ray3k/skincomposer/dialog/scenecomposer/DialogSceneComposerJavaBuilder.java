@@ -1,21 +1,25 @@
 package com.ray3k.skincomposer.dialog.scenecomposer;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectSet;
+import com.badlogic.gdx.scenes.scene2d.ui.Tree.Node;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.*;
 import com.ray3k.skincomposer.utils.Utils;
 import com.squareup.javapoet.*;
 
 import javax.lang.model.element.Modifier;
 
-import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.rootActor;
+import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.*;
 
 public class DialogSceneComposerJavaBuilder {
     private static ClassName nodeClassName;
@@ -23,18 +27,23 @@ public class DialogSceneComposerJavaBuilder {
     public static String generateJavaFile() {
         nodeClassName = ClassName.get(rootActor.packageString + "." + rootActor.classString, "BasicNode");
         
-        TypeSpec typeSpec = TypeSpec.classBuilder(rootActor.classString)
+        TypeSpec.Builder typeSpec = TypeSpec.classBuilder(rootActor.classString)
                 .addModifiers(Modifier.PUBLIC)
-                .addSuperinterface(ApplicationAdapter.class)
+                .superclass(ApplicationAdapter.class)
                 .addField(Skin.class, "skin", javax.lang.model.element.Modifier.PRIVATE)
                 .addField(Stage.class, "stage", Modifier.PRIVATE)
                 .addMethod(createMethod())
                 .addMethod(renderMethod())
                 .addMethod(resizeMethod())
-                .addMethod(disposeMethod())
-                .build();
+                .addMethod(disposeMethod());
+        
+        if (rootActor.hasChildOfTypeRecursive(SimTree.class)) {
+            typeSpec.addType(basicNodeType());
+        }
     
-        JavaFile javaFile = JavaFile.builder(rootActor.packageString, typeSpec).build();
+        JavaFile javaFile = JavaFile.builder(rootActor.packageString, typeSpec.build())
+                .indent("    ")
+                .build();
         
         return javaFile.toString();
     }
@@ -42,9 +51,9 @@ public class DialogSceneComposerJavaBuilder {
     private static MethodSpec createMethod() {
         return MethodSpec.methodBuilder("create")
                 .addModifiers(Modifier.PUBLIC)
-                .addStatement("stage = new Stage(new ScreenViewport())")
-                .addStatement("skin = new Skin(Gdx.files.internal($S))", rootActor.skinPath)
-                .addStatement("Gdx.input.setInputProcessor(stage)")
+                .addStatement("stage = new $T(new $T())", Stage.class, ScreenViewport.class)
+                .addStatement("skin = new $T($T.files.internal($S))", Skin.class, Gdx.class, rootActor.skinPath)
+                .addStatement("$T.input.setInputProcessor(stage)", Gdx.class)
                 .addCode(createWidget(rootActor, new Array<>(), new ObjectSet<>()).codeBlock)
                 .returns(void.class).build();
     }
@@ -57,6 +66,7 @@ public class DialogSceneComposerJavaBuilder {
             
             for (var child : simRootGroup.children) {
                 var pair = createWidget(child, variables, usedVariables);
+                builder.add("\n");
                 builder.add(pair.codeBlock);
                 builder.addStatement("stage.addActor($L)", pair.name);
                 variables.removeValue(pair.name, false);
@@ -76,19 +86,19 @@ public class DialogSceneComposerJavaBuilder {
             
             if (!Utils.isEqual(0, table.padLeft, table.padRight, table.padTop, table.padBottom)) {
                 if (Utils.isEqual(table.padLeft, table.padRight, table.padTop, table.padBottom)) {
-                    builder.addStatement("$L.pad($L)", variableName, table.padLeft);
+                    builder.addStatement("$L.pad($Lf)", variableName, table.padLeft);
                 } else {
                     if (!MathUtils.isZero(table.padLeft)) {
-                        builder.addStatement("$L.padLeft($L)", variableName, table.padLeft);
+                        builder.addStatement("$L.padLeft($Lf)", variableName, table.padLeft);
                     }
                     if (!MathUtils.isZero(table.padRight)) {
-                        builder.addStatement("$L.padRight($L)", variableName, table.padRight);
+                        builder.addStatement("$L.padRight($Lf)", variableName, table.padRight);
                     }
                     if (!MathUtils.isZero(table.padTop)) {
-                        builder.addStatement("$L.padTop($L)", variableName, table.padTop);
+                        builder.addStatement("$L.padTop($Lf)", variableName, table.padTop);
                     }
                     if (!MathUtils.isZero(table.padBottom)) {
-                        builder.addStatement("$L.padBottom($L)", variableName, table.padBottom);
+                        builder.addStatement("$L.padBottom($Lf)", variableName, table.padBottom);
                     }
                 }
             }
@@ -100,19 +110,22 @@ public class DialogSceneComposerJavaBuilder {
             
             int row = 0;
             for (var cell : table.getChildren()) {
+                builder.add("\n");
                 if (cell.row > row) {
                     row = cell.row;
                     builder.addStatement("$L.row()", variableName);
                 }
                 
                 WidgetNamePair pair = createWidget(cell.child, variables, usedVariables);
-                if (pair != null) builder.add(pair.codeBlock);
+                if (pair != null) {
+                    builder.add(pair.codeBlock);
+                }
                 
                 builder.add("$L.add($L)", variableName, pair == null ? "" : pair.name);
     
                 if (!Utils.isEqual(0, cell.padLeft, cell.padRight, cell.padTop, cell.padBottom)) {
                     if (Utils.isEqual(cell.padLeft, cell.padRight, cell.padTop, cell.padBottom)) {
-                        builder.add(".pad($L)", cell.padLeft);
+                        builder.add(".pad($Lf)", cell.padLeft);
                     } else {
                         if (!MathUtils.isZero(cell.padLeft)) {
                             builder.add(".padLeft($Lf)", cell.padLeft);
@@ -131,7 +144,7 @@ public class DialogSceneComposerJavaBuilder {
     
                 if (!Utils.isEqual(0, cell.spaceLeft, cell.spaceRight, cell.spaceTop, cell.spaceBottom)) {
                     if (Utils.isEqual(cell.spaceLeft, cell.spaceRight, cell.spaceTop, cell.spaceBottom)) {
-                        builder.add(".space($L)", cell.spaceLeft);
+                        builder.add(".space($Lf)", cell.spaceLeft);
                     } else {
                         if (!MathUtils.isZero(cell.spaceLeft)) {
                             builder.add(".spaceLeft($Lf)", cell.spaceLeft);
@@ -150,19 +163,19 @@ public class DialogSceneComposerJavaBuilder {
     
                 if (cell.growX || cell.growY) {
                     if (cell.growX && cell.growY) {
-                        builder.add(".grow(true)");
+                        builder.add(".grow()");
                     } else if (cell.growX) {
-                        builder.add(".growX(true)");
+                        builder.add(".growX()");
                     } else if (cell.growY) {
-                        builder.add(".grow(true)");
+                        builder.add(".growY()");
                     }
                 } else {
                     if (cell.expandX && cell.expandY) {
-                        builder.add(".expand(true)");
+                        builder.add(".expand()");
                     } else if (cell.expandX) {
-                        builder.add(".expandX(true)");
+                        builder.add(".expandX()");
                     } else if (cell.expandY) {
-                        builder.add(".expand(true)");
+                        builder.add(".expandY()");
                     }
         
                     if (cell.fillX && cell.fillY) {
@@ -185,43 +198,43 @@ public class DialogSceneComposerJavaBuilder {
                     minWidth = true; minHeight = true; maxWidth = true; maxHeight = true; preferredWidth = true; preferredHeight = true;
                 }
                 if (!minWidth && !maxWidth && !preferredWidth && Utils.isEqual(cell.minWidth, cell.maxWidth, cell.preferredWidth) && !Utils.isEqual(-1, cell.minWidth)) {
-                    builder.add(".width($L)", cell.minWidth);
+                    builder.add(".width($Lf)", cell.minWidth);
                     minWidth = true; maxWidth = true; preferredWidth = true;
                 }
                 if (!minHeight && !maxHeight && !preferredHeight && Utils.isEqual(cell.minHeight, cell.maxHeight, cell.preferredHeight) && !Utils.isEqual(-1, cell.minHeight)) {
-                    builder.add(".height($L)", cell.minHeight);
+                    builder.add(".height($Lf)", cell.minHeight);
                     minHeight = true; maxHeight = true; preferredHeight = true;
                 }
                 if (!minWidth && !minHeight && Utils.isEqual(cell.minWidth, cell.minHeight) && !Utils.isEqual(-1, cell.minWidth)) {
-                    builder.add(".minSize($L)", cell.minWidth);
+                    builder.add(".minSize($Lf)", cell.minWidth);
                     minWidth = true; minHeight = true;
                 }
                 if (!maxWidth && !maxHeight && Utils.isEqual(cell.maxWidth, cell.maxHeight) && !Utils.isEqual(-1, cell.maxWidth)) {
-                    builder.add(".maxSize($L)", cell.maxWidth);
+                    builder.add(".maxSize($Lf)", cell.maxWidth);
                     maxWidth = true; maxHeight = true;
                 }
                 if (!preferredWidth && !preferredHeight && Utils.isEqual(cell.preferredWidth, cell.preferredHeight) && !Utils.isEqual(-1,
                         cell.preferredWidth)) {
-                    builder.add(".preferredSize($L)", cell.preferredWidth);
+                    builder.add(".preferredSize($Lf)", cell.preferredWidth);
                     preferredWidth = true; preferredHeight = true;
                 }
                 if (!minWidth && !Utils.isEqual(-1, cell.minWidth)) {
-                    builder.add(".minWidth($L)", cell.minWidth);
+                    builder.add(".minWidth($Lf)", cell.minWidth);
                 }
                 if (!minHeight && !Utils.isEqual(-1, cell.minHeight)) {
-                    builder.add(".minHeight($L)", cell.minHeight);
+                    builder.add(".minHeight($Lf)", cell.minHeight);
                 }
                 if (!maxWidth && !Utils.isEqual(-1, cell.maxWidth)) {
-                    builder.add(".maxWidth($L)", cell.maxWidth);
+                    builder.add(".maxWidth($Lf)", cell.maxWidth);
                 }
                 if (!maxHeight && !Utils.isEqual(-1, cell.maxHeight)) {
-                    builder.add(".maxHeight($L)", cell.maxHeight);
+                    builder.add(".maxHeight($Lf)", cell.maxHeight);
                 }
                 if (!preferredWidth && !Utils.isEqual(-1, cell.preferredWidth)) {
-                    builder.add(".preferredWidth($L)", cell.preferredWidth);
+                    builder.add(".preferredWidth($Lf)", cell.preferredWidth);
                 }
                 if (!preferredHeight && !Utils.isEqual(-1, cell.preferredHeight)) {
-                    builder.add(".preferredHeight($L)", cell.preferredHeight);
+                    builder.add(".preferredHeight($Lf)", cell.preferredHeight);
                 }
     
                 if (cell.uniformX && cell.uniformY) {
@@ -232,7 +245,7 @@ public class DialogSceneComposerJavaBuilder {
                     builder.add(".uniformY(true)");
                 }
                 
-                if (cell.colSpan > 1) builder.add(".colSpan($L)", cell.colSpan);
+                if (cell.colSpan > 1) builder.add(".colspan($L)", cell.colSpan);
                 
                 builder.addStatement("");
                 if (pair != null) {
@@ -252,26 +265,26 @@ public class DialogSceneComposerJavaBuilder {
             builder.addStatement("$L = new $T(skin$L)", variableName, Button.class,
                     button.style.name.equals("default") ? "" : ", \"" + button.style.name + "\"");
             
-            if (button.name != null) builder.addStatement("$L.setName($L)", variableName, button.name);
+            if (button.name != null) builder.addStatement("$L.setName($S)", variableName, button.name);
             if (button.checked) builder.addStatement("$L.setChecked($L)", variableName, true);
             if (button.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
             if (button.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, button.color.getName());
             
             if (!Utils.isEqual(0, button.padLeft, button.padRight, button.padTop, button.padBottom)) {
                 if (Utils.isEqual(button.padLeft, button.padRight, button.padTop, button.padBottom)) {
-                    builder.addStatement("$L.pad($L)", variableName, button.padLeft);
+                    builder.addStatement("$L.pad($Lf)", variableName, button.padLeft);
                 } else {
                     if (!MathUtils.isZero(button.padLeft)) {
-                        builder.addStatement("$L.padLeft($L)", variableName, button.padLeft);
+                        builder.addStatement("$L.padLeft($Lf)", variableName, button.padLeft);
                     }
                     if (!MathUtils.isZero(button.padRight)) {
-                        builder.addStatement("$L.padRight($L)", variableName, button.padRight);
+                        builder.addStatement("$L.padRight($Lf)", variableName, button.padRight);
                     }
                     if (!MathUtils.isZero(button.padTop)) {
-                        builder.addStatement("$L.padTop($L)", variableName, button.padTop);
+                        builder.addStatement("$L.padTop($Lf)", variableName, button.padTop);
                     }
                     if (!MathUtils.isZero(button.padBottom)) {
-                        builder.addStatement("$L.padBottom($L)", variableName, button.padBottom);
+                        builder.addStatement("$L.padBottom($Lf)", variableName, button.padBottom);
                     }
                 }
             }
@@ -287,26 +300,26 @@ public class DialogSceneComposerJavaBuilder {
             builder.addStatement("$L = new $T($S, skin$L)", variableName, CheckBox.class, checkBox.text,
                     checkBox.style.name.equals("default") ? "" : ", \"" + checkBox.style.name + "\"");
             
-            if (checkBox.name != null) builder.addStatement("$L.setName($L)", variableName, checkBox.name);
+            if (checkBox.name != null) builder.addStatement("$L.setName($S)", variableName, checkBox.name);
             if (checkBox.checked) builder.addStatement("$L.setChecked($L)", variableName, true);
             if (checkBox.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
             if (checkBox.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, checkBox.color.getName());
     
             if (!Utils.isEqual(0, checkBox.padLeft, checkBox.padRight, checkBox.padTop, checkBox.padBottom)) {
                 if (Utils.isEqual(checkBox.padLeft, checkBox.padRight, checkBox.padTop, checkBox.padBottom)) {
-                    builder.addStatement("$L.pad($L)", variableName, checkBox.padLeft);
+                    builder.addStatement("$L.pad($Lf)", variableName, checkBox.padLeft);
                 } else {
                     if (!MathUtils.isZero(checkBox.padLeft)) {
-                        builder.addStatement("$L.padLeft($L)", variableName, checkBox.padLeft);
+                        builder.addStatement("$L.padLeft($Lf)", variableName, checkBox.padLeft);
                     }
                     if (!MathUtils.isZero(checkBox.padRight)) {
-                        builder.addStatement("$L.padRight($L)", variableName, checkBox.padRight);
+                        builder.addStatement("$L.padRight($Lf)", variableName, checkBox.padRight);
                     }
                     if (!MathUtils.isZero(checkBox.padTop)) {
-                        builder.addStatement("$L.padTop($L)", variableName, checkBox.padTop);
+                        builder.addStatement("$L.padTop($Lf)", variableName, checkBox.padTop);
                     }
                     if (!MathUtils.isZero(checkBox.padBottom)) {
-                        builder.addStatement("$L.padBottom($L)", variableName, checkBox.padBottom);
+                        builder.addStatement("$L.padBottom($Lf)", variableName, checkBox.padBottom);
                     }
                 }
             }
@@ -318,10 +331,10 @@ public class DialogSceneComposerJavaBuilder {
             
             var builder = CodeBlock.builder();
             var variableName = createVariableName("image", variables);
-            if (usedVariables.contains(variableName)) builder.add("$T", Image.class);
-            builder.addStatement("$L = new $T($S)", variableName, Image.class, image.drawable.name);
-            if (image.name != null) builder.addStatement("$L.setName($L)", variableName, image.name);
-            if (image.scaling != null) builder.addStatement("$L.setScaling($L)", variableName, image.scaling.name());
+            if (!usedVariables.contains(variableName)) builder.add("$T ", Image.class);
+            builder.addStatement("$L = new $T(skin, $S)", variableName, Image.class, image.drawable.name);
+            if (image.name != null) builder.addStatement("$L.setName($S)", variableName, image.name);
+            if (image.scaling != null) builder.addStatement("$L.setScaling($T.$L)", variableName, Scaling.class, image.scaling.name());
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimImageButton) {
@@ -330,30 +343,30 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("imageButton", variables);
-            if (!usedVariables.contains(variableName)) builder.add("$T", ImageButton.class);
+            if (!usedVariables.contains(variableName)) builder.add("$T ", ImageButton.class);
             builder.addStatement("$L = new $T(skin$L)", variableName, ImageButton.class,
                     imageButton.style.name.equals("default") ? "" : ", \"" + imageButton.style.name + "\"");
             
-            if (imageButton.name != null) builder.addStatement("$L.setName($L)", variableName, imageButton.name);
+            if (imageButton.name != null) builder.addStatement("$L.setName($S)", variableName, imageButton.name);
             if (imageButton.checked) builder.addStatement("$L.setChecked($L)", variableName, true);
             if (imageButton.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
             if (imageButton.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, imageButton.color.getName());
     
             if (!Utils.isEqual(0, imageButton.padLeft, imageButton.padRight, imageButton.padTop, imageButton.padBottom)) {
                 if (Utils.isEqual(imageButton.padLeft, imageButton.padRight, imageButton.padTop, imageButton.padBottom)) {
-                    builder.addStatement("$L.pad($L)", variableName, imageButton.padLeft);
+                    builder.addStatement("$L.pad($Lf)", variableName, imageButton.padLeft);
                 } else {
                     if (!MathUtils.isZero(imageButton.padLeft)) {
-                        builder.addStatement("$L.padLeft($L)", variableName, imageButton.padLeft);
+                        builder.addStatement("$L.padLeft($Lf)", variableName, imageButton.padLeft);
                     }
                     if (!MathUtils.isZero(imageButton.padRight)) {
-                        builder.addStatement("$L.padRight($L)", variableName, imageButton.padRight);
+                        builder.addStatement("$L.padRight($Lf)", variableName, imageButton.padRight);
                     }
                     if (!MathUtils.isZero(imageButton.padTop)) {
-                        builder.addStatement("$L.padTop($L)", variableName, imageButton.padTop);
+                        builder.addStatement("$L.padTop($Lf)", variableName, imageButton.padTop);
                     }
                     if (!MathUtils.isZero(imageButton.padBottom)) {
-                        builder.addStatement("$L.padBottom($L)", variableName, imageButton.padBottom);
+                        builder.addStatement("$L.padBottom($Lf)", variableName, imageButton.padBottom);
                     }
                 }
             }
@@ -366,29 +379,29 @@ public class DialogSceneComposerJavaBuilder {
             var builder = CodeBlock.builder();
             var variableName = createVariableName("imageTextButton", variables);
             if (!usedVariables.contains(variableName)) builder.add("$T ", ImageTextButton.class);
-            builder.addStatement("$L = new $T($S, skin$3L)", variableName, ImageTextButton.class, imageTextButton.text,
+            builder.addStatement("$L = new $T($S, skin$L)", variableName, ImageTextButton.class, imageTextButton.text,
                     imageTextButton.style.name.equals("default") ? "" : ", \"" + imageTextButton.style.name + "\"");
             
-            if (imageTextButton.name != null) builder.addStatement("$L.setName($L)", variableName, imageTextButton.name);
+            if (imageTextButton.name != null) builder.addStatement("$L.setName($S)", variableName, imageTextButton.name);
             if (imageTextButton.checked) builder.addStatement("$L.setChecked($L)", variableName, true);
             if (imageTextButton.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
             if (imageTextButton.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, imageTextButton.color.getName());
     
             if (!Utils.isEqual(0, imageTextButton.padLeft, imageTextButton.padRight, imageTextButton.padTop, imageTextButton.padBottom)) {
                 if (Utils.isEqual(imageTextButton.padLeft, imageTextButton.padRight, imageTextButton.padTop, imageTextButton.padBottom)) {
-                    builder.addStatement("$L.pad($L)", variableName, imageTextButton.padLeft);
+                    builder.addStatement("$L.pad($Lf)", variableName, imageTextButton.padLeft);
                 } else {
                     if (!MathUtils.isZero(imageTextButton.padLeft)) {
-                        builder.addStatement("$L.padLeft($L)", variableName, imageTextButton.padLeft);
+                        builder.addStatement("$L.padLeft($Lf)", variableName, imageTextButton.padLeft);
                     }
                     if (!MathUtils.isZero(imageTextButton.padRight)) {
-                        builder.addStatement("$L.padRight($L)", variableName, imageTextButton.padRight);
+                        builder.addStatement("$L.padRight($Lf)", variableName, imageTextButton.padRight);
                     }
                     if (!MathUtils.isZero(imageTextButton.padTop)) {
-                        builder.addStatement("$L.padTop($L)", variableName, imageTextButton.padTop);
+                        builder.addStatement("$L.padTop($Lf)", variableName, imageTextButton.padTop);
                     }
                     if (!MathUtils.isZero(imageTextButton.padBottom)) {
-                        builder.addStatement("$L.padBottom($L)", variableName, imageTextButton.padBottom);
+                        builder.addStatement("$L.padBottom($Lf)", variableName, imageTextButton.padBottom);
                     }
                 }
             }
@@ -404,14 +417,14 @@ public class DialogSceneComposerJavaBuilder {
             builder.addStatement("$L = new $T($S, skin$L)", variableName, Label.class, label.text,
                     label.style.name.equals("default") ? "" : ", \"" + label.style.name + "\"");
                 
-            if (label.name != null) builder.addStatement("$L.setName($L)", variableName, label.name);
+            if (label.name != null) builder.addStatement("$L.setName($S)", variableName, label.name);
             
             if (label.textAlignment != Align.left) {
-                builder.add(".align($T.$L)", Align.class, alignmentToName(label.textAlignment));
+                builder.addStatement("$L.setAlignment($T.$L)", variableName, Align.class, alignmentToName(label.textAlignment));
             }
     
             if (label.ellipsis) builder.addStatement("$L.setEllipsis($L)", variableName, true);
-            if (label.ellipsisString != null) builder.addStatement("$L.setEllipsis($L)", variableName, label.ellipsisString);
+            if (label.ellipsisString != null) builder.addStatement("$L.setEllipsis($S)", variableName, label.ellipsisString);
             if (label.wrap) builder.addStatement("$L.setWrap($L)", variableName, true);
             if (label.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, label.color.getName());
     
@@ -423,10 +436,10 @@ public class DialogSceneComposerJavaBuilder {
             var builder = CodeBlock.builder();
             var variableName = createVariableName("list", variables);
             if (!usedVariables.contains(variableName)) builder.add("$T<String> ", List.class);
-            builder.addStatement("$L = new $T<String>(skin$L)", variableName, List.class,
+            builder.addStatement("$L = new $T<>(skin$L)", variableName, List.class,
                     list.style.name.equals("default") ? "" : ", \"" + list.style.name + "\"");
             
-            if (list.name != null) builder.addStatement("$L.setName($L)", variableName, list.name);
+            if (list.name != null) builder.addStatement("$L.setName($S)", variableName, list.name);
             if (list.list.size > 0) {
                 builder.add("$L.setItems(", variableName);
                 boolean addComma = false;
@@ -445,11 +458,11 @@ public class DialogSceneComposerJavaBuilder {
             var builder = CodeBlock.builder();
             var variableName = createVariableName("progressBar", variables);
             if (!usedVariables.contains(variableName)) builder.add("$T ", ProgressBar.class);
-            builder.addStatement("$L = new $T($L, $L, $L, $L, skin$L)", variableName, ProgressBar.class,
+            builder.addStatement("$L = new $T($Lf, $Lf, $Lf, $L, skin$L)", variableName, ProgressBar.class,
                     progressBar.minimum, progressBar.maximum, progressBar.increment, progressBar.vertical,
-                    progressBar.style.name.equals("default") ? "" : ", \"" + progressBar.style.name + "\"");
+                    progressBar.style.name.equals("default-horizontal") || progressBar.style.name.equals("default-vertical") ? "" : ", \"" + progressBar.style.name + "\"");
             
-            if (progressBar.name != null) builder.addStatement("$L.setName($L)", variableName, progressBar.name);
+            if (progressBar.name != null) builder.addStatement("$L.setName($S)", variableName, progressBar.name);
             if (MathUtils.isZero(progressBar.value)) builder.addStatement("$L.setValue($Lf)", variableName, progressBar.value);
             if (MathUtils.isZero(progressBar.animationDuration)) builder.addStatement("$L.setAnimationDuration($Lf)", variableName, progressBar.animationDuration);
             if (progressBar.animateInterpolation != null) builder.addStatement("$L.setAnimateInterpolation($T.$L)", variableName,
@@ -469,7 +482,7 @@ public class DialogSceneComposerJavaBuilder {
             builder.addStatement("$L = new $T(skin$L)", variableName, SelectBox.class,
                     selectBox.style.name.equals("default") ? "" : ", \"" + selectBox.style.name + "\"");
             
-            if (selectBox.name != null) builder.addStatement("$L.setName($L)", variableName, selectBox.name);
+            if (selectBox.name != null) builder.addStatement("$L.setName($S)", variableName, selectBox.name);
             if (selectBox.disabled) builder.addStatement("$L.setDisabled($L)", variableName, selectBox.disabled);
             if (selectBox.maxListCount != 0) builder.addStatement("$L.setMaxListCount($L)", variableName, selectBox.maxListCount);
     
@@ -484,10 +497,10 @@ public class DialogSceneComposerJavaBuilder {
             }
     
             if (selectBox.alignment != Align.center) {
-                builder.add(".align($T.$L)", Align.class, alignmentToName(selectBox.alignment));
+                builder.addStatement("$L.setAlignment($T.$L)", variableName, Align.class, alignmentToName(selectBox.alignment));
             }
     
-            if (selectBox.selected != 0) builder.addStatement("$L.setSelected($L)", variableName, selectBox.selected);
+            if (selectBox.selected != 0) builder.addStatement("$L.setSelectedIndex($L)", variableName, selectBox.selected);
             if (selectBox.scrollingDisabled) builder.addStatement("$L.setScrollingDisabled($L)", variableName, selectBox.scrollingDisabled);
     
             return new WidgetNamePair(builder.build(), variableName);
@@ -498,11 +511,11 @@ public class DialogSceneComposerJavaBuilder {
             var builder = CodeBlock.builder();
             var variableName = createVariableName("slider", variables);
             if (!usedVariables.contains(variableName)) builder.add("$T ", Slider.class);
-            builder.addStatement("$L = new $T($L, $L, $L, $L, skin$L)", variableName, Slider.class,
+            builder.addStatement("$L = new $T($Lf, $Lf, $Lf, $L, skin$L)", variableName, Slider.class,
                     slider.minimum, slider.maximum, slider.increment, slider.vertical,
                     slider.style.name.equals("default") ? "" : ", \"" + slider.style.name + "\"");
     
-            if (slider.name != null) builder.addStatement("$L.setName($L)", variableName, slider.name);
+            if (slider.name != null) builder.addStatement("$L.setName($S)", variableName, slider.name);
             if (slider.disabled) builder.addStatement("$L.setDisabled($L)", variableName, slider.disabled);
             if (MathUtils.isZero(slider.value)) builder.addStatement("$L.setValue($Lf)", variableName, slider.value);
             if (MathUtils.isZero(slider.animationDuration)) builder.addStatement("$L.setAnimationDuration($Lf)", variableName, slider.animationDuration);
@@ -520,29 +533,29 @@ public class DialogSceneComposerJavaBuilder {
             var builder = CodeBlock.builder();
             var variableName = createVariableName("textButton", variables);
             if (!usedVariables.contains(variableName)) builder.add("$T ", TextButton.class);
-            builder.addStatement("$L = new $T($S, skin$3L)", variableName, TextButton.class, textButton.text,
+            builder.addStatement("$L = new $T($S, skin$L)", variableName, TextButton.class, textButton.text,
                     textButton.style.name.equals("default") ? "" : ", \"" + textButton.style.name + "\"");
     
-            if (textButton.name != null) builder.addStatement("$L.setName($L)", variableName, textButton.name);
+            if (textButton.name != null) builder.addStatement("$L.setName($S)", variableName, textButton.name);
             if (textButton.checked) builder.addStatement("$L.setChecked($L)", variableName, true);
             if (textButton.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
             if (textButton.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, textButton.color.getName());
     
             if (!Utils.isEqual(0, textButton.padLeft, textButton.padRight, textButton.padTop, textButton.padBottom)) {
                 if (Utils.isEqual(textButton.padLeft, textButton.padRight, textButton.padTop, textButton.padBottom)) {
-                    builder.addStatement("$L.pad($L)", variableName, textButton.padLeft);
+                    builder.addStatement("$L.pad($Lf)", variableName, textButton.padLeft);
                 } else {
                     if (!MathUtils.isZero(textButton.padLeft)) {
-                        builder.addStatement("$L.padLeft($L)", variableName, textButton.padLeft);
+                        builder.addStatement("$L.padLeft($Lf)", variableName, textButton.padLeft);
                     }
                     if (!MathUtils.isZero(textButton.padRight)) {
-                        builder.addStatement("$L.padRight($L)", variableName, textButton.padRight);
+                        builder.addStatement("$L.padRight($Lf)", variableName, textButton.padRight);
                     }
                     if (!MathUtils.isZero(textButton.padTop)) {
-                        builder.addStatement("$L.padTop($L)", variableName, textButton.padTop);
+                        builder.addStatement("$L.padTop($Lf)", variableName, textButton.padTop);
                     }
                     if (!MathUtils.isZero(textButton.padBottom)) {
-                        builder.addStatement("$L.padBottom($L)", variableName, textButton.padBottom);
+                        builder.addStatement("$L.padBottom($Lf)", variableName, textButton.padBottom);
                     }
                 }
             }
@@ -558,12 +571,12 @@ public class DialogSceneComposerJavaBuilder {
                 builder.addStatement("$L = new $T($S, skin$L)", variableName, TextField.class, textField.text,
                         textField.style.name.equals("default") ? "" : ", \"" + textField.style.name + "\"");
             
-            if (textField.name != null) builder.addStatement("$L.setName($L)", variableName, textField.name);
-            if (textField.passwordCharacter != '•') builder.addStatement("$L.setPasswordCharacter($L)", variableName, textField.passwordCharacter);
+            if (textField.name != null) builder.addStatement("$L.setName($S)", variableName, textField.name);
+            if (textField.passwordCharacter != '•') builder.addStatement("$L.setPasswordCharacter('$L')", variableName, textField.passwordCharacter);
             if (textField.passwordMode) builder.addStatement("$L.setPasswordMode($L)", variableName, true);
             
             if (textField.alignment != Align.left) {
-                builder.add(".align($T.$L)", Align.class, alignmentToName(textField.alignment));
+                builder.addStatement("$L.setAlignment($T.$L)", variableName, Align.class, alignmentToName(textField.alignment));
             }
     
             if (textField.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
@@ -573,7 +586,7 @@ public class DialogSceneComposerJavaBuilder {
                 builder.addStatement("$L.setSelection($L, $L)", variableName, textField.selectionStart, textField.selectionEnd);
             if (!textField.focusTraversal) builder.addStatement("$L.setFocusTraversal($L)", variableName, false);
             if (textField.maxLength != 0) builder.addStatement("$L.setMaxLength($L)", variableName, textField.maxLength);
-            if (textField.messageText != null) builder.addStatement("$L.setCursorPosition($L)", variableName, textField.messageText);
+            if (textField.messageText != null) builder.addStatement("$L.setMessageText($S)", variableName, textField.messageText);
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimTextArea) {
@@ -586,12 +599,12 @@ public class DialogSceneComposerJavaBuilder {
             builder.addStatement("$L = new $T($S, skin$L)", variableName, TextArea.class, textArea.text,
                     textArea.style.name.equals("default") ? "" : ", \"" + textArea.style.name + "\"");
     
-            if (textArea.name != null) builder.addStatement("$L.setName($L)", variableName, textArea.name);
-            if (textArea.passwordCharacter != '•') builder.addStatement("$L.setPasswordCharacter($L)", variableName, textArea.passwordCharacter);
-            if (textArea.passwordMode) builder.addStatement("$L.setPasswordMode($L)", true);
+            if (textArea.name != null) builder.addStatement("$L.setName($S)", variableName, textArea.name);
+            if (textArea.passwordCharacter != '•') builder.addStatement("$L.setPasswordCharacter('$L')", variableName, textArea.passwordCharacter);
+            if (textArea.passwordMode) builder.addStatement("$L.setPasswordMode($L)", variableName, true);
     
             if (textArea.alignment != Align.left) {
-                builder.add(".align($T.$L)", Align.class, alignmentToName(textArea.alignment));
+                builder.addStatement("$L.setAlignment($T.$L)", variableName, Align.class, alignmentToName(textArea.alignment));
             }
     
             if (textArea.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
@@ -601,7 +614,7 @@ public class DialogSceneComposerJavaBuilder {
                 builder.addStatement("$L.setSelection($L, $L)", variableName, textArea.selectionStart, textArea.selectionEnd);
             if (!textArea.focusTraversal) builder.addStatement("$L.setFocusTraversal($L)", variableName, false);
             if (textArea.maxLength != 0) builder.addStatement("$L.setMaxLength($L)", variableName, textArea.maxLength);
-            if (textArea.messageText != null) builder.addStatement("$L.setCursorPosition($L)", variableName, textArea.messageText);
+            if (textArea.messageText != null) builder.addStatement("$L.setMessageText($S)", variableName, textArea.messageText);
             if (textArea.preferredRows > 0) builder.addStatement("$L.setPreferredRows($L)", variableName, textArea.preferredRows);
     
             return new WidgetNamePair(builder.build(), variableName);
@@ -612,10 +625,10 @@ public class DialogSceneComposerJavaBuilder {
             var builder = CodeBlock.builder();
             var variableName = createVariableName("touchPad", variables);
             if (!usedVariables.contains(variableName)) builder.add("$T ", Touchpad.class);
-            builder.addStatement("$2L = new $1T($Lf, skin$3L)", variableName, Touchpad.class, touchPad.deadZone,
+            builder.addStatement("$L = new $T($Lf, skin$L)", variableName, Touchpad.class, touchPad.deadZone,
                     touchPad.style.name.equals("default") ? "" : ", \"" + touchPad.style.name + "\"");
                 
-            if (touchPad.name != null) builder.addStatement("$L.setName($L)", variableName, touchPad.name);
+            if (touchPad.name != null) builder.addStatement("$L.setName($S)", variableName, touchPad.name);
             if (!touchPad.resetOnTouchUp) builder.addStatement("$L.setResetOnTouchUp($L)", variableName, false);
     
             return new WidgetNamePair(builder.build(), variableName);
@@ -627,87 +640,88 @@ public class DialogSceneComposerJavaBuilder {
             if (!usedVariables.contains(variableName)) builder.add("$T ", Container.class);
             builder.addStatement("$L = new $T()", variableName, Container.class);
             
-            if (container.name != null) builder.addStatement("$L.setName($L)", variableName, container.name);
+            if (container.name != null) builder.addStatement("$L.setName($S)", variableName, container.name);
     
             if (container.alignment != Align.center) {
                 builder.addStatement("$L.align($T.$L)", variableName, Align.class, alignmentToName(container.alignment));
             }
     
             if (container.fillX && container.fillY) {
-                builder.add("$L.fill(true)", variableName);
+                builder.addStatement("$L.fill(true)", variableName);
             } else if (container.fillX) {
-                builder.add("$L.fillX(true)", variableName);
+                builder.addStatement("$L.fillX(true)", variableName);
             } else if (container.fillY) {
-                builder.add("$L.fill(true)", variableName);
+                builder.addStatement("$L.fill(true)", variableName);
             }
     
             boolean minWidth = false, minHeight = false, maxWidth = false, maxHeight = false, preferredWidth = false, preferredHeight = false;
             if (Utils.isEqual(container.minWidth, container.minHeight, container.maxWidth, container.maxHeight, container.preferredWidth,
                     container.preferredHeight) && !Utils.isEqual(-1, container.minWidth)) {
-                builder.add("$L.size($L)", variableName, container.minWidth);
+                builder.addStatement("$L.size($Lf)", variableName, container.minWidth);
                 minWidth = true; minHeight = true; maxWidth = true; maxHeight = true; preferredWidth = true; preferredHeight = true;
             }
             if (!minWidth && !maxWidth && !preferredWidth && Utils.isEqual(container.minWidth, container.maxWidth, container.preferredWidth) && !Utils.isEqual(-1, container.minWidth)) {
-                builder.add("$L.width($L)", variableName, container.minWidth);
+                builder.addStatement("$L.width($Lf)", variableName, container.minWidth);
                 minWidth = true; maxWidth = true; preferredWidth = true;
             }
             if (!minHeight && !maxHeight && !preferredHeight && Utils.isEqual(container.minHeight, container.maxHeight, container.preferredHeight) && !Utils.isEqual(-1, container.minHeight)) {
-                builder.add("$L.height($L)", variableName, container.minHeight);
+                builder.addStatement("$L.height($Lf)", variableName, container.minHeight);
                 minHeight = true; maxHeight = true; preferredHeight = true;
             }
             if (!minWidth && !minHeight && Utils.isEqual(container.minWidth, container.minHeight) && !Utils.isEqual(-1, container.minWidth)) {
-                builder.add("$L.minSize($L)", variableName, container.minWidth);
+                builder.addStatement("$L.minSize($Lf)", variableName, container.minWidth);
                 minWidth = true; minHeight = true;
             }
             if (!maxWidth && !maxHeight && Utils.isEqual(container.maxWidth, container.maxHeight) && !Utils.isEqual(-1, container.maxWidth)) {
-                builder.add("$L.maxSize($L)", variableName, container.maxWidth);
+                builder.addStatement("$L.maxSize($Lf)", variableName, container.maxWidth);
                 maxWidth = true; maxHeight = true;
             }
             if (!preferredWidth && !preferredHeight && Utils.isEqual(container.preferredWidth, container.preferredHeight) && !Utils.isEqual(-1,
                     container.preferredWidth)) {
-                builder.add("$L.preferredSize($L)", variableName, container.preferredWidth);
+                builder.addStatement("$L.prefSize($Lf)", variableName, container.preferredWidth);
                 preferredWidth = true; preferredHeight = true;
             }
             if (!minWidth && !Utils.isEqual(-1, container.minWidth)) {
-                builder.add("$L.minWidth($L)", variableName, container.minWidth);
+                builder.addStatement("$L.minWidth($Lf)", variableName, container.minWidth);
             }
             if (!minHeight && !Utils.isEqual(-1, container.minHeight)) {
-                builder.add("$L.minHeight($L)", variableName, container.minHeight);
+                builder.addStatement("$L.minHeight($Lf)", variableName, container.minHeight);
             }
             if (!maxWidth && !Utils.isEqual(-1, container.maxWidth)) {
-                builder.add("$L.maxWidth($L)", variableName, container.maxWidth);
+                builder.addStatement("$L.maxWidth($Lf)", variableName, container.maxWidth);
             }
             if (!maxHeight && !Utils.isEqual(-1, container.maxHeight)) {
-                builder.add("$L.maxHeight($L)", variableName, container.maxHeight);
+                builder.addStatement("$L.maxHeight($Lf)", variableName, container.maxHeight);
             }
             if (!preferredWidth && !Utils.isEqual(-1, container.preferredWidth)) {
-                builder.add("$L.preferredWidth($L)", variableName, container.preferredWidth);
+                builder.addStatement("$L.prefWidth($Lf)", variableName, container.preferredWidth);
             }
             if (!preferredHeight && !Utils.isEqual(-1, container.preferredHeight)) {
-                builder.add("$L.preferredHeight($L)", variableName, container.preferredHeight);
+                builder.addStatement("$L.prefHeight($Lf)", variableName, container.preferredHeight);
             }
     
             if (!Utils.isEqual(0, container.padLeft, container.padRight, container.padTop, container.padBottom)) {
                 if (Utils.isEqual(container.padLeft, container.padRight, container.padTop, container.padBottom)) {
-                    builder.add("$L.pad($L)", variableName, container.padLeft);
+                    builder.add("$L.pad($Lf)", variableName, container.padLeft);
                 } else {
                     if (!MathUtils.isZero(container.padLeft)) {
-                        builder.add("$L.padLeft($Lf)", variableName, container.padLeft);
+                        builder.addStatement("$L.padLeft($Lf)", variableName, container.padLeft);
                     }
                     if (!MathUtils.isZero(container.padRight)) {
-                        builder.add("$L.padRight($Lf)", variableName, container.padRight);
+                        builder.addStatement("$L.padRight($Lf)", variableName, container.padRight);
                     }
                     if (!MathUtils.isZero(container.padTop)) {
-                        builder.add("$L.padTop($Lf)", variableName, container.padTop);
+                        builder.addStatement("$L.padTop($Lf)", variableName, container.padTop);
                     }
                     if (!MathUtils.isZero(container.padBottom)) {
-                        builder.add("$L.padBottom($Lf)", variableName, container.padBottom);
+                        builder.addStatement("$L.padBottom($Lf)", variableName, container.padBottom);
                     }
                 }
             }
     
             WidgetNamePair pair = createWidget(container.child, variables, usedVariables);
             if (pair != null) {
+                builder.add("\n");
                 builder.add(pair.codeBlock);
                 builder.addStatement("$L.setActor($L)", variableName, pair.name);
                 variables.removeValue(pair.name, false);
@@ -723,7 +737,7 @@ public class DialogSceneComposerJavaBuilder {
             if (!usedVariables.contains(variableName)) builder.add("$T ", HorizontalGroup.class);
             builder.addStatement("$L = new $T()", variableName, HorizontalGroup.class);
             
-            if (horizontalGroup.name != null) builder.addStatement("$L.setName($L)", variableName, horizontalGroup.name);
+            if (horizontalGroup.name != null) builder.addStatement("$L.setName($S)", variableName, horizontalGroup.name);
     
             if (horizontalGroup.alignment != Align.center) {
                 builder.addStatement("$L.align($T.$L)", variableName, Align.class, alignmentToName(horizontalGroup.alignment));
@@ -734,19 +748,19 @@ public class DialogSceneComposerJavaBuilder {
     
             if (!Utils.isEqual(0, horizontalGroup.padLeft, horizontalGroup.padRight, horizontalGroup.padTop, horizontalGroup.padBottom)) {
                 if (Utils.isEqual(horizontalGroup.padLeft, horizontalGroup.padRight, horizontalGroup.padTop, horizontalGroup.padBottom)) {
-                    builder.add("$L.pad($L)", variableName, horizontalGroup.padLeft);
+                    builder.addStatement("$L.pad($Lf)", variableName, horizontalGroup.padLeft);
                 } else {
                     if (!MathUtils.isZero(horizontalGroup.padLeft)) {
-                        builder.add("$L.padLeft($Lf)", variableName, horizontalGroup.padLeft);
+                        builder.addStatement("$L.padLeft($Lf)", variableName, horizontalGroup.padLeft);
                     }
                     if (!MathUtils.isZero(horizontalGroup.padRight)) {
-                        builder.add("$L.padRight($Lf)", variableName, horizontalGroup.padRight);
+                        builder.addStatement("$L.padRight($Lf)", variableName, horizontalGroup.padRight);
                     }
                     if (!MathUtils.isZero(horizontalGroup.padTop)) {
-                        builder.add("$L.padTop($Lf)", variableName, horizontalGroup.padTop);
+                        builder.addStatement("$L.padTop($Lf)", variableName, horizontalGroup.padTop);
                     }
                     if (!MathUtils.isZero(horizontalGroup.padBottom)) {
-                        builder.add("$L.padBottom($Lf)", variableName, horizontalGroup.padBottom);
+                        builder.addStatement("$L.padBottom($Lf)", variableName, horizontalGroup.padBottom);
                     }
                 }
             }
@@ -764,6 +778,7 @@ public class DialogSceneComposerJavaBuilder {
             for (var child : horizontalGroup.children) {
                 WidgetNamePair pair = createWidget(child, variables, usedVariables);
                 if (pair != null) {
+                    builder.add("\n");
                     builder.add(pair.codeBlock);
                     builder.addStatement("$L.addActor($L)", variableName, pair.name);
                     variables.removeValue(pair.name, false);
@@ -778,23 +793,23 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("scrollPane", variables);
-            if (!usedVariables.contains(variableName)) builder.add("$T ", ScrollPane.class);
     
             WidgetNamePair pair = createWidget(scrollPane.child, variables, usedVariables);
             if (pair != null) {
+                builder.add("\n");
                 builder.add(pair.codeBlock);
                 variables.removeValue(pair.name, false);
                 usedVariables.add(pair.name);
             }
+            if (!usedVariables.contains(variableName)) builder.add("$T ", ScrollPane.class);
             builder.add("$L = new $T(", variableName, ScrollPane.class);
             if (pair != null) builder.add("$L, skin", pair.name);
             else builder.add("skin");
             builder.addStatement("$L)", scrollPane.style.name.equals("default") ? "" : ", \"" + scrollPane.style.name + "\"");
     
-            if (!scrollPane.fadeScrollBars) builder.addStatement("$L.setfadeScrollBars($L)", variableName, false);
-            if (!scrollPane.fadeScrollBars) builder.addStatement("$L.setfadeScrollBars($L)", variableName, false);
+            if (!scrollPane.fadeScrollBars) builder.addStatement("$L.setFadeScrollBars($L)", variableName, false);
             if (scrollPane.clamp) builder.addStatement("$L.setClamp($L)", variableName, true);
-            if (!scrollPane.flickScroll) builder.addStatement("$L.setFlickScrollBars($L)", variableName, false);
+            if (!scrollPane.flickScroll) builder.addStatement("$L.setFlickScroll($L)", variableName, false);
             if (MathUtils.isEqual(scrollPane.flingTime, 1f)) builder.addStatement("$L.setFlingTime($Lf)", variableName, scrollPane.flingTime);
             
             if (scrollPane.forceScrollX || scrollPane.forceScrollY) {
@@ -802,23 +817,23 @@ public class DialogSceneComposerJavaBuilder {
             }
             
             if (!scrollPane.overScrollX || !scrollPane.overScrollY) {
-                builder.addStatement("$L.setOverScroll($L, $L)", variableName, scrollPane.forceScrollX, scrollPane.forceScrollY);
+                builder.addStatement("$L.setOverscroll($L, $L)", variableName, scrollPane.overScrollX, scrollPane.overScrollY);
             }
             
             if (!MathUtils.isEqual(50f, scrollPane.overScrollDistance) || !MathUtils.isEqual(30f, scrollPane.overScrollSpeedMin) || !MathUtils.isEqual(200f, scrollPane.overScrollSpeedMax)) {
-                builder.addStatement("$L.setupOverscroll($L, $L, $L)", scrollPane.overScrollDistance, scrollPane.overScrollSpeedMin, scrollPane.overScrollSpeedMax);
+                builder.addStatement("$L.setupOverscroll($Lf, $Lf, $Lf)", variableName, scrollPane.overScrollDistance, scrollPane.overScrollSpeedMin, scrollPane.overScrollSpeedMax);
             }
             
             if (!scrollPane.scrollBarBottom || !scrollPane.scrollBarRight) {
-                builder.addStatement("$L.setScrollBarPositions($L, $L)", scrollPane.scrollBarBottom, scrollPane.scrollBarRight);
+                builder.addStatement("$L.setScrollBarPositions($L, $L)", variableName, scrollPane.scrollBarBottom, scrollPane.scrollBarRight);
             }
     
-            if (scrollPane.scrollBarsOnTop) builder.addStatement("$L.setScrollBarsOnTop($L)", variableName, true);
+            if (scrollPane.scrollBarsOnTop) builder.addStatement("$L.setScrollbarsOnTop($L)", variableName, true);
             if (!scrollPane.scrollBarsVisible) builder.addStatement("$L.setScrollBarsVisible($L)", variableName, false);
             if (!scrollPane.scrollBarTouch) builder.addStatement("$L.setScrollBarTouch($L)", variableName, false);
     
             if (scrollPane.scrollingDisabledX || scrollPane.scrollingDisabledY) {
-                builder.addStatement("$L.setScrollingDisabled($L, $L)", scrollPane.scrollingDisabledX, scrollPane.scrollingDisabledY);
+                builder.addStatement("$L.setScrollingDisabled($L, $L)", variableName, scrollPane.scrollingDisabledX, scrollPane.scrollingDisabledY);
             }
     
             if (!scrollPane.smoothScrolling) builder.addStatement("$L.setSmoothScrolling($L)", variableName, false);
@@ -833,11 +848,12 @@ public class DialogSceneComposerJavaBuilder {
             if (!usedVariables.contains(variableName)) builder.add("$T ", Stack.class);
             builder.addStatement("$L = new $T()", variableName, Stack.class);
             
-            if (stack.name != null) builder.addStatement("$L.setName($L)", variableName, stack.name);
+            if (stack.name != null) builder.addStatement("$L.setName($S)", variableName, stack.name);
     
             for (var child : stack.children) {
                 WidgetNamePair pair = createWidget(child, variables, usedVariables);
                 if (pair != null) {
+                    builder.add("\n");
                     builder.add(pair.codeBlock);
                     builder.addStatement("$L.addActor($L)", variableName, pair.name);
                     variables.removeValue(pair.name, false);
@@ -855,12 +871,14 @@ public class DialogSceneComposerJavaBuilder {
             
             WidgetNamePair pair1 = createWidget(splitPane.childFirst, variables, usedVariables);
             if (pair1 != null) {
+                builder.add("\n");
                 builder.add(pair1.codeBlock);
                 variables.removeValue(pair1.name, false);
                 usedVariables.add(pair1.name);
             }
             WidgetNamePair pair2 = createWidget(splitPane.childFirst, variables, usedVariables);
             if (pair2 != null) {
+                builder.add("\n");
                 builder.add(pair2.codeBlock);
                 variables.removeValue(pair2.name, false);
                 usedVariables.add(pair2.name);
@@ -871,7 +889,7 @@ public class DialogSceneComposerJavaBuilder {
                     .addStatement("$L)", splitPane.style.name.equals("default-horizontal") || splitPane.style.name.equals("default-vertical") ? "" : ", \"" + splitPane.style.name + "\"");
             
             
-            if (splitPane.name != null) builder.addStatement("$L.setName($L)", variableName, splitPane.name);
+            if (splitPane.name != null) builder.addStatement("$L.setName($S)", variableName, splitPane.name);
             if (MathUtils.isEqual(.5f, splitPane.split)) builder.addStatement("$L.setSplit($L)", variableName, splitPane.split);
             if (MathUtils.isZero(splitPane.splitMin)) builder.addStatement("$L.setMinSplitAmount($L)", variableName, splitPane.splitMin);
             if (MathUtils.isEqual(1, splitPane.splitMax)) builder.addStatement("$L.setMaxSplitAmount($L)", variableName, splitPane.splitMax);
@@ -887,8 +905,8 @@ public class DialogSceneComposerJavaBuilder {
             builder.addStatement("$L = new $T(skin$L)", variableName, Tree.class,
                     tree.style.name.equals("default") ? "" : ", \"" + tree.style.name + "\"");
             
-            if (tree.name != null) builder.addStatement("$L.setName($L)", variableName, tree.name);
-            if (!MathUtils.isZero(tree.padLeft) || !MathUtils.isZero(tree.padLeft)) {
+            if (tree.name != null) builder.addStatement("$L.setName($S)", variableName, tree.name);
+            if (!MathUtils.isZero(tree.padLeft) || !MathUtils.isZero(tree.padRight)) {
                 if (MathUtils.isEqual(tree.padLeft, tree.padRight)) {
                     builder.addStatement("$L.setPadding($Lf)", variableName, tree.padLeft);
                 } else {
@@ -906,6 +924,7 @@ public class DialogSceneComposerJavaBuilder {
             for (var node : tree.children) {
                 var pair = createWidget(node, variables, usedVariables);
                 if (pair != null) {
+                    builder.add("\n");
                     builder.add(pair.codeBlock);
                     builder.addStatement("$L.add($L)", variableName, pair.name);
                     variables.removeValue(pair.name, false);
@@ -921,6 +940,9 @@ public class DialogSceneComposerJavaBuilder {
             if (pair == null) return null;
             
             var builder = CodeBlock.builder();
+            builder.add("\n");
+            builder.add(pair.codeBlock);
+            
             var variableName = createVariableName("node", variables);
             if (!usedVariables.contains(variableName)) builder.add("$T ", nodeClassName);
             builder.addStatement("$L = new $T($L)", variableName, nodeClassName, pair.name);
@@ -932,6 +954,7 @@ public class DialogSceneComposerJavaBuilder {
             for (var child : node.nodes) {
                 var nodePair = createWidget(child, variables, usedVariables);
                 if (nodePair != null) {
+                    builder.add("\n");
                     builder.add(nodePair.codeBlock);
                     builder.addStatement("$L.add($L)", variableName, nodePair.name);
                     variables.removeValue(nodePair.name, false);
@@ -948,7 +971,7 @@ public class DialogSceneComposerJavaBuilder {
             if (!usedVariables.contains(variableName)) builder.add("$T ", HorizontalGroup.class);
             builder.addStatement("$L = new $T()", variableName, HorizontalGroup.class);
     
-            if (verticalGroup.name != null) builder.addStatement("$L.setName($L)", variableName, verticalGroup.name);
+            if (verticalGroup.name != null) builder.addStatement("$L.setName($S)", variableName, verticalGroup.name);
     
             if (verticalGroup.alignment != Align.center) {
                 builder.addStatement("$L.align($T.$L)", variableName, Align.class, alignmentToName(verticalGroup.alignment));
@@ -959,19 +982,19 @@ public class DialogSceneComposerJavaBuilder {
     
             if (!Utils.isEqual(0, verticalGroup.padLeft, verticalGroup.padRight, verticalGroup.padTop, verticalGroup.padBottom)) {
                 if (Utils.isEqual(verticalGroup.padLeft, verticalGroup.padRight, verticalGroup.padTop, verticalGroup.padBottom)) {
-                    builder.add("$L.pad($L)", variableName, verticalGroup.padLeft);
+                    builder.addStatement("$L.pad($Lf)", variableName, verticalGroup.padLeft);
                 } else {
                     if (!MathUtils.isZero(verticalGroup.padLeft)) {
-                        builder.add("$L.padLeft($Lf)", variableName, verticalGroup.padLeft);
+                        builder.addStatement("$L.padLeft($Lf)", variableName, verticalGroup.padLeft);
                     }
                     if (!MathUtils.isZero(verticalGroup.padRight)) {
-                        builder.add("$L.padRight($Lf)", variableName, verticalGroup.padRight);
+                        builder.addStatement("$L.padRight($Lf)", variableName, verticalGroup.padRight);
                     }
                     if (!MathUtils.isZero(verticalGroup.padTop)) {
-                        builder.add("$L.padTop($Lf)", variableName, verticalGroup.padTop);
+                        builder.addStatement("$L.padTop($Lf)", variableName, verticalGroup.padTop);
                     }
                     if (!MathUtils.isZero(verticalGroup.padBottom)) {
-                        builder.add("$L.padBottom($Lf)", variableName, verticalGroup.padBottom);
+                        builder.addStatement("$L.padBottom($Lf)", variableName, verticalGroup.padBottom);
                     }
                 }
             }
@@ -989,6 +1012,7 @@ public class DialogSceneComposerJavaBuilder {
             for (var child : verticalGroup.children) {
                 WidgetNamePair pair = createWidget(child, variables, usedVariables);
                 if (pair != null) {
+                    builder.add("\n");
                     builder.add(pair.codeBlock);
                     builder.addStatement("$L.addActor($L)", variableName, pair.name);
                     variables.removeValue(pair.name, false);
@@ -1046,10 +1070,11 @@ public class DialogSceneComposerJavaBuilder {
     }
     
     private static MethodSpec renderMethod() {
+        Color color = rootActor.backgroundColor == null ? Color.WHITE : rootActor.backgroundColor.color;
         return MethodSpec.methodBuilder("render")
                 .addModifiers(Modifier.PUBLIC)
-                .addStatement("Gdx.gl.glClearColor(1, 1, 1, 1)")
-                .addStatement("Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)")
+                .addStatement("$T.gl.glClearColor($Lf, $Lf, $Lf, $Lf)", Gdx.class, color.r, color.g, color.b, color.a)
+                .addStatement("$T.gl.glClear($T.GL_COLOR_BUFFER_BIT)", Gdx.class, GL20.class)
                 .addStatement("stage.act()")
                 .addStatement("stage.draw()")
                 .returns(void.class).build();
@@ -1068,7 +1093,19 @@ public class DialogSceneComposerJavaBuilder {
         return MethodSpec.methodBuilder("dispose")
                 .addModifiers(Modifier.PUBLIC)
                 .addStatement("stage.dispose()")
-                .addStatement("skin.dispose")
+                .addStatement("skin.dispose()")
                 .returns(void.class).build();
+    }
+    
+    private static TypeSpec basicNodeType() {
+        return TypeSpec.classBuilder("BasicNode")
+                .superclass(Node.class)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .addMethod(MethodSpec.constructorBuilder()
+                        .addModifiers(Modifier.PUBLIC)
+                        .addParameter(Actor.class, "actor")
+                        .addStatement("super(actor)")
+                        .build())
+                .build();
     }
 }

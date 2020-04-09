@@ -72,7 +72,8 @@ public class DialogSceneComposerEvents {
     
     public void dialogExportSaveJava(FileHandle saveFile) {
         Main.main.getProjectData().setLastImportExportPath(saveFile.path());
-        System.out.println(DialogSceneComposerJavaBuilder.generateJavaFile());
+        String java = DialogSceneComposerJavaBuilder.generateJavaFile();
+        saveFile.writeString(java, false);
     }
     
     public void dialogExportClipboard() {

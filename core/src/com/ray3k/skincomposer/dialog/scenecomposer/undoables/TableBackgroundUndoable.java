@@ -43,11 +43,11 @@ public class TableBackgroundUndoable implements SceneComposerUndoable {
     
     @Override
     public String getRedoString() {
-        return "Redo \"Table Background: " + background.name + "\"";
+        return "Redo \"Table Background: " + (background == null ? "null" : background.name) + "\"";
     }
     
     @Override
     public String getUndoString() {
-        return "Undo \"Table Background: " + background.name + "\"";
+        return "Undo \"Table Background: " + (background == null ? "null" : background.name) + "\"";
     }
 }

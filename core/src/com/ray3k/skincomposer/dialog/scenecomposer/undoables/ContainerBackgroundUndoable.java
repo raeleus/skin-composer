@@ -43,11 +43,11 @@ public class ContainerBackgroundUndoable implements SceneComposerUndoable {
     
     @Override
     public String getRedoString() {
-        return "Redo \"Container Background: " + background.name + "\"";
+        return "Redo \"Container Background: " + (background == null ? "null" : background.name) + "\"";
     }
     
     @Override
     public String getUndoString() {
-        return "Undo \"Container Background: " + background.name + "\"";
+        return "Undo \"Container Background: " + (background == null ? "null" : background.name) + "\"";
     }
 }

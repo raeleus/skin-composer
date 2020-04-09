@@ -43,11 +43,11 @@ public class NodeIconUndoable implements SceneComposerUndoable {
     
     @Override
     public String getRedoString() {
-        return "Redo \"Node icon: " + icon.name + "\"";
+        return "Redo \"Node icon: " + (icon == null ? "null" : icon.name) + "\"";
     }
     
     @Override
     public String getUndoString() {
-        return "Undo \"Node icon: " + icon.name + "\"";
+        return "Undo \"Node icon: " + (icon == null ? "null" : icon.name) + "\"";
     }
 }

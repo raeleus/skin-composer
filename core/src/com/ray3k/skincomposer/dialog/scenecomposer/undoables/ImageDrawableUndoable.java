@@ -43,11 +43,11 @@ public class ImageDrawableUndoable implements SceneComposerUndoable {
     
     @Override
     public String getRedoString() {
-        return "Redo \"Image Drawable: " + drawable.name + "\"";
+        return "Redo \"Image Drawable: " + (drawable == null ? "null" : drawable.name) + "\"";
     }
     
     @Override
     public String getUndoString() {
-        return "Undo \"Image Drawable: " + drawable.name + "\"";
+        return "Undo \"Image Drawable: " + (drawable == null ? "null" : drawable.name) + "\"";
     }
 }

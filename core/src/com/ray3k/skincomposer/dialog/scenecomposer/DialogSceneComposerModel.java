@@ -491,7 +491,10 @@ public class DialogSceneComposerModel {
             horizontalGroup.wrap(sim.wrap);
             horizontalGroup.wrapSpace(sim.wrapSpace);
             for (var child : sim.children) {
-                horizontalGroup.addActor(createPreviewWidget(child));
+                var widget = createPreviewWidget(child);
+                if ( widget != null) {
+                    horizontalGroup.addActor(widget);
+                }
             }
             actor = horizontalGroup;
         } else if (simActor instanceof SimScrollPane) {
@@ -569,7 +572,8 @@ public class DialogSceneComposerModel {
             verticalGroup.wrap(sim.wrap);
             verticalGroup.wrapSpace(sim.wrapSpace);
             for (var child : sim.children) {
-                verticalGroup.addActor(createPreviewWidget(child));
+                var widget = createPreviewWidget(child);
+                if (widget != null) verticalGroup.addActor(widget);
             }
             actor = verticalGroup;
         }
@@ -601,7 +605,7 @@ public class DialogSceneComposerModel {
     }
     
     public static void assignParentRecursive(SimActor parent) {
-        if (parent instanceof  SimSingleChild) {
+        if (parent instanceof SimSingleChild) {
             var child = ((SimSingleChild) parent).getChild();
             if (child != null) {
                 child.parent = parent;
@@ -619,6 +623,29 @@ public class DialogSceneComposerModel {
     
     public static class SimActor {
         public transient SimActor parent;
+        
+        public boolean hasChildOfTypeRecursive(Class type) {
+            boolean returnValue = false;
+            if (this instanceof SimSingleChild) {
+                SimActor child = ((SimSingleChild) this).getChild();
+                if (child != null) {
+                    returnValue = ClassReflection.isInstance(type, child) || child.hasChildOfTypeRecursive(type);
+                }
+            }
+            
+            if (!returnValue && this instanceof SimMultipleChildren) {
+                for (var child : ((SimMultipleChildren) this).getChildren()) {
+                    if (child != null) {
+                        if (returnValue = ClassReflection.isInstance(type, child) || child.hasChildOfTypeRecursive(type)) {
+                            break;
+                        }
+                        
+                    }
+                }
+            }
+            
+            return returnValue;
+        }
     }
     
     public interface SimSingleChild {
