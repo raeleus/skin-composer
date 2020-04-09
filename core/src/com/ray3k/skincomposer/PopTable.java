@@ -24,6 +24,8 @@ public class PopTable extends Table {
     private int preferredEdge;
     private boolean keepSizedWithinStage;
     private boolean automaticallyResized;
+    private Actor attachToActor;
+    private int attachToActorEdge;
     
     public PopTable() {
         this(new PopTableStyle());
@@ -266,72 +268,7 @@ public class PopTable extends Table {
             popTable.show(stage);
             int edge = popTable.getPreferredEdge();
             
-            popTable.alignToActorEdge(actor, edge);
-            
-            var rightDistance = popTable.actorEdgeStageHorizontalDistance(actor, Align.right);
-            var leftDistance = popTable.actorEdgeStageHorizontalDistance(actor, Align.left);
-            switch (edge) {
-                case Align.left:
-                case Align.topLeft:
-                case Align.bottomLeft:
-                    if (popTable.getX() < 0) {
-                        if (rightDistance > leftDistance) {
-                            edge &= ~Align.left;
-                            edge |= Align.right;
-                            popTable.setWidth(Math.min(popTable.getWidth(), rightDistance));
-                        } else {
-                            popTable.setWidth(Math.min(popTable.getWidth(), leftDistance));
-                        }
-                    }
-                    break;
-                    
-                case Align.right:
-                case Align.bottomRight:
-                case Align.topRight:
-                    if (popTable.getX() + popTable.getWidth() > stage.getWidth()) {
-                        if (leftDistance > rightDistance) {
-                            edge &= ~Align.right;
-                            edge |= Align.left;
-                            popTable.setWidth(Math.min(popTable.getWidth(), leftDistance));
-                        } else {
-                            popTable.setWidth(Math.min(popTable.getWidth(), rightDistance));
-                        }
-                    }
-                    break;
-            }
-            
-            var topDistance = popTable.actorEdgeStageVerticalDistance(actor, Align.top);
-            var bottomDistance = popTable.actorEdgeStageVerticalDistance(actor, Align.bottom);
-            switch (edge) {
-                case Align.bottom:
-                case Align.bottomLeft:
-                case Align.bottomRight:
-                    if (popTable.getY() < 0) {
-                        if (topDistance > bottomDistance) {
-                            edge &= ~Align.bottom;
-                            edge |= Align.top;
-                            popTable.setHeight(Math.min(popTable.getHeight(), topDistance));
-                        } else {
-                            popTable.setHeight(Math.min(popTable.getHeight(), bottomDistance));
-                        }
-                    }
-                    break;
-                    
-                case Align.top:
-                case Align.topLeft:
-                case Align.topRight:
-                    if (popTable.getY() + popTable.getHeight() > stage.getHeight()) {
-                        if (bottomDistance > topDistance) {
-                            edge &= ~Align.top;
-                            edge |= Align.bottom;
-                            popTable.setHeight(Math.min(popTable.getHeight(), bottomDistance));
-                        } else {
-                            popTable.setHeight(Math.min(popTable.getHeight(), topDistance));
-                        }
-                    }
-                    break;
-            }
-            
+            popTable.setAttachToActor(actor, edge);
             popTable.alignToActorEdge(actor, edge);
             
             popTable.moveToInsideStage();
@@ -414,6 +351,19 @@ public class PopTable extends Table {
         this.automaticallyResized = automaticallyResized;
     }
     
+    public Actor getAttachToActor() {
+        return attachToActor;
+    }
+    
+    public int getAttachToActorEdge() {
+        return attachToActorEdge;
+    }
+    
+    public void setAttachToActor(Actor attachToActor, int edge) {
+        this.attachToActor = attachToActor;
+        this.attachToActorEdge = edge;
+    }
+    
     @Override
     public void layout() {
         if (automaticallyResized) {
@@ -422,9 +372,14 @@ public class PopTable extends Table {
             pack();
             setPosition(centerX, centerY, Align.center);
             setPosition(MathUtils.floor(getX()), MathUtils.floor(getY()));
-            if (keepSizedWithinStage) {
-                resizeWindowWithinStage();
-            }
+        }
+        
+        if (attachToActor != null) {
+            alignToActorEdge(attachToActor, attachToActorEdge);
+        }
+        
+        if (keepSizedWithinStage) {
+            resizeWindowWithinStage();
         }
         super.layout();
     }

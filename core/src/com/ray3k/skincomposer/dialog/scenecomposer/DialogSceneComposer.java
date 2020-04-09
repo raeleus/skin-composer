@@ -206,7 +206,7 @@ public class DialogSceneComposer extends Dialog {
         previewTable.setTouchable(Touchable.enabled);
         previewTable.setBackground(skin.getDrawable("white"));
         
-        previewTable.add(model.preview).grow();
+        previewTable.add(model.preview).grow().minSize(0).prefSize(0);
         
         var bottom = new Table() {
             @Override
