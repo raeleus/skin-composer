@@ -198,6 +198,7 @@ public class PopTable extends Table {
         this.stage = stage;
         group = new WidgetGroup();
         group.setFillParent(true);
+        group.setTouchable(Touchable.childrenOnly);
         stage.addActor(group);
         
         group.addActor(stageBackground);
@@ -325,6 +326,7 @@ public class PopTable extends Table {
     
     public void setHideOnUnfocus(boolean hideOnUnfocus) {
         this.hideOnUnfocus = hideOnUnfocus;
+        stageBackground.setTouchable(hideOnUnfocus ? Touchable.enabled : Touchable.disabled);
     }
     
     public int getPreferredEdge() {
