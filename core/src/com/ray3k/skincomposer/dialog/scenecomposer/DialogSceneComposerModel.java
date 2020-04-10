@@ -21,7 +21,7 @@ public class DialogSceneComposerModel {
     public transient Array<SceneComposerUndoable> undoables;
     public transient Array<SceneComposerUndoable> redoables;
     public static SimRootGroup rootActor;
-    public transient Group preview;
+    public transient Stack preview;
     private static Json json;
     
     public enum Interpol {
@@ -76,7 +76,7 @@ public class DialogSceneComposerModel {
     public DialogSceneComposerModel() {
         undoables = new Array<>();
         redoables = new Array<>();
-        preview = new Group();
+        preview = new Stack();
         main = Main.main;
     
         json = new Json();
@@ -218,6 +218,7 @@ public class DialogSceneComposerModel {
             
             table.align(simTable.alignment);
             
+            System.out.println(simTable.fillParent);
             table.setFillParent(simTable.fillParent);
             
             int row = 0;
@@ -238,7 +239,7 @@ public class DialogSceneComposerModel {
                 }
     
                 if (simCell.minHeight >= 0) {
-                    cell.minWidth(simCell.minHeight);
+                    cell.minHeight(simCell.minHeight);
                 }
     
                 if (simCell.maxWidth >= 0) {
@@ -246,7 +247,7 @@ public class DialogSceneComposerModel {
                 }
     
                 if (simCell.maxHeight >= 0) {
-                    cell.maxWidth(simCell.maxHeight);
+                    cell.maxHeight(simCell.maxHeight);
                 }
     
                 if (simCell.preferredWidth >= 0) {
