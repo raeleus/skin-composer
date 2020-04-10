@@ -26,6 +26,8 @@ public class PopTable extends Table {
     private boolean automaticallyResized;
     private Actor attachToActor;
     private int attachToActorEdge;
+    private HideListener hideListener;
+    private boolean modal;
     
     public PopTable() {
         this(new PopTableStyle());
@@ -41,25 +43,18 @@ public class PopTable extends Table {
     
     public PopTable(PopTableStyle style) {
         setTouchable(Touchable.enabled);
+        hideListener = new HideListener();
         
         stageBackground = new Image(style.stageBackground);
         stageBackground.setFillParent(true);
-        stageBackground.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                if (hideOnUnfocus) {
-                    hide();
-                }
-            }
-        });
         
         setBackground(style.background);
         
-        hideOnUnfocus = true;
         preferredEdge = Align.top;
         keepSizedWithinStage = true;
         automaticallyResized = true;
+        setModal(false);
+        setHideOnUnfocus(false);
     }
     
     public void alignToActorEdge(Actor actor, int edge) {
@@ -185,6 +180,7 @@ public class PopTable extends Table {
     }
     
     public void hide(Action action) {
+        stage.removeCaptureListener(hideListener);
         group.addAction(sequence(action, Actions.removeActor()));
         fire(new TableHiddenEvent());
     }
@@ -200,6 +196,7 @@ public class PopTable extends Table {
         group.setFillParent(true);
         group.setTouchable(Touchable.childrenOnly);
         stage.addActor(group);
+        stage.addCaptureListener(hideListener);
         
         group.addActor(stageBackground);
         group.addActor(this);
@@ -214,6 +211,18 @@ public class PopTable extends Table {
         
         group.addAction(action);
         fire(new TableShownEvent());
+    }
+    
+    private class HideListener extends InputListener {
+        @Override
+        public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+            if (hideOnUnfocus) {
+                Actor target = event.getTarget();
+                if (isAscendantOf(target)) return false;
+                hide();
+            }
+            return false;
+        }
     }
     
     public static class PopTableStyle {
@@ -243,6 +252,8 @@ public class PopTable extends Table {
         
         public PopTableClickListener(PopTableStyle style) {
             popTable = new PopTable(style);
+            popTable.setModal(true);
+            popTable.setHideOnUnfocus(true);
             popTable.addListener(new TableHiddenListener() {
                 @Override
                 public void tableShown(Event event) {
@@ -326,7 +337,6 @@ public class PopTable extends Table {
     
     public void setHideOnUnfocus(boolean hideOnUnfocus) {
         this.hideOnUnfocus = hideOnUnfocus;
-        stageBackground.setTouchable(hideOnUnfocus ? Touchable.enabled : Touchable.disabled);
     }
     
     public int getPreferredEdge() {
@@ -364,6 +374,15 @@ public class PopTable extends Table {
     public void setAttachToActor(Actor attachToActor, int edge) {
         this.attachToActor = attachToActor;
         this.attachToActorEdge = edge;
+    }
+    
+    public boolean isModal() {
+        return modal;
+    }
+    
+    public void setModal(boolean modal) {
+        this.modal = modal;
+        stageBackground.setTouchable(modal ? Touchable.enabled : Touchable.disabled);
     }
     
     @Override
