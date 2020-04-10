@@ -193,7 +193,6 @@ public class DialogSceneComposerModel {
                 preview.addActor(actor);
             }
         }
-//        preview.debugAll();
     }
     
     private Actor createPreviewWidget(SimActor simActor) {
