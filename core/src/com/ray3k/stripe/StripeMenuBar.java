@@ -83,13 +83,7 @@ public class StripeMenuBar extends Table implements StripeMenu {
         modalGroup.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                hideRecursive(stripeMenuValues);
-                modalGroup.remove();
-                menuActivated = false;
-                
-                for (StripeMenuValue value : stripeMenuValues) {
-                    value.getParentButton().setChecked(false);
-                }
+                hideEverything();
             }
         });
     }
@@ -98,6 +92,16 @@ public class StripeMenuBar extends Table implements StripeMenu {
         for (StripeMenuValue item : items) {
             hideRecursive(item.stripeMenuValues);
             item.hide();
+        }
+    }
+    
+    private void hideEverything() {
+        hideRecursive(stripeMenuValues);
+        modalGroup.remove();
+        menuActivated = false;
+    
+        for (StripeMenuValue value : stripeMenuValues) {
+            value.getParentButton().setChecked(false);
         }
     }
     
@@ -356,6 +360,10 @@ public class StripeMenuBar extends Table implements StripeMenu {
     
         @Override
         public void clicked(InputEvent event, float x, float y) {
+            if (stripeMenuValue == null) {
+                hideEverything();
+            }
+            
             if (clickMode) {
                 menuActivated = true;
                 
@@ -389,8 +397,7 @@ public class StripeMenuBar extends Table implements StripeMenu {
         
         private void show() {
             if (stripeMenuValue != null && stripeMenuValue.isHidden()) {
-                if (modal) com.ray3k.stripe.StripeMenuBar.this.getParent().addActorBefore(
-                        com.ray3k.stripe.StripeMenuBar.this, modalGroup);
+                if (modal) stage.addActor(modalGroup);
                 stripeMenuValue.show(stage);
                 stripeMenuValue.attachToActor();
                 stripeMenuValue.setTouchable(Touchable.enabled);

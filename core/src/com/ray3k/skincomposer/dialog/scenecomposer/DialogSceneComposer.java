@@ -104,7 +104,12 @@ public class DialogSceneComposer extends Dialog {
                 .item("Refresh")
                 .item("Clear")
                 .item("Undo", new KeyboardShortcut("Ctrl+Z", Keys.Z, Keys.CONTROL_LEFT))
-                .item("Redo");
+                .item("Redo")
+                
+                .menu("test")
+                .item("test1")
+                .item("test2")
+                .item("test3");
         
         bar.menu("View")
                 .item("Live")
