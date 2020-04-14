@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Scaling;
-import com.ray3k.skincomposer.PopTable;
+import com.ray3k.skincomposer.stripe.PopTable;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;

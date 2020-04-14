@@ -50,6 +50,7 @@ import com.ray3k.skincomposer.dialog.DialogCustomStyle;
 import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
+import com.ray3k.skincomposer.stripe.Spinner;
 import com.ray3k.skincomposer.utils.Utils;
 
 import java.io.File;

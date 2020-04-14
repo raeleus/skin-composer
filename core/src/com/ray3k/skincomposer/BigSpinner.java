@@ -29,13 +29,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.skincomposer.Spinner.Orientation;
-import com.ray3k.skincomposer.Spinner.SpinnerStyle;
+import com.ray3k.skincomposer.stripe.Spinner.Orientation;
+import com.ray3k.skincomposer.stripe.Spinner.SpinnerStyle;
 import com.ray3k.skincomposer.utils.Utils;
 
 import java.math.BigDecimal;

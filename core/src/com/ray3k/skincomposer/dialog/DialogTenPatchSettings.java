@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.Main;
-import com.ray3k.skincomposer.Spinner;
+import com.ray3k.skincomposer.stripe.Spinner;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
 
@@ -43,7 +43,7 @@ public class DialogTenPatchSettings extends Dialog {
         label = new Label("Min Width:", skin);
         table.add(label).right();
         
-        var spinner = new Spinner(0, 1, true, com.ray3k.skincomposer.Spinner.Orientation.HORIZONTAL, skin);
+        var spinner = new Spinner(0, 1, true, Spinner.Orientation.HORIZONTAL, skin);
         spinner.setValue(workingData.minWidth);
         table.add(spinner).minWidth(100).spaceRight(15);
         spinner.getButtonMinus().addListener(main.getHandListener());
@@ -59,7 +59,7 @@ public class DialogTenPatchSettings extends Dialog {
         label = new Label("Min Height:", skin);
         table.add(label).right();
     
-        spinner = new Spinner(0, 1, true, com.ray3k.skincomposer.Spinner.Orientation.HORIZONTAL, skin);
+        spinner = new Spinner(0, 1, true, Spinner.Orientation.HORIZONTAL, skin);
         spinner.setValue(workingData.minHeight);
         table.add(spinner).minWidth(100).spaceRight(15);
         spinner.getButtonMinus().addListener(main.getHandListener());
@@ -251,7 +251,7 @@ public class DialogTenPatchSettings extends Dialog {
         textTooltip = new TextTooltip("Only relevant if Tiling is enabled.", main.getTooltipManager(), skin);
         label.addListener(textTooltip);
     
-        spinner = new Spinner(0, 1, true, com.ray3k.skincomposer.Spinner.Orientation.HORIZONTAL, skin);
+        spinner = new Spinner(0, 1, true, Spinner.Orientation.HORIZONTAL, skin);
         spinner.setValue(workingData.tenPatchData.offsetX);
         table.add(spinner).minWidth(100).spaceRight(15);
         spinner.addListener(textTooltip);
@@ -269,7 +269,7 @@ public class DialogTenPatchSettings extends Dialog {
         table.add(label).right();
         label.addListener(textTooltip);
     
-        spinner = new Spinner(0, 1, true, com.ray3k.skincomposer.Spinner.Orientation.HORIZONTAL, skin);
+        spinner = new Spinner(0, 1, true, Spinner.Orientation.HORIZONTAL, skin);
         spinner.setValue(workingData.tenPatchData.offsetY);
         table.add(spinner).minWidth(100).spaceRight(15);
         spinner.addListener(textTooltip);
@@ -288,7 +288,7 @@ public class DialogTenPatchSettings extends Dialog {
         table.add(label).right();
         label.addListener(textTooltip);
     
-        spinner = new Spinner(0, 1, true, com.ray3k.skincomposer.Spinner.Orientation.HORIZONTAL, skin);
+        spinner = new Spinner(0, 1, true, Spinner.Orientation.HORIZONTAL, skin);
         spinner.setValue(workingData.tenPatchData.offsetXspeed);
         table.add(spinner).minWidth(100).spaceRight(15);
         spinner.addListener(textTooltip);
@@ -306,7 +306,7 @@ public class DialogTenPatchSettings extends Dialog {
         table.add(label).right();
         label.addListener(textTooltip);
     
-        spinner = new Spinner(0, 1, true, com.ray3k.skincomposer.Spinner.Orientation.HORIZONTAL, skin);
+        spinner = new Spinner(0, 1, true, Spinner.Orientation.HORIZONTAL, skin);
         spinner.setValue(workingData.tenPatchData.offsetYspeed);
         table.add(spinner).minWidth(100).spaceRight(15);
         spinner.addListener(textTooltip);

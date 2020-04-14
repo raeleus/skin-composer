@@ -36,7 +36,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.*;
-import com.ray3k.skincomposer.Spinner.Orientation;
+import com.ray3k.skincomposer.stripe.Spinner;
+import com.ray3k.skincomposer.stripe.Spinner.Orientation;
 
 public class DialogColorPicker extends Dialog {
     private Skin skin;

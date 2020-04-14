@@ -42,7 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.Main;
-import com.ray3k.skincomposer.Spinner;
+import com.ray3k.skincomposer.stripe.Spinner;
 import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.utils.Utils;
 

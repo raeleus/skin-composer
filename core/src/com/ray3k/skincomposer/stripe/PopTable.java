@@ -1,4 +1,4 @@
-package com.ray3k.skincomposer;
+package com.ray3k.skincomposer.stripe;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;

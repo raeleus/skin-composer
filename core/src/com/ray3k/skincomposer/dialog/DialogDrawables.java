@@ -30,7 +30,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
@@ -44,8 +43,8 @@ import com.ray3k.skincomposer.UndoableManager.CustomDrawableUndoable;
 import com.ray3k.skincomposer.UndoableManager.DrawableUndoable;
 import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.dialog.DialogTenPatch.TenPatchData;
+import com.ray3k.skincomposer.stripe.Spinner;
 import com.ray3k.skincomposer.utils.Utils;
-import com.ray3k.tenpatch.TenPatchDrawable;
 
 import java.io.File;
 import java.util.Iterator;
