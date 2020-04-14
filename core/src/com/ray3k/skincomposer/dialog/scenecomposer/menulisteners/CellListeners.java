@@ -6,8 +6,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.skincomposer.stripe.PopTable;
-import com.ray3k.skincomposer.stripe.Spinner;
+import com.ray3k.stripe.PopTable;
+import com.ray3k.stripe.PopTableClickListener;
+import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
@@ -16,7 +17,7 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimA
 public class CellListeners {
     public static EventListener cellUniformListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -65,7 +66,7 @@ public class CellListeners {
     
     public static EventListener cellSizeListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -208,7 +209,7 @@ public class CellListeners {
     }
     
     public static EventListener cellAlignmentListener(final DialogSceneComposerEvents events, final SimActor simActor) {
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -396,7 +397,7 @@ public class CellListeners {
     
     public static EventListener cellExpandFillGrowListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -532,7 +533,7 @@ public class CellListeners {
     
     public static EventListener cellColSpanListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -576,7 +577,7 @@ public class CellListeners {
     
     public static EventListener cellPaddingSpacingListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

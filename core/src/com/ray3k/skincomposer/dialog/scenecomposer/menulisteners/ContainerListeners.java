@@ -8,8 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.skincomposer.stripe.PopTable;
-import com.ray3k.skincomposer.stripe.Spinner;
+import com.ray3k.stripe.PopTable;
+import com.ray3k.stripe.PopTableClickListener;
+import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents.WidgetType;
@@ -20,7 +21,7 @@ public class ContainerListeners {
     public static EventListener containerNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simContainer = (DialogSceneComposerModel.SimContainer) dialogSceneComposer.simActor;
         var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -72,7 +73,7 @@ public class ContainerListeners {
     
     public static EventListener containerFillListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simContainer = (DialogSceneComposerModel.SimContainer) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -120,7 +121,7 @@ public class ContainerListeners {
     
     public static EventListener containerSizeListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simContainer = (DialogSceneComposerModel.SimContainer) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -264,7 +265,7 @@ public class ContainerListeners {
     
     public static EventListener containerPaddingListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simContainer = (DialogSceneComposerModel.SimContainer) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -360,7 +361,7 @@ public class ContainerListeners {
     
     public static EventListener containerAlignmentListener(final DialogSceneComposerEvents events,
                                                            final SimActor simActor) {
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

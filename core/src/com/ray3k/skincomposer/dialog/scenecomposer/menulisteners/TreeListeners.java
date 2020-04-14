@@ -5,8 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.skincomposer.stripe.PopTable;
-import com.ray3k.skincomposer.stripe.Spinner;
+import com.ray3k.stripe.PopTable;
+import com.ray3k.stripe.PopTableClickListener;
+import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
@@ -20,7 +21,7 @@ public class TreeListeners {
     public static EventListener treeNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simTree = (SimTree) dialogSceneComposer.simActor;
         var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -84,7 +85,7 @@ public class TreeListeners {
     
     public static EventListener treePaddingListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTree = (SimTree) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void tableShown(Event event) {
                 var popTable = getPopTable();
@@ -135,7 +136,7 @@ public class TreeListeners {
     
     public static EventListener treeSpacingListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTree = (SimTree) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void tableShown(Event event) {
                 var popTable = getPopTable();
@@ -287,7 +288,7 @@ public class TreeListeners {
     
     public static EventListener nodeOptionsListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simNode = (SimNode) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

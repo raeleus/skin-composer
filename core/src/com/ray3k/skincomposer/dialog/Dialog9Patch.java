@@ -43,7 +43,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.*;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.skincomposer.stripe.Spinner;
+import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.utils.Utils;
 
 import java.io.File;

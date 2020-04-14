@@ -43,7 +43,7 @@ import com.ray3k.skincomposer.UndoableManager.CustomDrawableUndoable;
 import com.ray3k.skincomposer.UndoableManager.DrawableUndoable;
 import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.dialog.DialogTenPatch.TenPatchData;
-import com.ray3k.skincomposer.stripe.Spinner;
+import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.utils.Utils;
 
 import java.io.File;

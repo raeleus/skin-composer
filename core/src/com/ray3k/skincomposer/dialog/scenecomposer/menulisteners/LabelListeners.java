@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.skincomposer.stripe.PopTable;
+import com.ray3k.stripe.PopTable;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogListener;
@@ -18,12 +18,13 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
+import com.ray3k.stripe.PopTableClickListener;
 
 public class LabelListeners {
     public static EventListener labelNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simLabel = (DialogSceneComposerModel.SimLabel) dialogSceneComposer.simActor;
         var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -76,7 +77,7 @@ public class LabelListeners {
     public static EventListener labelTextListener(final DialogSceneComposer dialogSceneComposer) {
         var simLabel = (DialogSceneComposerModel.SimLabel) dialogSceneComposer.simActor;
         var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -139,7 +140,7 @@ public class LabelListeners {
     
     public static EventListener labelColorListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simLabel = (DialogSceneComposerModel.SimLabel) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -194,7 +195,7 @@ public class LabelListeners {
     
     public static EventListener labelTextAlignmentListener(final DialogSceneComposerEvents events,
                                                            final SimActor simActor) {
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -383,7 +384,7 @@ public class LabelListeners {
     public static EventListener labelEllipsisListener(final DialogSceneComposer dialogSceneComposer) {
         var simLabel = (DialogSceneComposerModel.SimLabel) dialogSceneComposer.simActor;
         var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -453,7 +454,7 @@ public class LabelListeners {
     
     public static EventListener labelWrapListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simLabel = (DialogSceneComposerModel.SimLabel) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

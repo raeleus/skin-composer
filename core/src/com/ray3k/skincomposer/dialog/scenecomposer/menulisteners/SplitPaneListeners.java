@@ -8,8 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.skincomposer.stripe.PopTable;
-import com.ray3k.skincomposer.stripe.Spinner;
+import com.ray3k.stripe.PopTable;
+import com.ray3k.stripe.PopTableClickListener;
+import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
@@ -23,7 +24,7 @@ public class SplitPaneListeners {
     public static EventListener splitPaneNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simSplitPane = (DialogSceneComposerModel.SimSplitPane) dialogSceneComposer.simActor;
         var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -87,7 +88,7 @@ public class SplitPaneListeners {
     
     public static EventListener splitPaneOrientationListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simSplitPane = (DialogSceneComposerModel.SimSplitPane) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -140,7 +141,7 @@ public class SplitPaneListeners {
     
     public static EventListener splitPaneSplitListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simSplitPane = (DialogSceneComposerModel.SimSplitPane) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

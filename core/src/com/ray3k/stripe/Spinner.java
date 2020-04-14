@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.ray3k.skincomposer.stripe;
+package com.ray3k.stripe;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.MathUtils;

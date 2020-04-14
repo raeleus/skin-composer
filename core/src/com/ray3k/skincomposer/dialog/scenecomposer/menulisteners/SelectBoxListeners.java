@@ -8,9 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.skincomposer.stripe.DraggableTextList;
-import com.ray3k.skincomposer.stripe.PopTable;
-import com.ray3k.skincomposer.stripe.Spinner;
+import com.ray3k.stripe.DraggableTextList;
+import com.ray3k.stripe.PopTable;
+import com.ray3k.stripe.PopTableClickListener;
+import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
@@ -22,7 +23,7 @@ public class SelectBoxListeners {
     public static EventListener selectBoxNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simSelectBox = (DialogSceneComposerModel.SimSelectBox) dialogSceneComposer.simActor;
         var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -99,7 +100,7 @@ public class SelectBoxListeners {
         var scrollPane = new ScrollPane(draggableTextList, DialogSceneComposer.skin, "scene");
         scrollPane.setFadeScrollBars(false);
         scrollPane.addListener(DialogSceneComposer.main.getScrollFocusListener());
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             {
                 popTable.setAutomaticallyResized(true);
                 
@@ -177,7 +178,7 @@ public class SelectBoxListeners {
     public static EventListener selectBoxMaxListCountListener(final DialogSceneComposerEvents events,
                                                               SimActor simActor) {
         var simSelectBox = (DialogSceneComposerModel.SimSelectBox) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -222,7 +223,7 @@ public class SelectBoxListeners {
     
     public static EventListener selectBoxAlignmentListener(final DialogSceneComposerEvents events,
                                                            final SimActor simActor) {
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -410,7 +411,7 @@ public class SelectBoxListeners {
     
     public static EventListener selectBoxScrollingListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simSelectBox = (DialogSceneComposerModel.SimSelectBox) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -447,7 +448,7 @@ public class SelectBoxListeners {
     
     public static EventListener selectBoxDisabledListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simSelectBox = (DialogSceneComposerModel.SimSelectBox) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

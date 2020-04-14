@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.HandListener;
 import com.ray3k.skincomposer.Main;
-import com.ray3k.skincomposer.stripe.Spinner;
+import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.AlphanumComparator;

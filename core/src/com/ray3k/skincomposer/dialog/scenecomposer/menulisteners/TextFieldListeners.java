@@ -9,13 +9,14 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.skincomposer.stripe.PopTable;
-import com.ray3k.skincomposer.stripe.RangeSlider;
-import com.ray3k.skincomposer.stripe.RangeSlider.ValueBeginChangeEvent;
-import com.ray3k.skincomposer.stripe.RangeSlider.ValueBeginChangeListener;
-import com.ray3k.skincomposer.stripe.RangeSlider.ValueEndChangeEvent;
-import com.ray3k.skincomposer.stripe.RangeSlider.ValueEndChangeListener;
-import com.ray3k.skincomposer.stripe.Spinner;
+import com.ray3k.stripe.PopTable;
+import com.ray3k.stripe.PopTableClickListener;
+import com.ray3k.stripe.RangeSlider;
+import com.ray3k.stripe.RangeSlider.ValueBeginChangeEvent;
+import com.ray3k.stripe.RangeSlider.ValueBeginChangeListener;
+import com.ray3k.stripe.RangeSlider.ValueEndChangeEvent;
+import com.ray3k.stripe.RangeSlider.ValueEndChangeListener;
+import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
@@ -27,7 +28,7 @@ public class TextFieldListeners {
     public static EventListener textFieldNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simTextField = (DialogSceneComposerModel.SimTextField) dialogSceneComposer.simActor;
         var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -92,7 +93,7 @@ public class TextFieldListeners {
     public static EventListener textFieldMessageTextListener(final DialogSceneComposer dialogSceneComposer) {
         var simTextField = (DialogSceneComposerModel.SimTextField) dialogSceneComposer.simActor;
         var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -144,7 +145,7 @@ public class TextFieldListeners {
     public static EventListener textFieldPasswordListener(final DialogSceneComposer dialogSceneComposer) {
         var simTextField = (DialogSceneComposerModel.SimTextField) dialogSceneComposer.simActor;
         var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -218,7 +219,7 @@ public class TextFieldListeners {
     
     public static EventListener textFieldSelectionListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTextField = (DialogSceneComposerModel.SimTextField) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -313,7 +314,7 @@ public class TextFieldListeners {
     
     public static EventListener textFieldAlignmentListener(final DialogSceneComposerEvents events,
                                                            final SimActor simActor) {
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -502,7 +503,7 @@ public class TextFieldListeners {
     public static EventListener textFieldFocusTraversalListener(final DialogSceneComposerEvents events,
                                                                 SimActor simActor) {
         var simTextField = (DialogSceneComposerModel.SimTextField) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -539,7 +540,7 @@ public class TextFieldListeners {
     
     public static EventListener textFieldMaxLengthListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTextField = (DialogSceneComposerModel.SimTextField) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -584,7 +585,7 @@ public class TextFieldListeners {
     
     public static EventListener textFieldDisabledListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTextField = (DialogSceneComposerModel.SimTextField) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -622,7 +623,7 @@ public class TextFieldListeners {
     public static EventListener textFieldTextListener(final DialogSceneComposer dialogSceneComposer) {
         var simTextField = (DialogSceneComposerModel.SimTextField) dialogSceneComposer.simActor;
         var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

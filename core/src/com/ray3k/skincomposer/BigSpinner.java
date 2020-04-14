@@ -32,8 +32,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.skincomposer.stripe.Spinner.Orientation;
-import com.ray3k.skincomposer.stripe.Spinner.SpinnerStyle;
+import com.ray3k.stripe.Spinner.Orientation;
+import com.ray3k.stripe.Spinner.SpinnerStyle;
 import com.ray3k.skincomposer.utils.Utils;
 
 import java.math.BigDecimal;

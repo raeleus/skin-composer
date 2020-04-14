@@ -1,4 +1,4 @@
-package com.ray3k.skincomposer.stripe;
+package com.ray3k.stripe;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;

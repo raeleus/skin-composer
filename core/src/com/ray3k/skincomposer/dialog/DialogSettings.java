@@ -33,8 +33,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.RootTable;
-import com.ray3k.skincomposer.stripe.Spinner;
-import com.ray3k.skincomposer.stripe.Spinner.Orientation;
+import com.ray3k.stripe.Spinner;
+import com.ray3k.stripe.Spinner.Orientation;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class DialogSettings extends Dialog {

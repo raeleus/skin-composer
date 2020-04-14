@@ -8,8 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.skincomposer.stripe.PopTable;
-import com.ray3k.skincomposer.stripe.Spinner;
+import com.ray3k.stripe.PopTable;
+import com.ray3k.stripe.PopTableClickListener;
+import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents.WidgetType;
@@ -20,7 +21,7 @@ public class HorizontalGroupListeners {
     public static EventListener horizontalGroupNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simHorizontalGroup = (DialogSceneComposerModel.SimHorizontalGroup) dialogSceneComposer.simActor;
         var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -73,7 +74,7 @@ public class HorizontalGroupListeners {
     public static EventListener horizontalGroupExpandFillGrowListener(final DialogSceneComposerEvents events,
                                                                       SimActor simActor) {
         var simHorizontalGroup = (DialogSceneComposerModel.SimHorizontalGroup) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -160,7 +161,7 @@ public class HorizontalGroupListeners {
     public static EventListener horizontalGroupPaddingSpacingListener(final DialogSceneComposerEvents events,
                                                                       SimActor simActor) {
         var simHorizontalGroup = (DialogSceneComposerModel.SimHorizontalGroup) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -288,7 +289,7 @@ public class HorizontalGroupListeners {
     
     public static EventListener horizontalGroupWrapListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simHorizontalGroup = (DialogSceneComposerModel.SimHorizontalGroup) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -343,7 +344,7 @@ public class HorizontalGroupListeners {
     
     public static EventListener horizontalGroupAlignmentListener(final DialogSceneComposerEvents events,
                                                                  final SimActor simActor) {
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -531,7 +532,7 @@ public class HorizontalGroupListeners {
     
     public static EventListener horizontalGroupRowAlignmentListener(final DialogSceneComposerEvents events,
                                                                     final SimActor simActor) {
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -720,7 +721,7 @@ public class HorizontalGroupListeners {
     public static EventListener horizontalGroupReverseListener(final DialogSceneComposerEvents events,
                                                                SimActor simActor) {
         var simHorizontalGroup = (DialogSceneComposerModel.SimHorizontalGroup) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

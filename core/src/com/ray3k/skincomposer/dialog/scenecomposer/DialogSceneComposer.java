@@ -12,12 +12,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.*;
-import com.ray3k.skincomposer.stripe.PopTable;
+import com.ray3k.stripe.PopTable;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.*;
 import com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.*;
 import com.ray3k.skincomposer.utils.IntPair;
+import com.ray3k.stripe.PopTableClickListener;
 import space.earlygrey.shapedrawer.GraphDrawer;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.*;
@@ -258,7 +259,7 @@ public class DialogSceneComposer extends Dialog {
     }
     
     private EventListener menuViewListener() {
-        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTableClickListener = new PopTableClickListener(skin);
         var popTable = popTableClickListener.getPopTable();
         var label = new Label("Choose a view:", skin, "scene-label-colored");
         popTable.add(label);
@@ -1634,7 +1635,7 @@ public class DialogSceneComposer extends Dialog {
     }
     
     private EventListener rootAddTableListener() {
-        var popTableClickListener = new PopTable.PopTableClickListener(skin, "dark");
+        var popTableClickListener = new PopTableClickListener(skin, "dark");
         var popTable = popTableClickListener.getPopTable();
         
         var label = new Label("New Table:", skin, "scene-label");
@@ -1695,7 +1696,7 @@ public class DialogSceneComposer extends Dialog {
     }
     
     private EventListener rootBackgroundColorListener() {
-        var popTableClickListener = new PopTable.PopTableClickListener(skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -1788,7 +1789,7 @@ public class DialogSceneComposer extends Dialog {
             }
         }
     
-        var popTableClickListener = new PopTable.PopTableClickListener(skin);
+        var popTableClickListener = new PopTableClickListener(skin);
         var popTable = popTableClickListener.getPopTable();
         var popSubTable = new Table();
         var scrollPane = new ScrollPane(popSubTable, skin, "scene");

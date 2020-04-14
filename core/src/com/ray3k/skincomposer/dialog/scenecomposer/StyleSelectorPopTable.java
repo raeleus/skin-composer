@@ -7,10 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.Main;
-import com.ray3k.skincomposer.stripe.PopTable;
+import com.ray3k.stripe.PopTable;
 import com.ray3k.skincomposer.data.StyleData;
+import com.ray3k.stripe.PopTableClickListener;
 
-public class StyleSelectorPopTable extends PopTable.PopTableClickListener {
+public class StyleSelectorPopTable extends PopTableClickListener {
     private Main main;
     private Skin skin;
     private ScrollPane scrollFocus;

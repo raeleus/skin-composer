@@ -50,7 +50,7 @@ import com.ray3k.skincomposer.MenuButton.MenuButtonListener;
 import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
-import com.ray3k.skincomposer.stripe.Spinner;
+import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.tenpatch.TenPatchDrawable;
 

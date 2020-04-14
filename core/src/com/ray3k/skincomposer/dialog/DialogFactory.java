@@ -39,7 +39,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.Main;
-import com.ray3k.skincomposer.stripe.Spinner;
+import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.UndoableManager;
 import com.ray3k.skincomposer.UndoableManager.DeleteStyleUndoable;
 import com.ray3k.skincomposer.UndoableManager.DuplicateStyleUndoable;

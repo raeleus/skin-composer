@@ -8,20 +8,21 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.skincomposer.stripe.DraggableTextList;
-import com.ray3k.skincomposer.stripe.PopTable;
+import com.ray3k.stripe.DraggableTextList;
+import com.ray3k.stripe.PopTable;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
+import com.ray3k.stripe.PopTableClickListener;
 
 public class ListListeners {
     public static EventListener listNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simList = (DialogSceneComposerModel.SimList) dialogSceneComposer.simActor;
         var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -97,7 +98,7 @@ public class ListListeners {
         var scrollPane = new ScrollPane(draggableTextList, DialogSceneComposer.skin, "scene");
         scrollPane.setFadeScrollBars(false);
         scrollPane.addListener(DialogSceneComposer.main.getScrollFocusListener());
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             {
                 popTable.setAutomaticallyResized(true);
                 

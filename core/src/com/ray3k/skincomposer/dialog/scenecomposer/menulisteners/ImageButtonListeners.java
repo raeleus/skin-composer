@@ -8,8 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.ray3k.skincomposer.stripe.PopTable;
-import com.ray3k.skincomposer.stripe.Spinner;
+import com.ray3k.stripe.PopTable;
+import com.ray3k.stripe.PopTableClickListener;
+import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogListener;
@@ -23,7 +24,7 @@ public class ImageButtonListeners {
     public static EventListener imageButtonNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simImageButton = (DialogSceneComposerModel.SimImageButton) dialogSceneComposer.simActor;
         var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -87,7 +88,7 @@ public class ImageButtonListeners {
     
     public static EventListener imageButtonCheckedListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simImageButton = (DialogSceneComposerModel.SimImageButton) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -124,7 +125,7 @@ public class ImageButtonListeners {
     
     public static EventListener imageButtonDisabledListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simImageButton = (DialogSceneComposerModel.SimImageButton) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -161,7 +162,7 @@ public class ImageButtonListeners {
     
     public static EventListener imageButtonColorListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simImageButton = (DialogSceneComposerModel.SimImageButton) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -216,7 +217,7 @@ public class ImageButtonListeners {
     
     public static EventListener imageButtonPaddingListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simImageButton = (DialogSceneComposerModel.SimImageButton) simActor;
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

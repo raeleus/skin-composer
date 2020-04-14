@@ -9,19 +9,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
-import com.ray3k.skincomposer.stripe.PopTable;
-import com.ray3k.skincomposer.stripe.PopTable.PopTableClickListener;
+import com.ray3k.stripe.PopTable;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.dialog.DialogDrawables;
 import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents.WidgetType;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.Interpol;
+import com.ray3k.stripe.PopTableClickListener;
 import space.earlygrey.shapedrawer.scene2d.GraphDrawerDrawable;
 
 public class GeneralListeners {
     public static EventListener widgetResetListener(String name, Runnable runnable) {
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin);
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin);
         var popTable = popTableClickListener.getPopTable();
         
         var label = new Label("Are you sure you want to reset this " + name + "?", DialogSceneComposer.skin, "scene-label-colored");
@@ -44,7 +44,7 @@ public class GeneralListeners {
     }
     
     public static EventListener widgetDeleteListener(String name, Runnable runnable) {
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin);
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin);
         var popTable = popTableClickListener.getPopTable();
         
         var label = new Label("Are you sure you want to delete this " + name + "?", DialogSceneComposer.skin, "scene-label-colored");
@@ -66,7 +66,7 @@ public class GeneralListeners {
         return popTableClickListener;
     }
     
-    public static PopTable.PopTableClickListener setWidgetListener(final DialogSceneComposer dialogSceneComposer,
+    public static PopTableClickListener setWidgetListener(final DialogSceneComposer dialogSceneComposer,
                                                                    WidgetSelectedListener widgetSelectedListener) {
         var table = new Table();
         var scrollPane = new ScrollPane(table, DialogSceneComposer.skin, "scene");
@@ -77,7 +77,7 @@ public class GeneralListeners {
         scrollPane.addListener(DialogSceneComposer.main.getScrollFocusListener());
         
         
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -409,7 +409,7 @@ public class GeneralListeners {
     
     public static EventListener selectDrawableListener(DrawableData originalDrawable, String toolTipText,
                                                        DrawableSelected drawableSelected) {
-        var popTableClickListener = new PopTable.PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
