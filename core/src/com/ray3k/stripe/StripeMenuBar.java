@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -30,6 +31,7 @@ public class StripeMenuBar extends Table implements StripeMenu {
     private boolean menuActivated;
     private final Array<KeyboardShortcutListener> keyboardShortcutListeners = new Array<>();
     private StripeMenuBarStyle style;
+    private static final Vector2 temp = new Vector2();
     
     public StripeMenuBar(Stage stage, Skin skin) {
         this(stage, skin, "default");
@@ -78,7 +80,16 @@ public class StripeMenuBar extends Table implements StripeMenu {
         this.stage = stage;
         align(Align.left);
     
-        modalGroup = new WidgetGroup();
+        modalGroup = new WidgetGroup() {
+            @Override
+            public Actor hit(float x, float y, boolean touchable) {
+                temp.set(x,y);
+                localToStageCoordinates(temp);
+                StripeMenuBar.this.stageToLocalCoordinates(temp);
+                Actor actor = StripeMenuBar.this.hit(temp.x, temp.y, true);
+                return actor == null ? this : actor;
+            }
+        };
         modalGroup.setFillParent(true);
         modalGroup.addListener(new ClickListener() {
             @Override
@@ -189,7 +200,7 @@ public class StripeMenuBar extends Table implements StripeMenu {
     
         @Override
         public StripeMenu findMenu(String name) {
-            for (var value : stripeMenuValues) {
+            for (StripeMenuValue value : stripeMenuValues) {
                 if (value.textButton.getText().toString().equals(name)) return value;
             }
             return null;
@@ -279,7 +290,7 @@ public class StripeMenuBar extends Table implements StripeMenu {
     
     @Override
     public StripeMenu findMenu(String name) {
-        for (var value : stripeMenuValues) {
+        for (StripeMenuValue value : stripeMenuValues) {
             if (value.textButton.getText().toString().equals(name)) return value;
         }
         return null;
@@ -365,11 +376,15 @@ public class StripeMenuBar extends Table implements StripeMenu {
             }
             
             if (clickMode) {
-                menuActivated = true;
-                
-                hide();
+                if (!menuActivated) {
+                    menuActivated = true;
     
-                show();
+                    hide();
+    
+                    show();
+                } else {
+                    hideEverything();
+                }
             }
         }
         
@@ -377,7 +392,7 @@ public class StripeMenuBar extends Table implements StripeMenu {
         public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
             super.enter(event, x, y, pointer, fromActor);
             
-            if (!clickMode || menuActivated) {
+            if (menuActivated) {
                 hide();
     
                 show();
