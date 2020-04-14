@@ -179,6 +179,8 @@ public class DialogSceneComposer extends Dialog {
         redoTooltip = new TextTooltip("", main.getTooltipManager(), skin, "scene");
         viewButton = bar.findButton("View");
         
+        bar.findCell("?").expandX().right();
+        
         root.row();
         previewTable = new Table();
         previewTable.setTouchable(Touchable.enabled);

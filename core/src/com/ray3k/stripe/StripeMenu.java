@@ -1,6 +1,7 @@
 package com.ray3k.stripe;
 
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.ray3k.stripe.StripeMenuBar.KeyboardShortcut;
 
@@ -12,4 +13,5 @@ public interface StripeMenu {
     public TextButton getParentButton();
     public TextButton findButton(String name);
     public StripeMenu findMenu(String name);
+    public Cell findCell(String name);
 }

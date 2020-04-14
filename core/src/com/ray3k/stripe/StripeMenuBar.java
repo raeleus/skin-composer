@@ -199,6 +199,19 @@ public class StripeMenuBar extends Table implements StripeMenu {
         }
     
         @Override
+        public Cell findCell(String name) {
+            for (Actor actor : getChildren()) {
+                if (actor instanceof TextButton) {
+                    TextButton textButton = (TextButton) actor;
+                    if (textButton.getText().toString().equals(name)) {
+                        return getCell(textButton);
+                    }
+                }
+            }
+            return null;
+        }
+    
+        @Override
         public StripeMenu findMenu(String name) {
             for (StripeMenuValue value : stripeMenuValues) {
                 if (value.textButton.getText().toString().equals(name)) return value;
@@ -282,6 +295,19 @@ public class StripeMenuBar extends Table implements StripeMenu {
                 TextButton textButton = (TextButton) actor;
                 if (textButton.getText().toString().equals(name)) {
                     return textButton;
+                }
+            }
+        }
+        return null;
+    }
+    
+    @Override
+    public Cell findCell(String name) {
+        for (Actor actor : getChildren()) {
+            if (actor instanceof TextButton) {
+                TextButton textButton = (TextButton) actor;
+                if (textButton.getText().toString().equals(name)) {
+                    return getCell(textButton);
                 }
             }
         }
