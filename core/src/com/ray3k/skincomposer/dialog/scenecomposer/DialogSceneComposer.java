@@ -2,6 +2,7 @@ package com.ray3k.skincomposer.dialog.scenecomposer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
@@ -11,14 +12,17 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.ray3k.skincomposer.*;
-import com.ray3k.stripe.PopTable;
+import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.*;
 import com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.*;
 import com.ray3k.skincomposer.utils.IntPair;
 import com.ray3k.stripe.PopTableClickListener;
+import com.ray3k.stripe.StripeMenuBar;
+import com.ray3k.stripe.StripeMenuBar.KeyboardShortcut;
+import com.ray3k.stripe.StripeMenuBar.MenuBarEvent;
+import com.ray3k.stripe.StripeMenuBar.MenuBarListener;
 import space.earlygrey.shapedrawer.GraphDrawer;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.*;
@@ -87,118 +91,149 @@ public class DialogSceneComposer extends Dialog {
         table.add(label);
         
         root.row();
-        table = new Table();
-        table.setBackground(skin.getDrawable("scene-menu-bar-ten"));
-        root.add(table).growX();
+        var bar = new StripeMenuBar(main.getStage(), skin);
+        root.add(bar).growX();
         
-        var textButton = new TextButton("Import", skin, "scene-menu-button");
-        table.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                showImportDialog();
-            }
-        });
-    
-        textButton = new TextButton("Export", skin, "scene-menu-button");
-        table.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                showExportDialog();
-            }
-        });
-    
-        textButton = new TextButton("Settings", skin, "scene-menu-button");
-        table.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                showSettingsDialog();
-            }
-        });
-    
-        textButton = new TextButton("Quit", skin, "scene-menu-button");
-        table.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                events.menuQuit();
-            }
-        });
+        bar.menu("File")
+                .item("Import")
+                .item("Export")
+                .item("Settings")
+                .item("Quit");
         
-        var image = new Image(skin, "scene-menu-divider");
-        table.add(image).space(10);
-    
-        textButton = new TextButton("Refresh", skin, "scene-menu-button");
-        table.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                events.menuRefresh();
-            }
-        });
-    
-        textButton = new TextButton("Clear", skin, "scene-menu-button");
-        table.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                events.menuClear();
-            }
-        });
+        bar.menu("Scene")
+                .item("Refresh")
+                .item("Clear")
+                .item("Undo", new KeyboardShortcut("Ctrl+Z", Keys.Z, Keys.CONTROL_LEFT))
+                .item("Redo");
         
-        image = new Image(skin, "scene-menu-divider");
-        table.add(image).space(10);
-    
-        textButton = new TextButton("Undo", skin, "scene-menu-button");
-        undoButton = textButton;
-        table.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                events.menuUndo();
-            }
-        });
+        bar.menu("View")
+                .item("Live")
+                .item("Edit")
+                .item("Outline");
+        undoButton = bar.findMenu("Scene").findButton("Undo");
         undoTooltip = new TextTooltip("", main.getTooltipManager(), skin, "scene");
-    
-        textButton = new TextButton("Redo", skin, "scene-menu-button");
-        redoButton = textButton;
-        table.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                events.menuRedo();
-            }
-        });
+        redoButton = bar.findMenu("Scene").findButton("Redo");
         redoTooltip = new TextTooltip("", main.getTooltipManager(), skin, "scene");
-    
-        image = new Image(skin, "scene-menu-divider");
-        table.add(image).space(10);
-    
-        textButton = new TextButton("", skin, "scene-menu-button");
-        viewButton = textButton;
-        table.add(textButton).expandX().right().space(5);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(menuViewListener());
-    
-        textButton = new TextButton("?", skin, "scene-menu-button");
-        table.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
+        viewButton = bar.findButton("View");
+        
+        bar.addListener(new MenuBarListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                events.menuHelp();
+            public void itemClicked(String name, TextButton textButton, MenuBarEvent event) {
+            
             }
         });
+//        table = new Table();
+//        table.setBackground(skin.getDrawable("scene-menu-bar-ten"));
+//        root.add(table).growX();
+//
+//        var textButton = new TextButton("Import", skin, "scene-menu-button");
+//        table.add(textButton);
+//        textButton.addListener(main.getHandListener());
+//        textButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                showImportDialog();
+//            }
+//        });
+//
+//        textButton = new TextButton("Export", skin, "scene-menu-button");
+//        table.add(textButton);
+//        textButton.addListener(main.getHandListener());
+//        textButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                showExportDialog();
+//            }
+//        });
+//
+//        textButton = new TextButton("Settings", skin, "scene-menu-button");
+//        table.add(textButton);
+//        textButton.addListener(main.getHandListener());
+//        textButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                showSettingsDialog();
+//            }
+//        });
+//
+//        textButton = new TextButton("Quit", skin, "scene-menu-button");
+//        table.add(textButton);
+//        textButton.addListener(main.getHandListener());
+//        textButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                events.menuQuit();
+//            }
+//        });
+//
+//        var image = new Image(skin, "scene-menu-divider");
+//        table.add(image).space(10);
+//
+//        textButton = new TextButton("Refresh", skin, "scene-menu-button");
+//        table.add(textButton);
+//        textButton.addListener(main.getHandListener());
+//        textButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                events.menuRefresh();
+//            }
+//        });
+//
+//        textButton = new TextButton("Clear", skin, "scene-menu-button");
+//        table.add(textButton);
+//        textButton.addListener(main.getHandListener());
+//        textButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                events.menuClear();
+//            }
+//        });
+//
+//        image = new Image(skin, "scene-menu-divider");
+//        table.add(image).space(10);
+//
+//        textButton = new TextButton("Undo", skin, "scene-menu-button");
+//        undoButton = textButton;
+//        table.add(textButton);
+//        textButton.addListener(main.getHandListener());
+//        textButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                events.menuUndo();
+//            }
+//        });
+//        undoTooltip = new TextTooltip("", main.getTooltipManager(), skin, "scene");
+//
+//        textButton = new TextButton("Redo", skin, "scene-menu-button");
+//        redoButton = textButton;
+//        table.add(textButton);
+//        textButton.addListener(main.getHandListener());
+//        textButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                events.menuRedo();
+//            }
+//        });
+//        redoTooltip = new TextTooltip("", main.getTooltipManager(), skin, "scene");
+//
+//        image = new Image(skin, "scene-menu-divider");
+//        table.add(image).space(10);
+//
+//        textButton = new TextButton("", skin, "scene-menu-button");
+//        viewButton = textButton;
+//        table.add(textButton).expandX().right().space(5);
+//        textButton.addListener(main.getHandListener());
+//        textButton.addListener(menuViewListener());
+//
+//        textButton = new TextButton("?", skin, "scene-menu-button");
+//        table.add(textButton);
+//        textButton.addListener(main.getHandListener());
+//        textButton.addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ChangeEvent event, Actor actor) {
+//                events.menuHelp();
+//            }
+//        });
         
         root.row();
         previewTable = new Table();
@@ -242,7 +277,7 @@ public class DialogSceneComposer extends Dialog {
         populateProperties();
     
         bottom.row();
-        image = new Image(skin, "scene-path-border");
+        var image = new Image(skin, "scene-path-border");
         bottom.add(image).growX();
         
         bottom.row();

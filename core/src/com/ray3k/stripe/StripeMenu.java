@@ -11,4 +11,5 @@ public interface StripeMenu {
     public com.ray3k.stripe.StripeMenu parent();
     public TextButton getParentButton();
     public TextButton findButton(String name);
+    public StripeMenu findMenu(String name);
 }

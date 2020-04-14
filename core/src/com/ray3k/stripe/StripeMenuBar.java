@@ -9,12 +9,14 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.IntSet;
+import com.badlogic.gdx.utils.IntSet.IntSetIterator;
 import com.ray3k.stripe.PopTable.PopTableStyle;
 
 public class StripeMenuBar extends Table implements StripeMenu {
@@ -45,21 +47,26 @@ public class StripeMenuBar extends Table implements StripeMenu {
         itemStyle.down = style.itemDown;
         itemStyle.over = style.itemOver;
         itemStyle.checked = style.itemOpen;
+        itemStyle.disabled = style.itemDisabled;
         itemStyle.font = style.itemFont;
         itemStyle.fontColor = style.itemFontColor;
         itemStyle.overFontColor = style.itemOverFontColor;
         itemStyle.downFontColor = style.itemDownFontColor;
         itemStyle.checkedFontColor = style.itemOpenFontColor;
+        itemStyle.disabledFontColor = style.itemDisabledFontColor;
         
         submenuStyle = new TextButtonStyle();
         submenuStyle.up = style.submenuUp == null ? style.itemUp : style.submenuUp;
         submenuStyle.down = style.submenuDown == null ? style.itemDown : style.submenuDown;
         submenuStyle.over = style.submenuOver == null ? style.itemOver : style.submenuOver;
+        submenuStyle.checked = style.submenuOpen;
+        submenuStyle.disabled = style.submenuDisabled;
         submenuStyle.font = style.itemFont;
         submenuStyle.fontColor = style.itemFontColor;
         submenuStyle.overFontColor = style.itemOverFontColor;
         submenuStyle.downFontColor = style.itemDownFontColor;
         submenuStyle.checkedFontColor = style.itemOpenFontColor;
+        submenuStyle.disabledFontColor = style.itemDisabledFontColor;
         
         popTableStyle = new PopTableStyle();
         popTableStyle.background = style.submenuBackground;
@@ -168,10 +175,18 @@ public class StripeMenuBar extends Table implements StripeMenu {
             for (Actor actor : getChildren()) {
                 if (actor instanceof TextButton) {
                     TextButton textButton = (TextButton) actor;
-                    if (textButton.getName().equals(name)) {
+                    if (textButton.getText().toString().equals(name)) {
                         return textButton;
                     }
                 }
+            }
+            return null;
+        }
+    
+        @Override
+        public StripeMenu findMenu(String name) {
+            for (var value : stripeMenuValues) {
+                if (value.textButton.getText().toString().equals(name)) return value;
             }
             return null;
         }
@@ -202,10 +217,10 @@ public class StripeMenuBar extends Table implements StripeMenu {
         for (EventListener listener : listeners) {
             textButton.addListener(listener);
         }
-        
-        textButton.addListener(new ClickListener() {
+
+        textButton.addListener(new ChangeListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
+            public void changed(ChangeEvent event, Actor actor) {
                 textButton.setChecked(false);
                 fire(new MenuBarEvent(textButton, textButton.getText().toString()));
             }
@@ -217,7 +232,9 @@ public class StripeMenuBar extends Table implements StripeMenu {
             Label label = new Label(keyboardShortcut.name, shortcutLabelStyle) {
                 @Override
                 public void draw(Batch batch, float parentAlpha) {
-                    if (textButton.isPressed()) {
+                    if (textButton.isDisabled()) {
+                        shortcutLabelStyle.fontColor = style.shortcutDisabledFontColor == null ? style.itemDisabledFontColor : style.shortcutDisabledFontColor;
+                    } else if (textButton.isPressed()) {
                         shortcutLabelStyle.fontColor = style.shortcutDownFontColor == null ? style.itemDownFontColor : style.shortcutDownFontColor;
                     } else if (textButton.isChecked()) {
                         shortcutLabelStyle.fontColor = style.shortcutOpenFontColor == null ? style.itemOpenFontColor : style.shortcutOpenFontColor;
@@ -227,11 +244,11 @@ public class StripeMenuBar extends Table implements StripeMenu {
                         shortcutLabelStyle.fontColor = style.shortcutFontColor == null ? style.itemFontColor : style.shortcutFontColor;
                     }
                     super.draw(batch, parentAlpha);
-                    
+
                 }
             };
             textButton.add(label).space(style.shortcutSpace);
-        
+
             KeyboardShortcutListener keyboardShortcutListener = new KeyboardShortcutListener(keyboardShortcut, textButton);
             stage.addListener(keyboardShortcutListener);
             keyboardShortcutListeners.add(keyboardShortcutListener);
@@ -248,7 +265,7 @@ public class StripeMenuBar extends Table implements StripeMenu {
         for (Actor actor : getChildren()) {
             if (actor instanceof TextButton) {
                 TextButton textButton = (TextButton) actor;
-                if (textButton.getName().equals(name)) {
+                if (textButton.getText().toString().equals(name)) {
                     return textButton;
                 }
             }
@@ -256,10 +273,18 @@ public class StripeMenuBar extends Table implements StripeMenu {
         return null;
     }
     
+    @Override
+    public StripeMenu findMenu(String name) {
+        for (var value : stripeMenuValues) {
+            if (value.textButton.getText().toString().equals(name)) return value;
+        }
+        return null;
+    }
+    
     public static class KeyboardShortcut {
         public String name;
         public int key;
-        public final IntArray modifiers = new IntArray();
+        public final IntSet modifiers = new IntSet();
         
         public KeyboardShortcut(String name, int key, int... modifiers) {
             this.name = name;
@@ -303,8 +328,10 @@ public class StripeMenuBar extends Table implements StripeMenu {
     
         @Override
         public boolean keyDown(InputEvent event, int keycode) {
-            if (getParent() != null && keycode == keyboardShortcut.key) {
-                for (int modifier : keyboardShortcut.modifiers.toArray()) {
+            if (getParent() != null && !textButton.isDisabled() && keycode == keyboardShortcut.key) {
+                IntSetIterator iter = keyboardShortcut.modifiers.iterator();
+                while (iter.hasNext) {
+                    int modifier = iter.next();
                     if (!Gdx.input.isKeyPressed(modifier)) return false;
                 }
                 textButton.fire(new ChangeEvent());
