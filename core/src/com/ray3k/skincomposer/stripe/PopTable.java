@@ -8,8 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 
@@ -21,13 +19,15 @@ public class PopTable extends Table {
     private WidgetGroup group;
     private final static Vector2 temp = new Vector2();
     private boolean hideOnUnfocus;
-    private int preferredEdge;
+    private int attachEdge;
+    private int attachAlign;
     private boolean keepSizedWithinStage;
     private boolean automaticallyResized;
     private Actor attachToActor;
-    private int attachToActorEdge;
     private HideListener hideListener;
     private boolean modal;
+    private boolean hidden;
+    private PopTableStyle style;
     
     public PopTable() {
         this(new PopTableStyle());
@@ -50,20 +50,23 @@ public class PopTable extends Table {
         
         setBackground(style.background);
         
-        preferredEdge = Align.top;
+        attachEdge = Align.top;
+        attachAlign = Align.top;
         keepSizedWithinStage = true;
         automaticallyResized = true;
         setModal(false);
         setHideOnUnfocus(false);
+        hidden = true;
+        this.style = style;
     }
     
-    public void alignToActorEdge(Actor actor, int edge) {
+    private void alignToActorEdge(Actor actor, int edge, int alignment) {
         float widgetX;
         switch (edge) {
             case Align.left:
             case Align.bottomLeft:
             case Align.topLeft:
-                widgetX = -getWidth();
+                widgetX = 0;
                 break;
             case Align.right:
             case Align.bottomRight:
@@ -71,7 +74,7 @@ public class PopTable extends Table {
                 widgetX = actor.getWidth();
                 break;
             default:
-                widgetX = actor.getWidth() / 2f - getWidth() / 2f;
+                widgetX = actor.getWidth() / 2f;
                 break;
         }
     
@@ -80,7 +83,7 @@ public class PopTable extends Table {
             case Align.bottom:
             case Align.bottomLeft:
             case Align.bottomRight:
-                widgetY = -getHeight();
+                widgetY = 0;
                 break;
             case Align.top:
             case Align.topLeft:
@@ -88,63 +91,41 @@ public class PopTable extends Table {
                 widgetY = actor.getHeight();
                 break;
             default:
-                widgetY = actor.getHeight() / 2f - getHeight() / 2f;
+                widgetY = actor.getHeight() / 2f;
+                break;
+        }
+        
+        switch (alignment) {
+            case Align.bottom:
+            case Align.top:
+            case Align.center:
+                widgetX -= getWidth() / 2;
+                break;
+                
+            case Align.left:
+            case Align.bottomLeft:
+            case Align.topLeft:
+                widgetX -= getWidth();
+                break;
+        }
+        
+        switch (alignment) {
+            case Align.right:
+            case Align.left:
+            case Align.center:
+                widgetY -= getHeight() / 2;
+                break;
+                
+            case Align.bottom:
+            case Align.bottomLeft:
+            case Align.bottomRight:
+                widgetY -= getHeight();
                 break;
         }
     
         temp.set(widgetX, widgetY);
         actor.localToStageCoordinates(temp);
         setPosition(temp.x, temp.y);
-    }
-    
-    private float actorEdgeStageHorizontalDistance(Actor actor, int edge) {
-        temp.set(0, 0);
-        actor.localToStageCoordinates(temp);
-        setPosition(temp.x, temp.y);
-        
-        float returnValue;
-        switch (edge) {
-            case Align.left:
-            case Align.bottomLeft:
-            case Align.topLeft:
-                returnValue = temp.x;
-                break;
-            case Align.right:
-            case Align.bottomRight:
-            case Align.topRight:
-                returnValue = stage.getWidth() - (temp.x + actor.getWidth());
-                break;
-            default:
-                returnValue = 0;
-                break;
-        }
-        
-        return returnValue;
-    }
-    
-    private float actorEdgeStageVerticalDistance(Actor actor, int edge) {
-        temp.set(0, 0);
-        actor.localToStageCoordinates(temp);
-        setPosition(temp.x, temp.y);
-        
-        float returnValue;
-        switch (edge) {
-            case Align.bottom:
-            case Align.bottomLeft:
-            case Align.bottomRight:
-                returnValue = temp.y;
-                break;
-            case Align.top:
-            case Align.topLeft:
-            case Align.topRight:
-                returnValue = stage.getHeight() - (temp.y + actor.getHeight());
-                break;
-            default:
-                returnValue = 0;
-                break;
-        }
-        
-        return returnValue;
     }
     
     public void moveToInsideStage() {
@@ -180,9 +161,12 @@ public class PopTable extends Table {
     }
     
     public void hide(Action action) {
-        stage.removeCaptureListener(hideListener);
-        group.addAction(sequence(action, Actions.removeActor()));
-        fire(new TableHiddenEvent());
+        if (!hidden) {
+            hidden = true;
+            stage.removeCaptureListener(hideListener);
+            group.addAction(sequence(action, Actions.removeActor()));
+            fire(new TableHiddenEvent());
+        }
     }
     
     public void show(Stage stage) {
@@ -191,6 +175,7 @@ public class PopTable extends Table {
     }
     
     public void show(Stage stage, Action action) {
+        hidden = false;
         this.stage = stage;
         group = new WidgetGroup();
         group.setFillParent(true);
@@ -239,72 +224,6 @@ public class PopTable extends Table {
         }
     }
     
-    public static class PopTableClickListener extends ClickListener {
-        protected PopTable popTable;
-    
-        public PopTableClickListener(Skin skin) {
-            this(skin.get(PopTableStyle.class));
-        }
-        
-        public PopTableClickListener(Skin skin, String style) {
-            this(skin.get(style, PopTableStyle.class));
-        }
-        
-        public PopTableClickListener(PopTableStyle style) {
-            popTable = new PopTable(style);
-            popTable.setModal(true);
-            popTable.setHideOnUnfocus(true);
-            popTable.addListener(new TableHiddenListener() {
-                @Override
-                public void tableShown(Event event) {
-                    PopTableClickListener.this.tableShown(event);
-                }
-                
-                @Override
-                public void tableHidden(Event event) {
-                    PopTableClickListener.this.tableHidden(event);
-                }
-            });
-        }
-    
-        @Override
-        public void clicked(InputEvent event, float x, float y) {
-            super.clicked(event, x, y);
-            var stage = event.getListenerActor().getStage();
-            var actor = event.getListenerActor();
-            
-            if (actor instanceof Disableable) {
-                if (((Disableable) actor).isDisabled()) return;
-            }
-            
-            popTable.show(stage);
-            int edge = popTable.getPreferredEdge();
-            
-            popTable.setAttachToActor(actor, edge);
-            popTable.alignToActorEdge(actor, edge);
-            
-            popTable.moveToInsideStage();
-        }
-    
-        public PopTable getPopTable() {
-            return popTable;
-        }
-    
-        /**
-         * Override this method to be performed when the popTable is hidden or dismissed.
-         */
-        public void tableShown(Event event) {
-        
-        }
-        
-        /**
-         * Override this method to be performed when the popTable is hidden or dismissed.
-         */
-        public void tableHidden(Event event) {
-        
-        }
-    }
-    
     public static class TableShownEvent extends Event {
     
     }
@@ -339,12 +258,12 @@ public class PopTable extends Table {
         this.hideOnUnfocus = hideOnUnfocus;
     }
     
-    public int getPreferredEdge() {
-        return preferredEdge;
+    public int getAttachEdge() {
+        return attachEdge;
     }
     
-    public void setPreferredEdge(int preferredEdge) {
-        this.preferredEdge = preferredEdge;
+    public int getAttachAlign() {
+        return attachAlign;
     }
     
     public boolean isKeepSizedWithinStage() {
@@ -367,13 +286,15 @@ public class PopTable extends Table {
         return attachToActor;
     }
     
-    public int getAttachToActorEdge() {
-        return attachToActorEdge;
+    public void attachToActor() {
+        attachToActor(attachToActor, attachEdge, attachAlign);
     }
     
-    public void setAttachToActor(Actor attachToActor, int edge) {
+    public void attachToActor(Actor attachToActor, int edge, int align) {
+        alignToActorEdge(attachToActor, edge, align);
         this.attachToActor = attachToActor;
-        this.attachToActorEdge = edge;
+        this.attachEdge = edge;
+        this.attachAlign = align;
     }
     
     public boolean isModal() {
@@ -385,18 +306,26 @@ public class PopTable extends Table {
         stageBackground.setTouchable(modal ? Touchable.enabled : Touchable.disabled);
     }
     
+    public boolean isHidden() {
+        return hidden;
+    }
+    
+    public PopTableStyle getStyle() {
+        return style;
+    }
+    
     @Override
     public void layout() {
         if (automaticallyResized) {
-            var centerX = getX(Align.center);
-            var centerY = getY(Align.center);
+            float centerX = getX(Align.center);
+            float centerY = getY(Align.center);
             pack();
             setPosition(centerX, centerY, Align.center);
             setPosition(MathUtils.floor(getX()), MathUtils.floor(getY()));
         }
         
         if (attachToActor != null) {
-            alignToActorEdge(attachToActor, attachToActorEdge);
+            alignToActorEdge(attachToActor, attachEdge, attachAlign);
         }
         
         if (keepSizedWithinStage) {
