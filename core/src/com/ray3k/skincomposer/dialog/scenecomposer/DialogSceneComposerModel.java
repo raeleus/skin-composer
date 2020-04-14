@@ -217,7 +217,6 @@ public class DialogSceneComposerModel {
             
             table.align(simTable.alignment);
             
-            System.out.println(simTable.fillParent);
             table.setFillParent(simTable.fillParent);
             
             int row = 0;
