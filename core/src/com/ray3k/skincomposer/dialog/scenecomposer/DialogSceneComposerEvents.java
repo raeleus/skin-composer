@@ -55,7 +55,7 @@ public class DialogSceneComposerEvents {
         dialog.showHelpDialog();
     }
     
-    public void dialogImportImportTemplate(FileHandle loadFile) {
+    public void importTemplate(FileHandle loadFile) {
         Main.main.getProjectData().setLastImportExportPath(loadFile.path());
         DialogSceneComposerModel.loadFromJson(loadFile);
         dialog.simActor = rootActor;
@@ -64,18 +64,18 @@ public class DialogSceneComposerEvents {
         dialog.populateProperties();
     }
     
-    public void dialogExportSaveTemplate(FileHandle saveFile) {
+    public void exportTemplate(FileHandle saveFile) {
         Main.main.getProjectData().setLastImportExportPath(saveFile.path());
         DialogSceneComposerModel.saveToJson(saveFile);
     }
     
-    public void dialogExportSaveJava(FileHandle saveFile) {
+    public void exportJava(FileHandle saveFile) {
         Main.main.getProjectData().setLastImportExportPath(saveFile.path());
         String java = DialogSceneComposerJavaBuilder.generateJavaFile();
         saveFile.writeString(java, false);
     }
     
-    public void dialogExportClipboard() {
+    public void exportClipboard() {
     
     }
     

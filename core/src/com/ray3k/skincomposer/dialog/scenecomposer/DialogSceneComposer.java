@@ -21,8 +21,6 @@ import com.ray3k.skincomposer.utils.IntPair;
 import com.ray3k.stripe.PopTableClickListener;
 import com.ray3k.stripe.StripeMenuBar;
 import com.ray3k.stripe.StripeMenuBar.KeyboardShortcut;
-import com.ray3k.stripe.StripeMenuBar.MenuBarEvent;
-import com.ray3k.stripe.StripeMenuBar.MenuBarListener;
 import space.earlygrey.shapedrawer.GraphDrawer;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.*;
@@ -42,7 +40,6 @@ public class DialogSceneComposer extends Dialog {
     private TextTooltip redoTooltip;
     private TextButton undoButton;
     private TextButton redoButton;
-    private TextButton viewButton;
     public DialogSceneComposerModel.SimActor simActor;
     private Table propertiesTable;
     private Table pathTable;
@@ -98,7 +95,11 @@ public class DialogSceneComposer extends Dialog {
                 .item("Import", main.getHandListener(), new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        showImportDialog();
+                        var file = main.getDesktopWorker().openDialog("Import Template...", main.getProjectData().getLastImportExportPath(), new String[] {"*.json"}, "JSON Files (*.json)");
+                        
+                        if (file != null) {
+                            events.importTemplate(new FileHandle(file));
+                        }
                     }
                 })
                 .item("Export", main.getHandListener(), new ChangeListener() {
@@ -177,7 +178,6 @@ public class DialogSceneComposer extends Dialog {
         undoTooltip = new TextTooltip("", main.getTooltipManager(), skin, "scene");
         redoButton = bar.findMenu("Scene").findButton("Redo");
         redoTooltip = new TextTooltip("", main.getTooltipManager(), skin, "scene");
-        viewButton = bar.findButton("View");
         
         bar.findCell("?").expandX().right();
         
@@ -1858,78 +1858,6 @@ public class DialogSceneComposer extends Dialog {
         return dialog;
     }
     
-    public Dialog showImportDialog() {
-        var dialog = new Dialog("", skin, "scene-dialog");
-        
-        var root = dialog.getTitleTable();
-        root.clear();
-        
-        root.add().uniform();
-        
-        var label = new Label("Import", skin, "scene-title");
-        root.add(label).expandX();
-        
-        var button = new Button(skin, "scene-close");
-        root.add(button).uniform();
-        button.addListener(main.getHandListener());
-        button.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                dialog.hide();
-            }
-        });
-        
-        root = dialog.getContentTable();
-        root.pad(10);
-        
-        var table = new Table();
-        root.add(table).growX();
-        
-        var textField = new TextField("", skin, "scene");
-        table.add(textField).growX();
-        textField.addListener(main.getIbeamListener());
-        
-        var textButton = new TextButton("Browse", skin, "scene-small");
-        table.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                var file = main.getDesktopWorker().openDialog("Import Template...", main.getProjectData().getLastImportExportPath(), new String[] {"*.json"}, "JSON Files (*.json)");
-            
-                if (file != null) {
-                    textField.setText(file.getPath());
-                    textField.setCursorPosition(textField.getText().length());
-                }
-            }
-        });
-        
-        dialog.getContentTable().row();
-        table = new Table();
-        root.add(table);
-        
-        table.defaults().space(5);
-        textButton = new TextButton("Import Template", skin, "scene-med");
-        table.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                events.dialogImportImportTemplate(Gdx.files.absolute(textField.getText()));
-                dialog.hide();
-            }
-        });
-        
-        label = new Label("Import JSON Template File", skin, "scene-label-colored");
-        table.add(label).expandX().left();
-        
-        dialog.show(getStage());
-        
-        getStage().setKeyboardFocus(textField);
-        
-        return dialog;
-    }
-    
     public Dialog showExportDialog() {
         var dialog = new Dialog("", skin, "scene-dialog");
     
@@ -1967,7 +1895,7 @@ public class DialogSceneComposer extends Dialog {
             public void changed(ChangeEvent event, Actor actor) {
                 var file = main.getDesktopWorker().saveDialog("Export Template...", main.getProjectData().getLastImportExportPath(), new String[] {"*.json"}, "JSON Files (*.json)");
                 if (file != null) {
-                    events.dialogExportSaveTemplate(new FileHandle(file));
+                    events.exportTemplate(new FileHandle(file));
                 }
     
                 if (file != null) {
@@ -1990,7 +1918,7 @@ public class DialogSceneComposer extends Dialog {
                 var fileHandle = new FileHandle(file);
                 if (file != null) {
                     if (!fileHandle.extension().equalsIgnoreCase("java")) fileHandle = fileHandle.sibling(fileHandle.name() + ".java");
-                    events.dialogExportSaveJava(fileHandle);
+                    events.exportJava(fileHandle);
                     dialog.hide();
                 }
             }
@@ -2006,7 +1934,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                events.dialogExportClipboard();
+                events.exportClipboard();
                 dialog.hide();
             }
         });
