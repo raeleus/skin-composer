@@ -94,79 +94,79 @@ public class DialogSceneComposer extends Dialog {
         var bar = new StripeMenuBar(main.getStage(), skin);
         root.add(bar).growX();
         
-        bar.menu("File")
-                .item("Import", new ChangeListener() {
+        bar.menu("File", main.getHandListener())
+                .item("Import", main.getHandListener(), new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         showImportDialog();
                     }
                 })
-                .item("Export", new ChangeListener() {
+                .item("Export", main.getHandListener(), new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         showExportDialog();
                     }
                 })
-                .item("Settings", new ChangeListener() {
+                .item("Settings", main.getHandListener(), new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         showSettingsDialog();
                     }
                 })
-                .item("Quit", new ChangeListener() {
+                .item("Quit", main.getHandListener(), new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         events.menuQuit();
                     }
                 });
         
-        bar.menu("Scene")
-                .item("Refresh", new ChangeListener() {
+        bar.menu("Scene", main.getHandListener())
+                .item("Refresh", main.getHandListener(), new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         events.menuRefresh();
                     }
                 })
-                .item("Clear", new ChangeListener() {
+                .item("Clear", main.getHandListener(), new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         events.menuClear();
                     }
                 })
-                .item("Undo", new KeyboardShortcut("Ctrl+Z", Keys.Z, Keys.CONTROL_LEFT), new ChangeListener() {
+                .item("Undo", new KeyboardShortcut("Ctrl+Z", Keys.Z, Keys.CONTROL_LEFT), main.getHandListener(), new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         events.menuUndo();
                     }
                 })
-                .item("Redo", new KeyboardShortcut("Ctrl+R", Keys.R, Keys.CONTROL_LEFT), new ChangeListener() {
+                .item("Redo", new KeyboardShortcut("Ctrl+R", Keys.R, Keys.CONTROL_LEFT), main.getHandListener(), new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         events.menuRedo();
                     }
                 });
         
-        bar.menu("View")
-                .item("Live", new ChangeListener() {
+        bar.menu("View", main.getHandListener())
+                .item("Live", main.getHandListener(), new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         events.menuView(View.LIVE);
                     }
                 })
-                .item("Edit", new ChangeListener() {
+                .item("Edit", main.getHandListener(), new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         events.menuView(View.EDIT);
                     }
                 })
-                .item("Outline", new ChangeListener() {
+                .item("Outline", main.getHandListener(), new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         events.menuView(View.OUTLINE);
                     }
                 });
         
-        bar.item("?", new ChangeListener() {
+        bar.item("?", main.getHandListener(), new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 events.menuHelp();

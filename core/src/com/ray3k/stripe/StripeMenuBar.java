@@ -117,8 +117,8 @@ public class StripeMenuBar extends Table implements StripeMenu {
     }
     
     @Override
-    public StripeMenu menu(String name) {
-        StripeMenuValue returnValue = createMenu(name, this, stripeMenuValues, Align.bottomLeft, Align.bottomRight, true);
+    public StripeMenu menu(String name, EventListener... listeners) {
+        StripeMenuValue returnValue = createMenu(name, this, stripeMenuValues, Align.bottomLeft, Align.bottomRight, true, listeners);
         add(returnValue.textButton);
         return returnValue;
     }
@@ -130,7 +130,7 @@ public class StripeMenuBar extends Table implements StripeMenu {
     
     @Override
     public StripeMenu item(String name, KeyboardShortcut keyboardShortcut, EventListener... listeners) {
-        add(createItem(name, stripeMenuValues, keyboardShortcut, listeners));
+        add(createItem(name, Align.center, stripeMenuValues, keyboardShortcut, listeners));
         return this;
     }
     
@@ -156,8 +156,8 @@ public class StripeMenuBar extends Table implements StripeMenu {
         }
     
         @Override
-        public StripeMenu menu(String name) {
-            StripeMenu returnValue = createMenu(name, this, stripeMenuValues, Align.topRight, Align.bottomRight, false);
+        public StripeMenu menu(String name, EventListener... listeners) {
+            StripeMenu returnValue = createMenu(name, this, stripeMenuValues, Align.topRight, Align.bottomRight, false, listeners);
             add(returnValue.getParentButton());
             row();
             return returnValue;
@@ -170,7 +170,7 @@ public class StripeMenuBar extends Table implements StripeMenu {
     
         @Override
         public StripeMenu item(String name, KeyboardShortcut keyboardShortcut, EventListener... listeners) {
-            add(createItem(name, stripeMenuValues, keyboardShortcut, listeners));
+            add(createItem(name, Align.left, stripeMenuValues, keyboardShortcut, listeners));
             row();
             return this;
         }
@@ -220,15 +220,21 @@ public class StripeMenuBar extends Table implements StripeMenu {
         }
     }
     
-    private StripeMenuValue createMenu(String name, StripeMenu parent, Array<StripeMenuValue> stripeMenuValues, int edge, int align, boolean modal) {
+    private StripeMenuValue createMenu(String name, StripeMenu parent, Array<StripeMenuValue> stripeMenuValues, int edge, int align, boolean modal, EventListener... listeners) {
         TextButton textButton = new TextButton(name, itemStyle);
+        textButton.setProgrammaticChangeEvents(false);
         textButton.getLabel().setAlignment(Align.left);
+    
+        for (EventListener listener : listeners) {
+            textButton.addListener(listener);
+        }
     
         StripeMenuValue menu = new StripeMenuValue(parent);
         menu.defaults().growX();
         menu.attachToActor(textButton, edge, align);
         menu.textButton = textButton;
         stripeMenuValues.add(menu);
+        
         ItemHoverListener listener = new ItemHoverListener(menu, stripeMenuValues);
         listener.modal = modal;
         listener.clickMode = modal;
@@ -237,10 +243,10 @@ public class StripeMenuBar extends Table implements StripeMenu {
         return menu;
     }
     
-    private TextButton createItem(String name, Array<StripeMenuValue> stripeMenuValues, KeyboardShortcut keyboardShortcut, EventListener... listeners) {
+    private TextButton createItem(String name, int textAlign, Array<StripeMenuValue> stripeMenuValues, KeyboardShortcut keyboardShortcut, EventListener... listeners) {
         TextButton textButton = new TextButton(name, itemStyle);
         textButton.setProgrammaticChangeEvents(false);
-        textButton.getLabel().setAlignment(Align.left);
+        textButton.getLabel().setAlignment(textAlign);
     
         for (EventListener listener : listeners) {
             textButton.addListener(listener);
