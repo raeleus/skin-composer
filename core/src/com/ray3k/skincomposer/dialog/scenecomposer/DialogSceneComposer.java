@@ -235,22 +235,7 @@ public class DialogSceneComposer extends Dialog {
         populatePath();
         
         updateMenuUndoRedo();
-        updateMenuView();
         model.updatePreview();
-    }
-    
-    public void updateMenuView() {
-        switch(view) {
-            case EDIT:
-                viewButton.setText("View: Edit");
-                break;
-            case LIVE:
-                viewButton.setText("View: Live");
-                break;
-            case OUTLINE:
-                viewButton.setText("View: Outline");
-                break;
-        }
     }
     
     public void updateMenuUndoRedo() {
