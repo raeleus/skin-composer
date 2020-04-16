@@ -1698,6 +1698,7 @@ public class DialogSceneComposer extends Dialog {
                 public void changed(ChangeEvent event, Actor actor) {
                     simActor = (DialogSceneComposerModel.SimActor) textButton.getUserObject();
                     populateProperties();
+                    model.updatePreview();
                     populatePath();
                 }
             });
@@ -1738,6 +1739,7 @@ public class DialogSceneComposer extends Dialog {
                         public void changed(ChangeEvent event, Actor actor) {
                             simActor = cell;
                             populateProperties();
+                            model.updatePreview();
                             populatePath();
                             popTable.hide();
                         }
@@ -1759,6 +1761,7 @@ public class DialogSceneComposer extends Dialog {
                     public void changed(ChangeEvent event, Actor actor) {
                         simActor = simSingleChild.getChild();
                         populateProperties();
+                        model.updatePreview();
                         populatePath();
                     }
                 });
@@ -1778,6 +1781,7 @@ public class DialogSceneComposer extends Dialog {
                         public void changed(ChangeEvent event, Actor actor) {
                             simActor = simMultipleChildren.getChildren().first();
                             populateProperties();
+                            model.updatePreview();
                             populatePath();
                         }
                     });
@@ -1796,6 +1800,7 @@ public class DialogSceneComposer extends Dialog {
                                 simActor = child;
                                 populateProperties();
                                 populatePath();
+                                model.updatePreview();
                                 popTable.hide();
                             }
                         });

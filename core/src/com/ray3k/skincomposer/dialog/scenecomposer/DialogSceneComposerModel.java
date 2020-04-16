@@ -3,7 +3,6 @@ package com.ray3k.skincomposer.dialog.scenecomposer;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
@@ -12,9 +11,12 @@ import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleData;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer.View;
 import com.ray3k.skincomposer.dialog.scenecomposer.undoables.SceneComposerUndoable;
 
 import java.util.Locale;
+
+import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer.dialog;
 
 public class DialogSceneComposerModel {
     private transient Main main;
@@ -23,6 +25,8 @@ public class DialogSceneComposerModel {
     public static SimRootGroup rootActor;
     public transient Stack preview;
     private static Json json;
+    private Actor selectedPreviewActor;
+    private Cell selectedPreviewCell;
     
     public enum Interpol {
         LINEAR(Interpolation.linear, "Linear", "linear"), SMOOTH(Interpolation.smooth, "Smooth", "smooth"), SMOOTH2(
@@ -186,7 +190,76 @@ public class DialogSceneComposerModel {
     
     public void updatePreview() {
         preview.clearChildren();
+        selectedPreviewActor = null;
+        selectedPreviewCell = null;
         
+        switch (dialog.view) {
+            case LIVE:
+                createPreviewWidgets();
+                preview.setDebug(false, true);
+                break;
+            case EDIT:
+                createPreviewWidgets();
+                createEditWidgets();
+                preview.setDebug(false, true);
+                break;
+            case OUTLINE:
+                createPreviewWidgets();
+                preview.debugAll();
+                break;
+        }
+    }
+    
+    private void createEditWidgets() {
+        if (dialog.simActor instanceof SimRootGroup) {
+            var group = (SimRootGroup) dialog.simActor;
+            var edit = new EditWidget(main.getSkin(), "scene-selection");
+            edit.setFillParent(true);
+            preview.add(edit);
+            
+            if (group.children.size > 0) {
+                edit = new EditWidget(main.getSkin(), "scene-selector");
+                edit.setFillParent(true);
+                preview.add(edit);
+            }
+        } else if (dialog.simActor instanceof SimCell) {
+            var cell = (SimCell) dialog.simActor;
+            var edit = new EditWidget(main.getSkin(), "scene-selection");
+            edit.setCell(selectedPreviewCell);
+            preview.add(edit);
+            
+            if (cell.getChild() != null) {
+                edit = new EditWidget(main.getSkin(), "scene-selector");
+                edit.setCell(selectedPreviewCell);
+                preview.add(edit);
+            }
+        } else if (selectedPreviewActor != null) {
+            var edit = new EditWidget(main.getSkin(), "scene-selection");
+            edit.setFollowActor(selectedPreviewActor);
+            preview.add(edit);
+    
+            if (selectedPreviewActor instanceof WidgetGroup) {
+                if (selectedPreviewActor instanceof Table) {
+                    var table = (Table) selectedPreviewActor;
+                    for (var cell : table.getCells()) {
+                        edit = new EditWidget(main.getSkin(), "scene-selector");
+                        edit.setCell(cell);
+                        preview.add(edit);
+                    }
+                } else {
+                    var widgetGroup = (WidgetGroup) selectedPreviewActor;
+                    for (var child : widgetGroup.getChildren()) {
+                        edit = new EditWidget(main.getSkin(), "scene-selector");
+                        edit.setFollowActor(child);
+                        preview.add(edit);
+                    }
+                }
+            }
+        }
+    
+    }
+    
+    private void createPreviewWidgets() {
         for (var simActor : rootActor.children) {
             var actor = createPreviewWidget(simActor);
             if (actor != null) {
@@ -255,6 +328,8 @@ public class DialogSceneComposerModel {
                 if (simCell.preferredHeight >= 0) {
                     cell.prefHeight(simCell.preferredHeight);
                 }
+                
+                if (simCell == dialog.simActor) selectedPreviewCell = cell;
             }
         } else if (simActor instanceof SimTextButton) {
             var simTextButton = (SimTextButton) simActor;
@@ -472,7 +547,7 @@ public class DialogSceneComposerModel {
             container.padRight(sim.padRight);
             container.padTop(sim.padTop);
             container.padBottom(sim.padBottom);
-            if (sim.child != null) container.setActor(createPreviewWidget(sim.child));
+            if (sim.child != null || dialog.view == View.EDIT) container.setActor(createPreviewWidget(sim.child));
             actor = container;
         } else if (simActor instanceof SimHorizontalGroup) {
             var sim = (SimHorizontalGroup) simActor;
@@ -495,6 +570,13 @@ public class DialogSceneComposerModel {
                     horizontalGroup.addActor(widget);
                 }
             }
+            
+            if (sim.children.size == 0) {
+                var container = new Container();
+                container.prefSize(50);
+                horizontalGroup.addActor(container);
+            }
+            
             actor = horizontalGroup;
         } else if (simActor instanceof SimScrollPane) {
             var sim = (SimScrollPane) simActor;
@@ -525,6 +607,11 @@ public class DialogSceneComposerModel {
             for (var child : sim.children) {
                 stack.add(createPreviewWidget(child));
             }
+            if (sim.children.size == 0) {
+                var container = new Container();
+                container.prefSize(50);
+                stack.add(container);
+            }
             actor = stack;
         } else if (simActor instanceof SimSplitPane) {
             var sim = (SimSplitPane) simActor;
@@ -553,6 +640,13 @@ public class DialogSceneComposerModel {
                         tree.add(node);
                     }
                 }
+                if (sim.children.size == 0) {
+                    Tree.Node node = new GenericNode();
+                    var container = new Container();
+                    container.prefSize(50);
+                    node.setActor(container);
+                    tree.add(node);
+                }
                 actor = tree;
             }
         } else if (simActor instanceof SimVerticalGroup) {
@@ -575,13 +669,21 @@ public class DialogSceneComposerModel {
                 if (widget != null) verticalGroup.addActor(widget);
             }
             actor = verticalGroup;
+        } else if (dialog.view == View.EDIT){
+            var container = new Container();
+            container.prefSize(50);
+            actor = container;
+        }
+        
+        if (simActor == dialog.simActor) {
+            selectedPreviewActor = actor;
         }
         
         return actor;
     }
     
     public Tree.Node createPreviewNode(SimNode simNode) {
-        if (simNode.actor != null) {
+        if (simNode.actor != null || dialog.view == View.EDIT) {
             var node = new GenericNode();
             Actor actor = createPreviewWidget(simNode.actor);
             if (actor == null) return null;
@@ -593,6 +695,10 @@ public class DialogSceneComposerModel {
                 if (newNode != null) {
                     node.add(newNode);
                 }
+            }
+    
+            if (simNode == dialog.simActor) {
+                selectedPreviewActor = actor;
             }
             return node;
         }

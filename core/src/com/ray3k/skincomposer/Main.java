@@ -236,6 +236,11 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
         stage.act(Gdx.graphics.getDeltaTime());
+        
+        for (var tenPatch : skin.getAll(TenPatchDrawable.class)) {
+            tenPatch.value.update(Gdx.graphics.getDeltaTime());
+        }
+        
         stage.draw();
     }
 
