@@ -54,7 +54,7 @@ public class DialogSceneComposer extends Dialog {
         events = new DialogSceneComposerEvents();
         model = new DialogSceneComposerModel();
         
-        view = View.LIVE;
+        view = View.EDIT;
         simActor = rootActor;
         
         setFillParent(true);

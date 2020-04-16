@@ -1,6 +1,7 @@
 package com.ray3k.skincomposer.dialog.scenecomposer;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -36,6 +37,7 @@ public class FadeLabel extends Label {
     }
     
     private void addActions() {
+        setTouchable(Touchable.disabled);
         addAction(Actions.parallel(
                 Actions.sequence(Actions.fadeOut(TIME), Actions.removeActor()),
                 Actions.moveBy(0, 20, TIME)));
