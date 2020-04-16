@@ -2,7 +2,9 @@ package com.ray3k.skincomposer.dialog.scenecomposer;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
@@ -26,6 +28,7 @@ public class DialogSceneComposerModel {
     public static SimRootGroup rootActor;
     public transient Stack preview;
     private static Json json;
+    private final static Vector2 temp = new Vector2();
     
     public enum Interpol {
         LINEAR(Interpolation.linear, "Linear", "linear"), SMOOTH(Interpolation.smooth, "Smooth", "smooth"), SMOOTH2(
@@ -175,6 +178,11 @@ public class DialogSceneComposerModel {
             redoables.add(undoable);
             
             undoable.undo();
+            var fadeLabel = new FadeLabel(undoable.getUndoString(), main.getSkin(), "scene-edit-tip");
+            temp.set(dialog.previewTable.getWidth() / 2, dialog.previewTable.getHeight() / 2);
+            dialog.previewTable.localToStageCoordinates(temp);
+            fadeLabel.setPosition(temp.x - (int) fadeLabel.getWidth() / 2, temp.y - (int) fadeLabel.getHeight() / 2);
+            main.getStage().addActor(fadeLabel);
         }
     }
     
