@@ -12,6 +12,7 @@ import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer.View;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.Interpol;
 import com.ray3k.skincomposer.dialog.scenecomposer.undoables.SceneComposerUndoable;
 
 import java.util.Locale;
@@ -25,8 +26,6 @@ public class DialogSceneComposerModel {
     public static SimRootGroup rootActor;
     public transient Stack preview;
     private static Json json;
-    private Actor selectedPreviewActor;
-    private Cell selectedPreviewCell;
     
     public enum Interpol {
         LINEAR(Interpolation.linear, "Linear", "linear"), SMOOTH(Interpolation.smooth, "Smooth", "smooth"), SMOOTH2(
@@ -190,8 +189,6 @@ public class DialogSceneComposerModel {
     
     public void updatePreview() {
         preview.clearChildren();
-        selectedPreviewActor = null;
-        selectedPreviewCell = null;
         
         switch (dialog.view) {
             case LIVE:
@@ -211,52 +208,84 @@ public class DialogSceneComposerModel {
     }
     
     private void createEditWidgets() {
+        if (dialog.simActor.parent != null) {
+            var edit = new EditWidget(main.getSkin(), "scene-select-back");
+            edit.setFillParent(true);
+            edit.setSimActorTarget(dialog.simActor.parent);
+            preview.add(edit);
+        }
+        
         if (dialog.simActor instanceof SimRootGroup) {
-            var group = (SimRootGroup) dialog.simActor;
+            var simGroup = (SimRootGroup) dialog.simActor;
             var edit = new EditWidget(main.getSkin(), "scene-selection");
             edit.setFillParent(true);
+            edit.setSimActorTarget(dialog.simActor.parent);
             preview.add(edit);
-            
-            if (group.children.size > 0) {
+    
+            if (simGroup.children.size > 0) {
                 edit = new EditWidget(main.getSkin(), "scene-selector");
                 edit.setFillParent(true);
+                edit.setSimActorTarget(simGroup.children.peek());
+                preview.add(edit);
+            }
+        } else if (dialog.simActor instanceof SimTable) {
+            var edit = new EditWidget(main.getSkin(), "scene-selection");
+            edit.setFollowActor(dialog.simActor.previewActor);
+            edit.setSimActorTarget(dialog.simActor.parent);
+            preview.add(edit);
+            
+            var simTable = (SimTable) dialog.simActor;
+            for (var simCell : simTable.cells) {
+                var table = (Table) simTable.previewActor;
+                var cell = table.getCells().get(simCell.row * table.getColumns() + simCell.column);
+                
+                edit = new EditWidget(main.getSkin(), "scene-selector");
+                edit.setCell(cell);
+                edit.setSimActorTarget(simCell);
                 preview.add(edit);
             }
         } else if (dialog.simActor instanceof SimCell) {
-            var cell = (SimCell) dialog.simActor;
+            var simCell = (SimCell) dialog.simActor;
+            var table = (Table) ((SimTable) simCell.parent).previewActor;
+            var cell = table.getCells().get(simCell.row * table.getColumns() + simCell.column);
+            
             var edit = new EditWidget(main.getSkin(), "scene-selection");
-            edit.setCell(selectedPreviewCell);
+            edit.setCell(cell);
+            edit.setSimActorTarget(dialog.simActor.parent);
             preview.add(edit);
             
-            if (cell.getChild() != null) {
+            if (simCell.child != null) {
                 edit = new EditWidget(main.getSkin(), "scene-selector");
-                edit.setCell(selectedPreviewCell);
+                edit.setFollowActor(simCell.child.previewActor);
+                edit.setSimActorTarget(simCell.child);
                 preview.add(edit);
             }
-        } else if (selectedPreviewActor != null) {
+        }  else if (dialog.simActor.previewActor != null) {
             var edit = new EditWidget(main.getSkin(), "scene-selection");
-            edit.setFollowActor(selectedPreviewActor);
+            edit.setFollowActor(dialog.simActor.previewActor);
+            edit.setSimActorTarget(dialog.simActor.parent);
             preview.add(edit);
     
-            if (selectedPreviewActor instanceof WidgetGroup) {
-                if (selectedPreviewActor instanceof Table) {
-                    var table = (Table) selectedPreviewActor;
-                    for (var cell : table.getCells()) {
-                        edit = new EditWidget(main.getSkin(), "scene-selector");
-                        edit.setCell(cell);
-                        preview.add(edit);
-                    }
-                } else {
-                    var widgetGroup = (WidgetGroup) selectedPreviewActor;
-                    for (var child : widgetGroup.getChildren()) {
-                        edit = new EditWidget(main.getSkin(), "scene-selector");
-                        edit.setFollowActor(child);
-                        preview.add(edit);
-                    }
+            if (dialog.simActor instanceof SimSingleChild) {
+                var child = ((SimSingleChild) dialog.simActor).getChild();
+                if (child != null) {
+                    edit = new EditWidget(main.getSkin(), "scene-selector");
+                    edit.setFollowActor(child.previewActor);
+                    edit.setSimActorTarget(child);
+                    preview.add(edit);
+                }
+            }
+    
+            if (dialog.simActor instanceof SimMultipleChildren) {
+                var children = ((SimMultipleChildren) dialog.simActor).getChildren();
+                for (var child : children) {
+                    edit = new EditWidget(main.getSkin(), "scene-selector");
+                    edit.setFollowActor(child.previewActor);
+                    edit.setSimActorTarget(child);
+                    preview.add(edit);
                 }
             }
         }
-    
     }
     
     private void createPreviewWidgets() {
@@ -328,9 +357,9 @@ public class DialogSceneComposerModel {
                 if (simCell.preferredHeight >= 0) {
                     cell.prefHeight(simCell.preferredHeight);
                 }
-                
-                if (simCell == dialog.simActor) selectedPreviewCell = cell;
             }
+            
+            if (dialog.view == View.EDIT && table.getCells().size == 0) table.add().size(50, 50);
         } else if (simActor instanceof SimTextButton) {
             var simTextButton = (SimTextButton) simActor;
             if (simTextButton.style != null && simTextButton.style.hasMandatoryFields()) {
@@ -571,7 +600,7 @@ public class DialogSceneComposerModel {
                 }
             }
             
-            if (sim.children.size == 0) {
+            if (dialog.view == View.EDIT && sim.children.size == 0) {
                 var container = new Container();
                 container.prefSize(50);
                 horizontalGroup.addActor(container);
@@ -668,24 +697,28 @@ public class DialogSceneComposerModel {
                 var widget = createPreviewWidget(child);
                 if (widget != null) verticalGroup.addActor(widget);
             }
+    
+            if (dialog.view == View.EDIT && sim.children.size == 0) {
+                var container = new Container();
+                container.prefSize(50);
+                verticalGroup.addActor(container);
+            }
+            
             actor = verticalGroup;
-        } else if (dialog.view == View.EDIT){
+        } else if (dialog.view == View.EDIT) {
             var container = new Container();
             container.prefSize(50);
             actor = container;
         }
         
-        if (simActor == dialog.simActor) {
-            selectedPreviewActor = actor;
-        }
-        
+        if (simActor != null) simActor.previewActor = actor;
         return actor;
     }
     
     public Tree.Node createPreviewNode(SimNode simNode) {
         if (simNode.actor != null || dialog.view == View.EDIT) {
             var node = new GenericNode();
-            Actor actor = createPreviewWidget(simNode.actor);
+            Actor actor = createPreviewWidget(simNode.actor == null  && dialog.view == View.EDIT ? new SimActor() : simNode.actor);
             if (actor == null) return null;
             node.setActor(actor);
             if (simNode.icon != null) node.setIcon(main.getAtlasData().drawablePairs.get(simNode.icon));
@@ -696,10 +729,7 @@ public class DialogSceneComposerModel {
                     node.add(newNode);
                 }
             }
-    
-            if (simNode == dialog.simActor) {
-                selectedPreviewActor = actor;
-            }
+            simNode.previewActor = actor;
             return node;
         }
         return null;
@@ -728,6 +758,7 @@ public class DialogSceneComposerModel {
     
     public static class SimActor {
         public transient SimActor parent;
+        public transient Actor previewActor;
         
         public boolean hasChildOfTypeRecursive(Class type) {
             boolean returnValue = false;

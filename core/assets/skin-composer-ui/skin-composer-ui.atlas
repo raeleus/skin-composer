@@ -2150,6 +2150,48 @@ scene-list-selection-dark
   orig: 12, 12
   offset: 0, 0
   index: -1
+scene-marquee-back_00
+  rotate: false
+  xy: 905, 1269
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+scene-marquee-back_01
+  rotate: false
+  xy: 188, 287
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+scene-marquee-back_02
+  rotate: false
+  xy: 62, 3
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+scene-marquee-back_03
+  rotate: false
+  xy: 301, 1255
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+scene-marquee-back_04
+  rotate: false
+  xy: 915, 1269
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+scene-marquee-back_05
+  rotate: false
+  xy: 188, 277
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
 scene-marquee-color_00
   rotate: false
   xy: 138, 71
@@ -2320,7 +2362,7 @@ scene-scroll-list-horizontal
   index: -1
 scene-scroll-list-vertical
   rotate: false
-  xy: 188, 237
+  xy: 188, 217
   size: 4, 58
   orig: 4, 58
   offset: 0, 0
