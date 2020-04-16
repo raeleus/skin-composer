@@ -1,5 +1,6 @@
 package com.ray3k.skincomposer.dialog.scenecomposer;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -43,6 +44,10 @@ public class EditWidget extends Button {
                     dialog.populateProperties();
                     dialog.model.updatePreview();
                     dialog.populatePath();
+                    
+                    var label = new FadeLabel(simActor.toString(), main.getSkin(), "scene-edit-tip");
+                    main.getStage().addActor(label);
+                    label.setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
                 }
             }
         });
