@@ -48,6 +48,10 @@ public class DialogSceneComposerJavaBuilder {
         return javaFile.toString();
     }
     
+    public static String generateClipBoard() {
+        return createMethod().code.toString();
+    }
+    
     private static MethodSpec createMethod() {
         return MethodSpec.methodBuilder("create")
                 .addModifiers(Modifier.PUBLIC)
