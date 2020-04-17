@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntSet;
@@ -30,6 +31,7 @@ public class StripeMenuBar extends Table implements StripeMenu {
     private final WidgetGroup modalGroup;
     private boolean menuActivated;
     private final Array<KeyboardShortcutListener> keyboardShortcutListeners = new Array<>();
+    private final KeyboardFocusListener keyboardFocusListener = new KeyboardFocusListener();
     private StripeMenuBarStyle style;
     private static final Vector2 temp = new Vector2();
     
@@ -97,6 +99,8 @@ public class StripeMenuBar extends Table implements StripeMenu {
                 hideEverything();
             }
         });
+        
+        stage.setKeyboardFocus(this);
     }
     
     private static void hideRecursive(Array<StripeMenuValue> items) {
@@ -284,10 +288,29 @@ public class StripeMenuBar extends Table implements StripeMenu {
             textButton.add(label).space(style.shortcutSpace);
 
             KeyboardShortcutListener keyboardShortcutListener = new KeyboardShortcutListener(keyboardShortcut, textButton);
-            stage.addListener(keyboardShortcutListener);
+            stage.addCaptureListener(keyboardShortcutListener);
+            addListener(keyboardShortcutListener);
             keyboardShortcutListeners.add(keyboardShortcutListener);
         }
         return textButton;
+    }
+    
+    @Override
+    protected void setStage(Stage stage) {
+        if (getParent() != null) {
+            if (stage != null) {
+                for (var listener : keyboardShortcutListeners) {
+                    stage.addCaptureListener(listener);
+                }
+                stage.addCaptureListener(keyboardFocusListener);
+            } else {
+                for (var listener : keyboardShortcutListeners) {
+                    getStage().removeCaptureListener(listener);
+                }
+                if (getStage() != null) getStage().removeCaptureListener(keyboardFocusListener);
+            }
+            super.setStage(stage);
+        }
     }
     
     public StripeMenuBarStyle getStyle() {
@@ -362,6 +385,16 @@ public class StripeMenuBar extends Table implements StripeMenu {
         }
         
         public abstract void itemClicked(String name, TextButton textButton, MenuBarEvent event);
+    }
+    
+    private class KeyboardFocusListener extends FocusListener {
+        @Override
+        public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
+            Actor other = event.getRelatedActor();
+            if (other != null && other.getStage() == null) {
+                event.cancel();
+            }
+        }
     }
     
     private class KeyboardShortcutListener extends InputListener {
