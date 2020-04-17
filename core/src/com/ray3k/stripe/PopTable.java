@@ -50,8 +50,8 @@ public class PopTable extends Table {
         
         setBackground(style.background);
         
-        attachEdge = Align.top;
-        attachAlign = Align.top;
+        attachEdge = Align.bottom;
+        attachAlign = Align.bottom;
         keepSizedWithinStage = true;
         automaticallyResized = true;
         setModal(false);

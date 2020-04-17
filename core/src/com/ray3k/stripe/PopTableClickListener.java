@@ -17,11 +17,11 @@ public class PopTableClickListener extends ClickListener {
     private int align;
     
     public PopTableClickListener(Skin skin) {
-        this(Align.top, Align.bottom, skin.get(PopTableStyle.class));
+        this(Align.bottom, Align.bottom, skin.get(PopTableStyle.class));
     }
     
     public PopTableClickListener(Skin skin, String style) {
-        this(Align.top, Align.bottom, skin.get(style, PopTableStyle.class));
+        this(Align.bottom, Align.bottom, skin.get(style, PopTableStyle.class));
     }
     
     public PopTableClickListener(int edge, int align, Skin skin) {
