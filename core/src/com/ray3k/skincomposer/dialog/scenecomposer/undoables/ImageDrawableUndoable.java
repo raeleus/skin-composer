@@ -23,9 +23,9 @@ public class ImageDrawableUndoable implements SceneComposerUndoable {
         
         if (dialog.simActor != image) {
             dialog.simActor = image;
-            dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.populateProperties();
         dialog.model.updatePreview();
     }
     
@@ -35,9 +35,9 @@ public class ImageDrawableUndoable implements SceneComposerUndoable {
         
         if (dialog.simActor != image) {
             dialog.simActor = image;
-            dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.populateProperties();
         dialog.model.updatePreview();
     }
     

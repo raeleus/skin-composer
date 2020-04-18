@@ -23,9 +23,9 @@ public class TableBackgroundUndoable implements SceneComposerUndoable {
         
         if (dialog.simActor != table) {
             dialog.simActor = table;
-            dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.populateProperties();
         dialog.model.updatePreview();
     }
     
@@ -35,9 +35,9 @@ public class TableBackgroundUndoable implements SceneComposerUndoable {
         
         if (dialog.simActor != table) {
             dialog.simActor = table;
-            dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.populateProperties();
         dialog.model.updatePreview();
     }
     

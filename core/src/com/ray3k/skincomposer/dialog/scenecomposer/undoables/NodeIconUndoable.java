@@ -23,9 +23,9 @@ public class NodeIconUndoable implements SceneComposerUndoable {
         
         if (dialog.simActor != node) {
             dialog.simActor = node;
-            dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.populateProperties();
         dialog.model.updatePreview();
     }
     
@@ -35,9 +35,9 @@ public class NodeIconUndoable implements SceneComposerUndoable {
         
         if (dialog.simActor != node) {
             dialog.simActor = node;
-            dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.populateProperties();
         dialog.model.updatePreview();
     }
     

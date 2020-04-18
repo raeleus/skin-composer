@@ -23,9 +23,9 @@ public class ContainerBackgroundUndoable implements SceneComposerUndoable {
         
         if (dialog.simActor != container) {
             dialog.simActor = container;
-            dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.populateProperties();
         dialog.model.updatePreview();
     }
     
@@ -35,9 +35,9 @@ public class ContainerBackgroundUndoable implements SceneComposerUndoable {
         
         if (dialog.simActor != container) {
             dialog.simActor = container;
-            dialog.populateProperties();
             dialog.populatePath();
         }
+        dialog.populateProperties();
         dialog.model.updatePreview();
     }
     
