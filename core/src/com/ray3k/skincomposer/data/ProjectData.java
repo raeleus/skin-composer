@@ -30,6 +30,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.JsonData.ExportFormat;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimRootGroup;
 import com.ray3k.skincomposer.utils.Utils;
 
 import java.util.Iterator;
@@ -554,6 +556,8 @@ public class ProjectData implements Json.Serializable {
         jsonData.clear();
         atlasData.clear();
         saveFile = null;
+        DialogSceneComposerModel.rootActor = null;
+        
         if (main != null) {
             main.getAtlasData().produceAtlas();
             main.getRootTable().populate();
@@ -573,6 +577,7 @@ public class ProjectData implements Json.Serializable {
             json.writeValue("saveFile", (String) null);
         }
         json.writeValue("version", Main.VERSION);
+        json.writeValue("sceneComposer", DialogSceneComposerModel.rootActor);
     }
 
     @Override
@@ -587,6 +592,7 @@ public class ProjectData implements Json.Serializable {
         }
     
         loadedVersion = jsonValue.getString("version", "none");
+        DialogSceneComposerModel.rootActor = json.readValue("sceneComposer", SimRootGroup.class, jsonValue);
     }
 
     public JsonData getJsonData() {
