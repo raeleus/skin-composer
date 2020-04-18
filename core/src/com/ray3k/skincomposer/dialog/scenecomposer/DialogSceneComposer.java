@@ -18,6 +18,7 @@ import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.*;
 import com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.*;
 import com.ray3k.skincomposer.utils.IntPair;
+import com.ray3k.stripe.PopTable;
 import com.ray3k.stripe.PopTableClickListener;
 import com.ray3k.stripe.StripeMenuBar;
 import com.ray3k.stripe.StripeMenuBar.KeyboardShortcut;
@@ -1820,30 +1821,26 @@ public class DialogSceneComposer extends Dialog {
         return this;
     }
     
-    public Dialog showHelpDialog() {
-        var dialog = new Dialog("", skin, "scene-dialog");
-    
-        var root = dialog.getTitleTable();
-        root.clear();
-    
-        root.add().uniform();
-    
-        var label = new Label("About Scene Composer", skin, "scene-title");
-        root.add(label).expandX();
-    
-        var button = new Button(skin, "scene-close");
-        root.add(button).uniform();
-        button.addListener(main.getHandListener());
-        button.addListener(new ChangeListener() {
+    public PopTable showHelpDialog() {
+        var root = new PopTable(skin);
+        root.setHideOnUnfocus(true);
+        root.setModal(true);
+        root.setKeepSizedWithinStage(true);
+        root.setKeepCenteredInWindow(true);
+        root.pad(20);
+        root.addListener(main.getHandListener());
+        root.addListener(new ClickListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                dialog.hide();
+            public void clicked(InputEvent event, float x, float y) {
+                root.hide();
             }
         });
     
-        root = dialog.getContentTable();
-        root.pad(10);
+        var label = new Label("About Scene Composer", skin, "scene-title-bg");
+        label.setAlignment(Align.center);
+        root.add(label).growX().padBottom(10);
         
+        root.row();
         label = new Label("Scene Composer is a live scenegraph editor for Scene2D.UI. The primary goal is to allow " +
                 "Skin Composer users to test out their skins quickly in simple, reusable layouts. \n\nAs a consequence, " +
                 "Scene Composer is not capable of making complex UI's. The user is encouraged to learn the nuances of " +
@@ -1852,48 +1849,30 @@ public class DialogSceneComposer extends Dialog {
         label.setWrap(true);
         root.add(label).growX();
         
-        var textButton = new TextButton("OK", skin, "scene-med");
-        dialog.button(textButton);
-        textButton.addListener(main.getHandListener());
+        root.show(getStage());
         
-        dialog.show(getStage());
-        dialog.setSize(500, 350);
-        dialog.setPosition((int) (getStage().getWidth() / 2f - dialog.getWidth() / 2f), (int) (getStage().getHeight() / 2f - dialog.getHeight() / 2f));
-        
-        return dialog;
+        return root;
     }
     
-    public Dialog showExportDialog() {
-        var dialog = new Dialog("", skin, "scene-dialog");
-    
-        var root = dialog.getTitleTable();
-        root.clear();
-    
-        root.add().uniform();
-    
-        var label = new Label("Export", skin, "scene-title");
-        root.add(label).expandX();
-    
-        var button = new Button(skin, "scene-close");
-        root.add(button).uniform();
-        button.addListener(main.getHandListener());
-        button.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                dialog.hide();
-            }
-        });
+    public PopTable showExportDialog() {
+        var root = new PopTable(skin);
+        root.setHideOnUnfocus(true);
+        root.setModal(true);
+        root.setKeepSizedWithinStage(true);
+        root.setKeepCenteredInWindow(true);
+        root.pad(20);
         
-        root = dialog.getContentTable();
-        root.pad(10);
+        var label = new Label("Export", skin, "scene-title-bg");
+        label.setAlignment(Align.center);
+        root.add(label).growX().pad(10);
         
-        dialog.getContentTable().row();
+        root.row();
         var table = new Table();
         root.add(table);
         
-        table.defaults().space(5);
+        table.defaults().space(10f);
         var textButton = new TextButton("Save Template", skin, "scene-med");
-        table.add(textButton).uniformX().fillX();
+        table.add(textButton).fillX();
         textButton.addListener(main.getHandListener());
         textButton.addListener(new ChangeListener() {
             @Override
@@ -1902,19 +1881,19 @@ public class DialogSceneComposer extends Dialog {
                 if (file != null) {
                     events.exportTemplate(new FileHandle(file));
                 }
-    
+            
                 if (file != null) {
-                    dialog.hide();
+                    root.hide();
                 }
             }
         });
-        
+    
         label = new Label("A template to be imported into Scene Composer", skin, "scene-label-colored");
         table.add(label).expandX().left();
     
         table.row();
         textButton = new TextButton("Save to JAVA", skin, "scene-med");
-        table.add(textButton).uniformX().fillX();
+        table.add(textButton).fillX();
         textButton.addListener(main.getHandListener());
         textButton.addListener(new ChangeListener() {
             @Override
@@ -1924,7 +1903,7 @@ public class DialogSceneComposer extends Dialog {
                 if (file != null) {
                     if (!fileHandle.extension().equalsIgnoreCase("java")) fileHandle = fileHandle.sibling(fileHandle.name() + ".java");
                     events.exportJava(fileHandle);
-                    dialog.hide();
+                    root.hide();
                 }
             }
         });
@@ -1934,48 +1913,36 @@ public class DialogSceneComposer extends Dialog {
     
         table.row();
         textButton = new TextButton("Copy to Clipboard", skin, "scene-med");
-        table.add(textButton).uniformX().fillX();
+        table.add(textButton).fillX();
         textButton.addListener(main.getHandListener());
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 events.exportClipboard();
-                dialog.hide();
+                root.hide();
             }
         });
     
         label = new Label("A minimal version to be pasted into your existing code", skin, "scene-label-colored");
         table.add(label).expandX().left();
-        
-        dialog.show(getStage());
-        
-        return dialog;
+
+        root.show(getStage());
+        return root;
     }
     
-    public Dialog showSettingsDialog() {
-        var dialog = new Dialog("", skin, "scene-dialog");
+    public PopTable showSettingsDialog() {
+        var root = new PopTable(skin);
+        root.setHideOnUnfocus(true);
+        root.setModal(true);
+        root.setKeepSizedWithinStage(true);
+        root.setKeepCenteredInWindow(true);
+        root.pad(20);
         
-        var root = dialog.getTitleTable();
-        root.clear();
+        var label = new Label("Settings", skin, "scene-title-bg");
+        label.setAlignment(Align.center);
+        root.add(label).growX().padBottom(10);
         
-        root.add().uniform();
-        
-        var label = new Label("Settings", skin, "scene-title");
-        root.add(label).expandX();
-        
-        var button = new Button(skin, "scene-close");
-        root.add(button).uniform();
-        button.addListener(main.getHandListener());
-        button.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                dialog.hide();
-            }
-        });
-        
-        root = dialog.getContentTable();
-        root.pad(10);
-        
+        root.row();
         var table = new Table();
         root.add(table).growX();
         
@@ -2052,14 +2019,9 @@ public class DialogSceneComposer extends Dialog {
             }
         });
         
-        dialog.getContentTable().row();
-        table = new Table();
-        root.add(table);
-        
-        dialog.show(getStage());
-        
+        root.show(getStage());
         getStage().setKeyboardFocus(keyboardFocus);
         
-        return dialog;
+        return root;
     }
 }
