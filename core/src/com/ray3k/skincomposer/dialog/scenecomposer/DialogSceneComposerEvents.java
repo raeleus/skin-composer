@@ -50,6 +50,7 @@ public class DialogSceneComposerEvents {
     
     public void menuView(DialogSceneComposer.View view) {
         dialog.view = view;
+        dialog.updateMenuView();
         dialog.model.updatePreview();
     }
     

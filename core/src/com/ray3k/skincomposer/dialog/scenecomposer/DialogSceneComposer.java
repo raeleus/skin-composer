@@ -45,6 +45,9 @@ public class DialogSceneComposer extends Dialog {
     private Table propertiesTable;
     private Table pathTable;
     public Table previewTable;
+    public Image liveImage;
+    public Image editImage;
+    public Image outlineImage;
     
     public DialogSceneComposer() {
         super("", Main.main.getSkin(), "scene");
@@ -167,6 +170,26 @@ public class DialogSceneComposer extends Dialog {
                         events.menuView(View.OUTLINE);
                     }
                 });
+    
+        var textButton = bar.findMenu("View").findButton("Live");
+        textButton.clearChildren();
+        liveImage = new Image(skin, "scene-menu-radio-invisible");
+        textButton.add(liveImage).space(10);
+        textButton.add(textButton.getLabel()).expandX().left();
+    
+        textButton = bar.findMenu("View").findButton("Edit");
+        textButton.clearChildren();
+        editImage = new Image(skin, "scene-menu-radio-invisible");
+        textButton.add(editImage).space(10);
+        textButton.add(textButton.getLabel()).expandX().left();
+        
+        textButton = bar.findMenu("View").findButton("Outline");
+        textButton.clearChildren();
+        outlineImage = new Image(skin, "scene-menu-radio-invisible");
+        textButton.add(outlineImage).space(10);
+        textButton.add(textButton.getLabel()).expandX().left();
+        
+        updateMenuView();
         
         bar.item("?", main.getHandListener(), new ChangeListener() {
             @Override
@@ -237,6 +260,12 @@ public class DialogSceneComposer extends Dialog {
         
         updateMenuUndoRedo();
         model.updatePreview();
+    }
+    
+    public void updateMenuView() {
+        liveImage.setDrawable(skin, view == View.LIVE ? "scene-menu-radio" : "scene-menu-radio-invisible");
+        editImage.setDrawable(skin, view == View.EDIT ? "scene-menu-radio" : "scene-menu-radio-invisible");
+        outlineImage.setDrawable(skin, view == View.OUTLINE ? "scene-menu-radio" : "scene-menu-radio-invisible");
     }
     
     public void updateMenuUndoRedo() {
