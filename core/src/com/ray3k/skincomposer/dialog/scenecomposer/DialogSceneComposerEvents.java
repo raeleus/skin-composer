@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
+import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.dialog.scenecomposer.undoables.*;
 
@@ -100,6 +101,7 @@ public class DialogSceneComposerEvents {
         dialog.model.redoables.clear();
         undoable.redo();
         dialog.updateMenuUndoRedo();
+        Main.main.getProjectData().setChangesSaved(false);
     }
     
     public void rootAddTable(int columns, int rows) {
