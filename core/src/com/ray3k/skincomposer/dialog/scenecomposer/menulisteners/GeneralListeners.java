@@ -557,15 +557,15 @@ public class GeneralListeners {
         return listener;
     }
     
-    public static interface DrawableSelected {
-        public void selected(DrawableData drawableData);
+    public interface DrawableSelected {
+        void selected(DrawableData drawableData);
     }
     
-    public static interface WidgetSelectedListener {
-        public void widgetSelected(WidgetType widgetType, PopTable popTable);
+    public interface WidgetSelectedListener {
+        void widgetSelected(WidgetType widgetType, PopTable popTable);
     }
     
     public interface InterpolationSelected {
-        public void selected(Interpol selection);
+        void selected(Interpol selection);
     }
 }

@@ -15,6 +15,7 @@ import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer.View;
 import com.ray3k.skincomposer.dialog.scenecomposer.undoables.SceneComposerUndoable;
 
+import javax.xml.crypto.Data;
 import java.util.Locale;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer.dialog;
@@ -156,6 +157,38 @@ public class DialogSceneComposerModel {
         
         if (rootActor == null) rootActor = new SimRootGroup();
         assignParentRecursive(rootActor);
+        primeStyles();
+    }
+    
+    private void primeStyles() {
+        primeStyles(rootActor);
+    }
+    
+    private void primeStyles(SimActor simActor) {
+        for (var field : ClassReflection.getFields(simActor.getClass())) {
+            if (field.getType() == StyleData.class) {
+                try {
+                    var style = (StyleData) field.get(simActor);
+                    var foundStyle = main.getJsonData().findStyle(style.clazz, style.name);
+                    if (foundStyle == null) foundStyle = main.getJsonData().findStyle(style.clazz, "default");
+                    if (foundStyle == null) foundStyle = main.getJsonData().findStyle(style.clazz, "default-horizontal");
+                    field.set(simActor, foundStyle);
+                } catch (ReflectionException e) {
+                    e.printStackTrace(System.out);
+                }
+            }
+        }
+        
+        if (simActor instanceof SimMultipleChildren) {
+            for (var child : ((SimMultipleChildren) simActor).getChildren()) {
+                if (child != null) primeStyles(child);
+            }
+        }
+        
+        if (simActor instanceof SimSingleChild) {
+            var child = ((SimSingleChild) simActor).getChild();
+            if (child != null) primeStyles(child);
+        }
     }
     
     public static void saveToJson(FileHandle saveFile) {
