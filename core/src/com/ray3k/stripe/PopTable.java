@@ -23,6 +23,7 @@ public class PopTable extends Table {
     private int attachAlign;
     private boolean keepSizedWithinStage;
     private boolean automaticallyResized;
+    private boolean keepCenteredInWindow;
     private Actor attachToActor;
     private HideListener hideListener;
     private boolean modal;
@@ -54,6 +55,7 @@ public class PopTable extends Table {
         attachAlign = Align.bottom;
         keepSizedWithinStage = true;
         automaticallyResized = true;
+        keepCenteredInWindow = false;
         setModal(false);
         setHideOnUnfocus(false);
         hidden = true;
@@ -282,6 +284,14 @@ public class PopTable extends Table {
         this.automaticallyResized = automaticallyResized;
     }
     
+    public boolean isKeepCenteredInWindow() {
+        return keepCenteredInWindow;
+    }
+    
+    public void setKeepCenteredInWindow(boolean keepCenteredInWindow) {
+        this.keepCenteredInWindow = keepCenteredInWindow;
+    }
+    
     public Actor getAttachToActor() {
         return attachToActor;
     }
@@ -316,6 +326,13 @@ public class PopTable extends Table {
     
     @Override
     public void layout() {
+        if (keepCenteredInWindow) {
+            float x = getStage().getWidth() / 2f;
+            float y = getStage().getHeight() / 2f;
+            setPosition(x, y, Align.center);
+            setPosition(MathUtils.floor(getX()), MathUtils.floor(getY()));
+        }
+        
         if (automaticallyResized) {
             float centerX = getX(Align.center);
             float centerY = getY(Align.center);
