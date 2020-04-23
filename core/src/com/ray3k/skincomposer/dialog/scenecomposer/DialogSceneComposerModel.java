@@ -2,6 +2,7 @@ package com.ray3k.skincomposer.dialog.scenecomposer;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -14,8 +15,8 @@ import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer.View;
 import com.ray3k.skincomposer.dialog.scenecomposer.undoables.SceneComposerUndoable;
+import com.ray3k.skincomposer.utils.Utils;
 
-import javax.xml.crypto.Data;
 import java.util.Locale;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer.dialog;
@@ -339,7 +340,7 @@ public class DialogSceneComposerModel {
         for (var simActor : rootActor.children) {
             var actor = createPreviewWidget(simActor);
             if (actor != null) {
-                preview.addActor(actor);
+                preview.add(actor);
             }
         }
     }
@@ -418,7 +419,12 @@ public class DialogSceneComposerModel {
                 if (simTextButton.color != null) {
                     textButton.setColor(simTextButton.color.color);
                 }
-                textButton.pad(simTextButton.padTop, simTextButton.padLeft, simTextButton.padBottom, simTextButton.padRight);
+                
+                if (!MathUtils.isZero(simTextButton.padTop)) textButton.padTop(simTextButton.padTop);
+                if (!MathUtils.isZero(simTextButton.padBottom)) textButton.padTop(simTextButton.padBottom);
+                if (!MathUtils.isZero(simTextButton.padLeft)) textButton.padTop(simTextButton.padLeft);
+                if (!MathUtils.isZero(simTextButton.padRight)) textButton.padTop(simTextButton.padRight);
+                
                 textButton.addListener(main.getHandListener());
                 actor = textButton;
             }
@@ -448,7 +454,12 @@ public class DialogSceneComposerModel {
                 if (simImageButton.color != null) {
                     imageButton.setColor(simImageButton.color.color);
                 }
-                imageButton.pad(simImageButton.padTop, simImageButton.padLeft, simImageButton.padBottom, simImageButton.padRight);
+    
+                if (!MathUtils.isZero(simImageButton.padTop)) imageButton.padTop(simImageButton.padTop);
+                if (!MathUtils.isZero(simImageButton.padBottom)) imageButton.padTop(simImageButton.padBottom);
+                if (!MathUtils.isZero(simImageButton.padLeft)) imageButton.padTop(simImageButton.padLeft);
+                if (!MathUtils.isZero(simImageButton.padRight)) imageButton.padTop(simImageButton.padRight);
+                
                 imageButton.addListener(main.getHandListener());
                 actor = imageButton;
             }
@@ -463,7 +474,12 @@ public class DialogSceneComposerModel {
                 if (simImageTextButton.color != null) {
                     imageTextButton.setColor(simImageTextButton.color.color);
                 }
-                imageTextButton.pad(simImageTextButton.padTop, simImageTextButton.padLeft, simImageTextButton.padBottom, simImageTextButton.padRight);
+    
+                if (!MathUtils.isZero(simImageTextButton.padTop)) imageTextButton.padTop(simImageTextButton.padTop);
+                if (!MathUtils.isZero(simImageTextButton.padBottom)) imageTextButton.padTop(simImageTextButton.padBottom);
+                if (!MathUtils.isZero(simImageTextButton.padLeft)) imageTextButton.padTop(simImageTextButton.padLeft);
+                if (!MathUtils.isZero(simImageTextButton.padRight)) imageTextButton.padTop(simImageTextButton.padRight);
+                
                 imageTextButton.addListener(main.getHandListener());
                 actor = imageTextButton;
             }
@@ -478,7 +494,12 @@ public class DialogSceneComposerModel {
                 if (simCheckBox.color != null) {
                     checkBox.setColor(simCheckBox.color.color);
                 }
-                checkBox.pad(simCheckBox.padTop, simCheckBox.padLeft, simCheckBox.padBottom, simCheckBox.padRight);
+    
+                if (!MathUtils.isZero(simCheckBox.padTop)) checkBox.padTop(simCheckBox.padTop);
+                if (!MathUtils.isZero(simCheckBox.padBottom)) checkBox.padTop(simCheckBox.padBottom);
+                if (!MathUtils.isZero(simCheckBox.padLeft)) checkBox.padTop(simCheckBox.padLeft);
+                if (!MathUtils.isZero(simCheckBox.padRight)) checkBox.padTop(simCheckBox.padRight);
+                
                 checkBox.addListener(main.getHandListener());
                 actor = checkBox;
             }
