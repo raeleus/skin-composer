@@ -1,7 +1,6 @@
 ### Skin Composer Version 35 ###
-**Please use TenPatch 5.0.0 with your projects to enable TenPatch functionality:** https://github.com/raeleus/TenPatch
 
-* 
+* Added Scene Composer to generate basic GUI's with a visual editor.
 
 ### Skin Composer Version 34 ###
 **Please use TenPatch 5.0.0 with your projects to enable TenPatch functionality:** https://github.com/raeleus/TenPatch
