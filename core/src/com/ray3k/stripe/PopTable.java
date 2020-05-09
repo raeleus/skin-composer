@@ -127,7 +127,7 @@ public class PopTable extends Table {
     
         temp.set(widgetX, widgetY);
         actor.localToStageCoordinates(temp);
-        setPosition(temp.x, temp.y);
+        setPosition(MathUtils.round(temp.x), MathUtils.round(temp.y));
     }
     
     public void moveToInsideStage() {

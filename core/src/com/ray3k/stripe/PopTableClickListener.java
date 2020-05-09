@@ -73,7 +73,7 @@ public class PopTableClickListener extends ClickListener {
     }
     
     /**
-     * Override this method to be performed when the popTable is hidden or dismissed.
+     * Override this method to be performed when the popTable is displayed.
      */
     public void tableShown(Event event) {
     
