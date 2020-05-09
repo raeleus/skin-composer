@@ -512,6 +512,7 @@ public class DialogDrawables extends Dialog {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     getPopTable().hide();
+                    getPopTable().removeAttachToActor();
                 }
             };
             

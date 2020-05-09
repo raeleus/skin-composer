@@ -300,11 +300,19 @@ public class PopTable extends Table {
         attachToActor(attachToActor, attachEdge, attachAlign);
     }
     
+    public void attachToActor(Actor attachToActor) {
+        attachToActor(attachToActor, attachEdge, attachAlign);
+    }
+    
     public void attachToActor(Actor attachToActor, int edge, int align) {
         alignToActorEdge(attachToActor, edge, align);
         this.attachToActor = attachToActor;
         this.attachEdge = edge;
         this.attachAlign = align;
+    }
+    
+    public void removeAttachToActor() {
+        attachToActor = null;
     }
     
     public boolean isModal() {
