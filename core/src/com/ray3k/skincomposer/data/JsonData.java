@@ -898,10 +898,9 @@ public class JsonData implements Json.Serializable {
         }
 
         //styles
-        Array<Array<StyleData>> valuesArray = classStyleMap.values().toArray();
         for (int i = 0; i < Main.STYLE_CLASSES.length; i++) {
             Class clazz = Main.STYLE_CLASSES[i];
-            Array<StyleData> styles = valuesArray.get(i);
+            Array<StyleData> styles = classStyleMap.get(Main.styleToBasicClass(clazz));
 
             //check if any style has the mandatory fields necessary to write
             boolean hasMandatoryStyles = false;
