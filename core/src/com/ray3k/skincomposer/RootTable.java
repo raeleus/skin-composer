@@ -63,8 +63,6 @@ public class RootTable extends Table {
     private final Main main;
     private SelectBox classSelectBox;
     private SelectBox styleSelectBox;
-    private Array<StyleProperty> styleProperties;
-    private Array<CustomProperty> customProperties;
     private Table stylePropertiesTable;
     private Table previewPropertiesTable;
     private Table previewTable;
@@ -277,8 +275,8 @@ public class RootTable extends Table {
         classSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                fire(new RootTableEvent(RootTableEnum.CLASS_SELECTED));
                 fire(new LoadStylesEvent(classSelectBox, styleSelectBox));
+                fire(new RootTableEvent(RootTableEnum.CLASS_SELECTED));
             }
         });
 
@@ -345,7 +343,7 @@ public class RootTable extends Table {
 
         styleSelectBox = new SelectBox(getSkin());
         table.add(styleSelectBox).padRight(5.0f).minWidth(150.0f);
-
+        
         styleSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -565,7 +563,10 @@ public class RootTable extends Table {
 
         //gather all labelStyles
         Array<StyleData> labelStyles = main.getProjectData().getJsonData().getClassStyleMap().get(Label.class);
-
+    
+        Object selected = main.getRootTable().getStyleSelectBox().getSelected();
+        Array<StyleProperty> styleProperties = selected instanceof StyleData ? ((StyleData) selected).properties.values().toArray() : null;
+        Array<CustomProperty> customProperties = selected instanceof CustomStyle ? ((CustomStyle) selected).getProperties() : null;
         if (styleProperties != null) {
             //add parent selection box
             label = new Label("parent", getSkin());
@@ -2579,18 +2580,9 @@ public class RootTable extends Table {
     }
 
     public StyleData getSelectedStyle() {
-        OrderedMap<Class, Array<StyleData>> classStyleMap = main.getProjectData().getJsonData().getClassStyleMap();
-        return classStyleMap.get(getSelectedClass()).get(styleSelectBox.getSelectedIndex());
-    }
-
-    public void setStyleProperties(Array<StyleProperty> styleProperties) {
-        this.styleProperties = styleProperties;
-        customProperties = null;
-    }
-    
-    public void setCustomStyleProperties(Array<CustomProperty> styleProperties) {
-        this.styleProperties = null;
-        customProperties = styleProperties;
+        var classStyleMap = main.getProjectData().getJsonData().getClassStyleMap();
+        var styles = classStyleMap.get(getSelectedClass());
+        return styles.get(styleSelectBox.getSelectedIndex());
     }
 
     public FilesDroppedListener getFilesDroppedListener() {

@@ -534,7 +534,7 @@ public class MainListener extends RootTableListener {
             root.setClassDeleteButtonDisabled(true);
             root.setClassRenameButtonDisabled(true);
 
-            Array<StyleData> styleDatas = jsonData.getClassStyleMap().values().toArray().get(classIndex);
+            Array<StyleData> styleDatas = jsonData.getClassStyleMap().get(Main.BASIC_CLASSES[classIndex]);
             
             int styleIndex = root.getStyleSelectBox().getSelectedIndex();
             if (styleIndex >= 0 && styleIndex < styleDatas.size) {
@@ -542,8 +542,7 @@ public class MainListener extends RootTableListener {
 
                 root.setStyleDeleteButtonDisabled(!styleData.deletable);
                 root.setStyleRenameButtonDisabled(!styleData.deletable);
-
-                root.setStyleProperties(styleData.properties.values().toArray());
+                
                 root.refreshStyleProperties(false);
                 root.refreshPreviewProperties();
                 root.refreshPreview();
@@ -561,7 +560,6 @@ public class MainListener extends RootTableListener {
                 main.getRootTable().setStyleDeleteButtonDisabled(!customStyle.isDeletable());
                 main.getRootTable().setStyleRenameButtonDisabled(!customStyle.isDeletable());
                 
-                root.setCustomStyleProperties(customStyle.getProperties());
                 root.refreshStyleProperties(false);
                 root.refreshPreviewProperties();
                 root.refreshPreview();
