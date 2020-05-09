@@ -41,6 +41,8 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.data.DrawableData.DrawableType;
+import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
 import java.io.File;
@@ -183,6 +185,11 @@ public class AtlasData implements Json.Serializable {
                 FileHandle outputFile = targetDirectory.child(name);
                 PixmapIO.writePNG(outputFile, savePixmap);
                 DrawableData drawable = new DrawableData(outputFile);
+                if (Utils.isNinePatch(outputFile.name())) {
+                    drawable.type = DrawableType.NINE_PATCH;
+                } else {
+                    drawable.type = DrawableType.TEXTURE;
+                }
                 
                 //delete drawables with the same name
                 for (DrawableData originalData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {
@@ -280,7 +287,32 @@ public class AtlasData implements Json.Serializable {
     public void read(Json json, JsonValue jsonData) {
         atlasCurrent = json.readValue("atlasCurrent", Boolean.TYPE, jsonData);
         drawables = json.readValue("drawables", Array.class, DrawableData.class, jsonData);
+        assignDrawableTypes();
         fontDrawables = json.readValue("fontDrawables", Array.class, DrawableData.class, new Array<DrawableData>(),jsonData);
+    }
+    
+    private void assignDrawableTypes() {
+        for (DrawableData drawable : drawables) {
+            if (drawable.type == null) {
+                if (drawable.tiled) {
+                    drawable.type = DrawableType.TILED;
+                } else if (drawable.customized) {
+                    drawable.type = DrawableType.CUSTOM;
+                } else if (drawable.tenPatchData != null) {
+                    drawable.type = DrawableType.TENPATCH;
+                } else if (drawable.tintName != null) {
+                    drawable.type = DrawableType.TINTED_FROM_COLOR_DATA;
+                } else if (drawable.tint != null) {
+                    drawable.type = DrawableType.TINTED;
+                } else if (drawable.file != null) {
+                    if (Utils.isNinePatch(drawable.file.name())) {
+                        drawable.type = DrawableType.NINE_PATCH;
+                    } else {
+                        drawable.type = DrawableType.TEXTURE;
+                    }
+                }
+            }
+        }
     }
     
     public boolean checkIfNameExists(String name) {
@@ -397,7 +429,7 @@ public class AtlasData implements Json.Serializable {
                     drawable.setMinWidth(data.minWidth);
                     drawable.setMinHeight(data.minHeight);
                     ((TiledDrawable) drawable).getColor().set(main.getJsonData().getColorByName(data.tintName).color);
-                } else if (data.file.name().matches(".*\\.9\\.[a-zA-Z0-9]*$")) {
+                } else if (Utils.isNinePatch(data.file.name())) {
                     String name = data.file.name();
                     name = DrawableData.proper(name);
                     drawable = new NinePatchDrawable(atlas.createPatch(name));

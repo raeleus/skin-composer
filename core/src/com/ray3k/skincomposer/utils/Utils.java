@@ -414,4 +414,8 @@ public class Utils {
             return false;
         }
     }
+    
+    public static boolean isNinePatch(String name) {
+        return name.matches(".*\\.9\\.[a-zA-Z0-9]*$");
+    }
 }

@@ -42,6 +42,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
+import com.ray3k.skincomposer.data.DrawableData.DrawableType;
 import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.dialog.DialogTenPatch;
 import com.ray3k.skincomposer.utils.Utils;
@@ -261,6 +262,7 @@ public class JsonData implements Json.Serializable {
             else if (child.name().equals(TiledDrawable.class.getName()) || child.name().equals(TiledDrawable.class.getSimpleName())) {
                 for (JsonValue tiledDrawable : child.iterator()) {
                     DrawableData drawableData = new DrawableData(main.getProjectData().getAtlasData().getDrawable(tiledDrawable.getString("region")).file);
+                    drawableData.type = DrawableType.TILED;
                     drawableData.name = tiledDrawable.name;
                     
                     drawableData.tiled = true;
@@ -284,6 +286,7 @@ public class JsonData implements Json.Serializable {
                     drawableData.name = tintedDrawable.name;
                     
                     if (!tintedDrawable.get("color").isString()) {
+                        drawableData.type = DrawableType.TINTED;
                         drawableData.tint = new Color();
                         if (tintedDrawable.get("color").has("hex")) {
                             drawableData.tint.set(Color.valueOf(tintedDrawable.get("color").getString("hex")));
@@ -291,6 +294,7 @@ public class JsonData implements Json.Serializable {
                             drawableData.tint.set(tintedDrawable.get("color").getFloat("r", 1.0f), tintedDrawable.get("color").getFloat("g", 1.0f), tintedDrawable.get("color").getFloat("b", 1.0f), tintedDrawable.get("color").getFloat("a", 1.0f));
                         }
                     } else {
+                        drawableData.type = DrawableType.TINTED_FROM_COLOR_DATA;
                         drawableData.tintName = tintedDrawable.getString("color");
                     }
     
@@ -310,6 +314,7 @@ public class JsonData implements Json.Serializable {
             else if (child.name().equals(TenPatchDrawable.class.getName()) || child.name().equals(TenPatchDrawable.class.getSimpleName())) {
                 for (JsonValue value : child.iterator()) {
                     DrawableData drawableData = new DrawableData(main.getProjectData().getAtlasData().getDrawable(value.getString("region")).file);
+                    drawableData.type = DrawableType.TENPATCH;
                     drawableData.name = value.name();
                     drawableData.tenPatchData = new DialogTenPatch.TenPatchData();
                     drawableData.tenPatchData.colorName = value.getString("color", null);
@@ -514,6 +519,7 @@ public class JsonData implements Json.Serializable {
                             if (!keep) {
                                 keep = true;
                                 DrawableData customDrawable = new DrawableData((String) property.value);
+                                customDrawable.type = DrawableType.CUSTOM;
                                 main.getAtlasData().getDrawables().add(customDrawable);
                             }
                         } else {
@@ -1280,7 +1286,7 @@ public class JsonData implements Json.Serializable {
         fonts.addAll(jsonData.fonts);
         
         classStyleMap.clear();
-        classStyleMap.putAll(jsonData.classStyleMap);
+        classStyleMap.putAll((ObjectMap<? extends Class, ? extends Array<StyleData>>) jsonData.classStyleMap);
         
         customClasses.clear();
         customClasses.addAll(jsonData.customClasses);

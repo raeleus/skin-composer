@@ -42,6 +42,7 @@ import com.ray3k.skincomposer.*;
 import com.ray3k.skincomposer.UndoableManager.CustomDrawableUndoable;
 import com.ray3k.skincomposer.UndoableManager.DrawableUndoable;
 import com.ray3k.skincomposer.data.*;
+import com.ray3k.skincomposer.data.DrawableData.DrawableType;
 import com.ray3k.skincomposer.dialog.DialogTenPatch.TenPatchData;
 import com.ray3k.stripe.PopTableClickListener;
 import com.ray3k.stripe.Spinner;
@@ -374,13 +375,13 @@ public class DialogDrawables extends Dialog {
             } else {
                 drawableButton = new Button(getSkin(), "color-base-static");
             }
-            contentTable.add(drawableButton).growX();
+            contentTable.add(drawableButton).fillX();
             contentTable.row();
             
             Table table = new Table();
             drawableButton.add(table).growX();
-            table.defaults().uniform();
             
+            table.defaults().space(10);
             //preview
             Container bg = new Container();
             bg.setClip(true);
@@ -396,19 +397,22 @@ public class DialogDrawables extends Dialog {
                 bg.fill();
             }
             bg.setActor(image);
-            table.add(bg).size(sizes[MathUtils.floor(zoomSlider.getValue())]).uniform(false, false);
+            table.add(bg).size(sizes[MathUtils.floor(zoomSlider.getValue())]);
             
             //name
-            Label label = new Label(drawable.name, getSkin());
+            var label = new Label(drawable.name, getSkin());
             label.setAlignment(Align.left);
             label.setEllipsis("...");
             label.setEllipsis(true);
-            table.add(label).growX().uniform(false, false).space(10);
+            table.add(label);
+    
+            label = new Label(drawable.type.formattedName, getSkin());
+            table.add(label).right().expandX().spaceLeft(50);
             
             if (showingOptions) {
                 //more button
                 var button = new Button(getSkin(),  "more");
-                table.add(button).right().expandX();
+                table.add(button);
                 button.addListener(main.getHandListener());
                 button.addListener(new MoreClickListener(drawable));
             }
@@ -448,6 +452,9 @@ public class DialogDrawables extends Dialog {
             var subTable = new Table();
             table.add(subTable).growX();
         
+            var label = new Label(drawable.type == null ? "error" : drawable.type.formattedName, getSkin());
+            subTable.add(label);
+            
             if (showingOptions) {
                 //more button
                 var button = new Button(getSkin(),  "more");
@@ -476,7 +483,7 @@ public class DialogDrawables extends Dialog {
         
             //name
             table.row();
-            Label label = new Label(drawable.name, getSkin());
+            label = new Label(drawable.name, getSkin());
             label.setEllipsis("...");
             label.setEllipsis(true);
             label.setAlignment(Align.center);
@@ -537,6 +544,7 @@ public class DialogDrawables extends Dialog {
                     public void changed(ChangeListener.ChangeEvent event,
                                         Actor actor) {
                         DrawableData tiledDrawable = new DrawableData();
+                        tiledDrawable.type = DrawableType.TILED;
                         tiledDrawable.name = drawable.name;
                         tiledDrawable.file = drawable.file;
                         tiledDrawable.tiled = true;
@@ -563,6 +571,7 @@ public class DialogDrawables extends Dialog {
                         event.setBubbles(false);
                 
                         var drawableData = new DrawableData();
+                        drawableData.type = DrawableType.TENPATCH;
                         drawableData.name = drawable.name;
                         drawableData.file = drawable.file;
                         drawableData.bgColor = drawable.bgColor;
@@ -762,6 +771,7 @@ public class DialogDrawables extends Dialog {
         DialogColors dialog = new DialogColors(main, (StyleProperty) null, true, (colorData, pressedCancel) -> {
             if (colorData != null) {
                 final DrawableData tintedDrawable = new DrawableData(drawableData.file);
+                tintedDrawable.type = DrawableType.TINTED_FROM_COLOR_DATA;
                 tintedDrawable.tintName = colorData.getName();
 
                 //Fix background color for new, tinted drawable
@@ -1611,6 +1621,7 @@ public class DialogDrawables extends Dialog {
         
         main.getDialogFactory().showCustomDrawableDialog(getSkin(), getStage(), (String name1) -> {
             DrawableData drawable = new DrawableData(name1);
+            drawable.type = DrawableType.CUSTOM;
             main.getAtlasData().getDrawables().add(drawable);
             gatherDrawables();
             main.getDialogFactory().showDialogLoading(() -> {
@@ -1750,6 +1761,11 @@ public class DialogDrawables extends Dialog {
     private void finalizeDrawables(Array<DrawableData> backup, Array<FileHandle> filesToProcess) {
         for (FileHandle file : filesToProcess) {
             DrawableData data = new DrawableData(file);
+            if (Utils.isNinePatch(file.name())) {
+                data.type = DrawableType.NINE_PATCH;
+            } else {
+                data.type = DrawableType.TEXTURE;
+            }
             if (!checkIfNameExists(data.name)) {
                 main.getAtlasData().getDrawables().add(data);
             }
@@ -1798,6 +1814,7 @@ public class DialogDrawables extends Dialog {
             public void selected(Color color) {
                 if (color != null) {
                     final DrawableData tintedDrawable = new DrawableData(drawableData.file);
+                    tintedDrawable.type = DrawableType.TINTED;
                     tintedDrawable.tint = color;
                     
                     //Fix background color for new, tinted drawable

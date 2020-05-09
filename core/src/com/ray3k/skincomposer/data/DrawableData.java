@@ -25,19 +25,22 @@ package com.ray3k.skincomposer.data;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
 import com.ray3k.skincomposer.dialog.DialogTenPatch;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class DrawableData {
-
-    public static String proper(String name) {
-        return name.replaceFirst("(\\.9)?\\.[a-zA-Z0-9]*$", "");
-    }
-
-    public static boolean validate(String name) {
-        return name != null && !name.matches("^\\d.*|^-.*|.*\\s.*|.*[^a-zA-Z\\d\\s-_ñáéíóúüÑÁÉÍÓÚÜ].*|^$");
+    public enum DrawableType {
+        TINTED("Tinted"), TINTED_FROM_COLOR_DATA("Tinted"), TILED("Tiled"), TENPATCH("Tenpatch"), TEXTURE("Texture"), NINE_PATCH("Nine Patch"), CUSTOM("Custom");
+        
+        public String formattedName;
+        DrawableType (String formattedName) {
+            this.formattedName = formattedName;
+        }
+    
+        @Override
+        public String toString() {
+            return formattedName;
+        }
     }
     
     public FileHandle file;
@@ -50,6 +53,7 @@ public class DrawableData {
     public float minHeight;
     public boolean customized;
     public DialogTenPatch.TenPatchData tenPatchData;
+    public DrawableType type;
 
     public DrawableData(FileHandle file) {
         this.file = file;
@@ -99,6 +103,7 @@ public class DrawableData {
             if (tenPatchData == null) tenPatchData = new DialogTenPatch.TenPatchData();
             this.tenPatchData.set(drawableData.tenPatchData);
         }
+        this.type = type;
     }
 
     @Override
@@ -119,5 +124,13 @@ public class DrawableData {
                     (tenPatchData == null && dd.tenPatchData == null || tenPatchData != null && tenPatchData.equals(dd.tenPatchData));
         }
         return false;
+    }
+    
+    public static String proper(String name) {
+        return name.replaceFirst("(\\.9)?\\.[a-zA-Z0-9]*$", "");
+    }
+    
+    public static boolean validate(String name) {
+        return name != null && !name.matches("^\\d.*|^-.*|.*\\s.*|.*[^a-zA-Z\\d\\s-_ñáéíóúüÑÁÉÍÓÚÜ].*|^$");
     }
 }
