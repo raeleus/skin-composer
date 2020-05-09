@@ -35,18 +35,27 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.*;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap.Values;
-import com.ray3k.skincomposer.*;
+import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.Sort;
+import com.ray3k.skincomposer.FilesDroppedListener;
+import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.Undoable;
+import com.ray3k.skincomposer.UndoableManager;
 import com.ray3k.skincomposer.UndoableManager.CustomDrawableUndoable;
 import com.ray3k.skincomposer.UndoableManager.DrawableUndoable;
 import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.data.DrawableData.DrawableType;
 import com.ray3k.skincomposer.dialog.DialogTenPatch.TenPatchData;
+import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.PopTableClickListener;
 import com.ray3k.stripe.Spinner;
-import com.ray3k.skincomposer.utils.Utils;
 
 import java.io.File;
 import java.util.Iterator;
@@ -498,252 +507,264 @@ public class DialogDrawables extends Dialog {
     private class MoreClickListener extends PopTableClickListener {
         public MoreClickListener(DrawableData drawable) {
             super(getSkin(), "more");
+            
+            var hideListener = new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    getPopTable().hide();
+                }
+            };
+            
             var root = getPopTable();
     
             root.pad(10);
             root.defaults().expandX().left();
-            //color wheel
-            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null && drawable.tenPatchData == null) {
-                var button = new ImageTextButton("New Tinted Drawable", getSkin(), "colorwheel");
-                button.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        newTintedDrawable(drawable);
-                        event.setBubbles(false);
-                    }
-                });
-                if (property == null && customProperty == null) {
-                    button.addListener(main.getHandListener());
-                }
-                root.add(button);
-                root.row();
-            }
-    
-            //swatches
-            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null && drawable.tenPatchData == null) {
-                var button = new ImageTextButton("New Tinted Drawable from Colors", getSkin(), "swatches");
-                button.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        colorSwatchesDialog(drawable);
-                        event.setBubbles(false);
-                    }
-                });
-                if (property == null && customProperty == null) {
-                    button.addListener(main.getHandListener());
-                }
-                root.add(button);
-                root.row();
-            }
-    
-            //tiles button
-            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null && drawable.tenPatchData == null) {
-                var button = new ImageTextButton("New Tiled Drawable", getSkin(), "tiles");
-                button.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeListener.ChangeEvent event,
-                                        Actor actor) {
-                        DrawableData tiledDrawable = new DrawableData();
-                        tiledDrawable.type = DrawableType.TILED;
-                        tiledDrawable.name = drawable.name;
-                        tiledDrawable.file = drawable.file;
-                        tiledDrawable.tiled = true;
-                        Vector2 dimensions = Utils.imageDimensions(drawable.file);
-                        tiledDrawable.minWidth = dimensions.x;
-                        tiledDrawable.minHeight = dimensions.y;
-                        tiledDrawableSettingsDialog("New Tiled Drawable", tiledDrawable, true);
-                        event.setBubbles(false);
-                    }
-                });
-                if (property == null && customProperty == null) {
-                    button.addListener(main.getHandListener());
-                }
-                root.add(button);
-                root.row();
-            }
-    
-            //tenpatch button
-            if (!drawable.customized && !drawable.tiled && drawable.tint == null && drawable.tintName == null && drawable.tenPatchData == null) {
-                var button = new ImageTextButton("New Tenpatch Drawable", getSkin(), "tenpatch");
-                button.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        event.setBubbles(false);
-                
-                        var drawableData = new DrawableData();
-                        drawableData.type = DrawableType.TENPATCH;
-                        drawableData.name = drawable.name;
-                        drawableData.file = drawable.file;
-                        drawableData.bgColor = drawable.bgColor;
-                        drawableData.tenPatchData = new TenPatchData();
-                
-                        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
-                        main.getDialogFactory().showDialogTenPatch(drawableData, true, new DialogTenPatch.DialogTenPatchListener() {
-                            @Override
-                            public void selected(DrawableData drawableData) {
-                                main.getProjectData().getAtlasData().getDrawables().add(drawableData);
-                                main.getProjectData().setChangesSaved(false);
-                                gatherDrawables();
-                                main.getAtlasData().produceAtlas();
-                                sortBySelectedMode();
-                                getStage().setScrollFocus(scrollPane);
-                                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
-                                refreshDrawableDisplay();
-                            }
-                    
-                            @Override
-                            public void cancelled() {
-                                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
-                                refreshDrawableDisplay();
-                            }
-                        });
-                    }
-                });
-                if (property == null && customProperty == null) {
-                    button.addListener(main.getHandListener());
-                }
-                root.add(button);
-                root.row();
-            }
-    
-            //tiled settings
-            if (drawable.tiled) {
-                var button = new ImageTextButton("Settings", getSkin(), "settings-small");
-                button.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        tiledDrawableSettingsDialog("Tiled Drawable Settings", drawable, false);
-                        event.setBubbles(false);
-                    }
-                });
-                if (property == null && customProperty == null) {
-                    button.addListener(main.getHandListener());
-                }
-                root.add(button);
-                root.row();
-            }
             
-            //rename (ONLY FOR TINTS)
-            else if (drawable.tint != null || drawable.tintName != null) {
-                var button = new ImageTextButton("Rename", getSkin(), "settings-small");
-                button.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        tintedDrawableSettingsDialog(drawable);
-                        event.setBubbles(false);
+            switch (drawable.type) {
+                case TEXTURE:
+                case NINE_PATCH:
+                    //color wheel
+                    var button = new ImageTextButton("New Tinted Drawable", getSkin(), "colorwheel");
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                            newTintedDrawable(drawable);
+                            event.setBubbles(false);
+                        }
+                    });
+                    if (property == null && customProperty == null) {
+                        button.addListener(main.getHandListener());
                     }
-                });
-                if (property == null && customProperty == null) {
-                    button.addListener(main.getHandListener());
-                }
-                root.add(button);
-                root.row();
-            }
-            //settings for custom drawables
-            else if (drawable.customized) {
-                var button = new ImageTextButton("Rename", getSkin(), "settings-small");
-                button.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        renameCustomDrawableDialog(drawable);
-                        event.setBubbles(false);
+                    root.add(button);
+                    root.row();
+                    button.addListener(hideListener);
+    
+                    //swatches
+                    button = new ImageTextButton("New Tinted Drawable from Colors", getSkin(), "swatches");
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                            colorSwatchesDialog(drawable);
+                            event.setBubbles(false);
+                        }
+                    });
+                    if (property == null && customProperty == null) {
+                        button.addListener(main.getHandListener());
                     }
-                });
-                if (property == null && customProperty == null) {
-                    button.addListener(main.getHandListener());
-                }
-                root.add(button);
-                root.row();
-            }
-            //settings for ten patch drawables
-            else if (drawable.tenPatchData != null) {
-                //settings button for an existing ten patch
-                var button = new ImageTextButton("Settings", getSkin(), "settings-small");
-                button.addListener(main.getHandListener());
-                button.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        event.setBubbles(false);
-                        var drawableData = new DrawableData(drawable);
-                
-                        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
-                        main.getDialogFactory().showDialogTenPatch(drawableData, false, new DialogTenPatch.DialogTenPatchListener() {
-                            @Override
-                            public void selected(DrawableData drawableData) {
-                                drawable.set(drawableData);
-                                main.getProjectData().setChangesSaved(false);
-                                gatherDrawables();
-                                main.getAtlasData().produceAtlas();
-                                sortBySelectedMode();
-                                getStage().setScrollFocus(scrollPane);
-                                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
-                                refreshDrawableDisplay();
-                            }
-                    
-                            @Override
-                            public void cancelled() {
-                                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
-                                refreshDrawableDisplay();
-                            }
-                        });
+                    root.add(button);
+                    root.row();
+                    button.addListener(hideListener);
+    
+                    //tiles button
+                    button = new ImageTextButton("New Tiled Drawable", getSkin(), "tiles");
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent event,
+                                            Actor actor) {
+                            DrawableData tiledDrawable = new DrawableData();
+                            tiledDrawable.type = DrawableType.TILED;
+                            tiledDrawable.name = drawable.name;
+                            tiledDrawable.file = drawable.file;
+                            tiledDrawable.tiled = true;
+                            Vector2 dimensions = Utils.imageDimensions(drawable.file);
+                            tiledDrawable.minWidth = dimensions.x;
+                            tiledDrawable.minHeight = dimensions.y;
+                            tiledDrawableSettingsDialog("New Tiled Drawable", tiledDrawable, true);
+                            event.setBubbles(false);
+                        }
+                    });
+                    if (property == null && customProperty == null) {
+                        button.addListener(main.getHandListener());
                     }
-                });
-        
-                root.add(button);
-                root.row();
-        
-                //duplicate button for an existing ten patch
-                button = new ImageTextButton("Duplicate", getSkin(), "duplicate-small");
-                button.addListener(main.getHandListener());
-                button.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        event.setBubbles(false);
-                        var drawableData = new DrawableData();
-                        drawableData.set(drawable);
-                
-                        main.getDialogFactory().showDuplicateTenPatchDialog("Duplicate Ten Patch Drawable", "Please enter the name of the duplicated ten patch drawable", drawable.name, new DialogFactory.InputDialogListener() {
-                            @Override
-                            public void confirmed(String text) {
-                                drawableData.name = text;
-                                main.getAtlasData().getDrawables().add(drawableData);
-                                gatherDrawables();
-                                main.getAtlasData().produceAtlas();
-                                sortBySelectedMode();
-                            }
-                    
-                            @Override
-                            public void cancelled() {
-                        
-                            }
-                        });
-                    }
-                });
-        
-                root.add(button);
-                root.row();
-            }
+                    root.add(button);
+                    root.row();
+                    button.addListener(hideListener);
+    
+                    //tenpatch button
+                    button = new ImageTextButton("New Tenpatch Drawable", getSkin(), "tenpatch");
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                            event.setBubbles(false);
             
-            //settings for regular drawables
-            else {
-                var button = new ImageTextButton("Settings", getSkin(), "settings-small");
-                button.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        main.getDialogFactory().showDrawableSettingsDialog(getSkin(), getStage(), drawable, (boolean accepted) -> {
-                            if (accepted) {
-                                main.getAtlasData().produceAtlas();
-                                refreshDrawableDisplay();
-                            }
-                        });
-                        event.setBubbles(false);
+                            var drawableData = new DrawableData();
+                            drawableData.type = DrawableType.TENPATCH;
+                            drawableData.name = drawable.name;
+                            drawableData.file = drawable.file;
+                            drawableData.bgColor = drawable.bgColor;
+                            drawableData.tenPatchData = new TenPatchData();
+            
+                            main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+                            main.getDialogFactory().showDialogTenPatch(drawableData, true, new DialogTenPatch.DialogTenPatchListener() {
+                                @Override
+                                public void selected(DrawableData drawableData) {
+                                    main.getProjectData().getAtlasData().getDrawables().add(drawableData);
+                                    main.getProjectData().setChangesSaved(false);
+                                    gatherDrawables();
+                                    main.getAtlasData().produceAtlas();
+                                    sortBySelectedMode();
+                                    getStage().setScrollFocus(scrollPane);
+                                    main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+                                    refreshDrawableDisplay();
+                                }
+                
+                                @Override
+                                public void cancelled() {
+                                    main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+                                    refreshDrawableDisplay();
+                                }
+                            });
+                        }
+                    });
+                    if (property == null && customProperty == null) {
+                        button.addListener(main.getHandListener());
                     }
-                });
-                if (property == null && customProperty == null) {
+                    root.add(button);
+                    root.row();
+                    button.addListener(hideListener);
+                    
+                    //settings
+                    button = new ImageTextButton("Settings", getSkin(), "settings-small");
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                            main.getDialogFactory().showDrawableSettingsDialog(getSkin(), getStage(), drawable, (boolean accepted) -> {
+                                if (accepted) {
+                                    main.getAtlasData().produceAtlas();
+                                    refreshDrawableDisplay();
+                                }
+                            });
+                            event.setBubbles(false);
+                        }
+                    });
+                    if (property == null && customProperty == null) {
+                        button.addListener(main.getHandListener());
+                    }
+                    root.add(button);
+                    root.row();
+                    button.addListener(hideListener);
+                    break;
+                case TILED:
+                    //settings
+                    button = new ImageTextButton("Settings", getSkin(), "settings-small");
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                            tiledDrawableSettingsDialog("Tiled Drawable Settings", drawable, false);
+                            event.setBubbles(false);
+                        }
+                    });
+                    if (property == null && customProperty == null) {
+                        button.addListener(main.getHandListener());
+                    }
+                    root.add(button);
+                    root.row();
+                    button.addListener(hideListener);
+                    break;
+                case TINTED:
+                case TINTED_FROM_COLOR_DATA:
+                    //settings
+                    button = new ImageTextButton("Settings", getSkin(), "settings-small");
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                            tintedDrawableSettingsDialog(drawable);
+                            event.setBubbles(false);
+                        }
+                    });
+                    if (property == null && customProperty == null) {
+                        button.addListener(main.getHandListener());
+                    }
+                    root.add(button);
+                    root.row();
+                    button.addListener(hideListener);
+                    break;
+                case CUSTOM:
+                    //settings
+                    button = new ImageTextButton("Rename", getSkin(), "settings-small");
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                            renameCustomDrawableDialog(drawable);
+                            event.setBubbles(false);
+                        }
+                    });
+                    if (property == null && customProperty == null) {
+                        button.addListener(main.getHandListener());
+                    }
+                    root.add(button);
+                    root.row();
+                    button.addListener(hideListener);
+                    break;
+                case TENPATCH:
+                    //settings
+                    button = new ImageTextButton("Settings", getSkin(), "settings-small");
                     button.addListener(main.getHandListener());
-                }
-                root.add(button);
-                root.row();
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            event.setBubbles(false);
+                            var drawableData = new DrawableData(drawable);
+            
+                            main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+                            main.getDialogFactory().showDialogTenPatch(drawableData, false, new DialogTenPatch.DialogTenPatchListener() {
+                                @Override
+                                public void selected(DrawableData drawableData) {
+                                    drawable.set(drawableData);
+                                    main.getProjectData().setChangesSaved(false);
+                                    gatherDrawables();
+                                    main.getAtlasData().produceAtlas();
+                                    sortBySelectedMode();
+                                    getStage().setScrollFocus(scrollPane);
+                                    main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+                                    refreshDrawableDisplay();
+                                }
+                
+                                @Override
+                                public void cancelled() {
+                                    main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+                                    refreshDrawableDisplay();
+                                }
+                            });
+                        }
+                    });
+    
+                    root.add(button);
+                    root.row();
+                    button.addListener(hideListener);
+    
+                    //duplicate button for an existing ten patch
+                    button = new ImageTextButton("Duplicate", getSkin(), "duplicate-small");
+                    button.addListener(main.getHandListener());
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            event.setBubbles(false);
+                            var drawableData = new DrawableData();
+                            drawableData.set(drawable);
+            
+                            main.getDialogFactory().showDuplicateTenPatchDialog("Duplicate Ten Patch Drawable", "Please enter the name of the duplicated ten patch drawable", drawable.name, new DialogFactory.InputDialogListener() {
+                                @Override
+                                public void confirmed(String text) {
+                                    drawableData.name = text;
+                                    main.getAtlasData().getDrawables().add(drawableData);
+                                    gatherDrawables();
+                                    main.getAtlasData().produceAtlas();
+                                    sortBySelectedMode();
+                                }
+                
+                                @Override
+                                public void cancelled() {
+                    
+                                }
+                            });
+                        }
+                    });
+    
+                    root.add(button);
+                    root.row();
+                    button.addListener(hideListener);
+                    break;
             }
     
             //delete
@@ -759,6 +780,7 @@ public class DialogDrawables extends Dialog {
                 button.addListener(main.getHandListener());
             }
             root.add(button);
+            button.addListener(hideListener);
         }
     
         @Override
