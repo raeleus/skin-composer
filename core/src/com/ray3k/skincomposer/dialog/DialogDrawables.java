@@ -1373,42 +1373,42 @@ public class DialogDrawables extends Dialog {
                 }
                 
                 if (!filterOptions.custom) {
-                    if (drawable.customized) {
+                    if (drawable.type == DrawableType.CUSTOM) {
                         iter.remove();
                         continue;
                     }
                 }
                 
                 if (!filterOptions.ninePatch) {
-                    if (main.getAtlasData().getDrawablePairs().get(drawable) instanceof NinePatchDrawable && !drawable.customized && drawable.tint == null && drawable.tintName == null) {
+                    if (drawable.type == DrawableType.NINE_PATCH) {
                         iter.remove();
                         continue;
                     }
                 }
                 
                 if (!filterOptions.texture) {
-                    if (main.getAtlasData().getDrawablePairs().get(drawable) instanceof SpriteDrawable && drawable.tint == null && drawable.tintName == null) {
+                    if (drawable.type == DrawableType.TEXTURE) {
                         iter.remove();
                         continue;
                     }
                 }
                 
                 if (!filterOptions.tiled) {
-                    if (drawable.tiled) {
+                    if (drawable.type == DrawableType.TILED) {
                         iter.remove();
                         continue;
                     }
                 }
                 
                 if (!filterOptions.tinted) {
-                    if (drawable.tint != null || drawable.tintName != null && !drawable.tiled) {
+                    if (drawable.type == DrawableType.TINTED || drawable.type == DrawableType.TINTED_FROM_COLOR_DATA) {
                         iter.remove();
                         continue;
                     }
                 }
                 
                 if (!filterOptions.tenPatch) {
-                    if (drawable.tenPatchData != null) {
+                    if (drawable.type == DrawableType.TENPATCH) {
                         iter.remove();
                         continue;
                     }
