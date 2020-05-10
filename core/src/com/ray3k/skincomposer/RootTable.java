@@ -270,6 +270,7 @@ public class RootTable extends Table {
         classSelectBox = new SelectBox(getSkin());
         classSelectBox.addListener(main.getHandListener());
         classSelectBox.getList().addListener(main.getHandListener());
+        classSelectBox.getList().addListener(main.getScrollFocusListener());
         table.add(classSelectBox).padRight(5.0f).minWidth(150.0f);
 
         classSelectBox.addListener(new ChangeListener() {
@@ -353,6 +354,7 @@ public class RootTable extends Table {
         
         styleSelectBox.addListener(main.getHandListener());
         styleSelectBox.getList().addListener(main.getHandListener());
+        styleSelectBox.getList().addListener(main.getScrollFocusListener());
 
         button = new Button(getSkin(), "new");
         button.addListener(main.getHandListener());
