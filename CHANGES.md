@@ -6,6 +6,7 @@
 * Cleaned up Drawables Dialog. Popups for Drawable settings and labels describing what type of Drawable it is.
 * Drawables can be hidden in the Drawables dialog to prevent them from being shown with the default filter. They can be unhidden by deactivating the filter and deselcting "hidden".
 * Fixed crash when adding a custom placeholder drawable to a project that is set to keep resources relative.
+* Fixed Tenpatch dialog not displaying correct region in preview when removing all animation frames.
 * Minor UI Tweaks and bug fixes. 
 
 ### Skin Composer Version 34 ###

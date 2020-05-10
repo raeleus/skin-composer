@@ -73,6 +73,7 @@ public class DialogTenPatch extends Dialog {
     private FilesDroppedListener filesDroppedListener;
     private static DrawableData copiedDrawableData;
     private float splitValue;
+    private TextureRegion originalRegion;
     
     public DialogTenPatch(Main main, DrawableData drawableData, boolean newDrawable) {
         super("", main.getSkin(), "dialog");
@@ -545,7 +546,8 @@ public class DialogTenPatch extends Dialog {
         if (matcher.find()) {
             name = matcher.group();
         }
-        tenPatchDrawable = new TenPatchDrawable(new int[0], new int[0], false, main.getAtlasData().getAtlas().findRegion(name));
+        originalRegion = main.getAtlasData().getAtlas().findRegion(name);
+        tenPatchDrawable = new TenPatchDrawable(new int[0], new int[0], false, originalRegion);
         if (drawableData.tenPatchData.colorName != null) {
             tenPatchDrawable.getColor().set(main.getJsonData().getColorByName(drawableData.tenPatchData.colorName).color);
         }
@@ -722,7 +724,12 @@ public class DialogTenPatch extends Dialog {
         tenPatchDrawable.setOffsetY(drawableData.tenPatchData.offsetY);
         tenPatchDrawable.setOffsetXspeed(drawableData.tenPatchData.offsetXspeed);
         tenPatchDrawable.setOffsetYspeed(drawableData.tenPatchData.offsetYspeed);
-        tenPatchDrawable.setRegions(drawableData.tenPatchData.regions);
+        if (drawableData.tenPatchData.regions != null && drawableData.tenPatchData.regions.size > 0) {
+            tenPatchDrawable.setRegions(drawableData.tenPatchData.regions);
+        } else {
+            tenPatchDrawable.setRegions(null);
+            tenPatchDrawable.setRegion(originalRegion);
+        }
         tenPatchDrawable.setFrameDuration(drawableData.tenPatchData.frameDuration);
         tenPatchDrawable.setPlayMode(drawableData.tenPatchData.playMode);
         
