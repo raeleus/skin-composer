@@ -416,6 +416,13 @@ public class DialogDrawables extends Dialog {
                 table.add(button);
                 button.addListener(main.getHandListener());
                 button.addListener(new MoreClickListener(drawable));
+                //prevent click from activating parent button.
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        event.setBubbles(false);
+                    }
+                });
             }
             
             //Tooltip
