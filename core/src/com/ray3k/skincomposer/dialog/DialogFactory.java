@@ -1123,7 +1123,7 @@ public class DialogFactory {
         dialog.show(main.getStage());
     }
     
-    public void showDuplicateTenPatchDialog(String title, String message, String defaultText, InputDialogListener listener) {
+    public void showDuplicateDialog(String title, String message, String defaultText, InputDialogListener listener) {
         var dialog = new Dialog(title, main.getSkin(), "bg") {
             @Override
             protected void result(Object object) {

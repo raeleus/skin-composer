@@ -27,7 +27,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -43,7 +42,6 @@ import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.UndoableManager.CustomFontUndoable;
 import com.ray3k.skincomposer.UndoableManager.FontUndoable;
 import com.ray3k.skincomposer.data.*;
-import com.ray3k.skincomposer.dialog.DialogDrawables.AddListener;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.PopTableClickListener;
 

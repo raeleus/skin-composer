@@ -229,7 +229,7 @@ public class DialogDrawables extends Dialog {
         TextButton textButton = new TextButton("Add...", getSkin());
         table.add(textButton);
         textButton.addListener(main.getHandListener());
-        textButton.addListener(new AddListener());
+        textButton.addListener(new AddClickListener());
         
         table.add(new Label("Zoom:", getSkin())).right().expandX();
         zoomSlider = new Slider(0, 4, 1, false, getSkin());
@@ -282,8 +282,8 @@ public class DialogDrawables extends Dialog {
         });
     }
     
-    public class AddListener extends PopTableClickListener {
-        public AddListener() {
+    public class AddClickListener extends PopTableClickListener {
+        public AddClickListener() {
             super(getSkin(), "more");
             
             populate();
@@ -667,6 +667,36 @@ public class DialogDrawables extends Dialog {
                     });
                     break;
                 case TILED:
+                    //duplicate
+                    button = new ImageTextButton("Duplicate", getSkin(), "duplicate-small");
+                    root.add(button);
+                    root.row();
+                    button.addListener(main.getHandListener());
+                    button.addListener(hideListener);
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            var drawableData = new DrawableData();
+                            drawableData.set(drawable);
+            
+                            main.getDialogFactory().showDuplicateDialog("Duplicate Tiled Drawable", "Please enter the name of the duplicated drawable", drawable.name, new DialogFactory.InputDialogListener() {
+                                @Override
+                                public void confirmed(String text) {
+                                    drawableData.name = text;
+                                    main.getAtlasData().getDrawables().add(drawableData);
+                                    gatherDrawables();
+                                    main.getAtlasData().produceAtlas();
+                                    sortBySelectedMode();
+                                }
+                
+                                @Override
+                                public void cancelled() {
+                    
+                                }
+                            });
+                        }
+                    });
+                    
                     //settings
                     button = new ImageTextButton("Settings", getSkin(), "settings-small");
                     root.add(button);
@@ -682,6 +712,36 @@ public class DialogDrawables extends Dialog {
                     break;
                 case TINTED:
                 case TINTED_FROM_COLOR_DATA:
+                    //duplicate
+                    button = new ImageTextButton("Duplicate", getSkin(), "duplicate-small");
+                    root.add(button);
+                    root.row();
+                    button.addListener(main.getHandListener());
+                    button.addListener(hideListener);
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            var drawableData = new DrawableData();
+                            drawableData.set(drawable);
+            
+                            main.getDialogFactory().showDuplicateDialog("Duplicate Tiled Drawable", "Please enter the name of the duplicated drawable", drawable.name, new DialogFactory.InputDialogListener() {
+                                @Override
+                                public void confirmed(String text) {
+                                    drawableData.name = text;
+                                    main.getAtlasData().getDrawables().add(drawableData);
+                                    gatherDrawables();
+                                    main.getAtlasData().produceAtlas();
+                                    sortBySelectedMode();
+                                }
+                
+                                @Override
+                                public void cancelled() {
+                    
+                                }
+                            });
+                        }
+                    });
+                    
                     //settings
                     button = new ImageTextButton("Settings", getSkin(), "settings-small");
                     root.add(button);
@@ -756,7 +816,7 @@ public class DialogDrawables extends Dialog {
                             var drawableData = new DrawableData();
                             drawableData.set(drawable);
             
-                            main.getDialogFactory().showDuplicateTenPatchDialog("Duplicate Ten Patch Drawable", "Please enter the name of the duplicated ten patch drawable", drawable.name, new DialogFactory.InputDialogListener() {
+                            main.getDialogFactory().showDuplicateDialog("Duplicate Ten Patch Drawable", "Please enter the name of the duplicated ten patch drawable", drawable.name, new DialogFactory.InputDialogListener() {
                                 @Override
                                 public void confirmed(String text) {
                                     drawableData.name = text;
