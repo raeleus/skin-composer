@@ -346,7 +346,7 @@ public class ProjectData implements Json.Serializable {
         FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
         
         for (DrawableData drawableData : main.getAtlasData().getDrawables()) {
-            if (drawableData.file.exists() && !targetFolder.equals(drawableData.file.parent())) {
+            if (drawableData.file != null && drawableData.file.exists() && !targetFolder.equals(drawableData.file.parent())) {
                 targetFolder.mkdirs();
                 drawableData.file.copyTo(targetFolder);
                 drawableData.file = targetFolder.child(drawableData.file.name());
