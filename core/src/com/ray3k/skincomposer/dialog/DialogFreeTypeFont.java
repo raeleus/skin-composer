@@ -68,6 +68,7 @@ public class DialogFreeTypeFont extends Dialog {
     private Array<DialogFreeTypeFontListener> listeners;
     private TextFieldStyle previewStyle;
     private String previewText;
+    private boolean automaticBgColor;
     private static final String SERIALIZER_TEXT = "skin = new Skin(Gdx.files.internal(\"skin-name.json\")) {\n" +
 "            //Override json loader to process FreeType fonts from skin JSON\n" +
 "            @Override\n" +
@@ -123,6 +124,7 @@ public class DialogFreeTypeFont extends Dialog {
     public DialogFreeTypeFont(Main main, FreeTypeFontData freeTypeFontData) {
         super(freeTypeFontData == null ? "Create new FreeType Font" : "Edit FreeType Font", main.getSkin(), "bg");
         previewBGcolor = new Color(Color.WHITE);
+        automaticBgColor = true;
         
         json = new Json(JsonWriter.OutputType.json);
         
@@ -167,7 +169,7 @@ public class DialogFreeTypeFont extends Dialog {
         
         filesDroppedListener = (Array<FileHandle> files) -> {
             if (files.size > 0) {
-                CheckBox checkBox = (CheckBox) findActor("serializerCheckBox");
+                CheckBox checkBox = findActor("serializerCheckBox");
                 
                 var extension = files.first().extension().toLowerCase(Locale.ROOT);
                 if (extension.equals("ttf")) {
@@ -373,6 +375,7 @@ public class DialogFreeTypeFont extends Dialog {
                         if (color != null) {
                             previewBGcolor.set(color);
                             previewTable.setColor(color);
+                            automaticBgColor = false;
                         }
                     }
                 });
@@ -415,6 +418,12 @@ public class DialogFreeTypeFont extends Dialog {
                 data.useCustomSerializer = checkBox.isChecked();
                 
                 updateDisabledFields();
+    
+                if (automaticBgColor) {
+                    var color = main.getJsonData().getColorByName(data.name);
+                    previewBGcolor.set(Utils.blackOrWhiteBgColor(color == null? Color.WHITE : color.color));
+                    previewTable.setColor(previewBGcolor);
+                }
             }
         });
         
@@ -676,6 +685,10 @@ public class DialogFreeTypeFont extends Dialog {
                         textButton.setText(colorData.getName());
                         textButton.setUserObject(colorData);
                         data.color = colorData.getName();
+                        if (automaticBgColor) {
+                            previewBGcolor.set(Utils.blackOrWhiteBgColor(colorData.color));
+                            previewTable.setColor(previewBGcolor);
+                        }
                     } else {
                         textButton.setText("");
                         textButton.setUserObject(null);

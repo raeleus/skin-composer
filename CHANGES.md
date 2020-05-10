@@ -5,6 +5,7 @@
 * Added duplicate option for Tinted and Tiled Drawables.
 * Cleaned up Drawables Dialog. Popups for Drawable settings and labels describing what type of Drawable it is.
 * Drawables can be hidden in the Drawables dialog to prevent them from being shown with the default filter. They can be unhidden by deactivating the filter and deselcting "hidden".
+* Background color is automatically set in FreeTypeFont dialog.
 * Fixed crash when adding a custom placeholder drawable to a project that is set to keep resources relative.
 * Fixed Tenpatch dialog not displaying correct region in preview when removing all animation frames.
 * Fixed crash with FreeTypeFonts when they are missing from the project.
