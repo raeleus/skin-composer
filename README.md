@@ -36,7 +36,7 @@ Video tutorials are available on [YouTube](https://www.youtube.com/playlist?list
 ### License ###
 MIT License
 
-Copyright (c) 2019 Raymond Buckley
+Copyright (c) 2020 Raymond Buckley
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
