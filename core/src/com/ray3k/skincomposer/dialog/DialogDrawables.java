@@ -83,10 +83,10 @@ public class DialogDrawables extends Dialog {
     private FilterOptions filterOptions;
     private FilterInputListener filterInputListener;
     
-    public static interface DialogDrawablesListener {
-        public void confirmed(DrawableData drawable, DialogDrawables dialog);
-        public void emptied(DialogDrawables dialog);
-        public void cancelled(DialogDrawables dialog);
+    public interface DialogDrawablesListener {
+        void confirmed(DrawableData drawable, DialogDrawables dialog);
+        void emptied(DialogDrawables dialog);
+        void cancelled(DialogDrawables dialog);
     }
     
     public DialogDrawables(Main main, StyleProperty property, DialogDrawablesListener listener) {
@@ -197,19 +197,16 @@ public class DialogDrawables extends Dialog {
                 main.getDialogFactory().showDialogDrawablesFilter(filterOptions, new DialogDrawablesFilter.FilterListener() {
                     @Override
                     public void applied() {
-                        button.setChecked(filterOptions.applied);
                         sortBySelectedMode();
                     }
                     
                     @Override
                     public void disabled() {
-                        button.setChecked(filterOptions.applied);
                         sortBySelectedMode();
                     }
 
                     @Override
                     public void cancelled() {
-                        button.setChecked(filterOptions.applied);
                         sortBySelectedMode();
                     }
                 });
@@ -325,9 +322,7 @@ public class DialogDrawables extends Dialog {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Keys.ESCAPE) {
-                    filterOptions.applied = false;
-                    Button button = findActor("filter");
-                    button.setChecked(false);
+                    filterOptions.name = "";
                     sortBySelectedMode();
                     return true;
                 }
@@ -352,7 +347,7 @@ public class DialogDrawables extends Dialog {
         
         if (drawables.size == 0) {
             Label label = new Label("No drawables have been added!", getSkin());
-            if (filterOptions.applied) {
+            if (main.getAtlasData().getDrawables().size > 0) {
                 label.setText("No drawables match filter!");
             }
             contentTable.add(label);
@@ -526,38 +521,36 @@ public class DialogDrawables extends Dialog {
                 case NINE_PATCH:
                     //color wheel
                     var button = new ImageTextButton("New Tinted Drawable", getSkin(), "colorwheel");
+                    root.add(button);
+                    root.row();
+                    button.addListener(main.getHandListener());
+                    button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             newTintedDrawable(drawable);
-                            event.setBubbles(false);
                         }
                     });
-                    if (property == null && customProperty == null) {
-                        button.addListener(main.getHandListener());
-                    }
-                    root.add(button);
-                    root.row();
-                    button.addListener(hideListener);
     
                     //swatches
                     button = new ImageTextButton("New Tinted Drawable from Colors", getSkin(), "swatches");
+                    root.add(button);
+                    root.row();
+                    button.addListener(main.getHandListener());
+                    button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             colorSwatchesDialog(drawable);
-                            event.setBubbles(false);
                         }
                     });
-                    if (property == null && customProperty == null) {
-                        button.addListener(main.getHandListener());
-                    }
-                    root.add(button);
-                    root.row();
-                    button.addListener(hideListener);
     
                     //tiles button
                     button = new ImageTextButton("New Tiled Drawable", getSkin(), "tiles");
+                    root.add(button);
+                    root.row();
+                    button.addListener(main.getHandListener());
+                    button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event,
@@ -571,23 +564,18 @@ public class DialogDrawables extends Dialog {
                             tiledDrawable.minWidth = dimensions.x;
                             tiledDrawable.minHeight = dimensions.y;
                             tiledDrawableSettingsDialog("New Tiled Drawable", tiledDrawable, true);
-                            event.setBubbles(false);
                         }
                     });
-                    if (property == null && customProperty == null) {
-                        button.addListener(main.getHandListener());
-                    }
-                    root.add(button);
-                    root.row();
-                    button.addListener(hideListener);
     
                     //tenpatch button
                     button = new ImageTextButton("New Tenpatch Drawable", getSkin(), "tenpatch");
+                    root.add(button);
+                    root.row();
+                    button.addListener(main.getHandListener());
+                    button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                            event.setBubbles(false);
-            
                             var drawableData = new DrawableData();
                             drawableData.type = DrawableType.TENPATCH;
                             drawableData.name = drawable.name;
@@ -617,15 +605,13 @@ public class DialogDrawables extends Dialog {
                             });
                         }
                     });
-                    if (property == null && customProperty == null) {
-                        button.addListener(main.getHandListener());
-                    }
-                    root.add(button);
-                    root.row();
-                    button.addListener(hideListener);
                     
                     //settings
                     button = new ImageTextButton("Settings", getSkin(), "settings-small");
+                    root.add(button);
+                    root.row();
+                    button.addListener(main.getHandListener());
+                    button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -635,76 +621,62 @@ public class DialogDrawables extends Dialog {
                                     refreshDrawableDisplay();
                                 }
                             });
-                            event.setBubbles(false);
                         }
                     });
-                    if (property == null && customProperty == null) {
-                        button.addListener(main.getHandListener());
-                    }
-                    root.add(button);
-                    root.row();
-                    button.addListener(hideListener);
                     break;
                 case TILED:
                     //settings
                     button = new ImageTextButton("Settings", getSkin(), "settings-small");
+                    root.add(button);
+                    root.row();
+                    button.addListener(main.getHandListener());
+                    button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             tiledDrawableSettingsDialog("Tiled Drawable Settings", drawable, false);
-                            event.setBubbles(false);
                         }
                     });
-                    if (property == null && customProperty == null) {
-                        button.addListener(main.getHandListener());
-                    }
-                    root.add(button);
-                    root.row();
-                    button.addListener(hideListener);
                     break;
                 case TINTED:
                 case TINTED_FROM_COLOR_DATA:
                     //settings
                     button = new ImageTextButton("Settings", getSkin(), "settings-small");
+                    root.add(button);
+                    root.row();
+                    button.addListener(main.getHandListener());
+                    button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             tintedDrawableSettingsDialog(drawable);
-                            event.setBubbles(false);
                         }
                     });
-                    if (property == null && customProperty == null) {
-                        button.addListener(main.getHandListener());
-                    }
-                    root.add(button);
-                    root.row();
-                    button.addListener(hideListener);
                     break;
                 case CUSTOM:
                     //settings
                     button = new ImageTextButton("Rename", getSkin(), "settings-small");
+                    root.add(button);
+                    root.row();
+                    button.addListener(main.getHandListener());
+                    button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             renameCustomDrawableDialog(drawable);
-                            event.setBubbles(false);
                         }
                     });
-                    if (property == null && customProperty == null) {
-                        button.addListener(main.getHandListener());
-                    }
-                    root.add(button);
-                    root.row();
-                    button.addListener(hideListener);
                     break;
                 case TENPATCH:
                     //settings
                     button = new ImageTextButton("Settings", getSkin(), "settings-small");
+                    root.add(button);
+                    root.row();
+                    button.addListener(hideListener);
                     button.addListener(main.getHandListener());
                     button.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
-                            event.setBubbles(false);
                             var drawableData = new DrawableData(drawable);
             
                             main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
@@ -730,17 +702,15 @@ public class DialogDrawables extends Dialog {
                         }
                     });
     
-                    root.add(button);
-                    root.row();
-                    button.addListener(hideListener);
-    
                     //duplicate button for an existing ten patch
                     button = new ImageTextButton("Duplicate", getSkin(), "duplicate-small");
+                    root.add(button);
+                    root.row();
                     button.addListener(main.getHandListener());
+                    button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
-                            event.setBubbles(false);
                             var drawableData = new DrawableData();
                             drawableData.set(drawable);
             
@@ -762,26 +732,39 @@ public class DialogDrawables extends Dialog {
                         }
                     });
     
-                    root.add(button);
-                    root.row();
-                    button.addListener(hideListener);
                     break;
             }
     
+            //visible
+            var button = new ImageTextButton("Visible", getSkin(), "visible");
+            button.setProgrammaticChangeEvents(false);
+            button.setChecked(drawable.hidden);
+            root.add(button);
+            root.row();
+            button.addListener(main.getHandListener());
+            button.addListener(hideListener);
+            button.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                    drawable.hidden = ((ImageTextButton) actor).isChecked();
+                    main.getProjectData().setChangesSaved(false);
+    
+                    gatherDrawables();
+                    sortBySelectedMode();
+                }
+            });
+            
             //delete
-            var button = new ImageTextButton("Delete", getSkin(), "delete-small");
+            button = new ImageTextButton("Delete", getSkin(), "delete-small");
+            root.add(button);
+            button.addListener(hideListener);
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                     deleteDrawable(drawable);
-                    event.setBubbles(false);
                 }
             });
-            if (property == null && customProperty == null) {
-                button.addListener(main.getHandListener());
-            }
-            root.add(button);
-            button.addListener(hideListener);
+            button.addListener(main.getHandListener());
         }
     
         @Override
@@ -1356,62 +1339,66 @@ public class DialogDrawables extends Dialog {
     }
     
     private void applyFilterOptions() {
-        if (filterOptions.applied) {
-            var iter = drawables.iterator();
-            while (iter.hasNext()) {
-                var drawable = iter.next();
-                
-                if (!filterOptions.regularExpression) {
-                    if (!filterOptions.name.equals("") && !drawable.name.contains(filterOptions.name.toLowerCase(Locale.ROOT))) {
-                        iter.remove();
-                        continue;
-                    }
-                } else {
-                    if (!drawable.name.matches(filterOptions.name)) {
-                        iter.remove();
-                    }
+        var iter = drawables.iterator();
+        while (iter.hasNext()) {
+            var drawable = iter.next();
+            
+            if (!filterOptions.regularExpression) {
+                if (!filterOptions.name.equals("") && !drawable.name.contains(filterOptions.name.toLowerCase(Locale.ROOT))) {
+                    iter.remove();
+                    continue;
                 }
-                
-                if (!filterOptions.custom) {
-                    if (drawable.type == DrawableType.CUSTOM) {
-                        iter.remove();
-                        continue;
-                    }
+            } else {
+                if (!drawable.name.matches(filterOptions.name)) {
+                    iter.remove();
                 }
-                
-                if (!filterOptions.ninePatch) {
-                    if (drawable.type == DrawableType.NINE_PATCH) {
-                        iter.remove();
-                        continue;
-                    }
+            }
+            
+            if (!filterOptions.custom) {
+                if (drawable.type == DrawableType.CUSTOM) {
+                    iter.remove();
+                    continue;
                 }
-                
-                if (!filterOptions.texture) {
-                    if (drawable.type == DrawableType.TEXTURE) {
-                        iter.remove();
-                        continue;
-                    }
+            }
+            
+            if (!filterOptions.ninePatch) {
+                if (drawable.type == DrawableType.NINE_PATCH) {
+                    iter.remove();
+                    continue;
                 }
-                
-                if (!filterOptions.tiled) {
-                    if (drawable.type == DrawableType.TILED) {
-                        iter.remove();
-                        continue;
-                    }
+            }
+            
+            if (!filterOptions.texture) {
+                if (drawable.type == DrawableType.TEXTURE) {
+                    iter.remove();
+                    continue;
                 }
-                
-                if (!filterOptions.tinted) {
-                    if (drawable.type == DrawableType.TINTED || drawable.type == DrawableType.TINTED_FROM_COLOR_DATA) {
-                        iter.remove();
-                        continue;
-                    }
+            }
+            
+            if (!filterOptions.tiled) {
+                if (drawable.type == DrawableType.TILED) {
+                    iter.remove();
+                    continue;
                 }
-                
-                if (!filterOptions.tenPatch) {
-                    if (drawable.type == DrawableType.TENPATCH) {
-                        iter.remove();
-                        continue;
-                    }
+            }
+            
+            if (!filterOptions.tinted) {
+                if (drawable.type == DrawableType.TINTED || drawable.type == DrawableType.TINTED_FROM_COLOR_DATA) {
+                    iter.remove();
+                    continue;
+                }
+            }
+            
+            if (!filterOptions.tenPatch) {
+                if (drawable.type == DrawableType.TENPATCH) {
+                    iter.remove();
+                    continue;
+                }
+            }
+            
+            if (!filterOptions.hidden) {
+                if (drawable.hidden) {
+                    iter.remove();
                 }
             }
         }
@@ -2121,8 +2108,8 @@ public class DialogDrawables extends Dialog {
         public boolean tiled = true;
         public boolean custom = true;
         public boolean tenPatch = true;
+        public boolean hidden = false;
         public boolean regularExpression = false;
-        public boolean applied = false;
         public String name = "";
 
         void set(FilterOptions filterOptions) {
@@ -2133,8 +2120,8 @@ public class DialogDrawables extends Dialog {
             custom = filterOptions.custom;
             tenPatch = filterOptions.tenPatch;
             regularExpression = filterOptions.regularExpression;
-            applied = filterOptions.applied;
             name = filterOptions.name;
+            hidden = filterOptions.hidden;
         }
     }
     
@@ -2160,7 +2147,6 @@ public class DialogDrawables extends Dialog {
 
                 var filterOptions = dialog.filterOptions;
                 filterOptions.regularExpression = false;
-                filterOptions.applied = true;
                 //backspace
                 if (character == 8) {
                     if (name.length() > 0) {

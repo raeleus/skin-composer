@@ -54,6 +54,7 @@ public class DrawableData {
     public boolean customized;
     public DialogTenPatch.TenPatchData tenPatchData;
     public DrawableType type;
+    public boolean hidden;
 
     public DrawableData(FileHandle file) {
         this.file = file;
@@ -103,7 +104,8 @@ public class DrawableData {
             if (tenPatchData == null) tenPatchData = new DialogTenPatch.TenPatchData();
             this.tenPatchData.set(drawableData.tenPatchData);
         }
-        this.type = type;
+        this.type = drawableData.type;
+        this.hidden = drawableData.hidden;
     }
 
     @Override

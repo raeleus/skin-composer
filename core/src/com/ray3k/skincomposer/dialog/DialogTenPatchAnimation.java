@@ -830,7 +830,6 @@ public class DialogTenPatchAnimation extends Dialog {
         dialog.setShowing9patchButton(false);
         dialog.setShowingOptions(false);
         var filterOptions = new DialogDrawables.FilterOptions();
-        filterOptions.applied = true;
         filterOptions.texture = true;
         filterOptions.ninePatch = true;
         filterOptions.custom = false;

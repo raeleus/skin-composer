@@ -1,7 +1,8 @@
 ### Skin Composer Version 35 ###
 
 * Added Scene Composer to generate basic GUI's with a visual editor.
-* Cleaned up Drawables Dialog. Popups for Drawable settings and labels describing what type of Drawable it is. 
+* Cleaned up Drawables Dialog. Popups for Drawable settings and labels describing what type of Drawable it is.
+* Drawables can be hidden in the Drawables dialog to prevent them from being shown with the default filter. They can be unhidden by deactivating the filter and deselcting "hidden". 
 
 ### Skin Composer Version 34 ###
 **Please use TenPatch 5.0.0 with your projects to enable TenPatch functionality:** https://github.com/raeleus/TenPatch

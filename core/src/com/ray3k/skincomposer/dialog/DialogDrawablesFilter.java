@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.dialog.DialogDrawables.FilterOptions;
 
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -40,30 +41,36 @@ import java.util.regex.PatternSyntaxException;
 public class DialogDrawablesFilter extends Dialog {
     private Skin skin;
     private Main main;
-    private DialogDrawables.FilterOptions filterOptions, appliedFilterOptions;
+    private DialogDrawables.FilterOptions filterOptions, appliedFilterOptions, defaultFilterOptions;
     
     public static enum Selection {
-        APPLY, DISABLE, CANCEL
+        APPLY, RESET, CANCEL
     }
 
     public DialogDrawablesFilter(DialogDrawables.FilterOptions filterOptions, Main main) {
         super("", main.getSkin(), "dialog");
         this.main = main;
         this.skin = main.getSkin();
-        this.filterOptions = new DialogDrawables.FilterOptions();
+        this.filterOptions = new FilterOptions();
+        defaultFilterOptions = new FilterOptions();
         appliedFilterOptions = filterOptions;
         this.filterOptions.set(filterOptions);
         
+        populate();
+    }
+    
+    private void populate() {
         var table = getContentTable();
+        table.clearChildren();
         table.pad(10);
-        
+    
         var label = new Label("Filter by type:", skin);
         table.add(label);
-        
+    
         table.row();
         var subTable = new Table();
         table.add(subTable);
-        
+    
         subTable.defaults().space(10).align(Align.left);
         var checkBox = new CheckBox("Texture", skin);
         checkBox.setChecked(this.filterOptions.texture);
@@ -75,7 +82,7 @@ public class DialogDrawablesFilter extends Dialog {
                 DialogDrawablesFilter.this.filterOptions.texture = ((CheckBox) actor).isChecked();
             }
         });
-        
+    
         checkBox = new CheckBox("NinePatch", skin);
         checkBox.setChecked(this.filterOptions.ninePatch);
         subTable.add(checkBox);
@@ -86,7 +93,7 @@ public class DialogDrawablesFilter extends Dialog {
                 DialogDrawablesFilter.this.filterOptions.ninePatch = ((CheckBox) actor).isChecked();
             }
         });
-        
+    
         subTable.row();
         checkBox = new CheckBox("Tinted", skin);
         checkBox.setChecked(this.filterOptions.tinted);
@@ -98,7 +105,7 @@ public class DialogDrawablesFilter extends Dialog {
                 DialogDrawablesFilter.this.filterOptions.tinted = ((CheckBox) actor).isChecked();
             }
         });
-        
+    
         checkBox = new CheckBox("Tiled", skin);
         checkBox.setChecked(this.filterOptions.tiled);
         subTable.add(checkBox);
@@ -109,7 +116,7 @@ public class DialogDrawablesFilter extends Dialog {
                 DialogDrawablesFilter.this.filterOptions.tiled = ((CheckBox) actor).isChecked();
             }
         });
-        
+    
         subTable.row();
         checkBox = new CheckBox("Custom", skin);
         checkBox.setChecked(this.filterOptions.custom);
@@ -119,6 +126,18 @@ public class DialogDrawablesFilter extends Dialog {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 DialogDrawablesFilter.this.filterOptions.custom = ((CheckBox) actor).isChecked();
+            }
+        });
+    
+        subTable.row();
+        checkBox = new CheckBox("Hidden", skin);
+        checkBox.setChecked(this.filterOptions.hidden);
+        subTable.add(checkBox);
+        checkBox.addListener(main.getHandListener());
+        checkBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                DialogDrawablesFilter.this.filterOptions.hidden = ((CheckBox) actor).isChecked();
             }
         });
     
@@ -132,15 +151,15 @@ public class DialogDrawablesFilter extends Dialog {
                 DialogDrawablesFilter.this.filterOptions.tenPatch = ((CheckBox) actor).isChecked();
             }
         });
-        
+    
         table.row();
         var image = new Image(skin, "welcome-separator");
         table.add(image).growX();
-        
+    
         table.row();
         label = new Label("Filter by name:", skin);
         table.add(label).padTop(10);
-        
+    
         table.row();
         checkBox = new CheckBox("Use regular expression", skin);
         checkBox.setName("regular-expression");
@@ -154,7 +173,7 @@ public class DialogDrawablesFilter extends Dialog {
                 updateApplyButton();
             }
         });
-        
+    
         table.row();
         var textField = new TextField("", skin);
         textField.setName("text");
@@ -168,22 +187,22 @@ public class DialogDrawablesFilter extends Dialog {
                 updateApplyButton();
             }
         });
-        
+    
         getButtonTable().pad(10);
         getButtonTable().defaults().space(5);
         var textButton = new TextButton("Apply", skin);
         textButton.setName("apply");
         button(textButton, Selection.APPLY);
         textButton.addListener(main.getHandListener());
-        
-        textButton = new TextButton("Disable", skin);
-        button(textButton, Selection.DISABLE);
+    
+        textButton = new TextButton("Reset", skin);
+        button(textButton, Selection.RESET);
         textButton.addListener(main.getHandListener());
-        
+    
         textButton = new TextButton("Cancel", skin);
         button(textButton, Selection.CANCEL);
         textButton.addListener(main.getHandListener());
-        
+    
         key(Keys.ENTER, Selection.APPLY).key(Keys.ESCAPE, Selection.CANCEL);
         updateApplyButton();
     }
@@ -223,10 +242,11 @@ public class DialogDrawablesFilter extends Dialog {
         switch ((Selection) object) {
             case APPLY:
                 appliedFilterOptions.set(filterOptions);
-                appliedFilterOptions.applied = true;
                 break;
-            case DISABLE:
-                appliedFilterOptions.applied = false;
+            case RESET:
+                filterOptions.set(defaultFilterOptions);
+                populate();
+                appliedFilterOptions.set(defaultFilterOptions);
                 break;
             case CANCEL:
                 break;
@@ -248,7 +268,7 @@ public class DialogDrawablesFilter extends Dialog {
                     case APPLY:
                         applied();
                         break;
-                    case DISABLE:
+                    case RESET:
                         disabled();
                         break;
                     case CANCEL:
