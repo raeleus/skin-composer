@@ -35,10 +35,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap.Values;
@@ -465,6 +462,13 @@ public class DialogDrawables extends Dialog {
                 subTable.add(button).right().expandX();
                 button.addListener(main.getHandListener());
                 button.addListener(new MoreClickListener(drawable));
+                //prevent click from activating parent button.
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        event.setBubbles(false);
+                    }
+                });
             }
         
             //preview
@@ -765,6 +769,12 @@ public class DialogDrawables extends Dialog {
                 }
             });
             button.addListener(main.getHandListener());
+        }
+    
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            super.clicked(event, x, y);
+            event.setBubbles(false);
         }
     
         @Override
