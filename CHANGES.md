@@ -1,6 +1,7 @@
 ### Skin Composer Version 35 ###
 
 * Added Scene Composer to generate basic GUI's with a visual editor.
+* Added submenu controls in dialogs to clean up interface.
 * Cleaned up Drawables Dialog. Popups for Drawable settings and labels describing what type of Drawable it is.
 * Drawables can be hidden in the Drawables dialog to prevent them from being shown with the default filter. They can be unhidden by deactivating the filter and deselcting "hidden".
 * Minor UI Tweaks and bug fixes. 

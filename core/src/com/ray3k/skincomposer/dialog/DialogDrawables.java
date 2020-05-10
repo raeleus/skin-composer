@@ -226,56 +226,10 @@ public class DialogDrawables extends Dialog {
         sortSelectBox.getList().addListener(main.getHandListener());
         table.add(sortSelectBox);
         
-        TextButton textButton = new TextButton("Add", getSkin(), "new");
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                newDrawableDialog();
-            }
-        });
-        textButton.addListener(main.getHandListener());
+        TextButton textButton = new TextButton("Add...", getSkin());
         table.add(textButton);
-        
-        if (showing9patchButton) {
-            textButton = new TextButton("Custom", getSkin(), "new");
-            textButton.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                    customDrawableDialog();
-                }
-            });
-            textButton.addListener(main.getHandListener());
-            table.add(textButton);
-        }
-        
-        if (showing9patchButton) {
-            textButton = new TextButton("Create 9-Patch", getSkin(), "new");
-            textButton.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                    main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
-                    main.getDialogFactory().showDialog9Patch(main.getAtlasData().getDrawablePairs(), new Dialog9Patch.Dialog9PatchListener() {
-                        @Override
-                        public void fileSaved(FileHandle fileHandle) {
-                            if (fileHandle.exists()) {
-                                drawablesSelected(new Array<>(new FileHandle[] {fileHandle}));
-                                main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
-                            }
-                        }
-
-                        @Override
-                        public void cancelled() {
-                            main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
-                        }
-                    });
-                }
-            });
-            textButton.addListener(main.getHandListener());
-            table.add(textButton);
-        }
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new AddListener());
         
         table.add(new Label("Zoom:", getSkin())).right().expandX();
         zoomSlider = new Slider(0, 4, 1, false, getSkin());
@@ -326,6 +280,83 @@ public class DialogDrawables extends Dialog {
                 return false;
             }
         });
+    }
+    
+    public class AddListener extends PopTableClickListener {
+        public AddListener() {
+            super(getSkin(), "more");
+            
+            populate();
+        }
+        
+        private void populate() {
+            var table = getPopTable();
+            table.clearChildren();
+    
+            table.pad(10);
+            table.defaults().space(10).fillX();
+            var hideListener = new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    table.hide();
+                }
+            };
+            
+            var textButton = new TextButton("Image File", getSkin(), "new");
+            table.add(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(hideListener);
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                    newDrawableDialog();
+                }
+            });
+    
+            if (showing9patchButton) {
+                table.row();
+                textButton = new TextButton("Custom Placeholder", getSkin(), "new");
+                table.add(textButton);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(hideListener);
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                        customDrawableDialog();
+                    }
+                });
+    
+                table.row();
+                textButton = new TextButton("Create 9-Patch", getSkin(), "new");
+                table.add(textButton);
+                textButton.addListener(main.getHandListener());
+                textButton.addListener(hideListener);
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+                        main.getDialogFactory().showDialog9Patch(main.getAtlasData().getDrawablePairs(),
+                                new Dialog9Patch.Dialog9PatchListener() {
+                                    @Override
+                                    public void fileSaved(FileHandle fileHandle) {
+                                        if (fileHandle.exists()) {
+                                            drawablesSelected(new Array<>(new FileHandle[]{fileHandle}));
+                                            main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+                                        }
+                                    }
+                            
+                                    @Override
+                                    public void cancelled() {
+                                        main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+                                    }
+                                });
+                    }
+                });
+            }
+        }
     }
 
     @Override
