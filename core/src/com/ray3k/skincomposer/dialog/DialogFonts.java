@@ -43,7 +43,9 @@ import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.UndoableManager.CustomFontUndoable;
 import com.ray3k.skincomposer.UndoableManager.FontUndoable;
 import com.ray3k.skincomposer.data.*;
+import com.ray3k.skincomposer.dialog.DialogDrawables.AddListener;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.stripe.PopTableClickListener;
 
 import java.io.File;
 import java.util.Iterator;
@@ -159,50 +161,11 @@ public class DialogFonts extends Dialog {
         selectBox.addListener(main.getHandListener());
         selectBox.getList().addListener(main.getHandListener());
         table.add(selectBox);
-
-        TextButton imageButton = new TextButton("Open FNT", getSkin(), "new");
-        imageButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                newFontDialog();
-            }
-        });
-        imageButton.addListener(main.getHandListener());
-        table.add(imageButton).expandX();
-        
-        imageButton = new TextButton("Create FNT", getSkin(), "new");
-        imageButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                newBitmapFontDialog();
-            }
-        });
-        imageButton.addListener(main.getHandListener());
-        table.add(imageButton).expandX();
-        
-        imageButton = new TextButton("FreeType Font", getSkin(), "new");
-        imageButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                newFreeTypeFontDialog();
-            }
-        });
-        imageButton.addListener(main.getHandListener());
-        table.add(imageButton).expandX();
-        
-        imageButton = new TextButton("Create from Image", getSkin(), "new");
-        imageButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                newImageFontDialog();
-            }
-        });
-        imageButton.addListener(main.getHandListener());
-        table.add(imageButton).expandX();
+    
+        TextButton textButton = new TextButton("Add...", getSkin());
+        table.add(textButton);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new AddListener());
         
         getContentTable().add(table).expandX().left();
         getContentTable().row();
@@ -227,6 +190,75 @@ public class DialogFonts extends Dialog {
         scrollPane = new ScrollPane(table, getSkin());
         scrollPane.setFadeScrollBars(false);
         getContentTable().add(scrollPane).grow();
+    }
+    
+    public class AddListener extends PopTableClickListener {
+        public AddListener() {
+            super(getSkin(), "more");
+            
+            populate();
+        }
+        
+        private void populate() {
+            var table = getPopTable();
+            table.clearChildren();
+            
+            table.pad(10);
+            table.defaults().space(10).fillX();
+            var hideListener = new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    table.hide();
+                }
+            };
+    
+            var imageButton = new TextButton("Open FNT", getSkin(), "new");
+            table.add(imageButton).expandX();
+            imageButton.addListener(main.getHandListener());
+            imageButton.addListener(hideListener);
+            imageButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                    newFontDialog();
+                }
+            });
+    
+            table.row();
+            imageButton = new TextButton("Create FNT", getSkin(), "new");
+            imageButton.addListener(hideListener);
+            imageButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                    newBitmapFontDialog();
+                }
+            });
+            imageButton.addListener(main.getHandListener());
+            table.add(imageButton).expandX();
+    
+            table.row();
+            imageButton = new TextButton("FreeType Font", getSkin(), "new");
+            table.add(imageButton);
+            imageButton.addListener(main.getHandListener());
+            imageButton.addListener(hideListener);
+            imageButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                    newFreeTypeFontDialog();
+                }
+            });
+    
+            table.row();
+            imageButton = new TextButton("Create from Image", getSkin(), "new");
+            table.add(imageButton);
+            imageButton.addListener(main.getHandListener());
+            imageButton.addListener(hideListener);
+            imageButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                    newImageFontDialog();
+                }
+            });
+        }
     }
 
     @Override
