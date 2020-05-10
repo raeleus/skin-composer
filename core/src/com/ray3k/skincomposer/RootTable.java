@@ -1240,7 +1240,7 @@ public class RootTable extends Table {
 
                     t.row();
                     t.add(new Label("Maximum: ", getSkin())).right();
-                    Spinner maximumSpinner = new Spinner(100.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, getSkin());
+                    Spinner maximumSpinner = new Spinner(10f, 1.0f, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     maximumSpinner.getTextField().setFocusTraversal(false);
                     maximumSpinner.getTextField().addListener(main.getIbeamListener());
                     maximumSpinner.getButtonMinus().addListener(main.getHandListener());
