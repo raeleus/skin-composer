@@ -873,8 +873,9 @@ public class DialogFactory {
                                     main.getProjectData().load(file);
                                     Array<DrawableData> drawableErrors = main.getProjectData().verifyDrawablePaths();
                                     Array<FontData> fontErrors = main.getProjectData().verifyFontPaths();
-                                    if (drawableErrors.size > 0 || fontErrors.size > 0) {
-                                        main.getDialogFactory().showDialogPathErrors(drawableErrors, fontErrors);
+                                    var freeTypeFontErrors = main.getProjectData().verifyFreeTypeFontPaths();
+                                    if (drawableErrors.size > 0 || fontErrors.size > 0 || freeTypeFontErrors.size > 0) {
+                                        main.getDialogFactory().showDialogPathErrors(drawableErrors, fontErrors, freeTypeFontErrors);
                                     }
     
                                     if (main.getProjectData().checkForInvalidMinWidthHeight()) {
@@ -1016,8 +1017,8 @@ public class DialogFactory {
         dialog.show(main.getStage());
     }
     
-    public void showDialogPathErrors(Array<DrawableData> drawableErrors, Array<FontData> fontErrors) {
-        DialogPathErrors dialog = new DialogPathErrors(main, main.getSkin(), "dialog", drawableErrors, fontErrors);
+    public void showDialogPathErrors(Array<DrawableData> drawableErrors, Array<FontData> fontErrors, Array<FreeTypeFontData> freeTypeFontErrors) {
+        DialogPathErrors dialog = new DialogPathErrors(main, main.getSkin(), "dialog", drawableErrors, fontErrors, freeTypeFontErrors);
         dialog.show(main.getStage());
     }
     

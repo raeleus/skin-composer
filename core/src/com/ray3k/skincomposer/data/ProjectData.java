@@ -507,6 +507,32 @@ public class ProjectData implements Json.Serializable {
         return errors;
     }
     
+    public Array<FreeTypeFontData> verifyFreeTypeFontPaths() {
+        Array<FreeTypeFontData> errors = new Array<>();
+        
+        if (!areResourcesRelative()) {
+            for (var font : jsonData.getFreeTypeFonts()) {
+                if (font.file == null || !font.file.exists()) {
+                    errors.add(font);
+                }
+            }
+        } else {
+            FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
+            
+            for (var font : jsonData.getFreeTypeFonts()) {
+                if (font.file == null) {
+                    errors.add(font);
+                } else {
+                    FileHandle localFile = targetFolder.child(font.file.name());
+                    if (!localFile.exists()) {
+                        errors.add(font);
+                    }
+                }
+            }
+        }
+        return errors;
+    }
+    
     private void correctFilePaths() {
         FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
         

@@ -94,7 +94,7 @@ public class JsonData implements Json.Serializable {
         colors.clear();
         fonts.clear();
         for (FreeTypeFontData font : freeTypeFonts) {
-            font.bitmapFont.dispose();
+            if (font.bitmapFont != null) font.bitmapFont.dispose();
         }
         freeTypeFonts.clear();
         initializeClassStyleMap();

@@ -118,7 +118,7 @@ public class FreeTypeFontData implements Json.Serializable {
                 generator.dispose();
             }
         } else {
-            if (file == null) return;
+            if (file == null || !file.exists()) return;
             FreeTypeFontGenerator generator = new FreeTypeFontGenerator(file);
             FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 

@@ -37,6 +37,7 @@ import com.ray3k.skincomposer.DesktopWorker;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.FontData;
+import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.utils.Utils;
 
 import java.io.File;
@@ -44,18 +45,20 @@ import java.io.File;
 public class DialogPathErrors extends Dialog {
     private Array<DrawableData> foundDrawables;
     private Array<FontData> foundFonts;
+    private Array<FreeTypeFontData> foundFreeTypeFonts;
     private Table dataTable;
     private ScrollPane scrollPane;
     private Main main;
     private TextButton applyButton;
     
-    public DialogPathErrors(Main main, Skin skin, String windowStyleName, Array<DrawableData> drawables, Array<FontData> fonts) {
+    public DialogPathErrors(Main main, Skin skin, String windowStyleName, Array<DrawableData> drawables, Array<FontData> fonts, Array<FreeTypeFontData> freeTypeFonts) {
         super("", skin, windowStyleName);
         
         this.main = main;
     
         foundDrawables = new Array<>();
         foundFonts = new Array<>();
+        foundFreeTypeFonts = new Array<>();
         
         setFillParent(true);
         
@@ -79,7 +82,7 @@ public class DialogPathErrors extends Dialog {
         scrollPane.setFadeScrollBars(false);
         table.add(scrollPane).grow();
         
-        resetDrawableTable(main, skin, drawables, fonts);
+        resetDrawableTable(main, skin, drawables, fonts, freeTypeFonts);
         
         button("Apply", true);
         applyButton = (TextButton) getButtonTable().getCells().first().getActor();
@@ -94,7 +97,7 @@ public class DialogPathErrors extends Dialog {
         table.setWidth(200);
     }
     
-    private void resetDrawableTable(Main main, Skin skin, Array<DrawableData> drawables, Array<FontData> fonts) {
+    private void resetDrawableTable(Main main, Skin skin, Array<DrawableData> drawables, Array<FontData> fonts, Array<FreeTypeFontData> freeTypeFonts) {
         dataTable.clear();
         
         if (drawables.size > 0) {
@@ -147,8 +150,8 @@ public class DialogPathErrors extends Dialog {
                             if (!foundDrawables.contains(drawable, true)) {
                                 foundDrawables.add(drawable);
                             }
-                            resolveAssetsFromFolder(fileHandle.parent(), drawables, fonts);
-                            resetDrawableTable(main, skin, drawables, fonts);
+                            resolveAssetsFromFolder(fileHandle.parent(), drawables, fonts, freeTypeFonts);
+                            resetDrawableTable(main, skin, drawables, fonts, freeTypeFonts);
                         }
                     }
                 });
@@ -222,8 +225,8 @@ public class DialogPathErrors extends Dialog {
                             if (!foundFonts.contains(font, true)) {
                                 foundFonts.add(font);
                             }
-                            resolveAssetsFromFolder(fileHandle.parent(), drawables, fonts);
-                            resetDrawableTable(main, skin, drawables, fonts);
+                            resolveAssetsFromFolder(fileHandle.parent(), drawables, fonts, freeTypeFonts);
+                            resetDrawableTable(main, skin, drawables, fonts, freeTypeFonts);
                         }
                     }
                 });
@@ -243,12 +246,87 @@ public class DialogPathErrors extends Dialog {
                 dataTable.add(image).colspan(4).pad(5.0f).padLeft(0.0f).padRight(0.0f).growX();
             }
         }
+    
+        if (freeTypeFonts.size > 0) {
+            dataTable.row();
+            dataTable.defaults().padTop(20.0f);
+            Label label = new Label("FreeTypeFont Name", skin, "black");
+            dataTable.add(label);
+        
+            label = new Label("Path", skin, "black");
+            dataTable.add(label);
+        
+            dataTable.add();
+        
+            label = new Label("Found?", skin, "black");
+            dataTable.add(label);
+        
+            dataTable.defaults().reset();
+            dataTable.row();
+            Image image = new Image(skin, "welcome-separator");
+            dataTable.add(image).colspan(4).pad(5.0f).padLeft(0.0f).padRight(0.0f).growX();
+        
+        
+            for (var font : freeTypeFonts) {
+                dataTable.row();
+                label = new Label(font.name, skin);
+                dataTable.add(label);
+            
+                label = new Label(font.file.path(), skin);
+                label.setWrap(true);
+                label.setAlignment(Align.left);
+                dataTable.add(label).growX();
+            
+                TextButton textButton = new TextButton("browse...", skin);
+                textButton.addListener(main.getHandListener());
+                dataTable.add(textButton);
+            
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event,
+                                        Actor actor) {
+                        DesktopWorker desktopWorker = main.getDesktopWorker();
+                        String[] filterPatterns = null;
+                        if (!Utils.isMac()) {
+                            filterPatterns = new String[] {"*.ttf"};
+                        }
+                    
+                        var defaultPath = font.file.parent().exists() ? font.file.parent().path() + "/": "";
+                    
+                        File file = desktopWorker.openDialog("Locate " + font.file.name() + "...", defaultPath, filterPatterns, "TTF files");
+                        if (file != null) {
+                            FileHandle fileHandle = new FileHandle(file);
+                            font.file = fileHandle;
+                            if (!foundFreeTypeFonts.contains(font, true)) {
+                                foundFreeTypeFonts.add(font);
+                            }
+                            resolveAssetsFromFolder(fileHandle.parent(), drawables, fonts, freeTypeFonts);
+                            resetDrawableTable(main, skin, drawables, fonts, freeTypeFonts);
+                        }
+                    }
+                });
+            
+                if (foundFreeTypeFonts.contains(font, true)) {
+                    label = new Label("YES", skin, "white");
+                    label.setColor(Color.GREEN);
+                    dataTable.add(label);
+                } else {
+                    label = new Label("NO", skin, "white");
+                    label.setColor(Color.RED);
+                    dataTable.add(label);
+                }
+            
+                dataTable.row();
+                image = new Image(skin, "welcome-separator");
+                dataTable.add(image).colspan(4).pad(5.0f).padLeft(0.0f).padRight(0.0f).growX();
+            }
+        }
         
         dataTable.row();
         dataTable.add().grow().colspan(4);
     }
 
-    private void resolveAssetsFromFolder(FileHandle folder, Array<DrawableData> drawables, Array<FontData> fonts) {
+    private void resolveAssetsFromFolder(FileHandle folder, Array<DrawableData> drawables, Array<FontData> fonts, Array<FreeTypeFontData> freeTypeFonts) {
         if (folder.isDirectory()) {
             for (DrawableData drawable : drawables) {
                 if (!foundDrawables.contains(drawable, true)) {
@@ -259,13 +337,23 @@ public class DialogPathErrors extends Dialog {
                     }
                 }
             }
-            
+    
             for (FontData font : fonts) {
                 if (!foundFonts.contains(font, true)) {
                     FileHandle file = folder.child(font.file.name());
                     if (file.exists()) {
                         font.file = file;
                         foundFonts.add(font);
+                    }
+                }
+            }
+    
+            for (var font : freeTypeFonts) {
+                if (!foundFreeTypeFonts.contains(font, true)) {
+                    FileHandle file = folder.child(font.file.name());
+                    if (file.exists()) {
+                        font.file = file;
+                        foundFreeTypeFonts.add(font);
                     }
                 }
             }
@@ -299,6 +387,9 @@ public class DialogPathErrors extends Dialog {
             main.getProjectData().setChangesSaved(false);
             main.getAtlasData().produceAtlas();
             main.getRootTable().populate();
+            for (FreeTypeFontData font : main.getJsonData().getFreeTypeFonts()) {
+                font.createBitmapFont(main);
+            }
         } else {
             main.getMainListener().newFile();
         }
