@@ -49,12 +49,4 @@ public class DesktopLauncher extends Launcher {
             }
         }
     }
-    
-    @Override
-    public void closeSplashScreen() {
-        var splash = SplashScreen.getSplashScreen();
-        if (splash != null) {
-            splash.close();
-        }
-    }
 }
