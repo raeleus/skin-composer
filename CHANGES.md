@@ -7,6 +7,7 @@
 * Drawables can be hidden in the Drawables dialog to prevent them from being shown with the default filter. They can be unhidden by deactivating the filter and deselcting "hidden".
 * Drawables filter is persisted between every use. Remember to click the filter button and choose "reset" to disable the filter.
 * Background color is automatically set in FreeTypeFont dialog.
+* Red marquees make it more obvious that required values are missing in various dialogs. 
 * Fixed crash when adding a custom placeholder drawable to a project that is set to keep resources relative.
 * Fixed Tenpatch dialog not displaying correct region in preview when removing all animation frames.
 * Fixed crash with FreeTypeFonts when they are missing from the project.
