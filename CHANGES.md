@@ -11,6 +11,7 @@
 * Fixed crash with FreeTypeFonts when they are missing from the project.
 * Default maximum for ProgressBar previews is 10 instead of 100.
 * Corrected terminology in 9patch editor.
+* Fixed crash when typing "[]" into text fields.
 * Minor UI Tweaks and bug fixes. 
 
 ### Skin Composer Version 34 ###
