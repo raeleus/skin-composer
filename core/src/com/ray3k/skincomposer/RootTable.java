@@ -2305,12 +2305,14 @@ public class RootTable extends Table {
                                 TextButton okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
                                 okButton.setDisabled(true);
                                 okButton.addListener(main.getHandListener());
+                                widthField.addListener(main.getIbeamListener());
                                 widthField.addListener(new ChangeListener() {
                                     @Override
                                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                                         okButton.setDisabled(!widthField.getText().matches("^\\d+$") || !heightField.getText().matches("^\\d+$"));
                                     }
                                 });
+                                heightField.addListener(main.getIbeamListener());
                                 heightField.addListener(new ChangeListener() {
                                     @Override
                                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
