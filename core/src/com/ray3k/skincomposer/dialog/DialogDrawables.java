@@ -555,13 +555,14 @@ public class DialogDrawables extends Dialog {
             var root = getPopTable();
     
             root.pad(10);
-            root.defaults().expandX().left();
+            root.defaults().growX().left();
             
             switch (drawable.type) {
                 case TEXTURE:
                 case NINE_PATCH:
                     //color wheel
                     var button = new ImageTextButton("New Tinted Drawable", getSkin(), "colorwheel");
+                    button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
                     button.addListener(main.getHandListener());
@@ -575,6 +576,7 @@ public class DialogDrawables extends Dialog {
     
                     //swatches
                     button = new ImageTextButton("New Tinted Drawable from Colors", getSkin(), "swatches");
+                    button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
                     button.addListener(main.getHandListener());
@@ -588,6 +590,7 @@ public class DialogDrawables extends Dialog {
     
                     //tiles button
                     button = new ImageTextButton("New Tiled Drawable", getSkin(), "tiles");
+                    button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
                     button.addListener(main.getHandListener());
@@ -610,6 +613,7 @@ public class DialogDrawables extends Dialog {
     
                     //tenpatch button
                     button = new ImageTextButton("New Tenpatch Drawable", getSkin(), "tenpatch");
+                    button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
                     button.addListener(main.getHandListener());
@@ -649,6 +653,7 @@ public class DialogDrawables extends Dialog {
                     
                     //settings
                     button = new ImageTextButton("Settings", getSkin(), "settings-small");
+                    button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
                     button.addListener(main.getHandListener());
@@ -668,6 +673,7 @@ public class DialogDrawables extends Dialog {
                 case TILED:
                     //duplicate
                     button = new ImageTextButton("Duplicate", getSkin(), "duplicate-small");
+                    button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
                     button.addListener(main.getHandListener());
@@ -698,6 +704,7 @@ public class DialogDrawables extends Dialog {
                     
                     //settings
                     button = new ImageTextButton("Settings", getSkin(), "settings-small");
+                    button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
                     button.addListener(main.getHandListener());
@@ -713,6 +720,7 @@ public class DialogDrawables extends Dialog {
                 case TINTED_FROM_COLOR_DATA:
                     //duplicate
                     button = new ImageTextButton("Duplicate", getSkin(), "duplicate-small");
+                    button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
                     button.addListener(main.getHandListener());
@@ -743,6 +751,7 @@ public class DialogDrawables extends Dialog {
                     
                     //settings
                     button = new ImageTextButton("Settings", getSkin(), "settings-small");
+                    button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
                     button.addListener(main.getHandListener());
@@ -757,6 +766,7 @@ public class DialogDrawables extends Dialog {
                 case CUSTOM:
                     //settings
                     button = new ImageTextButton("Rename", getSkin(), "settings-small");
+                    button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
                     button.addListener(main.getHandListener());
@@ -771,6 +781,7 @@ public class DialogDrawables extends Dialog {
                 case TENPATCH:
                     //settings
                     button = new ImageTextButton("Settings", getSkin(), "settings-small");
+                    button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
                     button.addListener(hideListener);
@@ -805,6 +816,7 @@ public class DialogDrawables extends Dialog {
     
                     //duplicate button for an existing ten patch
                     button = new ImageTextButton("Duplicate", getSkin(), "duplicate-small");
+                    button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
                     button.addListener(main.getHandListener());
@@ -838,6 +850,7 @@ public class DialogDrawables extends Dialog {
     
             //visible
             var button = new ImageTextButton("Visible", getSkin(), "visible");
+            button.getLabelCell().expandX().left();
             button.setProgrammaticChangeEvents(false);
             button.setChecked(drawable.hidden);
             root.add(button);
@@ -857,6 +870,7 @@ public class DialogDrawables extends Dialog {
             
             //delete
             button = new ImageTextButton("Delete", getSkin(), "delete-small");
+            button.getLabelCell().expandX().left();
             root.add(button);
             button.addListener(hideListener);
             button.addListener(new ChangeListener() {
