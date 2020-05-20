@@ -77,7 +77,7 @@ public class DialogDrawables extends Dialog {
     private Main main;
     private boolean showing9patchButton;
     private boolean showingOptions;
-    private FilterOptions filterOptions;
+    private static FilterOptions filterOptions = new FilterOptions();
     private FilterInputListener filterInputListener;
     
     public interface DialogDrawablesListener {
@@ -109,7 +109,6 @@ public class DialogDrawables extends Dialog {
         label.setColor(1, 1, 1, 0);
         table.add(label).bottom().right().expand().pad(50).padBottom(20);
         
-        filterOptions = new FilterOptions();
         filterInputListener = new FilterInputListener(this);
         addListener(filterInputListener);
         showing9patchButton = true;

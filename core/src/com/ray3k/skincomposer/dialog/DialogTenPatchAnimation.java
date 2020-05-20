@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.HandListener;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.dialog.DialogDrawables.FilterOptions;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
@@ -759,6 +760,9 @@ public class DialogTenPatchAnimation extends Dialog {
     }
     
     public void showRegionDialog() {
+        var filterOptions = new FilterOptions();
+        filterOptions.set(DialogDrawables.instance.getFilterOptions());
+        
         var dialog = main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
             @Override
             public void confirmed(DrawableData drawable, DialogDrawables dialog) {
@@ -814,29 +818,31 @@ public class DialogTenPatchAnimation extends Dialog {
                         addRegion(drawable);
                     }
                 }
+    
+                DialogDrawables.instance.setFilterOptions(filterOptions);
             }
         
             @Override
             public void emptied(DialogDrawables dialog) {
-            
+                DialogDrawables.instance.setFilterOptions(filterOptions);
             }
         
             @Override
             public void cancelled(DialogDrawables dialog) {
-            
+                DialogDrawables.instance.setFilterOptions(filterOptions);
             }
         }, null);
     
         dialog.setShowing9patchButton(false);
         dialog.setShowingOptions(false);
-        var filterOptions = new DialogDrawables.FilterOptions();
-        filterOptions.texture = true;
-        filterOptions.ninePatch = true;
-        filterOptions.custom = false;
-        filterOptions.tiled = false;
-        filterOptions.tinted = false;
-        filterOptions.tenPatch = false;
-        dialog.setFilterOptions(filterOptions);
+        var tempFilterOptions = new DialogDrawables.FilterOptions();
+        tempFilterOptions.texture = true;
+        tempFilterOptions.ninePatch = true;
+        tempFilterOptions.custom = false;
+        tempFilterOptions.tiled = false;
+        tempFilterOptions.tinted = false;
+        tempFilterOptions.tenPatch = false;
+        dialog.setFilterOptions(tempFilterOptions);
     }
     
     @Override
