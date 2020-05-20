@@ -265,7 +265,7 @@ public class Dialog9Patch extends Dialog {
             }
         });
 
-        var label = new Label("PADDING", getSkin());
+        var label = new Label("STRETCH REGION", getSkin());
         table.add(label);
         
         spinner = new Spinner(0, 1, true, Spinner.Orientation.HORIZONTAL_FLIPPED, getSkin(), "horizontal-reversed");
@@ -332,7 +332,7 @@ public class Dialog9Patch extends Dialog {
         group.setTransform(true);
         subTable.add(group).size(0).minHeight(100.0f);
 
-        label = new Label("PADDING", getSkin());
+        label = new Label("STRETCH REGION", getSkin());
         group.add(label);
         group.setOriginY(50.0f);
         group.rotateBy(90.0f);

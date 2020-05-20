@@ -10,6 +10,7 @@
 * Fixed Tenpatch dialog not displaying correct region in preview when removing all animation frames.
 * Fixed crash with FreeTypeFonts when they are missing from the project.
 * Default maximum for ProgressBar previews is 10 instead of 100.
+* Corrected terminology in 9patch editor.
 * Minor UI Tweaks and bug fixes. 
 
 ### Skin Composer Version 34 ###
