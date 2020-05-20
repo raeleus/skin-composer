@@ -12,6 +12,7 @@
 * Default maximum for ProgressBar previews is 10 instead of 100.
 * Corrected terminology in 9patch editor.
 * Fixed crash when typing "[]" into text fields.
+* Set "NO_MAXIMUM" on FreeTypeFontGenerators to allow FreeType fonts of any size.
 * Minor UI Tweaks and bug fixes. 
 
 ### Skin Composer Version 34 ###

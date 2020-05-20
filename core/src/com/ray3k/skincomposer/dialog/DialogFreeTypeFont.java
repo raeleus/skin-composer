@@ -59,7 +59,7 @@ public class DialogFreeTypeFont extends Dialog {
     private Table root;
     private Table buttons;
     private Mode mode;
-    public static enum Mode {
+    public enum Mode {
          NEW, EDIT
     }
     private FreeTypeFontData data;

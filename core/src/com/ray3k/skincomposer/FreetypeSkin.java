@@ -83,6 +83,7 @@ public class FreetypeSkin extends Skin {
                 parameter.minFilter = minFilter;
                 parameter.magFilter = magFilter;
                 FreeTypeFontGenerator generator = new FreeTypeFontGenerator(skinFile.parent().child(path));
+                generator.setMaxTextureSize(FreeTypeFontGenerator.NO_MAXIMUM);
                 BitmapFont font = generator.generateFont(parameter);
                 skin.add(jsonData.name, font);
                 if (parameter.incremental) {

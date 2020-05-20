@@ -114,12 +114,14 @@ public class FreeTypeFontData implements Json.Serializable {
             FileHandle previewFontPath = Main.appFolder.child("preview fonts/" + previewTTF + ".ttf");
             if (previewFontPath.exists()) {
                 FreeTypeFontGenerator generator = new FreeTypeFontGenerator(previewFontPath);
+                generator.setMaxTextureSize(FreeTypeFontGenerator.NO_MAXIMUM);
                 bitmapFont = generator.generateFont(parameter);
                 generator.dispose();
             }
         } else {
             if (file == null || !file.exists()) return;
             FreeTypeFontGenerator generator = new FreeTypeFontGenerator(file);
+            generator.setMaxTextureSize(FreeTypeFontGenerator.NO_MAXIMUM);
             FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 
             if (borderColor != null) for (ColorData colorData : main.getJsonData().getColors()) {
@@ -159,7 +161,7 @@ public class FreeTypeFontData implements Json.Serializable {
             parameter.size = size;
             parameter.spaceX = spaceX;
             parameter.spaceY = spaceY;
-
+            
             bitmapFont = generator.generateFont(parameter);
             generator.dispose();
         }
@@ -179,6 +181,7 @@ public class FreeTypeFontData implements Json.Serializable {
             FileHandle previewFontPath = Main.appFolder.child("preview fonts/" + previewTTF + ".ttf");
             if (previewFontPath.exists()) {
                 FreeTypeFontGenerator generator = new FreeTypeFontGenerator(previewFontPath);
+                generator.setMaxTextureSize(FreeTypeFontGenerator.NO_MAXIMUM);
                 bitmapFont = generator.generateFont(parameter);
                 generator.dispose();
             }
