@@ -3,11 +3,10 @@ plugins {
 }
 apply plugin: "java"
 
-mainClassName = 'com.ray3k.skincomposer.desktop.DesktopLauncher'
 sourceCompatibility = 1.11
 sourceSets.main.java.srcDirs = [ "src/" ]
 
-project.ext.mainClassName = "com.ray3k.skincomposer.desktop.DesktopLauncher"
+mainClassName = "com.ray3k.skincomposer.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets")
 
 task dist(type: Jar) {
