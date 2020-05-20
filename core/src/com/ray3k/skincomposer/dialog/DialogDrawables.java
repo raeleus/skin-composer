@@ -77,7 +77,7 @@ public class DialogDrawables extends Dialog {
     private Main main;
     private boolean showing9patchButton;
     private boolean showingOptions;
-    private static FilterOptions filterOptions = new FilterOptions();
+    public final static FilterOptions filterOptions = new FilterOptions();
     private FilterInputListener filterInputListener;
     
     public interface DialogDrawablesListener {
@@ -2204,7 +2204,7 @@ public class DialogDrawables extends Dialog {
     }
     
     public void setFilterOptions(FilterOptions filterOptions) {
-        this.filterOptions = filterOptions;
+        this.filterOptions.set(filterOptions);
         populate();
     }
     

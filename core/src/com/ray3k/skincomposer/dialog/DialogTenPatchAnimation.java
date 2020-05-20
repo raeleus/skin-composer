@@ -761,7 +761,7 @@ public class DialogTenPatchAnimation extends Dialog {
     
     public void showRegionDialog() {
         var filterOptions = new FilterOptions();
-        filterOptions.set(DialogDrawables.instance.getFilterOptions());
+        filterOptions.set(DialogDrawables.filterOptions);
         
         var dialog = main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
             @Override
@@ -819,17 +819,17 @@ public class DialogTenPatchAnimation extends Dialog {
                     }
                 }
     
-                DialogDrawables.instance.setFilterOptions(filterOptions);
+                DialogDrawables.filterOptions.set(filterOptions);
             }
         
             @Override
             public void emptied(DialogDrawables dialog) {
-                DialogDrawables.instance.setFilterOptions(filterOptions);
+                DialogDrawables.filterOptions.set(filterOptions);
             }
         
             @Override
             public void cancelled(DialogDrawables dialog) {
-                DialogDrawables.instance.setFilterOptions(filterOptions);
+                DialogDrawables.filterOptions.set(filterOptions);
             }
         }, null);
     
