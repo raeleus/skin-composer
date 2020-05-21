@@ -850,6 +850,14 @@ public class DialogSceneComposerModel {
             
             return returnValue;
         }
+        
+        public SimActor duplicate() {
+            var simActor = new SimActor();
+            
+            simActor.parent = parent;
+            
+            return parent;
+        }
     }
     
     public interface SimSingleChild {
@@ -892,6 +900,25 @@ public class DialogSceneComposerModel {
         public void removeChild(SimActor simActor) {
             children.removeValue(simActor, true);
         }
+    
+        @Override
+        public SimRootGroup duplicate() {
+            var simRootGroup = new SimRootGroup();
+
+            simRootGroup.parent = parent;
+            
+            for (var actor : children) {
+                simRootGroup.children.add(actor.duplicate());
+                simRootGroup.children.peek().parent = simRootGroup;
+            }
+    
+            simRootGroup.backgroundColor = backgroundColor;
+            simRootGroup.skinPath = skinPath;
+            simRootGroup.packageString = packageString;
+            simRootGroup.classString = classString;
+            
+            return simRootGroup;
+        }
     }
     
     public static class SimTable extends SimActor implements SimMultipleChildren {
@@ -905,6 +932,29 @@ public class DialogSceneComposerModel {
         public float padBottom;
         public int alignment = Align.center;
         public boolean fillParent;
+    
+        @Override
+        public SimTable duplicate() {
+            var simTable = new SimTable();
+            
+            for (var cell : cells) {
+                simTable.cells.add(cell.duplicate());
+                simTable.cells.peek().parent = simTable;
+            }
+            
+            simTable.parent = parent;
+            simTable.name = name;
+            simTable.background = background;
+            simTable.color = color;
+            simTable.padLeft = padLeft;
+            simTable.padRight = padRight;
+            simTable.padTop = padTop;
+            simTable.padBottom = padBottom;
+            simTable.alignment = alignment;
+            simTable.fillParent = fillParent;
+            
+            return simTable;
+        }
     
         @Override
         public String toString() {
@@ -985,6 +1035,45 @@ public class DialogSceneComposerModel {
         public int colSpan = 1;
     
         @Override
+        public SimCell duplicate() {
+            var simCell = new SimCell();
+            
+            simCell.parent = parent;
+            if (child != null) {
+                simCell.child = child.duplicate();
+                simCell.child.parent = simCell;
+            }
+            simCell.row = row;
+            simCell.column = column;
+            simCell.padLeft = padLeft;
+            simCell.padRight = padRight;
+            simCell.padTop = padTop;
+            simCell.padBottom = padBottom;
+            simCell.spaceLeft = spaceLeft;
+            simCell.spaceRight = spaceRight;
+            simCell.spaceTop = spaceTop;
+            simCell.spaceBottom = spaceBottom;
+            simCell.expandX = expandX;
+            simCell.expandY = expandY;
+            simCell.fillX = fillX;
+            simCell.fillY = fillY;
+            simCell.growX = growX;
+            simCell.growY = growY;
+            simCell.alignment = alignment;
+            simCell.minWidth = minWidth;
+            simCell.minHeight = minHeight;
+            simCell.maxWidth = maxWidth;
+            simCell.maxHeight = maxHeight;
+            simCell.preferredWidth = preferredWidth;
+            simCell.preferredHeight = preferredHeight;
+            simCell.uniformX = uniformX;
+            simCell.uniformY = uniformY;
+            simCell.colSpan = colSpan;
+            
+            return simCell;
+        }
+    
+        @Override
         public String toString() {
             return "Cell (" + column + "," + row + ")";
         }
@@ -1036,6 +1125,24 @@ public class DialogSceneComposerModel {
         public float padTop;
         public float padBottom;
     
+        @Override
+        public SimButton duplicate() {
+            var simButton = new SimButton();
+            
+            simButton.parent = parent;
+            simButton.name = name;
+            simButton.style = style;
+            simButton.checked = checked;
+            simButton.disabled = disabled;
+            simButton.color = color;
+            simButton.padLeft = padLeft;
+            simButton.padRight = padRight;
+            simButton.padTop = padTop;
+            simButton.padBottom = padBottom;
+            
+            return simButton;
+        }
+    
         public SimButton() {
             var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
             for (var style : styles) {
@@ -1085,6 +1192,25 @@ public class DialogSceneComposerModel {
         public float padBottom;
         public boolean checked;
     
+        @Override
+        public SimCheckBox duplicate() {
+            var simCheckBox = new SimCheckBox();
+            
+            simCheckBox.parent = parent;
+            simCheckBox.name = name;
+            simCheckBox.style = style;
+            simCheckBox.disabled = disabled;
+            simCheckBox.text = text;
+            simCheckBox.color = color;
+            simCheckBox.padLeft = padLeft;
+            simCheckBox.padRight = padRight;
+            simCheckBox.padTop = padTop;
+            simCheckBox.padBottom = padBottom;
+            simCheckBox.checked = checked;
+            
+            return simCheckBox;
+        }
+    
         public SimCheckBox() {
             var styles = Main.main.getJsonData().getClassStyleMap().get(CheckBox.class);
             for (var style : styles) {
@@ -1129,6 +1255,18 @@ public class DialogSceneComposerModel {
         public Scaling scaling = Scaling.stretch;
     
         @Override
+        public SimImage duplicate() {
+            var simImage = new SimImage();
+            
+            simImage.parent = parent;
+            simImage.name = name;
+            simImage.drawable = drawable;
+            simImage.scaling = scaling;
+            
+            return simImage;
+        }
+    
+        @Override
         public String toString() {
             return name == null ? "Image" : name + " (Image)";
         }
@@ -1150,6 +1288,24 @@ public class DialogSceneComposerModel {
         public float padRight;
         public float padTop;
         public float padBottom;
+    
+        @Override
+        public SimImageButton duplicate() {
+            var simImageButton = new SimImageButton();
+            
+            simImageButton.parent = parent;
+            simImageButton.name = name;
+            simImageButton.style = style;
+            simImageButton.checked = checked;
+            simImageButton.disabled = disabled;
+            simImageButton.color = color;
+            simImageButton.padLeft = padLeft;
+            simImageButton.padRight = padRight;
+            simImageButton.padTop = padTop;
+            simImageButton.padBottom = padBottom;
+            
+            return simImageButton;
+        }
     
         public SimImageButton() {
             var styles = Main.main.getJsonData().getClassStyleMap().get(ImageButton.class);
@@ -1192,6 +1348,25 @@ public class DialogSceneComposerModel {
         public float padTop;
         public float padBottom;
     
+        @Override
+        public SimImageTextButton duplicate() {
+            var simImageTextButton = new SimImageTextButton();
+            
+            simImageTextButton.parent = parent;
+            simImageTextButton.name = name;
+            simImageTextButton.text = text;
+            simImageTextButton.style = style;
+            simImageTextButton.checked = checked;
+            simImageTextButton.disabled = disabled;
+            simImageTextButton.color = color;
+            simImageTextButton.padLeft = padLeft;
+            simImageTextButton.padRight = padRight;
+            simImageTextButton.padTop = padTop;
+            simImageTextButton.padBottom = padBottom;
+            
+            return simImageTextButton;
+        }
+    
         public SimImageTextButton() {
             var styles = Main.main.getJsonData().getClassStyleMap().get(ImageTextButton.class);
             for (var style : styles) {
@@ -1231,6 +1406,23 @@ public class DialogSceneComposerModel {
         public String ellipsisString = "...";
         public boolean wrap;
         public ColorData color;
+    
+        @Override
+        public SimLabel duplicate() {
+            var simLabel = new SimLabel();
+            
+            simLabel.parent = parent;
+            simLabel.name = name;
+            simLabel.style = style;
+            simLabel.text = text;
+            simLabel.textAlignment = textAlignment;
+            simLabel.ellipsis = ellipsis;
+            simLabel.ellipsisString = ellipsisString;
+            simLabel.wrap = wrap;
+            simLabel.color = color;
+            
+            return simLabel;
+        }
     
         public SimLabel() {
             var styles = Main.main.getJsonData().getClassStyleMap().get(Label.class);
@@ -1272,6 +1464,18 @@ public class DialogSceneComposerModel {
         public String name;
         public StyleData style;
         public Array<String> list = new Array<>();
+    
+        @Override
+        public SimList duplicate() {
+            var simList = new SimList();
+            
+            simList.parent = parent;
+            simList.name = name;
+            simList.style = style;
+            simList.list.addAll(list);
+            
+            return simList;
+        }
     
         public SimList() {
             var styles = Main.main.getJsonData().getClassStyleMap().get(List.class);
@@ -1317,6 +1521,27 @@ public class DialogSceneComposerModel {
         public Interpol animateInterpolation = Interpol.LINEAR;
         public boolean round = true;
         public Interpol visualInterpolation = Interpol.LINEAR;
+    
+        @Override
+        public SimProgressBar duplicate() {
+            var simProgressBar = new SimProgressBar();
+            
+            simProgressBar.parent = parent;
+            simProgressBar.name = name;
+            simProgressBar.style = style;
+            simProgressBar.disabled = disabled;
+            simProgressBar.value = value;
+            simProgressBar.minimum = minimum;
+            simProgressBar.maximum = maximum;
+            simProgressBar.increment = increment;
+            simProgressBar.vertical = vertical;
+            simProgressBar.animationDuration = animationDuration;
+            simProgressBar.animateInterpolation = animateInterpolation;
+            simProgressBar.round = round;
+            simProgressBar.visualInterpolation = visualInterpolation;
+            
+            return simProgressBar;
+        }
     
         public SimProgressBar() {
             var styles = Main.main.getJsonData().getClassStyleMap().get(ProgressBar.class);
@@ -1369,6 +1594,23 @@ public class DialogSceneComposerModel {
         public int selected;
         public boolean scrollingDisabled;
     
+        @Override
+        public SimSelectBox duplicate() {
+            var simSelectBox = new SimSelectBox();
+            
+            simSelectBox.parent = parent;
+            simSelectBox.name = name;
+            simSelectBox.style = style;
+            simSelectBox.disabled = disabled;
+            simSelectBox.maxListCount = maxListCount;
+            simSelectBox.list.addAll(list);
+            simSelectBox.alignment = alignment;
+            simSelectBox.selected = selected;
+            simSelectBox.scrollingDisabled = scrollingDisabled;
+            
+            return simSelectBox;
+        }
+    
         public SimSelectBox() {
             var styles = Main.main.getJsonData().getClassStyleMap().get(SelectBox.class);
             for (var style : styles) {
@@ -1419,6 +1661,27 @@ public class DialogSceneComposerModel {
         public Interpol animateInterpolation = Interpol.LINEAR;
         public boolean round = true;
         public Interpol visualInterpolation = Interpol.LINEAR;
+    
+        @Override
+        public SimSlider duplicate() {
+            var simSlider = new SimSlider();
+            
+            simSlider.parent = parent;
+            simSlider.name = name;
+            simSlider.style = style;
+            simSlider.disabled = disabled;
+            simSlider.value = value;
+            simSlider.minimum = minimum;
+            simSlider.maximum = maximum;
+            simSlider.increment = increment;
+            simSlider.vertical = vertical;
+            simSlider.animationDuration = animationDuration;
+            simSlider.animateInterpolation = animateInterpolation;
+            simSlider.round = round;
+            simSlider.visualInterpolation = visualInterpolation;
+            
+            return simSlider;
+        }
     
         public SimSlider() {
             var styles = Main.main.getJsonData().getClassStyleMap().get(Slider.class);
@@ -1473,6 +1736,25 @@ public class DialogSceneComposerModel {
         public float padTop;
         public float padBottom;
     
+        @Override
+        public SimTextButton duplicate() {
+            var sim = new SimTextButton();
+            
+            sim.parent = parent;
+            sim.name = name;
+            sim.text = text;
+            sim.style = style;
+            sim.checked = checked;
+            sim.disabled = disabled;
+            sim.color = color;
+            sim.padLeft = padLeft;
+            sim.padRight = padRight;
+            sim.padTop = padTop;
+            sim.padBottom = padBottom;
+            
+            return sim;
+        }
+    
         public SimTextButton() {
             var styles = Main.main.getJsonData().getClassStyleMap().get(TextButton.class);
             for (var style : styles) {
@@ -1526,6 +1808,29 @@ public class DialogSceneComposerModel {
         public boolean focusTraversal = true;
         public int maxLength;
         public String messageText;
+    
+        @Override
+        public SimTextField duplicate() {
+            var simTextField = new SimTextField();
+            
+            simTextField.parent = parent;
+            simTextField.name = name;
+            simTextField.style = style;
+            simTextField.text = text;
+            simTextField.passwordCharacter = passwordCharacter;
+            simTextField.passwordMode = passwordMode;
+            simTextField.alignment = alignment;
+            simTextField.disabled = disabled;
+            simTextField.cursorPosition = cursorPosition;
+            simTextField.selectionStart = selectionStart;
+            simTextField.selectionEnd = selectionEnd;
+            simTextField.selectAll = selectAll;
+            simTextField.focusTraversal = focusTraversal;
+            simTextField.maxLength = maxLength;
+            simTextField.messageText = messageText;
+            
+            return simTextField;
+        }
     
         public SimTextField() {
             var styles = Main.main.getJsonData().getClassStyleMap().get(TextField.class);
@@ -1587,6 +1892,30 @@ public class DialogSceneComposerModel {
         public String messageText;
         public int preferredRows;
     
+        @Override
+        public SimTextArea duplicate() {
+            var simTextArea = new SimTextArea();
+            
+            simTextArea.parent = parent;
+            simTextArea.name = name;
+            simTextArea.style = style;
+            simTextArea.text = text;
+            simTextArea.passwordCharacter = passwordCharacter;
+            simTextArea.passwordMode = passwordMode;
+            simTextArea.alignment = alignment;
+            simTextArea.disabled = disabled;
+            simTextArea.cursorPosition = cursorPosition;
+            simTextArea.selectionStart = selectionStart;
+            simTextArea.selectionEnd = selectionEnd;
+            simTextArea.selectAll = selectAll;
+            simTextArea.focusTraversal = focusTraversal;
+            simTextArea.maxLength = maxLength;
+            simTextArea.messageText = messageText;
+            simTextArea.preferredRows = preferredRows;
+            
+            return simTextArea;
+        }
+    
         public SimTextArea() {
             var styles = Main.main.getJsonData().getClassStyleMap().get(TextField.class);
             for (var style : styles) {
@@ -1636,6 +1965,18 @@ public class DialogSceneComposerModel {
         public StyleData style;
         public float deadZone;
         public boolean resetOnTouchUp = true;
+    
+        @Override
+        public SimTouchPad duplicate() {
+            var simTouchPad = new SimTouchPad();
+            
+            simTouchPad.parent = parent;
+            simTouchPad.style = style;
+            simTouchPad.deadZone = deadZone;
+            simTouchPad.resetOnTouchUp = resetOnTouchUp;
+            
+            return simTouchPad;
+        }
     
         public SimTouchPad() {
             var styles = Main.main.getJsonData().getClassStyleMap().get(Touchpad.class);
@@ -1688,6 +2029,32 @@ public class DialogSceneComposerModel {
         public float padBottom;
         public SimActor child;
     
+        @Override
+        public SimContainer duplicate() {
+            var simContainer = new SimContainer();
+            simContainer.name = name;
+            simContainer.alignment = alignment;
+            simContainer.background = background;
+            simContainer.fillX = fillX;
+            simContainer.fillY = fillY;
+            simContainer.minWidth = minWidth;
+            simContainer.minHeight = minHeight;
+            simContainer.maxWidth = maxWidth;
+            simContainer.maxHeight = maxHeight;
+            simContainer.preferredWidth = preferredWidth;
+            simContainer.preferredHeight = preferredHeight;
+            simContainer.padLeft = padLeft;
+            simContainer.padRight = padRight;
+            simContainer.padTop = padTop;
+            simContainer.padBottom = padBottom;
+            if (child != null) {
+                simContainer.child = child.duplicate();
+                simContainer.child.parent = simContainer;
+            }
+            
+            return simContainer;
+        }
+    
         public SimContainer() {
         
         }
@@ -1737,6 +2104,33 @@ public class DialogSceneComposerModel {
         public boolean wrap;
         public float wrapSpace;
         public Array<SimActor> children = new Array<>();
+    
+        @Override
+        public SimHorizontalGroup duplicate() {
+            var simHorizontalGroup = new SimHorizontalGroup();
+            
+            simHorizontalGroup.parent = parent;
+            simHorizontalGroup.name = name;
+            simHorizontalGroup.alignment = alignment;
+            simHorizontalGroup.expand = expand;
+            simHorizontalGroup.fill = fill;
+            simHorizontalGroup.padLeft = padLeft;
+            simHorizontalGroup.padRight = padRight;
+            simHorizontalGroup.padTop = padTop;
+            simHorizontalGroup.padBottom = padBottom;
+            simHorizontalGroup.reverse = reverse;
+            simHorizontalGroup.rowAlignment =  rowAlignment;
+            simHorizontalGroup.space = space;
+            simHorizontalGroup.wrap = wrap;
+            simHorizontalGroup.wrapSpace = wrapSpace;
+            
+            for (var actor : children) {
+                simHorizontalGroup.children.add(actor.duplicate());
+                simHorizontalGroup.children.peek().parent = simHorizontalGroup;
+            }
+            
+            return simHorizontalGroup;
+        }
     
         public SimHorizontalGroup() {
         }
@@ -1804,6 +2198,43 @@ public class DialogSceneComposerModel {
         public boolean smoothScrolling = true;
         public boolean variableSizeKnobs = true;
     
+        @Override
+        public SimScrollPane duplicate() {
+            var simScrollPane = new SimScrollPane();
+            
+            simScrollPane.parent = parent;
+            simScrollPane.name = name;
+            simScrollPane.style = style;
+            simScrollPane.fadeScrollBars = fadeScrollBars;
+            
+            if (child != null) {
+                simScrollPane.child = child.duplicate();
+                simScrollPane.child.parent = simScrollPane;
+            }
+            
+            simScrollPane.clamp = clamp;
+            simScrollPane.flickScroll = flickScroll;
+            simScrollPane.flingTime = flingTime;
+            simScrollPane.forceScrollX = forceScrollX;
+            simScrollPane.forceScrollY = forceScrollY;
+            simScrollPane.overScrollX = overScrollX;
+            simScrollPane.overScrollY = overScrollY;
+            simScrollPane.overScrollDistance = overScrollDistance;
+            simScrollPane.overScrollSpeedMin = overScrollSpeedMin;
+            simScrollPane.overScrollSpeedMax = overScrollSpeedMax;
+            simScrollPane.scrollBarBottom = scrollBarBottom;
+            simScrollPane.scrollBarRight = scrollBarRight;
+            simScrollPane.scrollBarsOnTop = scrollBarsOnTop;
+            simScrollPane.scrollBarsVisible = scrollBarsVisible;
+            simScrollPane.scrollBarTouch = scrollBarTouch;
+            simScrollPane.scrollingDisabledX = scrollingDisabledX;
+            simScrollPane.scrollingDisabledY = scrollingDisabledY;
+            simScrollPane.smoothScrolling = smoothScrolling;
+            simScrollPane.variableSizeKnobs = variableSizeKnobs;
+            
+            return simScrollPane;
+        }
+    
         public SimScrollPane() {
             var styles = Main.main.getJsonData().getClassStyleMap().get(ScrollPane.class);
             for (var style : styles) {
@@ -1865,6 +2296,20 @@ public class DialogSceneComposerModel {
         public String name;
         public Array<SimActor> children = new Array<>();
     
+        @Override
+        public SimStack duplicate() {
+            var simStack = new SimStack();
+            
+            simStack.parent = parent;
+            
+            for (var actor : children) {
+                simStack.children.add(actor.duplicate());
+                simStack.children.peek().parent = simStack;
+            }
+            
+            return simStack;
+        }
+    
         public SimStack() {
         
         }
@@ -1905,6 +2350,29 @@ public class DialogSceneComposerModel {
         public float splitMin;
         public float splitMax = 1;
         public transient Array<SimActor> tempChildren = new Array<>();
+    
+        @Override
+        public SimSplitPane duplicate() {
+            var simSplitPane = new SimSplitPane();
+            
+            simSplitPane.parent = parent;
+            simSplitPane.name = name;
+            simSplitPane.style = style;
+            if (childFirst != null) {
+                simSplitPane.childFirst = childFirst;
+                simSplitPane.childFirst.parent = simSplitPane;
+            }
+            if (childSecond != null) {
+                simSplitPane.childSecond = childSecond.duplicate();
+                simSplitPane.childSecond.parent = simSplitPane;
+            }
+            simSplitPane.vertical = vertical;
+            simSplitPane.split = split;
+            simSplitPane.splitMin = splitMin;
+            simSplitPane.splitMax = splitMax;
+            
+            return simSplitPane;
+        }
     
         public SimSplitPane() {
             var styles = Main.main.getJsonData().getClassStyleMap().get(SplitPane.class);
@@ -1975,6 +2443,28 @@ public class DialogSceneComposerModel {
         public DrawableData icon;
         public boolean selectable = true;
     
+        @Override
+        public SimNode duplicate() {
+            var simNode = new SimNode();
+            
+            simNode.parent = parent;
+            if (actor != null) {
+                simNode.actor = actor.duplicate();
+                simNode.actor.parent = simNode;
+            }
+            
+            for (var node : nodes) {
+                simNode.nodes.add(node.duplicate());
+                simNode.nodes.peek().parent = simNode;
+            }
+            
+            simNode.expanded = expanded;
+            simNode.icon = icon;
+            simNode.selectable = selectable;
+            
+            return simNode;
+        }
+    
         public SimNode() {
         }
     
@@ -2022,6 +2512,29 @@ public class DialogSceneComposerModel {
         public float iconSpaceRight = 2;
         public float indentSpacing;
         public float ySpacing = 4;
+    
+        @Override
+        public SimTree duplicate() {
+            var simTree = new SimTree();
+            
+            simTree.parent = parent;
+            simTree.name = name;
+            simTree.style = style;
+            
+            for (var node : children) {
+                simTree.children.add(node.duplicate());
+                simTree.children.peek().parent = simTree;
+            }
+            
+            simTree.padLeft = padLeft;
+            simTree.padRight = padRight;
+            simTree.iconSpaceLeft = iconSpaceLeft;
+            simTree.iconSpaceRight = iconSpaceRight;
+            simTree.indentSpacing = indentSpacing;
+            simTree.ySpacing = ySpacing;
+            
+            return simTree;
+        }
     
         public SimTree() {
             var styles = Main.main.getJsonData().getClassStyleMap().get(Tree.class);
@@ -2091,6 +2604,33 @@ public class DialogSceneComposerModel {
         public boolean wrap;
         public float wrapSpace;
         public Array<SimActor> children = new Array<>();
+    
+        @Override
+        public SimVerticalGroup duplicate() {
+            var simVerticalGroup = new SimVerticalGroup();
+            
+            simVerticalGroup.parent = parent;
+            simVerticalGroup.name = name;
+            simVerticalGroup.alignment = alignment;
+            simVerticalGroup.expand = expand;
+            simVerticalGroup.fill = fill;
+            simVerticalGroup.padLeft = padLeft;
+            simVerticalGroup.padRight = padRight;
+            simVerticalGroup.padTop = padTop;
+            simVerticalGroup.padBottom = padBottom;
+            simVerticalGroup.reverse = reverse;
+            simVerticalGroup.columnAlignment = columnAlignment;
+            simVerticalGroup.space = space;
+            simVerticalGroup.wrap = wrap;
+            simVerticalGroup.wrapSpace = wrapSpace;
+            
+            for (var actor : children) {
+                simVerticalGroup.children.add(actor.duplicate());
+                simVerticalGroup.children.peek().parent = simVerticalGroup;
+            }
+            
+            return simVerticalGroup;
+        }
     
         public SimVerticalGroup() {
         

@@ -2,13 +2,11 @@ package com.ray3k.skincomposer.dialog.scenecomposer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.DrawableData;
-import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.dialog.scenecomposer.undoables.*;
 
@@ -162,6 +160,22 @@ public class DialogSceneComposerEvents {
     
     public void cellAddRowBelow() {
         processUndoable(new CellAddRowBelowUndoable());
+    }
+    
+    public void cellDuplicateCellLeft() {
+        processUndoable(new CellDuplicateCellLeftUndoable());
+    }
+    
+    public void cellDuplicateCellRight() {
+        processUndoable(new CellDuplicateCellRightUndoable());
+    }
+    
+    public void cellDuplicateCellAbove() {
+        processUndoable(new CellDuplicateCellAboveUndoable());
+    }
+    
+    public void cellDuplicateCellBelow() {
+        processUndoable(new CellDuplicateCellBelowUndoable());
     }
     
     public void cellPaddingSpacing(float paddingLeft, float paddingRight, float paddingTop, float paddingBottom, float spaceLeft, float spaceRight, float spaceTop, float spaceBottom) {
