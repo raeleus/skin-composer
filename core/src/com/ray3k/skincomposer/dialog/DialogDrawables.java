@@ -1,18 +1,18 @@
 /*******************************************************************************
  * MIT License
- * 
+ *
  * Copyright (c) 2018 Raymond Buckley
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -883,9 +883,9 @@ public class DialogDrawables extends Dialog {
         }
     
         @Override
-        public void clicked(InputEvent event, float x, float y) {
-            super.clicked(event, x, y);
+        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
             event.setBubbles(false);
+            return super.touchDown(event, x, y, pointer, button);
         }
     
         @Override
@@ -1268,7 +1268,7 @@ public class DialogDrawables extends Dialog {
     private boolean validateTiledDrawable(Dialog dialog, String newName, String oldName, ColorData colorData, boolean newDrawable) {
         boolean returnValue = true;
         String requiredLabelName = null;
-                
+        
         if (!DrawableData.validate(newName) || checkIfNameExists(newName)) {
             if (newDrawable || !newName.equals(oldName)) {
                 requiredLabelName = "name-label";
@@ -1381,7 +1381,7 @@ public class DialogDrawables extends Dialog {
      * Shows a dialog to confirm deletion of all TintedDrawables based on the
      * provided drawable data. This is called when the delete button is pressed
      * on a drawable in the drawable list.
-     * @param drawable 
+     * @param drawable
      */
     private void showConfirmDeleteDialog(DrawableData drawable) {
         Dialog dialog = new Dialog("Delete duplicates?", getSkin(), "bg"){
@@ -1578,7 +1578,7 @@ public class DialogDrawables extends Dialog {
      * This ignores the file extension.
      * @param handle
      * @param minimum The minimum allowed matches before it's considered a duplicate
-     * @return 
+     * @return
      */
     private boolean checkDuplicateDrawables(FileHandle handle, int minimum) {
         int count = 0;
@@ -1621,7 +1621,7 @@ public class DialogDrawables extends Dialog {
      * Removes any duplicate drawables that share the same file name. This
      * ignores the file extension and also deletes TintedDrawables from the
      * same file. Calls removeDuplicateDrawables(handle, true).
-     * @param handle 
+     * @param handle
      */
     private void removeDuplicateDrawables(FileHandle handle) {
         removeDuplicateDrawables(handle, true);
@@ -1631,7 +1631,7 @@ public class DialogDrawables extends Dialog {
      * Removes any duplicate drawables that share the same file name. This
      * ignores the file extension and also deletes TintedDrawables from the
      * same file.
-     * @param handle 
+     * @param handle
      */
     private void removeDuplicateDrawables(FileHandle handle, boolean deleteStyleValues) {
         boolean refreshDrawables = false;
@@ -1791,7 +1791,7 @@ public class DialogDrawables extends Dialog {
     /**
      * Called when a selection of drawables has been chosen from the
      * newDrawablesDialog(). Adds the new drawables to the project.
-     * @param files 
+     * @param files
      */
     private void drawablesSelected(List<File> files) {
         Array<FileHandle> fileHandles = new Array<>();
@@ -1833,7 +1833,7 @@ public class DialogDrawables extends Dialog {
      * Does not delete existing style values that point to this drawable.
      * @param unhandledFiles
      * @param backup
-     * @param filesToProcess 
+     * @param filesToProcess
      */
     private void showRemoveDuplicatesDialog(Array<FileHandle> unhandledFiles, Array<DrawableData> backup, Array<FileHandle> filesToProcess) {
         Dialog dialog = new Dialog("Delete duplicates?", getSkin(), "bg"){
@@ -1887,7 +1887,7 @@ public class DialogDrawables extends Dialog {
      * Adds the drawables to the project.
      * @param backup If there is a failure, the drawable list will be rolled
      * back to the provided backup.
-     * @param filesToProcess 
+     * @param filesToProcess
      */
     private void finalizeDrawables(Array<DrawableData> backup, Array<FileHandle> filesToProcess) {
         for (FileHandle file : filesToProcess) {
@@ -1900,7 +1900,7 @@ public class DialogDrawables extends Dialog {
             if (!checkIfNameExists(data.name)) {
                 main.getAtlasData().getDrawables().add(data);
             }
-        }        
+        }
         
         gatherDrawables();
 
@@ -1933,7 +1933,7 @@ public class DialogDrawables extends Dialog {
     /**
      * Creates a TintedDrawable based on the provided DrawableData. Prompts
      * user for a Color and name.
-     * @param drawableData 
+     * @param drawableData
      */
     private void newTintedDrawable(DrawableData drawableData) {
         Color previousColor = Color.WHITE;
@@ -2044,7 +2044,7 @@ public class DialogDrawables extends Dialog {
     /**
      * Returns true if any existing drawable has the indicated name.
      * @param name
-     * @return 
+     * @return
      */
     private boolean checkIfDrawableNameExists(String name) {
         boolean returnValue = false;
@@ -2062,7 +2062,7 @@ public class DialogDrawables extends Dialog {
     /**
      * Returns true if any existing drawable has the indicated name.
      * @param name
-     * @return 
+     * @return
      */
     private boolean checkIfFontDrawableNameExists(String name) {
         boolean returnValue = false;
