@@ -3,19 +3,19 @@ plugins {
 }
 apply plugin: "java"
 
-sourceCompatibility = 1.11
+sourceCompatibility = 11
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 mainClassName = "com.ray3k.skincomposer.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets")
 
 task dist(type: Jar) {
-    archiveName = "${project.appName}.jar";
-    from files(sourceSets.main.output.classesDir)
+    archiveFileName = "${project.appName}.jar";
+    from files(sourceSets.main.output.getClassesDirs())
     from files(sourceSets.main.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}
     from files(project.assetsDir)
-    destinationDir = file("$buildDir/lib")
+    destinationDirectory = file("$buildDir/lib")
     manifest {
         attributes ('Main-Class': project.mainClassName)
     }
