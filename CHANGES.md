@@ -15,7 +15,7 @@
 * Corrected terminology in 9patch editor.
 * Fixed crash when typing "[]" into text fields.
 * Set "NO_MAXIMUM" on FreeTypeFontGenerators to allow FreeType fonts of any size.
-* Updated to Gradle 6.4. Building Skin Composer project with JDK 14 suggested. Running Skin Composer JAR requires JRE 11 or later. 
+* Updated to Gradle 6.4.1. Building Skin Composer project with JDK 14 suggested. Running Skin Composer JAR requires JRE 11 or later. 
 * Minor UI Tweaks and bug fixes. 
 
 ### Skin Composer Version 34 ###
