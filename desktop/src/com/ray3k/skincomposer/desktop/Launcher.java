@@ -187,7 +187,7 @@ public class Launcher implements DesktopWorker, Lwjgl3WindowListener {
 
     @Override
     public void attachLogListener() {
-        ((Lwjgl3Application) Gdx.app).setApplicationLogger(new TextFileApplicationLogger());
+        Gdx.app.setApplicationLogger(new TextFileApplicationLogger());
     }
 
     @Override

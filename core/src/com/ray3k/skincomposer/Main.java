@@ -57,6 +57,7 @@ import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.stripe.FreeTypeSkin;
 import com.ray3k.tenpatch.TenPatchDrawable;
 import space.earlygrey.shapedrawer.GraphDrawer;
 import space.earlygrey.shapedrawer.ShapeDrawer;
@@ -110,7 +111,7 @@ public class Main extends ApplicationAdapter {
         
         appFolder = Gdx.files.external(".skincomposer/");
         
-        skin = new FreetypeSkin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
+        skin = new FreeTypeSkin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         

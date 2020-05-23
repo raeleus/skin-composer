@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.stripe.PopTable;
 import com.ray3k.stripe.PopTableClickListener;
 import com.ray3k.stripe.RangeSlider;
 import com.ray3k.stripe.RangeSlider.ValueBeginChangeEvent;

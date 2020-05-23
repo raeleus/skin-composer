@@ -49,13 +49,13 @@ project(":desktop") {
 project(":core") {
     apply plugin: "java"
 
-
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.github.raeleus.TenPatch:tenpatch:5.0.0"
         implementation "space.earlygrey:shapedrawer:2.2.0"
         compile 'com.squareup:javapoet:1.12.1'
+        compile 'com.ray3k.stripe:stripe:0.0.1-SNAPSHOT'
     }
 }
 
