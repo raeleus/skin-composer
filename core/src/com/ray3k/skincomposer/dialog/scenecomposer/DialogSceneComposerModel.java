@@ -255,6 +255,15 @@ public class DialogSceneComposerModel {
         }
     }
     
+    private Cell findCell(Table table, int row, int column) {
+        for (var cell : table.getCells()) {
+            if (cell.getColumn() == column && cell.getRow() == row) {
+                return cell;
+            }
+        }
+        return null;
+    }
+    
     private void createEditWidgets() {
         if (dialog.simActor.parent != null) {
             var edit = new EditWidget(main.getSkin(), "scene-select-back");
@@ -285,7 +294,7 @@ public class DialogSceneComposerModel {
             var simTable = (SimTable) dialog.simActor;
             for (var simCell : simTable.cells) {
                 var table = (Table) simTable.previewActor;
-                var cell = table.getCells().get(simCell.row * table.getColumns() + simCell.column);
+                var cell = findCell(table, simCell.row, simCell.column);
                 
                 edit = new EditWidget(main.getSkin(), "scene-selector");
                 edit.setCell(cell);
@@ -295,7 +304,7 @@ public class DialogSceneComposerModel {
         } else if (dialog.simActor instanceof SimCell) {
             var simCell = (SimCell) dialog.simActor;
             var table = (Table) ((SimTable) simCell.parent).previewActor;
-            var cell = table.getCells().get(simCell.row * table.getColumns() + simCell.column);
+            var cell = findCell(table, simCell.row, simCell.column);
             
             var edit = new EditWidget(main.getSkin(), "scene-selection");
             edit.setCell(cell);
