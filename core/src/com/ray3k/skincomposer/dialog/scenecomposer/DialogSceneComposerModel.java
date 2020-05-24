@@ -180,8 +180,10 @@ public class DialogSceneComposerModel {
             } else if (field.getType() == DrawableData.class) {
                 try {
                     var drawable = (DrawableData) field.get(simActor);
-                    var foundDrawable = main.getAtlasData().getDrawable(drawable.name);
-                    field.set(simActor, foundDrawable);
+                    if (drawable != null) {
+                        var foundDrawable = main.getAtlasData().getDrawable(drawable.name);
+                        field.set(simActor, foundDrawable);
+                    }
                 } catch (ReflectionException e) {
                     e.printStackTrace(System.out);
                 }
