@@ -48,6 +48,7 @@ public class DialogSceneComposer extends Dialog {
     public Image liveImage;
     public Image editImage;
     public Image outlineImage;
+    private Label propertiesLabel;
     
     public DialogSceneComposer() {
         super("", Main.main.getSkin(), "scene");
@@ -230,8 +231,8 @@ public class DialogSceneComposer extends Dialog {
         table.setClip(true);
         bottom.add(table).growX().minHeight(0);
         
-        label = new Label("Properties", skin, "scene-title-colored");
-        table.add(label);
+        propertiesLabel = new Label("Properties", skin, "scene-title-colored");
+        table.add(propertiesLabel);
     
         bottom.row();
         table = new Table();
@@ -308,12 +309,16 @@ public class DialogSceneComposer extends Dialog {
         root.add(horizontalGroup).grow();
     
         if (simActor instanceof SimRootGroup) {
+            propertiesLabel.setText("Properties");
+            
             var textButton = new TextButton("Add Table", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
             textButton.addListener(rootAddTableListener());
             textButton.addListener(new TextTooltip("Creates a table with the specified number of rows and columns.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimTable) {
+            propertiesLabel.setText("Table Properties");
+            
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -362,6 +367,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("Table", events::tableDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimCell) {
+            propertiesLabel.setText("Cell Properties");
+    
             var textButton = new TextButton("Set Widget", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -521,6 +528,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("Cell", events::cellDelete));
             textButton.addListener(new TextTooltip("Deletes the cell and its contents.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimTextButton) {
+            propertiesLabel.setText("TextButton Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -575,6 +584,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("TextButton", events::textButtonDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimButton) {
+            propertiesLabel.setText("Button Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -623,6 +634,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("Button", events::buttonDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimImageButton) {
+            propertiesLabel.setText("ImageButton Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -671,6 +684,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("ImageButton", events::imageButtonDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimImageTextButton) {
+            propertiesLabel.setText("ImageTextButton Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -725,6 +740,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("ImageTextButton", events::imageButtonDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimCheckBox) {
+            propertiesLabel.setText("CheckBox Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -779,6 +796,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("CheckBox", events::checkBoxDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimImage) {
+            propertiesLabel.setText("Image Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -809,6 +828,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("Image", events::imageDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimLabel) {
+            propertiesLabel.setText("Label Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -863,6 +884,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("Label", events::labelDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimList) {
+            propertiesLabel.setText("List Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -893,6 +916,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("List", events::listDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimProgressBar) {
+            propertiesLabel.setText("ProgressBar Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -947,6 +972,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("ProgressBar", events::progressBarDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimSelectBox) {
+            propertiesLabel.setText("SelectBox Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -1001,6 +1028,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("SelectBox", events::selectBoxDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimSlider) {
+            propertiesLabel.setText("Slider Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -1055,6 +1084,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("Slider", events::sliderDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimTextArea) {
+            propertiesLabel.setText("TextArea Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -1133,6 +1164,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("TextArea", events::textAreaDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimTextField) {
+            propertiesLabel.setText("TextField Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -1205,6 +1238,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("TextField", events::textFieldDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimTouchPad) {
+            propertiesLabel.setText("TouchPad Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -1241,6 +1276,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("TouchPad", events::touchPadDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimContainer) {
+            propertiesLabel.setText("Container Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -1297,6 +1334,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("Container", events::containerDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimHorizontalGroup) {
+            propertiesLabel.setText("HorizontalGroup Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -1358,6 +1397,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("HorizontalGroup", events::horizontalGroupDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimScrollPane) {
+            propertiesLabel.setText("ScrollPane Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -1402,6 +1443,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("ScrollPane", events::scrollPaneDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimSplitPane) {
+            propertiesLabel.setText("SplitPane Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -1454,6 +1497,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("SplitPane", events::splitPaneDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimStack) {
+            propertiesLabel.setText("Stack Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -1479,6 +1524,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("Stack", events::stackDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimNode) {
+            propertiesLabel.setText("Node Properties");
+    
             var textButton = new TextButton("Set Widget", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -1522,6 +1569,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("Node", events::nodeDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof SimTree) {
+            propertiesLabel.setText("Tree Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -1569,6 +1618,8 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.widgetDeleteListener("Tree", events::treeDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimVerticalGroup) {
+            propertiesLabel.setText("VerticalGroup Properties");
+    
             var textButton = new TextButton("Name", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
