@@ -75,7 +75,7 @@ public class ImageButtonListeners {
     
     public static EventListener imageButtonStyleListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simImageButton = (DialogSceneComposerModel.SimImageButton) simActor;
-        var popTableClickListener = new StyleSelectorPopTable(TextButton.class, simImageButton.style == null ? "default" : simImageButton.style.name) {
+        var popTableClickListener = new StyleSelectorPopTable(ImageButton.class, simImageButton.style == null ? "default" : simImageButton.style.name) {
             @Override
             public void accepted(StyleData styleData) {
                 events.imageButtonStyle(styleData);
