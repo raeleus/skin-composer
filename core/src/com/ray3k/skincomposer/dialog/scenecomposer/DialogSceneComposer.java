@@ -99,7 +99,7 @@ public class DialogSceneComposer extends Dialog {
                 .item("Import", main.getHandListener(), new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        var file = main.getDesktopWorker().openDialog("Import Template...", main.getProjectData().getLastImportExportPath(), new String[] {"*.json"}, "JSON Files (*.json)");
+                        var file = main.getDesktopWorker().openDialog("Import JSON...", main.getProjectData().getLastImportExportPath(), new String[] {"*.json"}, "JSON Files (*.json)");
                         
                         if (file != null) {
                             events.importTemplate(new FileHandle(file));
@@ -1927,6 +1927,43 @@ public class DialogSceneComposer extends Dialog {
                 "replacement for learning proper libGDX techniques.", skin, "scene-label-colored");
         label.setWrap(true);
         root.add(label).growX();
+    
+        root.row();
+        var horizontalGroup = new HorizontalGroup();
+        root.add(horizontalGroup).padTop(20).left();
+    
+        label = new Label("Documentation on creating scenes is available ", skin, "scene-label-colored");
+        horizontalGroup.addActor(label);
+    
+        var textButton = new TextButton("here", skin, "scene-link");
+        horizontalGroup.addActor(textButton);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.net.openURI("https://github.com/raeleus/skin-composer/wiki/Scene-Composer");
+            }
+        });
+    
+        root.row();
+        horizontalGroup = new HorizontalGroup();
+        root.add(horizontalGroup).padTop(20).left();
+    
+        label = new Label("Building scene JSON widgets requires ", skin, "scene-label-colored");
+        horizontalGroup.addActor(label);
+    
+        textButton = new TextButton("Stripe Widgets", skin, "scene-link");
+        horizontalGroup.addActor(textButton);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.net.openURI("https://github.com/raeleus/stripe/blob/master/README.md");
+            }
+        });
+        
+        label = new Label(".", skin, "scene-label-colored");
+        horizontalGroup.addActor(label);
         
         root.show(getStage());
         
@@ -1950,13 +1987,13 @@ public class DialogSceneComposer extends Dialog {
         root.add(table);
         
         table.defaults().space(10f);
-        var textButton = new TextButton("Save Template", skin, "scene-med");
+        var textButton = new TextButton("Save JSON", skin, "scene-med");
         table.add(textButton).fillX();
         textButton.addListener(main.getHandListener());
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                var file = main.getDesktopWorker().saveDialog("Export Template...", main.getProjectData().getLastImportExportPath(), new String[] {"*.json"}, "JSON Files (*.json)");
+                var file = main.getDesktopWorker().saveDialog("Export JSON...", main.getProjectData().getLastImportExportPath(), new String[] {"*.json"}, "JSON Files (*.json)");
                 if (file != null) {
                     events.exportTemplate(new FileHandle(file));
                 }
@@ -1967,8 +2004,21 @@ public class DialogSceneComposer extends Dialog {
             }
         });
     
-        label = new Label("A template to be imported into Scene Composer", skin, "scene-label-colored");
-        table.add(label).expandX().left();
+        var horizontalGroup = new HorizontalGroup();
+        table.add(horizontalGroup).expandX().left();
+        
+        label = new Label("A JSON file compatible with ", skin, "scene-label-colored");
+        horizontalGroup.addActor(label);
+        
+        textButton = new TextButton("SceneComposerStageBuilder", skin, "scene-link");
+        horizontalGroup.addActor(textButton);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.net.openURI("https://github.com/raeleus/stripe/blob/master/README.md");
+            }
+        });
     
         table.row();
         textButton = new TextButton("Save to JAVA", skin, "scene-med");
