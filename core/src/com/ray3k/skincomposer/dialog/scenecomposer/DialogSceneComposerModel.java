@@ -755,6 +755,7 @@ public class DialogSceneComposerModel {
                     node.setActor(container);
                     tree.add(node);
                 }
+                tree.addListener(main.getHandListener());
                 actor = tree;
             }
         } else if (simActor instanceof SimVerticalGroup) {
