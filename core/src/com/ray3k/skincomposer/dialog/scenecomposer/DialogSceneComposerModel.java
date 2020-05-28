@@ -261,6 +261,8 @@ public class DialogSceneComposerModel {
         for (var cell : table.getCells()) {
             if (cell.getColumn() == column && cell.getRow() == row) {
                 return cell;
+            } else if (cell.getRow() == row) {
+                column += cell.getColspan() - 1;
             }
         }
         return null;

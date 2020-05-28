@@ -126,7 +126,12 @@ public class EditWidget extends Button {
                 height += table.getRowHeight(i);
             }
 
-            setBounds(temp.x + width, temp.y + height, table.getColumnWidth(cell.getColumn()), table.getRowHeight(cell.getRow()));
+            var cellWidth = 0;
+            for (int i = cell.getColumn(); i < cell.getColumn() + cell.getColspan(); i++) {
+                cellWidth += table.getColumnWidth(i);
+            }
+            
+            setBounds(temp.x + width, temp.y + height, cellWidth, table.getRowHeight(cell.getRow()));
         }
     }
 }
