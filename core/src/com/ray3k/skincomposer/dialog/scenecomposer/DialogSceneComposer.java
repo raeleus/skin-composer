@@ -97,11 +97,23 @@ public class DialogSceneComposer extends Dialog {
         root.add(bar).growX();
         
         bar.menu("File", main.getHandListener())
+                .item("Save", new KeyboardShortcut("Ctrl+S", Keys.S, Keys.CONTROL_LEFT), main.getHandListener(), new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        main.getMainListener().saveFile(null);
+                    }
+                })
+                .item("Save as...", new KeyboardShortcut("Ctrl+Shift+S", Keys.S, Keys.CONTROL_LEFT, Keys.SHIFT_LEFT), main.getHandListener(), new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        main.getMainListener().saveAsFile(null);
+                    }
+                })
                 .item("Import", main.getHandListener(), new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         var file = main.getDesktopWorker().openDialog("Import JSON...", main.getProjectData().getLastImportExportPath(), new String[] {"*.json"}, "JSON Files (*.json)");
-                        
+                
                         if (file != null) {
                             events.importTemplate(new FileHandle(file));
                         }
