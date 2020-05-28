@@ -1445,7 +1445,7 @@ public class DialogImageFont extends Dialog {
     
     private void updateLabelHighlight(String requiredLabelName) {
         var normalStyle = skin.get(Label.LabelStyle.class);
-        var requiredStyle = skin.get("required", Label.LabelStyle.class);
+        var requiredStyle = skin.get("dialog-required", Label.LabelStyle.class);
         var actors = new Array<Actor>();
         actors.addAll(getChildren());
         

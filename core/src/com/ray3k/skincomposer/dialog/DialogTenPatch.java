@@ -37,6 +37,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
@@ -1148,7 +1149,7 @@ public class DialogTenPatch extends Dialog {
         button.setDisabled(!valid);
         
         Label label = findActor("nameLabel");
-        label.setColor(valid ? skin.getColor("button") : Color.RED);
+        label.setStyle(valid ? skin.get(LabelStyle.class) : skin.get("dialog-required", LabelStyle.class));
     }
     
     public void showToast(String message) {

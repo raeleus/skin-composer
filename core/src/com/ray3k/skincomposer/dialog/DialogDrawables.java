@@ -1281,7 +1281,7 @@ public class DialogDrawables extends Dialog {
         }
         
         var normalStyle = getSkin().get(Label.LabelStyle.class);
-        var requiredStyle = getSkin().get("required", Label.LabelStyle.class);
+        var requiredStyle = getSkin().get("dialog-required", Label.LabelStyle.class);
         var actors = new Array<Actor>();
         actors.addAll(dialog.getChildren());
         

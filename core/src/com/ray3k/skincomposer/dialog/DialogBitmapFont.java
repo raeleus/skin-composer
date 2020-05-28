@@ -1321,7 +1321,7 @@ public class DialogBitmapFont extends Dialog {
 
     private void updateLabelHighlight(String requiredLabelName) {
         var normalStyle = skin.get(LabelStyle.class);
-        var requiredStyle = skin.get("required", LabelStyle.class);
+        var requiredStyle = skin.get("dialog-required", LabelStyle.class);
         var actors = new Array<Actor>();
         actors.addAll(getChildren());
         
