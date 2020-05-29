@@ -139,10 +139,10 @@ public class DialogSceneComposer extends Dialog {
                 });
         
         bar.menu("Scene", main.getHandListener())
-                .item("Refresh", main.getHandListener(), new ChangeListener() {
+                .item("Find by name...", new KeyboardShortcut("Ctrl+F", Keys.F, Keys.CONTROL_LEFT), main.getHandListener(), new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        events.menuRefresh();
+                        events.menuFind();
                     }
                 })
                 .item("Clear", main.getHandListener(), new ChangeListener() {
@@ -2118,6 +2118,99 @@ public class DialogSceneComposer extends Dialog {
         label = new Label("A minimal version to be pasted into your existing code", skin, "scene-label-colored");
         table.add(label).expandX().left();
 
+        root.show(getStage());
+        return root;
+    }
+    
+    public PopTable showFindDialog() {
+        var root = new PopTable(skin);
+        
+        root.setHideOnUnfocus(true);
+        root.setModal(true);
+        root.setKeepSizedWithinStage(true);
+        root.setKeepCenteredInWindow(true);
+        root.pad(20);
+        
+        defaults().space(15);
+        var label = new Label("Find by Name", skin, "scene-title-bg");
+        label.setAlignment(Align.center);
+        root.add(label).growX().pad(10);
+        
+        root.row();
+        var table = new Table();
+        root.add(table);
+        
+        table.defaults().space(5);
+        label = new Label("Name:", skin, "scene-label-colored");
+        table.add(label);
+        
+        var textField = new TextField("", skin, "scene");
+        table.add(textField).minWidth(300);
+        textField.addListener(main.getIbeamListener());
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                var simActor = model.findSimActorByName(textField.getText());
+                Label label = root.findActor("found-label");
+                TextButton textButton = root.findActor("find-button");
+                if (simActor != null) {
+                    label.setText("Actor found (" + simActor.getClass().getSimpleName() + ")");
+                    textButton.setDisabled(false);
+                    textButton.setUserObject(simActor);
+                } else {
+                    label.setText("Actor not found");
+                    textButton.setDisabled(true);
+                }
+            }
+        });
+        
+        root.row();
+        label = new Label(" ", skin, "scene-label-colored");
+        label.setName("found-label");
+        root.add(label);
+        
+        root.row();
+        table = new Table();
+        root.add(table);
+        
+        table.defaults().space(10);
+        var textButton = new TextButton("Select Widget", skin, "scene-med");
+        textButton.setName("find-button");
+        table.add(textButton);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                simActor = ((SimActor) actor.getUserObject());
+                dialog.populateProperties();
+                dialog.populatePath();
+                dialog.model.updatePreview();
+                root.hide();
+            }
+        });
+    
+        textButton = new TextButton("Cancel", skin, "scene-med");
+        table.add(textButton);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                root.hide();
+            }
+        });
+        
+        root.addListener(new PopTable.TableShowHideListener() {
+            @Override
+            public void tableShown(Event event) {
+                getStage().setKeyboardFocus(textField);
+            }
+    
+            @Override
+            public void tableHidden(Event event) {
+        
+            }
+        });
+        
         root.show(getStage());
         return root;
     }

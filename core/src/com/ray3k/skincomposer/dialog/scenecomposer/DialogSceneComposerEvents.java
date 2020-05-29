@@ -29,8 +29,8 @@ public class DialogSceneComposerEvents {
         dialog.hide();
     }
     
-    public void menuRefresh() {
-    
+    public void menuFind() {
+        dialog.showFindDialog();
     }
     
     public void menuClear() {

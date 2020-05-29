@@ -268,6 +268,32 @@ public class DialogSceneComposerModel {
         return null;
     }
     
+    public SimActor findSimActorByName(String name) {
+        return findSimActorByName(name, rootActor);
+    }
+    
+    public SimActor findSimActorByName(String name, SimActor parent) {
+        if (parent instanceof SimNamed) {
+            var compareName = ((SimNamed) parent).getName();
+            if (compareName != null && compareName.toLowerCase(Locale.ROOT).equals(name)) {
+                return parent;
+            }
+        }
+        
+        if (parent instanceof SimSingleChild) {
+            var child = ((SimSingleChild) parent).getChild();
+            if (child != null) return findSimActorByName(name, child);
+        }
+    
+        if (parent instanceof SimMultipleChildren) {
+            for (var child : ((SimMultipleChildren) parent).getChildren()) {
+                var found = findSimActorByName(name, child);
+                if (found != null) return found;
+            }
+        }
+        return null;
+    }
+    
     private void createEditWidgets() {
         if (dialog.simActor.parent != null) {
             var edit = new EditWidget(main.getSkin(), "scene-select-back");
@@ -884,6 +910,10 @@ public class DialogSceneComposerModel {
         void removeChild(SimActor simActor);
     }
     
+    public interface SimNamed {
+        public String getName();
+    }
+    
     public static class SimRootGroup extends SimActor implements SimMultipleChildren {
         public Array<SimActor> children = new Array<>();
         public ColorData backgroundColor;
@@ -935,7 +965,7 @@ public class DialogSceneComposerModel {
         }
     }
     
-    public static class SimTable extends SimActor implements SimMultipleChildren {
+    public static class SimTable extends SimActor implements SimMultipleChildren, SimNamed {
         public Array<SimCell> cells = new Array<>();
         public String name;
         public DrawableData background;
@@ -1016,6 +1046,11 @@ public class DialogSceneComposerModel {
         @Override
         public void removeChild(SimActor simActor) {
             cells.removeValue((SimCell) simActor, true);
+        }
+    
+        @Override
+        public String getName() {
+            return name;
         }
     }
     
@@ -1128,7 +1163,7 @@ public class DialogSceneComposerModel {
         }
     }
     
-    public static class SimButton extends SimActor {
+    public static class SimButton extends SimActor implements SimNamed {
         public String name;
         public StyleData style;
         public boolean checked;
@@ -1192,9 +1227,14 @@ public class DialogSceneComposerModel {
             padTop = 0;
             padBottom = 0;
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimCheckBox extends SimActor {
+    public static class SimCheckBox extends SimActor implements SimNamed {
         public String name;
         public StyleData style;
         public boolean disabled;
@@ -1261,9 +1301,14 @@ public class DialogSceneComposerModel {
             padBottom = 0;
             checked = false;
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimImage extends SimActor {
+    public static class SimImage extends SimActor implements SimNamed {
         public String name;
         public DrawableData drawable;
         public Scaling scaling = Scaling.stretch;
@@ -1290,9 +1335,14 @@ public class DialogSceneComposerModel {
             drawable = null;
             scaling  = Scaling.stretch;
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimImageButton extends SimActor {
+    public static class SimImageButton extends SimActor implements SimNamed {
         public String name;
         public StyleData style;
         public boolean checked;
@@ -1348,9 +1398,14 @@ public class DialogSceneComposerModel {
             padTop = 0;
             padBottom = 0;
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimImageTextButton extends SimActor {
+    public static class SimImageTextButton extends SimActor implements SimNamed {
         public String name;
         public String text;
         public StyleData style;
@@ -1409,9 +1464,14 @@ public class DialogSceneComposerModel {
             padTop = 0;
             padBottom = 0;
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimLabel extends SimActor {
+    public static class SimLabel extends SimActor implements SimNamed {
         public String name;
         public StyleData style;
         public String text;
@@ -1472,9 +1532,14 @@ public class DialogSceneComposerModel {
             wrap = false;
             color = null;
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimList extends SimActor {
+    public static class SimList extends SimActor implements SimNamed {
         public String name;
         public StyleData style;
         public Array<String> list = new Array<>();
@@ -1520,9 +1585,14 @@ public class DialogSceneComposerModel {
             }
             list.clear();
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimProgressBar extends SimActor {
+    public static class SimProgressBar extends SimActor implements SimNamed {
         public String name;
         public StyleData style;
         public boolean disabled;
@@ -1596,9 +1666,14 @@ public class DialogSceneComposerModel {
                 }
             }
         }
+        
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimSelectBox extends SimActor {
+    public static class SimSelectBox extends SimActor implements SimNamed {
         public String name;
         public StyleData style;
         public boolean disabled;
@@ -1660,9 +1735,14 @@ public class DialogSceneComposerModel {
                 }
             }
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimSlider extends SimActor {
+    public static class SimSlider extends SimActor implements SimNamed {
         public String name;
         public StyleData style;
         public boolean disabled;
@@ -1736,9 +1816,14 @@ public class DialogSceneComposerModel {
                 }
             }
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimTextButton extends SimActor {
+    public static class SimTextButton extends SimActor implements SimNamed {
         public String name;
         public String text;
         public StyleData style;
@@ -1805,9 +1890,13 @@ public class DialogSceneComposerModel {
             padTop = 0;
             padBottom = 0;
         }
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimTextField extends SimActor {
+    public static class SimTextField extends SimActor implements SimNamed {
         public String name;
         public StyleData style;
         public String text;
@@ -1887,9 +1976,14 @@ public class DialogSceneComposerModel {
                 }
             }
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimTextArea extends SimActor {
+    public static class SimTextArea extends SimActor implements SimNamed {
         public String name;
         public StyleData style;
         public String text;
@@ -1972,9 +2066,14 @@ public class DialogSceneComposerModel {
                 }
             }
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimTouchPad extends SimActor {
+    public static class SimTouchPad extends SimActor implements SimNamed {
         public String name;
         public StyleData style;
         public float deadZone;
@@ -2023,9 +2122,14 @@ public class DialogSceneComposerModel {
                 }
             }
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimContainer extends SimActor implements SimSingleChild {
+    public static class SimContainer extends SimActor implements SimSingleChild, SimNamed {
         public String name;
         public int alignment = Align.center;
         public DrawableData background;
@@ -2101,9 +2205,14 @@ public class DialogSceneComposerModel {
         public SimActor getChild() {
             return child;
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimHorizontalGroup extends SimActor implements SimMultipleChildren {
+    public static class SimHorizontalGroup extends SimActor implements SimMultipleChildren, SimNamed {
         public String name;
         public int alignment = Align.center;
         public boolean expand;
@@ -2185,9 +2294,14 @@ public class DialogSceneComposerModel {
         public void removeChild(SimActor simActor) {
             children.removeValue(simActor, true);
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimScrollPane extends SimActor implements SimSingleChild {
+    public static class SimScrollPane extends SimActor implements SimSingleChild, SimNamed {
         public String name;
         public StyleData style;
         public boolean fadeScrollBars = true;
@@ -2304,9 +2418,14 @@ public class DialogSceneComposerModel {
         public SimActor getChild() {
             return child;
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimStack extends SimActor implements SimMultipleChildren {
+    public static class SimStack extends SimActor implements SimMultipleChildren, SimNamed {
         public String name;
         public Array<SimActor> children = new Array<>();
     
@@ -2352,9 +2471,14 @@ public class DialogSceneComposerModel {
         public void removeChild(SimActor simActor) {
             children.removeValue(simActor, true);
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimSplitPane extends SimActor implements SimMultipleChildren {
+    public static class SimSplitPane extends SimActor implements SimMultipleChildren, SimNamed{
         public String name;
         public StyleData style;
         public SimActor childFirst;
@@ -2448,6 +2572,11 @@ public class DialogSceneComposerModel {
             if (childFirst == simActor) childFirst = null;
             else if (childSecond == simActor) childSecond = null;
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
     public static class SimNode extends SimActor implements SimMultipleChildren {
@@ -2516,7 +2645,7 @@ public class DialogSceneComposerModel {
         }
     }
     
-    public static class SimTree extends SimActor implements SimMultipleChildren {
+    public static class SimTree extends SimActor implements SimMultipleChildren, SimNamed{
         public String name;
         public StyleData style;
         public Array<SimNode> children = new Array<>();
@@ -2601,9 +2730,14 @@ public class DialogSceneComposerModel {
         public void removeChild(SimActor simActor) {
             children.removeValue((SimNode) simActor, true);
         }
+    
+        @Override
+        public String getName() {
+            return name;
+        }
     }
     
-    public static class SimVerticalGroup extends SimActor implements SimMultipleChildren {
+    public static class SimVerticalGroup extends SimActor implements SimMultipleChildren, SimNamed {
         public String name;
         public int alignment = Align.center;
         public boolean expand;
@@ -2685,6 +2819,11 @@ public class DialogSceneComposerModel {
         @Override
         public void removeChild(SimActor simActor) {
             children.removeValue(simActor, true);
+        }
+    
+        @Override
+        public String getName() {
+            return name;
         }
     }
 }
