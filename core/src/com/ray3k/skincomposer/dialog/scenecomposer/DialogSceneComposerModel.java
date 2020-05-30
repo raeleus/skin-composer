@@ -389,16 +389,16 @@ public class DialogSceneComposerModel {
     }
     
     private String convertEscapedCharacters(String string) {
-        string = string.replace("\\n", "\n")
-                .replace("\\t", "\t")
-                .replace("\\r", "\r");
+        string = string.replaceAll("(?<!\\\\)\\\\n", "\n")
+                .replace("(?<!\\\\)\\\\t", "\t")
+                .replace("(?<!\\\\)\\\\r", "\r");
         var result = string;
-        Pattern pattern = Pattern.compile("(\\\\u[\\d,a-f,A-F]{4})");
+        Pattern pattern = Pattern.compile("(?<!\\\\)(\\\\u[\\d,a-f,A-F]{4})");
         Matcher matcher = pattern.matcher(string);
         while (matcher.find()) {
-            result = result.replaceFirst("(\\\\u[\\d,a-f,A-F]{4})", new String(Character.toChars(Integer.parseInt(matcher.group().substring(2), 16))));
+            result = result.replaceFirst("(?<!\\\\)(\\\\u[\\d,a-f,A-F]{4})", new String(Character.toChars(Integer.parseInt(matcher.group().substring(2), 16))));
         }
-        return result;
+        return result.replace("\\\\", "\\");
     }
     
     private Actor createPreviewWidget(SimActor simActor) {
