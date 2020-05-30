@@ -591,6 +591,7 @@ public class DialogSceneComposerModel {
                     newList.add(convertEscapedCharacters(item));
                 }
                 list.setItems(newList);
+                list.addListener(main.getHandListener());
                 actor = list;
             }
         } else if (simActor instanceof SimProgressBar) {
@@ -623,6 +624,8 @@ public class DialogSceneComposerModel {
                 selectBox.setAlignment(sim.alignment);
                 selectBox.setSelectedIndex(sim.selected);
                 selectBox.setScrollingDisabled(sim.scrollingDisabled);
+                selectBox.addListener(main.getHandListener());
+                selectBox.getList().addListener(main.getHandListener());
                 actor = selectBox;
             }
         } else if (simActor instanceof SimSlider) {
