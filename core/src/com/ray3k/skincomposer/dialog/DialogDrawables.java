@@ -437,8 +437,11 @@ public class DialogDrawables extends Dialog {
             label.setEllipsis(true);
             table.add(label);
     
+            image = new Image(getSkin(), drawable.type.iconName);
+            table.add(image).right().expandX().spaceLeft(50).spaceRight(5);
+            
             label = new Label(drawable.type.formattedName, getSkin());
-            table.add(label).right().expandX().spaceLeft(50);
+            table.add(label).spaceLeft(5).width(100);
             
             if (showingOptions) {
                 //more button
@@ -490,6 +493,9 @@ public class DialogDrawables extends Dialog {
             var subTable = new Table();
             table.add(subTable).growX();
         
+            var image = new Image(getSkin(), drawable.type.iconName);
+            subTable.add(image).spaceRight(5);
+            
             var label = new Label(drawable.type == null ? "error" : drawable.type.formattedName, getSkin());
             subTable.add(label);
             
@@ -515,7 +521,7 @@ public class DialogDrawables extends Dialog {
             bg.setBackground(getSkin().getDrawable("white"));
             bg.setColor(drawable.bgColor);
         
-            Image image = new Image(main.getAtlasData().getDrawablePairs().get(drawable));
+            image = new Image(main.getAtlasData().getDrawablePairs().get(drawable));
             if (MathUtils.isEqual(zoomSlider.getValue(), 1)) {
                 image.setScaling(Scaling.fit);
                 bg.fill(false);

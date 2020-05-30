@@ -30,11 +30,16 @@ import com.ray3k.skincomposer.utils.Utils;
 
 public class DrawableData {
     public enum DrawableType {
-        TINTED("Tinted"), TINTED_FROM_COLOR_DATA("Tinted"), TILED("Tiled"), TENPATCH("Tenpatch"), TEXTURE("Texture"), NINE_PATCH("Nine Patch"), CUSTOM("Custom");
+        TINTED("Tinted", "button-colorwheel-over"), TINTED_FROM_COLOR_DATA("Tinted", "button-swatches-over"),
+        TILED("Tiled", "button-tiles-over"), TENPATCH("TenPatch", "button-tenpatch-over"),
+        TEXTURE("Texture", "icon-texture"), NINE_PATCH("NinePatch", "icon-ninepatch"),
+        CUSTOM("Custom", "icon-custom");
         
         public String formattedName;
-        DrawableType (String formattedName) {
+        public String iconName;
+        DrawableType (String formattedName, String iconName) {
             this.formattedName = formattedName;
+            this.iconName = iconName;
         }
     
         @Override
