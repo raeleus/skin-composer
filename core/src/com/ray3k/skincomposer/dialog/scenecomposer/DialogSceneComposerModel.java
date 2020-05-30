@@ -17,7 +17,11 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer.View;
 import com.ray3k.skincomposer.dialog.scenecomposer.undoables.SceneComposerUndoable;
 import com.ray3k.skincomposer.utils.Utils;
 
+import java.lang.StringBuilder;
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer.dialog;
 
@@ -384,6 +388,19 @@ public class DialogSceneComposerModel {
         }
     }
     
+    private String convertEscapedCharacters(String string) {
+        string = string.replace("\\n", "\n")
+                .replace("\\t", "\t")
+                .replace("\\r", "\r");
+        var result = string;
+        Pattern pattern = Pattern.compile("(\\\\u[\\d,a-f,A-F]{4})");
+        Matcher matcher = pattern.matcher(string);
+        while (matcher.find()) {
+            result = result.replaceFirst("(\\\\u[\\d,a-f,A-F]{4})", new String(Character.toChars(Integer.parseInt(matcher.group().substring(2), 16))));
+        }
+        return result;
+    }
+    
     private Actor createPreviewWidget(SimActor simActor) {
         Actor actor = null;
     
@@ -451,7 +468,7 @@ public class DialogSceneComposerModel {
             var simTextButton = (SimTextButton) simActor;
             if (simTextButton.style != null && simTextButton.style.hasMandatoryFields()) {
                 var style = main.getRootTable().createPreviewStyle(TextButton.TextButtonStyle.class, simTextButton.style);
-                var textButton = new TextButton(simTextButton.text == null ? "" : simTextButton.text, style);
+                var textButton = new TextButton(simTextButton.text == null ? "" : convertEscapedCharacters(simTextButton.text), style);
                 textButton.setName(simTextButton.name);
                 textButton.setChecked(simTextButton.checked);
                 textButton.setDisabled(simTextButton.disabled);
@@ -506,7 +523,7 @@ public class DialogSceneComposerModel {
             var simImageTextButton = (SimImageTextButton) simActor;
             if (simImageTextButton.style != null && simImageTextButton.style.hasMandatoryFields()) {
                 var style = main.getRootTable().createPreviewStyle(ImageTextButton.ImageTextButtonStyle.class, simImageTextButton.style);
-                var imageTextButton = new ImageTextButton(simImageTextButton.text == null ? "" : simImageTextButton.text, style);
+                var imageTextButton = new ImageTextButton(simImageTextButton.text == null ? "" : convertEscapedCharacters(simImageTextButton.text), style);
                 imageTextButton.setName(simImageTextButton.name);
                 imageTextButton.setChecked(simImageTextButton.checked);
                 imageTextButton.setDisabled(simImageTextButton.disabled);
@@ -526,7 +543,7 @@ public class DialogSceneComposerModel {
             var simCheckBox = (SimCheckBox) simActor;
             if (simCheckBox.style != null && simCheckBox.style.hasMandatoryFields()) {
                 var style = main.getRootTable().createPreviewStyle(CheckBox.CheckBoxStyle.class, simCheckBox.style);
-                var checkBox = new CheckBox(simCheckBox.text == null ? "" : simCheckBox.text, style);
+                var checkBox = new CheckBox(simCheckBox.text == null ? "" : convertEscapedCharacters(simCheckBox.text), style);
                 checkBox.setName(simCheckBox.name);
                 checkBox.setChecked(simCheckBox.checked);
                 checkBox.setDisabled(simCheckBox.disabled);
@@ -553,7 +570,7 @@ public class DialogSceneComposerModel {
             var simLabel = (SimLabel) simActor;
             if (simLabel.style != null && simLabel.style.hasMandatoryFields()) {
                 var style = main.getRootTable().createPreviewStyle(Label.LabelStyle.class, simLabel.style);
-                var label = new Label(simLabel.text == null ? "" : simLabel.text, style);
+                var label = new Label(simLabel.text == null ? "" : convertEscapedCharacters(simLabel.text), style);
                 label.setName(simLabel.name);
                 label.setAlignment(simLabel.textAlignment);
                 if (simLabel.ellipsis) {
@@ -569,7 +586,11 @@ public class DialogSceneComposerModel {
                 var style = main.getRootTable().createPreviewStyle(List.ListStyle.class, simList.style);
                 var list = new List<String>(style);
                 list.setName(simList.name);
-                list.setItems(simList.list);
+                var newList = new Array<String>();
+                for (var item : simList.list) {
+                    newList.add(convertEscapedCharacters(item));
+                }
+                list.setItems(newList);
                 actor = list;
             }
         } else if (simActor instanceof SimProgressBar) {
@@ -594,7 +615,11 @@ public class DialogSceneComposerModel {
                 selectBox.setName(sim.name);
                 selectBox.setDisabled(sim.disabled);
                 selectBox.setMaxListCount(sim.maxListCount);
-                selectBox.setItems(sim.list);
+                var newList = new Array<String>();
+                for (var item : sim.list) {
+                    newList.add(convertEscapedCharacters(item));
+                }
+                selectBox.setItems(newList);
                 selectBox.setAlignment(sim.alignment);
                 selectBox.setSelectedIndex(sim.selected);
                 selectBox.setScrollingDisabled(sim.scrollingDisabled);
@@ -618,7 +643,7 @@ public class DialogSceneComposerModel {
             var sim = (SimTextField) simActor;
             if (sim.style != null && sim.style.hasMandatoryFields()) {
                 var style = main.getRootTable().createPreviewStyle(TextField.TextFieldStyle.class, sim.style);
-                var textField = new TextField(sim.text == null ? "" : sim.text, style);
+                var textField = new TextField(sim.text == null ? "" : convertEscapedCharacters(sim.text), style);
                 textField.setName(sim.name);
                 textField.setPasswordCharacter(sim.passwordCharacter);
                 textField.setPasswordMode(sim.passwordMode);
@@ -639,7 +664,7 @@ public class DialogSceneComposerModel {
             var sim = (SimTextArea) simActor;
             if (sim.style != null && sim.style.hasMandatoryFields()) {
                 var style = main.getRootTable().createPreviewStyle(TextField.TextFieldStyle.class, sim.style);
-                var textArea = new TextArea(sim.text == null ? "" : sim.text, style);
+                var textArea = new TextArea(sim.text == null ? "" : convertEscapedCharacters(sim.text), style);
                 textArea.setName(sim.name);
                 textArea.setPasswordCharacter(sim.passwordCharacter);
                 textArea.setPasswordMode(sim.passwordMode);
