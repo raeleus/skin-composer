@@ -106,6 +106,7 @@ public class SplitPaneListeners {
                 table.defaults().left().expandX();
                 ButtonGroup buttonGroup = new ButtonGroup();
                 var imageTextButton = new ImageTextButton("Horizontal", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton.setProgrammaticChangeEvents(false);
                 imageTextButton.setChecked(!simSplitPane.vertical);
                 table.add(imageTextButton);
                 buttonGroup.add(imageTextButton);
@@ -120,6 +121,7 @@ public class SplitPaneListeners {
                 
                 table.row();
                 imageTextButton = new ImageTextButton("Vertical", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton.setProgrammaticChangeEvents(false);
                 imageTextButton.setChecked(simSplitPane.vertical);
                 table.add(imageTextButton);
                 buttonGroup.add(imageTextButton);
