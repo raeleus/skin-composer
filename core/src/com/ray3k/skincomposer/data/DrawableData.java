@@ -30,8 +30,8 @@ import com.ray3k.skincomposer.utils.Utils;
 
 public class DrawableData {
     public enum DrawableType {
-        TINTED("Tinted", "button-colorwheel-over"), TINTED_FROM_COLOR_DATA("Tinted", "button-swatches-over"),
-        TILED("Tiled", "button-tiles-over"), TENPATCH("TenPatch", "button-tenpatch-over"),
+        TINTED("Tinted", "button-colorwheel"), TINTED_FROM_COLOR_DATA("Tinted", "button-swatches"),
+        TILED("Tiled", "button-tiles"), TENPATCH("TenPatch", "button-tenpatch"),
         TEXTURE("Texture", "icon-texture"), NINE_PATCH("NinePatch", "icon-ninepatch"),
         CUSTOM("Custom", "icon-custom");
         
