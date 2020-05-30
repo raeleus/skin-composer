@@ -661,6 +661,7 @@ public class DialogSceneComposerModel {
                 textField.setFocusTraversal(sim.focusTraversal);
                 textField.setMaxLength(sim.maxLength);
                 textField.setMessageText(sim.messageText);
+                textField.addListener(main.getIbeamListener());
                 actor = textField;
             }
         } else if (simActor instanceof SimTextArea) {
@@ -683,6 +684,7 @@ public class DialogSceneComposerModel {
                 textArea.setMaxLength(sim.maxLength);
                 textArea.setMessageText(sim.messageText);
                 textArea.setPrefRows(sim.preferredRows);
+                textArea.addListener(main.getIbeamListener());
                 actor = textArea;
             }
         } else if (simActor instanceof SimTouchPad) {
