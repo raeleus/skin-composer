@@ -89,7 +89,7 @@ public class EditWidget extends Button {
             setBounds(temp.x, temp.y, followActor.getWidth(), followActor.getHeight());
         } else if (cell != null) {
             var table = cell.getTable();
-            temp.set(0, 0);
+            temp.set(table.getPadLeft(), table.getPadBottom());
     
             var contentWidth = 0f;
             var contentHeight = 0f;
@@ -101,29 +101,29 @@ public class EditWidget extends Button {
             }
     
             if ((table.getAlign() & Align.right) != 0) {
-                temp.add(table.getWidth() - contentWidth, 0);
+                temp.add(table.getWidth() - contentWidth - table.getPadLeft() - table.getPadRight(), 0);
             } else if ((table.getAlign() & Align.left) == 0) {
-                temp.add((table.getWidth() - contentWidth) / 2, 0);
+                temp.add((table.getWidth() - contentWidth - table.getPadLeft() - table.getPadRight()) / 2, 0);
             }
     
             if ((table.getAlign() & Align.top) != 0) {
-                temp.add(0, table.getHeight() - contentHeight);
+                temp.add(0, table.getHeight() - contentHeight - table.getPadBottom()  - table.getPadTop());
             } else if ((table.getAlign() & Align.bottom) == 0) {
-                temp.add(0, (table.getHeight() - contentHeight) / 2);
+                temp.add(0, (table.getHeight() - contentHeight - table.getPadBottom() - table.getPadTop()) / 2);
             }
             
             table.localToStageCoordinates(temp);
             stageToLocalCoordinates(temp);
             
-            var width = 0f;
-            var height = 0f;
+            var xpos = 0f;
+            var ypos = 0f;
             
             for (int i = 0; i < cell.getColumn(); i++) {
-                width += table.getColumnWidth(i);
+                xpos += table.getColumnWidth(i);
             }
             
             for (int i = table.getRows() - 1; i > cell.getRow(); i--) {
-                height += table.getRowHeight(i);
+                ypos += table.getRowHeight(i);
             }
 
             var cellWidth = 0;
@@ -131,7 +131,7 @@ public class EditWidget extends Button {
                 cellWidth += table.getColumnWidth(i);
             }
             
-            setBounds(temp.x + width, temp.y + height, cellWidth, table.getRowHeight(cell.getRow()));
+            setBounds(temp.x + xpos, temp.y + ypos, cellWidth, table.getRowHeight(cell.getRow()));
         }
     }
 }

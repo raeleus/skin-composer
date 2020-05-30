@@ -419,7 +419,9 @@ public class DialogSceneComposerModel {
                 table.setColor(simTable.color.color);
             }
             
-            table.pad(simTable.padTop, simTable.padLeft, simTable.padBottom, simTable.padRight);
+            if (simTable.paddingEnabled) {
+                table.pad(simTable.padTop, simTable.padLeft, simTable.padBottom, simTable.padRight);
+            }
             
             table.align(simTable.alignment);
             
@@ -1004,6 +1006,7 @@ public class DialogSceneComposerModel {
         public float padRight;
         public float padTop;
         public float padBottom;
+        public boolean paddingEnabled;
         public int alignment = Align.center;
         public boolean fillParent;
     
@@ -1024,6 +1027,7 @@ public class DialogSceneComposerModel {
             simTable.padRight = padRight;
             simTable.padTop = padTop;
             simTable.padBottom = padBottom;
+            simTable.paddingEnabled = paddingEnabled;
             simTable.alignment = alignment;
             simTable.fillParent = fillParent;
             
@@ -1044,6 +1048,7 @@ public class DialogSceneComposerModel {
             padRight = 0;
             padTop = 0;
             padBottom = 0;
+            paddingEnabled = false;
             alignment = Align.center;
         }
         

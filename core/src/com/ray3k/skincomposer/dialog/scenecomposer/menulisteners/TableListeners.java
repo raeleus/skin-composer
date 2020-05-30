@@ -141,29 +141,66 @@ public class TableListeners {
             public void update() {
                 var popTable = getPopTable();
                 popTable.clearChildren();
+                popTable.defaults().reset();
     
                 var changeListener = new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
+                        TextButton paddingButton = popTable.findActor("padding-button");
+                        paddingButton.setText(paddingButton.isChecked() ? "Enabled" : "Disabled");
+                        
                         Spinner padLeft = popTable.findActor("pad-left");
+                        padLeft.setTouchable(paddingButton.isChecked() ? Touchable.enabled : Touchable.disabled);
+                        padLeft.getTextField().setDisabled(!paddingButton.isChecked());
+                        padLeft.getButtonMinus().setDisabled(!paddingButton.isChecked());
+                        padLeft.getButtonPlus().setDisabled(!paddingButton.isChecked());
+                        
                         Spinner padRight = popTable.findActor("pad-right");
+                        padRight.setTouchable(paddingButton.isChecked() ? Touchable.enabled : Touchable.disabled);
+                        padRight.getTextField().setDisabled(!paddingButton.isChecked());
+                        padRight.getButtonMinus().setDisabled(!paddingButton.isChecked());
+                        padRight.getButtonPlus().setDisabled(!paddingButton.isChecked());
+                        
                         Spinner padTop = popTable.findActor("pad-top");
+                        padTop.setTouchable(paddingButton.isChecked() ? Touchable.enabled : Touchable.disabled);
+                        padTop.getTextField().setDisabled(!paddingButton.isChecked());
+                        padTop.getButtonMinus().setDisabled(!paddingButton.isChecked());
+                        padTop.getButtonPlus().setDisabled(!paddingButton.isChecked());
+                        
                         Spinner padBottom = popTable.findActor("pad-bottom");
-                        events.tablePadding((float) padLeft.getValue(), (float)  padRight.getValue(), (float)  padTop.getValue(), (float)  padBottom.getValue());
+                        padBottom.setTouchable(paddingButton.isChecked() ? Touchable.enabled : Touchable.disabled);
+                        padBottom.getTextField().setDisabled(!paddingButton.isChecked());
+                        padBottom.getButtonMinus().setDisabled(!paddingButton.isChecked());
+                        padBottom.getButtonPlus().setDisabled(!paddingButton.isChecked());
+                        
+                        events.tablePadding(paddingButton.isChecked(), (float) padLeft.getValue(), (float)  padRight.getValue(), (float)  padTop.getValue(), (float)  padBottom.getValue());
                     }
                 };
     
-                var label = new Label("Padding:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Padding", DialogSceneComposer.skin, "scene-label-colored");
                 popTable.add(label).colspan(2);
     
                 popTable.row();
                 popTable.defaults().right().spaceRight(5);
+                var textButton = new TextButton(simTable.paddingEnabled ? "Enabled" : "Disabled", DialogSceneComposer.skin, "scene-small");
+                textButton.setChecked(simTable.paddingEnabled);
+                textButton.setName("padding-button");
+                popTable.add(textButton).minWidth(150).colspan(2);
+                textButton.addListener(DialogSceneComposer.main.getHandListener());
+                textButton.addListener(new TextTooltip("Whether the button is checked initially.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textButton.addListener(changeListener);
+                
+                popTable.row();
                 label = new Label("Left:", DialogSceneComposer.skin, "scene-label-colored");
                 popTable.add(label);
     
                 var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
                 spinner.setName("pad-left");
                 spinner.setValue(simTable.padLeft);
+                spinner.setTouchable(simTable.paddingEnabled ? Touchable.enabled : Touchable.disabled);
+                spinner.getTextField().setDisabled(!simTable.paddingEnabled);
+                spinner.getButtonMinus().setDisabled(!simTable.paddingEnabled);
+                spinner.getButtonPlus().setDisabled(!simTable.paddingEnabled);
                 popTable.add(spinner);
                 spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
                 spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
@@ -178,6 +215,10 @@ public class TableListeners {
                 spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
                 spinner.setName("pad-right");
                 spinner.setValue(simTable.padRight);
+                spinner.setTouchable(simTable.paddingEnabled ? Touchable.enabled : Touchable.disabled);
+                spinner.getTextField().setDisabled(!simTable.paddingEnabled);
+                spinner.getButtonMinus().setDisabled(!simTable.paddingEnabled);
+                spinner.getButtonPlus().setDisabled(!simTable.paddingEnabled);
                 popTable.add(spinner);
                 spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
                 spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
@@ -192,6 +233,10 @@ public class TableListeners {
                 spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
                 spinner.setName("pad-top");
                 spinner.setValue(simTable.padTop);
+                spinner.setTouchable(simTable.paddingEnabled ? Touchable.enabled : Touchable.disabled);
+                spinner.getTextField().setDisabled(!simTable.paddingEnabled);
+                spinner.getButtonMinus().setDisabled(!simTable.paddingEnabled);
+                spinner.getButtonPlus().setDisabled(!simTable.paddingEnabled);
                 popTable.add(spinner);
                 spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
                 spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
@@ -206,6 +251,10 @@ public class TableListeners {
                 spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
                 spinner.setName("pad-bottom");
                 spinner.setValue(simTable.padBottom);
+                spinner.setTouchable(simTable.paddingEnabled ? Touchable.enabled : Touchable.disabled);
+                spinner.getTextField().setDisabled(!simTable.paddingEnabled);
+                spinner.getButtonMinus().setDisabled(!simTable.paddingEnabled);
+                spinner.getButtonPlus().setDisabled(!simTable.paddingEnabled);
                 popTable.add(spinner);
                 spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
                 spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());

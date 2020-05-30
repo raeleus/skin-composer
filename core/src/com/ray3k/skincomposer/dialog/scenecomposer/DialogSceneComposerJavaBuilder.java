@@ -88,22 +88,14 @@ public class DialogSceneComposerJavaBuilder {
             if (table.background != null) builder.addStatement("$L.setBackground(skin.getDrawable($S))", variableName, table.background.name);
             if (table.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, table.color.getName());
             
-            if (!Utils.isEqual(0, table.padLeft, table.padRight, table.padTop, table.padBottom)) {
+            if (table.paddingEnabled) {
                 if (Utils.isEqual(table.padLeft, table.padRight, table.padTop, table.padBottom)) {
                     builder.addStatement("$L.pad($Lf)", variableName, table.padLeft);
                 } else {
-                    if (!MathUtils.isZero(table.padLeft)) {
-                        builder.addStatement("$L.padLeft($Lf)", variableName, table.padLeft);
-                    }
-                    if (!MathUtils.isZero(table.padRight)) {
-                        builder.addStatement("$L.padRight($Lf)", variableName, table.padRight);
-                    }
-                    if (!MathUtils.isZero(table.padTop)) {
-                        builder.addStatement("$L.padTop($Lf)", variableName, table.padTop);
-                    }
-                    if (!MathUtils.isZero(table.padBottom)) {
-                        builder.addStatement("$L.padBottom($Lf)", variableName, table.padBottom);
-                    }
+                    builder.addStatement("$L.padLeft($Lf)", variableName, table.padLeft);
+                    builder.addStatement("$L.padRight($Lf)", variableName, table.padRight);
+                    builder.addStatement("$L.padTop($Lf)", variableName, table.padTop);
+                    builder.addStatement("$L.padBottom($Lf)", variableName, table.padBottom);
                 }
             }
             

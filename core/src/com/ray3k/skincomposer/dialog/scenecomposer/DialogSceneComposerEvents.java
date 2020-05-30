@@ -122,8 +122,8 @@ public class DialogSceneComposerEvents {
         processUndoable(new TableColorUndoable(color));
     }
     
-    public void tablePadding(float paddingLeft, float paddingRight, float paddingTop, float paddingBottom) {
-        processUndoable(new TablePaddingUndoable(paddingLeft, paddingRight, paddingTop, paddingBottom));
+    public void tablePadding(boolean enabled, float paddingLeft, float paddingRight, float paddingTop, float paddingBottom) {
+        processUndoable(new TablePaddingUndoable(enabled, paddingLeft, paddingRight, paddingTop, paddingBottom));
     }
     
     public void tableAlignment(int alignment) {
