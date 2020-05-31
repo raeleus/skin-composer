@@ -627,16 +627,46 @@ public class CellListeners {
                 var changeListener = new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        Spinner paddingLeft = popTable.findActor("padding-left");
-                        Spinner paddingRight = popTable.findActor("padding-right");
-                        Spinner paddingTop = popTable.findActor("padding-top");
-                        Spinner paddingBottom = popTable.findActor("padding-bottom");
-                        Spinner spacingLeft = popTable.findActor("spacing-left");
-                        Spinner spacingRight = popTable.findActor("spacing-right");
-                        Spinner spacingTop = popTable.findActor("spacing-top");
-                        Spinner spacingBottom = popTable.findActor("spacing-bottom");
-            
-                        events.cellPaddingSpacing((float) paddingLeft.getValue(), (float) paddingRight.getValue(), (float) paddingTop.getValue(), (float) paddingBottom.getValue(), (float) spacingLeft.getValue(), (float) spacingRight.getValue(), (float) spacingTop.getValue(), (float) spacingBottom.getValue());
+                        Spinner paddingLeftSpinner = popTable.findActor("padding-left");
+                        Spinner paddingRightSpinner = popTable.findActor("padding-right");
+                        Spinner paddingTopSpinner = popTable.findActor("padding-top");
+                        Spinner paddingBottomSpinner = popTable.findActor("padding-bottom");
+                        Spinner spacingLeftSpinner = popTable.findActor("spacing-left");
+                        Spinner spacingRightSpinner = popTable.findActor("spacing-right");
+                        Spinner spacingTopSpinner = popTable.findActor("spacing-top");
+                        Spinner spacingBottomSpinner = popTable.findActor("spacing-bottom");
+                        Button paddingLinkButton = popTable.findActor("padding-link");
+                        Button spacingLinkButton = popTable.findActor("spacing-link");
+    
+                        if (paddingLinkButton.isChecked() && actor instanceof Spinner) {
+                            var val = (float) ((Spinner) actor).getValue();
+        
+                            paddingLeftSpinner.setValue(val);
+                            paddingRightSpinner.setValue(val);
+                            paddingTopSpinner.setValue(val);
+                            paddingBottomSpinner.setValue(val);
+                        }
+    
+                        if (spacingLinkButton.isChecked() && actor instanceof Spinner) {
+                            var val = (float) ((Spinner) actor).getValue();
+        
+                            spacingLeftSpinner.setValue(val);
+                            spacingRightSpinner.setValue(val);
+                            spacingTopSpinner.setValue(val);
+                            spacingBottomSpinner.setValue(val);
+                        }
+    
+                        var paddingLeft = (float) paddingLeftSpinner.getValue();
+                        var paddingRight = (float) paddingRightSpinner.getValue();
+                        var paddingTop = (float) paddingTopSpinner.getValue();
+                        var paddingBottom = (float) paddingBottomSpinner.getValue();
+                        var spacingLeft = (float) spacingLeftSpinner.getValue();
+                        var spacingRight = (float) spacingRightSpinner.getValue();
+                        var spacingTop = (float) spacingTopSpinner.getValue();
+                        var spacingBottom = (float) spacingBottomSpinner.getValue();
+                        
+                        events.cellPaddingSpacing(paddingLeft, paddingRight, paddingTop, paddingBottom, spacingLeft,
+                                spacingRight, spacingTop, spacingBottom);
                     }
                 };
     
@@ -702,6 +732,14 @@ public class CellListeners {
                 spinner.getButtonPlus().addListener(DialogSceneComposer.main.getHandListener());
                 spinner.addListener(new TextTooltip("The padding to the bottom of the cell. Stacks with other cell padding.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 spinner.addListener(changeListener);
+                
+                table.row();
+                var button = new Button(DialogSceneComposer.skin, "scene-link");
+                button.setName("padding-link");
+                table.add(button).right().colspan(2);
+                button.addListener(Main.main.getHandListener());
+                button.addListener(changeListener);
+                button.addListener(new TextTooltip("Click to modify all padding values at once.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
     
                 var image = new Image(DialogSceneComposer.skin, "scene-menu-divider");
                 popTable.add(image).space(10).growY();
@@ -768,6 +806,14 @@ public class CellListeners {
                 spinner.getButtonPlus().addListener(DialogSceneComposer.main.getHandListener());
                 spinner.addListener(new TextTooltip("The spacing to the bottom of the cell. Does not stack with other cell spacing.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 spinner.addListener(changeListener);
+    
+                table.row();
+                button = new Button(DialogSceneComposer.skin, "scene-link");
+                button.setName("spacing-link");
+                table.add(button).right().colspan(2);
+                button.addListener(Main.main.getHandListener());
+                button.addListener(changeListener);
+                button.addListener(new TextTooltip("Click to modify all spacing values at once.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
             }
         };
         
