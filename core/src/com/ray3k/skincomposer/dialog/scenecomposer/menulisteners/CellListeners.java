@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.ray3k.skincomposer.Main;
 import com.ray3k.stripe.PopTableClickListener;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
@@ -88,10 +89,33 @@ public class CellListeners {
                         Spinner maximumHeight = popTable.findActor("maximum-height");
                         Spinner preferredWidth = popTable.findActor("preferred-width");
                         Spinner preferredHeight = popTable.findActor("preferred-height");
-                        events.cellSize((float) minimumWidth.getValue(), (float) minimumHeight.getValue(), (float) maximumWidth.getValue(), (float) maximumHeight.getValue(), (float) preferredWidth.getValue(), (float) preferredHeight.getValue());
+                        Button link = popTable.findActor("link");
+                        
+                        if (!link.isChecked()) {
+                            events.cellSize((float) minimumWidth.getValue(), (float) minimumHeight.getValue(),
+                                    (float) maximumWidth.getValue(), (float) maximumHeight.getValue(),
+                                    (float) preferredWidth.getValue(), (float) preferredHeight.getValue());
+                        } else if (actor != link) {
+                            var val = 0.0f;
+                            if (actor == minimumWidth) val = (float) minimumWidth.getValue();
+                            else if (actor == minimumHeight) val = (float) minimumHeight.getValue();
+                            else if (actor == maximumWidth) val = (float) maximumWidth.getValue();
+                            else if (actor == maximumHeight) val = (float) maximumHeight.getValue();
+                            else if (actor == preferredWidth) val = (float) preferredWidth.getValue();
+                            else if (actor == preferredHeight) val = (float) preferredHeight.getValue();
+                            
+                            events.cellSize(val, val, val, val, val, val);
+                            
+                            minimumWidth.setValue(val);
+                            minimumHeight.setValue(val);
+                            maximumWidth.setValue(val);
+                            maximumHeight.setValue(val);
+                            preferredWidth.setValue(val);
+                            preferredHeight.setValue(val);
+                        }
                     }
                 };
-    
+                
                 var label = new Label("Minimum:", DialogSceneComposer.skin, "scene-label-colored");
                 table.add(label).colspan(2);
     
@@ -199,6 +223,14 @@ public class CellListeners {
                 spinner.getButtonPlus().addListener(DialogSceneComposer.main.getHandListener());
                 spinner.addListener(new TextTooltip("The preferred height of the contents of the cell.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 spinner.addListener(changeListener);
+                
+                popTable.row();
+                var button = new Button(DialogSceneComposer.skin, "scene-link");
+                button.setName("link");
+                popTable.add(button).colspan(5).right();
+                button.addListener(Main.main.getHandListener());
+                button.addListener(changeListener);
+                button.addListener(new TextTooltip("Click to modify all values at once.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
             }
         };
         
