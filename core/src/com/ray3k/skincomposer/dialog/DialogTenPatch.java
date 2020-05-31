@@ -49,6 +49,7 @@ import com.ray3k.skincomposer.*;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.stripe.PopTable;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
 import java.util.Locale;
@@ -1153,17 +1154,17 @@ public class DialogTenPatch extends Dialog {
     }
     
     public void showToast(String message) {
-        var table = new Table();
-        table.setBackground(skin.getDrawable("textfield"));
-        table.setWidth(getStage().getWidth());
-        table.setHeight(50);
-        table.setPosition(0, 0, Align.topLeft);
-        getStage().addActor(table);
+        var popTable = new PopTable();
+        popTable.setHideOnUnfocus(true);
+        popTable.setBackground(skin.getDrawable("textfield"));
         
-        table.addAction(Actions.sequence(Actions.delay(.4f), Actions.moveBy(0, 50, .5f, Interpolation.circleOut),Actions.delay(1.5f), Actions.moveBy(0, -50, .5f, Interpolation.circleIn), Actions.removeActor()));
-        
+        popTable.pad(25);
         var label = new Label(message, skin);
-        table.add(label);
-        table.layout();
+        label.setTouchable(Touchable.disabled);
+        popTable.add(label);
+        
+        popTable.show(getStage(), Actions.sequence(Actions.color(Color.CLEAR), Actions.fadeIn(.4f), Actions.delay(2f), Actions.run(() -> {
+            popTable.hide(Actions.fadeOut(.5f));
+        })));
     }
 }
