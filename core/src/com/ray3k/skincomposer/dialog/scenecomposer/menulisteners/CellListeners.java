@@ -77,9 +77,6 @@ public class CellListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
     
-                var table = new Table();
-                popTable.add(table);
-    
                 var changeListener = new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -90,7 +87,7 @@ public class CellListeners {
                         Spinner preferredWidth = popTable.findActor("preferred-width");
                         Spinner preferredHeight = popTable.findActor("preferred-height");
                         Button link = popTable.findActor("link");
-                        
+            
                         if (!link.isChecked()) {
                             events.cellSize((float) minimumWidth.getValue(), (float) minimumHeight.getValue(),
                                     (float) maximumWidth.getValue(), (float) maximumHeight.getValue(),
@@ -103,9 +100,9 @@ public class CellListeners {
                             else if (actor == maximumHeight) val = (float) maximumHeight.getValue();
                             else if (actor == preferredWidth) val = (float) preferredWidth.getValue();
                             else if (actor == preferredHeight) val = (float) preferredHeight.getValue();
-                            
+                
                             events.cellSize(val, val, val, val, val, val);
-                            
+                
                             minimumWidth.setValue(val);
                             minimumHeight.setValue(val);
                             maximumWidth.setValue(val);
@@ -115,8 +112,15 @@ public class CellListeners {
                         }
                     }
                 };
+    
+                var label = new Label("Set to negative to disable", DialogSceneComposer.skin, "scene-label-colored");
+                popTable.add(label).colspan(5);
+    
+                popTable.row();
+                var table = new Table();
+                popTable.add(table);
                 
-                var label = new Label("Minimum:", DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label("Minimum:", DialogSceneComposer.skin, "scene-label-colored");
                 table.add(label).colspan(2);
     
                 table.row();
