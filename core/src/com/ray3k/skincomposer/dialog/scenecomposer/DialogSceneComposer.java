@@ -394,56 +394,6 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(main.getHandListener());
             textButton.addListener(CellListeners.cellAddCellListener(events, simActor));
             textButton.addListener(new TextTooltip("Adds a new cell.", main.getTooltipManager(), skin, "scene"));
-    
-//            table = new Table();
-//            horizontalGroup.addActor(table);
-//
-//            textButton = new TextButton("Duplicate Left", skin, "scene-med");
-//            table.add(textButton);
-//            textButton.addListener(main.getHandListener());
-//            textButton.addListener(new ChangeListener() {
-//                @Override
-//                public void changed(ChangeEvent event, Actor actor) {
-//                    events.cellDuplicateCellLeft();
-//                }
-//            });
-//            textButton.addListener(new TextTooltip("Duplicates the cell to the left of the current one.", main.getTooltipManager(), skin, "scene"));
-//
-//            textButton = new TextButton("Duplicate Right", skin, "scene-med");
-//            table.add(textButton);
-//            textButton.addListener(main.getHandListener());
-//            textButton.addListener(new ChangeListener() {
-//                @Override
-//                public void changed(ChangeEvent event, Actor actor) {
-//                    events.cellDuplicateCellRight();
-//                }
-//            });
-//            textButton.addListener(new TextTooltip("Duplicates the cell to the right of the current one.", main.getTooltipManager(), skin, "scene"));
-//
-//            table = new Table();
-//            horizontalGroup.addActor(table);
-//
-//            textButton = new TextButton("Duplicate Up", skin, "scene-med");
-//            table.add(textButton);
-//            textButton.addListener(main.getHandListener());
-//            textButton.addListener(new ChangeListener() {
-//                @Override
-//                public void changed(ChangeEvent event, Actor actor) {
-//                    events.cellDuplicateCellAbove();
-//                }
-//            });
-//            textButton.addListener(new TextTooltip("Duplicates the cell above the currently selected one.", main.getTooltipManager(), skin, "scene"));
-//
-//            textButton = new TextButton("Duplicate Down", skin, "scene-med");
-//            table.add(textButton);
-//            textButton.addListener(main.getHandListener());
-//            textButton.addListener(new ChangeListener() {
-//                @Override
-//                public void changed(ChangeEvent event, Actor actor) {
-//                    events.cellDuplicateCellBelow();
-//                }
-//            });
-//            textButton.addListener(new TextTooltip("Duplicates the cell below the currently selected one.", main.getTooltipManager(), skin, "scene"));
         
             var table = new Table();
             horizontalGroup.addActor(table);
