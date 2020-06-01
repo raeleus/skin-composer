@@ -26,6 +26,7 @@ package com.ray3k.skincomposer.data;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.Main;
@@ -727,6 +728,14 @@ public class ProjectData implements Json.Serializable {
     
     public void setExportingHex(boolean exportHex) {
         preferences.put("export-hex", exportHex);
+    }
+    
+    public Color getPreviewBgColor() {
+        return (Color) preferences.get("preview-bg-color", new Color(Color.WHITE));
+    }
+    
+    public void setPreviewBgColor(Color color) {
+        preferences.put("preview-bg-color", color);
     }
     
     /**

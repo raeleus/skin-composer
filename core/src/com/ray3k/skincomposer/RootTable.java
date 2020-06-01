@@ -68,7 +68,6 @@ public class RootTable extends Table {
     private ScrollPane stylePropertiesScrollPane;
     private final ScrollPaneListener scrollPaneListener;
     private final ObjectMap<String, Object> previewProperties;
-    private final Color previewBgColor;
     private SelectBox<String> previewSizeSelectBox;
     private static final String[] DEFAULT_SIZES = {"small", "default", "large", "growX", "growY", "grow", "custom"};
     private static final String TEXT_SAMPLE = "Lorem ipsum dolor sit";
@@ -107,7 +106,6 @@ public class RootTable extends Table {
         this.main = main;
         
         previewProperties = new ObjectMap<>();
-        previewBgColor = new Color(Color.WHITE);
         
         scrollPaneListener = new ScrollPaneListener();
         previewFonts = new Array<>();
@@ -1035,10 +1033,7 @@ public class RootTable extends Table {
             previewPropertiesTable.add(t).grow();
             t.defaults().pad(3.0f);
             
-            if (previewBgColor == null) {
-                previewBgColor.set(Color.WHITE);
-            }
-            previewProperties.put("bgcolor", previewBgColor);
+            previewProperties.put("bgcolor", main.getProjectData().getPreviewBgColor());
 
             if (classSelectBox.getSelectedIndex() >= 0 && classSelectBox.getSelectedIndex() < Main.BASIC_CLASSES.length) {
                 t.add(new Label("Stage Color: ", getSkin())).right();
@@ -1052,7 +1047,7 @@ public class RootTable extends Table {
                                 if (color != null) {
                                     browseField.getTextButton().setText((int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
                                     previewProperties.put("bgcolor", color);
-                                    previewBgColor.set(color);
+                                    main.getProjectData().setPreviewBgColor(color);
                                     refreshPreview();
                                 }
                             }
@@ -1062,6 +1057,7 @@ public class RootTable extends Table {
                 
                 browseField.addListener(main.getHandListener());
                 t.add(browseField).growX();
+                var previewBgColor = main.getProjectData().getPreviewBgColor();
                 browseField.getTextButton().setText((int) (previewBgColor.r * 255) + "," + (int) (previewBgColor.g * 255) + "," + (int) (previewBgColor.b * 255) + "," + (int) (previewBgColor.a * 255));
 
                 t.row();
@@ -2030,7 +2026,7 @@ public class RootTable extends Table {
                                 if (color != null) {
                                     browseField.getTextButton().setText((int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
                                     previewProperties.put("bgcolor", color);
-                                    previewBgColor.set(color);
+                                    main.getProjectData().setPreviewBgColor(color);
                                     refreshPreview();
                                 }
                             }
@@ -2040,6 +2036,8 @@ public class RootTable extends Table {
                 
                 browseField.addListener(main.getHandListener());
                 t.add(browseField).growX();
+                
+                var previewBgColor = main.getProjectData().getPreviewBgColor();
                 browseField.getTextButton().setText((int) (previewBgColor.r * 255) + "," + (int) (previewBgColor.g * 255) + "," + (int) (previewBgColor.b * 255) + "," + (int) (previewBgColor.a * 255));
             }
         }
