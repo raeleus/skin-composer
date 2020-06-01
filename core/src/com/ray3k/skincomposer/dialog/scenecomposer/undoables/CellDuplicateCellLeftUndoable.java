@@ -62,11 +62,11 @@ public class CellDuplicateCellLeftUndoable implements SceneComposerUndoable {
     
     @Override
     public String getRedoString() {
-        return "Redo \"Add Cell to Left\"";
+        return "Redo \"Duplicate Cell Left\"";
     }
     
     @Override
     public String getUndoString() {
-        return "Undo \"Add Cell to Left\"";
+        return "Undo \"Duplicate Cell Left\"";
     }
 }

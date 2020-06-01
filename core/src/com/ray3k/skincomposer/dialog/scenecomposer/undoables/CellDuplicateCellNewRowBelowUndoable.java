@@ -62,11 +62,11 @@ public class CellDuplicateCellNewRowBelowUndoable implements SceneComposerUndoab
     
     @Override
     public String getRedoString() {
-        return "Redo \"Add Row Below Cell\"";
+        return "Redo \"Duplicate Cell to New Row Below\"";
     }
     
     @Override
     public String getUndoString() {
-        return "Undo \"Add Row Below Cell\"";
+        return "Undo \"Duplicate Cell to New Row Below\"";
     }
 }
