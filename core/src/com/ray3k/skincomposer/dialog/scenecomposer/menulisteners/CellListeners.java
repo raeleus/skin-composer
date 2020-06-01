@@ -70,7 +70,7 @@ public class CellListeners {
                 button.setDisabled(simCell.row == simTable.getRows() - 1);
                 subTable.add(button);
                 button.addListener(DialogSceneComposer.main.getHandListener());
-                button.addListener(new TextTooltip("Moves the current cell to the end of the row below.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new TextTooltip("Moves the current cell down.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -83,7 +83,7 @@ public class CellListeners {
                 button.setDisabled(simCell.row == 0);
                 subTable.add(button);
                 button.addListener(DialogSceneComposer.main.getHandListener());
-                button.addListener(new TextTooltip("Moves the current cell to the end of the row above.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new TextTooltip("Moves the current cell up.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

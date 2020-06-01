@@ -16,11 +16,17 @@ public class CellMoveCellDownUndoable implements SceneComposerUndoable {
         cell = (DialogSceneComposerModel.SimCell) dialog.simActor;
         table = (DialogSceneComposerModel.SimTable) cell.parent;
         oldColumn = cell.column;
-        column = table.getColumns(cell.row + 1);
+        column = Math.min(table.getColumns(cell.row + 1), cell.column);
     }
     
     @Override
     public void undo() {
+        for (var currentCell : table.cells) {
+            if (currentCell.row == cell.row && currentCell.column > column) {
+                currentCell.column--;
+            }
+        }
+    
         for (var currentCell : table.cells) {
             if (currentCell.row == cell.row - 1 && currentCell.column >= oldColumn) {
                 currentCell.column++;
@@ -44,6 +50,12 @@ public class CellMoveCellDownUndoable implements SceneComposerUndoable {
         for (var currentCell : table.cells) {
             if (currentCell.row == cell.row && currentCell.column > oldColumn) {
                 currentCell.column--;
+            }
+        }
+    
+        for (var currentCell : table.cells) {
+            if (currentCell.row == cell.row + 1 && currentCell.column >= column) {
+                currentCell.column++;
             }
         }
         
