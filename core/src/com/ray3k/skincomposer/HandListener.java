@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 
 public class HandListener extends ClickListener {    
     public HandListener() {
@@ -43,6 +44,7 @@ public class HandListener extends ClickListener {
 
     @Override
     public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-        Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+        if (!(event.getListenerActor() instanceof Disableable) || !((Disableable) event.getListenerActor()).isDisabled())
+            Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
     }
 }

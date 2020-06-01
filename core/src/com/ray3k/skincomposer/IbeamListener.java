@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 
 public class IbeamListener extends ClickListener {
     public IbeamListener() {
@@ -43,6 +44,7 @@ public class IbeamListener extends ClickListener {
 
     @Override
     public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-        Gdx.graphics.setSystemCursor(SystemCursor.Ibeam);
+        if (!(event.getListenerActor() instanceof Disableable) || !((Disableable) event.getListenerActor()).isDisabled())
+            Gdx.graphics.setSystemCursor(SystemCursor.Ibeam);
     }
 }
