@@ -806,7 +806,7 @@ public class JsonData implements Json.Serializable {
         
         //ten patch drawables
         if (tenPatchDrawables.size > 0) {
-            String className = main.getProjectData().isUsingSimpleNames() ? TenPatchDrawable.class.getSimpleName() : TenPatchDrawable.class.getName();
+            String className = TenPatchDrawable.class.getName();
             json.writeObjectStart(className);
             for (DrawableData drawable : tenPatchDrawables) {
                 json.writeObjectStart(drawable.name);
