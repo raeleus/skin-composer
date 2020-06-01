@@ -7,13 +7,15 @@
 * Drawables can be hidden in the Drawables dialog to prevent them from being shown with the default filter. They can be unhidden by deactivating the filter and deselcting "hidden".
 * Drawables filter is persisted between every use. Remember to click the filter button and choose "reset" to disable the filter.
 * Background color is automatically set in FreeTypeFont dialog.
-* Red marquees make it more obvious that required values are missing in various dialogs. 
+* Red marquees make it more obvious that required values are missing in various dialogs.
+* Preview background color is saved with the project for convenience. 
 * Fixed crash when adding a custom placeholder drawable to a project that is set to keep resources relative.
 * Fixed Tenpatch dialog not displaying correct region in preview when removing all animation frames.
 * Fixed crash with FreeTypeFonts when they are missing from the project.
 * Default maximum for ProgressBar previews is 10 instead of 100.
 * Corrected terminology in 9patch editor.
 * Fixed crash when typing "[]" into text fields.
+* Fixed exporting with Simple Names breaking TenPatchDrawables.
 * Set "NO_MAXIMUM" on FreeTypeFontGenerators to allow FreeType fonts of any size.
 * Updated to Gradle 6.4.1. Building Skin Composer project with JDK 14 suggested. Running Skin Composer JAR requires JRE 11 or later. 
 * Minor UI Tweaks and bug fixes. 
