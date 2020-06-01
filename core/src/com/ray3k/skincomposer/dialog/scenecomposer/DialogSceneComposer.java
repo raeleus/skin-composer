@@ -394,7 +394,13 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(main.getHandListener());
             textButton.addListener(CellListeners.cellAddCellListener(events, simActor));
             textButton.addListener(new TextTooltip("Adds a new cell.", main.getTooltipManager(), skin, "scene"));
-        
+    
+            textButton = new TextButton("Move Cell...", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(CellListeners.cellMoveCellListener(events, simActor));
+            textButton.addListener(new TextTooltip("Moves the cell in a given direction.", main.getTooltipManager(), skin, "scene"));
+            
             var table = new Table();
             horizontalGroup.addActor(table);
         

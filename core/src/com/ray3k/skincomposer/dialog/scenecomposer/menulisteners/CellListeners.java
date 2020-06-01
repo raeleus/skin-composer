@@ -16,6 +16,89 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 
 public class CellListeners {
+    public static EventListener cellMoveCellListener(final DialogSceneComposerEvents events, SimActor simActor) {
+        var simCell = (DialogSceneComposerModel.SimCell) simActor;
+        var simTable = (SimTable) simActor.parent;
+        
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var skin = DialogSceneComposer.skin;
+
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var label = new Label("Move Cell", skin, "scene-label-colored");
+                popTable.add(label);
+
+                popTable.row();
+                var subTable = new Table();
+                popTable.add(subTable);
+
+                var button = new Button(skin, "scene-move-left");
+                button.setDisabled(simCell.column == 0);
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Moves the current cell left.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellMoveCellLeft();
+                        popTable.hide();
+                    }
+                });
+
+                button = new Button(skin, "scene-move-right");
+                button.setDisabled(simCell.column == simTable.getColumns(simCell.row) - 1);
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Moves the current cell right.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellMoveCellRight();
+                        popTable.hide();
+                    }
+                });
+
+                button = new Button(skin, "scene-move-down");
+                button.setDisabled(simCell.row == simTable.getRows() - 1);
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Moves the current cell to the end of the row below.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellMoveCellDown();
+                        popTable.hide();
+                    }
+                });
+
+                button = new Button(skin, "scene-move-up");
+                button.setDisabled(simCell.row == 0);
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Moves the current cell to the end of the row above.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellMoveCellUp();
+                        popTable.hide();
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
     public static EventListener cellAddCellListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;
         var simTable = (SimTable) simActor.parent;

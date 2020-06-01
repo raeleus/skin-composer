@@ -1105,6 +1105,18 @@ public class DialogSceneComposerModel {
         public String getName() {
             return name;
         }
+    
+        public SimCell getCell(int column, int row) {
+            SimCell cell = null;
+            for (var testCell : cells) {
+                if (testCell.column == column && testCell.row == row) {
+                    cell = testCell;
+                    break;
+                }
+            }
+            
+            return cell;
+        }
     }
     
     public static class SimCell extends SimActor implements SimSingleChild {
