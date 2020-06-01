@@ -248,7 +248,7 @@ public class CellListeners {
                 subTable.add(button);
                 button.setDisabled(simCell.row == simTable.getRows() - 1);
                 button.addListener(DialogSceneComposer.main.getHandListener());
-                button.addListener(new TextTooltip("Creates a new cell at the end of the row below.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new TextTooltip("Duplicates the cell to the row below.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -261,7 +261,7 @@ public class CellListeners {
                 subTable.add(button);
                 button.setDisabled(simCell.row == 0);
                 button.addListener(DialogSceneComposer.main.getHandListener());
-                button.addListener(new TextTooltip("Creates a new cell at the end of the row above.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new TextTooltip("Duplicates the cell to the row above.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
