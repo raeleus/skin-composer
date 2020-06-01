@@ -154,6 +154,14 @@ public class DialogSceneComposerEvents {
         processUndoable(new CellAddCellToRightUndoable());
     }
     
+    public void cellAddCellAbove() {
+        processUndoable(new CellAddCellAboveUndoable());
+    }
+    
+    public void cellAddCellBelow() {
+        processUndoable(new CellAddCellBelowUndoable());
+    }
+    
     public void cellAddRowAbove() {
         processUndoable(new CellAddRowAboveUndoable());
     }
@@ -176,6 +184,14 @@ public class DialogSceneComposerEvents {
     
     public void cellDuplicateCellBelow() {
         processUndoable(new CellDuplicateCellBelowUndoable());
+    }
+    
+    public void cellDuplicateCellNewRowAbove() {
+        processUndoable(new CellDuplicateCellNewRowAboveUndoable());
+    }
+    
+    public void cellDuplicateCellNewRowBelow() {
+        processUndoable(new CellDuplicateCellNewRowBelowUndoable());
     }
     
     public void cellPaddingSpacing(float paddingLeft, float paddingRight, float paddingTop, float paddingBottom, float spaceLeft, float spaceRight, float spaceTop, float spaceBottom) {

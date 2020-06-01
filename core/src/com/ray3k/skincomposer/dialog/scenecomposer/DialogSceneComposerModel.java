@@ -1073,6 +1073,24 @@ public class DialogSceneComposerModel {
             return cells;
         }
     
+        public int getColumns(int row) {
+            int columns = 0;
+            for (var cell : cells) {
+                if (cell.row == row) {
+                    if (cell.column > columns - 1) columns = cell.column + 1;
+                }
+            }
+            return columns;
+        }
+        
+        public int getRows() {
+            int rows = 0;
+            for (var cell : cells) {
+                if (cell.row > rows -1) rows = cell.row + 1;
+            }
+            return rows;
+        }
+        
         @Override
         public void addChild(SimActor simActor) {
             cells.add((SimCell) simActor);

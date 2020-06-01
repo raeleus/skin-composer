@@ -3,19 +3,19 @@ package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 
-public class CellDuplicateCellBelowUndoable implements SceneComposerUndoable {
+public class CellAddCellBelowUndoable implements SceneComposerUndoable {
     private DialogSceneComposerModel.SimCell cell;
     private DialogSceneComposerModel.SimCell newCell;
     private DialogSceneComposer dialog;
     private DialogSceneComposerModel.SimTable table;
     
-    public CellDuplicateCellBelowUndoable() {
+    public CellAddCellBelowUndoable() {
         dialog = DialogSceneComposer.dialog;
         
         cell = (DialogSceneComposerModel.SimCell) dialog.simActor;
         table = (DialogSceneComposerModel.SimTable) cell.parent;
         
-        newCell = cell.duplicate();
+        newCell = new DialogSceneComposerModel.SimCell();
         newCell.column = table.getColumns(cell.row + 1);
         newCell.row = cell.row + 1;
         newCell.parent = table;

@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimTable;
 import com.ray3k.stripe.PopTableClickListener;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
@@ -15,6 +16,216 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 
 public class CellListeners {
+    public static EventListener cellAddCellListener(final DialogSceneComposerEvents events, SimActor simActor) {
+        var simCell = (DialogSceneComposerModel.SimCell) simActor;
+        var simTable = (SimTable) simActor.parent;
+        
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                var skin = DialogSceneComposer.skin;
+                
+                var popTable = getPopTable();
+                popTable.clearChildren();
+    
+                var table = new Table();
+                popTable.add(table);
+                var label = new Label("New Cell", skin, "scene-label-colored");
+                table.add(label);
+    
+                table.row();
+                var subTable = new Table();
+                table.add(subTable);
+                
+                var button = new Button(skin, "scene-add-left");
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Creates a new cell to the left of the current one.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAddCellToLeft();
+                        popTable.hide();
+                    }
+                });
+                
+                button = new Button(skin, "scene-add-right");
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Creates a new cell to the right of the current one.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAddCellToRight();
+                        popTable.hide();
+                    }
+                });
+                
+                button = new Button(skin, "scene-add-down");
+                button.setDisabled(simCell.row == simTable.getRows() - 1);
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Creates a new cell at the end of the row below.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAddCellBelow();
+                        popTable.hide();
+                    }
+                });
+                
+                button = new Button(skin, "scene-add-up");
+                button.setDisabled(simCell.row == 0);
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Creates a new cell at the end of the row above.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAddCellAbove();
+                        popTable.hide();
+                    }
+                });
+                
+                table.row();
+                label = new Label("New Row", skin, "scene-label-colored");
+                table.add(label);
+    
+                table.row();
+                subTable = new Table();
+                table.add(subTable);
+                
+                button = new Button(skin, "scene-add-down-row");
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Creates a new row below and adds a cell to it.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAddRowBelow();
+                        popTable.hide();
+                    }
+                });
+                
+                button = new Button(skin, "scene-add-up-row");
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Creates a new row below and adds a cell to it.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAddRowAbove();
+                        popTable.hide();
+                    }
+                });
+    
+                var image = new Image(skin, "scene-menu-divider");
+                popTable.add(image).space(10).growY();
+    
+                table = new Table();
+                popTable.add(table);
+                
+                label = new Label("Duplicate Cell", skin, "scene-label-colored");
+                table.add(label);
+    
+                table.row();
+                subTable = new Table();
+                table.add(subTable);
+                
+                button = new Button(skin, "scene-duplicate-left");
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Creates a new cell to the left of the current one.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellDuplicateCellLeft();
+                        popTable.hide();
+                    }
+                });
+    
+                button = new Button(skin, "scene-duplicate-right");
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Creates a new cell to the right of the current one.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellDuplicateCellRight();
+                        popTable.hide();
+                    }
+                });
+    
+                button = new Button(skin, "scene-duplicate-down");
+                subTable.add(button);
+                button.setDisabled(simCell.row == simTable.getRows() - 1);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Creates a new cell at the end of the row below.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellDuplicateCellBelow();
+                        popTable.hide();
+                    }
+                });
+    
+                button = new Button(skin, "scene-duplicate-up");
+                subTable.add(button);
+                button.setDisabled(simCell.row == 0);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Creates a new cell at the end of the row above.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellDuplicateCellAbove();
+                        popTable.hide();
+                    }
+                });
+    
+                table.row();
+                label = new Label("Dup. to New Row", skin, "scene-label-colored");
+                table.add(label);
+    
+                table.row();
+                subTable = new Table();
+                table.add(subTable);
+                
+                button = new Button(skin, "scene-duplicate-down-row");
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Creates a new row below and adds a cell to it.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellDuplicateCellNewRowBelow();
+                        popTable.hide();
+                    }
+                });
+    
+                button = new Button(skin, "scene-duplicate-up-row");
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Creates a new row below and adds a cell to it.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellDuplicateCellNewRowAbove();
+                        popTable.hide();
+                    }
+                });
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
     public static EventListener cellUniformListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;
         var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {

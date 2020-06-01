@@ -16,21 +16,14 @@ public class CellDuplicateCellAboveUndoable implements SceneComposerUndoable {
         table = (DialogSceneComposerModel.SimTable) cell.parent;
         
         newCell = cell.duplicate();
-        newCell.column = 0;
-        newCell.row = cell.row;
+        newCell.column = table.getColumns(cell.row - 1);
+        newCell.row = cell.row - 1;
         newCell.parent = table;
     }
     
     @Override
     public void undo() {
         table.cells.removeValue(newCell, true);
-        
-        for (var currentCell : table.cells) {
-            if (currentCell.row >= newCell.row) {
-                currentCell.row--;
-            }
-        }
-        
         table.sort();
         
         if (dialog.simActor != cell) {
@@ -43,12 +36,6 @@ public class CellDuplicateCellAboveUndoable implements SceneComposerUndoable {
     
     @Override
     public void redo() {
-        for (var currentCell : table.cells) {
-            if (currentCell.row >= newCell.row) {
-                currentCell.row++;
-            }
-        }
-    
         table.cells.add(newCell);
         table.sort();
         
