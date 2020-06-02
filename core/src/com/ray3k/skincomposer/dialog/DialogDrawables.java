@@ -469,11 +469,18 @@ public class DialogDrawables extends Dialog {
         contentGroup.center().wrap(true).space(5.0f).wrapSpace(5.0f).rowAlign(Align.left);
         contentTable.add(contentGroup).grow();
     
+        DrawableData selectedDrawable = null;
+        if (property != null) {
+            selectedDrawable = main.getAtlasData().getDrawable((String) property.value);
+        } else if (customProperty != null) {
+            selectedDrawable = main.getAtlasData().getDrawable((String) customProperty.getValue());
+        }
+        
         for (var drawable : drawables) {
             Button drawableButton;
         
             if (property != null || customProperty != null) {
-                drawableButton = new Button(getSkin(), "color-base");
+                drawableButton = new Button(getSkin(), selectedDrawable == drawable ? "color-base-selected" : "color-base");
                 drawableButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {

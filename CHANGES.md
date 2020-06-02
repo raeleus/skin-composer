@@ -6,6 +6,7 @@
 * Cleaned up Drawables Dialog. Popups for Drawable settings and labels describing what type of Drawable it is.
 * Drawables can be hidden in the Drawables dialog to prevent them from being shown with the default filter. They can be unhidden by deactivating the filter and deselcting "hidden".
 * Drawables filter is persisted between every use. Remember to click the filter button and choose "reset" to disable the filter.
+* When selecting a Drawable for a property, the currently selected Drawable is highlighted in the dialog.
 * Background color is automatically set in FreeTypeFont dialog.
 * Red marquees make it more obvious that required values are missing in various dialogs.
 * Preview background color is saved with the project for convenience. 
