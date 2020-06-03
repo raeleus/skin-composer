@@ -207,7 +207,7 @@ public class JsonData implements Json.Serializable {
                             return warnings;
                         }
                         FileHandle fontCopy = targetDirectory.child(font.getString("font"));
-                        if (!fontCopy.parent().equals(fontFile.parent())) {
+                        if (!fontCopy.parent().equals(fontFile.parent()) && !fontCopy.exists()) {
                             fontFile.copyTo(fontCopy);
                         }
                         data.file = fontCopy;
@@ -504,6 +504,12 @@ public class JsonData implements Json.Serializable {
                         } else if (property.type == BitmapFont.class) {
                             for (FontData font : fonts) {
                                 if (property.value.equals(font.getName())) {
+                                    keep = true;
+                                    break;
+                                }
+                            }
+                            for (FreeTypeFontData font : freeTypeFonts) {
+                                if (property.value.equals(font.name)) {
                                     keep = true;
                                     break;
                                 }
