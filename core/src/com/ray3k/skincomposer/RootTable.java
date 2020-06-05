@@ -32,12 +32,23 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.SplitPane.SplitPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip.TextTooltipStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
@@ -2075,171 +2086,174 @@ public class RootTable extends Table {
                     previewTable.add(label);
                 } else {
                     Actor widget = null;
-                    if (clazz.equals(Button.class)) {
-                        Button.ButtonStyle style = createPreviewStyle(Button.ButtonStyle.class, styleData);
-                        widget = new Button(style);
-                        ((Button)widget).setDisabled((boolean) previewProperties.get("disabled"));
-                        widget.addListener(main.getHandListener());
-                    } else if (clazz.equals(CheckBox.class)) {
-                        CheckBox.CheckBoxStyle style = createPreviewStyle(CheckBox.CheckBoxStyle.class, styleData);
-                        widget = new CheckBox("", style);
-                        ((CheckBox)widget).setDisabled((boolean) previewProperties.get("disabled"));
-                        ((CheckBox)widget).setText((String) previewProperties.get("text"));
-                        widget.addListener(main.getHandListener());
-                    } else if (clazz.equals(ImageButton.class)) {
-                        ImageButtonStyle style = createPreviewStyle(ImageButtonStyle.class, styleData);
-                        widget = new ImageButton(style);
-                        ((ImageButton)widget).setDisabled((boolean) previewProperties.get("disabled"));
-                        widget.addListener(main.getHandListener());
-                    } else if (clazz.equals(ImageTextButton.class)) {
-                        ImageTextButton.ImageTextButtonStyle style = createPreviewStyle(ImageTextButton.ImageTextButtonStyle.class, styleData);
-                        widget = new ImageTextButton("", style);
-                        ((ImageTextButton)widget).setDisabled((boolean) previewProperties.get("disabled"));
-                        ((ImageTextButton)widget).setText((String) previewProperties.get("text"));
-                        widget.addListener(main.getHandListener());
-                    } else if (clazz.equals(Label.class)) {
-                        LabelStyle style = createPreviewStyle(LabelStyle.class, styleData);
-                        widget = new Label("", style);
-                        ((Label)widget).setText((String) previewProperties.get("text"));
-                    } else if (clazz.equals(List.class)) {
-                        ListStyle style = createPreviewStyle(ListStyle.class, styleData);
-                        widget = new List(style);
-                        Array<String> items = new Array<>(((String) previewProperties.get("text")).split("\\n"));
-                        ((List)widget).setItems(items);
-                        widget.addListener(main.getHandListener());
-                    } else if (clazz.equals(ProgressBar.class)) {
-                        ProgressBar.ProgressBarStyle style = createPreviewStyle(ProgressBar.ProgressBarStyle.class, styleData);
-                        widget = new ProgressBar((float) (double) previewProperties.get("minimum"), (float) (double) previewProperties.get("maximum"), (float) (double) previewProperties.get("increment"), (boolean) previewProperties.get("orientation"), style);
-                        ((ProgressBar) widget).setValue((float) (double) previewProperties.get("value"));
-                        ((ProgressBar)widget).setDisabled((boolean) previewProperties.get("disabled"));
-                    } else if (clazz.equals(ScrollPane.class)) {
-                        ScrollPaneStyle style = createPreviewStyle(ScrollPaneStyle.class, styleData);
-                        Label label = new Label("", getSkin());
-                        widget = new ScrollPane(label, style);
-                        ((ScrollPane) widget).setScrollbarsOnTop((boolean) previewProperties.get("scrollbarsOnTop"));
-                        ((ScrollPane) widget).setScrollBarPositions((boolean) previewProperties.get("hScrollBarPosition"), (boolean) previewProperties.get("vScrollBarPosition"));
-                        ((ScrollPane) widget).setScrollingDisabled((boolean) previewProperties.get("hScrollDisabled"), (boolean) previewProperties.get("vScrollDisabled"));
-                        ((ScrollPane) widget).setForceScroll((boolean) previewProperties.get("forceHscroll"), (boolean) previewProperties.get("forceVscroll"));
-                        ((ScrollPane) widget).setVariableSizeKnobs((boolean) previewProperties.get("variableSizeKnobs"));
-                        ((ScrollPane) widget).setOverscroll((boolean) previewProperties.get("hOverscroll"), (boolean) previewProperties.get("vOverscroll"));
-                        ((ScrollPane) widget).setFadeScrollBars((boolean) previewProperties.get("fadeScroll"));
-                        ((ScrollPane) widget).setSmoothScrolling((boolean) previewProperties.get("smoothScroll"));
-                        ((ScrollPane) widget).setFlickScroll((boolean) previewProperties.get("flickScroll"));
-                        ((ScrollPane) widget).setClamp((boolean) previewProperties.get("clamp"));
-                        label.setText((String) previewProperties.get("text"));
-                    } else if (clazz.equals(SelectBox.class)) {
-                        SelectBox.SelectBoxStyle style = createPreviewStyle(SelectBox.SelectBoxStyle.class, styleData);
-                        widget = new SelectBox(style);
-                        ((SelectBox)widget).setDisabled((boolean) previewProperties.get("disabled"));
-                        Array<String> items = new Array<>(((String) previewProperties.get("text")).split("\\n"));
-                        ((SelectBox)widget).setItems(items);
-                        ((SelectBox)widget).setMaxListCount((int) previewProperties.get("max-list-count"));
-                        ((SelectBox)widget).setAlignment((int) previewProperties.get("alignment"));
-                        widget.addListener(main.getHandListener());
-                        ((SelectBox)widget).getList().addListener(main.getHandListener());
-                    } else if (clazz.equals(Slider.class)) {
-                        Slider.SliderStyle style = createPreviewStyle(Slider.SliderStyle.class, styleData);
-                        widget = new Slider((float) (double) previewProperties.get("minimum"), (float) (double) previewProperties.get("maximum"), (float) (double) previewProperties.get("increment"), (boolean) previewProperties.get("orientation"), style);
-                        ((Slider)widget).setDisabled((boolean) previewProperties.get("disabled"));
-                        widget.addListener(main.getHandListener());
-                    } else if (clazz.equals(SplitPane.class)) {
-                        SplitPane.SplitPaneStyle style = createPreviewStyle(SplitPane.SplitPaneStyle.class, styleData);
-                        
-                        var table1 = new Table();
-                        Label label1 = new Label("", getSkin());
-                        table1.add(label1).minSize(0);
-                        
-                        var table2 = new Table();
-                        Label label2 = new Label("", getSkin());
-                        table2.add(label2).minSize(0);
-                        
-                        widget = new SplitPane(table1, table2, (boolean) previewProperties.get("orientation"), style);
-                        ((SplitPane) widget).setMinSplitAmount(0);
-                        ((SplitPane) widget).setMaxSplitAmount(1);
-                        label1.setText((String) previewProperties.get("text"));
-                        label2.setText((String) previewProperties.get("text"));
-                        
-                        if ((boolean) previewProperties.get("orientation")) {
-                            widget.addListener(main.getVerticalResizeArrowListener());
-                        } else {
-                            widget.addListener(main.getHorizontalResizeArrowListener());
-                        }
-                    } else if (clazz.equals(TextButton.class)) {
-                        TextButtonStyle style = createPreviewStyle(TextButtonStyle.class, styleData);
-                        widget = new TextButton("", style);
-                        ((TextButton)widget).setDisabled((boolean) previewProperties.get("disabled"));
-                        ((TextButton)widget).setText((String) previewProperties.get("text"));
-                        widget.addListener(main.getHandListener());
-                    } else if (clazz.equals(TextField.class)) {
-                        TextFieldStyle style = createPreviewStyle(TextFieldStyle.class, styleData);
-                        widget = new TextField("", style);
-                        ((TextField)widget).setFocusTraversal(false);
-                        ((TextField)widget).setDisabled((boolean) previewProperties.get("disabled"));
-                        ((TextField)widget).setPasswordMode((boolean) previewProperties.get("passwordMode"));
-                        ((TextField)widget).setAlignment((int) previewProperties.get("alignment"));
-                        ((TextField)widget).setText((String) previewProperties.get("text"));
-                        ((TextField)widget).setMessageText((String) previewProperties.get("message"));
-                        String string = (String) previewProperties.get("password");
-                        if (string.length() > 0) {
-                            ((TextField)widget).setPasswordCharacter(string.charAt(0));
-                        }
-                        widget.addListener(main.getIbeamListener());
-                    } else if (clazz.equals(TextTooltip.class)) {
-                        TextTooltip.TextTooltipStyle style = createPreviewStyle(TextTooltip.TextTooltipStyle.class, styleData);
-
-                        TooltipManager manager = new TooltipManager();
-                        manager.animations = false;
-                        manager.initialTime = 0.0f;
-                        manager.resetTime = 0.0f;
-                        manager.subsequentTime = 0.0f;
-                        manager.hideAll();
-                        manager.instant();
-                        TextTooltip toolTip = new TextTooltip((String) previewProperties.get("text"), manager, style);
-
-                        widget = new Label("Hover over me", getSkin());
-                        widget.addListener(toolTip);
-                    } else if (clazz.equals(Touchpad.class)) {
-                        Touchpad.TouchpadStyle style = createPreviewStyle(Touchpad.TouchpadStyle.class, styleData);
-                        widget = new Touchpad(0, style);
-                        widget.addListener(main.getHandListener());
-                    } else if (clazz.equals(Tree.class)) {
-                        Tree.TreeStyle style = createPreviewStyle(Tree.TreeStyle.class, styleData);
-                        widget = new Tree(style);
-                        ((Tree) widget).setIconSpacing((int) previewProperties.get("icon-spacing-left"), (int) previewProperties.get("icon-spacing-right"));
-                        ((Tree) widget).setIndentSpacing((int) previewProperties.get("indent-spacing"));
-                        ((Tree) widget).setYSpacing((int) previewProperties.get("y-spacing"));
-                        String[] lines = {"this", "is", "a", "test"};
-                        Tree.Node parentNode = null;
-                        for (String line: lines) {
-                            Label label = new Label(line, getSkin());
-                            Tree.Node node = new Tree.Node(label) {
-                            
-                            };
-                            if (parentNode == null) {
-                                ((Tree) widget).add(node);
+                    
+                    var style = createPreviewStyle(Main.basicToStyleClass(clazz), styleData);
+                    
+                    if (style != null) {
+                        if (clazz.equals(Button.class)) {
+                            widget = new Button((ButtonStyle) style);
+                            ((Button) widget).setDisabled((boolean) previewProperties.get("disabled"));
+                            widget.addListener(main.getHandListener());
+                        } else if (clazz.equals(CheckBox.class)) {
+                            widget = new CheckBox("", (CheckBoxStyle) style);
+                            ((CheckBox) widget).setDisabled((boolean) previewProperties.get("disabled"));
+                            ((CheckBox) widget).setText((String) previewProperties.get("text"));
+                            widget.addListener(main.getHandListener());
+                        } else if (clazz.equals(ImageButton.class)) {
+                            widget = new ImageButton((ImageButtonStyle) style);
+                            ((ImageButton) widget).setDisabled((boolean) previewProperties.get("disabled"));
+                            widget.addListener(main.getHandListener());
+                        } else if (clazz.equals(ImageTextButton.class)) {
+                            widget = new ImageTextButton("", (ImageTextButtonStyle) style);
+                            ((ImageTextButton) widget).setDisabled((boolean) previewProperties.get("disabled"));
+                            ((ImageTextButton) widget).setText((String) previewProperties.get("text"));
+                            widget.addListener(main.getHandListener());
+                        } else if (clazz.equals(Label.class)) {
+                            widget = new Label("", (LabelStyle) style);
+                            ((Label) widget).setText((String) previewProperties.get("text"));
+                        } else if (clazz.equals(List.class)) {
+                            widget = new List((ListStyle) style);
+                            Array<String> items = new Array<>(((String) previewProperties.get("text")).split("\\n"));
+                            ((List) widget).setItems(items);
+                            widget.addListener(main.getHandListener());
+                        } else if (clazz.equals(ProgressBar.class)) {
+                            widget = new ProgressBar((float) (double) previewProperties.get("minimum"),
+                                    (float) (double) previewProperties.get("maximum"),
+                                    (float) (double) previewProperties.get("increment"),
+                                    (boolean) previewProperties.get("orientation"), (ProgressBarStyle) style);
+                            ((ProgressBar) widget).setValue((float) (double) previewProperties.get("value"));
+                            ((ProgressBar) widget).setDisabled((boolean) previewProperties.get("disabled"));
+                        } else if (clazz.equals(ScrollPane.class)) {
+                            Label label = new Label("", getSkin());
+                            widget = new ScrollPane(label, (ScrollPaneStyle) style);
+                            ((ScrollPane) widget).setScrollbarsOnTop(
+                                    (boolean) previewProperties.get("scrollbarsOnTop"));
+                            ((ScrollPane) widget).setScrollBarPositions(
+                                    (boolean) previewProperties.get("hScrollBarPosition"),
+                                    (boolean) previewProperties.get("vScrollBarPosition"));
+                            ((ScrollPane) widget).setScrollingDisabled(
+                                    (boolean) previewProperties.get("hScrollDisabled"),
+                                    (boolean) previewProperties.get("vScrollDisabled"));
+                            ((ScrollPane) widget).setForceScroll((boolean) previewProperties.get("forceHscroll"),
+                                    (boolean) previewProperties.get("forceVscroll"));
+                            ((ScrollPane) widget).setVariableSizeKnobs(
+                                    (boolean) previewProperties.get("variableSizeKnobs"));
+                            ((ScrollPane) widget).setOverscroll((boolean) previewProperties.get("hOverscroll"),
+                                    (boolean) previewProperties.get("vOverscroll"));
+                            ((ScrollPane) widget).setFadeScrollBars((boolean) previewProperties.get("fadeScroll"));
+                            ((ScrollPane) widget).setSmoothScrolling((boolean) previewProperties.get("smoothScroll"));
+                            ((ScrollPane) widget).setFlickScroll((boolean) previewProperties.get("flickScroll"));
+                            ((ScrollPane) widget).setClamp((boolean) previewProperties.get("clamp"));
+                            label.setText((String) previewProperties.get("text"));
+                        } else if (clazz.equals(SelectBox.class)) {
+                            widget = new SelectBox((SelectBoxStyle) style);
+                            ((SelectBox) widget).setDisabled((boolean) previewProperties.get("disabled"));
+                            Array<String> items = new Array<>(((String) previewProperties.get("text")).split("\\n"));
+                            ((SelectBox) widget).setItems(items);
+                            ((SelectBox) widget).setMaxListCount((int) previewProperties.get("max-list-count"));
+                            ((SelectBox) widget).setAlignment((int) previewProperties.get("alignment"));
+                            widget.addListener(main.getHandListener());
+                            ((SelectBox) widget).getList().addListener(main.getHandListener());
+                        } else if (clazz.equals(Slider.class)) {
+                            widget = new Slider((float) (double) previewProperties.get("minimum"),
+                                    (float) (double) previewProperties.get("maximum"),
+                                    (float) (double) previewProperties.get("increment"),
+                                    (boolean) previewProperties.get("orientation"), (SliderStyle) style);
+                            ((Slider) widget).setDisabled((boolean) previewProperties.get("disabled"));
+                            widget.addListener(main.getHandListener());
+                        } else if (clazz.equals(SplitPane.class)) {
+                            var table1 = new Table();
+                            Label label1 = new Label("", getSkin());
+                            table1.add(label1).minSize(0);
+        
+                            var table2 = new Table();
+                            Label label2 = new Label("", getSkin());
+                            table2.add(label2).minSize(0);
+        
+                            widget = new SplitPane(table1, table2, (boolean) previewProperties.get("orientation"),
+                                    (SplitPaneStyle) style);
+                            ((SplitPane) widget).setMinSplitAmount(0);
+                            ((SplitPane) widget).setMaxSplitAmount(1);
+                            label1.setText((String) previewProperties.get("text"));
+                            label2.setText((String) previewProperties.get("text"));
+        
+                            if ((boolean) previewProperties.get("orientation")) {
+                                widget.addListener(main.getVerticalResizeArrowListener());
                             } else {
-                                parentNode.add(node);
+                                widget.addListener(main.getHorizontalResizeArrowListener());
                             }
-                            parentNode = node;
+                        } else if (clazz.equals(TextButton.class)) {
+                            widget = new TextButton("", (TextButtonStyle) style);
+                            ((TextButton) widget).setDisabled((boolean) previewProperties.get("disabled"));
+                            ((TextButton) widget).setText((String) previewProperties.get("text"));
+                            widget.addListener(main.getHandListener());
+                        } else if (clazz.equals(TextField.class)) {
+                            widget = new TextField("", (TextFieldStyle) style);
+                            ((TextField) widget).setFocusTraversal(false);
+                            ((TextField) widget).setDisabled((boolean) previewProperties.get("disabled"));
+                            ((TextField) widget).setPasswordMode((boolean) previewProperties.get("passwordMode"));
+                            ((TextField) widget).setAlignment((int) previewProperties.get("alignment"));
+                            ((TextField) widget).setText((String) previewProperties.get("text"));
+                            ((TextField) widget).setMessageText((String) previewProperties.get("message"));
+                            String string = (String) previewProperties.get("password");
+                            if (string.length() > 0) {
+                                ((TextField) widget).setPasswordCharacter(string.charAt(0));
+                            }
+                            widget.addListener(main.getIbeamListener());
+                        } else if (clazz.equals(TextTooltip.class)) {
+                            TooltipManager manager = new TooltipManager();
+                            manager.animations = false;
+                            manager.initialTime = 0.0f;
+                            manager.resetTime = 0.0f;
+                            manager.subsequentTime = 0.0f;
+                            manager.hideAll();
+                            manager.instant();
+                            TextTooltip toolTip = new TextTooltip((String) previewProperties.get("text"), manager,
+                                    (TextTooltipStyle) style);
+        
+                            widget = new Label("Hover over me", getSkin());
+                            widget.addListener(toolTip);
+                        } else if (clazz.equals(Touchpad.class)) {
+                            widget = new Touchpad(0, (TouchpadStyle) style);
+                            widget.addListener(main.getHandListener());
+                        } else if (clazz.equals(Tree.class)) {
+                            widget = new Tree((TreeStyle) style);
+                            ((Tree) widget).setIconSpacing((int) previewProperties.get("icon-spacing-left"),
+                                    (int) previewProperties.get("icon-spacing-right"));
+                            ((Tree) widget).setIndentSpacing((int) previewProperties.get("indent-spacing"));
+                            ((Tree) widget).setYSpacing((int) previewProperties.get("y-spacing"));
+                            String[] lines = {"this", "is", "a", "test"};
+                            Tree.Node parentNode = null;
+                            for (String line : lines) {
+                                Label label = new Label(line, getSkin());
+                                Tree.Node node = new Tree.Node(label) {
+                
+                                };
+                                if (parentNode == null) {
+                                    ((Tree) widget).add(node);
+                                } else {
+                                    parentNode.add(node);
+                                }
+                                parentNode = node;
+                            }
+                            widget.addListener(main.getHandListener());
+                        } else if (clazz.equals(Window.class)) {
+                            WindowStyle windowStyle = (WindowStyle) style;
+                            if (windowStyle.stageBackground != null) {
+                                previewTable.setBackground(windowStyle.stageBackground);
+                                previewTable.setColor(Color.WHITE);
+                                windowStyle.stageBackground = null;
+                            }
+        
+                            Label sampleText = new Label("", getSkin());
+                            sampleText.setText((String) previewProperties.get("text"));
+        
+                            widget = new Window((String) previewProperties.get("title"), windowStyle);
+                            ((Window) widget).add(sampleText);
                         }
-                        widget.addListener(main.getHandListener());
-                    } else if (clazz.equals(Window.class))  {
-                        Window.WindowStyle style = createPreviewStyle(Window.WindowStyle.class, styleData);
-                        
-                        if (style.stageBackground != null) {
-                            previewTable.setBackground(style.stageBackground);
-                            previewTable.setColor(Color.WHITE);
-                            style.stageBackground = null;
-                        }
-
-                        Label sampleText = new Label("", getSkin());
-                        sampleText.setText((String) previewProperties.get("text"));
-
-                        widget = new Window((String) previewProperties.get("title"), style);
-                        ((Window)widget).add(sampleText);
                     }
 
-                    if (widget != null) {                        
+                    if (widget != null) {
                         switch ((int) previewProperties.get("size")) {
                             case (0):
                                 previewTable.add(widget).size(10.0f);
@@ -2491,17 +2505,17 @@ public class RootTable extends Table {
     public <T> T createPreviewStyle(Class<T> clazz, StyleData styleData) {
         T returnValue = null;
         try {
-            returnValue = ClassReflection.newInstance(clazz);
+            T instance = ClassReflection.newInstance(clazz);
             Field[] fields = ClassReflection.getFields(clazz);
             for (Field field : fields) {
                 Object value = styleData.getInheritedValue(field.getName());
                 if (value != null) {
                     if (field.getType().equals(Drawable.class)) {
-                        field.set(returnValue, main.getAtlasData().getDrawablePairs().get(main.getAtlasData().getDrawable((String) value)));
+                        field.set(instance, main.getAtlasData().getDrawablePairs().get(main.getAtlasData().getDrawable((String) value)));
                     } else if (field.getType().equals(Color.class)) {
                         for (ColorData data : main.getProjectData().getJsonData().getColors()) {
                             if (value.equals(data.getName())) {
-                                field.set(returnValue, data.color);
+                                field.set(instance, data.color);
                                 break;
                             }
                         }
@@ -2510,24 +2524,24 @@ public class RootTable extends Table {
                             if (value.equals(data.getName())) {
                                 BitmapFont font = new BitmapFont(data.file);
                                 previewFonts.add(font);
-                                field.set(returnValue, font);
+                                field.set(instance, font);
                             }
                         }
                         
                         for (FreeTypeFontData data : main.getJsonData().getFreeTypeFonts()) {
                             if (value.equals(data.name)) {
-                                field.set(returnValue, data.bitmapFont);
+                                field.set(instance, data.bitmapFont);
                             }
                         }
                     } else if (field.getType().equals(Float.TYPE)) {
-                        field.set(returnValue, (float) (double) value);
+                        field.set(instance, (float) (double) value);
                     } else if (field.getType().equals(ListStyle.class)) {
                         Array<StyleData> datas = main.getProjectData().getJsonData().getClassStyleMap().get(List.class);
 
                         for (StyleData data : datas) {
                             if (value.equals(data.name)) {
                                 ListStyle style = createPreviewStyle(ListStyle.class, data);
-                                field.set(returnValue, style);
+                                field.set(instance, style);
                                 break;
                             }
                         }
@@ -2537,7 +2551,7 @@ public class RootTable extends Table {
                         for (StyleData data : datas) {
                             if (value.equals(data.name)) {
                                 ScrollPaneStyle style = createPreviewStyle(ScrollPaneStyle.class, data);
-                                field.set(returnValue, style);
+                                field.set(instance, style);
                                 break;
                             }
                         }
@@ -2547,16 +2561,19 @@ public class RootTable extends Table {
                         for (StyleData data : datas) {
                             if (value.equals(data.name)) {
                                 LabelStyle style = createPreviewStyle(LabelStyle.class, data);
-                                field.set(returnValue, style);
+                                field.set(instance, style);
                                 break;
                             }
                         }
                     }
                 }
             }
-        } finally {
-            return returnValue;
+            returnValue = instance;
+        } catch (Exception e) {
+            Gdx.app.error(RootTable.class.getName(), "Error creating style", e);
+            main.getDialogFactory().showDialogError("Error Creating Style", "Unable to create style " + styleData.name + " for class " + clazz.getSimpleName() + "\nOpen log?");
         }
+        return returnValue;
     }
     
     private void addStatusBar() {
