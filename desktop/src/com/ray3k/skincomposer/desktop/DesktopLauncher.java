@@ -25,9 +25,6 @@ public class DesktopLauncher extends Launcher {
         config.setWindowIcon("logo-16.png", "logo-32.png", "logo-48.png", "logo.png");
         var main = new Main(args);
         main.setDesktopWorker(desktopLauncher);
-        if (!Utils.isWindows()) {
-            desktopLauncher.closeSplashScreen();
-        }
 
         try {
             new Lwjgl3Application(main, config);

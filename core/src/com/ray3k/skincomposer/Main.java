@@ -105,9 +105,8 @@ public class Main extends ApplicationAdapter {
     
     @Override
     public void create() {
-        if (Utils.isWindows()) {
-            desktopWorker.closeSplashScreen();
-        }
+        //Send signal that the app has started, close the splash screen.
+        System.out.println("close-splash");
         
         appFolder = Gdx.files.external(".skincomposer/");
         

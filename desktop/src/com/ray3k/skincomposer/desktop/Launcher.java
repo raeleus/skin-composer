@@ -306,10 +306,6 @@ public class Launcher implements DesktopWorker, Lwjgl3WindowListener {
     }
 
     @Override
-    public void closeSplashScreen() {
-    }
-
-    @Override
     public char getKeyName(int keyCode) {
         int glfwKeyCode = DefaultLwjgl3Input.getGlfwKeyCode(keyCode);
         try {

@@ -1,0 +1,18 @@
+apply plugin: "java"
+
+sourceCompatibility = 11
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+project.ext.assetsDir = new File("/assets")
+
+task dist(type: Jar) {
+    archiveFileName = "${project.appName}-splash.jar";
+    from files(sourceSets.main.output.getClassesDirs())
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+    from files(project.assetsDir)
+    destinationDirectory = file("$buildDir/lib")
+    manifest {
+        attributes ('Main-Class': 'com.ray3k.skincomposer.splash.Splash', 'SplashScreen-Image' : 'splash.png')
+    }
+}
