@@ -49,12 +49,12 @@ public class DialogAbout extends Dialog {
         label.setAlignment(Align.center);
         table.add(label).padBottom(0);
         table.row();
-        TextButton button = new TextButton("ray3k.wordpress.com/software/skin-composer-for-libgdx/", skin, "link");
+        TextButton button = new TextButton("github.com/raeleus/skin-composer", skin, "link");
         button.addListener(main.getHandListener());
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                Gdx.net.openURI("https://ray3k.wordpress.com/software/skin-composer-for-libgdx/");
+                Gdx.net.openURI("https://github.com/raeleus/skin-composer");
             }
         });
         table.add(button).padTop(0);
