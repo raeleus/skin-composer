@@ -287,8 +287,8 @@ public class AtlasData implements Json.Serializable {
     public void read(Json json, JsonValue jsonData) {
         atlasCurrent = json.readValue("atlasCurrent", Boolean.TYPE, jsonData);
         drawables = json.readValue("drawables", Array.class, DrawableData.class, jsonData);
-        assignDrawableTypes();
         fontDrawables = json.readValue("fontDrawables", Array.class, DrawableData.class, new Array<DrawableData>(),jsonData);
+        assignDrawableTypes();
     }
     
     private void assignDrawableTypes() {
@@ -312,6 +312,10 @@ public class AtlasData implements Json.Serializable {
                     }
                 }
             }
+        }
+        
+        for (DrawableData drawable : fontDrawables) {
+            drawable.type = DrawableType.FONT;
         }
     }
     
@@ -382,7 +386,10 @@ public class AtlasData implements Json.Serializable {
             }
             atlas = main.getAtlasData().getAtlas();
             
-            for (DrawableData data : main.getAtlasData().getDrawables()) {
+            var combined = new Array<>(getDrawables());
+            combined.addAll(getFontDrawables());
+            
+            for (DrawableData data : combined) {
                 Drawable drawable;
                 if (data.customized) {
                     drawable = main.getSkin().getDrawable("custom-drawable-skincomposer-image");

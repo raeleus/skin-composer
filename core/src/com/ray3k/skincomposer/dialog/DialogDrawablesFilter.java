@@ -118,6 +118,17 @@ public class DialogDrawablesFilter extends Dialog {
         });
     
         subTable.row();
+        checkBox = new CheckBox("TenPatch", skin);
+        checkBox.setChecked(this.filterOptions.tenPatch);
+        subTable.add(checkBox);
+        checkBox.addListener(main.getHandListener());
+        checkBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                DialogDrawablesFilter.this.filterOptions.tenPatch = ((CheckBox) actor).isChecked();
+            }
+        });
+        
         checkBox = new CheckBox("Custom", skin);
         checkBox.setChecked(this.filterOptions.custom);
         subTable.add(checkBox);
@@ -130,6 +141,17 @@ public class DialogDrawablesFilter extends Dialog {
         });
     
         subTable.row();
+        checkBox = new CheckBox("Font", skin);
+        checkBox.setChecked(this.filterOptions.font);
+        subTable.add(checkBox);
+        checkBox.addListener(main.getHandListener());
+        checkBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                DialogDrawablesFilter.this.filterOptions.font = ((CheckBox) actor).isChecked();
+            }
+        });
+    
         checkBox = new CheckBox("Hidden", skin);
         checkBox.setChecked(this.filterOptions.hidden);
         subTable.add(checkBox);
@@ -138,17 +160,6 @@ public class DialogDrawablesFilter extends Dialog {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 DialogDrawablesFilter.this.filterOptions.hidden = ((CheckBox) actor).isChecked();
-            }
-        });
-    
-        checkBox = new CheckBox("TenPatch", skin);
-        checkBox.setChecked(this.filterOptions.tenPatch);
-        subTable.add(checkBox);
-        checkBox.addListener(main.getHandListener());
-        checkBox.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                DialogDrawablesFilter.this.filterOptions.tenPatch = ((CheckBox) actor).isChecked();
             }
         });
     

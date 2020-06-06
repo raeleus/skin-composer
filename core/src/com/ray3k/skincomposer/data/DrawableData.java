@@ -33,7 +33,7 @@ public class DrawableData {
         TINTED("Tinted", "button-colorwheel"), TINTED_FROM_COLOR_DATA("Tinted", "button-swatches"),
         TILED("Tiled", "button-tiles"), TENPATCH("TenPatch", "button-tenpatch"),
         TEXTURE("Texture", "icon-texture"), NINE_PATCH("NinePatch", "icon-ninepatch"),
-        CUSTOM("Custom", "icon-custom");
+        CUSTOM("Custom", "icon-custom"), FONT("Font", "icon-font");
         
         public String formattedName;
         public String iconName;

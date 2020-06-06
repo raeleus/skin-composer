@@ -6,21 +6,21 @@ filter: Linear,Linear
 repeat: none
 add-frame
   rotate: false
-  xy: 1971, 1420
+  xy: 1971, 1437
   size: 16, 15
   orig: 16, 15
   offset: 0, 0
   index: -1
 add-frame-over
   rotate: false
-  xy: 1971, 1488
+  xy: 1872, 1339
   size: 16, 15
   orig: 16, 15
   offset: 0, 0
   index: -1
 add-frame-pressed
   rotate: false
-  xy: 140, 28
+  xy: 1971, 1420
   size: 16, 15
   orig: 16, 15
   offset: 0, 0
@@ -444,21 +444,21 @@ button-menu-pressed
   index: -1
 button-filter
   rotate: false
-  xy: 1806, 1338
+  xy: 1830, 1338
   size: 21, 26
   orig: 21, 26
   offset: 0, 0
   index: -1
 button-filter-over
   rotate: false
-  xy: 1829, 1338
+  xy: 1848, 1373
   size: 21, 26
   orig: 21, 26
   offset: 0, 0
   index: -1
 button-filter-pressed
   rotate: false
-  xy: 1848, 1373
+  xy: 1871, 1375
   size: 21, 26
   orig: 21, 26
   offset: 0, 0
@@ -955,42 +955,42 @@ button-visible-pressed_1
   index: -1
 checkbox-off
   rotate: false
-  xy: 119, 28
+  xy: 1916, 1386
   size: 19, 15
   orig: 19, 15
   offset: 0, 0
   index: -1
 checkbox-off-over
   rotate: false
-  xy: 1592, 1340
+  xy: 119, 28
   size: 19, 15
   orig: 19, 15
   offset: 0, 0
   index: -1
 checkbox-off-pressed
   rotate: false
-  xy: 1613, 1335
+  xy: 653, 1169
   size: 19, 15
   orig: 19, 15
   offset: 0, 0
   index: -1
 checkbox-on
   rotate: false
-  xy: 653, 1169
+  xy: 650, 1152
   size: 19, 15
   orig: 19, 15
   offset: 0, 0
   index: -1
 checkbox-on-over
   rotate: false
-  xy: 650, 1152
+  xy: 1436, 1335
   size: 19, 15
   orig: 19, 15
   offset: 0, 0
   index: -1
 checkbox-on-pressed
   rotate: false
-  xy: 1436, 1335
+  xy: 1457, 1335
   size: 19, 15
   orig: 19, 15
   offset: 0, 0
@@ -1086,28 +1086,28 @@ font-title-export
   index: -1
 green-resizer-handle
   rotate: false
-  xy: 1124, 1331
+  xy: 12, 2
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
 green-resizer-handle-pressed
   rotate: false
-  xy: 1872, 1353
+  xy: 192, 856
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
 green-resizer-minor-handle
   rotate: false
-  xy: 1871, 1342
+  xy: 1650, 1347
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
 green-resizer-minor-handle-over
   rotate: false
-  xy: 192, 856
+  xy: 291, 1159
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
@@ -1121,7 +1121,7 @@ green-resizer-minor-handle-pressed
   index: -1
 gren-resizer-handle-over
   rotate: false
-  xy: 291, 1159
+  xy: 1124, 1331
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
@@ -1161,16 +1161,23 @@ icon-custom
   orig: 22, 24
   offset: 0, 0
   index: -1
+icon-font
+  rotate: false
+  xy: 1806, 1340
+  size: 22, 24
+  orig: 22, 24
+  offset: 0, 0
+  index: -1
 icon-grid-dark
   rotate: false
-  xy: 1915, 1381
+  xy: 1592, 1335
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 icon-grid-light
   rotate: false
-  xy: 1893, 1381
+  xy: 1614, 1352
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -1205,7 +1212,7 @@ icon-resize
   index: -1
 icon-resize-over
   rotate: false
-  xy: 1871, 1381
+  xy: 1894, 1381
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -1701,7 +1708,7 @@ move-frame-left
   index: -1
 move-frame-left-over
   rotate: false
-  xy: 2036, 1701
+  xy: 1636, 1329
   size: 10, 15
   orig: 10, 15
   offset: 0, 0
@@ -1744,7 +1751,7 @@ nine-patch-black
   index: -1
 nine-patch-border
   rotate: false
-  xy: 1872, 1364
+  xy: 140, 28
   size: 15, 15
   split: 1, 1, 1, 1
   orig: 15, 15
@@ -1842,7 +1849,7 @@ ten-patch-stretch-switch-on-over
   index: -1
 pop-table-more
   rotate: false
-  xy: 1921, 1367
+  xy: 343, 1407
   size: 12, 12
   orig: 12, 12
   offset: 0, 0
@@ -1905,14 +1912,14 @@ range-slider-progress-disabled
   index: -1
 red-resizer-handle
   rotate: false
-  xy: 2036, 1690
+  xy: 1661, 1347
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
   index: -1
 red-resizer-handle-over
   rotate: false
-  xy: 12, 2
+  xy: 302, 1159
   size: 9, 9
   orig: 9, 9
   offset: 0, 0
@@ -1947,21 +1954,21 @@ red-resizer-minor-handle-pressed
   index: -1
 remove-frame
   rotate: false
-  xy: 1971, 1437
+  xy: 1971, 1454
   size: 16, 15
   orig: 16, 15
   offset: 0, 0
   index: -1
 remove-frame-over
   rotate: false
-  xy: 1971, 1471
+  xy: 1971, 1488
   size: 16, 15
   orig: 16, 15
   offset: 0, 0
   index: -1
 remove-frame-pressed
   rotate: false
-  xy: 1971, 1454
+  xy: 1971, 1471
   size: 16, 15
   orig: 16, 15
   offset: 0, 0
@@ -1997,21 +2004,21 @@ resizer-handle-pressed
   index: -1
 resizer-minor-handle
   rotate: false
-  xy: 1361, 1336
+  xy: 1741, 1349
   size: 7, 7
   orig: 7, 7
   offset: 0, 0
   index: -1
 resizer-minor-handle-over
   rotate: false
-  xy: 149, 19
+  xy: 1750, 1349
   size: 7, 7
   orig: 7, 7
   offset: 0, 0
   index: -1
 resizer-minor-handle-pressed
   rotate: false
-  xy: 149, 10
+  xy: 1759, 1349
   size: 7, 7
   orig: 7, 7
   offset: 0, 0
@@ -2768,7 +2775,7 @@ scene-checkbox-unchecked
   index: -1
 scene-color-button
   rotate: false
-  xy: 1614, 1352
+  xy: 1614, 1330
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -2782,7 +2789,7 @@ scene-dialog
   index: -1
 scene-draggable-dragged-up
   rotate: false
-  xy: 1852, 1353
+  xy: 1324, 1334
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
@@ -2866,28 +2873,28 @@ scene-list
   index: -1
 scene-list-selection
   rotate: false
-  xy: 277, 1159
+  xy: 1636, 1346
   size: 12, 12
   orig: 12, 12
   offset: 0, 0
   index: -1
 scene-list-selection-dark
   rotate: false
-  xy: 343, 1407
+  xy: 277, 1159
   size: 12, 12
   orig: 12, 12
   offset: 0, 0
   index: -1
 scene-marquee-back_00
   rotate: false
-  xy: 43, 3
+  xy: 53, 3
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 scene-marquee-back_01
   rotate: false
-  xy: 53, 3
+  xy: 1702, 1348
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
@@ -2908,56 +2915,56 @@ scene-marquee-back_03
   index: -1
 scene-marquee-back_04
   rotate: false
-  xy: 1112, 1321
+  xy: 1712, 1348
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 scene-marquee-back_05
   rotate: false
-  xy: 1122, 1321
+  xy: 1722, 1348
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 scene-marquee-color_00
   rotate: false
-  xy: 312, 1160
+  xy: 1145, 1332
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 scene-marquee-color_01
   rotate: false
-  xy: 1145, 1332
+  xy: 33, 3
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 scene-marquee-color_02
   rotate: false
-  xy: 2036, 1670
+  xy: 1682, 1348
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 scene-marquee-color_03
   rotate: false
-  xy: 33, 3
+  xy: 43, 3
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 scene-marquee-color_04
   rotate: false
-  xy: 2036, 1660
+  xy: 1692, 1348
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 scene-marquee-color_05
   rotate: false
-  xy: 23, 3
+  xy: 313, 1160
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
@@ -2985,21 +2992,21 @@ scene-marquee_02
   index: -1
 scene-marquee_03
   rotate: false
-  xy: 302, 1160
+  xy: 1135, 1332
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 scene-marquee_04
   rotate: false
-  xy: 1135, 1332
+  xy: 23, 3
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 scene-marquee_05
   rotate: false
-  xy: 2036, 1680
+  xy: 1672, 1348
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
@@ -3237,7 +3244,7 @@ scene-table-selected
   index: -1
 scene-table-unselected
   rotate: false
-  xy: 1478, 1332
+  xy: 1304, 1334
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
@@ -3286,14 +3293,14 @@ scene-tooltip
   index: -1
 scrollpane
   rotate: false
-  xy: 1889, 1365
+  xy: 729, 1199
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 scrollpane-knob
   rotate: false
-  xy: 1905, 1365
+  xy: 745, 1199
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
@@ -3411,14 +3418,14 @@ stand-animation
   index: -1
 status-bar
   rotate: false
-  xy: 1457, 1331
+  xy: 1478, 1331
   size: 19, 19
   orig: 19, 19
   offset: 0, 0
   index: -1
 ten-patch-content-area-horizontal
   rotate: false
-  xy: 1852, 1334
+  xy: 1344, 1335
   size: 17, 17
   split: 2, 2, 0, 0
   orig: 17, 17
@@ -3426,7 +3433,7 @@ ten-patch-content-area-horizontal
   index: -1
 ten-patch-content-area-vertical
   rotate: false
-  xy: 1304, 1335
+  xy: 1853, 1354
   size: 17, 17
   split: 0, 0, 2, 2
   orig: 17, 17
@@ -3462,7 +3469,7 @@ ten-patch-orientation-switch-on-over
   index: -1
 ten-patch-stretch-area-horizontal
   rotate: false
-  xy: 1323, 1335
+  xy: 1872, 1356
   size: 17, 17
   split: 2, 2, 0, 0
   orig: 17, 17
@@ -3470,7 +3477,7 @@ ten-patch-stretch-area-horizontal
   index: -1
 ten-patch-stretch-area-vertical
   rotate: false
-  xy: 1342, 1335
+  xy: 1853, 1335
   size: 17, 17
   split: 0, 0, 2, 2
   orig: 17, 17
@@ -3637,7 +3644,7 @@ toggle-on-pressed
   index: -1
 welcome-frame
   rotate: false
-  xy: 1361, 1345
+  xy: 714, 1380
   size: 7, 7
   split: 2, 2, 2, 2
   pad: 1, 1, 1, 1
@@ -3655,7 +3662,7 @@ welcome-frame-over
   index: -1
 welcome-frame-pressed
   rotate: false
-  xy: 714, 1380
+  xy: 1732, 1349
   size: 7, 7
   split: 2, 2, 2, 2
   pad: 1, 1, 1, 1

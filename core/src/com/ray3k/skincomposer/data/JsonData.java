@@ -164,6 +164,7 @@ public class JsonData implements Json.Serializable {
                             FileHandle file = new FileHandle(path);
                             
                             var drawable = main.getProjectData().getAtlasData().getDrawable(file.nameWithoutExtension());
+                            drawable.type = DrawableType.FONT;
                             
                             main.getProjectData().getAtlasData().getDrawables().removeValue(drawable, false);
                             main.getProjectData().getAtlasData().getFontDrawables().add(drawable);
@@ -252,6 +253,7 @@ public class JsonData implements Json.Serializable {
                     colors.add(colorData);
                 }
             }
+            //drawables
             else if (child.name().equals(TextureRegionDrawable.class.getName()) || child.name().equals(TextureRegionDrawable.class.getSimpleName()) || child.name().equals(NinePatchDrawable.class.getName()) || child.name().equals(NinePatchDrawable.class.getSimpleName())) {
                 for (JsonValue jsonValue : child.iterator()) {
                     DrawableData drawableData = main.getProjectData().getAtlasData().getDrawable(jsonValue.name);
@@ -1201,6 +1203,7 @@ public class JsonData implements Json.Serializable {
                     if (drawable != null) {
                         atlasData.getDrawables().removeValue(drawable, false);
                         atlasData.getFontDrawables().add(drawable);
+                        drawable.type = DrawableType.FONT;
                     }
                 }
             }

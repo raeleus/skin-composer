@@ -161,6 +161,7 @@ public class DialogDrawables extends Dialog {
      */
     private void gatherDrawables() {
         drawables = new Array<>(main.getAtlasData().getDrawables());
+        drawables.addAll(main.getAtlasData().getFontDrawables());
     }
     
     public void populate() {
@@ -393,7 +394,7 @@ public class DialogDrawables extends Dialog {
         for (var drawable: drawables) {
             Button drawableButton;
             
-            if (property != null || customProperty != null) {
+            if ((property != null || customProperty != null) && drawable.type != DrawableType.FONT) {
                 drawableButton = new Button(getSkin(), "color-base");
                 drawableButton.addListener(new ChangeListener() {
                     @Override
@@ -443,7 +444,7 @@ public class DialogDrawables extends Dialog {
             label = new Label(drawable.type.formattedName, getSkin());
             table.add(label).spaceLeft(5).width(100);
             
-            if (showingOptions) {
+            if (showingOptions && drawable.type != DrawableType.FONT) {
                 //more button
                 var button = new Button(getSkin(),  "more");
                 table.add(button);
@@ -456,6 +457,8 @@ public class DialogDrawables extends Dialog {
                         event.setBubbles(false);
                     }
                 });
+            } else {
+                table.add().size(22, 22);
             }
             
             //Tooltip
@@ -479,7 +482,7 @@ public class DialogDrawables extends Dialog {
         for (var drawable : drawables) {
             Button drawableButton;
         
-            if (property != null || customProperty != null) {
+            if ((property != null || customProperty != null) && drawable.type != DrawableType.FONT) {
                 drawableButton = new Button(getSkin(), selectedDrawable == drawable ? "color-base-selected" : "color-base");
                 drawableButton.addListener(new ChangeListener() {
                     @Override
@@ -506,7 +509,7 @@ public class DialogDrawables extends Dialog {
             var label = new Label(drawable.type == null ? "error" : drawable.type.formattedName, getSkin());
             subTable.add(label);
             
-            if (showingOptions) {
+            if (showingOptions && drawable.type != DrawableType.FONT) {
                 //more button
                 var button = new Button(getSkin(),  "more");
                 subTable.add(button).right().expandX();
@@ -519,6 +522,8 @@ public class DialogDrawables extends Dialog {
                         event.setBubbles(false);
                     }
                 });
+            } else {
+                subTable.add().expandX();
             }
         
             //preview
@@ -861,38 +866,40 @@ public class DialogDrawables extends Dialog {
                     break;
             }
     
-            //visible
-            var button = new ImageTextButton("Visible", getSkin(), "visible");
-            button.getLabelCell().expandX().left();
-            button.setProgrammaticChangeEvents(false);
-            button.setChecked(drawable.hidden);
-            root.add(button);
-            root.row();
-            button.addListener(main.getHandListener());
-            button.addListener(hideListener);
-            button.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                    drawable.hidden = ((ImageTextButton) actor).isChecked();
-                    main.getProjectData().setChangesSaved(false);
+            if (drawable.type != DrawableType.FONT) {
+                //visible
+                var button = new ImageTextButton("Visible", getSkin(), "visible");
+                button.getLabelCell().expandX().left();
+                button.setProgrammaticChangeEvents(false);
+                button.setChecked(drawable.hidden);
+                root.add(button);
+                root.row();
+                button.addListener(main.getHandListener());
+                button.addListener(hideListener);
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        drawable.hidden = ((ImageTextButton) actor).isChecked();
+                        main.getProjectData().setChangesSaved(false);
     
-                    gatherDrawables();
-                    sortBySelectedMode();
-                }
-            });
-            
-            //delete
-            button = new ImageTextButton("Delete", getSkin(), "delete-small");
-            button.getLabelCell().expandX().left();
-            root.add(button);
-            button.addListener(hideListener);
-            button.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                    deleteDrawable(drawable);
-                }
-            });
-            button.addListener(main.getHandListener());
+                        gatherDrawables();
+                        sortBySelectedMode();
+                    }
+                });
+    
+                //delete
+                button = new ImageTextButton("Delete", getSkin(), "delete-small");
+                button.getLabelCell().expandX().left();
+                root.add(button);
+                button.addListener(hideListener);
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        deleteDrawable(drawable);
+                    }
+                });
+                button.addListener(main.getHandListener());
+            }
         }
     
         @Override
@@ -1534,6 +1541,10 @@ public class DialogDrawables extends Dialog {
                 if (drawable.hidden) {
                     iter.remove();
                 }
+            }
+            
+            if (!filterOptions.font && drawable.type == DrawableType.FONT) {
+                iter.remove();
             }
         }
     }
@@ -2243,6 +2254,7 @@ public class DialogDrawables extends Dialog {
         public boolean custom = true;
         public boolean tenPatch = true;
         public boolean hidden = false;
+        public boolean font = false;
         public boolean regularExpression = false;
         public String name = "";
 
@@ -2256,6 +2268,7 @@ public class DialogDrawables extends Dialog {
             regularExpression = filterOptions.regularExpression;
             name = filterOptions.name;
             hidden = filterOptions.hidden;
+            font = filterOptions.font;
         }
     }
     

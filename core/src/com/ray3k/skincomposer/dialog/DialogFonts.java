@@ -42,6 +42,7 @@ import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.UndoableManager.CustomFontUndoable;
 import com.ray3k.skincomposer.UndoableManager.FontUndoable;
 import com.ray3k.skincomposer.data.*;
+import com.ray3k.skincomposer.data.DrawableData.DrawableType;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.PopTableClickListener;
 
@@ -311,6 +312,8 @@ public class DialogFonts extends Dialog {
                     }
                     
                     var drawable = new DrawableData(new FileHandle(path));
+                    drawable.type = DrawableType.FONT;
+                    
                     if (!fontDrawables.contains(drawable, false)) {
                         main.getAtlasData().atlasCurrent = false;
                         fontDrawables.add(drawable);
