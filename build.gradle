@@ -53,6 +53,15 @@ project(":splash") {
     }
 }
 
+project(":uninstaller") {
+    apply plugin: "java"
+
+    dependencies {
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    }
+}
+
 project(":installer") {
     apply plugin: "java"
 

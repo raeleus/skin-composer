@@ -1,0 +1,165 @@
+
+skin-composer-installer-ui.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bg
+  rotate: false
+  xy: 1, 70
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+button-browse
+  rotate: false
+  xy: 240, 371
+  size: 37, 19
+  orig: 37, 19
+  offset: 0, 0
+  index: -1
+button-browse-over
+  rotate: false
+  xy: 123, 323
+  size: 37, 19
+  orig: 37, 19
+  offset: 0, 0
+  index: -1
+button-browse-pressed
+  rotate: false
+  xy: 383, 419
+  size: 37, 19
+  orig: 37, 19
+  offset: 0, 0
+  index: -1
+button-normal
+  rotate: false
+  xy: 123, 293
+  size: 28, 28
+  split: 4, 4, 4, 4
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+button-normal-over
+  rotate: false
+  xy: 1, 40
+  size: 28, 28
+  split: 4, 4, 4, 4
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+button-normal-pressed
+  rotate: false
+  xy: 31, 70
+  size: 28, 28
+  split: 4, 4, 4, 4
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+button-small
+  rotate: false
+  xy: 422, 422
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+button-small-over
+  rotate: false
+  xy: 240, 353
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+button-small-pressed
+  rotate: false
+  xy: 279, 374
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+check-box
+  rotate: false
+  xy: 162, 329
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+check-box-checked
+  rotate: false
+  xy: 123, 278
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+check-box-checked-over
+  rotate: false
+  xy: 1, 25
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+check-box-checked-pressed
+  rotate: false
+  xy: 31, 55
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+check-box-over
+  rotate: false
+  xy: 61, 85
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+check-box-pressed
+  rotate: false
+  xy: 404, 404
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+font export
+  rotate: false
+  xy: 1, 392
+  size: 380, 46
+  orig: 380, 46
+  offset: 0, 0
+  index: -1
+font-small export
+  rotate: false
+  xy: 1, 344
+  size: 237, 46
+  orig: 237, 46
+  offset: 0, 0
+  index: -1
+path-bg
+  rotate: false
+  xy: 383, 398
+  size: 19, 19
+  split: 0, 0, 0, 0
+  pad: 2, 2, 0, 0
+  orig: 19, 19
+  offset: 0, 0
+  index: -1
+progress-bar
+  rotate: false
+  xy: 1, 222
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+progress-bar-filled
+  rotate: false
+  xy: 1, 100
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+white
+  rotate: false
+  xy: 153, 320
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,84 @@
+{
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+	font: {
+		file: font export.fnt
+	}
+	font-small: {
+		file: font-small export.fnt
+	}
+}
+com.badlogic.gdx.graphics.Color: {
+	black: {
+		r: 0
+		g: 0
+		b: 0
+		a: 1
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+	default: {
+		up: button-normal
+		down: button-normal-pressed
+		over: button-normal-over
+	}
+	browse: {
+		up: button-browse
+		down: button-browse-pressed
+		over: button-browse-over
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
+	default: {
+		font: font
+		up: button-normal
+		down: button-normal-pressed
+		over: button-normal-over
+	}
+	checkbox: {
+		imageUp: check-box
+		imageDown: check-box-checked-pressed
+		imageOver: check-box-over
+		imageChecked: check-box-checked
+		imageCheckedOver: check-box-checked-over
+		font: font-small
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+	default: {
+		font: font
+	}
+	small: {
+		font: font-small
+	}
+	path: {
+		font: font-small
+		fontColor: black
+		background: path-bg
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
+	default: {
+		font: font
+		up: button-normal
+		down: button-normal-pressed
+		over: button-normal-over
+	}
+	small: {
+		font: font-small
+		up: button-small
+		down: button-small-pressed
+		over: button-small-over
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
+	default: {
+		label: default
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
+	default: {
+		background: bg
+		titleFont: font-small
+	}
+}
+}
