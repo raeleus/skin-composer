@@ -13,17 +13,13 @@ def exeName = 'SkinComposerInstaller'
 def mtPath = 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x64/mt.exe'
 def winRarPath = 'C:/Program Files/WinRAR/WinRAR.exe'
 
-task dist(type: Jar, dependsOn: [':desktop:jpackageImage', ':uninstaller:jpackageApplyUAC']) {
+task dist(type: Jar, dependsOn: [':desktop:jpackageImage', ':uninstaller:jpackageApplyUAC', ':splash:dist']) {
     archiveFileName = "${project.appName}-installer.jar";
     from files(sourceSets.main.output.getClassesDirs())
     from files(sourceSets.main.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}
     from files(project.assetsDir)
-    from(files('../desktop/build/jpackage/SkinComposer/')) {
-        into('installation/')
-        exclude('runtime', '*.dll', '*.xml')
-    }
-    from(files('../uninstaller/build/jpackage/SkinComposerUninstaller/')) {
+    from(files('../desktop/build/jpackage/SkinComposer/', '../uninstaller/build/jpackage/SkinComposerUninstaller/')) {
         into('installation/')
         exclude('runtime', '*.dll', '*.xml')
     }
