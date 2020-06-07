@@ -11,7 +11,7 @@ public class Splash {
         var file = new File(System.getProperty("user.dir") + "/" + "SkinComposer.jar");
         var process =  Runtime.getRuntime().exec("java -jar \"" + file.getName() + "\"", null, file.getParentFile());
         BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-    
+
         String line;
         while ((line = in.readLine()) != null) {
             if (line.equals("close-splash")) break;
