@@ -105,9 +105,6 @@ public class Main extends ApplicationAdapter {
     
     @Override
     public void create() {
-        //Send signal that the app has started, close the splash screen.
-        System.out.println("close-splash");
-        
         appFolder = Gdx.files.external(".skincomposer/");
         
         skin = new FreeTypeSkin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
