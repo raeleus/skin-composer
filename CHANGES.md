@@ -10,7 +10,8 @@
 * Textures associated with Bitmap Fonts are now viewable in the Drawables Dialog to help reduce confusion from overwriting with another Drawable. Enable via the Drawables filter.
 * Background color is automatically set in FreeTypeFont dialog.
 * Red marquees make it more obvious that required values are missing in various dialogs.
-* Preview background color is saved with the project for convenience. 
+* Preview background color is saved with the project for convenience.
+* Running on Mac OSX no longer requires start with -XstartOnFirstThread option.
 * Fixed crash when adding a custom placeholder drawable to a project that is set to keep resources relative.
 * Fixed Tenpatch dialog not displaying correct region in preview when removing all animation frames.
 * Fixed crash with FreeTypeFonts when they are missing from the project.
