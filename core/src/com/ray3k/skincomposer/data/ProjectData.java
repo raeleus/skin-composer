@@ -147,33 +147,35 @@ public class ProjectData implements Json.Serializable {
     }
     
     public void putRecentFile(String filePath) {
-        Array<RecentFile> recentFiles = getRecentFiles();
-        Iterator<RecentFile> iter = recentFiles.iterator();
-        while(iter.hasNext()) {
-            RecentFile recentFile = iter.next();
-            if (recentFile.fileHandle.toString().equals(filePath)) {
-                iter.remove();
+        if (Gdx.files.absolute(filePath).exists()) {
+            Array<RecentFile> recentFiles = getRecentFiles();
+            Iterator<RecentFile> iter = recentFiles.iterator();
+            while (iter.hasNext()) {
+                RecentFile recentFile = iter.next();
+                if (recentFile.fileHandle.toString().equals(filePath)) {
+                    iter.remove();
+                }
             }
+            RecentFile newFile = new RecentFile();
+            newFile.fileHandle = new FileHandle(filePath);
+            newFile.name = newFile.fileHandle.nameWithoutExtension();
+    
+            recentFiles.add(newFile);
+            while (recentFiles.size > MAX_RECENT_FILES) {
+                recentFiles.removeIndex(0);
+            }
+    
+            int size = Math.min(MAX_RECENT_FILES, recentFiles.size);
+            generalPref.putInteger("recentFilesCount", size);
+    
+            for (int i = 0; i < size; i++) {
+                RecentFile recentFile = recentFiles.get(i);
+                generalPref.putString("recentFile" + i, recentFile.fileHandle.toString());
+            }
+            generalPref.flush();
+    
+            main.getRootTable().setRecentFilesDisabled(false);
         }
-        RecentFile newFile = new RecentFile();
-        newFile.fileHandle = new FileHandle(filePath);
-        newFile.name = newFile.fileHandle.nameWithoutExtension();
-
-        recentFiles.add(newFile);
-        while (recentFiles.size > MAX_RECENT_FILES) {
-            recentFiles.removeIndex(0);
-        }
-        
-        int size = Math.min(MAX_RECENT_FILES, recentFiles.size);
-        generalPref.putInteger("recentFilesCount", size);
-        
-        for (int i = 0; i < size; i++) {
-            RecentFile recentFile = recentFiles.get(i);
-            generalPref.putString("recentFile" + i, recentFile.fileHandle.toString());
-        }
-        generalPref.flush();
-        
-        main.getRootTable().setRecentFilesDisabled(false);
     }
     
     public void setMaxUndos(int maxUndos) {
@@ -631,17 +633,20 @@ public class ProjectData implements Json.Serializable {
     }
 
     public String getLastOpenSavePath() {
-
-        return (String) generalPref.getString("last-open-save-path",
-                generalPref.getString("last-path",
-                        Gdx.files.getLocalStoragePath()));
+        var path = generalPref.getString("last-open-save-path", generalPref.getString("last-path"));
+        if (path == null || !Gdx.files.absolute(path).exists()) {
+            path = Gdx.files.getLocalStoragePath();
+        }
+        return path;
     }
 
     public void setLastOpenSavePath(String openSavePath) {
-        generalPref.putString("last-open-save-path", openSavePath);
-        generalPref.flush();
-
-        setLastPath(openSavePath);
+        if (Gdx.files.absolute(openSavePath).exists()) {
+            generalPref.putString("last-open-save-path", openSavePath);
+            generalPref.flush();
+    
+            setLastPath(openSavePath);
+        }
     }
 
     public String getLastImportExportPath() {
@@ -655,39 +660,52 @@ public class ProjectData implements Json.Serializable {
     }
 
     public String getLastFontPath() {
-        return (String) generalPref.getString("last-font-path",
-                generalPref.getString("last-path",
-                        Gdx.files.getLocalStoragePath()));
+        var path = generalPref.getString("last-font-path", generalPref.getString("last-path"));
+        if (path == null || !Gdx.files.absolute(path).exists()) {
+            path = Gdx.files.getLocalStoragePath();
+        }
+        return path;
     }
 
     public void setLastFontPath(String fontPath) {
-        generalPref.putString("last-font-path", fontPath);
-        generalPref.flush();
-
-        setLastPath(fontPath);
+        if (Gdx.files.absolute(fontPath).exists()) {
+            generalPref.putString("last-font-path", fontPath);
+            generalPref.flush();
+    
+            setLastPath(fontPath);
+        }
     }
 
     public String getLastDrawablePath() {
-        return (String) generalPref.getString("last-drawable-path",
-                generalPref.getString("last-path",
-                        Gdx.files.getLocalStoragePath()));
+        var path = generalPref.getString("last-drawable-path", generalPref.getString("last-path"));
+        if (path == null || !Gdx.files.absolute(path).exists()) {
+            path = Gdx.files.getLocalStoragePath();
+        }
+        return path;
     }
 
     public void setLastDrawablePath(String drawablePath) {
-        generalPref.putString("last-drawable-path", drawablePath);
-        generalPref.flush();
-
-        setLastPath(drawablePath);
+        if (Gdx.files.absolute(drawablePath).exists()) {
+            generalPref.putString("last-drawable-path", drawablePath);
+            generalPref.flush();
+    
+            setLastPath(drawablePath);
+        }
     }
 
     public String getLastPath() {
-        return (String) generalPref.getString("last-path",
-                Gdx.files.getLocalStoragePath());
+        var path = generalPref.getString("last-path");
+        if (path == null || !Gdx.files.absolute(path).exists()) {
+            path = Gdx.files.getLocalStoragePath();
+        }
+        return path;
     }
     
     public void setLastPath(String lastPath) {
-        generalPref.putString("last-path", lastPath);
-        generalPref.flush();
+        if (Gdx.files.absolute(lastPath).exists()) {
+            generalPref.putString("last-path", lastPath);
+            generalPref.flush();
+        }
     }
     
     public boolean areResourcesRelative() {
