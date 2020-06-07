@@ -12,6 +12,7 @@
 * Red marquees make it more obvious that required values are missing in various dialogs.
 * Preview background color is saved with the project for convenience.
 * Running on Mac OSX no longer requires start with -XstartOnFirstThread option.
+* Fixed being unable to choose "Open" or "Save As" after accessing a demo project on Mac.
 * Fixed crash when adding a custom placeholder drawable to a project that is set to keep resources relative.
 * Fixed Tenpatch dialog not displaying correct region in preview when removing all animation frames.
 * Fixed crash with FreeTypeFonts when they are missing from the project.
