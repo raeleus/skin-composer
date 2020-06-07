@@ -45,14 +45,6 @@ project(":desktop") {
     }
 }
 
-project(":splash") {
-    apply plugin: "java"
-
-    dependencies {
-
-    }
-}
-
 project(":uninstaller") {
     apply plugin: "java"
 

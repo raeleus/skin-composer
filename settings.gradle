@@ -1,2 +1,2 @@
-include 'desktop', 'core', 'splash', 'installer', 'uninstaller'
+include 'desktop', 'core', 'installer', 'uninstaller'
 rootProject.name = 'Skin Composer'
