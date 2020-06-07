@@ -1,0 +1,157 @@
+{
+"skeleton": { "hash": "dPSy7anANMEACk3QpNBSCcP/z28", "spine": "3.6.53", "width": 120, "height": 120, "images": "../output/" },
+"bones": [
+	{ "name": "root" },
+	{ "name": "resizer", "parent": "root" },
+	{ "name": "progress-bar", "parent": "resizer", "length": 69.01, "x": 0.5, "y": 0.5, "transform": "noScale" },
+	{ "name": "progress-bar-filled", "parent": "resizer", "length": 76.06, "x": 0.5, "y": 0.5, "transform": "noScale" }
+],
+"slots": [
+	{ "name": "clip", "bone": "progress-bar", "attachment": "clip" },
+	{ "name": "progress-bar", "bone": "progress-bar", "attachment": "progress-bar" },
+	{ "name": "progress-bar-filled", "bone": "progress-bar-filled", "attachment": "progress-bar-filled" }
+],
+"skins": {
+	"default": {
+		"clip": {
+			"clip": {
+				"type": "clipping",
+				"end": "clip",
+				"vertexCount": 7,
+				"vertices": [ 0, -1.5, 0, 105.5, -141, 103.5, -138, -164.5, 124, -162.5, 123, 103.5, 0, 103.5 ],
+				"color": "ce3a3aff"
+			}
+		},
+		"progress-bar": {
+			"progress-bar": { "width": 120, "height": 120 }
+		},
+		"progress-bar-filled": {
+			"progress-bar-filled": { "width": 120, "height": 120 }
+		}
+	}
+},
+"animations": {
+	"complete": {
+		"slots": {
+			"clip": {
+				"attachment": [
+					{ "time": 0, "name": null }
+				]
+			},
+			"progress-bar": {
+				"color": [
+					{ "time": 0.3333, "color": "ffffffff" },
+					{ "time": 1.3333, "color": "ffffff00" }
+				]
+			},
+			"progress-bar-filled": {
+				"attachment": [
+					{ "time": 0, "name": null }
+				]
+			}
+		}
+	},
+	"install": {
+		"slots": {
+			"clip": {
+				"attachment": [
+					{ "time": 0, "name": "clip" }
+				]
+			},
+			"progress-bar-filled": {
+				"attachment": [
+					{ "time": 0, "name": null }
+				]
+			}
+		},
+		"deform": {
+			"default": {
+				"clip": {
+					"clip": [
+						{
+							"time": 0,
+							"offset": 7,
+							"vertices": [ 245.00003, -247, 243.00006, -227.99997, -22.00001, 0.18495, -10.99999 ]
+						},
+						{
+							"time": 0.2333,
+							"offset": 8,
+							"vertices": [ -247, -1.99995, -227.99997, -267, -123.00009, -101 ]
+						},
+						{
+							"time": 0.4667,
+							"offset": 10,
+							"vertices": [ 3, -256.00006, 0.99994, -264.00003 ]
+						},
+						{
+							"time": 0.7667,
+							"offset": 12,
+							"vertices": [ 113.99994, -104.00002 ]
+						},
+						{ "time": 1 }
+					]
+				}
+			}
+		}
+	},
+	"start": {
+		"slots": {
+			"progress-bar": {
+				"color": [
+					{ "time": 0.8, "color": "ffffff00" },
+					{ "time": 1.1, "color": "ffffffff" },
+					{ "time": 1.3667, "color": "ffffff00" },
+					{ "time": 1.6667, "color": "ffffffff" }
+				],
+				"attachment": [
+					{ "time": 0, "name": null },
+					{ "time": 0.8, "name": "progress-bar" }
+				]
+			},
+			"progress-bar-filled": {
+				"color": [
+					{ "time": 0, "color": "ffffffff" },
+					{ "time": 0.5, "color": "ffffff00" }
+				]
+			}
+		},
+		"bones": {
+			"progress-bar-filled": {
+				"scale": [
+					{ "time": 0, "x": 0, "y": 0 },
+					{ "time": 0.5, "x": 1, "y": 1 }
+				]
+			}
+		},
+		"deform": {
+			"default": {
+				"clip": {
+					"clip": [
+						{ "time": 1.6667 },
+						{
+							"time": 1.8,
+							"offset": 12,
+							"vertices": [ 113.99994, -104.00002 ]
+						},
+						{
+							"time": 1.9667,
+							"offset": 10,
+							"vertices": [ 3, -256.00006, 0.99994, -264.00003 ]
+						},
+						{
+							"time": 2.1,
+							"offset": 8,
+							"vertices": [ -247, -1.99995, -227.99997, -267, -123.00009, -101 ]
+						},
+						{
+							"time": 2.2333,
+							"offset": 7,
+							"vertices": [ 245.00003, -247, 243.00006, -227.99997, -22.00001, 0.18495, -10.99999 ]
+						}
+					]
+				}
+			}
+		}
+	}
+}
+}

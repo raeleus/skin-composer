@@ -30,7 +30,6 @@ allprojects {
 project(":desktop") {
     apply plugin: "java"
 
-
     dependencies {
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
@@ -51,6 +50,25 @@ project(":splash") {
 
     dependencies {
 
+    }
+}
+
+project(":installer") {
+    apply plugin: "java"
+
+    dependencies {
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        compile "org.lwjgl:lwjgl-tinyfd:3.2.3"
+        compile "org.lwjgl:lwjgl-tinyfd:3.2.3:natives-windows"
+        compile "org.lwjgl:lwjgl-tinyfd:3.2.3:natives-linux"
+        compile "org.lwjgl:lwjgl-tinyfd:3.2.3:natives-macos"
+        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        compile ("com.badlogicgames.gdx:gdx-tools:$gdxVersion") {
+            exclude group: 'com.badlogicgames.gdx', module: 'gdx-backend-lwjgl'
+        }
+        compile 'com.esotericsoftware.spine:spine-libgdx:3.6.53.1'
+        compile 'com.github.vatbub:mslinks:1.0.4'
     }
 }
 

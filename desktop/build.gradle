@@ -6,6 +6,8 @@ apply plugin: "java"
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs = [ "src/" ]
 
+def exeName = 'SkinComposer'
+
 mainClassName = "com.ray3k.skincomposer.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets")
 
@@ -38,5 +40,6 @@ runtime {
     jpackage {
         mainJar = "${appName}.jar"
         imageOptions = ["--icon", file("../icons/logo.ico")]
+        imageName = exeName
     }
 }
