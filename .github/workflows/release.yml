@@ -76,7 +76,7 @@ jobs:
         java-version: 14
 
     - name: Install dependencies
-      run: choco install -y winrar
+      run: choco install -y winrar & choco install windows-sdk-10-version-2004-all
 
     - name: Build exe
       run: ./gradlew.bat installer:jpackageZip
