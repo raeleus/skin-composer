@@ -1,0 +1,210 @@
+name: Build skin-composer and create a draft release
+
+on:
+  create
+
+
+jobs:
+  jar:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up JDK 14
+      uses: actions/setup-java@v1
+      with:
+        java-version: 14
+
+    - name: Fix gradlew file permissions
+      run: chmod +x gradlew
+
+    - name: Build jar
+      run: ./gradlew desktop:dist
+
+    - name: Upload jar artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: SkinComposer.jar
+        path: desktop/build/lib/SkinComposer.jar
+
+
+  linux-deb-rpm:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up JDK 14
+      uses: actions/setup-java@v1
+      with:
+        java-version: 14
+
+    - name: Fix gradlew file permissions
+      run: chmod +x gradlew
+
+    - name: Build deb/rpm
+      run: ./gradlew desktop:jpackage
+
+    - name: Fix deb filename
+      run: mv desktop/build/jpackage/*.deb SkinComposer.deb
+
+    - name: Fix rpm filename
+      run: mv desktop/build/jpackage/*.rpm SkinComposer.rpm
+
+    - name: Upload deb artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: SkinComposer.deb
+        path: SkinComposer.deb
+
+    - name: Upload rpm artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: SkinComposer.rpm
+        path: SkinComposer.rpm
+
+
+
+
+  windows-msi-exe:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up JDK 14
+      uses: actions/setup-java@v1
+      with:
+        java-version: 14
+
+    - name: Install dependencies
+      run: choco install -y winrar
+
+    - name: Build exe
+      run: ./gradlew.bat installer:jpackageZip
+
+    - name: Upload exe artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: SkinComposerInstaller.exe
+        path: installer\build\winrar\SkinComposerInstaller.exe
+
+
+  apple-dmg-pkg:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up JDK 14
+      uses: actions/setup-java@v1
+      with:
+        java-version: 14
+
+    - name: Fix gradlew file permissions
+      run: chmod +x gradlew
+
+    - name: Build app/dmg/pkg
+      run: ./gradlew desktop:jpackage
+
+    - name: Fix dmg filename
+      run: mv desktop/build/jpackage/*.dmg SkinComposer.dmg
+
+    - name: Fix pkg filename
+      run: mv desktop/build/jpackage/*.pkg SkinComposer.pkg
+    
+    - name: Upload dmg artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: SkinComposer.dmg
+        path: SkinComposer.dmg
+
+    - name: Upload pkg artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: SkinComposer.pkg
+        path: SkinComposer.pkg
+
+
+
+
+  release:
+    needs: [jar, linux-deb-rpm, windows-msi-exe, apple-dmg-pkg]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v2
+        
+      - name: Display structure of downloaded files
+        run: ls -R
+          
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: false
+
+      - name: Upload jar release artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: SkinComposer.jar/SkinComposer.jar
+          asset_name: SkinComposer.jar
+          asset_content_type: application/x-java-archive
+
+      - name: Upload deb release artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: SkinComposer.deb/SkinComposer.deb
+          asset_name: SkinComposer.deb
+          asset_content_type: application/vnd.debian.binary-package
+
+      - name: Upload rpm release artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: SkinComposer.rpm/SkinComposer.rpm
+          asset_name: SkinComposer.rpm
+          asset_content_type: application/x-rpm
+
+      - name: Upload exe release artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: SkinComposerInstaller.exe/SkinComposerInstaller.exe
+          asset_name: SkinComposerInstaller.exe
+          asset_content_type: application/x-ms-dos-executable
+
+      - name: Upload dmg release artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: SkinComposer.dmg/SkinComposer.dmg
+          asset_name: SkinComposer.dmg
+          asset_content_type: application/x-apple-diskimage
+
+      - name: Upload pkg release artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: SkinComposer.pkg/SkinComposer.pkg
+          asset_name: SkinComposer.pkg
+          asset_content_type: application/x-xar
+
+
+
