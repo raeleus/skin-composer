@@ -179,6 +179,13 @@ public class DialogSceneComposerModel {
                     if (foundStyle == null) foundStyle = main.getJsonData().findStyle(style.clazz, "default");
                     if (foundStyle == null) foundStyle = main.getJsonData().findStyle(style.clazz, "default-horizontal");
                     field.set(simActor, foundStyle);
+                    if (style != null) {
+                        StyleData foundStyle = main.getJsonData().findStyle(style.clazz, style.name);
+                        if (foundStyle == null) foundStyle = main.getJsonData().findStyle(style.clazz, "default");
+                        if (foundStyle == null)
+                            foundStyle = main.getJsonData().findStyle(style.clazz, "default-horizontal");
+                        field.set(simActor, foundStyle);
+                    }
                 } catch (ReflectionException e) {
                     e.printStackTrace(System.out);
                 }
