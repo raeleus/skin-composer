@@ -330,6 +330,8 @@ public class GeneralListeners {
     
         table.row();
         textButton = new TextButton("ScrollPane", DialogSceneComposer.skin, "scene-med");
+        valid = DialogSceneComposer.main.getJsonData().classHasValidStyles(ScrollPane.class);
+        textButton.setDisabled(!valid);
         table.add(textButton);
         textButton.addListener(DialogSceneComposer.main.getHandListener());
         textButton.addListener(new TextTooltip("Creates a scrollable layout for your widgets. It is commonly used to adapt the UI to variable content and screen sizes.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
