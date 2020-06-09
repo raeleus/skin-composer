@@ -9,6 +9,7 @@ public class CellMoveCellUpUndoable implements SceneComposerUndoable {
     private DialogSceneComposerModel.SimTable table;
     private int column;
     private int oldColumn;
+    private boolean moveRows;
     
     public CellMoveCellUpUndoable() {
         dialog = DialogSceneComposer.dialog;
@@ -17,10 +18,19 @@ public class CellMoveCellUpUndoable implements SceneComposerUndoable {
         table = (DialogSceneComposerModel.SimTable) cell.parent;
         oldColumn = cell.column;
         column = Math.min(table.getColumns(cell.row - 1), cell.column);
+        moveRows = table.getColumns(cell.row) == 1;
     }
     
     @Override
     public void undo() {
+        if (moveRows) {
+            for (var currentCell : table.cells) {
+                if (currentCell.row >= cell.row + 1) {
+                    currentCell.row++;
+                }
+            }
+        }
+        
         for (var currentCell : table.cells) {
             if (currentCell.row == cell.row && currentCell.column > column) {
                 currentCell.column--;
@@ -35,6 +45,7 @@ public class CellMoveCellUpUndoable implements SceneComposerUndoable {
         
         cell.row++;
         cell.column = oldColumn;
+        
         table.sort();
     
         if (dialog.simActor != cell) {
@@ -61,7 +72,14 @@ public class CellMoveCellUpUndoable implements SceneComposerUndoable {
         
         cell.row--;
         cell.column = column;
-    
+        
+        if (moveRows) {
+            for (var currentCell : table.cells) {
+                if (currentCell.row >= cell.row + 1) {
+                    currentCell.row--;
+                }
+            }
+        }
         
         table.sort();
         

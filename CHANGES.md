@@ -1,3 +1,7 @@
+### Skin Composer Version 36 ###
+
+* Fixed Move Cell Up and Down being broken in Scene Composer.
+
 ### Skin Composer Version 35 ###
 
 * Added Scene Composer to generate basic GUI's with a visual editor.
