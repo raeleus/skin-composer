@@ -34,6 +34,7 @@ public class DialogSceneComposerModel {
     public transient Stack preview;
     private static Json json;
     private final static Vector2 temp = new Vector2();
+    private final static int EDIT_EMPTY_WIDGET_SIZE = 50;
     
     public enum Interpol {
         LINEAR(Interpolation.linear, "Linear", "linear"), SMOOTH(Interpolation.smooth, "Smooth", "smooth"), SMOOTH2(
@@ -175,10 +176,6 @@ public class DialogSceneComposerModel {
             if (field.getType() == StyleData.class) {
                 try {
                     var style = (StyleData) field.get(simActor);
-                    var foundStyle = main.getJsonData().findStyle(style.clazz, style.name);
-                    if (foundStyle == null) foundStyle = main.getJsonData().findStyle(style.clazz, "default");
-                    if (foundStyle == null) foundStyle = main.getJsonData().findStyle(style.clazz, "default-horizontal");
-                    field.set(simActor, foundStyle);
                     if (style != null) {
                         StyleData foundStyle = main.getJsonData().findStyle(style.clazz, style.name);
                         if (foundStyle == null) foundStyle = main.getJsonData().findStyle(style.clazz, "default");
@@ -473,7 +470,7 @@ public class DialogSceneComposerModel {
                 }
             }
             
-            if (dialog.view == View.EDIT && table.getCells().size == 0) table.add().size(50, 50);
+            if (dialog.view == View.EDIT && table.getCells().size == 0) table.add().size(EDIT_EMPTY_WIDGET_SIZE, EDIT_EMPTY_WIDGET_SIZE);
         } else if (simActor instanceof SimTextButton) {
             var simTextButton = (SimTextButton) simActor;
             if (simTextButton.style != null && simTextButton.style.hasMandatoryFields()) {
@@ -493,6 +490,10 @@ public class DialogSceneComposerModel {
                 
                 textButton.addListener(main.getHandListener());
                 actor = textButton;
+            } else if (dialog.view == View.EDIT) {
+                var container = new Container();
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
         } else if (simActor instanceof SimButton) {
             var simButton = (SimButton) simActor;
@@ -508,6 +509,10 @@ public class DialogSceneComposerModel {
                 button.pad(simButton.padTop, simButton.padLeft, simButton.padBottom, simButton.padRight);
                 button.addListener(main.getHandListener());
                 actor = button;
+            } else if (dialog.view == View.EDIT) {
+                var container = new Container();
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
         }  else if (simActor instanceof SimImageButton) {
             var simImageButton = (SimImageButton) simActor;
@@ -528,6 +533,10 @@ public class DialogSceneComposerModel {
                 
                 imageButton.addListener(main.getHandListener());
                 actor = imageButton;
+            } else if (dialog.view == View.EDIT) {
+                var container = new Container();
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
         } else if (simActor instanceof SimImageTextButton) {
             var simImageTextButton = (SimImageTextButton) simActor;
@@ -548,6 +557,10 @@ public class DialogSceneComposerModel {
                 
                 imageTextButton.addListener(main.getHandListener());
                 actor = imageTextButton;
+            } else if (dialog.view == View.EDIT) {
+                var container = new Container();
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
         } else if (simActor instanceof SimCheckBox) {
             var simCheckBox = (SimCheckBox) simActor;
@@ -568,6 +581,10 @@ public class DialogSceneComposerModel {
                 
                 checkBox.addListener(main.getHandListener());
                 actor = checkBox;
+            } else if (dialog.view == View.EDIT) {
+                var container = new Container();
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
         } else if (simActor instanceof SimImage) {
             var simImage = (SimImage) simActor;
@@ -576,9 +593,9 @@ public class DialogSceneComposerModel {
                 image.setScaling(simImage.scaling);
                 actor = image;
             } else if (dialog.view == View.EDIT) {
-                var image = new Image(skin.getDrawable("scene-image-debug"));
-                image.setScaling(Scaling.none);
-                actor = image;
+                var container = new Container();
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
         } else if (simActor instanceof SimLabel) {
             var simLabel = (SimLabel) simActor;
@@ -593,6 +610,10 @@ public class DialogSceneComposerModel {
                 label.setWrap(simLabel.wrap);
                 if (simLabel.color != null) label.setColor(simLabel.color.color);
                 actor = label;
+            } else if (dialog.view == View.EDIT) {
+                var container = new Container();
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
         } else if (simActor instanceof SimList) {
             var simList = (SimList) simActor;
@@ -607,6 +628,10 @@ public class DialogSceneComposerModel {
                 list.setItems(newList);
                 list.addListener(main.getHandListener());
                 actor = list;
+            } else if (dialog.view == View.EDIT) {
+                var container = new Container();
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
         } else if (simActor instanceof SimProgressBar) {
             var sim = (SimProgressBar) simActor;
@@ -621,6 +646,10 @@ public class DialogSceneComposerModel {
                 progressBar.setRound(sim.round);
                 progressBar.setVisualInterpolation(sim.visualInterpolation.interpolation);
                 actor = progressBar;
+            } else if (dialog.view == View.EDIT) {
+                var container = new Container();
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
         } else if (simActor instanceof SimSelectBox) {
             var sim = (SimSelectBox) simActor;
@@ -641,6 +670,10 @@ public class DialogSceneComposerModel {
                 selectBox.addListener(main.getHandListener());
                 selectBox.getList().addListener(main.getHandListener());
                 actor = selectBox;
+            } else if (dialog.view == View.EDIT) {
+                var container = new Container();
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
         } else if (simActor instanceof SimSlider) {
             var sim = (SimSlider) simActor;
@@ -655,6 +688,10 @@ public class DialogSceneComposerModel {
                 slider.setRound(sim.round);
                 slider.setVisualInterpolation(sim.visualInterpolation.interpolation);
                 actor = slider;
+            } else if (dialog.view == View.EDIT) {
+                var container = new Container();
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
         } else if (simActor instanceof SimTextField) {
             var sim = (SimTextField) simActor;
@@ -677,6 +714,10 @@ public class DialogSceneComposerModel {
                 textField.setMessageText(sim.messageText);
                 textField.addListener(main.getIbeamListener());
                 actor = textField;
+            } else if (dialog.view == View.EDIT) {
+                var container = new Container();
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
         } else if (simActor instanceof SimTextArea) {
             var sim = (SimTextArea) simActor;
@@ -700,6 +741,10 @@ public class DialogSceneComposerModel {
                 textArea.setPrefRows(sim.preferredRows);
                 textArea.addListener(main.getIbeamListener());
                 actor = textArea;
+            } else if (dialog.view == View.EDIT) {
+                var container = new Container();
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
         } else if (simActor instanceof SimTouchPad) {
             var sim = (SimTouchPad) simActor;
@@ -708,6 +753,10 @@ public class DialogSceneComposerModel {
                 var touchPad = new Touchpad(sim.deadZone, style);
                 touchPad.setResetOnTouchUp(sim.resetOnTouchUp);
                 actor = touchPad;
+            } else if (dialog.view == View.EDIT) {
+                var container = new Container();
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
         } else if (simActor instanceof SimContainer) {
             var sim = (SimContainer) simActor;
@@ -753,14 +802,14 @@ public class DialogSceneComposerModel {
             
             if (dialog.view == View.EDIT && sim.children.size == 0) {
                 var container = new Container();
-                container.prefSize(50);
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
                 horizontalGroup.addActor(container);
             }
             
             actor = horizontalGroup;
         } else if (simActor instanceof SimScrollPane) {
             var sim = (SimScrollPane) simActor;
-            if (sim.style != null && sim.style.hasMandatoryFields()) {
+            if (sim.style != null && sim.style.hasMandatoryFields() && !sim.style.hasAllNullFields()) {
                 var style = main.getRootTable().createPreviewStyle(ScrollPane.ScrollPaneStyle.class, sim.style);
                 var scrollPane = new ScrollPane(createPreviewWidget(sim.child), style);
                 scrollPane.setName(sim.name);
@@ -779,20 +828,26 @@ public class DialogSceneComposerModel {
                 scrollPane.setSmoothScrolling(sim.smoothScrolling);
                 scrollPane.setVariableSizeKnobs(sim.variableSizeKnobs);
                 actor = scrollPane;
+            } else if (dialog.view == View.EDIT) {
+                var container = new Container();
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
         } else if (simActor instanceof SimStack) {
             var sim = (SimStack) simActor;
-            var stack = new Stack();
-            stack.setName(sim.name);
-            for (var child : sim.children) {
-                stack.add(createPreviewWidget(child));
-            }
-            if (sim.children.size == 0) {
+            if (sim.children.size > 0) {
+                var stack = new Stack();
+                stack.setName(sim.name);
+                for (var child : sim.children) {
+                    var childActor = createPreviewWidget(child);
+                    if (childActor != null) stack.add(childActor);
+                }
+                actor = stack;
+            } else if (dialog.view == View.EDIT) {
                 var container = new Container();
-                container.prefSize(50);
-                stack.add(container);
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
-            actor = stack;
         } else if (simActor instanceof SimSplitPane) {
             var sim = (SimSplitPane) simActor;
             if (sim.style != null && sim.style.hasMandatoryFields()) {
@@ -803,6 +858,10 @@ public class DialogSceneComposerModel {
                 splitPane.setMinSplitAmount(sim.splitMin);
                 splitPane.setMaxSplitAmount(sim.splitMax);
                 actor = splitPane;
+            } else if (dialog.view == View.EDIT) {
+                var container = new Container();
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
         } else if (simActor instanceof SimTree) {
             var sim = (SimTree) simActor;
@@ -823,12 +882,16 @@ public class DialogSceneComposerModel {
                 if (sim.children.size == 0) {
                     Tree.Node node = new GenericNode();
                     var container = new Container();
-                    container.prefSize(50);
+                    container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
                     node.setActor(container);
                     tree.add(node);
                 }
                 tree.addListener(main.getHandListener());
                 actor = tree;
+            } else if (dialog.view == View.EDIT) {
+                var container = new Container();
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
+                actor = container;
             }
         } else if (simActor instanceof SimVerticalGroup) {
             var sim = (SimVerticalGroup) simActor;
@@ -852,14 +915,14 @@ public class DialogSceneComposerModel {
     
             if (dialog.view == View.EDIT && sim.children.size == 0) {
                 var container = new Container();
-                container.prefSize(50);
+                container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
                 verticalGroup.addActor(container);
             }
             
             actor = verticalGroup;
         } else if (dialog.view == View.EDIT) {
             var container = new Container();
-            container.prefSize(50);
+            container.prefSize(EDIT_EMPTY_WIDGET_SIZE);
             actor = container;
         }
         
