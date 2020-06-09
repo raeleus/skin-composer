@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer.dialog;
+import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer.skin;
 
 public class DialogSceneComposerModel {
     private transient Main main;
@@ -566,6 +567,10 @@ public class DialogSceneComposerModel {
             if (simImage.drawable != null) {
                 var image = new Image(main.getAtlasData().getDrawablePairs().get(simImage.drawable));
                 image.setScaling(simImage.scaling);
+                actor = image;
+            } else if (dialog.view == View.EDIT) {
+                var image = new Image(skin.getDrawable("scene-image-debug"));
+                image.setScaling(Scaling.none);
                 actor = image;
             }
         } else if (simActor instanceof SimLabel) {
