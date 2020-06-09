@@ -1,6 +1,9 @@
 ### Skin Composer Version 36 ###
 
 * Fixed Move Cell Up and Down being broken in Scene Composer.
+* Disabled ScrollPane if there are no valid ScrollPane styles in Scene Composer
+* Fixed adding an empty image to Stack causes a crash.
+* Fixed null styles resulting in an unclickable preview for the Edit mode in Scene Composer. 
 
 ### Skin Composer Version 35 ###
 
