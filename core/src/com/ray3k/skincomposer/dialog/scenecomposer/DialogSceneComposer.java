@@ -661,7 +661,7 @@ public class DialogSceneComposer extends Dialog {
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
-            textButton.addListener(GeneralListeners.widgetDeleteListener("ImageTextButton", events::imageButtonDelete));
+            textButton.addListener(GeneralListeners.widgetDeleteListener("ImageTextButton", events::imageTextButtonDelete));
             textButton.addListener(new TextTooltip("Removes this widget from its parent.", main.getTooltipManager(), skin, "scene"));
         } else if (simActor instanceof DialogSceneComposerModel.SimCheckBox) {
             propertiesLabel.setText("CheckBox Properties");
