@@ -2,6 +2,7 @@ package com.ray3k.skincomposer.dialog.scenecomposer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.Main;
@@ -112,6 +113,10 @@ public class DialogSceneComposerEvents {
     
     public void tableName(String name) {
         processUndoable(new TableNameUndoable(name));
+    }
+    
+    public void tableTouchable(Touchable touchable) {
+        processUndoable(new TableTouchableUndoable(touchable));
     }
     
     public void tableBackground(DrawableData background) {
@@ -246,6 +251,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new ButtonNameUndoable(name));
     }
     
+    public void buttonTouchable(Touchable touchable) {
+        processUndoable(new ButtonTouchableUndoable(touchable));
+    }
+    
     public void buttonStyle(StyleData style) {
         processUndoable(new ButtonStyleUndoable(style));
     }
@@ -278,6 +287,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new ImageButtonNameUndoable(name));
     }
     
+    public void imageButtonTouchable(Touchable touchable) {
+        processUndoable(new ImageButtonTouchableUndoable(touchable));
+    }
+    
     public void imageButtonStyle(StyleData style) {
         processUndoable(new ImageButtonStyleUndoable(style));
     }
@@ -308,6 +321,10 @@ public class DialogSceneComposerEvents {
     
     public void imageTextButtonName(String name) {
         processUndoable(new ImageTextButtonNameUndoable(name));
+    }
+    
+    public void imageTextButtonTouchable(Touchable touchable) {
+        processUndoable(new ImageTextButtonTouchableUndoable(touchable));
     }
     
     public void imageTextButtonText(String text) {
@@ -346,6 +363,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new TextButtonNameUndoable(name));
     }
     
+    public void textButtonTouchable(Touchable touchable) {
+        processUndoable(new TextButtonTouchableUndoable(touchable));
+    }
+    
     public void textButtonText(String text) {
         processUndoable(new TextButtonTextUndoable(text));
     }
@@ -376,6 +397,10 @@ public class DialogSceneComposerEvents {
     
     public void textButtonDelete() {
         processUndoable(new TextButtonDeleteUndoable());
+    }
+    
+    public void checkBoxTouchable(Touchable touchable) {
+        processUndoable(new CheckBoxTouchableUndoable(touchable));
     }
     
     public void checkBoxChecked(boolean checked) {
@@ -434,6 +459,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new ContainerNameUndoable(name));
     }
     
+    public void containerTouchable(Touchable touchable) {
+        processUndoable(new ContainerTouchableUndoable(touchable));
+    }
+    
     public void containerPadding(float padLeft, float padRight, float padTop, float padBottom) {
         processUndoable(new ContainerPaddingUndoable(padLeft,  padRight, padTop, padBottom));
     }
@@ -472,6 +501,10 @@ public class DialogSceneComposerEvents {
     
     public void horizontalGroupName(String name) {
         processUndoable(new HorizontalGroupNameUndoable(name));
+    }
+    
+    public void horizontalGroupTouchable(Touchable touchable) {
+        processUndoable(new HorizontalGroupTouchableUndoable(touchable));
     }
     
     public void horizontalGroupPadBottom(float padBottom) {
@@ -525,6 +558,10 @@ public class DialogSceneComposerEvents {
    public void imageName(String name) {
         processUndoable(new ImageNameUndoable(name));
    }
+    
+    public void imageTouchable(Touchable touchable) {
+        processUndoable(new ImageTouchableUndoable(touchable));
+    }
    
    public void imageReset() {
         processUndoable(new ImageResetUndoable());
@@ -553,6 +590,10 @@ public class DialogSceneComposerEvents {
    public void labelName(String name) {
         processUndoable(new LabelNameUndoable(name));
    }
+    
+    public void labelTouchable(Touchable touchable) {
+        processUndoable(new LabelTouchableUndoable(touchable));
+    }
    
    public void labelReset() {
         processUndoable(new LabelResetUndoable());
@@ -581,6 +622,10 @@ public class DialogSceneComposerEvents {
    public void listName(String name) {
         processUndoable(new ListNameUndoable(name));
    }
+    
+    public void listTouchable(Touchable touchable) {
+        processUndoable(new ListTouchableUndoable(touchable));
+    }
    
    public void listReset() {
         processUndoable(new ListResetUndoable());
@@ -649,6 +694,10 @@ public class DialogSceneComposerEvents {
    public void progressBarName(String name) {
         processUndoable(new ProgressBarNameUndoable(name));
    }
+    
+    public void progressBarTouchable(Touchable touchable) {
+        processUndoable(new ProgressBarTouchableUndoable(touchable));
+    }
    
    public void progressBarReset() {
         processUndoable(new ProgressBarResetUndoable());
@@ -713,6 +762,10 @@ public class DialogSceneComposerEvents {
    public void scrollPaneName(String name) {
         processUndoable(new ScrollPaneNameUndoable(name));
    }
+    
+    public void scrollPaneTouchable(Touchable touchable) {
+        processUndoable(new ScrollPaneTouchableUndoable(touchable));
+    }
    
    public void scrollPaneOverScrollDistance(float overScrollDistance) {
         processUndoable(new ScrollPaneOverScrollDistanceUndoable(overScrollDistance));
@@ -745,7 +798,8 @@ public class DialogSceneComposerEvents {
    public void scrollPaneScrollBarsVisible(boolean scrollBarsVisible) {
         processUndoable(new ScrollPaneScrollBarsVisibleUndoable(scrollBarsVisible));
    }
-   
+    
+    //todo: this isn't used
    public void scrollPaneScrollBarTouch(boolean scrollBarTouch) {
         processUndoable(new ScrollPaneScrollBarTouchUndoable(scrollBarTouch));
    }
@@ -797,6 +851,10 @@ public class DialogSceneComposerEvents {
    public void selectBoxName(String name) {
         processUndoable(new SelectBoxNameUndoable(name));
    }
+    
+    public void selectBoxTouchable(Touchable touchable) {
+        processUndoable(new SelectBoxTouchableUndoable(touchable));
+    }
    
    public void selectBoxReset() {
         processUndoable(new SelectBoxResetUndoable());
@@ -846,6 +904,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new SliderNameUndoable(name));
     }
     
+    public void sliderTouchable(Touchable touchable) {
+        processUndoable(new SliderTouchableUndoable(touchable));
+    }
+    
     public void sliderReset() {
         processUndoable(new SliderResetUndoable());
     }
@@ -886,6 +948,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new SplitPaneNameUndoable(name));
     }
     
+    public void splitPaneTouchable(Touchable touchable) {
+        processUndoable(new SplitPaneTouchableUndoable(touchable));
+    }
+    
     public void splitPaneReset() {
         processUndoable(new SplitPaneResetUndoable());
     }
@@ -922,6 +988,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new StackNameUndoable(name));
     }
     
+    public void stackTouchable(Touchable touchable) {
+        processUndoable(new StackTouchableUndoable(touchable));
+    }
+    
     public void stackReset() {
         processUndoable(new StackResetUndoable());
     }
@@ -956,6 +1026,10 @@ public class DialogSceneComposerEvents {
     
     public void textAreaName(String name) {
         processUndoable(new TextAreaNameUndoable(name));
+    }
+    
+    public void textAreaTouchable(Touchable touchable) {
+        processUndoable(new TextAreaTouchableUndoable(touchable));
     }
     
     public void textAreaPasswordCharacter(char character) {
@@ -1026,6 +1100,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new TextFieldNameUndoable(name));
     }
     
+    public void textFieldTouchable(Touchable touchable) {
+        processUndoable(new TextFieldTouchableUndoable(touchable));
+    }
+    
     public void textFieldPasswordCharacter(char character) {
         processUndoable(new TextFieldPasswordCharacterUndoable(character));
     }
@@ -1066,6 +1144,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new TouchPadNameUndoable(name));
     }
     
+    public void touchPadTouchable(Touchable touchable) {
+        processUndoable(new TouchPadTouchableUndoable(touchable));
+    }
+    
     public void touchPadDeadZone(float deadZone) {
         processUndoable(new TouchPadDeadZoneUndoable(deadZone));
     }
@@ -1104,6 +1186,10 @@ public class DialogSceneComposerEvents {
     
     public void treeName(String name) {
         processUndoable(new TreeNameUndoable(name));
+    }
+    
+    public void treeTouchable(Touchable touchable) {
+        processUndoable(new TreeTouchableUndoable(touchable));
     }
     
     public void treePadLeft(float padLeft) {
@@ -1148,6 +1234,10 @@ public class DialogSceneComposerEvents {
     
     public void verticalGroupName(String name) {
         processUndoable(new VerticalGroupNameUndoable(name));
+    }
+    
+    public void verticalGroupTouchable(Touchable touchable) {
+        processUndoable(new VerticalGroupTouchableUndoable(touchable));
     }
     
     public void verticalGroupPadBottom(float padBottom) {

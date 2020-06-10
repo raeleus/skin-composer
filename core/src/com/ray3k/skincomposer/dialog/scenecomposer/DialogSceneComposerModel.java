@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
@@ -926,7 +927,12 @@ public class DialogSceneComposerModel {
             actor = container;
         }
         
-        if (simActor != null) simActor.previewActor = actor;
+        if (simActor != null) {
+            if (actor != null && simActor instanceof SimTouchable) {
+                actor.setTouchable(((SimTouchable) simActor).getTouchable());
+            }
+            simActor.previewActor = actor;
+        }
         return actor;
     }
     
@@ -1018,15 +1024,20 @@ public class DialogSceneComposerModel {
     }
     
     public interface SimNamed {
-        public String getName();
+        String getName();
     }
     
-    public static class SimRootGroup extends SimActor implements SimMultipleChildren {
+    public interface SimTouchable {
+        Touchable getTouchable();
+    }
+    
+    public static class SimRootGroup extends SimActor implements SimMultipleChildren, SimTouchable {
         public Array<SimActor> children = new Array<>();
         public ColorData backgroundColor;
         public String skinPath = "skin.json";
         public String packageString = "com.mygdx.game";
         public String classString = "Core";
+        public Touchable touchable = Touchable.childrenOnly;
     
         @Override
         public String toString() {
@@ -1035,6 +1046,7 @@ public class DialogSceneComposerModel {
         
         public void reset() {
             children.clear();
+            touchable = Touchable.enabled;
         }
     
         @Override
@@ -1067,12 +1079,18 @@ public class DialogSceneComposerModel {
             simRootGroup.skinPath = skinPath;
             simRootGroup.packageString = packageString;
             simRootGroup.classString = classString;
+            simRootGroup.touchable = touchable;
             
             return simRootGroup;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimTable extends SimActor implements SimMultipleChildren, SimNamed {
+    public static class SimTable extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable {
         public Array<SimCell> cells = new Array<>();
         public String name;
         public DrawableData background;
@@ -1084,6 +1102,7 @@ public class DialogSceneComposerModel {
         public boolean paddingEnabled;
         public int alignment = Align.center;
         public boolean fillParent;
+        public Touchable touchable = Touchable.childrenOnly;
     
         @Override
         public SimTable duplicate() {
@@ -1105,6 +1124,7 @@ public class DialogSceneComposerModel {
             simTable.paddingEnabled = paddingEnabled;
             simTable.alignment = alignment;
             simTable.fillParent = fillParent;
+            simTable.touchable = touchable;
             
             return simTable;
         }
@@ -1125,6 +1145,7 @@ public class DialogSceneComposerModel {
             padBottom = 0;
             paddingEnabled = false;
             alignment = Align.center;
+            touchable = Touchable.enabled;
         }
         
         public void sort() {
@@ -1191,6 +1212,11 @@ public class DialogSceneComposerModel {
             }
             
             return cell;
+        }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
         }
     }
     
@@ -1303,7 +1329,7 @@ public class DialogSceneComposerModel {
         }
     }
     
-    public static class SimButton extends SimActor implements SimNamed {
+    public static class SimButton extends SimActor implements SimNamed, SimTouchable {
         public String name;
         public StyleData style;
         public boolean checked;
@@ -1313,6 +1339,7 @@ public class DialogSceneComposerModel {
         public float padRight;
         public float padTop;
         public float padBottom;
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimButton duplicate() {
@@ -1328,6 +1355,7 @@ public class DialogSceneComposerModel {
             simButton.padRight = padRight;
             simButton.padTop = padTop;
             simButton.padBottom = padBottom;
+            simButton.touchable = touchable;
             
             return simButton;
         }
@@ -1366,15 +1394,21 @@ public class DialogSceneComposerModel {
             padRight = 0;
             padTop = 0;
             padBottom = 0;
+            touchable = Touchable.enabled;
         }
     
         @Override
         public String getName() {
             return name;
         }
+        
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimCheckBox extends SimActor implements SimNamed {
+    public static class SimCheckBox extends SimActor implements SimNamed, SimTouchable {
         public String name;
         public StyleData style;
         public boolean disabled;
@@ -1385,6 +1419,7 @@ public class DialogSceneComposerModel {
         public float padTop;
         public float padBottom;
         public boolean checked;
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimCheckBox duplicate() {
@@ -1401,6 +1436,7 @@ public class DialogSceneComposerModel {
             simCheckBox.padTop = padTop;
             simCheckBox.padBottom = padBottom;
             simCheckBox.checked = checked;
+            simCheckBox.touchable = touchable;
             
             return simCheckBox;
         }
@@ -1440,18 +1476,25 @@ public class DialogSceneComposerModel {
             padTop = 0;
             padBottom = 0;
             checked = false;
+            touchable = Touchable.enabled;
         }
     
         @Override
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimImage extends SimActor implements SimNamed {
+    public static class SimImage extends SimActor implements SimNamed, SimTouchable {
         public String name;
         public DrawableData drawable;
         public Scaling scaling = Scaling.stretch;
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimImage duplicate() {
@@ -1461,6 +1504,7 @@ public class DialogSceneComposerModel {
             simImage.name = name;
             simImage.drawable = drawable;
             simImage.scaling = scaling;
+            simImage.touchable = touchable;
             
             return simImage;
         }
@@ -1474,15 +1518,21 @@ public class DialogSceneComposerModel {
             name = null;
             drawable = null;
             scaling  = Scaling.stretch;
+            touchable = Touchable.enabled;
         }
     
         @Override
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimImageButton extends SimActor implements SimNamed {
+    public static class SimImageButton extends SimActor implements SimNamed, SimTouchable {
         public String name;
         public StyleData style;
         public boolean checked;
@@ -1492,6 +1542,7 @@ public class DialogSceneComposerModel {
         public float padRight;
         public float padTop;
         public float padBottom;
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimImageButton duplicate() {
@@ -1507,6 +1558,7 @@ public class DialogSceneComposerModel {
             simImageButton.padRight = padRight;
             simImageButton.padTop = padTop;
             simImageButton.padBottom = padBottom;
+            simImageButton.touchable = touchable;
             
             return simImageButton;
         }
@@ -1537,15 +1589,21 @@ public class DialogSceneComposerModel {
             padRight = 0;
             padTop = 0;
             padBottom = 0;
+            touchable = Touchable.enabled;
         }
     
         @Override
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimImageTextButton extends SimActor implements SimNamed {
+    public static class SimImageTextButton extends SimActor implements SimNamed, SimTouchable {
         public String name;
         public String text;
         public StyleData style;
@@ -1556,6 +1614,7 @@ public class DialogSceneComposerModel {
         public float padRight;
         public float padTop;
         public float padBottom;
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimImageTextButton duplicate() {
@@ -1572,6 +1631,7 @@ public class DialogSceneComposerModel {
             simImageTextButton.padRight = padRight;
             simImageTextButton.padTop = padTop;
             simImageTextButton.padBottom = padBottom;
+            simImageTextButton.touchable = touchable;
             
             return simImageTextButton;
         }
@@ -1603,15 +1663,21 @@ public class DialogSceneComposerModel {
             padRight = 0;
             padTop = 0;
             padBottom = 0;
+            touchable = Touchable.enabled;
         }
     
         @Override
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimLabel extends SimActor implements SimNamed {
+    public static class SimLabel extends SimActor implements SimNamed, SimTouchable {
         public String name;
         public StyleData style;
         public String text;
@@ -1620,6 +1686,7 @@ public class DialogSceneComposerModel {
         public String ellipsisString = "...";
         public boolean wrap;
         public ColorData color;
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimLabel duplicate() {
@@ -1634,6 +1701,7 @@ public class DialogSceneComposerModel {
             simLabel.ellipsisString = ellipsisString;
             simLabel.wrap = wrap;
             simLabel.color = color;
+            simLabel.touchable = touchable;
             
             return simLabel;
         }
@@ -1671,18 +1739,25 @@ public class DialogSceneComposerModel {
             ellipsisString = "...";
             wrap = false;
             color = null;
+            touchable = Touchable.enabled;
         }
     
         @Override
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimList extends SimActor implements SimNamed {
+    public static class SimList extends SimActor implements SimNamed, SimTouchable {
         public String name;
         public StyleData style;
         public Array<String> list = new Array<>();
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimList duplicate() {
@@ -1692,6 +1767,7 @@ public class DialogSceneComposerModel {
             simList.name = name;
             simList.style = style;
             simList.list.addAll(list);
+            simList.touchable = touchable;
             
             return simList;
         }
@@ -1715,6 +1791,8 @@ public class DialogSceneComposerModel {
         public void reset() {
             name = null;
             style = null;
+            touchable = Touchable.enabled;
+            
             var styles = Main.main.getJsonData().getClassStyleMap().get(List.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
@@ -1730,9 +1808,14 @@ public class DialogSceneComposerModel {
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimProgressBar extends SimActor implements SimNamed {
+    public static class SimProgressBar extends SimActor implements SimNamed, SimTouchable {
         public String name;
         public StyleData style;
         public boolean disabled;
@@ -1745,6 +1828,7 @@ public class DialogSceneComposerModel {
         public Interpol animateInterpolation = Interpol.LINEAR;
         public boolean round = true;
         public Interpol visualInterpolation = Interpol.LINEAR;
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimProgressBar duplicate() {
@@ -1763,6 +1847,7 @@ public class DialogSceneComposerModel {
             simProgressBar.animateInterpolation = animateInterpolation;
             simProgressBar.round = round;
             simProgressBar.visualInterpolation = visualInterpolation;
+            simProgressBar.touchable = touchable;
             
             return simProgressBar;
         }
@@ -1796,6 +1881,7 @@ public class DialogSceneComposerModel {
             animateInterpolation = Interpol.LINEAR;
             round = true;
             visualInterpolation = Interpol.LINEAR;
+            touchable = Touchable.enabled;
     
             var styles = Main.main.getJsonData().getClassStyleMap().get(ProgressBar.class);
             for (var style : styles) {
@@ -1811,9 +1897,14 @@ public class DialogSceneComposerModel {
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimSelectBox extends SimActor implements SimNamed {
+    public static class SimSelectBox extends SimActor implements SimNamed, SimTouchable {
         public String name;
         public StyleData style;
         public boolean disabled;
@@ -1822,6 +1913,7 @@ public class DialogSceneComposerModel {
         public int alignment = Align.center;
         public int selected;
         public boolean scrollingDisabled;
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimSelectBox duplicate() {
@@ -1836,6 +1928,7 @@ public class DialogSceneComposerModel {
             simSelectBox.alignment = alignment;
             simSelectBox.selected = selected;
             simSelectBox.scrollingDisabled = scrollingDisabled;
+            simSelectBox.touchable = touchable;
             
             return simSelectBox;
         }
@@ -1865,6 +1958,7 @@ public class DialogSceneComposerModel {
             alignment = Align.center;
             selected = 0;
             scrollingDisabled = false;
+            touchable = Touchable.enabled;
     
             var styles = Main.main.getJsonData().getClassStyleMap().get(SelectBox.class);
             for (var style : styles) {
@@ -1880,9 +1974,14 @@ public class DialogSceneComposerModel {
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimSlider extends SimActor implements SimNamed {
+    public static class SimSlider extends SimActor implements SimNamed, SimTouchable {
         public String name;
         public StyleData style;
         public boolean disabled;
@@ -1895,6 +1994,7 @@ public class DialogSceneComposerModel {
         public Interpol animateInterpolation = Interpol.LINEAR;
         public boolean round = true;
         public Interpol visualInterpolation = Interpol.LINEAR;
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimSlider duplicate() {
@@ -1913,6 +2013,7 @@ public class DialogSceneComposerModel {
             simSlider.animateInterpolation = animateInterpolation;
             simSlider.round = round;
             simSlider.visualInterpolation = visualInterpolation;
+            simSlider.touchable = touchable;
             
             return simSlider;
         }
@@ -1946,6 +2047,7 @@ public class DialogSceneComposerModel {
             animateInterpolation = Interpol.LINEAR;
             round = true;
             visualInterpolation = Interpol.LINEAR;
+            touchable = Touchable.enabled;
     
             var styles = Main.main.getJsonData().getClassStyleMap().get(Slider.class);
             for (var style : styles) {
@@ -1961,9 +2063,14 @@ public class DialogSceneComposerModel {
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimTextButton extends SimActor implements SimNamed {
+    public static class SimTextButton extends SimActor implements SimNamed, SimTouchable {
         public String name;
         public String text;
         public StyleData style;
@@ -1974,6 +2081,7 @@ public class DialogSceneComposerModel {
         public float padRight;
         public float padTop;
         public float padBottom;
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimTextButton duplicate() {
@@ -1990,6 +2098,7 @@ public class DialogSceneComposerModel {
             sim.padRight = padRight;
             sim.padTop = padTop;
             sim.padBottom = padBottom;
+            sim.touchable = touchable;
             
             return sim;
         }
@@ -2029,14 +2138,20 @@ public class DialogSceneComposerModel {
             padRight = 0;
             padTop = 0;
             padBottom = 0;
+            touchable = Touchable.enabled;
         }
         @Override
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimTextField extends SimActor implements SimNamed {
+    public static class SimTextField extends SimActor implements SimNamed, SimTouchable {
         public String name;
         public StyleData style;
         public String text;
@@ -2051,6 +2166,7 @@ public class DialogSceneComposerModel {
         public boolean focusTraversal = true;
         public int maxLength;
         public String messageText;
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimTextField duplicate() {
@@ -2071,6 +2187,7 @@ public class DialogSceneComposerModel {
             simTextField.focusTraversal = focusTraversal;
             simTextField.maxLength = maxLength;
             simTextField.messageText = messageText;
+            simTextField.touchable = touchable;
             
             return simTextField;
         }
@@ -2106,6 +2223,7 @@ public class DialogSceneComposerModel {
             focusTraversal = true;
             maxLength = 0;
             messageText = null;
+            touchable = Touchable.enabled;
     
             var styles = Main.main.getJsonData().getClassStyleMap().get(TextField.class);
             for (var style : styles) {
@@ -2121,9 +2239,14 @@ public class DialogSceneComposerModel {
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimTextArea extends SimActor implements SimNamed {
+    public static class SimTextArea extends SimActor implements SimNamed, SimTouchable {
         public String name;
         public StyleData style;
         public String text;
@@ -2139,6 +2262,7 @@ public class DialogSceneComposerModel {
         public int maxLength;
         public String messageText;
         public int preferredRows;
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimTextArea duplicate() {
@@ -2160,6 +2284,7 @@ public class DialogSceneComposerModel {
             simTextArea.maxLength = maxLength;
             simTextArea.messageText = messageText;
             simTextArea.preferredRows = preferredRows;
+            simTextArea.touchable = touchable;
             
             return simTextArea;
         }
@@ -2196,6 +2321,7 @@ public class DialogSceneComposerModel {
             maxLength = 0;
             messageText = null;
             preferredRows = 0;
+            touchable = Touchable.enabled;
     
             var styles = Main.main.getJsonData().getClassStyleMap().get(TextField.class);
             for (var style : styles) {
@@ -2211,13 +2337,19 @@ public class DialogSceneComposerModel {
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimTouchPad extends SimActor implements SimNamed {
+    public static class SimTouchPad extends SimActor implements SimNamed, SimTouchable {
         public String name;
         public StyleData style;
         public float deadZone;
         public boolean resetOnTouchUp = true;
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimTouchPad duplicate() {
@@ -2227,6 +2359,7 @@ public class DialogSceneComposerModel {
             simTouchPad.style = style;
             simTouchPad.deadZone = deadZone;
             simTouchPad.resetOnTouchUp = resetOnTouchUp;
+            simTouchPad.touchable = touchable;
             
             return simTouchPad;
         }
@@ -2252,6 +2385,7 @@ public class DialogSceneComposerModel {
             style = null;
             deadZone = 0;
             resetOnTouchUp = true;
+            touchable = Touchable.enabled;
     
             var styles = Main.main.getJsonData().getClassStyleMap().get(Touchpad.class);
             for (var style : styles) {
@@ -2267,9 +2401,14 @@ public class DialogSceneComposerModel {
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimContainer extends SimActor implements SimSingleChild, SimNamed {
+    public static class SimContainer extends SimActor implements SimSingleChild, SimNamed, SimTouchable {
         public String name;
         public int alignment = Align.center;
         public DrawableData background;
@@ -2286,6 +2425,7 @@ public class DialogSceneComposerModel {
         public float padTop;
         public float padBottom;
         public SimActor child;
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimContainer duplicate() {
@@ -2305,6 +2445,8 @@ public class DialogSceneComposerModel {
             simContainer.padRight = padRight;
             simContainer.padTop = padTop;
             simContainer.padBottom = padBottom;
+            simContainer.touchable = touchable;
+            
             if (child != null) {
                 simContainer.child = child.duplicate();
                 simContainer.child.parent = simContainer;
@@ -2339,6 +2481,7 @@ public class DialogSceneComposerModel {
             padTop = 0;
             padBottom = 0;
             child = null;
+            touchable = Touchable.enabled;
         }
     
         @Override
@@ -2350,9 +2493,14 @@ public class DialogSceneComposerModel {
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimHorizontalGroup extends SimActor implements SimMultipleChildren, SimNamed {
+    public static class SimHorizontalGroup extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable {
         public String name;
         public int alignment = Align.center;
         public boolean expand;
@@ -2367,6 +2515,7 @@ public class DialogSceneComposerModel {
         public boolean wrap;
         public float wrapSpace;
         public Array<SimActor> children = new Array<>();
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimHorizontalGroup duplicate() {
@@ -2386,6 +2535,7 @@ public class DialogSceneComposerModel {
             simHorizontalGroup.space = space;
             simHorizontalGroup.wrap = wrap;
             simHorizontalGroup.wrapSpace = wrapSpace;
+            simHorizontalGroup.touchable = touchable;
             
             for (var actor : children) {
                 simHorizontalGroup.children.add(actor.duplicate());
@@ -2418,6 +2568,7 @@ public class DialogSceneComposerModel {
             wrap = false;
             wrapSpace = 0;
             children.clear();
+            touchable = Touchable.enabled;
         }
     
         @Override
@@ -2439,9 +2590,14 @@ public class DialogSceneComposerModel {
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimScrollPane extends SimActor implements SimSingleChild, SimNamed {
+    public static class SimScrollPane extends SimActor implements SimSingleChild, SimNamed, SimTouchable {
         public String name;
         public StyleData style;
         public boolean fadeScrollBars = true;
@@ -2465,6 +2621,7 @@ public class DialogSceneComposerModel {
         public boolean scrollingDisabledY;
         public boolean smoothScrolling = true;
         public boolean variableSizeKnobs = true;
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimScrollPane duplicate() {
@@ -2499,6 +2656,7 @@ public class DialogSceneComposerModel {
             simScrollPane.scrollingDisabledY = scrollingDisabledY;
             simScrollPane.smoothScrolling = smoothScrolling;
             simScrollPane.variableSizeKnobs = variableSizeKnobs;
+            simScrollPane.touchable = touchable;
             
             return simScrollPane;
         }
@@ -2543,6 +2701,7 @@ public class DialogSceneComposerModel {
             scrollingDisabledY = false;
             smoothScrolling = true;
             variableSizeKnobs = true;
+            touchable = Touchable.enabled;
     
             var styles = Main.main.getJsonData().getClassStyleMap().get(ScrollPane.class);
             for (var style : styles) {
@@ -2563,17 +2722,24 @@ public class DialogSceneComposerModel {
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimStack extends SimActor implements SimMultipleChildren, SimNamed {
+    public static class SimStack extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable {
         public String name;
         public Array<SimActor> children = new Array<>();
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimStack duplicate() {
             var simStack = new SimStack();
             
             simStack.parent = parent;
+            simStack.touchable = touchable;
             
             for (var actor : children) {
                 simStack.children.add(actor.duplicate());
@@ -2594,6 +2760,7 @@ public class DialogSceneComposerModel {
     
         public void reset() {
             name = null;
+            touchable = Touchable.enabled;
             children.clear();
         }
     
@@ -2616,9 +2783,14 @@ public class DialogSceneComposerModel {
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimSplitPane extends SimActor implements SimMultipleChildren, SimNamed{
+    public static class SimSplitPane extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable {
         public String name;
         public StyleData style;
         public SimActor childFirst;
@@ -2628,6 +2800,7 @@ public class DialogSceneComposerModel {
         public float splitMin;
         public float splitMax = 1;
         public transient Array<SimActor> tempChildren = new Array<>();
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimSplitPane duplicate() {
@@ -2648,6 +2821,7 @@ public class DialogSceneComposerModel {
             simSplitPane.split = split;
             simSplitPane.splitMin = splitMin;
             simSplitPane.splitMax = splitMax;
+            simSplitPane.touchable = touchable;
             
             return simSplitPane;
         }
@@ -2677,6 +2851,7 @@ public class DialogSceneComposerModel {
             split = .5f;
             splitMin = 0;
             splitMax = 1;
+            touchable = Touchable.enabled;
             tempChildren.clear();
     
             var styles = Main.main.getJsonData().getClassStyleMap().get(Stack.class);
@@ -2716,6 +2891,11 @@ public class DialogSceneComposerModel {
         @Override
         public String getName() {
             return name;
+        }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
         }
     }
     
@@ -2785,7 +2965,7 @@ public class DialogSceneComposerModel {
         }
     }
     
-    public static class SimTree extends SimActor implements SimMultipleChildren, SimNamed{
+    public static class SimTree extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable {
         public String name;
         public StyleData style;
         public Array<SimNode> children = new Array<>();
@@ -2795,6 +2975,7 @@ public class DialogSceneComposerModel {
         public float iconSpaceRight = 2;
         public float indentSpacing;
         public float ySpacing = 4;
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimTree duplicate() {
@@ -2815,6 +2996,7 @@ public class DialogSceneComposerModel {
             simTree.iconSpaceRight = iconSpaceRight;
             simTree.indentSpacing = indentSpacing;
             simTree.ySpacing = ySpacing;
+            simTree.touchable = touchable;
             
             return simTree;
         }
@@ -2845,6 +3027,7 @@ public class DialogSceneComposerModel {
             iconSpaceRight = 2;
             indentSpacing = 0;
             ySpacing = 4;
+            touchable = Touchable.enabled;
     
             var styles = Main.main.getJsonData().getClassStyleMap().get(Tree.class);
             for (var style : styles) {
@@ -2875,9 +3058,14 @@ public class DialogSceneComposerModel {
         public String getName() {
             return name;
         }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
+        }
     }
     
-    public static class SimVerticalGroup extends SimActor implements SimMultipleChildren, SimNamed {
+    public static class SimVerticalGroup extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable {
         public String name;
         public int alignment = Align.center;
         public boolean expand;
@@ -2892,6 +3080,7 @@ public class DialogSceneComposerModel {
         public boolean wrap;
         public float wrapSpace;
         public Array<SimActor> children = new Array<>();
+        public Touchable touchable = Touchable.enabled;
     
         @Override
         public SimVerticalGroup duplicate() {
@@ -2911,6 +3100,7 @@ public class DialogSceneComposerModel {
             simVerticalGroup.space = space;
             simVerticalGroup.wrap = wrap;
             simVerticalGroup.wrapSpace = wrapSpace;
+            simVerticalGroup.touchable = touchable;
             
             for (var actor : children) {
                 simVerticalGroup.children.add(actor.duplicate());
@@ -2943,6 +3133,7 @@ public class DialogSceneComposerModel {
             space = 0;
             wrap = false;
             wrapSpace = 0;
+            touchable = Touchable.enabled;
             children.clear();
         }
     
@@ -2964,6 +3155,11 @@ public class DialogSceneComposerModel {
         @Override
         public String getName() {
             return name;
+        }
+    
+        @Override
+        public Touchable getTouchable() {
+            return touchable;
         }
     }
 }

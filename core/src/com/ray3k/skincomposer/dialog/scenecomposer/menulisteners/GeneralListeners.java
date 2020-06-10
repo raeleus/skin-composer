@@ -1,14 +1,15 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.menulisteners;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimTouchable;
 import com.ray3k.stripe.PopTable;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.dialog.DialogDrawables;
@@ -559,6 +560,70 @@ public class GeneralListeners {
         return listener;
     }
     
+    public static EventListener touchableListener(SimActor simActor, TouchableSelected touchableSelected) {
+        var simTouchable = (SimTouchable) simActor;
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                final var buttonGroup = new ButtonGroup<ImageTextButton>();
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var changeListener = new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        touchableSelected.selected((Touchable) buttonGroup.getChecked().getUserObject());
+                    }
+                };
+                
+                var table = new Table();
+                popTable.add(table);
+                
+                table.defaults().left().spaceRight(5);
+                var imageTextButton = new ImageTextButton("Touchable Enabled", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton.setProgrammaticChangeEvents(false);
+                imageTextButton.setChecked(simTouchable.getTouchable() == Touchable.enabled);
+                imageTextButton.setUserObject(Touchable.enabled);
+                table.add(imageTextButton);
+                buttonGroup.add(imageTextButton);
+                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("The widget and all children can be clicked on.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(changeListener);
+                
+                table.row();
+                imageTextButton = new ImageTextButton("Touchable Disabled", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton.setProgrammaticChangeEvents(false);
+                imageTextButton.setChecked(simTouchable.getTouchable() == Touchable.disabled);
+                imageTextButton.setUserObject(Touchable.disabled);
+                table.add(imageTextButton);
+                buttonGroup.add(imageTextButton);
+                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("The widget and all children can not be clicked on.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(changeListener);
+    
+                table.row();
+                imageTextButton = new ImageTextButton("Touchable Children Only", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton.setProgrammaticChangeEvents(false);
+                imageTextButton.setChecked(simTouchable.getTouchable() == Touchable.childrenOnly);
+                imageTextButton.setUserObject(Touchable.childrenOnly);
+                table.add(imageTextButton);
+                buttonGroup.add(imageTextButton);
+                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Only the widget's children can be clicked on.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(changeListener);
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
     public interface DrawableSelected {
         void selected(DrawableData drawableData);
     }
@@ -569,5 +634,9 @@ public class GeneralListeners {
     
     public interface InterpolationSelected {
         void selected(Interpol selection);
+    }
+    
+    public interface TouchableSelected {
+        void selected(Touchable touchable);
     }
 }
