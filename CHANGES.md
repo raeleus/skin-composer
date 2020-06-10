@@ -1,6 +1,7 @@
 ### Skin Composer Version 36 ###
 
 * The preview for a Custom Drawable is now tiled instead of looking nasty at larger scales.
+* Fixed missing icons for uninstall and scmp files in Windows installer.
 * Fixed Move Cell Up and Down being broken in Scene Composer.
 * Disabled ScrollPane if there are no valid ScrollPane styles in Scene Composer
 * Fixed adding an empty image to Stack causes a crash.
