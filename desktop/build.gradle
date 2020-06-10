@@ -43,6 +43,9 @@ runtime {
             imageOptions = ["--icon", file("../icons/logo.ico")]
         } else if (org.gradle.internal.os.OperatingSystem.current().linux) {
             imageOptions = ["--icon", file("../icons/logo.png")]
+        } else if (org.gradle.internal.os.OperatingSystem.current().isMacOsX()) {
+            imageOptions = ["--icon", file("../icons/logo.icns")]
+            jvmArgs = ['-XstartOnFirstThread']
         }
         imageName = exeName
     }
