@@ -6,6 +6,8 @@
 * Disabled ScrollPane if there are no valid ScrollPane styles in Scene Composer
 * Fixed adding an empty image to Stack causes a crash.
 * Fixed null styles resulting in an unclickable preview for the Edit mode in Scene Composer. 
+* Fixed unable to delete an ImageTextButton in SceneComposer
+* Added missing Command symbol for mac users in file menus.
 
 ### Skin Composer Version 35 ###
 
