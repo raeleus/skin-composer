@@ -392,7 +392,7 @@ public class AtlasData implements Json.Serializable {
             for (DrawableData data : combined) {
                 Drawable drawable;
                 if (data.customized) {
-                    drawable = main.getSkin().getDrawable("custom-drawable-skincomposer-image");
+                    drawable = main.getSkin().getDrawable("custom");
                 } else if (data.tenPatchData != null) {
                     var region = atlas.findRegion(DrawableData.proper(data.file.name()));
                     drawable = new TenPatchDrawable(data.tenPatchData.horizontalStretchAreas.toArray(),
