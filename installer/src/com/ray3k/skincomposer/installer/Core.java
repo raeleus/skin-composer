@@ -21,7 +21,7 @@ import java.io.IOException;
 public class Core extends ApplicationAdapter {
     private Stage stage;
     public static Skin skin;
-    public static com.ray3k.skincomposerinstaller.DesktopWorker desktopWorker;
+    public static com.ray3k.skincomposer.installer.DesktopWorker desktopWorker;
     private int dragStartX, dragStartY;
     private int windowStartX, windowStartY;
     private static Table root;
@@ -33,7 +33,6 @@ public class Core extends ApplicationAdapter {
 
     @Override
     public void create() {
-        desktopWorker.closeSplash();
         properties = new ObjectMap<>();
         try {
             PropertiesUtils.load(properties, Gdx.files.internal("values.properties").reader());

@@ -6,8 +6,6 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 
-import java.awt.SplashScreen;
-
 public class Uninstaller implements DesktopWorker {
 
     public static void main(String[] arg) {

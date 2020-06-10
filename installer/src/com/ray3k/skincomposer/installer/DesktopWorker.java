@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.ray3k.skincomposerinstaller;
+package com.ray3k.skincomposer.installer;
 
 import com.badlogic.gdx.files.FileHandle;
 
@@ -36,8 +36,6 @@ public interface DesktopWorker {
     public int getWindowX();
 
     public int getWindowY();
-    
-    public void closeSplash();
     
     public FileHandle selectFolder(String title, FileHandle defaultPath);
 }

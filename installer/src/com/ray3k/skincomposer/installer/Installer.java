@@ -6,10 +6,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.files.FileHandle;
-import com.ray3k.skincomposerinstaller.DesktopWorker;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
-
-import java.awt.*;
 
 public class Installer implements DesktopWorker {
 
@@ -38,14 +35,6 @@ public class Installer implements DesktopWorker {
     @Override
     public int getWindowY() {
         return ((Lwjgl3Graphics) Gdx.graphics).getWindow().getPositionY();
-    }
-
-    @Override
-    public void closeSplash() {
-        SplashScreen splash = SplashScreen.getSplashScreen();
-        if (splash != null) {
-            splash.close();
-        }
     }
     
     @Override
