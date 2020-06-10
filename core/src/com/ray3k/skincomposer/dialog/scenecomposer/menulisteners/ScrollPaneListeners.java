@@ -137,7 +137,7 @@ public class ScrollPaneListeners {
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        events.scrollPaneScrollBarsOnTop(((ImageTextButton) actor).isChecked());
+                        events.scrollPaneScrollBarsVisible(((ImageTextButton) actor).isChecked());
                     }
                 });
                 
