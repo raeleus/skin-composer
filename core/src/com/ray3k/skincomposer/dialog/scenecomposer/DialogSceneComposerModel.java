@@ -1042,7 +1042,6 @@ public class DialogSceneComposerModel {
         public String skinPath = "skin.json";
         public String packageString = "com.mygdx.game";
         public String classString = "Core";
-        public Touchable touchable = Touchable.childrenOnly;
     
         @Override
         public String toString() {
@@ -1051,7 +1050,6 @@ public class DialogSceneComposerModel {
         
         public void reset() {
             children.clear();
-            touchable = Touchable.enabled;
         }
     
         @Override
@@ -1084,7 +1082,6 @@ public class DialogSceneComposerModel {
             simRootGroup.skinPath = skinPath;
             simRootGroup.packageString = packageString;
             simRootGroup.classString = classString;
-            simRootGroup.touchable = touchable;
             
             return simRootGroup;
         }
@@ -1126,6 +1123,7 @@ public class DialogSceneComposerModel {
             simTable.alignment = alignment;
             simTable.fillParent = fillParent;
             simTable.touchable = touchable;
+            simTable.visible = visible;
             
             return simTable;
         }
@@ -1147,6 +1145,7 @@ public class DialogSceneComposerModel {
             paddingEnabled = false;
             alignment = Align.center;
             touchable = Touchable.enabled;
+            visible = true;
         }
         
         public void sort() {
@@ -1363,6 +1362,7 @@ public class DialogSceneComposerModel {
             simButton.padTop = padTop;
             simButton.padBottom = padBottom;
             simButton.touchable = touchable;
+            simButton.visible = visible;
             
             return simButton;
         }
@@ -1402,6 +1402,7 @@ public class DialogSceneComposerModel {
             padTop = 0;
             padBottom = 0;
             touchable = Touchable.enabled;
+            visible = true;
         }
     
         @Override
@@ -1450,6 +1451,7 @@ public class DialogSceneComposerModel {
             simCheckBox.padBottom = padBottom;
             simCheckBox.checked = checked;
             simCheckBox.touchable = touchable;
+            simCheckBox.visible = visible;
             
             return simCheckBox;
         }
@@ -1490,6 +1492,7 @@ public class DialogSceneComposerModel {
             padBottom = 0;
             checked = false;
             touchable = Touchable.enabled;
+            visible = true;
         }
     
         @Override
@@ -1524,6 +1527,7 @@ public class DialogSceneComposerModel {
             simImage.drawable = drawable;
             simImage.scaling = scaling;
             simImage.touchable = touchable;
+            simImage.visible = visible;
             
             return simImage;
         }
@@ -1538,6 +1542,7 @@ public class DialogSceneComposerModel {
             drawable = null;
             scaling  = Scaling.stretch;
             touchable = Touchable.enabled;
+            visible = true;
         }
     
         @Override
@@ -1584,6 +1589,7 @@ public class DialogSceneComposerModel {
             simImageButton.padTop = padTop;
             simImageButton.padBottom = padBottom;
             simImageButton.touchable = touchable;
+            simImageButton.visible = visible;
             
             return simImageButton;
         }
@@ -1615,6 +1621,7 @@ public class DialogSceneComposerModel {
             padTop = 0;
             padBottom = 0;
             touchable = Touchable.enabled;
+            visible = true;
         }
     
         @Override
@@ -1663,6 +1670,7 @@ public class DialogSceneComposerModel {
             simImageTextButton.padTop = padTop;
             simImageTextButton.padBottom = padBottom;
             simImageTextButton.touchable = touchable;
+            simImageTextButton.visible = visible;
             
             return simImageTextButton;
         }
@@ -1695,6 +1703,7 @@ public class DialogSceneComposerModel {
             padTop = 0;
             padBottom = 0;
             touchable = Touchable.enabled;
+            visible = true;
         }
     
         @Override
@@ -1739,6 +1748,7 @@ public class DialogSceneComposerModel {
             simLabel.wrap = wrap;
             simLabel.color = color;
             simLabel.touchable = touchable;
+            simLabel.visible = visible;
             
             return simLabel;
         }
@@ -1777,6 +1787,7 @@ public class DialogSceneComposerModel {
             wrap = false;
             color = null;
             touchable = Touchable.enabled;
+            visible = true;
         }
     
         @Override
@@ -1811,6 +1822,7 @@ public class DialogSceneComposerModel {
             simList.style = style;
             simList.list.addAll(list);
             simList.touchable = touchable;
+            simList.visible = visible;
             
             return simList;
         }
@@ -1835,6 +1847,7 @@ public class DialogSceneComposerModel {
             name = null;
             style = null;
             touchable = Touchable.enabled;
+            visible = true;
             
             var styles = Main.main.getJsonData().getClassStyleMap().get(List.class);
             for (var style : styles) {
@@ -1897,6 +1910,7 @@ public class DialogSceneComposerModel {
             simProgressBar.round = round;
             simProgressBar.visualInterpolation = visualInterpolation;
             simProgressBar.touchable = touchable;
+            simProgressBar.visible = visible;
             
             return simProgressBar;
         }
@@ -1931,6 +1945,7 @@ public class DialogSceneComposerModel {
             round = true;
             visualInterpolation = Interpol.LINEAR;
             touchable = Touchable.enabled;
+            visible = true;
     
             var styles = Main.main.getJsonData().getClassStyleMap().get(ProgressBar.class);
             for (var style : styles) {
@@ -1984,6 +1999,7 @@ public class DialogSceneComposerModel {
             simSelectBox.selected = selected;
             simSelectBox.scrollingDisabled = scrollingDisabled;
             simSelectBox.touchable = touchable;
+            simSelectBox.visible = visible;
             
             return simSelectBox;
         }
@@ -2014,6 +2030,7 @@ public class DialogSceneComposerModel {
             selected = 0;
             scrollingDisabled = false;
             touchable = Touchable.enabled;
+            visible = true;
     
             var styles = Main.main.getJsonData().getClassStyleMap().get(SelectBox.class);
             for (var style : styles) {
@@ -2075,6 +2092,7 @@ public class DialogSceneComposerModel {
             simSlider.round = round;
             simSlider.visualInterpolation = visualInterpolation;
             simSlider.touchable = touchable;
+            simSlider.visible = visible;
             
             return simSlider;
         }
@@ -2109,6 +2127,7 @@ public class DialogSceneComposerModel {
             round = true;
             visualInterpolation = Interpol.LINEAR;
             touchable = Touchable.enabled;
+            visible = true;
     
             var styles = Main.main.getJsonData().getClassStyleMap().get(Slider.class);
             for (var style : styles) {
@@ -2166,6 +2185,7 @@ public class DialogSceneComposerModel {
             sim.padTop = padTop;
             sim.padBottom = padBottom;
             sim.touchable = touchable;
+            sim.visible = visible;
             
             return sim;
         }
@@ -2206,6 +2226,7 @@ public class DialogSceneComposerModel {
             padTop = 0;
             padBottom = 0;
             touchable = Touchable.enabled;
+            visible = true;
         }
         @Override
         public String getName() {
@@ -2261,6 +2282,7 @@ public class DialogSceneComposerModel {
             simTextField.maxLength = maxLength;
             simTextField.messageText = messageText;
             simTextField.touchable = touchable;
+            simTextField.visible = visible;
             
             return simTextField;
         }
@@ -2297,6 +2319,7 @@ public class DialogSceneComposerModel {
             maxLength = 0;
             messageText = null;
             touchable = Touchable.enabled;
+            visible = true;
     
             var styles = Main.main.getJsonData().getClassStyleMap().get(TextField.class);
             for (var style : styles) {
@@ -2364,6 +2387,7 @@ public class DialogSceneComposerModel {
             simTextArea.messageText = messageText;
             simTextArea.preferredRows = preferredRows;
             simTextArea.touchable = touchable;
+            simTextArea.visible = visible;
             
             return simTextArea;
         }
@@ -2401,6 +2425,7 @@ public class DialogSceneComposerModel {
             messageText = null;
             preferredRows = 0;
             touchable = Touchable.enabled;
+            visible = true;
     
             var styles = Main.main.getJsonData().getClassStyleMap().get(TextField.class);
             for (var style : styles) {
@@ -2445,6 +2470,7 @@ public class DialogSceneComposerModel {
             simTouchPad.deadZone = deadZone;
             simTouchPad.resetOnTouchUp = resetOnTouchUp;
             simTouchPad.touchable = touchable;
+            simTouchPad.visible = visible;
             
             return simTouchPad;
         }
@@ -2537,6 +2563,7 @@ public class DialogSceneComposerModel {
             simContainer.padTop = padTop;
             simContainer.padBottom = padBottom;
             simContainer.touchable = touchable;
+            simContainer.visible = visible;
             
             if (child != null) {
                 simContainer.child = child.duplicate();
@@ -2573,6 +2600,7 @@ public class DialogSceneComposerModel {
             padBottom = 0;
             child = null;
             touchable = Touchable.enabled;
+            visible = true;
         }
     
         @Override
@@ -2633,6 +2661,7 @@ public class DialogSceneComposerModel {
             simHorizontalGroup.wrap = wrap;
             simHorizontalGroup.wrapSpace = wrapSpace;
             simHorizontalGroup.touchable = touchable;
+            simHorizontalGroup.visible = visible;
             
             for (var actor : children) {
                 simHorizontalGroup.children.add(actor.duplicate());
@@ -2666,6 +2695,7 @@ public class DialogSceneComposerModel {
             wrapSpace = 0;
             children.clear();
             touchable = Touchable.enabled;
+            visible = true;
         }
     
         @Override
@@ -2760,6 +2790,7 @@ public class DialogSceneComposerModel {
             simScrollPane.smoothScrolling = smoothScrolling;
             simScrollPane.variableSizeKnobs = variableSizeKnobs;
             simScrollPane.touchable = touchable;
+            simScrollPane.visible = visible;
             
             return simScrollPane;
         }
@@ -2805,6 +2836,7 @@ public class DialogSceneComposerModel {
             smoothScrolling = true;
             variableSizeKnobs = true;
             touchable = Touchable.enabled;
+            visible = true;
     
             var styles = Main.main.getJsonData().getClassStyleMap().get(ScrollPane.class);
             for (var style : styles) {
@@ -2849,6 +2881,7 @@ public class DialogSceneComposerModel {
             
             simStack.parent = parent;
             simStack.touchable = touchable;
+            simStack.visible = visible;
             
             for (var actor : children) {
                 simStack.children.add(actor.duplicate());
@@ -2870,6 +2903,7 @@ public class DialogSceneComposerModel {
         public void reset() {
             name = null;
             touchable = Touchable.enabled;
+            visible = true;
             children.clear();
         }
     
@@ -2937,6 +2971,7 @@ public class DialogSceneComposerModel {
             simSplitPane.splitMin = splitMin;
             simSplitPane.splitMax = splitMax;
             simSplitPane.touchable = touchable;
+            simSplitPane.visible = visible;
             
             return simSplitPane;
         }
@@ -2967,6 +3002,7 @@ public class DialogSceneComposerModel {
             splitMin = 0;
             splitMax = 1;
             touchable = Touchable.enabled;
+            visible = true;
             tempChildren.clear();
     
             var styles = Main.main.getJsonData().getClassStyleMap().get(Stack.class);
@@ -3118,6 +3154,7 @@ public class DialogSceneComposerModel {
             simTree.indentSpacing = indentSpacing;
             simTree.ySpacing = ySpacing;
             simTree.touchable = touchable;
+            simTree.visible = visible;
             
             return simTree;
         }
@@ -3149,6 +3186,7 @@ public class DialogSceneComposerModel {
             indentSpacing = 0;
             ySpacing = 4;
             touchable = Touchable.enabled;
+            visible = true;
     
             var styles = Main.main.getJsonData().getClassStyleMap().get(Tree.class);
             for (var style : styles) {
@@ -3228,6 +3266,7 @@ public class DialogSceneComposerModel {
             simVerticalGroup.wrap = wrap;
             simVerticalGroup.wrapSpace = wrapSpace;
             simVerticalGroup.touchable = touchable;
+            simVerticalGroup.visible = visible;
             
             for (var actor : children) {
                 simVerticalGroup.children.add(actor.duplicate());
@@ -3261,6 +3300,7 @@ public class DialogSceneComposerModel {
             wrap = false;
             wrapSpace = 0;
             touchable = Touchable.enabled;
+            visible = true;
             children.clear();
         }
     

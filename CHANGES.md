@@ -1,6 +1,6 @@
 ### Skin Composer Version 36 ###
 
-* Added Touchable option to all widgets in Scene Composer.
+* Added Touchable and Visible options to all widgets in Scene Composer.
 * The preview for a Custom Drawable is now tiled instead of looking nasty at larger scales.
 * Fixed missing icons for uninstall and scmp files in Windows installer.
 * Fixed Move Cell Up and Down being broken in Scene Composer.
