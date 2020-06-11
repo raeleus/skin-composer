@@ -803,6 +803,7 @@ public class DialogSceneComposerJavaBuilder {
             else builder.add("skin");
             builder.addStatement("$L)", scrollPane.style.name.equals("default") ? "" : ", \"" + scrollPane.style.name + "\"");
     
+            if (scrollPane.name != null) builder.addStatement("$L.setName($S)", variableName, scrollPane.name);
             if (!scrollPane.fadeScrollBars) builder.addStatement("$L.setFadeScrollBars($L)", variableName, false);
             if (scrollPane.clamp) builder.addStatement("$L.setClamp($L)", variableName, true);
             if (!scrollPane.flickScroll) builder.addStatement("$L.setFlickScroll($L)", variableName, false);
