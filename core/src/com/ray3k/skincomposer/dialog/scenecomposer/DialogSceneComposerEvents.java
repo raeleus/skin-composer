@@ -850,8 +850,7 @@ public class DialogSceneComposerEvents {
    public void scrollPaneScrollBarsVisible(boolean scrollBarsVisible) {
         processUndoable(new ScrollPaneScrollBarsVisibleUndoable(scrollBarsVisible));
    }
-    
-    //todo: this isn't used
+   
    public void scrollPaneScrollBarTouch(boolean scrollBarTouch) {
         processUndoable(new ScrollPaneScrollBarTouchUndoable(scrollBarTouch));
    }

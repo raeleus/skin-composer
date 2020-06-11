@@ -129,7 +129,7 @@ public class ScrollPaneListeners {
                 });
                 
                 table.row();
-                imageTextButton = new ImageTextButton("Visible", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("ScrollBarsVisible", DialogSceneComposer.skin, "scene-checkbox-colored");
                 imageTextButton.setChecked(simScrollPane.scrollBarsVisible);
                 table.add(imageTextButton);
                 imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
@@ -138,6 +138,19 @@ public class ScrollPaneListeners {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         events.scrollPaneScrollBarsVisible(((ImageTextButton) actor).isChecked());
+                    }
+                });
+    
+                table.row();
+                imageTextButton = new ImageTextButton("Scroll Bar Touch", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton.setChecked(simScrollPane.scrollBarsOnTop);
+                table.add(imageTextButton);
+                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("Set whether scrollbars respond to mouse clicks.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.scrollPaneScrollBarTouch(((ImageTextButton) actor).isChecked());
                     }
                 });
                 
