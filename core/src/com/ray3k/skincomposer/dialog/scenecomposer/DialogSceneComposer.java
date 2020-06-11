@@ -342,6 +342,12 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(main.getHandListener());
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::tableTouchable));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::tableVisible));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
         
             textButton = new TextButton("Background", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -477,6 +483,12 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(main.getHandListener());
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::textButtonTouchable));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::textButtonVisible));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
         
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -539,6 +551,12 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(main.getHandListener());
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::buttonTouchable));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::buttonVisible));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
         
             textButton = new TextButton("Checked", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -594,6 +612,12 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::imageButtonTouchable));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::imageButtonVisible));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
         
             textButton = new TextButton("Checked", skin, "scene-med");
@@ -657,6 +681,12 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(main.getHandListener());
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::imageTextButtonTouchable));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::imageTextButtonVisible));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Checked", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -712,6 +742,12 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::checkBoxTouchable));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::checkBoxVisible));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Text", skin, "scene-med");
@@ -775,6 +811,12 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(main.getHandListener());
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::imageTouchable));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::imageVisible));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Scaling", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -812,6 +854,12 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::labelTouchable));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::labelVisible));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Text", skin, "scene-med");
@@ -875,6 +923,12 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(main.getHandListener());
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::listTouchable));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::listVisible));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Text List", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -911,7 +965,13 @@ public class DialogSceneComposer extends Dialog {
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
-            textButton.addListener(GeneralListeners.touchableListener(simActor, events::listTouchable));
+            textButton.addListener(GeneralListeners.touchableListener(simActor, events::progressBarTouchable));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::progressBarVisible));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Value Settings", skin, "scene-med");
@@ -976,6 +1036,12 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::selectBoxTouchable));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
     
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::selectBoxVisible));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
             textButton = new TextButton("Text List", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -1038,6 +1104,12 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::sliderTouchable));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
     
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::sliderVisible));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
             textButton = new TextButton("Value Settings", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -1098,6 +1170,12 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::textAreaTouchable));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::textAreaVisible));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Text", skin, "scene-med");
@@ -1186,6 +1264,12 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::textFieldTouchable));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
     
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::textFieldVisible));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
             textButton = new TextButton("Text", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -1266,6 +1350,12 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::touchPadTouchable));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
     
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::touchPadVisible));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
             textButton = new TextButton("Dead Zone", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
@@ -1310,6 +1400,12 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::containerTouchable));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::containerVisible));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Background", skin, "scene-med");
@@ -1373,6 +1469,12 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::horizontalGroupTouchable));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::horizontalGroupVisible));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
     
             textButton = new TextButton("Expand", skin, "scene-med");
@@ -1450,6 +1552,12 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(main.getHandListener());
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::scrollPaneTouchable));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::scrollPaneVisible));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Knobs", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -1510,6 +1618,12 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(main.getHandListener());
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::splitPaneTouchable));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::splitPaneVisible));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Orientation", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -1554,6 +1668,12 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::stackTouchable));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::stackVisible));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Reset", skin, "scene-med");
@@ -1643,6 +1763,12 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(main.getHandListener());
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::treeTouchable));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::treeVisible));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Padding", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -1688,6 +1814,12 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(main.getHandListener());
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::verticalGroupTouchable));
+            textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
+    
+            textButton = new TextButton("Visible", skin, "scene-med");
+            horizontalGroup.addActor(textButton);
+            textButton.addListener(main.getHandListener());
+            textButton.addListener(GeneralListeners.visibleListener(simActor, events::verticalGroupVisible));
             textButton.addListener(new TextTooltip("Sets whether this widget can be clicked on.", main.getTooltipManager(), skin, "scene"));
             
             textButton = new TextButton("Expand", skin, "scene-med");

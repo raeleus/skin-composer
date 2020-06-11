@@ -10,6 +10,7 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimTouchable;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimVisible;
 import com.ray3k.stripe.PopTable;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.dialog.DialogDrawables;
@@ -624,6 +625,59 @@ public class GeneralListeners {
         return popTableClickListener;
     }
     
+    public static EventListener visibleListener(SimActor simActor, VisibleSelected visibleSelected) {
+        var simVisible = (SimVisible) simActor;
+        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                update();
+            }
+            
+            public void update() {
+                final var buttonGroup = new ButtonGroup<ImageTextButton>();
+                var popTable = getPopTable();
+                popTable.clearChildren();
+                
+                var changeListener = new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        visibleSelected.selected((boolean) buttonGroup.getChecked().getUserObject());
+                    }
+                };
+                
+                var table = new Table();
+                popTable.add(table);
+                
+                table.defaults().left().spaceRight(5);
+                var imageTextButton = new ImageTextButton("Visible", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton.setProgrammaticChangeEvents(false);
+                imageTextButton.setChecked(simVisible.isVisible());
+                imageTextButton.setUserObject(true);
+                table.add(imageTextButton);
+                buttonGroup.add(imageTextButton);
+                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("The widget is visible in the stage.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(changeListener);
+                
+                table.row();
+                imageTextButton = new ImageTextButton("Invisible", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton.setProgrammaticChangeEvents(false);
+                imageTextButton.setChecked(!simVisible.isVisible());
+                imageTextButton.setUserObject(false);
+                table.add(imageTextButton);
+                buttonGroup.add(imageTextButton);
+                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
+                imageTextButton.addListener(new TextTooltip("The widget is not visible in the stage.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(changeListener);
+            }
+        };
+        
+        popTableClickListener.update();
+        
+        return popTableClickListener;
+    }
+    
     public interface DrawableSelected {
         void selected(DrawableData drawableData);
     }
@@ -638,5 +692,9 @@ public class GeneralListeners {
     
     public interface TouchableSelected {
         void selected(Touchable touchable);
+    }
+    
+    public interface VisibleSelected {
+        void selected(boolean visible);
     }
 }

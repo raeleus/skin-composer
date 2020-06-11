@@ -928,8 +928,9 @@ public class DialogSceneComposerModel {
         }
         
         if (simActor != null) {
-            if (actor != null && simActor instanceof SimTouchable) {
-                actor.setTouchable(((SimTouchable) simActor).getTouchable());
+            if (actor != null) {
+                if (simActor instanceof SimTouchable) actor.setTouchable(((SimTouchable) simActor).getTouchable());
+                if (simActor instanceof SimVisible) actor.setVisible(((SimVisible) simActor).isVisible());
             }
             simActor.previewActor = actor;
         }
@@ -1031,7 +1032,11 @@ public class DialogSceneComposerModel {
         Touchable getTouchable();
     }
     
-    public static class SimRootGroup extends SimActor implements SimMultipleChildren, SimTouchable {
+    public interface SimVisible {
+        boolean isVisible();
+    }
+    
+    public static class SimRootGroup extends SimActor implements SimMultipleChildren {
         public Array<SimActor> children = new Array<>();
         public ColorData backgroundColor;
         public String skinPath = "skin.json";
@@ -1083,14 +1088,9 @@ public class DialogSceneComposerModel {
             
             return simRootGroup;
         }
-    
-        @Override
-        public Touchable getTouchable() {
-            return touchable;
-        }
     }
     
-    public static class SimTable extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable {
+    public static class SimTable extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable, SimVisible {
         public Array<SimCell> cells = new Array<>();
         public String name;
         public DrawableData background;
@@ -1103,6 +1103,7 @@ public class DialogSceneComposerModel {
         public int alignment = Align.center;
         public boolean fillParent;
         public Touchable touchable = Touchable.childrenOnly;
+        public boolean visible = true;
     
         @Override
         public SimTable duplicate() {
@@ -1218,6 +1219,11 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
     public static class SimCell extends SimActor implements SimSingleChild {
@@ -1329,7 +1335,7 @@ public class DialogSceneComposerModel {
         }
     }
     
-    public static class SimButton extends SimActor implements SimNamed, SimTouchable {
+    public static class SimButton extends SimActor implements SimNamed, SimTouchable, SimVisible {
         public String name;
         public StyleData style;
         public boolean checked;
@@ -1340,6 +1346,7 @@ public class DialogSceneComposerModel {
         public float padTop;
         public float padBottom;
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimButton duplicate() {
@@ -1406,9 +1413,14 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimCheckBox extends SimActor implements SimNamed, SimTouchable {
+    public static class SimCheckBox extends SimActor implements SimNamed, SimTouchable, SimVisible {
         public String name;
         public StyleData style;
         public boolean disabled;
@@ -1420,6 +1432,7 @@ public class DialogSceneComposerModel {
         public float padBottom;
         public boolean checked;
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimCheckBox duplicate() {
@@ -1488,13 +1501,19 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimImage extends SimActor implements SimNamed, SimTouchable {
+    public static class SimImage extends SimActor implements SimNamed, SimTouchable, SimVisible {
         public String name;
         public DrawableData drawable;
         public Scaling scaling = Scaling.stretch;
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimImage duplicate() {
@@ -1530,9 +1549,14 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimImageButton extends SimActor implements SimNamed, SimTouchable {
+    public static class SimImageButton extends SimActor implements SimNamed, SimTouchable, SimVisible {
         public String name;
         public StyleData style;
         public boolean checked;
@@ -1543,6 +1567,7 @@ public class DialogSceneComposerModel {
         public float padTop;
         public float padBottom;
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimImageButton duplicate() {
@@ -1601,9 +1626,14 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimImageTextButton extends SimActor implements SimNamed, SimTouchable {
+    public static class SimImageTextButton extends SimActor implements SimNamed, SimTouchable, SimVisible {
         public String name;
         public String text;
         public StyleData style;
@@ -1615,6 +1645,7 @@ public class DialogSceneComposerModel {
         public float padTop;
         public float padBottom;
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimImageTextButton duplicate() {
@@ -1675,9 +1706,14 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimLabel extends SimActor implements SimNamed, SimTouchable {
+    public static class SimLabel extends SimActor implements SimNamed, SimTouchable, SimVisible {
         public String name;
         public StyleData style;
         public String text;
@@ -1687,6 +1723,7 @@ public class DialogSceneComposerModel {
         public boolean wrap;
         public ColorData color;
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimLabel duplicate() {
@@ -1751,13 +1788,19 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimList extends SimActor implements SimNamed, SimTouchable {
+    public static class SimList extends SimActor implements SimNamed, SimTouchable, SimVisible {
         public String name;
         public StyleData style;
         public Array<String> list = new Array<>();
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimList duplicate() {
@@ -1813,9 +1856,14 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimProgressBar extends SimActor implements SimNamed, SimTouchable {
+    public static class SimProgressBar extends SimActor implements SimNamed, SimTouchable, SimVisible {
         public String name;
         public StyleData style;
         public boolean disabled;
@@ -1829,6 +1877,7 @@ public class DialogSceneComposerModel {
         public boolean round = true;
         public Interpol visualInterpolation = Interpol.LINEAR;
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimProgressBar duplicate() {
@@ -1902,9 +1951,14 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimSelectBox extends SimActor implements SimNamed, SimTouchable {
+    public static class SimSelectBox extends SimActor implements SimNamed, SimTouchable, SimVisible {
         public String name;
         public StyleData style;
         public boolean disabled;
@@ -1914,6 +1968,7 @@ public class DialogSceneComposerModel {
         public int selected;
         public boolean scrollingDisabled;
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimSelectBox duplicate() {
@@ -1979,9 +2034,14 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimSlider extends SimActor implements SimNamed, SimTouchable {
+    public static class SimSlider extends SimActor implements SimNamed, SimTouchable, SimVisible {
         public String name;
         public StyleData style;
         public boolean disabled;
@@ -1995,6 +2055,7 @@ public class DialogSceneComposerModel {
         public boolean round = true;
         public Interpol visualInterpolation = Interpol.LINEAR;
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimSlider duplicate() {
@@ -2068,9 +2129,14 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimTextButton extends SimActor implements SimNamed, SimTouchable {
+    public static class SimTextButton extends SimActor implements SimNamed, SimTouchable, SimVisible {
         public String name;
         public String text;
         public StyleData style;
@@ -2082,6 +2148,7 @@ public class DialogSceneComposerModel {
         public float padTop;
         public float padBottom;
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimTextButton duplicate() {
@@ -2149,9 +2216,14 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimTextField extends SimActor implements SimNamed, SimTouchable {
+    public static class SimTextField extends SimActor implements SimNamed, SimTouchable, SimVisible {
         public String name;
         public StyleData style;
         public String text;
@@ -2167,6 +2239,7 @@ public class DialogSceneComposerModel {
         public int maxLength;
         public String messageText;
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimTextField duplicate() {
@@ -2244,9 +2317,14 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimTextArea extends SimActor implements SimNamed, SimTouchable {
+    public static class SimTextArea extends SimActor implements SimNamed, SimTouchable, SimVisible {
         public String name;
         public StyleData style;
         public String text;
@@ -2263,6 +2341,7 @@ public class DialogSceneComposerModel {
         public String messageText;
         public int preferredRows;
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimTextArea duplicate() {
@@ -2342,14 +2421,20 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimTouchPad extends SimActor implements SimNamed, SimTouchable {
+    public static class SimTouchPad extends SimActor implements SimNamed, SimTouchable, SimVisible {
         public String name;
         public StyleData style;
         public float deadZone;
         public boolean resetOnTouchUp = true;
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimTouchPad duplicate() {
@@ -2406,9 +2491,14 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimContainer extends SimActor implements SimSingleChild, SimNamed, SimTouchable {
+    public static class SimContainer extends SimActor implements SimSingleChild, SimNamed, SimTouchable, SimVisible {
         public String name;
         public int alignment = Align.center;
         public DrawableData background;
@@ -2426,6 +2516,7 @@ public class DialogSceneComposerModel {
         public float padBottom;
         public SimActor child;
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimContainer duplicate() {
@@ -2498,9 +2589,14 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimHorizontalGroup extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable {
+    public static class SimHorizontalGroup extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable, SimVisible {
         public String name;
         public int alignment = Align.center;
         public boolean expand;
@@ -2516,6 +2612,7 @@ public class DialogSceneComposerModel {
         public float wrapSpace;
         public Array<SimActor> children = new Array<>();
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimHorizontalGroup duplicate() {
@@ -2595,9 +2692,14 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimScrollPane extends SimActor implements SimSingleChild, SimNamed, SimTouchable {
+    public static class SimScrollPane extends SimActor implements SimSingleChild, SimNamed, SimTouchable, SimVisible {
         public String name;
         public StyleData style;
         public boolean fadeScrollBars = true;
@@ -2622,6 +2724,7 @@ public class DialogSceneComposerModel {
         public boolean smoothScrolling = true;
         public boolean variableSizeKnobs = true;
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimScrollPane duplicate() {
@@ -2727,12 +2830,18 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimStack extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable {
+    public static class SimStack extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable, SimVisible {
         public String name;
         public Array<SimActor> children = new Array<>();
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimStack duplicate() {
@@ -2788,9 +2897,14 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimSplitPane extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable {
+    public static class SimSplitPane extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable, SimVisible {
         public String name;
         public StyleData style;
         public SimActor childFirst;
@@ -2801,6 +2915,7 @@ public class DialogSceneComposerModel {
         public float splitMax = 1;
         public transient Array<SimActor> tempChildren = new Array<>();
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimSplitPane duplicate() {
@@ -2897,6 +3012,11 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
     public static class SimNode extends SimActor implements SimMultipleChildren {
@@ -2965,7 +3085,7 @@ public class DialogSceneComposerModel {
         }
     }
     
-    public static class SimTree extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable {
+    public static class SimTree extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable, SimVisible {
         public String name;
         public StyleData style;
         public Array<SimNode> children = new Array<>();
@@ -2976,6 +3096,7 @@ public class DialogSceneComposerModel {
         public float indentSpacing;
         public float ySpacing = 4;
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimTree duplicate() {
@@ -3063,9 +3184,14 @@ public class DialogSceneComposerModel {
         public Touchable getTouchable() {
             return touchable;
         }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
     }
     
-    public static class SimVerticalGroup extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable {
+    public static class SimVerticalGroup extends SimActor implements SimMultipleChildren, SimNamed, SimTouchable, SimVisible {
         public String name;
         public int alignment = Align.center;
         public boolean expand;
@@ -3081,6 +3207,7 @@ public class DialogSceneComposerModel {
         public float wrapSpace;
         public Array<SimActor> children = new Array<>();
         public Touchable touchable = Touchable.enabled;
+        public boolean visible = true;
     
         @Override
         public SimVerticalGroup duplicate() {
@@ -3160,6 +3287,11 @@ public class DialogSceneComposerModel {
         @Override
         public Touchable getTouchable() {
             return touchable;
+        }
+    
+        @Override
+        public boolean isVisible() {
+            return visible;
         }
     }
 }

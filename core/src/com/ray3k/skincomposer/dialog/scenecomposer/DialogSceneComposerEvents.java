@@ -119,6 +119,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new TableTouchableUndoable(touchable));
     }
     
+    public void tableVisible(boolean visible) {
+        processUndoable(new TableVisibleUndoable(visible));
+    }
+    
     public void tableBackground(DrawableData background) {
         processUndoable(new TableBackgroundUndoable(background));
     }
@@ -255,6 +259,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new ButtonTouchableUndoable(touchable));
     }
     
+    public void buttonVisible(boolean visible) {
+        processUndoable(new ButtonVisibleUndoable(visible));
+    }
+    
     public void buttonStyle(StyleData style) {
         processUndoable(new ButtonStyleUndoable(style));
     }
@@ -291,6 +299,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new ImageButtonTouchableUndoable(touchable));
     }
     
+    public void imageButtonVisible(boolean visible) {
+        processUndoable(new ImageButtonVisibleUndoable(visible));
+    }
+    
     public void imageButtonStyle(StyleData style) {
         processUndoable(new ImageButtonStyleUndoable(style));
     }
@@ -325,6 +337,10 @@ public class DialogSceneComposerEvents {
     
     public void imageTextButtonTouchable(Touchable touchable) {
         processUndoable(new ImageTextButtonTouchableUndoable(touchable));
+    }
+    
+    public void imageTextButtonVisible(boolean visible) {
+        processUndoable(new ImageTextButtonVisibleUndoable(visible));
     }
     
     public void imageTextButtonText(String text) {
@@ -367,6 +383,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new TextButtonTouchableUndoable(touchable));
     }
     
+    public void textButtonVisible(boolean visible) {
+        processUndoable(new TextButtonVisibleUndoable(visible));
+    }
+    
     public void textButtonText(String text) {
         processUndoable(new TextButtonTextUndoable(text));
     }
@@ -401,6 +421,10 @@ public class DialogSceneComposerEvents {
     
     public void checkBoxTouchable(Touchable touchable) {
         processUndoable(new CheckBoxTouchableUndoable(touchable));
+    }
+    
+    public void checkBoxVisible(boolean visible) {
+        processUndoable(new CheckBoxVisibleUndoable(visible));
     }
     
     public void checkBoxChecked(boolean checked) {
@@ -463,6 +487,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new ContainerTouchableUndoable(touchable));
     }
     
+    public void containerVisible(boolean visible) {
+        processUndoable(new ContainerVisibleUndoable(visible));
+    }
+    
     public void containerPadding(float padLeft, float padRight, float padTop, float padBottom) {
         processUndoable(new ContainerPaddingUndoable(padLeft,  padRight, padTop, padBottom));
     }
@@ -505,6 +533,10 @@ public class DialogSceneComposerEvents {
     
     public void horizontalGroupTouchable(Touchable touchable) {
         processUndoable(new HorizontalGroupTouchableUndoable(touchable));
+    }
+    
+    public void horizontalGroupVisible(boolean visible) {
+        processUndoable(new HorizontalGroupVisibleUndoable(visible));
     }
     
     public void horizontalGroupPadBottom(float padBottom) {
@@ -562,6 +594,10 @@ public class DialogSceneComposerEvents {
     public void imageTouchable(Touchable touchable) {
         processUndoable(new ImageTouchableUndoable(touchable));
     }
+    
+    public void imageVisible(boolean visible) {
+        processUndoable(new ImageVisibleUndoable(visible));
+    }
    
    public void imageReset() {
         processUndoable(new ImageResetUndoable());
@@ -594,6 +630,10 @@ public class DialogSceneComposerEvents {
     public void labelTouchable(Touchable touchable) {
         processUndoable(new LabelTouchableUndoable(touchable));
     }
+    
+    public void labelVisible(boolean visible) {
+        processUndoable(new LabelVisibleUndoable(visible));
+    }
    
    public void labelReset() {
         processUndoable(new LabelResetUndoable());
@@ -625,6 +665,10 @@ public class DialogSceneComposerEvents {
     
     public void listTouchable(Touchable touchable) {
         processUndoable(new ListTouchableUndoable(touchable));
+    }
+    
+    public void listVisible(boolean visible) {
+        processUndoable(new ListVisibleUndoable(visible));
     }
    
    public void listReset() {
@@ -698,6 +742,10 @@ public class DialogSceneComposerEvents {
     public void progressBarTouchable(Touchable touchable) {
         processUndoable(new ProgressBarTouchableUndoable(touchable));
     }
+    
+    public void progressBarVisible(boolean visible) {
+        processUndoable(new ProgressBarVisibleUndoable(visible));
+    }
    
    public void progressBarReset() {
         processUndoable(new ProgressBarResetUndoable());
@@ -765,6 +813,10 @@ public class DialogSceneComposerEvents {
     
     public void scrollPaneTouchable(Touchable touchable) {
         processUndoable(new ScrollPaneTouchableUndoable(touchable));
+    }
+    
+    public void scrollPaneVisible(boolean visible) {
+        processUndoable(new ScrollPaneVisibleUndoable(visible));
     }
    
    public void scrollPaneOverScrollDistance(float overScrollDistance) {
@@ -855,6 +907,10 @@ public class DialogSceneComposerEvents {
     public void selectBoxTouchable(Touchable touchable) {
         processUndoable(new SelectBoxTouchableUndoable(touchable));
     }
+    
+    public void selectBoxVisible(boolean visible) {
+        processUndoable(new SelectBoxVisibleUndoable(visible));
+    }
    
    public void selectBoxReset() {
         processUndoable(new SelectBoxResetUndoable());
@@ -908,6 +964,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new SliderTouchableUndoable(touchable));
     }
     
+    public void sliderVisible(boolean visible) {
+        processUndoable(new SliderVisibleUndoable(visible));
+    }
+    
     public void sliderReset() {
         processUndoable(new SliderResetUndoable());
     }
@@ -952,6 +1012,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new SplitPaneTouchableUndoable(touchable));
     }
     
+    public void splitPaneVisible(boolean visible) {
+        processUndoable(new SplitPaneVisibleUndoable(visible));
+    }
+    
     public void splitPaneReset() {
         processUndoable(new SplitPaneResetUndoable());
     }
@@ -992,6 +1056,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new StackTouchableUndoable(touchable));
     }
     
+    public void stackVisible(boolean visible) {
+        processUndoable(new StackVisibleUndoable(visible));
+    }
+    
     public void stackReset() {
         processUndoable(new StackResetUndoable());
     }
@@ -1030,6 +1098,10 @@ public class DialogSceneComposerEvents {
     
     public void textAreaTouchable(Touchable touchable) {
         processUndoable(new TextAreaTouchableUndoable(touchable));
+    }
+    
+    public void textAreaVisible(boolean visible) {
+        processUndoable(new TextAreaVisibleUndoable(visible));
     }
     
     public void textAreaPasswordCharacter(char character) {
@@ -1104,6 +1176,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new TextFieldTouchableUndoable(touchable));
     }
     
+    public void textFieldVisible(boolean visible) {
+        processUndoable(new TextFieldVisibleUndoable(visible));
+    }
+    
     public void textFieldPasswordCharacter(char character) {
         processUndoable(new TextFieldPasswordCharacterUndoable(character));
     }
@@ -1148,6 +1224,10 @@ public class DialogSceneComposerEvents {
         processUndoable(new TouchPadTouchableUndoable(touchable));
     }
     
+    public void touchPadVisible(boolean visible) {
+        processUndoable(new TouchPadVisibleUndoable(visible));
+    }
+    
     public void touchPadDeadZone(float deadZone) {
         processUndoable(new TouchPadDeadZoneUndoable(deadZone));
     }
@@ -1190,6 +1270,10 @@ public class DialogSceneComposerEvents {
     
     public void treeTouchable(Touchable touchable) {
         processUndoable(new TreeTouchableUndoable(touchable));
+    }
+    
+    public void treeVisible(boolean visible) {
+        processUndoable(new TreeVisibleUndoable(visible));
     }
     
     public void treePadLeft(float padLeft) {
@@ -1238,6 +1322,10 @@ public class DialogSceneComposerEvents {
     
     public void verticalGroupTouchable(Touchable touchable) {
         processUndoable(new VerticalGroupTouchableUndoable(touchable));
+    }
+    
+    public void verticalGroupVisible(boolean visible) {
+        processUndoable(new VerticalGroupVisibleUndoable(visible));
     }
     
     public void verticalGroupPadBottom(float padBottom) {

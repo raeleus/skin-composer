@@ -87,6 +87,7 @@ public class DialogSceneComposerJavaBuilder {
             builder.addStatement("$L = new $T()", variableName, Table.class);
             if (table.name != null) builder.addStatement("$L.setName($L)", variableName, table.name);
             if (table.touchable != Touchable.childrenOnly)  builder.addStatement("$L.setTouchable($L)", variableName, table.touchable);
+            if (!table.visible) builder.addStatement("$L.setTouchable($L)", variableName, table.visible);
             if (table.background != null) builder.addStatement("$L.setBackground(skin.getDrawable($S))", variableName, table.background.name);
             if (table.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, table.color.getName());
             
@@ -265,6 +266,7 @@ public class DialogSceneComposerJavaBuilder {
             
             if (button.name != null) builder.addStatement("$L.setName($S)", variableName, button.name);
             if (button.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, button.touchable);
+            if (!button.visible) builder.addStatement("$L.setTouchable($L)", variableName, button.visible);
             if (button.checked) builder.addStatement("$L.setChecked($L)", variableName, true);
             if (button.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
             if (button.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, button.color.getName());
@@ -301,6 +303,7 @@ public class DialogSceneComposerJavaBuilder {
             
             if (checkBox.name != null) builder.addStatement("$L.setName($S)", variableName, checkBox.name);
             if (checkBox.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, checkBox.touchable);
+            if (!checkBox.visible) builder.addStatement("$L.setTouchable($L)", variableName, checkBox.visible);
             if (checkBox.checked) builder.addStatement("$L.setChecked($L)", variableName, true);
             if (checkBox.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
             if (checkBox.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, checkBox.color.getName());
@@ -335,6 +338,7 @@ public class DialogSceneComposerJavaBuilder {
             builder.addStatement("$L = new $T(skin, $S)", variableName, Image.class, image.drawable.name);
             if (image.name != null) builder.addStatement("$L.setName($S)", variableName, image.name);
             if (image.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, image.touchable);
+            if (!image.visible) builder.addStatement("$L.setTouchable($L)", variableName, image.visible);
             if (image.scaling != null) builder.addStatement("$L.setScaling($T.$L)", variableName, Scaling.class, image.scaling.name());
     
             return new WidgetNamePair(builder.build(), variableName);
@@ -350,6 +354,7 @@ public class DialogSceneComposerJavaBuilder {
             
             if (imageButton.name != null) builder.addStatement("$L.setName($S)", variableName, imageButton.name);
             if (imageButton.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, imageButton.touchable);
+            if (!imageButton.visible) builder.addStatement("$L.setTouchable($L)", variableName, imageButton.visible);
             if (imageButton.checked) builder.addStatement("$L.setChecked($L)", variableName, true);
             if (imageButton.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
             if (imageButton.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, imageButton.color.getName());
@@ -386,6 +391,7 @@ public class DialogSceneComposerJavaBuilder {
             
             if (imageTextButton.name != null) builder.addStatement("$L.setName($S)", variableName, imageTextButton.name);
             if (imageTextButton.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, imageTextButton.touchable);
+            if (!imageTextButton.visible) builder.addStatement("$L.setTouchable($L)", variableName, imageTextButton.visible);
             if (imageTextButton.checked) builder.addStatement("$L.setChecked($L)", variableName, true);
             if (imageTextButton.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
             if (imageTextButton.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, imageTextButton.color.getName());
@@ -422,6 +428,7 @@ public class DialogSceneComposerJavaBuilder {
                 
             if (label.name != null) builder.addStatement("$L.setName($S)", variableName, label.name);
             if (label.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, label.touchable);
+            if (!label.visible) builder.addStatement("$L.setTouchable($L)", variableName, label.visible);
             
             if (label.textAlignment != Align.left) {
                 builder.addStatement("$L.setAlignment($T.$L)", variableName, Align.class, alignmentToName(label.textAlignment));
@@ -445,6 +452,7 @@ public class DialogSceneComposerJavaBuilder {
             
             if (list.name != null) builder.addStatement("$L.setName($S)", variableName, list.name);
             if (list.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, list.touchable);
+            if (!list.visible) builder.addStatement("$L.setTouchable($L)", variableName, list.visible);
             if (list.list.size > 0) {
                 builder.add("$L.setItems(", variableName);
                 boolean addComma = false;
@@ -469,6 +477,7 @@ public class DialogSceneComposerJavaBuilder {
             
             if (progressBar.name != null) builder.addStatement("$L.setName($S)", variableName, progressBar.name);
             if (progressBar.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, progressBar.touchable);
+            if (!progressBar.visible) builder.addStatement("$L.setTouchable($L)", variableName, progressBar.visible);
             if (MathUtils.isZero(progressBar.value)) builder.addStatement("$L.setValue($Lf)", variableName, progressBar.value);
             if (MathUtils.isZero(progressBar.animationDuration)) builder.addStatement("$L.setAnimationDuration($Lf)", variableName, progressBar.animationDuration);
             if (progressBar.animateInterpolation != null) builder.addStatement("$L.setAnimateInterpolation($T.$L)", variableName,
@@ -490,6 +499,7 @@ public class DialogSceneComposerJavaBuilder {
             
             if (selectBox.name != null) builder.addStatement("$L.setName($S)", variableName, selectBox.name);
             if (selectBox.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, selectBox.touchable);
+            if (!selectBox.visible) builder.addStatement("$L.setTouchable($L)", variableName, selectBox.visible);
             if (selectBox.disabled) builder.addStatement("$L.setDisabled($L)", variableName, selectBox.disabled);
             if (selectBox.maxListCount != 0) builder.addStatement("$L.setMaxListCount($L)", variableName, selectBox.maxListCount);
     
@@ -524,6 +534,7 @@ public class DialogSceneComposerJavaBuilder {
     
             if (slider.name != null) builder.addStatement("$L.setName($S)", variableName, slider.name);
             if (slider.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, slider.touchable);
+            if (!slider.visible) builder.addStatement("$L.setTouchable($L)", variableName, slider.visible);
             if (slider.disabled) builder.addStatement("$L.setDisabled($L)", variableName, slider.disabled);
             if (MathUtils.isZero(slider.value)) builder.addStatement("$L.setValue($Lf)", variableName, slider.value);
             if (MathUtils.isZero(slider.animationDuration)) builder.addStatement("$L.setAnimationDuration($Lf)", variableName, slider.animationDuration);
@@ -546,6 +557,7 @@ public class DialogSceneComposerJavaBuilder {
     
             if (textButton.name != null) builder.addStatement("$L.setName($S)", variableName, textButton.name);
             if (textButton.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, textButton.touchable);
+            if (!textButton.visible) builder.addStatement("$L.setTouchable($L)", variableName, textButton.visible);
             if (textButton.checked) builder.addStatement("$L.setChecked($L)", variableName, true);
             if (textButton.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
             if (textButton.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, textButton.color.getName());
@@ -582,6 +594,7 @@ public class DialogSceneComposerJavaBuilder {
             
             if (textField.name != null) builder.addStatement("$L.setName($S)", variableName, textField.name);
             if (textField.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, textField.touchable);
+            if (!textField.visible) builder.addStatement("$L.setTouchable($L)", variableName, textField.visible);
             if (textField.passwordCharacter != '•') builder.addStatement("$L.setPasswordCharacter('$L')", variableName, textField.passwordCharacter);
             if (textField.passwordMode) builder.addStatement("$L.setPasswordMode($L)", variableName, true);
             
@@ -611,6 +624,7 @@ public class DialogSceneComposerJavaBuilder {
     
             if (textArea.name != null) builder.addStatement("$L.setName($S)", variableName, textArea.name);
             if (textArea.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, textArea.touchable);
+            if (!textArea.visible) builder.addStatement("$L.setTouchable($L)", variableName, textArea.visible);
             if (textArea.passwordCharacter != '•') builder.addStatement("$L.setPasswordCharacter('$L')", variableName, textArea.passwordCharacter);
             if (textArea.passwordMode) builder.addStatement("$L.setPasswordMode($L)", variableName, true);
     
@@ -641,6 +655,7 @@ public class DialogSceneComposerJavaBuilder {
                 
             if (touchPad.name != null) builder.addStatement("$L.setName($S)", variableName, touchPad.name);
             if (touchPad.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, touchPad.touchable);
+            if (!touchPad.visible) builder.addStatement("$L.setTouchable($L)", variableName, touchPad.visible);
             if (!touchPad.resetOnTouchUp) builder.addStatement("$L.setResetOnTouchUp($L)", variableName, false);
     
             return new WidgetNamePair(builder.build(), variableName);
@@ -654,6 +669,7 @@ public class DialogSceneComposerJavaBuilder {
             
             if (container.name != null) builder.addStatement("$L.setName($S)", variableName, container.name);
             if (container.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, container.touchable);
+            if (!container.visible) builder.addStatement("$L.setTouchable($L)", variableName, container.visible);
     
             if (container.alignment != Align.center) {
                 builder.addStatement("$L.align($T.$L)", variableName, Align.class, alignmentToName(container.alignment));
@@ -752,6 +768,7 @@ public class DialogSceneComposerJavaBuilder {
             
             if (horizontalGroup.name != null) builder.addStatement("$L.setName($S)", variableName, horizontalGroup.name);
             if (horizontalGroup.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, horizontalGroup.touchable);
+            if (!horizontalGroup.visible) builder.addStatement("$L.setTouchable($L)", variableName, horizontalGroup.visible);
     
             if (horizontalGroup.alignment != Align.center) {
                 builder.addStatement("$L.align($T.$L)", variableName, Align.class, alignmentToName(horizontalGroup.alignment));
@@ -823,6 +840,7 @@ public class DialogSceneComposerJavaBuilder {
     
             if (scrollPane.name != null) builder.addStatement("$L.setName($S)", variableName, scrollPane.name);
             if (scrollPane.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, scrollPane.touchable);
+            if (!scrollPane.visible) builder.addStatement("$L.setTouchable($L)", variableName, scrollPane.visible);
             if (!scrollPane.fadeScrollBars) builder.addStatement("$L.setFadeScrollBars($L)", variableName, false);
             if (scrollPane.clamp) builder.addStatement("$L.setClamp($L)", variableName, true);
             if (!scrollPane.flickScroll) builder.addStatement("$L.setFlickScroll($L)", variableName, false);
@@ -866,6 +884,7 @@ public class DialogSceneComposerJavaBuilder {
             
             if (stack.name != null) builder.addStatement("$L.setName($S)", variableName, stack.name);
             if (stack.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, stack.touchable);
+            if (!stack.visible) builder.addStatement("$L.setTouchable($L)", variableName, stack.visible);
     
             for (var child : stack.children) {
                 WidgetNamePair pair = createWidget(child, variables, usedVariables);
@@ -908,6 +927,7 @@ public class DialogSceneComposerJavaBuilder {
             
             if (splitPane.name != null) builder.addStatement("$L.setName($S)", variableName, splitPane.name);
             if (splitPane.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, splitPane.touchable);
+            if (!splitPane.visible) builder.addStatement("$L.setTouchable($L)", variableName, splitPane.visible);
             if (MathUtils.isEqual(.5f, splitPane.split)) builder.addStatement("$L.setSplit($L)", variableName, splitPane.split);
             if (MathUtils.isZero(splitPane.splitMin)) builder.addStatement("$L.setMinSplitAmount($L)", variableName, splitPane.splitMin);
             if (MathUtils.isEqual(1, splitPane.splitMax)) builder.addStatement("$L.setMaxSplitAmount($L)", variableName, splitPane.splitMax);
@@ -925,6 +945,7 @@ public class DialogSceneComposerJavaBuilder {
             
             if (tree.name != null) builder.addStatement("$L.setName($S)", variableName, tree.name);
             if (tree.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, tree.touchable);
+            if (!tree.visible) builder.addStatement("$L.setTouchable($L)", variableName, tree.visible);
             if (!MathUtils.isZero(tree.padLeft) || !MathUtils.isZero(tree.padRight)) {
                 if (MathUtils.isEqual(tree.padLeft, tree.padRight)) {
                     builder.addStatement("$L.setPadding($Lf)", variableName, tree.padLeft);
@@ -992,6 +1013,7 @@ public class DialogSceneComposerJavaBuilder {
     
             if (verticalGroup.name != null) builder.addStatement("$L.setName($S)", variableName, verticalGroup.name);
             if (verticalGroup.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, verticalGroup.touchable);
+            if (!verticalGroup.visible) builder.addStatement("$L.setTouchable($L)", variableName, verticalGroup.visible);
     
             if (verticalGroup.alignment != Align.center) {
                 builder.addStatement("$L.align($T.$L)", variableName, Align.class, alignmentToName(verticalGroup.alignment));
