@@ -39,6 +39,9 @@ runtime {
     distDir = file("$buildDir")
     jpackage {
         mainJar = "${appName}.jar"
+        imageName = 'Skin Composer'
+        installerName = 'Skin Composer'
+        installerOptions = ['--linux-menu-group', 'Programming']
         if (org.gradle.internal.os.OperatingSystem.current().windows) {
             imageOptions = ["--icon", file("../icons/logo.ico")]
         } else if (org.gradle.internal.os.OperatingSystem.current().linux) {
