@@ -1,5 +1,5 @@
 plugins {
-    id 'org.beryx.runtime' version '1.8.4'
+    id 'org.beryx.runtime' version '1.8.5'
 }
 apply plugin: "java"
 
@@ -12,7 +12,7 @@ mainClassName = "com.ray3k.skincomposer.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets")
 
 task dist(type: Jar) {
-    archiveFileName = "${project.appName}.jar";
+    archiveFileName = "${appName}.jar";
     from files(sourceSets.main.output.getClassesDirs())
     from files(sourceSets.main.output.resourcesDir)
     from {configurations.compile.collect {zipTree(it)}}
