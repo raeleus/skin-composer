@@ -69,11 +69,14 @@ jobs:
     - name: Build exe
       run: ./gradlew.bat installer:jpackageZip
 
+    - name: Fix exe filename
+      run: mv desktop/build/jpackage/*.exe skin-composer-windows.exe
+
     - name: Upload exe artifact
       uses: actions/upload-artifact@v2
       with:
         name: skin-composer-windows.exe
-        path: installer\build\winrar\SkinComposerInstaller.exe
+        path: skin-composer-windows.exe
 
 
 
