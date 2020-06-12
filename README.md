@@ -11,6 +11,7 @@
 * Nine-Patch editor with batch functions for multiple images
 * Integrated support for [TenPatch](https://github.com/raeleus/TenPatch) allowing for smart-resizing, animated UI's.
 * Implement your own classes allowing for extended Skin functionality
+* Create basic Scene2D layouts with Scene Composer
 * VisUI template and sample projects included
 
 Download [here](https://github.com/raeleus/skin-composer/releases).
