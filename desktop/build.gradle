@@ -41,14 +41,19 @@ runtime {
         mainJar = "${appName}.jar"
         imageName = 'Skin Composer'
         installerName = 'Skin Composer'
+        appVersion = "0.0.$project.version"
         if (org.gradle.internal.os.OperatingSystem.current().windows) {
             imageOptions = ["--icon", file("../icons/logo.ico")]
+            installerOptions = ['--win-menu', '--win-shortcut', '--win-dir-chooser']
+            resourceDir = file("../resources-windows")
         } else if (org.gradle.internal.os.OperatingSystem.current().linux) {
             imageOptions = ["--icon", file("../icons/logo.png")]
             installerOptions = ['--linux-menu-group', 'Programming', '--linux-shortcut']
+            resourceDir = file("../resources-linux")
         } else if (org.gradle.internal.os.OperatingSystem.current().isMacOsX()) {
             imageOptions = ["--icon", file("../icons/logo.icns")]
             jvmArgs = ['-XstartOnFirstThread']
+            resourceDir = file("../resources-osx")
         }
         imageName = exeName
     }

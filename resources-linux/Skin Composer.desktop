@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=36.0
+Type=Application
+Terminal=false
+Exec=/path/to/executable
+Name=Skin Composer
+Icon=/path/to/icon
