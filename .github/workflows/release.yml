@@ -44,14 +44,11 @@ jobs:
     - name: Build tar.gz
       run: ./gradlew desktop:jpackageTar
 
-    - name: Fix tar.gz filename
-      run: mv desktop/build/jpackage/*.tar.gz skin-composer-linux.tar.gz
-
     - name: Upload deb artifact
       uses: actions/upload-artifact@v2
       with:
         name: skin-composer-linux.tar.gz
-        path: skin-composer-linux.tar.gz
+        path: desktop/build/jpackage/skin-composer-linux.tar.gz
 
 
 
@@ -75,7 +72,7 @@ jobs:
     - name: Upload exe artifact
       uses: actions/upload-artifact@v2
       with:
-        name: SkinComposerInstaller.exe
+        name: skin-composer-windows.exe
         path: installer\build\winrar\SkinComposerInstaller.exe
 
 
@@ -128,6 +125,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: SkinComposerInstaller.exe/SkinComposerInstaller.exe
-          asset_name: SkinComposerInstaller.exe
+          asset_path: skin-composer-windows.exe/skin-composer-windows.exe
+          asset_name: skin-composer-windows.exe
           asset_content_type: application/x-ms-dos-executable
