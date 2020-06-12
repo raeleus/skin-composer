@@ -44,6 +44,9 @@ jobs:
     - name: Build tar.gz
       run: ./gradlew desktop:jpackageTar
 
+    - name: Fix tar.gz filename
+      run: mv desktop/build/jpackage/*.tar.gz skin-composer-linux.tar.gz
+
     - name: Upload deb artifact
       uses: actions/upload-artifact@v2
       with:
