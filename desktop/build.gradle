@@ -11,7 +11,7 @@ def exeName = 'SkinComposer'
 mainClassName = "com.ray3k.skincomposer.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets")
 
-task dist(type: Jar) {
+task dist(type: Jar, dependsOn: ['classes']) {
     archiveFileName = "${appName}.jar";
     from files(sourceSets.main.output.getClassesDirs())
     from files(sourceSets.main.output.resourcesDir)
@@ -23,8 +23,14 @@ task dist(type: Jar) {
     }
 }
 
-dist.dependsOn classes
 jpackageImage.dependsOn dist
+
+task jpackageTar(type: Tar, dependsOn:  ['jpackageImage']) {
+    archiveFileName = "skin-composer-linux.tar.gz"
+    compression = Compression.GZIP
+    destinationDirectory = file("$buildDir/jpackage")
+    from([file("$buildDir/jpackage/$appName/")])
+}
 
 runtime {
     options = ['--strip-debug',
