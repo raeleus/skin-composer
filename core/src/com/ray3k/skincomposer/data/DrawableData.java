@@ -103,9 +103,7 @@ public class DrawableData {
         this.minWidth = drawableData.minWidth;
         this.minHeight = drawableData.minHeight;
         this.customized = drawableData.customized;
-        if (drawableData.tenPatchData == null) {
-            drawableData.tenPatchData = null;
-        } else {
+        if (drawableData.tenPatchData != null) {
             if (tenPatchData == null) tenPatchData = new DialogTenPatch.TenPatchData();
             this.tenPatchData.set(drawableData.tenPatchData);
         }

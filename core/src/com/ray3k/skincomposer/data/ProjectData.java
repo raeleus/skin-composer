@@ -52,7 +52,7 @@ public class ProjectData implements Json.Serializable {
     
     public ProjectData() {
         json = new Json(JsonWriter.OutputType.minimal);
-        json.setSerializer(FileHandle.class, new Json.Serializer<FileHandle>() {
+        json.setSerializer(FileHandle.class, new Json.Serializer<>() {
             @Override
             public void write(Json json, FileHandle object, Class knownType) {
                 json.writeValue(object.path());
