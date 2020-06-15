@@ -84,7 +84,8 @@ runtime {
                '--vm', 'server']
     modules = ['java.base' ,
                'java.desktop',
-               'jdk.unsupported']
+               'jdk.unsupported',
+               'java.compiler']
     distDir = file("$buildDir")
     jpackage {
         mainJar = "${appName}-installer.jar"

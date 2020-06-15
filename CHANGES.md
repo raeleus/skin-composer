@@ -1,3 +1,7 @@
+### Skin Composer Version 37 ###
+
+* Fixed Window EXE version incapable of exporting Java files from Scene Composer.
+
 ### Skin Composer Version 36 ###
 
 * Added Touchable and Visible options to all widgets in Scene Composer.
