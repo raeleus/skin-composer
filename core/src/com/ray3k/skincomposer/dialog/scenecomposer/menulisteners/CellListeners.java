@@ -198,7 +198,7 @@ public class CellListeners {
                 button = new Button(skin, "scene-add-up-row");
                 subTable.add(button);
                 button.addListener(DialogSceneComposer.main.getHandListener());
-                button.addListener(new TextTooltip("Creates a new row below and adds a cell to it.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new TextTooltip("Creates a new row above and adds a cell to it.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
