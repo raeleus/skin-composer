@@ -1,6 +1,7 @@
 ### Skin Composer Version 37 ###
 
 * Fixed Window EXE version incapable of exporting Java files from Scene Composer.
+* Prevent crash if setting cell spacing to less than 0 in Scene Composer.
 
 ### Skin Composer Version 36 ###
 

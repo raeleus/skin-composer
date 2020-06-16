@@ -1052,6 +1052,7 @@ public class CellListeners {
                 spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
                 spinner.setValue(simCell.spaceLeft);
                 spinner.setName("spacing-left");
+                spinner.setMinimum(0);
                 table.add(spinner);
                 spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
                 spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
@@ -1066,6 +1067,7 @@ public class CellListeners {
                 spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
                 spinner.setValue(simCell.spaceRight);
                 spinner.setName("spacing-right");
+                spinner.setMinimum(0);
                 table.add(spinner);
                 spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
                 spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
@@ -1080,6 +1082,7 @@ public class CellListeners {
                 spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
                 spinner.setValue(simCell.spaceTop);
                 spinner.setName("spacing-top");
+                spinner.setMinimum(0);
                 table.add(spinner);
                 spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
                 spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
@@ -1094,6 +1097,7 @@ public class CellListeners {
                 spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
                 spinner.setValue(simCell.spaceBottom);
                 spinner.setName("spacing-bottom");
+                spinner.setMinimum(0);
                 table.add(spinner);
                 spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
                 spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
