@@ -53,7 +53,7 @@ jobs:
 
 
 
-  windows-exe:
+  windows-zip:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -125,6 +125,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: skin-composer-windows.exe/skin-composer-windows.exe
-          asset_name: skin-composer-windows.exe
+          asset_path: skin-composer-windows.exe/skin-composer-windows.zip
+          asset_name: skin-composer-windows.zip
           asset_content_type: application/zip
