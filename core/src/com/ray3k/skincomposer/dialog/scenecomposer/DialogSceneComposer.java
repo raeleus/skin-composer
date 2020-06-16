@@ -2339,6 +2339,18 @@ public class DialogSceneComposer extends Dialog {
                 }
             }
         });
+        textField.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                TextButton textButton = root.findActor("find-button");
+                if (!textButton.isDisabled() && keycode == Keys.ENTER) {
+                    textButton.setChecked(true);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
         
         root.row();
         label = new Label(" ", skin, "scene-label-colored");
