@@ -169,6 +169,7 @@ public class SliderListeners {
                 
                 var incrementSpinner = new Spinner(0, 1, false, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
                 incrementSpinner.setValue(simSlider.increment);
+                incrementSpinner.setMinimum(.0000000001);
                 table.add(incrementSpinner).uniformX().fillX();
                 incrementSpinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
                 incrementSpinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());

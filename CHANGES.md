@@ -1,3 +1,7 @@
+### Skin Composer Version 38 ###
+
+* Fixed crash if setting increment on Sliders/ProgressBars to a value less than 1
+
 ### Skin Composer Version 37 ###
 
 * Fixed Window EXE version incapable of exporting Java files from Scene Composer.
