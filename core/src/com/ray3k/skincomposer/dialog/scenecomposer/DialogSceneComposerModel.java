@@ -216,7 +216,7 @@ public class DialogSceneComposerModel {
         if (!saveFile.extension().toLowerCase(Locale.ROOT).equals("json")) {
             saveFile = saveFile.sibling(saveFile.nameWithoutExtension() + ".json");
         }
-        saveFile.writeString(json.prettyPrint(rootActor), false);
+        saveFile.writeString(json.prettyPrint(rootActor), false, "utf-8");
     }
     
     public static void loadFromJson(FileHandle loadFile) {

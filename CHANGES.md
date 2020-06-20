@@ -1,5 +1,6 @@
 ### Skin Composer Version 38 ###
 
+* JSON exports are guaranteed to be UTF-8 formatted to prevent issues with loading unicode characters.
 * Fixed crash if setting increment on Sliders/ProgressBars to a value less than 1
 
 ### Skin Composer Version 37 ###
