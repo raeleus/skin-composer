@@ -1285,35 +1285,62 @@ public class DialogFreeTypeFont extends Dialog {
     
     private void showMoreInfoDialog() {
         Dialog dialog = new Dialog("Custom serializer for FreeType Fonts", skin, "bg");
-        dialog.setFillParent(true);
         
         dialog.getTitleLabel().setAlignment(Align.center);
         dialog.getContentTable().pad(15.0f);
         dialog.getButtonTable().pad(15.0f);
         
-        Label label = new Label("Integrating TTF files and specifying FreeType within a Skin JSON requires a custom serializer. This is done by overriding getJsonLoader(). See the example below:", skin);
+        Label label = new Label("Integrating TTF files and specifying FreeType within a Skin JSON requires a custom serializer. This is done by overriding getJsonLoader().", skin);
         label.setWrap(true);
         dialog.getContentTable().add(label).growX();
         
         dialog.getContentTable().row();
-        Image image = new Image(skin, "code-sample");
-        image.setScaling(Scaling.fit);
-        dialog.getContentTable().add(image);
-        
-        dialog.getContentTable().row();
-        TextButton textButton = new TextButton("Copy sample code to clipboard", skin);
+        TextButton textButton = new TextButton("Copy custom serializer to clipboard", skin);
         dialog.getContentTable().add(textButton);
-        
+        textButton.addListener(main.getHandListener());
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 Gdx.app.getClipboard().setContents(SERIALIZER_TEXT);
             }
         });
+    
+        dialog.getContentTable().row();
+        label = new Label("Alternatively, you may use the FreeTypeSkin class from the Stripe library which automatically does this for you.", skin);
+        label.setWrap(true);
+        dialog.getContentTable().add(label).growX().padTop(50);
+    
+        dialog.getContentTable().row();
+        var table = new Table();
+        dialog.getContentTable().add(table);
+    
+        table.defaults().space(30).uniformX().fillX();
+        textButton = new TextButton("How to install Stripe", skin);
+        table.add(textButton);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                Gdx.net.openURI("https://github.com/raeleus/stripe#how-to-include-in-your-project");
+            }
+        });
+        
+        textButton = new TextButton("Custom Serializer wiki", skin);
+        table.add(textButton);
+        textButton.addListener(main.getHandListener());
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                Gdx.net.openURI("https://github.com/raeleus/skin-composer/wiki/Creating-FreeType-Fonts#using-a-custom-serializer");
+            }
+        });
+        
 
         dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
         dialog.getButtonTable().defaults().minWidth(100.0f);
-        dialog.button("OK", true);
+        textButton = new TextButton("OK", skin);
+        dialog.button(textButton, true);
+        textButton.addListener(main.getHandListener());
         dialog.show(main.getStage());
     }
     
