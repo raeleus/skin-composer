@@ -567,7 +567,7 @@ public class DialogColors extends Dialog {
             }
             
             //ten patch drawables
-            else if (drawableData.tenPatchData != null && drawableData.tenPatchData.colorName.equals(color.getName())) {
+            else if (drawableData.tenPatchData != null && drawableData.tenPatchData.colorName != null && drawableData.tenPatchData.colorName.equals(color.getName())) {
                 drawableData.tenPatchData.colorName = newName;
             }
         }
