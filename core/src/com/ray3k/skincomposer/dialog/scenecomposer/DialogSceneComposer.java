@@ -119,7 +119,7 @@ public class DialogSceneComposer extends Dialog {
                         }
                     }
                 })
-                .item("Export", main.getHandListener(), new ChangeListener() {
+                .item("Export", new KeyboardShortcut("Ctrl+E", Keys.E, Keys.CONTROL_LEFT), main.getHandListener(), new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         showExportDialog();

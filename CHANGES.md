@@ -1,5 +1,6 @@
 ### Skin Composer Version 38 ###
 
+* Added shortcut "Ctrl+e" for export in Scene Composer.
 * JSON exports are guaranteed to be UTF-8 formatted to prevent issues with loading unicode characters.
 * Fixed crash if setting increment on Sliders/ProgressBars to a value less than 1
 
