@@ -1,6 +1,0 @@
-;The comment below contains SFX script commands
-
-Setup=bin/SkinComposer.exe
-TempMode
-Silent=1
-Overwrite=1

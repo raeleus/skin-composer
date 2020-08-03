@@ -19,13 +19,13 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build jar
-      run: ./gradlew desktop:dist
+      run: ./gradlew core:dist
 
     - name: Upload jar artifact
       uses: actions/upload-artifact@v2
       with:
         name: SkinComposer.jar
-        path: desktop/build/lib/SkinComposer.jar
+        path: core/build/lib/SkinComposer.jar
 
 
   linux-tar:
@@ -42,13 +42,13 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build tar.gz
-      run: ./gradlew desktop:jpackageTar
+      run: ./gradlew core:jpackageTar
 
     - name: Upload deb artifact
       uses: actions/upload-artifact@v2
       with:
         name: skin-composer-linux.tar.gz
-        path: desktop/build/jpackage/skin-composer-linux.tar.gz
+        path: core/build/jpackage/skin-composer-linux.tar.gz
 
 
 

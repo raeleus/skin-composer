@@ -1,3 +1,6 @@
+plugins {
+    id 'org.beryx.runtime' version '1.8.5'
+}
 apply plugin: "java"
 
 sourceCompatibility = 11
@@ -5,7 +8,62 @@ sourceCompatibility = 11
 
 sourceSets.main.java.srcDirs = [ "src/" ]
 
+def exeName = 'SkinComposer'
 
-eclipse.project {
-    name = appName + "-core"
+mainClassName = "com.ray3k.skincomposer.desktop.DesktopLauncher"
+project.ext.assetsDir = new File("../core/assets")
+
+task dist(type: Jar, dependsOn: ['classes']) {
+    archiveFileName = "${appName}.jar";
+    from files(sourceSets.main.output.getClassesDirs())
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+    from files(project.assetsDir)
+    destinationDirectory = file("$buildDir/lib")
+    manifest {
+        attributes ('Main-Class': project.mainClassName)
+    }
+}
+
+jpackageImage.dependsOn dist
+
+task jpackageTar(type: Tar, dependsOn:  ['jpackageImage']) {
+    archiveFileName = "skin-composer-linux.tar.gz"
+    compression = Compression.GZIP
+    destinationDirectory = file("$buildDir/jpackage")
+    from([file("$buildDir/jpackage/$appName/")])
+}
+
+runtime {
+    options = ['--strip-debug',
+               '--compress', '2',
+               '--no-header-files',
+               '--no-man-pages',
+               '--strip-native-commands',
+               '--vm', 'server']
+    modules = ['java.base' ,
+               'java.desktop',
+               'jdk.unsupported',
+               'java.compiler']
+    distDir = file("$buildDir")
+    jpackage {
+        mainJar = "${appName}.jar"
+        imageName = 'Skin Composer'
+        installerName = 'Skin Composer'
+        appVersion = "0.0.$project.version"
+        if (org.gradle.internal.os.OperatingSystem.current().windows) {
+            imageOptions = ["--icon", file("../icons/logo.ico")]
+            installerOptions = ['--win-menu', '--win-shortcut', '--win-dir-chooser']
+            resourceDir = file("../resources-windows")
+        } else if (org.gradle.internal.os.OperatingSystem.current().linux) {
+            imageOptions = ["--icon", file("../icons/logo.png")]
+            installerOptions = ['--linux-menu-group', 'Programming', '--linux-shortcut']
+            resourceDir = file("../resources-linux")
+        } else if (org.gradle.internal.os.OperatingSystem.current().isMacOsX()) {
+            imageOptions = ["--icon", file("../icons/logo.icns")]
+            jvmArgs = ['-XstartOnFirstThread']
+            resourceDir = file("../resources-osx")
+        }
+        imageName = exeName
+    }
 }
