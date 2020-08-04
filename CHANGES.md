@@ -5,6 +5,7 @@
 * JSON exports are guaranteed to be UTF-8 formatted to prevent issues with loading unicode characters.
 * Fixed crash if setting increment on Sliders/ProgressBars to a value less than 1
 * Fixed crash when renaming a Color and there is a TenPatch that does not have a color defined.
+* Fixed Lwjgl3FileHandle issue when reading/writing SCMP files.
 
 ### Skin Composer Version 37 ###
 

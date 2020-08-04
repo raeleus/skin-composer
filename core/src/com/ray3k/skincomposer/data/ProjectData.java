@@ -23,8 +23,10 @@
  ******************************************************************************/
 package com.ray3k.skincomposer.data;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3FileHandle;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
@@ -62,6 +64,18 @@ public class ProjectData implements Json.Serializable {
             public FileHandle read(Json json, JsonValue jsonData, Class type) {
                 if (jsonData.isNull()) return null;
                 return new FileHandle(jsonData.asString());
+            }
+        });
+        
+        json.setSerializer(Lwjgl3FileHandle.class, new Json.Serializer<>() {
+            @Override
+            public void write(Json json, Lwjgl3FileHandle object, Class knownType) {
+                json.writeValue(object.path());
+            }
+    
+            @Override
+            public Lwjgl3FileHandle read(Json json, JsonValue jsonData, Class type) {
+                return new Lwjgl3FileHandle(jsonData.asString(), FileType.Absolute);
             }
         });
         
