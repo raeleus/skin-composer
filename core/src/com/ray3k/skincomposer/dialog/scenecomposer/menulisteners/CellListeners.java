@@ -40,7 +40,25 @@ public class CellListeners {
                 var subTable = new Table();
                 popTable.add(subTable);
 
-                var button = new Button(skin, "scene-move-left");
+                subTable.add();
+                
+                var button = new Button(skin, "scene-move-up");
+                button.setDisabled(simCell.row == 0);
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Moves the current cell up.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellMoveCellUp();
+                        popTable.hide();
+                    }
+                });
+                
+                subTable.add();
+                
+                subTable.row();
+                button = new Button(skin, "scene-move-left");
                 button.setDisabled(simCell.column == 0);
                 subTable.add(button);
                 button.addListener(DialogSceneComposer.main.getHandListener());
@@ -52,6 +70,8 @@ public class CellListeners {
                         popTable.hide();
                     }
                 });
+                
+                subTable.add();
 
                 button = new Button(skin, "scene-move-right");
                 button.setDisabled(simCell.column == simTable.getColumns(simCell.row) - 1);
@@ -65,7 +85,10 @@ public class CellListeners {
                         popTable.hide();
                     }
                 });
-
+                
+                subTable.row();
+                subTable.add();
+                
                 button = new Button(skin, "scene-move-down");
                 button.setDisabled(simCell.row == simTable.getRows() - 1);
                 subTable.add(button);
@@ -78,19 +101,8 @@ public class CellListeners {
                         popTable.hide();
                     }
                 });
-
-                button = new Button(skin, "scene-move-up");
-                button.setDisabled(simCell.row == 0);
-                subTable.add(button);
-                button.addListener(DialogSceneComposer.main.getHandListener());
-                button.addListener(new TextTooltip("Moves the current cell up.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
-                button.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        events.cellMoveCellUp();
-                        popTable.hide();
-                    }
-                });
+                
+                subTable.add();
             }
         };
         
@@ -125,7 +137,25 @@ public class CellListeners {
                 var subTable = new Table();
                 table.add(subTable);
                 
-                var button = new Button(skin, "scene-add-left");
+                subTable.add();
+                
+                var button = new Button(skin, "scene-add-up");
+                button.setDisabled(simCell.row == 0);
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Creates a new cell at the end of the row above.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellAddCellAbove();
+                        popTable.hide();
+                    }
+                });
+                
+                subTable.add();
+                
+                subTable.row();
+                button = new Button(skin, "scene-add-left");
                 subTable.add(button);
                 button.addListener(DialogSceneComposer.main.getHandListener());
                 button.addListener(new TextTooltip("Creates a new cell to the left of the current one.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
@@ -136,6 +166,8 @@ public class CellListeners {
                         popTable.hide();
                     }
                 });
+                
+                subTable.add();
                 
                 button = new Button(skin, "scene-add-right");
                 subTable.add(button);
@@ -148,6 +180,9 @@ public class CellListeners {
                         popTable.hide();
                     }
                 });
+                
+                subTable.row();
+                subTable.add();
                 
                 button = new Button(skin, "scene-add-down");
                 button.setDisabled(simCell.row == simTable.getRows() - 1);
@@ -162,18 +197,7 @@ public class CellListeners {
                     }
                 });
                 
-                button = new Button(skin, "scene-add-up");
-                button.setDisabled(simCell.row == 0);
-                subTable.add(button);
-                button.addListener(DialogSceneComposer.main.getHandListener());
-                button.addListener(new TextTooltip("Creates a new cell at the end of the row above.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
-                button.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        events.cellAddCellAbove();
-                        popTable.hide();
-                    }
-                });
+                subTable.add();
                 
                 table.row();
                 label = new Label("New Row", skin, "scene-label-colored");
@@ -220,42 +244,7 @@ public class CellListeners {
                 subTable = new Table();
                 table.add(subTable);
                 
-                button = new Button(skin, "scene-duplicate-left");
-                subTable.add(button);
-                button.addListener(DialogSceneComposer.main.getHandListener());
-                button.addListener(new TextTooltip("Creates a new cell to the left of the current one.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
-                button.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        events.cellDuplicateCellLeft();
-                        popTable.hide();
-                    }
-                });
-    
-                button = new Button(skin, "scene-duplicate-right");
-                subTable.add(button);
-                button.addListener(DialogSceneComposer.main.getHandListener());
-                button.addListener(new TextTooltip("Creates a new cell to the right of the current one.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
-                button.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        events.cellDuplicateCellRight();
-                        popTable.hide();
-                    }
-                });
-    
-                button = new Button(skin, "scene-duplicate-down");
-                subTable.add(button);
-                button.setDisabled(simCell.row == simTable.getRows() - 1);
-                button.addListener(DialogSceneComposer.main.getHandListener());
-                button.addListener(new TextTooltip("Duplicates the cell to the row below.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
-                button.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        events.cellDuplicateCellBelow();
-                        popTable.hide();
-                    }
-                });
+                subTable.add();
     
                 button = new Button(skin, "scene-duplicate-up");
                 subTable.add(button);
@@ -269,6 +258,53 @@ public class CellListeners {
                         popTable.hide();
                     }
                 });
+                
+                subTable.add();
+                
+                subTable.row();
+                button = new Button(skin, "scene-duplicate-left");
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Creates a new cell to the left of the current one.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellDuplicateCellLeft();
+                        popTable.hide();
+                    }
+                });
+    
+                subTable.add();
+                
+                button = new Button(skin, "scene-duplicate-right");
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Creates a new cell to the right of the current one.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellDuplicateCellRight();
+                        popTable.hide();
+                    }
+                });
+    
+                subTable.row();
+                subTable.add();
+                
+                button = new Button(skin, "scene-duplicate-down");
+                subTable.add(button);
+                button.setDisabled(simCell.row == simTable.getRows() - 1);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Duplicates the cell to the row below.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellDuplicateCellBelow();
+                        popTable.hide();
+                    }
+                });
+                
+                subTable.add();
     
                 table.row();
                 label = new Label("Dup. to New Row", skin, "scene-label-colored");
