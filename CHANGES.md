@@ -6,6 +6,7 @@
 * Fixed crash if setting increment on Sliders/ProgressBars to a value less than 1
 * Fixed crash when renaming a Color and there is a TenPatch that does not have a color defined.
 * Fixed Lwjgl3FileHandle issue when reading/writing SCMP files.
+* Fixed parent not copying when duplicating a style.
 
 ### Skin Composer Version 37 ###
 

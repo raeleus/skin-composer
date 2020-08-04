@@ -77,6 +77,7 @@ public class StyleData {
     public StyleData(StyleData styleData, String styleName, Main main) {
         name = styleName;
         this.main = main;
+        parent = styleData.parent;
 
         clazz = styleData.clazz;
         properties = new OrderedMap<>();
