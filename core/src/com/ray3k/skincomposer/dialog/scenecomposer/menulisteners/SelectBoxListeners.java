@@ -18,6 +18,8 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
 
+import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
+
 public class SelectBoxListeners {
     public static EventListener selectBoxNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simSelectBox = (DialogSceneComposerModel.SimSelectBox) dialogSceneComposer.simActor;
@@ -41,7 +43,7 @@ public class SelectBoxListeners {
                 
                 popTable.row();
                 textField.setText(simSelectBox.name);
-                popTable.add(textField).minWidth(150);
+                popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(DialogSceneComposer.main.getIbeamListener());
                 textField.addListener(new TextTooltip("The name of the SelectBox to allow for convenient searching via Group#findActor().", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 textField.addListener(new ChangeListener() {
@@ -146,7 +148,7 @@ public class SelectBoxListeners {
                 
                 popTable.row();
                 textField.setText("");
-                popTable.add(textField).minWidth(150);
+                popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 
                 var textButton = new Button(DialogSceneComposer.skin, "scene-plus");
                 popTable.add(textButton);

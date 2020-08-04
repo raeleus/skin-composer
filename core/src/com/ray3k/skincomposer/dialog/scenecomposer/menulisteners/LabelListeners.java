@@ -19,6 +19,8 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimA
 import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
 import com.ray3k.stripe.PopTableClickListener;
 
+import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
+
 public class LabelListeners {
     public static EventListener labelNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simLabel = (DialogSceneComposerModel.SimLabel) dialogSceneComposer.simActor;
@@ -42,7 +44,7 @@ public class LabelListeners {
                 
                 popTable.row();
                 textField.setText(simLabel.name);
-                popTable.add(textField).minWidth(150);
+                popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(DialogSceneComposer.main.getIbeamListener());
                 textField.addListener(new TextTooltip("The name of the Label to allow for convenient searching via Group#findActor().", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 textField.addListener(new ChangeListener() {
@@ -94,7 +96,7 @@ public class LabelListeners {
                 
                 popTable.row();
                 textField.setText(simLabel.text);
-                popTable.add(textField).minWidth(150);
+                popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(DialogSceneComposer.main.getIbeamListener());
                 textField.addListener(new TextTooltip("The text for the Label.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 textField.addListener(new ChangeListener() {
@@ -420,7 +422,7 @@ public class LabelListeners {
                 popTable.row();
                 textField.setDisabled(!textButton.isChecked());
                 textField.setText(simLabel.ellipsisString);
-                popTable.add(textField).minWidth(150);
+                popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(DialogSceneComposer.main.getIbeamListener());
                 textField.addListener(new TextTooltip("The String to punctuate the label with when the text is too long.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 textField.addListener(new ChangeListener() {

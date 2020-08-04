@@ -19,6 +19,8 @@ import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
 import com.ray3k.stripe.PopTableClickListener;
 import com.ray3k.stripe.Spinner;
 
+import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
+
 public class ButtonListeners {
     public static EventListener buttonCheckedListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simButton = (DialogSceneComposerModel.SimButton) simActor;
@@ -79,7 +81,7 @@ public class ButtonListeners {
                 
                 popTable.row();
                 textField.setText(simButton.name);
-                popTable.add(textField).minWidth(150);
+                popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(DialogSceneComposer.main.getIbeamListener());
                 textField.addListener(new TextTooltip("The name of the button to allow for convenient searching via Group#findActor().", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 textField.addListener(new ChangeListener() {

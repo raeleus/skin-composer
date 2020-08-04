@@ -20,6 +20,8 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimA
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimSplitPane;
 import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
 
+import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
+
 public class SplitPaneListeners {
     public static EventListener splitPaneNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simSplitPane = (DialogSceneComposerModel.SimSplitPane) dialogSceneComposer.simActor;
@@ -43,7 +45,7 @@ public class SplitPaneListeners {
                 
                 popTable.row();
                 textField.setText(simSplitPane.name);
-                popTable.add(textField).minWidth(150);
+                popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(DialogSceneComposer.main.getIbeamListener());
                 textField.addListener(new TextTooltip("The name of the SplitPane to allow for convenient searching via Group#findActor().", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 textField.addListener(new ChangeListener() {

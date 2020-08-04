@@ -17,6 +17,8 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents.Wid
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 
+import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
+
 public class HorizontalGroupListeners {
     public static EventListener horizontalGroupNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simHorizontalGroup = (DialogSceneComposerModel.SimHorizontalGroup) dialogSceneComposer.simActor;
@@ -40,7 +42,7 @@ public class HorizontalGroupListeners {
                 
                 popTable.row();
                 textField.setText(simHorizontalGroup.name);
-                popTable.add(textField).minWidth(150);
+                popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(DialogSceneComposer.main.getIbeamListener());
                 textField.addListener(new TextTooltip("The name of the HorizontalGroup to allow for convenient searching via Group#findActor().", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 textField.addListener(new ChangeListener() {

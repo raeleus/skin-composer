@@ -23,6 +23,8 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
 
+import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
+
 public class TextFieldListeners {
     public static EventListener textFieldNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simTextField = (DialogSceneComposerModel.SimTextField) dialogSceneComposer.simActor;
@@ -46,7 +48,7 @@ public class TextFieldListeners {
                 
                 popTable.row();
                 textField.setText(simTextField.name);
-                popTable.add(textField).minWidth(150);
+                popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(DialogSceneComposer.main.getIbeamListener());
                 textField.addListener(new TextTooltip("The name of the TextField to allow for convenient searching via Group#findActor().", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 textField.addListener(new ChangeListener() {
@@ -110,7 +112,7 @@ public class TextFieldListeners {
                 
                 popTable.row();
                 textField.setText(simTextField.messageText);
-                popTable.add(textField).minWidth(150);
+                popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(DialogSceneComposer.main.getIbeamListener());
                 textField.addListener(new TextTooltip("The message inside the field when nothing is inputted and the field does not have focus.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 textField.addListener(new ChangeListener() {
@@ -163,7 +165,7 @@ public class TextFieldListeners {
                 popTable.row();
                 textField.setText(Character.toString(simTextField.passwordCharacter));
                 textField.setMaxLength(1);
-                popTable.add(textField).minWidth(150);
+                popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(DialogSceneComposer.main.getIbeamListener());
                 textField.addListener(new TextTooltip("The character used to obscure text when password mode is enabled.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 textField.addListener(new ChangeListener() {
@@ -640,7 +642,7 @@ public class TextFieldListeners {
                 
                 popTable.row();
                 textField.setText(simTextField.text);
-                popTable.add(textField).minWidth(150);
+                popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(DialogSceneComposer.main.getIbeamListener());
                 textField.addListener(new TextTooltip("The default text inside the TextField.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 textField.addListener(new ChangeListener() {

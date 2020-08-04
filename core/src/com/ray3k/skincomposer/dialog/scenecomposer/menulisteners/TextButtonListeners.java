@@ -19,6 +19,8 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
 
+import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
+
 public class TextButtonListeners {
     public static EventListener textButtonNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simTextButton = (DialogSceneComposerModel.SimTextButton) dialogSceneComposer.simActor;
@@ -42,7 +44,7 @@ public class TextButtonListeners {
                 
                 popTable.row();
                 textField.setText(simTextButton.name);
-                popTable.add(textField).minWidth(150);
+                popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(DialogSceneComposer.main.getIbeamListener());
                 textField.addListener(new TextTooltip("The name of the button to allow for convenient searching via Group#findActor().", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 textField.addListener(new ChangeListener() {
@@ -94,7 +96,7 @@ public class TextButtonListeners {
                 
                 popTable.row();
                 textField.setText(simTextButton.text);
-                popTable.add(textField).minWidth(150);
+                popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(DialogSceneComposer.main.getIbeamListener());
                 textField.addListener(new TextTooltip("The text inside of the button.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 textField.addListener(new ChangeListener() {

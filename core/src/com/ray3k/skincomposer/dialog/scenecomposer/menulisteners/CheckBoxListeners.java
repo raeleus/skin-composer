@@ -19,6 +19,8 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
 
+import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
+
 public class CheckBoxListeners {
     public static EventListener checkBoxNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simCheckBox = (DialogSceneComposerModel.SimCheckBox) dialogSceneComposer.simActor;
@@ -42,7 +44,7 @@ public class CheckBoxListeners {
                 
                 popTable.row();
                 textField.setText(simCheckBox.name);
-                popTable.add(textField).minWidth(150);
+                popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(DialogSceneComposer.main.getIbeamListener());
                 textField.addListener(new TextTooltip("The name of the CheckBox to allow for convenient searching via Group#findActor().", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 textField.addListener(new ChangeListener() {
@@ -106,7 +108,7 @@ public class CheckBoxListeners {
                 
                 popTable.row();
                 textField.setText(simCheckBox.text);
-                popTable.add(textField).minWidth(150);
+                popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(DialogSceneComposer.main.getIbeamListener());
                 textField.addListener(new TextTooltip("The text inside of the CheckBox.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 textField.addListener(new ChangeListener() {

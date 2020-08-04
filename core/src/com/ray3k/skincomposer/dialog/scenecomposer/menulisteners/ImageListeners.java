@@ -17,6 +17,8 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 import com.ray3k.stripe.PopTableClickListener;
 
+import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
+
 public class ImageListeners {
     public static EventListener imageNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simImage = (DialogSceneComposerModel.SimImage) dialogSceneComposer.simActor;
@@ -40,7 +42,7 @@ public class ImageListeners {
                 
                 popTable.row();
                 textField.setText(simImage.name);
-                popTable.add(textField).minWidth(150);
+                popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(DialogSceneComposer.main.getIbeamListener());
                 textField.addListener(new TextTooltip("The name of the Image to allow for convenient searching via Group#findActor().", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
                 textField.addListener(new ChangeListener() {
