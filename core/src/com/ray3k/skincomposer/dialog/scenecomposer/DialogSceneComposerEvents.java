@@ -219,6 +219,14 @@ public class DialogSceneComposerEvents {
         processUndoable(new CellMoveCellDownUndoable());
     }
     
+    public void cellMoveToNewRowBelow() {
+        processUndoable(new CellMoveToNewRowBelowUndoable());
+    }
+    
+    public void cellMoveToNewRowAbove() {
+        processUndoable(new CellMoveToNewRowAboveUndoable());
+    }
+    
     public void cellPaddingSpacing(float paddingLeft, float paddingRight, float paddingTop, float paddingBottom, float spaceLeft, float spaceRight, float spaceTop, float spaceBottom) {
         processUndoable(new CellPaddingSpacingUndoable(paddingLeft, paddingRight, paddingTop, paddingBottom, spaceLeft, spaceRight, spaceTop, spaceBottom));
     }

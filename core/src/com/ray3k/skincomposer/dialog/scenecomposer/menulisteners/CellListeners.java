@@ -103,6 +103,39 @@ public class CellListeners {
                 });
                 
                 subTable.add();
+                
+                popTable.row();
+                label = new Label("Move to New Row", skin, "scene-label-colored");
+                popTable.add(label);
+    
+                popTable.row();
+                subTable = new Table();
+                popTable.add(subTable);
+                
+                //todo: fix these and create new events!
+                button = new Button(skin, "scene-add-down-row");
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Creates a new row below and moves this cell to it.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellMoveToNewRowBelow();
+                        popTable.hide();
+                    }
+                });
+    
+                button = new Button(skin, "scene-add-up-row");
+                subTable.add(button);
+                button.addListener(DialogSceneComposer.main.getHandListener());
+                button.addListener(new TextTooltip("Creates a new row above and moves this cell to it.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        events.cellMoveToNewRowAbove();
+                        popTable.hide();
+                    }
+                });
             }
         };
         
