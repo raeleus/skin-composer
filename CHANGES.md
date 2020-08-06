@@ -4,10 +4,12 @@
 * Added MoveCellToNewRowAbove and MoveCellToNewRowBelow in Scene Composer.
 * Updated instructions for Custom Serializer in FreeType Font dialog to include link to FreeTypeSkin.
 * JSON exports are guaranteed to be UTF-8 formatted to prevent issues with loading unicode characters.
+* Scene Composer now exports to clipboard without fully qualified names.
 * Fixed crash if setting increment on Sliders/ProgressBars to a value less than 1
 * Fixed crash when renaming a Color and there is a TenPatch that does not have a color defined.
 * Fixed Lwjgl3FileHandle issue when reading/writing SCMP files.
 * Fixed parent not copying when duplicating a style.
+* Fix unable to export to clipboard with a tree widget in Scene Composer.
 * Minor UI tweaks and bug fixes
 
 ### Skin Composer Version 37 ###
