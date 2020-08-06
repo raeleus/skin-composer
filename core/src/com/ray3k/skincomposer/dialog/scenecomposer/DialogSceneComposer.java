@@ -222,6 +222,7 @@ public class DialogSceneComposer extends Dialog {
         previewTable = new Table();
         previewTable.setTouchable(Touchable.enabled);
         previewTable.setBackground(skin.getDrawable("white"));
+        if (rootActor.backgroundColor != null) previewTable.setColor(rootActor.backgroundColor.color);
         
         previewTable.add(model.preview).grow().minSize(0).prefSize(0);
         
