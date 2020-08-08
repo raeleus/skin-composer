@@ -2641,32 +2641,30 @@ public class RootTable extends Table {
         public void changed(ChangeEvent event, Actor actor) {
             FileHandle file = recentFile.getFileHandle();
             if (file.exists()) {
-                stage.addAction(Actions.delay(.1f, Actions.run(() -> {
-                    main.getDialogFactory().showDialogLoading(() -> {
-                        Gdx.app.postRunnable(() -> {
-                            main.getProjectData().load(file);
-                            Array<DrawableData> drawableErrors = main.getProjectData().verifyDrawablePaths();
-                            Array<FontData> fontErrors = main.getProjectData().verifyFontPaths();
-                            var freeTypeFontErrors = main.getProjectData().verifyFreeTypeFontPaths();
-                            if (drawableErrors.size > 0 || fontErrors.size > 0 || freeTypeFontErrors.size > 0) {
-                                main.getDialogFactory().showDialogPathErrors(drawableErrors, fontErrors,
-                                        freeTypeFontErrors);
-                            }
-            
-                            if (main.getProjectData().checkForInvalidMinWidthHeight()) {
-                                main.getProjectData().setLoadedVersion(Main.VERSION);
-                                main.getDialogFactory().yesNoDialog("Fix minWidth and minHeight errors?",
-                                        "Old project (< v.30) detected.\nResolve minWidth and minHeight errors?",
-                                        selection -> {
-                                            if (selection == 0) {
-                                                main.getProjectData().fixInvalidMinWidthHeight();
-                                                main.getMainListener().refreshTextureAtlas();
-                                            }
-                                        }, null);
-                            }
-                        });
+                main.getDialogFactory().showDialogLoading(() -> {
+                    Gdx.app.postRunnable(() -> {
+                        main.getProjectData().load(file);
+                        Array<DrawableData> drawableErrors = main.getProjectData().verifyDrawablePaths();
+                        Array<FontData> fontErrors = main.getProjectData().verifyFontPaths();
+                        var freeTypeFontErrors = main.getProjectData().verifyFreeTypeFontPaths();
+                        if (drawableErrors.size > 0 || fontErrors.size > 0 || freeTypeFontErrors.size > 0) {
+                            main.getDialogFactory().showDialogPathErrors(drawableErrors, fontErrors,
+                                    freeTypeFontErrors);
+                        }
+        
+                        if (main.getProjectData().checkForInvalidMinWidthHeight()) {
+                            main.getProjectData().setLoadedVersion(Main.VERSION);
+                            main.getDialogFactory().yesNoDialog("Fix minWidth and minHeight errors?",
+                                    "Old project (< v.30) detected.\nResolve minWidth and minHeight errors?",
+                                    selection -> {
+                                        if (selection == 0) {
+                                            main.getProjectData().fixInvalidMinWidthHeight();
+                                            main.getMainListener().refreshTextureAtlas();
+                                        }
+                                    }, null);
+                        }
                     });
-                })));
+                });
             }
         }
     }
