@@ -218,7 +218,7 @@ public class Main extends ApplicationAdapter {
         rootTable.addListener(mainListener);
         rootTable.populate();
         stage.addActor(rootTable);
-        rootTable.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
+        rootTable.updateRecentFiles();
         
         //pass arguments
         if (!mainListener.argumentsPassed(args)) {

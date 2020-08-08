@@ -103,9 +103,6 @@ public class MainListener extends RootTableListener {
             case OPEN:
                 openFile();
                 break;
-            case RECENT_FILES:
-                dialogFactory.recentFiles(dialogListener);
-                break;
             case SAVE:
                 saveFile(null);
                 break;
@@ -346,7 +343,7 @@ public class MainListener extends RootTableListener {
                     
                     projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
                     root.populate();
-                    root.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
+                    root.updateRecentFiles();
                 });
             }
         };
@@ -406,7 +403,7 @@ public class MainListener extends RootTableListener {
                     
                     projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
                     root.populate();
-                    root.setRecentFilesDisabled(projectData.getRecentFiles().size == 0);
+                    root.updateRecentFiles();
                 });
             }
         };

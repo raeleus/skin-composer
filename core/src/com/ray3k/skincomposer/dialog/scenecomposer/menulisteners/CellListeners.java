@@ -112,7 +112,6 @@ public class CellListeners {
                 subTable = new Table();
                 popTable.add(subTable);
                 
-                //todo: fix these and create new events!
                 button = new Button(skin, "scene-add-down-row");
                 subTable.add(button);
                 button.addListener(DialogSceneComposer.main.getHandListener());

@@ -25,10 +25,12 @@ package com.ray3k.skincomposer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -56,12 +58,16 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
-import com.ray3k.skincomposer.MenuButton.MenuButtonListener;
 import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
+import com.ray3k.skincomposer.data.ProjectData.RecentFile;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
+import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.Spinner;
+import com.ray3k.stripe.StripeMenu;
+import com.ray3k.stripe.StripeMenuBar;
+import com.ray3k.stripe.StripeMenuBar.KeyboardShortcut;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
 import java.util.Arrays;
@@ -99,11 +105,9 @@ public class RootTable extends Table {
             + "\n\n\n" + PARAGRAPH_SAMPLE + "\n\n\n" + PARAGRAPH_SAMPLE + "\n\n\n"
             + PARAGRAPH_SAMPLE;
     private final Array<BitmapFont> previewFonts;
-    private MenuItem undoButton;
-    private MenuItem redoButton;
-    private MenuItem recentFilesButton;
-    private MenuButton fileMenu;
-    private MenuButton editMenu;
+    private TextButton undoButton;
+    private TextButton redoButton;
+    private StripeMenu recentFilesMenu;
     private Button classDuplicateButton;
     private Button classDeleteButton;
     private Button classRenameButton;
@@ -123,8 +127,6 @@ public class RootTable extends Table {
         
         main.getAtlasData().produceAtlas();
         
-        main.getStage().addListener(new ShortcutListener(this));
-        
         filesDroppedListener = (Array<FileHandle> files) -> {
             for (FileHandle fileHandle : files) {
                 if (fileHandle.extension().toLowerCase(Locale.ROOT).equals("scmp")) {
@@ -138,7 +140,7 @@ public class RootTable extends Table {
     }
 
     public void populate() {
-        Button button = (Button) findActor("downloadButton");
+        Button button = findActor("downloadButton");
         var updateAvailable = button == null ? false : button.isVisible();
         
         clearChildren();
@@ -153,87 +155,68 @@ public class RootTable extends Table {
         row();
         addStatusBar();
         
-        ((Button) findActor("downloadButton")).setVisible(updateAvailable);
+        findActor("downloadButton").setVisible(updateAvailable);
     }
 
     private void addFileMenu() {
         Table table = new Table();
         table.defaults().padRight(2.0f);
         add(table).growX().padTop(2.0f);
-
-        MenuButtonGroup menuButtonGroup = new MenuButtonGroup();
-
-        fileMenu = new MenuButton("File", getSkin());
-        fileMenu.addListener(main.getHandListener());
-        fileMenu.getMenuList().addListener(main.getHandListener());
-        menuButtonGroup.add(fileMenu);
-        table.add(fileMenu).padLeft(2.0f);
-
-        recentFilesButton = new MenuItem("Recent Files...", RootTableEnum.RECENT_FILES);
+    
+        var bar = new StripeMenuBar(main.getStage(), getSkin(), "main");
+        table.add(bar).growX();
         
-        fileMenu.setItems(new MenuItem("New", RootTableEnum.NEW),
-                new MenuItem("Open...", RootTableEnum.OPEN),
-                recentFilesButton,
-                new MenuItem("Save", RootTableEnum.SAVE),
-                new MenuItem("Save As...", RootTableEnum.SAVE_AS),
-                new MenuItem("Welcome Screen...", RootTableEnum.WELCOME),
-                new MenuItem("Import...", RootTableEnum.IMPORT),
-                new MenuItem("Export...", RootTableEnum.EXPORT),
-                new MenuItem("Exit", RootTableEnum.EXIT));
-        if (Utils.isMac()) {
-            fileMenu.setShortcuts("⌘+N", "⌘+O", null, "⌘+S", "Shift+⌘+S", null, null, "⌘+E");
-        } else {
-            fileMenu.setShortcuts("Ctrl+N", "Ctrl+O", null, "Ctrl+S", "Shift+Ctrl+S", null, null, "Ctrl+E");
-        }
-        fileMenu.addListener(new MenuBarListener(fileMenu));
-
-        editMenu = new MenuButton("Edit", getSkin());
-        editMenu.addListener(main.getHandListener());
-        editMenu.getMenuList().addListener(main.getHandListener());
-        menuButtonGroup.add(editMenu);
-        table.add(editMenu);
-
-        undoButton = new MenuItem("Undo", RootTableEnum.UNDO);
-        redoButton = new MenuItem("Redo", RootTableEnum.REDO);
+        String modifier;
+        KeyboardShortcut saveAsKeyboardShortcut;
         
-        editMenu.setItems(undoButton, redoButton);
         if (Utils.isMac()) {
-            editMenu.setShortcuts("⌘+Z", "⌘+Y");
+            modifier = "⌘";
+            saveAsKeyboardShortcut = new KeyboardShortcut("⌘+Shift+Option+S", Keys.S, Keys.CONTROL_LEFT, Keys.ALT_LEFT, Keys.SHIFT_LEFT);
         } else {
-            editMenu.setShortcuts("Ctrl+Z", "Ctrl+Y");
+            modifier = "Ctrl";
+            saveAsKeyboardShortcut = new KeyboardShortcut("Ctrl+Alt+S", Keys.S,Keys.CONTROL_LEFT, Keys.ALT_LEFT);
         }
-        editMenu.setDisabled(undoButton, true);
-        editMenu.setDisabled(redoButton, true);
-        editMenu.addListener(new MenuBarListener(editMenu));
-
-        MenuButton<MenuItem> menuButton = new MenuButton("Project", getSkin());
-        menuButton.addListener(main.getHandListener());
-        menuButton.getMenuList().addListener(main.getHandListener());
-        menuButtonGroup.add(menuButton);
-        table.add(menuButton);
-
-        menuButton.setItems(new MenuItem("Settings...", RootTableEnum.SETTINGS),
-                new MenuItem("Colors...", RootTableEnum.COLORS),
-                new MenuItem("Fonts...", RootTableEnum.FONTS),
-                new MenuItem("Drawables...", RootTableEnum.DRAWABLES),
-                new MenuItem("Refresh Atlas", RootTableEnum.REFRESH_ATLAS),
-                new MenuItem("Scene Composer", RootTableEnum.SCENE_COMPOSER));
-        menuButton.setShortcuts(null, null, null, null, "F5", null);
-
-        menuButton.addListener(new MenuBarListener(menuButton));
-
-        menuButton = new MenuButton("Help", getSkin());
-        menuButton.addListener(main.getHandListener());
-        menuButton.getMenuList().addListener(main.getHandListener());
-        menuButtonGroup.add(menuButton);
-        table.add(menuButton);
-
-        menuButton.setItems(new MenuItem("About...", RootTableEnum.ABOUT));
-        menuButton.addListener(new MenuBarListener(menuButton));
+        
+        bar.menu("File", main.getHandListener())
+                .item("New", new KeyboardShortcut(modifier + "+N", Keys.N, Keys.CONTROL_LEFT), main.getHandListener(), new MenuBarListener(RootTableEnum.NEW))
+                .item("Open...", new KeyboardShortcut(modifier + "+O", Keys.O, Keys.CONTROL_LEFT), main.getHandListener(), new MenuBarListener(RootTableEnum.OPEN))
+                .menu("Recent Files", main.getHandListener())
+                
+                .parent()
+                .item("Save", new KeyboardShortcut(modifier + "+S", Keys.S, Keys.CONTROL_LEFT), main.getHandListener(), new MenuBarListener(RootTableEnum.SAVE))
+                .item("Save As...", saveAsKeyboardShortcut, main.getHandListener(), new MenuBarListener(RootTableEnum.SAVE_AS))
+                .item("Welcome Screen...", main.getHandListener(), new MenuBarListener(RootTableEnum.WELCOME))
+                .item("Import...", main.getHandListener(), new MenuBarListener(RootTableEnum.IMPORT))
+                .item("Export...", new KeyboardShortcut(modifier + "+E", Keys.E, Keys.CONTROL_LEFT), main.getHandListener(), new MenuBarListener(RootTableEnum.EXPORT))
+                .item("Exit", main.getHandListener(), new MenuBarListener(RootTableEnum.EXIT));
+        
+        bar.menu("Edit", main.getHandListener())
+                .item("Undo", new KeyboardShortcut(modifier + "+Z", Keys.Z, Keys.CONTROL_LEFT), main.getHandListener(), new MenuBarListener(RootTableEnum.UNDO))
+                .item("Redo", new KeyboardShortcut(modifier + "+Y", Keys.Y, Keys.CONTROL_LEFT), main.getHandListener(), new MenuBarListener(RootTableEnum.REDO));
+        
+        bar.menu("Project", main.getHandListener())
+                .item("Settings", main.getHandListener(), new MenuBarListener(RootTableEnum.SETTINGS))
+                .item("Colors...", main.getHandListener(), new MenuBarListener(RootTableEnum.COLORS))
+                .item("Fonts...", main.getHandListener(), new MenuBarListener(RootTableEnum.FONTS))
+                .item("Drawables...", main.getHandListener(), new MenuBarListener(RootTableEnum.DRAWABLES))
+                .item("Refresh Atlas", new KeyboardShortcut("F5", Keys.F5), main.getHandListener(), new MenuBarListener(RootTableEnum.REFRESH_ATLAS))
+                .item("Scene Composer...", new MenuBarListener(RootTableEnum.SCENE_COMPOSER), main.getHandListener(), new MenuBarListener(RootTableEnum.SCENE_COMPOSER));
+        
+        bar.menu("Help", main.getHandListener())
+                .item("About...", main.getHandListener(), new MenuBarListener(RootTableEnum.ABOUT));
+    
+        recentFilesMenu = bar.findMenu("File").findMenu("Recent Files");
+        updateRecentFiles();
+        
+        undoButton = bar.findMenu("Edit").findButton("Undo");
+        undoButton.setDisabled(true);
+        
+        redoButton = bar.findMenu("Edit").findButton("Redo");
+        redoButton.setDisabled(true);
         
         Button button = new Button(getSkin(), "download");
         button.setName("downloadButton");
-        table.add(button).expandX().right();
+        table.add(button);
         button.addListener(new TextTooltip("Update Available", main.getTooltipManager(), getSkin()));
         button.addListener(main.getHandListener());
         button.addListener(new ChangeListener() {
@@ -245,26 +228,30 @@ public class RootTable extends Table {
         button.setVisible(false);
     }
     
-    public void setRecentFilesDisabled(boolean disabled) {
-        fileMenu.setDisabled(recentFilesButton, disabled);
+    public void updateRecentFiles() {
+        recentFilesMenu.clear();
+        var recentFiles = main.getProjectData().getRecentFiles();
+        recentFiles.reverse();
+        for (var recentFile : recentFiles) {
+            recentFilesMenu.item(recentFile.toString(), main.getHandListener(), new RecentFileListener(recentFile));
+        }
+        recentFilesMenu.getParentButton().setDisabled(recentFiles.size == 0);
     }
 
     public void setUndoDisabled(boolean disabled) {
-        editMenu.setDisabled(undoButton, disabled);
+        undoButton.setDisabled(disabled);
     }
     
     public void setRedoDisabled(boolean disabled) {
-        editMenu.setDisabled(redoButton, disabled);
+        redoButton.setDisabled(disabled);
     }
     
     public void setUndoText(String text) {
-        undoButton.text = text;
-        editMenu.updateContents();
+        undoButton.setText(text);
     }
     
     public void setRedoText(String text) {
-        redoButton.text = text;
-        editMenu.updateContents();
+        redoButton.setText(text);
     }
     
     private void addClassBar() {
@@ -2622,17 +2609,65 @@ public class RootTable extends Table {
         }
     }
 
-    private class MenuBarListener extends MenuButtonListener {
+    private class MenuBarListener extends ChangeListener {
+        private RootTableEnum value;
 
-        private final MenuButton<MenuItem> menuButton;
-
-        public MenuBarListener(MenuButton<MenuItem> menuButton) {
-            this.menuButton = menuButton;
+        public MenuBarListener(RootTableEnum value) {
+            this.value = value;
         }
-
+    
         @Override
-        public void menuClicked() {
-            fire(new RootTableEvent(menuButton.getSelectedItem().event));
+        public void changed(ChangeEvent event, Actor actor) {
+            boolean listenForShortcuts = true;
+            for (Actor temp : getStage().getActors()) {
+                if (temp instanceof Dialog) {
+                    listenForShortcuts = false;
+                    break;
+                }
+            }
+            
+            if (listenForShortcuts) fire(new RootTableEvent(value));
+        }
+    }
+    
+    private class RecentFileListener extends ChangeListener {
+        private RecentFile recentFile;
+    
+        public RecentFileListener(RecentFile recentFile) {
+            this.recentFile = recentFile;
+        }
+    
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+            FileHandle file = recentFile.getFileHandle();
+            if (file.exists()) {
+                stage.addAction(Actions.delay(.1f, Actions.run(() -> {
+                    main.getDialogFactory().showDialogLoading(() -> {
+                        Gdx.app.postRunnable(() -> {
+                            main.getProjectData().load(file);
+                            Array<DrawableData> drawableErrors = main.getProjectData().verifyDrawablePaths();
+                            Array<FontData> fontErrors = main.getProjectData().verifyFontPaths();
+                            var freeTypeFontErrors = main.getProjectData().verifyFreeTypeFontPaths();
+                            if (drawableErrors.size > 0 || fontErrors.size > 0 || freeTypeFontErrors.size > 0) {
+                                main.getDialogFactory().showDialogPathErrors(drawableErrors, fontErrors,
+                                        freeTypeFontErrors);
+                            }
+            
+                            if (main.getProjectData().checkForInvalidMinWidthHeight()) {
+                                main.getProjectData().setLoadedVersion(Main.VERSION);
+                                main.getDialogFactory().yesNoDialog("Fix minWidth and minHeight errors?",
+                                        "Old project (< v.30) detected.\nResolve minWidth and minHeight errors?",
+                                        selection -> {
+                                            if (selection == 0) {
+                                                main.getProjectData().fixInvalidMinWidthHeight();
+                                                main.getMainListener().refreshTextureAtlas();
+                                            }
+                                        }, null);
+                            }
+                        });
+                    });
+                })));
+            }
         }
     }
 
@@ -2652,8 +2687,8 @@ public class RootTable extends Table {
         }
     }
 
-    public static enum RootTableEnum {
-        NEW, OPEN, RECENT_FILES, SAVE, SAVE_AS, IMPORT, EXPORT, EXIT, UNDO,
+    public enum RootTableEnum {
+        NEW, OPEN, SAVE, SAVE_AS, IMPORT, EXPORT, EXIT, UNDO,
         REDO, SETTINGS, COLORS, FONTS, DRAWABLES, ABOUT, CLASS_SELECTED,
         NEW_CLASS, DUPLICATE_CLASS, DELETE_CLASS, RENAME_CLASS, STYLE_SELECTED,
         NEW_STYLE, DUPLICATE_STYLE, DELETE_STYLE, RENAME_STYLE, PREVIEW_PROPERTY,
@@ -2710,7 +2745,7 @@ public class RootTable extends Table {
         }
     }
 
-    private static enum CustomPropertyEnum {
+    private enum CustomPropertyEnum {
         NEW, DUPLICATE, DELETE, RENAME, CHANGE_VALUE;
     }
     
@@ -2796,66 +2831,6 @@ public class RootTable extends Table {
         public abstract void renameCustomProperty(CustomProperty customProperty);
     
         public abstract void droppedScmpFile(FileHandle fileHandle);
-    }
-
-    public static class ShortcutListener extends InputListener {
-
-        private final RootTable rootTable;
-
-        public ShortcutListener(RootTable rootTable) {
-            this.rootTable = rootTable;
-        }
-
-        @Override
-        public boolean keyDown(InputEvent event, int keycode) {
-            boolean listenForShortcuts = true;
-            for (Actor actor : rootTable.getStage().getActors()) {
-                if (actor instanceof Dialog) {
-                    listenForShortcuts = false;
-                    break;
-                }
-            }
-            
-            //trigger shortcuts only if no dialogs are open.
-            if (listenForShortcuts) {
-                if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
-                    char character = rootTable.main.getDesktopWorker().getKeyName(keycode);
-                    switch (character) {
-                        case 'z':
-                            rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.UNDO));
-                            break;
-                        case 'y':
-                            rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.REDO));
-                            break;
-                        case 'n':
-                            rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.NEW));
-                            break;
-                        case 'o':
-                            rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.OPEN));
-                            break;
-                        case 's':
-                            if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
-                                rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.SAVE_AS));
-                            } else {
-                                rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.SAVE));
-                            }
-                            break;
-                        case 'e':
-                            rootTable.fire(new RootTable.RootTableEvent(RootTableEnum.EXPORT));
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                
-                switch (keycode) {
-                    case Input.Keys.F5:
-                        rootTable.fire(new RootTable.RootTableEvent(RootTableEnum.REFRESH_ATLAS));
-                        break;
-                }
-            }
-            return false;
-        }
     }
     
     @Override

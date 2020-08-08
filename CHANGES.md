@@ -2,6 +2,7 @@
 
 * Added shortcut "Ctrl+e" for export in Scene Composer.
 * Added MoveCellToNewRowAbove and MoveCellToNewRowBelow in Scene Composer.
+* Improved file menu. Recent Files is now a submenu.
 * Updated instructions for Custom Serializer in FreeType Font dialog to include link to FreeTypeSkin.
 * JSON exports are guaranteed to be UTF-8 formatted to prevent issues with loading unicode characters.
 * Scene Composer now exports to clipboard without fully qualified names.

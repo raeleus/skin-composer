@@ -188,7 +188,7 @@ public class ProjectData implements Json.Serializable {
             }
             generalPref.flush();
     
-            main.getRootTable().setRecentFilesDisabled(false);
+            main.getRootTable().updateRecentFiles();
         }
     }
     
