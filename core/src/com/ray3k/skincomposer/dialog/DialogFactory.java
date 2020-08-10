@@ -26,7 +26,6 @@ package com.ray3k.skincomposer.dialog;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -39,6 +38,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.dialog.PopWelcome.WelcomeListener;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.UndoableManager;
 import com.ray3k.skincomposer.UndoableManager.DeleteStyleUndoable;
@@ -46,7 +46,6 @@ import com.ray3k.skincomposer.UndoableManager.DuplicateStyleUndoable;
 import com.ray3k.skincomposer.UndoableManager.NewStyleUndoable;
 import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
-import com.ray3k.skincomposer.data.ProjectData.RecentFile;
 import com.ray3k.skincomposer.dialog.Dialog9Patch.Dialog9PatchListener;
 import com.ray3k.skincomposer.dialog.DialogBitmapFont.DialogBitmapFontListener;
 import com.ray3k.skincomposer.dialog.DialogColors.DialogColorsListener;
@@ -57,7 +56,6 @@ import com.ray3k.skincomposer.dialog.DialogDrawables.DialogDrawablesListener;
 import com.ray3k.skincomposer.dialog.DialogFreeTypeFont.DialogFreeTypeFontListener;
 import com.ray3k.skincomposer.dialog.DialogImageFont.ImageFontListener;
 import com.ray3k.skincomposer.dialog.DialogTenPatch.DialogTenPatchListener;
-import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 
 public class DialogFactory {
@@ -71,13 +69,12 @@ public class DialogFactory {
         this.main = main;
     }
 
-    public DialogAbout showAbout(DialogListener listener) {
-        DialogAbout dialog = new DialogAbout(main, main.getSkin(), "dialog");
+    public void showDialogAbout(DialogListener listener) {
+        var pop = new PopAbout();
         if (listener != null) {
-            dialog.addListener(listener);
+            pop.addListener(listener);
         }
-        dialog.show(main.getStage());
-        return dialog;
+        pop.show(main.getStage());
     }
     
     public DialogExport showDialogExport(DialogListener listener) {
@@ -217,13 +214,12 @@ public class DialogFactory {
         return showDialogFonts((StyleProperty)null, dialogListener);
     }
 
-    public DialogSettings showSettings(DialogListener dialogListener) {
-        DialogSettings dialog = new DialogSettings("", "dialog", main);
+    public void showDialogSettings(DialogListener dialogListener) {
+        var pop = new PopSettings();
         if (dialogListener != null) {
-            dialog.addListener(dialogListener);
+            pop.addListener(dialogListener);
         }
-        dialog.show(main.getStage());
-        return dialog;
+        pop.show(main.getStage());
     }
 
     public void showDialogColorPicker(DialogColorPicker.ColorListener listener) {
@@ -925,16 +921,15 @@ public class DialogFactory {
         dialog.show(main.getStage());
     }
     
-    public DialogWelcome showWelcomeDialog(WelcomeListener listener, DialogListener dialogListener) {
-        DialogWelcome dialog = new DialogWelcome(main);
+    public void showDialogWelcome(WelcomeListener listener, DialogListener dialogListener) {
+        var pop = new PopWelcome();
         
         if (dialogListener != null) {
-            dialog.addListener(dialogListener);
+            pop.addListener(dialogListener);
         }
         
-        dialog.addListener(listener);
-        dialog.show(main.getStage());
-        return dialog;
+        pop.addListener(listener);
+        pop.show(main.getStage());
     }
     
     public void showWarningDialog(Array<String> warnings) {

@@ -49,7 +49,7 @@ import com.ray3k.skincomposer.dialog.DialogCustomProperty.CustomStylePropertyLis
 import com.ray3k.skincomposer.dialog.DialogCustomStyle;
 import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.dialog.DialogListener;
-import com.ray3k.skincomposer.dialog.DialogWelcome.WelcomeListener;
+import com.ray3k.skincomposer.dialog.PopWelcome.WelcomeListener;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.utils.Utils;
 
@@ -90,7 +90,7 @@ public class MainListener extends RootTableListener {
     public void createWelcomeListener() {
         welcomeListener = new WelcomeDialogListener();
         if (main.getProjectData().isAllowingWelcome()) {
-            dialogFactory.showWelcomeDialog(welcomeListener, dialogListener);
+            dialogFactory.showDialogWelcome(welcomeListener, dialogListener);
         }
     }
     
@@ -110,7 +110,7 @@ public class MainListener extends RootTableListener {
                 saveAsFile(null);
                 break;
             case WELCOME:
-                main.getDialogFactory().showWelcomeDialog(getWelcomeListener(), dialogListener);
+                main.getDialogFactory().showDialogWelcome(getWelcomeListener(), dialogListener);
                 break;
             case IMPORT:
                 main.getDialogFactory().showDialogImport(dialogListener);
@@ -128,7 +128,7 @@ public class MainListener extends RootTableListener {
                 main.getUndoableManager().redo();
                 break;
             case SETTINGS:
-                dialogFactory.showSettings(dialogListener);
+                dialogFactory.showDialogSettings(dialogListener);
                 break;
             case COLORS:
                 dialogFactory.showDialogColors(dialogListener);
@@ -140,7 +140,7 @@ public class MainListener extends RootTableListener {
                 dialogFactory.showDialogDrawables(dialogListener);
                 break;
             case ABOUT:
-                dialogFactory.showAbout(dialogListener);
+                dialogFactory.showDialogAbout(dialogListener);
                 break;
             case CLASS_SELECTED:
                 updateStyleProperties();
@@ -693,10 +693,6 @@ public class MainListener extends RootTableListener {
     }
     
     private class WelcomeDialogListener extends WelcomeListener {
-        @Override
-        public void cancelled() {
-        }
-
         @Override
         public void videoClicked() {
             Gdx.net.openURI("https://www.youtube.com/watch?v=78amAV0_e24&list=PLl-_-0fPSXFfHiRAFpmLCuQup10MUJwcA");

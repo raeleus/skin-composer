@@ -51,7 +51,7 @@ public class DialogImport extends Dialog {
     private FilesDroppedListener filesDroppedListener;
     
     public DialogImport(Main main) {
-        super("Import...", main.getSkin());
+        super("Import...", main.getSkin(), "bg");
         this.main = main;
     
         filesDroppedListener = (Array<FileHandle> files) -> {
