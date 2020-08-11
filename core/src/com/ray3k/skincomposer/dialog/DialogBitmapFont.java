@@ -68,10 +68,13 @@ public class DialogBitmapFont extends Dialog {
     }
     private Json json;
     private Color previewBGcolor;
+    private boolean automaticBgColor;
+    private Table previewTable;
 
     public DialogBitmapFont() {
         super("Create new Bitmap Font", skin, "bg");
-        previewBGcolor = new Color(Color.WHITE);
+        previewBGcolor = new Color(Color.BLACK);
+        automaticBgColor = true;
 
         json = new Json(JsonWriter.OutputType.json);
 
@@ -168,8 +171,9 @@ public class DialogBitmapFont extends Dialog {
         root.add(image).growX().space(15.0f);
 
         root.row();
-        final var previewTable = new Table();
+        previewTable = new Table();
         previewTable.setBackground(getSkin().getDrawable("white"));
+        previewTable.setColor(Color.BLACK);
         root.add(previewTable).growX();
         
         var textField = new TextField(previewText, previewStyle);
@@ -196,6 +200,7 @@ public class DialogBitmapFont extends Dialog {
                     @Override
                     public void selected(Color color) {
                         if (color != null) {
+                            automaticBgColor = false;
                             previewBGcolor.set(color);
                             previewTable.setColor(color);
                         }
@@ -1002,8 +1007,16 @@ public class DialogBitmapFont extends Dialog {
         ColorData colorData = (ColorData) textButton.getUserObject();
         if (colorData != null && jsonData.getColors().contains(colorData, false)) {
             data.color = colorData.getName();
+            if (automaticBgColor) {
+                previewBGcolor.set(Utils.blackOrWhiteBgColor(colorData.color));
+                previewTable.setColor(previewBGcolor);
+            }
         } else {
             data.color = null;
+            if (automaticBgColor) {
+                previewBGcolor.set(Color.BLACK);
+                previewTable.setColor(previewBGcolor);
+            }
         }
         textButton.setText(data.color);
 
