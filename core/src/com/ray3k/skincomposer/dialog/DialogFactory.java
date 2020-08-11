@@ -947,7 +947,7 @@ public class DialogFactory {
     }
     
     public void showDialogFreeTypeFont(DialogFreeTypeFontListener listener) {
-        DialogFreeTypeFont dialog = new DialogFreeTypeFont(main);
+        DialogFreeTypeFont dialog = new DialogFreeTypeFont();
         dialog.addListener(listener);
         dialog.setFillParent(true);
         dialog.show(stage);
@@ -956,7 +956,7 @@ public class DialogFactory {
     }
     
     public void showDialogFreeTypeFont(FreeTypeFontData data, DialogFreeTypeFontListener listener) {
-        DialogFreeTypeFont dialog = new DialogFreeTypeFont(main, data);
+        DialogFreeTypeFont dialog = new DialogFreeTypeFont(data);
         dialog.addListener(listener);
         dialog.setFillParent(true);
         dialog.show(stage);

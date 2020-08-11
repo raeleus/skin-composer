@@ -121,7 +121,7 @@ public class DialogFreeTypeFont extends Dialog {
     private Color previewBGcolor;
     private FilesDroppedListener filesDroppedListener;
     
-    public DialogFreeTypeFont(Main main, FreeTypeFontData freeTypeFontData) {
+    public DialogFreeTypeFont(FreeTypeFontData freeTypeFontData) {
         super(freeTypeFontData == null ? "Create new FreeType Font" : "Edit FreeType Font", skin, "bg");
         previewBGcolor = new Color(Color.WHITE);
         automaticBgColor = true;
@@ -189,8 +189,8 @@ public class DialogFreeTypeFont extends Dialog {
         return super.remove();
     }
     
-    public DialogFreeTypeFont(Main main) {
-        this(main, null);
+    public DialogFreeTypeFont() {
+        this(null);
     }
 
     @Override
