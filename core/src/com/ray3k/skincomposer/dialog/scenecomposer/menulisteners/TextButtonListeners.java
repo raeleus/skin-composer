@@ -20,12 +20,13 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimA
 import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
+import static com.ray3k.skincomposer.Main.*;
 
 public class TextButtonListeners {
     public static EventListener textButtonNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simTextButton = (DialogSceneComposerModel.SimTextButton) dialogSceneComposer.simActor;
-        var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -39,14 +40,14 @@ public class TextButtonListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Name:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Name:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
                 textField.setText(simTextButton.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
-                textField.addListener(DialogSceneComposer.main.getIbeamListener());
-                textField.addListener(new TextTooltip("The name of the button to allow for convenient searching via Group#findActor().", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textField.addListener(ibeamListener);
+                textField.addListener(new TextTooltip("The name of the button to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene"));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -77,8 +78,8 @@ public class TextButtonListeners {
     
     public static EventListener textButtonTextListener(final DialogSceneComposer dialogSceneComposer) {
         var simTextButton = (DialogSceneComposerModel.SimTextButton) dialogSceneComposer.simActor;
-        var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -91,14 +92,14 @@ public class TextButtonListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Text:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Text:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
                 textField.setText(simTextButton.text);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
-                textField.addListener(DialogSceneComposer.main.getIbeamListener());
-                textField.addListener(new TextTooltip("The text inside of the button.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textField.addListener(ibeamListener);
+                textField.addListener(new TextTooltip("The text inside of the button.", tooltipManager, skin, "scene"));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -141,7 +142,7 @@ public class TextButtonListeners {
     
     public static EventListener textButtonCheckedListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTextButton = (DialogSceneComposerModel.SimTextButton) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -152,15 +153,15 @@ public class TextButtonListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Checked:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Checked:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
-                var textButton = new TextButton(simTextButton.checked ? "TRUE" : "FALSE", DialogSceneComposer.skin, "scene-small");
+                var textButton = new TextButton(simTextButton.checked ? "TRUE" : "FALSE", skin, "scene-small");
                 textButton.setChecked(simTextButton.checked);
                 popTable.add(textButton).minWidth(100);
-                textButton.addListener(DialogSceneComposer.main.getHandListener());
-                textButton.addListener(new TextTooltip("Whether the button is checked initially.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textButton.addListener(handListener);
+                textButton.addListener(new TextTooltip("Whether the button is checked initially.", tooltipManager, skin, "scene"));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -178,7 +179,7 @@ public class TextButtonListeners {
     
     public static EventListener textButtonDisabledListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTextButton = (DialogSceneComposerModel.SimTextButton) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -189,15 +190,15 @@ public class TextButtonListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Disabled:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Disabled:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
-                var textButton = new TextButton(simTextButton.disabled ? "TRUE" : "FALSE", DialogSceneComposer.skin, "scene-small");
+                var textButton = new TextButton(simTextButton.disabled ? "TRUE" : "FALSE", skin, "scene-small");
                 textButton.setChecked(simTextButton.disabled);
                 popTable.add(textButton).minWidth(100);
-                textButton.addListener(DialogSceneComposer.main.getHandListener());
-                textButton.addListener(new TextTooltip("Whether the button is disabled initially.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textButton.addListener(handListener);
+                textButton.addListener(new TextTooltip("Whether the button is disabled initially.", tooltipManager, skin, "scene"));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -215,7 +216,7 @@ public class TextButtonListeners {
     
     public static EventListener textButtonColorListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTextButton = (DialogSceneComposerModel.SimTextButton) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -226,20 +227,20 @@ public class TextButtonListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Color:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Color:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
-                var imageButton = new ImageButton(DialogSceneComposer.skin, "scene-color");
+                var imageButton = new ImageButton(skin, "scene-color");
                 imageButton.getImage().setColor(simTextButton.color == null ? Color.WHITE : simTextButton.color.color);
                 popTable.add(imageButton).minWidth(100);
-                imageButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageButton.addListener(new TextTooltip("Select the color of the button.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageButton.addListener(handListener);
+                imageButton.addListener(new TextTooltip("Select the color of the button.", tooltipManager, skin, "scene"));
                 imageButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         popTable.hide();
-                        DialogSceneComposer.main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+                        dialogFactory.showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                             if (!pressedCancel) {
                                 events.textButtonColor(colorData);
                             }
@@ -258,7 +259,7 @@ public class TextButtonListeners {
                 });
                 
                 popTable.row();
-                label = new Label(simTextButton.color == null ? "white" : simTextButton.color.getName(), DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label(simTextButton.color == null ? "white" : simTextButton.color.getName(), skin, "scene-label-colored");
                 popTable.add(label);
             }
         };
@@ -270,7 +271,7 @@ public class TextButtonListeners {
     
     public static EventListener textButtonPaddingListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTextButton = (DialogSceneComposerModel.SimTextButton) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -292,64 +293,64 @@ public class TextButtonListeners {
                     }
                 };
                 
-                var label = new Label("Padding:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Padding:", skin, "scene-label-colored");
                 popTable.add(label).colspan(2);
                 
                 popTable.row();
                 popTable.defaults().right().spaceRight(5);
-                label = new Label("Left:", DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label("Left:", skin, "scene-label-colored");
                 popTable.add(label);
                 
-                var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
+                var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
                 spinner.setName("pad-left");
                 spinner.setValue(simTextButton.padLeft);
                 popTable.add(spinner);
-                spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
-                spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.getButtonPlus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.addListener(new TextTooltip("The padding on the left of the contents.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                spinner.getTextField().addListener(ibeamListener);
+                spinner.getButtonMinus().addListener(handListener);
+                spinner.getButtonPlus().addListener(handListener);
+                spinner.addListener(new TextTooltip("The padding on the left of the contents.", tooltipManager, skin, "scene"));
                 spinner.addListener(changeListener);
                 
                 popTable.row();
-                label = new Label("Right:", DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label("Right:", skin, "scene-label-colored");
                 popTable.add(label);
                 
-                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
                 spinner.setName("pad-right");
                 spinner.setValue(simTextButton.padRight);
                 popTable.add(spinner);
-                spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
-                spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.getButtonPlus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.addListener(new TextTooltip("The padding on the right of the contents.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                spinner.getTextField().addListener(ibeamListener);
+                spinner.getButtonMinus().addListener(handListener);
+                spinner.getButtonPlus().addListener(handListener);
+                spinner.addListener(new TextTooltip("The padding on the right of the contents.", tooltipManager, skin, "scene"));
                 spinner.addListener(changeListener);
                 
                 popTable.row();
-                label = new Label("Top:", DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label("Top:", skin, "scene-label-colored");
                 popTable.add(label);
                 
-                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
                 spinner.setName("pad-top");
                 spinner.setValue(simTextButton.padTop);
                 popTable.add(spinner);
-                spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
-                spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.getButtonPlus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.addListener(new TextTooltip("The padding on the top of the contents.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                spinner.getTextField().addListener(ibeamListener);
+                spinner.getButtonMinus().addListener(handListener);
+                spinner.getButtonPlus().addListener(handListener);
+                spinner.addListener(new TextTooltip("The padding on the top of the contents.", tooltipManager, skin, "scene"));
                 spinner.addListener(changeListener);
                 
                 popTable.row();
-                label = new Label("Bottom:", DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label("Bottom:", skin, "scene-label-colored");
                 popTable.add(label);
                 
-                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
                 spinner.setName("pad-bottom");
                 spinner.setValue(simTextButton.padBottom);
                 popTable.add(spinner);
-                spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
-                spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.getButtonPlus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.addListener(new TextTooltip("The padding on the bottom of the contents.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                spinner.getTextField().addListener(ibeamListener);
+                spinner.getButtonMinus().addListener(handListener);
+                spinner.getButtonPlus().addListener(handListener);
+                spinner.addListener(new TextTooltip("The padding on the bottom of the contents.", tooltipManager, skin, "scene"));
                 spinner.addListener(changeListener);
             }
         };

@@ -31,10 +31,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.CustomProperty;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.CustomStyle;
+
+import static com.ray3k.skincomposer.Main.*;
 
 public class DialogCustomProperty extends Dialog {
     private boolean allowSameName;
@@ -42,21 +43,18 @@ public class DialogCustomProperty extends Dialog {
     private final TextField nameField;
     private final TextButton okButton;
     private final SelectBox<PropertyType> propertyTypeBox;
-    private Main main;
     
-    public DialogCustomProperty(Main main, String title) {
-        this(main, title, null, PropertyType.NONE, false);
+    public DialogCustomProperty(String title) {
+        this(title, null, PropertyType.NONE, false);
     }
     
-    public DialogCustomProperty(Main main, String title, String propertyName, PropertyType propertyType, boolean allowSameName) {
-        super(title, main.getSkin(), "bg");
+    public DialogCustomProperty(String title, String propertyName, PropertyType propertyType, boolean allowSameName) {
+        super(title, skin, "bg");
         
         this.allowSameName = allowSameName;
         oldName = propertyName;
         
         getTitleLabel().setAlignment(Align.center);
-        
-        this.main = main;
         
         Label label = new Label("What is the property name?", getSkin());
         getContentTable().add(label).pad(10.0f).padBottom(0.0f);
@@ -70,7 +68,7 @@ public class DialogCustomProperty extends Dialog {
         nameField.setFocusTraversal(false);
         nameField.setText(propertyName);
         nameField.selectAll();
-        nameField.addListener(main.getIbeamListener());
+        nameField.addListener(ibeamListener);
         getContentTable().add(nameField).growX().padLeft(10.0f).padRight(10.0f);
         
         getContentTable().row();
@@ -80,8 +78,8 @@ public class DialogCustomProperty extends Dialog {
         getContentTable().row();
         propertyTypeBox = new SelectBox<>(getSkin());
         propertyTypeBox.setItems(PropertyType.TEXT, PropertyType.RAW_TEXT, PropertyType.STYLE, PropertyType.NUMBER, PropertyType.BOOL, PropertyType.FONT, PropertyType.DRAWABLE, PropertyType.COLOR);
-        propertyTypeBox.addListener(main.getHandListener());
-        propertyTypeBox.getList().addListener(main.getHandListener());
+        propertyTypeBox.addListener(handListener);
+        propertyTypeBox.getList().addListener(handListener);
         if (propertyType != null && propertyType != PropertyType.NONE) {
             propertyTypeBox.setSelected(propertyType);
         }
@@ -94,7 +92,7 @@ public class DialogCustomProperty extends Dialog {
         okButton = (TextButton) getButtonTable().getCells().first().getActor();
         updateOkButton();
         
-        getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        getButtonTable().getCells().get(1).getActor().addListener(handListener);
         
         nameField.addListener(new ChangeListener() {
             @Override
@@ -123,7 +121,7 @@ public class DialogCustomProperty extends Dialog {
     private void updateOkButton() {
         if (validate(nameField.getText())) {
             boolean unique = true;
-            for (CustomProperty customProperty : ((CustomStyle)main.getRootTable().getStyleSelectBox().getSelected()).getProperties()) {
+            for (CustomProperty customProperty : ((CustomStyle)rootTable.getStyleSelectBox().getSelected()).getProperties()) {
                 if (!allowSameName) {
                     if (customProperty.getName().equals(nameField.getText())) {
                         unique = false;
@@ -139,20 +137,20 @@ public class DialogCustomProperty extends Dialog {
             
             if (unique) {
                 okButton.setDisabled(false);
-                if (!okButton.getListeners().contains(main.getHandListener(), true)) {
-                    okButton.addListener(main.getHandListener());
+                if (!okButton.getListeners().contains(handListener, true)) {
+                    okButton.addListener(handListener);
                 }
             } else {
                 okButton.setDisabled(true);
-                if (okButton.getListeners().contains(main.getHandListener(), true)) {
-                    okButton.removeListener(main.getHandListener());
+                if (okButton.getListeners().contains(handListener, true)) {
+                    okButton.removeListener(handListener);
                 }
             }
             
         } else {
             okButton.setDisabled(true);
-            if (okButton.getListeners().contains(main.getHandListener(), true)) {
-                okButton.removeListener(main.getHandListener());
+            if (okButton.getListeners().contains(handListener, true)) {
+                okButton.removeListener(handListener);
             }
         }
     }

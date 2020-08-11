@@ -6,34 +6,34 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
-import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
-import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
-import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
-import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimTouchable;
-import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimVisible;
-import com.ray3k.stripe.PopTable;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.dialog.DialogDrawables;
 import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents.WidgetType;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.Interpol;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimTouchable;
+import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimVisible;
+import com.ray3k.stripe.PopTable;
 import com.ray3k.stripe.PopTableClickListener;
 import space.earlygrey.shapedrawer.scene2d.GraphDrawerDrawable;
 
+import static com.ray3k.skincomposer.Main.*;
+
 public class GeneralListeners {
     public static EventListener widgetResetListener(String name, Runnable runnable) {
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin);
+        var popTableClickListener = new PopTableClickListener(skin);
         var popTable = popTableClickListener.getPopTable();
         
-        var label = new Label("Are you sure you want to reset this " + name + "?", DialogSceneComposer.skin, "scene-label-colored");
+        var label = new Label("Are you sure you want to reset this " + name + "?", skin, "scene-label-colored");
         popTable.add(label);
         
         popTable.row();
-        var textButton = new TextButton("RESET", DialogSceneComposer.skin, "scene-small");
+        var textButton = new TextButton("RESET", skin, "scene-small");
         popTable.add(textButton).minWidth(100);
-        textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("Resets the settings of the " + name + " to the defaults.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Resets the settings of the " + name + " to the defaults.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -46,17 +46,17 @@ public class GeneralListeners {
     }
     
     public static EventListener widgetDeleteListener(String name, Runnable runnable) {
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin);
+        var popTableClickListener = new PopTableClickListener(skin);
         var popTable = popTableClickListener.getPopTable();
         
-        var label = new Label("Are you sure you want to delete this " + name + "?", DialogSceneComposer.skin, "scene-label-colored");
+        var label = new Label("Are you sure you want to delete this " + name + "?", skin, "scene-label-colored");
         popTable.add(label);
         
         popTable.row();
-        var textButton = new TextButton("DELETE", DialogSceneComposer.skin, "scene-small");
+        var textButton = new TextButton("DELETE", skin, "scene-small");
         popTable.add(textButton).minWidth(100);
-        textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("Removes this " + name + " from its parent.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Removes this " + name + " from its parent.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -71,15 +71,15 @@ public class GeneralListeners {
     public static PopTableClickListener setWidgetListener(final DialogSceneComposer dialogSceneComposer,
                                                                    WidgetSelectedListener widgetSelectedListener) {
         var table = new Table();
-        var scrollPane = new ScrollPane(table, DialogSceneComposer.skin, "scene");
+        var scrollPane = new ScrollPane(table, skin, "scene");
         var scrollFocus = scrollPane;
         scrollPane.setFadeScrollBars(false);
         scrollPane.setScrollingDisabled(true, false);
         scrollPane.setFlickScroll(false);
-        scrollPane.addListener(DialogSceneComposer.main.getScrollFocusListener());
+        scrollPane.addListener(scrollFocusListener);
         
         
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -93,24 +93,24 @@ public class GeneralListeners {
         };
     
         var popTable = popTableClickListener.getPopTable();
-        var label = new Label("Widgets:", DialogSceneComposer.skin, "scene-label-colored");
+        var label = new Label("Widgets:", skin, "scene-label-colored");
         popTable.add(label);
-        label.addListener(new TextTooltip("Widgets are interactive components of your UI.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        label.addListener(new TextTooltip("Widgets are interactive components of your UI.", tooltipManager, skin, "scene"));
     
-        label = new Label("Layout:", DialogSceneComposer.skin, "scene-label-colored");
+        label = new Label("Layout:", skin, "scene-label-colored");
         popTable.add(label);
-        label.addListener(new TextTooltip("Layout widgets help organize the components of your UI and make it more adaptable to varying screen size.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        label.addListener(new TextTooltip("Layout widgets help organize the components of your UI and make it more adaptable to varying screen size.", tooltipManager, skin, "scene"));
     
         popTable.row();
         popTable.defaults().top();
         popTable.add(scrollPane).grow();
     
-        var textButton = new TextButton("Button", DialogSceneComposer.skin, "scene-med");
-        var valid = DialogSceneComposer.main.getJsonData().classHasValidStyles(Button.class);
+        var textButton = new TextButton("Button", skin, "scene-med");
+        var valid = jsonData.classHasValidStyles(Button.class);
         textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("Buttons are the most basic component to UI design. These are clickable widgets that can perform a certain action such as starting a game or activating a power.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        if (valid) textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Buttons are the most basic component to UI design. These are clickable widgets that can perform a certain action such as starting a game or activating a power.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -119,12 +119,12 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("CheckBox", DialogSceneComposer.skin, "scene-med");
-        valid = DialogSceneComposer.main.getJsonData().classHasValidStyles(CheckBox.class);
+        textButton = new TextButton("CheckBox", skin, "scene-med");
+        valid = jsonData.classHasValidStyles(CheckBox.class);
         textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("CheckBoxes are great for setting/displaying boolean values for an options screen.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        if (valid) textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("CheckBoxes are great for setting/displaying boolean values for an options screen.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -133,10 +133,10 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("Image", DialogSceneComposer.skin, "scene-med");
+        textButton = new TextButton("Image", skin, "scene-med");
         table.add(textButton);
-        textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("Images are not directly interactable elements of a layout, but are necessary to showcase graphics or pictures in your UI. Scaling options make them a very powerful tool.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Images are not directly interactable elements of a layout, but are necessary to showcase graphics or pictures in your UI. Scaling options make them a very powerful tool.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -145,12 +145,12 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("ImageButton", DialogSceneComposer.skin, "scene-med");
-        valid = DialogSceneComposer.main.getJsonData().classHasValidStyles(ImageButton.class);
+        textButton = new TextButton("ImageButton", skin, "scene-med");
+        valid = jsonData.classHasValidStyles(ImageButton.class);
         textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("A Button with an image graphic in it. The image can change depending on the state of the button.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        if (valid) textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("A Button with an image graphic in it. The image can change depending on the state of the button.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -159,12 +159,12 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("ImageTextButton", DialogSceneComposer.skin, "scene-med");
-        valid = DialogSceneComposer.main.getJsonData().classHasValidStyles(ImageTextButton.class);
+        textButton = new TextButton("ImageTextButton", skin, "scene-med");
+        valid = jsonData.classHasValidStyles(ImageTextButton.class);
         textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("A Button with an image graphic followed by text in it. The image and text color can change depending on the state of the button.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        if (valid) textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("A Button with an image graphic followed by text in it. The image and text color can change depending on the state of the button.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -173,12 +173,12 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("Label", DialogSceneComposer.skin, "scene-med");
-        valid = DialogSceneComposer.main.getJsonData().classHasValidStyles(Label.class);
+        textButton = new TextButton("Label", skin, "scene-med");
+        valid = jsonData.classHasValidStyles(Label.class);
         textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("The most common way to display text in your layouts. Wrapping and ellipses options help mitigate sizing issues in small spaces.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        if (valid) textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("The most common way to display text in your layouts. Wrapping and ellipses options help mitigate sizing issues in small spaces.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -187,12 +187,12 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("List", DialogSceneComposer.skin, "scene-med");
-        valid = DialogSceneComposer.main.getJsonData().classHasValidStyles(List.class);
+        textButton = new TextButton("List", skin, "scene-med");
+        valid = jsonData.classHasValidStyles(List.class);
         textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("List presents text options in a clickable menu.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        if (valid) textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("List presents text options in a clickable menu.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -201,12 +201,12 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("ProgressBar", DialogSceneComposer.skin, "scene-med");
-        valid = DialogSceneComposer.main.getJsonData().classHasValidStyles(ProgressBar.class);
+        textButton = new TextButton("ProgressBar", skin, "scene-med");
+        valid = jsonData.classHasValidStyles(ProgressBar.class);
         textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("Commonly used to display loading progress or as a health/mana indicator in HUD's.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        if (valid) textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Commonly used to display loading progress or as a health/mana indicator in HUD's.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -215,12 +215,12 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("SelectBox", DialogSceneComposer.skin, "scene-med");
-        valid = DialogSceneComposer.main.getJsonData().classHasValidStyles(SelectBox.class);
+        textButton = new TextButton("SelectBox", skin, "scene-med");
+        valid = jsonData.classHasValidStyles(SelectBox.class);
         textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("SelectBox is a kind of button that displays a selectable option list when opened.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        if (valid) textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("SelectBox is a kind of button that displays a selectable option list when opened.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -229,12 +229,12 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("Slider", DialogSceneComposer.skin, "scene-med");
-        valid = DialogSceneComposer.main.getJsonData().classHasValidStyles(Slider.class);
+        textButton = new TextButton("Slider", skin, "scene-med");
+        valid = jsonData.classHasValidStyles(Slider.class);
         textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("Slider is a kind of user interactable ProgressBar that allows a user to select a value along a sliding scale.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        if (valid) textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Slider is a kind of user interactable ProgressBar that allows a user to select a value along a sliding scale.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -243,12 +243,12 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("TextButton", DialogSceneComposer.skin, "scene-med");
-        valid = DialogSceneComposer.main.getJsonData().classHasValidStyles(TextButton.class);
+        textButton = new TextButton("TextButton", skin, "scene-med");
+        valid = jsonData.classHasValidStyles(TextButton.class);
         textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("A kind of button that contains a text element inside of it. The text color can change depending on the state of the button.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        if (valid) textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("A kind of button that contains a text element inside of it. The text color can change depending on the state of the button.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -257,12 +257,12 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("TextField", DialogSceneComposer.skin, "scene-med");
-        valid = DialogSceneComposer.main.getJsonData().classHasValidStyles(TextField.class);
+        textButton = new TextButton("TextField", skin, "scene-med");
+        valid = jsonData.classHasValidStyles(TextField.class);
         textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("TextFields are the primary way of getting text input from the user.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        if (valid) textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("TextFields are the primary way of getting text input from the user.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -271,12 +271,12 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("TextArea", DialogSceneComposer.skin, "scene-med");
-        valid = DialogSceneComposer.main.getJsonData().classHasValidStyles(TextField.class);
+        textButton = new TextButton("TextArea", skin, "scene-med");
+        valid = jsonData.classHasValidStyles(TextField.class);
         textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("TextAreas are a multiline version of a TextField.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        if (valid) textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("TextAreas are a multiline version of a TextField.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -285,12 +285,12 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("Touchpad", DialogSceneComposer.skin, "scene-med");
-        valid = DialogSceneComposer.main.getJsonData().classHasValidStyles(Touchpad.class);
+        textButton = new TextButton("Touchpad", skin, "scene-med");
+        valid = jsonData.classHasValidStyles(Touchpad.class);
         textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("Touchpad is a UI element common to mobile games. It is used lieu of keyboard input, for example.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        if (valid) textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Touchpad is a UI element common to mobile games. It is used lieu of keyboard input, for example.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -299,18 +299,18 @@ public class GeneralListeners {
         });
     
         table = new Table();
-        scrollPane = new ScrollPane(table, DialogSceneComposer.skin, "scene");
+        scrollPane = new ScrollPane(table, skin, "scene");
         scrollPane.setFadeScrollBars(false);
         scrollPane.setScrollingDisabled(true, false);
         scrollPane.setFlickScroll(false);
         popTable.add(scrollPane);
-        scrollPane.addListener(DialogSceneComposer.main.getScrollFocusListener());
+        scrollPane.addListener(scrollFocusListener);
     
         table.row();
-        textButton = new TextButton("Container", DialogSceneComposer.skin, "scene-med");
+        textButton = new TextButton("Container", skin, "scene-med");
         table.add(textButton);
-        textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("Container is like a lightweight, single cell version of Table.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Container is like a lightweight, single cell version of Table.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -319,10 +319,10 @@ public class GeneralListeners {
         });
         
         table.row();
-        textButton = new TextButton("HorizontalGroup", DialogSceneComposer.skin, "scene-med");
+        textButton = new TextButton("HorizontalGroup", skin, "scene-med");
         table.add(textButton);
-        textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("Allows layout of multiple elements horizontally. It is most useful for its wrap functionality, which cannot be achieved with a Table.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Allows layout of multiple elements horizontally. It is most useful for its wrap functionality, which cannot be achieved with a Table.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -331,12 +331,12 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("ScrollPane", DialogSceneComposer.skin, "scene-med");
-        valid = DialogSceneComposer.main.getJsonData().classHasValidStyles(ScrollPane.class);
+        textButton = new TextButton("ScrollPane", skin, "scene-med");
+        valid = jsonData.classHasValidStyles(ScrollPane.class);
         textButton.setDisabled(!valid);
         table.add(textButton);
-        textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("Creates a scrollable layout for your widgets. It is commonly used to adapt the UI to variable content and screen sizes.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Creates a scrollable layout for your widgets. It is commonly used to adapt the UI to variable content and screen sizes.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -345,10 +345,10 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("Stack", DialogSceneComposer.skin, "scene-med");
+        textButton = new TextButton("Stack", skin, "scene-med");
         table.add(textButton);
-        textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("Allows stacking of elements on top of each other.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Allows stacking of elements on top of each other.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -357,12 +357,12 @@ public class GeneralListeners {
         });
         
         table.row();
-        textButton = new TextButton("SplitPane", DialogSceneComposer.skin, "scene-med");
-        valid = DialogSceneComposer.main.getJsonData().classHasValidStyles(SplitPane.class);
+        textButton = new TextButton("SplitPane", skin, "scene-med");
+        valid = jsonData.classHasValidStyles(SplitPane.class);
         textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("An organizational layout that allows the user to adjust the width or height of two widgets next to each other.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        if (valid) textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("An organizational layout that allows the user to adjust the width or height of two widgets next to each other.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -371,10 +371,10 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("Table", DialogSceneComposer.skin, "scene-med");
+        textButton = new TextButton("Table", skin, "scene-med");
         table.add(textButton);
-        textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("The most powerful layout widget available. Consisting of a series of configurable cells, it organizes elements in rows and columns. It serves as the basis of all layout design in Scene2D.UI.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("The most powerful layout widget available. Consisting of a series of configurable cells, it organizes elements in rows and columns. It serves as the basis of all layout design in Scene2D.UI.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -383,12 +383,12 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("Tree", DialogSceneComposer.skin, "scene-med");
-        valid = DialogSceneComposer.main.getJsonData().classHasValidStyles(Tree.class);
+        textButton = new TextButton("Tree", skin, "scene-med");
+        valid = jsonData.classHasValidStyles(Tree.class);
         textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("Tree is an organizational widget that allows collapsing and expanding elements like file structures.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        if (valid) textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Tree is an organizational widget that allows collapsing and expanding elements like file structures.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -397,10 +397,10 @@ public class GeneralListeners {
         });
     
         table.row();
-        textButton = new TextButton("VerticalGroup", DialogSceneComposer.skin, "scene-med");
+        textButton = new TextButton("VerticalGroup", skin, "scene-med");
         table.add(textButton);
-        textButton.addListener(DialogSceneComposer.main.getHandListener());
-        textButton.addListener(new TextTooltip("Allows layout of multiple elements vertically. It is most useful for its wrap functionality, which cannot be achieved with a Table.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+        textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Allows layout of multiple elements vertically. It is most useful for its wrap functionality, which cannot be achieved with a Table.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -413,7 +413,7 @@ public class GeneralListeners {
     
     public static EventListener selectDrawableListener(DrawableData originalDrawable, String toolTipText,
                                                        DrawableSelected drawableSelected) {
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -424,34 +424,34 @@ public class GeneralListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
         
-                var label = new Label("Drawable:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Drawable:", skin, "scene-label-colored");
                 popTable.add(label);
         
                 popTable.row();
                 var stack = new Stack();
                 popTable.add(stack).minSize(100).maxSize(300).grow();
-                var background = new Image(DialogSceneComposer.skin, "scene-tile-ten");
+                var background = new Image(skin, "scene-tile-ten");
                 stack.add(background);
                 Image image;
                 if (originalDrawable != null) {
-                    image = new Image(DialogSceneComposer.main.getAtlasData().drawablePairs.get(originalDrawable));
+                    image = new Image(atlasData.drawablePairs.get(originalDrawable));
                 } else {
                     image = new Image((Drawable) null);
                 }
                 stack.add(image);
         
                 popTable.row();
-                var textButton = new TextButton("Select Drawable", DialogSceneComposer.skin, "scene-small");
+                var textButton = new TextButton("Select Drawable", skin, "scene-small");
                 popTable.add(textButton).minWidth(100);
-                textButton.addListener(DialogSceneComposer.main.getHandListener());
-                textButton.addListener(new TextTooltip(toolTipText, DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textButton.addListener(handListener);
+                textButton.addListener(new TextTooltip(toolTipText, tooltipManager, skin, "scene"));
                 textButton.addListener(new ChangeListener() {
                     boolean confirmed;
                     DrawableData drawableData;
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         popTable.hide();
-                        DialogSceneComposer.main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
+                        dialogFactory.showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
                             @Override
                             public void confirmed(DrawableData drawable, DialogDrawables dialog) {
                                 confirmed = true;
@@ -477,7 +477,7 @@ public class GeneralListeners {
                             public void closed() {
                                 if (confirmed) {
                                     drawableSelected.selected(drawableData);
-                                    image.setDrawable(DialogSceneComposer.main.getAtlasData().drawablePairs.get(drawableData));
+                                    image.setDrawable(atlasData.drawablePairs.get(drawableData));
                                 } else {
                                     drawableSelected.selected(null);
                                     image.setDrawable(null);
@@ -499,8 +499,8 @@ public class GeneralListeners {
         var graphDrawerDrawables = new Array<GraphDrawerDrawable>();
         
         var table = new Table();
-        var scrollPane = new ScrollPane(table, DialogSceneComposer.skin, "scene");
-        var listener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var scrollPane = new ScrollPane(table, skin, "scene");
+        var listener = new PopTableClickListener(skin) {
             @Override
             public void tableShown(Event event) {
                 dialogSceneComposer.getStage().setScrollFocus(scrollPane);
@@ -523,16 +523,16 @@ public class GeneralListeners {
         
         table.defaults().space(5);
         for (Interpol interpol : Interpol.values()) {
-            var button = new Button(DialogSceneComposer.skin, "scene-med");
+            var button = new Button(skin, "scene-med");
             table.add(button).growX();
             
             var stack = new Stack();
             button.add(stack).size(50);
             
-            var image = new Image(DialogSceneComposer.skin.getDrawable("white"));
+            var image = new Image(skin.getDrawable("white"));
             stack.add(image);
             
-            var graphDrawerDrawable = new GraphDrawerDrawable(dialogSceneComposer.graphDrawer);
+            var graphDrawerDrawable = new GraphDrawerDrawable(graphDrawer);
             graphDrawerDrawable.setColor(Color.BLACK);
             graphDrawerDrawable.setInterpolation(interpol.interpolation);
             graphDrawerDrawable.setSamples(10);
@@ -542,9 +542,9 @@ public class GeneralListeners {
             container.pad(5).fill();
             stack.add(container);
             
-            var label = new Label(interpol.toString(), DialogSceneComposer.skin, "scene-label");
+            var label = new Label(interpol.toString(), skin, "scene-label");
             button.add(label).expandX().left().space(5);
-            button.addListener(DialogSceneComposer.main.getHandListener());
+            button.addListener(handListener);
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -563,7 +563,7 @@ public class GeneralListeners {
     
     public static EventListener touchableListener(SimActor simActor, TouchableSelected touchableSelected) {
         var simTouchable = (SimTouchable) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -586,36 +586,36 @@ public class GeneralListeners {
                 popTable.add(table);
                 
                 table.defaults().left().spaceRight(5);
-                var imageTextButton = new ImageTextButton("Touchable Enabled", DialogSceneComposer.skin, "scene-checkbox-colored");
+                var imageTextButton = new ImageTextButton("Touchable Enabled", skin, "scene-checkbox-colored");
                 imageTextButton.setProgrammaticChangeEvents(false);
                 imageTextButton.setChecked(simTouchable.getTouchable() == Touchable.enabled);
                 imageTextButton.setUserObject(Touchable.enabled);
                 table.add(imageTextButton);
                 buttonGroup.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("The widget and all children can be clicked on.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("The widget and all children can be clicked on.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(changeListener);
                 
                 table.row();
-                imageTextButton = new ImageTextButton("Touchable Disabled", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Touchable Disabled", skin, "scene-checkbox-colored");
                 imageTextButton.setProgrammaticChangeEvents(false);
                 imageTextButton.setChecked(simTouchable.getTouchable() == Touchable.disabled);
                 imageTextButton.setUserObject(Touchable.disabled);
                 table.add(imageTextButton);
                 buttonGroup.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("The widget and all children can not be clicked on.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("The widget and all children can not be clicked on.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(changeListener);
     
                 table.row();
-                imageTextButton = new ImageTextButton("Touchable Children Only", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Touchable Children Only", skin, "scene-checkbox-colored");
                 imageTextButton.setProgrammaticChangeEvents(false);
                 imageTextButton.setChecked(simTouchable.getTouchable() == Touchable.childrenOnly);
                 imageTextButton.setUserObject(Touchable.childrenOnly);
                 table.add(imageTextButton);
                 buttonGroup.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Only the widget's children can be clicked on.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Only the widget's children can be clicked on.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(changeListener);
             }
         };
@@ -627,7 +627,7 @@ public class GeneralListeners {
     
     public static EventListener visibleListener(SimActor simActor, VisibleSelected visibleSelected) {
         var simVisible = (SimVisible) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -650,25 +650,25 @@ public class GeneralListeners {
                 popTable.add(table);
                 
                 table.defaults().left().spaceRight(5);
-                var imageTextButton = new ImageTextButton("Visible", DialogSceneComposer.skin, "scene-checkbox-colored");
+                var imageTextButton = new ImageTextButton("Visible", skin, "scene-checkbox-colored");
                 imageTextButton.setProgrammaticChangeEvents(false);
                 imageTextButton.setChecked(simVisible.isVisible());
                 imageTextButton.setUserObject(true);
                 table.add(imageTextButton);
                 buttonGroup.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("The widget is visible in the stage.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("The widget is visible in the stage.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(changeListener);
                 
                 table.row();
-                imageTextButton = new ImageTextButton("Invisible", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Invisible", skin, "scene-checkbox-colored");
                 imageTextButton.setProgrammaticChangeEvents(false);
                 imageTextButton.setChecked(!simVisible.isVisible());
                 imageTextButton.setUserObject(false);
                 table.add(imageTextButton);
                 buttonGroup.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("The widget is not visible in the stage.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("The widget is not visible in the stage.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(changeListener);
             }
         };

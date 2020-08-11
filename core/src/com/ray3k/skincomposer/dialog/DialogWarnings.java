@@ -38,6 +38,8 @@ import com.ray3k.skincomposer.utils.Utils;
 
 import java.io.IOException;
 
+import static com.ray3k.skincomposer.Main.*;
+
 public class DialogWarnings extends Dialog {
     private final Main main;
     private float resetWidth, resetHeight;
@@ -59,7 +61,7 @@ public class DialogWarnings extends Dialog {
     }
 
     public DialogWarnings(Main main, boolean showCheckBox, Array<String> warnings) {
-        super("", main.getSkin(), "welcome");
+        super("", skin, "welcome");
         this.main = main;
         this.warnings = warnings;
         
@@ -68,7 +70,7 @@ public class DialogWarnings extends Dialog {
         getContentTable().pad(5);
         
         Button button = new Button(getSkin(), "close");
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -85,7 +87,7 @@ public class DialogWarnings extends Dialog {
         Table table = new Table();
         table.pad(5.0f).padTop(0.0f);
         table.defaults().space(10.0f);
-        scrollPane = new ScrollPane(table, main.getSkin());
+        scrollPane = new ScrollPane(table, skin);
         scrollPane.setFadeScrollBars(false);
         scrollPane.setFlickScroll(false);
         scrollPane.setScrollingDisabled(true, false);
@@ -94,13 +96,13 @@ public class DialogWarnings extends Dialog {
         if (showCheckBox) {
             getContentTable().row();
             var checkBox = new CheckBox("Do not show again", getSkin());
-            checkBox.setChecked(!main.getProjectData().isShowingExportWarnings());
+            checkBox.setChecked(!projectData.isShowingExportWarnings());
             getContentTable().add(checkBox).right();
-            checkBox.addListener(main.getHandListener());
+            checkBox.addListener(handListener);
             checkBox.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                    main.getProjectData().setShowingExportWarnings(!checkBox.isChecked());
+                    projectData.setShowingExportWarnings(!checkBox.isChecked());
                 }
             });
         }
@@ -114,9 +116,9 @@ public class DialogWarnings extends Dialog {
         getButtonTable().defaults().minWidth(100.0f).pad(10.0f);
         button("OK", false).key(Keys.ESCAPE, false).key(Keys.ENTER, false);
         button("Export to Text File", true);
-        getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+        getButtonTable().getCells().first().getActor().addListener(handListener);
         
-        main.getRootTable().addListener(new StageResizeListener() {
+        rootTable.addListener(new StageResizeListener() {
             @Override
             public void resized(int width, int height) {
                 if (!MathUtils.isEqual(getWidth(), width)) {
@@ -150,7 +152,7 @@ public class DialogWarnings extends Dialog {
         
         resetWidth = getWidth();
         resetHeight = getHeight();
-        main.getStage().setScrollFocus(scrollPane);
+        stage.setScrollFocus(scrollPane);
         return dialog;
     }
 
@@ -172,7 +174,7 @@ public class DialogWarnings extends Dialog {
         
         resetWidth = getWidth();
         resetHeight = getHeight();
-        main.getStage().setScrollFocus(scrollPane);
+        stage.setScrollFocus(scrollPane);
         return dialog;
     }
     

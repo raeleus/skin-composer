@@ -22,14 +22,15 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
+import static com.ray3k.skincomposer.Main.*;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
 
 public class TextFieldListeners {
     public static EventListener textFieldNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simTextField = (DialogSceneComposerModel.SimTextField) dialogSceneComposer.simActor;
-        var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -43,14 +44,14 @@ public class TextFieldListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Name:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Name:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
                 textField.setText(simTextField.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
-                textField.addListener(DialogSceneComposer.main.getIbeamListener());
-                textField.addListener(new TextTooltip("The name of the TextField to allow for convenient searching via Group#findActor().", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textField.addListener(ibeamListener);
+                textField.addListener(new TextTooltip("The name of the TextField to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene"));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -93,8 +94,8 @@ public class TextFieldListeners {
     
     public static EventListener textFieldMessageTextListener(final DialogSceneComposer dialogSceneComposer) {
         var simTextField = (DialogSceneComposerModel.SimTextField) dialogSceneComposer.simActor;
-        var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -107,14 +108,14 @@ public class TextFieldListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Message Text:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Message Text:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
                 textField.setText(simTextField.messageText);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
-                textField.addListener(DialogSceneComposer.main.getIbeamListener());
-                textField.addListener(new TextTooltip("The message inside the field when nothing is inputted and the field does not have focus.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textField.addListener(ibeamListener);
+                textField.addListener(new TextTooltip("The message inside the field when nothing is inputted and the field does not have focus.", tooltipManager, skin, "scene"));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -145,8 +146,8 @@ public class TextFieldListeners {
     
     public static EventListener textFieldPasswordListener(final DialogSceneComposer dialogSceneComposer) {
         var simTextField = (DialogSceneComposerModel.SimTextField) dialogSceneComposer.simActor;
-        var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -159,15 +160,15 @@ public class TextFieldListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Password Character:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Password Character:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
                 textField.setText(Character.toString(simTextField.passwordCharacter));
                 textField.setMaxLength(1);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
-                textField.addListener(DialogSceneComposer.main.getIbeamListener());
-                textField.addListener(new TextTooltip("The character used to obscure text when password mode is enabled.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textField.addListener(ibeamListener);
+                textField.addListener(new TextTooltip("The character used to obscure text when password mode is enabled.", tooltipManager, skin, "scene"));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -191,15 +192,15 @@ public class TextFieldListeners {
                 });
                 
                 popTable.row();
-                label = new Label("Password Mode:", DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label("Password Mode:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
-                var textButton = new TextButton(simTextField.passwordMode ? "TRUE" : "FALSE", DialogSceneComposer.skin, "scene-small");
+                var textButton = new TextButton(simTextField.passwordMode ? "TRUE" : "FALSE", skin, "scene-small");
                 textButton.setChecked(simTextField.passwordMode);
                 popTable.add(textButton).minWidth(100);
-                textButton.addListener(DialogSceneComposer.main.getHandListener());
-                textButton.addListener(new TextTooltip("Whether password mode is enabled for the TextField.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textButton.addListener(handListener);
+                textButton.addListener(new TextTooltip("Whether password mode is enabled for the TextField.", tooltipManager, skin, "scene"));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -220,7 +221,7 @@ public class TextFieldListeners {
     
     public static EventListener textFieldSelectionListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTextField = (DialogSceneComposerModel.SimTextField) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -235,15 +236,15 @@ public class TextFieldListeners {
                 var table = new Table();
                 popTable.add(table);
                 
-                var positionLabel = new Label("Cursor Position: (" + simTextField.cursorPosition + ")", DialogSceneComposer.skin, "scene-label-colored");
+                var positionLabel = new Label("Cursor Position: (" + simTextField.cursorPosition + ")", skin, "scene-label-colored");
                 table.add(positionLabel);
                 
                 table.row();
-                var slider = new Slider(0, simTextField.text == null ? 0 : simTextField.text.length(), 1, false, DialogSceneComposer.skin, "scene");
+                var slider = new Slider(0, simTextField.text == null ? 0 : simTextField.text.length(), 1, false, skin, "scene");
                 slider.setValue(simTextField.cursorPosition);
                 table.add(slider).minWidth(200);
-                slider.addListener(DialogSceneComposer.main.getHandListener());
-                slider.addListener(new TextTooltip("The cursor position when the textfield has keyboard focus.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                slider.addListener(handListener);
+                slider.addListener(new TextTooltip("The cursor position when the textfield has keyboard focus.", tooltipManager, skin, "scene"));
                 slider.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -253,11 +254,11 @@ public class TextFieldListeners {
                 });
                 
                 table.row();
-                var selectionLabel = new Label("Selection: (" + simTextField.selectionStart + ", " + simTextField.selectionEnd + ")", DialogSceneComposer.skin, "scene-label-colored");
+                var selectionLabel = new Label("Selection: (" + simTextField.selectionStart + ", " + simTextField.selectionEnd + ")", skin, "scene-label-colored");
                 table.add(selectionLabel);
                 
                 table.row();
-                var rangeSlider = new RangeSlider(DialogSceneComposer.skin, "scene");
+                var rangeSlider = new RangeSlider(skin, "scene");
                 rangeSlider.setMinimum(0);
                 rangeSlider.setMaximum(simTextField.text == null ? 0 : simTextField.text.length());
                 rangeSlider.setIncrement(1);
@@ -265,9 +266,9 @@ public class TextFieldListeners {
                 rangeSlider.setValueEnd(simTextField.selectionEnd);
                 rangeSlider.setDisabled(simTextField.selectAll);
                 table.add(rangeSlider).minWidth(200);
-                rangeSlider.getKnobBegin().addListener(DialogSceneComposer.main.getHandListener());
-                rangeSlider.getKnobEnd().addListener(DialogSceneComposer.main.getHandListener());
-                rangeSlider.addListener(new TextTooltip("The text range to be selected if this textField has keyboard focus.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                rangeSlider.getKnobBegin().addListener(handListener);
+                rangeSlider.getKnobEnd().addListener(handListener);
+                rangeSlider.addListener(new TextTooltip("The text range to be selected if this textField has keyboard focus.", tooltipManager, skin, "scene"));
                 rangeSlider.addListener(new ValueBeginChangeListener() {
                     @Override
                     public void changed(ValueBeginChangeEvent event, float value, Actor actor) {
@@ -288,15 +289,15 @@ public class TextFieldListeners {
                 });
                 
                 table.row();
-                var label = new Label("Select All: ", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Select All: ", skin, "scene-label-colored");
                 table.add(label);
                 
                 table.row();
-                var textButton = new TextButton(simTextField.selectAll ? "TRUE" : "FALSE", DialogSceneComposer.skin, "scene-small");
+                var textButton = new TextButton(simTextField.selectAll ? "TRUE" : "FALSE", skin, "scene-small");
                 textButton.setChecked(simTextField.selectAll);
                 table.add(textButton).minWidth(100);
-                textButton.addListener(DialogSceneComposer.main.getHandListener());
-                textButton.addListener(new TextTooltip("Convenience option to select all text.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textButton.addListener(handListener);
+                textButton.addListener(new TextTooltip("Convenience option to select all text.", tooltipManager, skin, "scene"));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -315,7 +316,7 @@ public class TextFieldListeners {
     
     public static EventListener textFieldAlignmentListener(final DialogSceneComposerEvents events,
                                                            final SimActor simActor) {
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -330,18 +331,18 @@ public class TextFieldListeners {
                 var table = new Table();
                 popTable.add(table);
                 
-                var label = new Label("Alignment:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Alignment:", skin, "scene-label-colored");
                 table.add(label).colspan(3);
                 
                 table.row();
                 table.defaults().space(10).left().uniformX();
                 var buttonGroup = new ButtonGroup<ImageTextButton>();
-                var imageTextButton = new ImageTextButton("Top-Left", DialogSceneComposer.skin, "scene-checkbox-colored");
+                var imageTextButton = new ImageTextButton("Top-Left", skin, "scene-checkbox-colored");
                 var topLeft = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the top left.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the top left.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -350,12 +351,12 @@ public class TextFieldListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Top", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Top", skin, "scene-checkbox-colored");
                 var top = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the top center.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the top center.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -364,12 +365,12 @@ public class TextFieldListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Top-Right", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Top-Right", skin, "scene-checkbox-colored");
                 var topRight = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the top right.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the top right.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -379,12 +380,12 @@ public class TextFieldListeners {
                 buttonGroup.add(imageTextButton);
                 
                 table.row();
-                imageTextButton = new ImageTextButton("Left", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Left", skin, "scene-checkbox-colored");
                 var left = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the middle left.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the middle left.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -393,12 +394,12 @@ public class TextFieldListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Center", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Center", skin, "scene-checkbox-colored");
                 var center = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the center.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the center.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -407,12 +408,12 @@ public class TextFieldListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Right", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Right", skin, "scene-checkbox-colored");
                 var right = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the middle right.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the middle right.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -422,12 +423,12 @@ public class TextFieldListeners {
                 buttonGroup.add(imageTextButton);
                 
                 table.row();
-                imageTextButton = new ImageTextButton("Bottom-Left", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Bottom-Left", skin, "scene-checkbox-colored");
                 var bottomLeft = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the bottom left.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the bottom left.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -436,12 +437,12 @@ public class TextFieldListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Bottom", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Bottom", skin, "scene-checkbox-colored");
                 var bottom = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the bottom center.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the bottom center.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -450,12 +451,12 @@ public class TextFieldListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Bottom-Right", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Bottom-Right", skin, "scene-checkbox-colored");
                 var bottomRight = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the bottom right.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the contents of the TextField to the bottom right.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -504,7 +505,7 @@ public class TextFieldListeners {
     public static EventListener textFieldFocusTraversalListener(final DialogSceneComposerEvents events,
                                                                 SimActor simActor) {
         var simTextField = (DialogSceneComposerModel.SimTextField) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -515,15 +516,15 @@ public class TextFieldListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Focus Traversal:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Focus Traversal:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
-                var textButton = new TextButton(simTextField.focusTraversal ? "TRUE" : "FALSE", DialogSceneComposer.skin, "scene-small");
+                var textButton = new TextButton(simTextField.focusTraversal ? "TRUE" : "FALSE", skin, "scene-small");
                 textButton.setChecked(simTextField.focusTraversal);
                 popTable.add(textButton).minWidth(100);
-                textButton.addListener(DialogSceneComposer.main.getHandListener());
-                textButton.addListener(new TextTooltip("Whether the text field allows for the use of focus traversal keys.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textButton.addListener(handListener);
+                textButton.addListener(new TextTooltip("Whether the text field allows for the use of focus traversal keys.", tooltipManager, skin, "scene"));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -541,7 +542,7 @@ public class TextFieldListeners {
     
     public static EventListener textFieldMaxLengthListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTextField = (DialogSceneComposerModel.SimTextField) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -556,16 +557,16 @@ public class TextFieldListeners {
                 var table = new Table();
                 popTable.add(table);
                 
-                var label = new Label("Max Length:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Max Length:", skin, "scene-label-colored");
                 table.add(label).right();
                 
-                var valueSpinner = new Spinner(simTextField.maxLength, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
+                var valueSpinner = new Spinner(simTextField.maxLength, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
                 valueSpinner.setMinimum(0);
                 table.add(valueSpinner).width(100).left();
-                valueSpinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
-                valueSpinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
-                valueSpinner.getButtonPlus().addListener(DialogSceneComposer.main.getHandListener());
-                valueSpinner.addListener(new TextTooltip("The maximum length of characters allowed in the TextField.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                valueSpinner.getTextField().addListener(ibeamListener);
+                valueSpinner.getButtonMinus().addListener(handListener);
+                valueSpinner.getButtonPlus().addListener(handListener);
+                valueSpinner.addListener(new TextTooltip("The maximum length of characters allowed in the TextField.", tooltipManager, skin, "scene"));
                 valueSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -574,7 +575,7 @@ public class TextFieldListeners {
                 });
                 
                 table.row();
-                label = new Label("(Set to 0 to show as many as possible)", DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label("(Set to 0 to show as many as possible)", skin, "scene-label-colored");
                 table.add(label).colspan(2);
             }
         };
@@ -586,7 +587,7 @@ public class TextFieldListeners {
     
     public static EventListener textFieldDisabledListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTextField = (DialogSceneComposerModel.SimTextField) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -597,15 +598,15 @@ public class TextFieldListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Disabled:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Disabled:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
-                var textButton = new TextButton(simTextField.disabled ? "TRUE" : "FALSE", DialogSceneComposer.skin, "scene-small");
+                var textButton = new TextButton(simTextField.disabled ? "TRUE" : "FALSE", skin, "scene-small");
                 textButton.setChecked(simTextField.disabled);
                 popTable.add(textButton).minWidth(100);
-                textButton.addListener(DialogSceneComposer.main.getHandListener());
-                textButton.addListener(new TextTooltip("Whether the TextField is disabled initially.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textButton.addListener(handListener);
+                textButton.addListener(new TextTooltip("Whether the TextField is disabled initially.", tooltipManager, skin, "scene"));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -623,8 +624,8 @@ public class TextFieldListeners {
     
     public static EventListener textFieldTextListener(final DialogSceneComposer dialogSceneComposer) {
         var simTextField = (DialogSceneComposerModel.SimTextField) dialogSceneComposer.simActor;
-        var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -637,14 +638,14 @@ public class TextFieldListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Text:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Text:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
                 textField.setText(simTextField.text);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
-                textField.addListener(DialogSceneComposer.main.getIbeamListener());
-                textField.addListener(new TextTooltip("The default text inside the TextField.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textField.addListener(ibeamListener);
+                textField.addListener(new TextTooltip("The default text inside the TextField.", tooltipManager, skin, "scene"));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

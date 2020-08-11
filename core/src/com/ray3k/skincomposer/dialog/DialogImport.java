@@ -39,20 +39,20 @@ import com.ray3k.skincomposer.utils.Utils;
 import java.nio.file.Paths;
 import java.util.Locale;
 
+import static com.ray3k.skincomposer.Main.*;
+
 /**
  *
  * @author Raymond
  */
 public class DialogImport extends Dialog {
-    private Main main;
     private enum Result {
         NEW, CURRENT, CANCEL
     }
     private FilesDroppedListener filesDroppedListener;
     
-    public DialogImport(Main main) {
-        super("Import...", main.getSkin(), "bg");
-        this.main = main;
+    public DialogImport() {
+        super("Import...", skin, "bg");
     
         filesDroppedListener = (Array<FileHandle> files) -> {
             if (files.size > 0 && files.first().name().toLowerCase(Locale.ROOT).endsWith(".json")) {
@@ -70,7 +70,7 @@ public class DialogImport extends Dialog {
                     });
                 };
             
-                main.getDialogFactory().showDialogLoading(runnable);
+                dialogFactory.showDialogLoading(runnable);
             }
         };
         
@@ -78,7 +78,7 @@ public class DialogImport extends Dialog {
     }
     
     private void populate() {
-        main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+        desktopWorker.addFilesDroppedListener(filesDroppedListener);
         getTitleTable().padLeft(5);
         
         var t = getContentTable();
@@ -93,10 +93,10 @@ public class DialogImport extends Dialog {
         
         var textField = new TextField("", getSkin());
         textField.setName("path");
-        textField.setText(main.getProjectData().getLastImportExportPath());
+        textField.setText(projectData.getLastImportExportPath());
         textField.setCursorPosition(Math.max(0, textField.getText().length() - 1));
         table.add(textField).minWidth(400);
-        textField.addListener(main.getIbeamListener());
+        textField.addListener(ibeamListener);
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -108,9 +108,9 @@ public class DialogImport extends Dialog {
             }
         });
         
-        var textButton = new TextButton("Browse...", main.getSkin());
+        var textButton = new TextButton("Browse...", skin);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -124,21 +124,21 @@ public class DialogImport extends Dialog {
         t.add().expandX();
         
         t.defaults().minWidth(75);
-        textButton = new TextButton("Import to New Project", main.getSkin());
+        textButton = new TextButton("Import to New Project", skin);
         textButton.setName("new");
         textButton.setDisabled(!checkPath());
         button(textButton, Result.NEW);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
-        textButton = new TextButton("Import into Current Project", main.getSkin());
+        textButton = new TextButton("Import into Current Project", skin);
         textButton.setName("current");
         textButton.setDisabled(!checkPath());
         button(textButton, Result.CURRENT);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
-        textButton = new TextButton("Cancel", main.getSkin());
+        textButton = new TextButton("Cancel", skin);
         button(textButton, Result.CANCEL);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
         key(Keys.ENTER, Result.CURRENT).key(Keys.ESCAPE, Result.CANCEL);
     }
@@ -154,7 +154,7 @@ public class DialogImport extends Dialog {
                 } else {
                     TextField textField = findActor("path");
                     var fileHandle = Gdx.files.absolute(textField.getText());
-                    main.getProjectData().setLastImportExportPath(fileHandle.path());
+                    projectData.setLastImportExportPath(fileHandle.path());
 
                     newFile(fileHandle);
                 }
@@ -165,7 +165,7 @@ public class DialogImport extends Dialog {
                 } else {
                     TextField textField = findActor("path");
                     var fileHandle = Gdx.files.absolute(textField.getText());
-                    main.getProjectData().setLastImportExportPath(fileHandle.path());
+                    projectData.setLastImportExportPath(fileHandle.path());
 
                     importFile(fileHandle);
                 }
@@ -175,48 +175,48 @@ public class DialogImport extends Dialog {
     }
     
     private void newFile(FileHandle fileHandle) {
-        if (!main.getProjectData().areChangesSaved() && !main.getProjectData().isNewProject()) {
-            main.getDialogFactory().yesNoCancelDialog("Save Changes?",
+        if (!projectData.areChangesSaved() && !projectData.isNewProject()) {
+            dialogFactory.yesNoCancelDialog("Save Changes?",
                     "Do you want to save changes to the existing project?"
                             + "\nAll unsaved changes will be lost.",
                     (int selection) -> {
                         if (selection == 0) {
-                            main.getMainListener().saveFile(() -> {
+                            mainListener.saveFile(() -> {
                                 Gdx.app.postRunnable(() -> {
-                                    main.getProjectData().clear();
+                                    projectData.clear();
                                     importFile(fileHandle);
                                 });
                             });
                         } else if (selection == 1) {
-                            main.getProjectData().clear();
+                            projectData.clear();
                             importFile(fileHandle);
                         }
                     }, null);
         } else {
-            main.getProjectData().clear();
+            projectData.clear();
             importFile(fileHandle);
         }
     }
     
     private void importFile(FileHandle fileHandle) {
-        main.getDialogFactory().showDialogLoading(() -> {
+        dialogFactory.showDialogLoading(() -> {
             Gdx.app.postRunnable(() -> {
                 Array<String> warnings = new Array<>();
 
                 try {
-                    Array<String> newWarnings = main.getJsonData().readFile(fileHandle);
+                    Array<String> newWarnings = jsonData.readFile(fileHandle);
                     warnings.addAll(newWarnings);
-                    main.getProjectData().getAtlasData().atlasCurrent = false;
-                    main.getJsonData().checkForPropertyConsistency();
-                    main.getAtlasData().produceAtlas();
-                    main.getRootTable().populate();
+                    projectData.getAtlasData().atlasCurrent = false;
+                    jsonData.checkForPropertyConsistency();
+                    atlasData.produceAtlas();
+                    rootTable.populate();
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error attempting to import JSON", e);
-                    main.getDialogFactory().showDialogError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
+                    dialogFactory.showDialogError("Import Error...", "Error while attempting to import a skin.\nPlease check that all files exist.\n\nOpen log?");
                 }
 
                 if (warnings.size > 0) {
-                    main.getDialogFactory().showWarningDialog(false, warnings);
+                    dialogFactory.showWarningDialog(false, warnings);
                 }
             });
         });
@@ -231,7 +231,7 @@ public class DialogImport extends Dialog {
     @Override
     public boolean remove() {
         fire(new DialogEvent(DialogEvent.Type.CLOSE));
-        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        desktopWorker.removeFilesDroppedListener(filesDroppedListener);
         return super.remove();
     }
     
@@ -242,7 +242,7 @@ public class DialogImport extends Dialog {
         }
 
         TextField textField  = findActor("path");
-        var file = main.getDesktopWorker().openDialog("Import skin...", textField.getText(), filterPatterns, "Json files");
+        var file = desktopWorker.openDialog("Import skin...", textField.getText(), filterPatterns, "Json files");
         if (file != null) {
             var fileHandle = new FileHandle(file);
             

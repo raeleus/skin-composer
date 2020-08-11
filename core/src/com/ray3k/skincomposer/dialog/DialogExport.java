@@ -40,16 +40,15 @@ import com.ray3k.skincomposer.utils.Utils;
 
 import java.nio.file.Paths;
 
+import static com.ray3k.skincomposer.Main.*;
+
 /**
  *
  * @author Raymond
  */
 public class DialogExport extends Dialog {
-    private Main main;
-
-    public DialogExport(Main main) {
-        super("Export skin...", main.getSkin(), "bg");
-        this.main = main;
+    public DialogExport() {
+        super("Export skin...", skin, "bg");
         
         populate();
     }
@@ -63,15 +62,15 @@ public class DialogExport extends Dialog {
         getContentTable().add(table).padBottom(10);
         
         table.defaults().space(5);
-        var label = new Label("Export Path:", main.getSkin());
+        var label = new Label("Export Path:", skin);
         table.add(label);
         
-        var textField = new TextField("", main.getSkin());
+        var textField = new TextField("", skin);
         textField.setName("path");
-        textField.setText(main.getProjectData().getLastImportExportPath());
+        textField.setText(projectData.getLastImportExportPath());
         textField.setCursorPosition(Math.max(0, textField.getText().length() - 1));
         table.add(textField).minWidth(400);
-        textField.addListener(main.getIbeamListener());
+        textField.addListener(ibeamListener);
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -80,9 +79,9 @@ public class DialogExport extends Dialog {
             }
         });
         
-        var textButton = new TextButton("Browse...", main.getSkin());
+        var textButton = new TextButton("Browse...", skin);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -91,50 +90,50 @@ public class DialogExport extends Dialog {
         });
         
         getContentTable().row();
-        var textureAtlasCheckBox = new CheckBox("Generate texture atlas", main.getSkin());
-        textureAtlasCheckBox.setChecked(main.getProjectData().isExportingAtlas());
+        var textureAtlasCheckBox = new CheckBox("Generate texture atlas", skin);
+        textureAtlasCheckBox.setChecked(projectData.isExportingAtlas());
         getContentTable().add(textureAtlasCheckBox);
-        textureAtlasCheckBox.addListener(main.getHandListener());
+        textureAtlasCheckBox.addListener(handListener);
         textureAtlasCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                main.getProjectData().setExportingAtlas(textureAtlasCheckBox.isChecked());
+                projectData.setExportingAtlas(textureAtlasCheckBox.isChecked());
             }
         });
         
         getContentTable().row();
-        var fontCheckBox = new CheckBox("Copy font files to destination", main.getSkin());
-        fontCheckBox.setChecked(main.getProjectData().isExportingFonts());
+        var fontCheckBox = new CheckBox("Copy font files to destination", skin);
+        fontCheckBox.setChecked(projectData.isExportingFonts());
         getContentTable().add(fontCheckBox);
-        fontCheckBox.addListener(main.getHandListener());
+        fontCheckBox.addListener(handListener);
         fontCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                main.getProjectData().setExportingFonts(fontCheckBox.isChecked());
+                projectData.setExportingFonts(fontCheckBox.isChecked());
             }
         });
         
         getContentTable().row();
-        var simpleNamesCheckBox = new CheckBox("Export with simple names", main.getSkin());
-        simpleNamesCheckBox.setChecked(main.getProjectData().isUsingSimpleNames());
+        var simpleNamesCheckBox = new CheckBox("Export with simple names", skin);
+        simpleNamesCheckBox.setChecked(projectData.isUsingSimpleNames());
         getContentTable().add(simpleNamesCheckBox);
-        simpleNamesCheckBox.addListener(main.getHandListener());
+        simpleNamesCheckBox.addListener(handListener);
         simpleNamesCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                main.getProjectData().setUsingSimpleNames(simpleNamesCheckBox.isChecked());
+                projectData.setUsingSimpleNames(simpleNamesCheckBox.isChecked());
             }
         });
         
         getContentTable().row();
-        var hexCheckBox = new CheckBox("Export colors as hexadecimal", main.getSkin());
-        hexCheckBox.setChecked(main.getProjectData().isExportingHex());
+        var hexCheckBox = new CheckBox("Export colors as hexadecimal", skin);
+        hexCheckBox.setChecked(projectData.isExportingHex());
         getContentTable().add(hexCheckBox);
-        hexCheckBox.addListener(main.getHandListener());
+        hexCheckBox.addListener(handListener);
         hexCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                main.getProjectData().setExportingHex(hexCheckBox.isChecked());
+                projectData.setExportingHex(hexCheckBox.isChecked());
             }
         });
         
@@ -143,19 +142,19 @@ public class DialogExport extends Dialog {
         getContentTable().add(table);
         
         table.defaults().space(5);
-        label = new Label("Exported JSON Format:", main.getSkin());
+        label = new Label("Exported JSON Format:", skin);
         table.add(label);
         
-        var selectBox = new SelectBox<ExportFormat>(main.getSkin());
+        var selectBox = new SelectBox<ExportFormat>(skin);
         selectBox.setItems(ExportFormat.MINIMAL, ExportFormat.JAVASCRIPT, ExportFormat.JSON);
-        selectBox.setSelected(main.getProjectData().getExportFormat());
+        selectBox.setSelected(projectData.getExportFormat());
         table.add(selectBox);
-        selectBox.addListener(main.getHandListener());
-        selectBox.getList().addListener(main.getHandListener());
+        selectBox.addListener(handListener);
+        selectBox.getList().addListener(handListener);
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                main.getProjectData().setExportFormat(selectBox.getSelected());
+                projectData.setExportFormat(selectBox.getSelected());
             }
         });
         
@@ -163,15 +162,15 @@ public class DialogExport extends Dialog {
         getButtonTable().pad(5.0f);
         
         getButtonTable().defaults().minWidth(75);
-        textButton = new TextButton("Export", main.getSkin());
+        textButton = new TextButton("Export", skin);
         textButton.setName("export");
         textButton.setDisabled(!checkPath());
         button(textButton, true);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
-        textButton = new TextButton("Cancel", main.getSkin());
+        textButton = new TextButton("Cancel", skin);
         button(textButton, false);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
         key(Keys.ENTER, true).key(Keys.ESCAPE, false);
     }
@@ -183,7 +182,7 @@ public class DialogExport extends Dialog {
         }
 
         TextField textField  = findActor("path");
-        var file = main.getDesktopWorker().saveDialog("Export skin...", textField.getText(), filterPatterns, "Json files");
+        var file = desktopWorker.saveDialog("Export skin...", textField.getText(), filterPatterns, "Json files");
         if (file != null) {
             var fileHandle = new FileHandle(file);
             if (fileHandle.extension().equals("")) {
@@ -205,7 +204,7 @@ public class DialogExport extends Dialog {
             } else {
                 TextField textField = findActor("path");
                 var fileHandle = Gdx.files.absolute(textField.getText());
-                main.getProjectData().setLastImportExportPath(fileHandle.path());
+                projectData.setLastImportExportPath(fileHandle.path());
                 
                 writeFile(fileHandle);
             }
@@ -214,39 +213,39 @@ public class DialogExport extends Dialog {
     }
     
     private void writeFile(FileHandle fileHandle) {
-        main.getDialogFactory().showDialogLoading(() -> {
+        dialogFactory.showDialogLoading(() -> {
             Gdx.app.postRunnable(() -> {
                 Array<String> warnings = new Array<>();
 
-                Array<String> newWarnings = main.getProjectData().getJsonData().writeFile(fileHandle);
+                Array<String> newWarnings = projectData.getJsonData().writeFile(fileHandle);
                 warnings.addAll(newWarnings);
 
-                if (main.getProjectData().isExportingAtlas()) {
+                if (projectData.isExportingAtlas()) {
                     try {
-                        newWarnings = main.getProjectData().getAtlasData().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"), Main.appFolder.child("texturepacker/atlas-export-settings.json"));
+                        newWarnings = projectData.getAtlasData().writeAtlas(fileHandle.parent().child(fileHandle.nameWithoutExtension() + ".atlas"), Main.appFolder.child("texturepacker/atlas-export-settings.json"));
                         warnings.addAll(newWarnings);
                     } catch (Exception ex) {
                         Gdx.app.error(getClass().getName(), "Error while writing texture atlas", ex);
-                        main.getDialogFactory().showDialogError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
+                        dialogFactory.showDialogError("Atlas Error...", "Error while writing texture atlas.\n\nOpen log?");
                     }
                 }
 
-                if (main.getProjectData().isExportingFonts()) {
-                    for (FontData font : main.getProjectData().getJsonData().getFonts()) {
+                if (projectData.isExportingFonts()) {
+                    for (FontData font : projectData.getJsonData().getFonts()) {
                         if (!font.file.parent().equals(fileHandle.parent())) {
                             font.file.copyTo(fileHandle.parent());
                         }
                     }
 
-                    for (FreeTypeFontData font : main.getProjectData().getJsonData().getFreeTypeFonts()) {
+                    for (FreeTypeFontData font : projectData.getJsonData().getFreeTypeFonts()) {
                         if (font.useCustomSerializer && !font.file.parent().equals(fileHandle.parent())) {
                             font.file.copyTo(fileHandle.parent());
                         }
                     }
                 }
 
-                if (warnings.size > 0 && main.getProjectData().isShowingExportWarnings()) {
-                    main.getDialogFactory().showWarningDialog(warnings);
+                if (warnings.size > 0 && projectData.isShowingExportWarnings()) {
+                    dialogFactory.showWarningDialog(warnings);
                 }
             });
         });

@@ -55,13 +55,13 @@ import com.ray3k.tenpatch.TenPatchDrawable;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import static com.ray3k.skincomposer.Main.*;
+
 /**
  * @author Raymond Buckley
  */
 public class DialogTenPatch extends Dialog {
     public static final int SCROLL_AMOUNT = 1;
-    private Main main;
-    private Skin skin;
     private TenPatchDrawable tenPatchDrawable;
     private TenPatchWidget tenPatchWidget;
     private boolean zoomToMouse;
@@ -77,10 +77,8 @@ public class DialogTenPatch extends Dialog {
     private float splitValue;
     private TextureRegion originalRegion;
     
-    public DialogTenPatch(Main main, DrawableData drawableData, boolean newDrawable) {
-        super("", main.getSkin(), "dialog");
-        this.main = main;
-        skin = main.getSkin();
+    public DialogTenPatch(DrawableData drawableData, boolean newDrawable) {
+        super("", skin, "dialog");
         this.drawableData = drawableData;
         originalName = newDrawable ? "" : drawableData.name;
         zoomToMouse = false;
@@ -99,7 +97,7 @@ public class DialogTenPatch extends Dialog {
                 tenPatchWidget.center();
             }
         };
-        main.getStage().addListener(stageResizeListener);
+        stage.addListener(stageResizeListener);
     
         filesDroppedListener = (Array<FileHandle> files) -> {
             if (files.size > 0 && files.first().name().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
@@ -109,11 +107,11 @@ public class DialogTenPatch extends Dialog {
                     });
                 };
             
-                main.getDialogFactory().showDialogLoading(runnable);
+                dialogFactory.showDialogLoading(runnable);
             }
         };
     
-        main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+        desktopWorker.addFilesDroppedListener(filesDroppedListener);
     
         addListener(new InputListener() {
             @Override
@@ -147,7 +145,7 @@ public class DialogTenPatch extends Dialog {
                                 var iter = drawableData.tenPatchData.regionNames.iterator();
                                 while (iter.hasNext()) {
                                     var region = iter.next();
-                                    if (main.getAtlasData().getDrawable(region) == null) {
+                                    if (atlasData.getDrawable(region) == null) {
                                         iter.remove();
                                     }
                                 }
@@ -220,7 +218,7 @@ public class DialogTenPatch extends Dialog {
     }
     
     private void populate() {
-        setSize(main.getStage().getWidth(), main.getStage().getHeight());
+        setSize(stage.getWidth(), stage.getHeight());
         
         var root = getContentTable();
         root.pad(10);
@@ -234,7 +232,7 @@ public class DialogTenPatch extends Dialog {
         var splitPane = new SplitPane(top, bottom, true, skin);
         splitPane.setSplitAmount(splitValue);
         root.add(splitPane).grow();
-        splitPane.addListener(main.getVerticalResizeArrowListener());
+        splitPane.addListener(verticalResizeArrowListener);
         splitPane.addListener(new DragListener() {
             {
                 setTapSquareSize(0f);
@@ -267,7 +265,7 @@ public class DialogTenPatch extends Dialog {
         var textField = new TextField(drawableData.name, skin);
         textField.setName("nameField");
         table.add(textField).growX();
-        textField.addListener(main.getIbeamListener());
+        textField.addListener(ibeamListener);
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -279,7 +277,7 @@ public class DialogTenPatch extends Dialog {
         table.defaults().uniform().fill();
         var textButton = new TextButton("Load Patches", skin);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -288,7 +286,7 @@ public class DialogTenPatch extends Dialog {
                     if (!Utils.isMac()) {
                         filterPatterns = new String[]{"*.9.png"};
                     }
-                    var file = main.getDesktopWorker().openDialog("Load patches from file...", main.getProjectData().getLastDrawablePath(), filterPatterns, "Nine patch files");
+                    var file = desktopWorker.openDialog("Load patches from file...", projectData.getLastDrawablePath(), filterPatterns, "Nine patch files");
                     if (file != null) {
                         Gdx.app.postRunnable(() -> {
                             var fileHandle = new FileHandle(file);
@@ -299,13 +297,13 @@ public class DialogTenPatch extends Dialog {
                     }
                 };
     
-                main.getDialogFactory().showDialogLoading(runnable);
+                dialogFactory.showDialogLoading(runnable);
             }
         });
         
         textButton = new TextButton("Save to File", skin);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -314,7 +312,7 @@ public class DialogTenPatch extends Dialog {
                     if (!Utils.isMac()) {
                         filterPatterns = new String[]{"*.png"};
                     }
-                    var file = main.getDesktopWorker().saveDialog("Save as 9patch...", main.getProjectData().getLastDrawablePath(), filterPatterns, "Image files");
+                    var file = desktopWorker.saveDialog("Save as 9patch...", projectData.getLastDrawablePath(), filterPatterns, "Image files");
                     if (file != null) {
                         Gdx.app.postRunnable(() -> {
                             var fileHandle = new FileHandle(file);
@@ -326,13 +324,13 @@ public class DialogTenPatch extends Dialog {
                     }
                 };
                 
-                main.getDialogFactory().showDialogLoading(runnable);
+                dialogFactory.showDialogLoading(runnable);
             }
         });
         
         textButton = new TextButton("Clear", skin);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -342,7 +340,7 @@ public class DialogTenPatch extends Dialog {
         
         textButton = new TextButton("More info...", skin);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -358,8 +356,8 @@ public class DialogTenPatch extends Dialog {
         tenPatchWidget.setTextureRegion(loadTextureFile(drawableData.file));
         
         top.add(tenPatchWidget).grow();
-        tenPatchWidget.getStretchSwitchButton().addListener(main.getHandListener());
-        tenPatchWidget.getModeSwitchButton().addListener(main.getHandListener());
+        tenPatchWidget.getStretchSwitchButton().addListener(handListener);
+        tenPatchWidget.getModeSwitchButton().addListener(handListener);
         tenPatchWidget.addListener(new InputListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
@@ -401,7 +399,7 @@ public class DialogTenPatch extends Dialog {
         imageButton.setName("grid-light");
         imageButton.setProgrammaticChangeEvents(false);
         table.add(imageButton);
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -421,7 +419,7 @@ public class DialogTenPatch extends Dialog {
         imageButton.setName("grid-dark");
         imageButton.setProgrammaticChangeEvents(false);
         table.add(imageButton);
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -439,7 +437,7 @@ public class DialogTenPatch extends Dialog {
         
         imageButton = new ImageButton(skin, "resize");
         table.add(imageButton).expandX().right();
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -453,7 +451,7 @@ public class DialogTenPatch extends Dialog {
         slider.setName("ten-patch-zoom");
         slider.setValue(1);
         table.add(slider);
-        slider.addListener(main.getHandListener());
+        slider.addListener(handListener);
         slider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -478,11 +476,11 @@ public class DialogTenPatch extends Dialog {
     
         var imageTextButton = new ImageTextButton("Animation...", skin, "ten-patch-animation");
         table.add(imageTextButton);
-        imageTextButton.addListener(main.getHandListener());
+        imageTextButton.addListener(handListener);
         imageTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                var dialog = new DialogTenPatchAnimation(drawableData, skin, main);
+                var dialog = new DialogTenPatchAnimation(drawableData);
                 dialog.addListener(new DialogTenPatchAnimation.DialogTenPatchAnimationListener() {
                     @Override
                     public void animationUpdated(DialogTenPatchAnimation.DialogTenPatchAnimationEvent event) {
@@ -495,11 +493,11 @@ public class DialogTenPatch extends Dialog {
     
         imageTextButton = new ImageTextButton("More settings...", skin, "ten-patch-scrolling");
         table.add(imageTextButton);
-        imageTextButton.addListener(main.getHandListener());
+        imageTextButton.addListener(handListener);
         imageTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                var dialog = new DialogTenPatchSettings(drawableData, skin, main);
+                var dialog = new DialogTenPatchSettings(drawableData);
                 dialog.addListener(new DialogTenPatchSettings.DialogTenPatchSettingsListener() {
                     @Override
                     public void settingsUpdated(DialogTenPatchSettings.DialogTenPatchSettingsEvent event) {
@@ -522,22 +520,22 @@ public class DialogTenPatch extends Dialog {
         resizer.setTouchable(Touchable.enabled);
         resizer.setResizeFromCenter(true);
         
-        var cursor = Utils.textureRegionToCursor(main.getSkin().getRegion("cursor_resize_ne"), 16, 16);
+        var cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
         var resizeFourArrowListener = new ResizeFourArrowListener(cursor);
         resizer.getBottomLeftHandle().addListener(resizeFourArrowListener);
         resizer.getTopRightHandle().addListener(resizeFourArrowListener);
         
-        cursor = Utils.textureRegionToCursor(main.getSkin().getRegion("cursor_resize_nw"), 16, 16);
+        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_nw"), 16, 16);
         resizeFourArrowListener = new ResizeFourArrowListener(cursor);
         resizer.getTopLeftHandle().addListener(resizeFourArrowListener);
         resizer.getBottomRightHandle().addListener(resizeFourArrowListener);
         
-        cursor = Utils.textureRegionToCursor(main.getSkin().getRegion("cursor_resize_vertical"), 16, 16);
+        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_vertical"), 16, 16);
         resizeFourArrowListener = new ResizeFourArrowListener(cursor);
         resizer.getBottomHandle().addListener(resizeFourArrowListener);
         resizer.getTopHandle().addListener(resizeFourArrowListener);
         
-        cursor = Utils.textureRegionToCursor(main.getSkin().getRegion("cursor_resize_horizontal"), 16, 16);
+        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_horizontal"), 16, 16);
         resizeFourArrowListener = new ResizeFourArrowListener(cursor);
         resizer.getLeftHandle().addListener(resizeFourArrowListener);
         resizer.getRightHandle().addListener(resizeFourArrowListener);
@@ -548,10 +546,10 @@ public class DialogTenPatch extends Dialog {
         if (matcher.find()) {
             name = matcher.group();
         }
-        originalRegion = main.getAtlasData().getAtlas().findRegion(name);
+        originalRegion = atlasData.getAtlas().findRegion(name);
         tenPatchDrawable = new TenPatchDrawable(new int[0], new int[0], false, originalRegion);
         if (drawableData.tenPatchData.colorName != null) {
-            tenPatchDrawable.getColor().set(main.getJsonData().getColorByName(drawableData.tenPatchData.colorName).color);
+            tenPatchDrawable.getColor().set(jsonData.getColorByName(drawableData.tenPatchData.colorName).color);
         }
         tenPatchDrawable.setTiling(drawableData.tenPatchData.tile);
         table = new Table();
@@ -575,8 +573,8 @@ public class DialogTenPatch extends Dialog {
         selectBox.setName("contentSelectBox");
         selectBox.setItems("None", "Text", "Color", "Drawable");
         table.add(selectBox);
-        selectBox.addListener(main.getHandListener());
-        selectBox.getList().addListener(main.getHandListener());
+        selectBox.addListener(handListener);
+        selectBox.getList().addListener(handListener);
         selectBox.getList().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -592,11 +590,11 @@ public class DialogTenPatch extends Dialog {
         
         imageButton = new ImageButton(skin, "color");
         table.add(imageButton);
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+                dialogFactory.showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                     if (colorData == null) {
                         previewColor.set(DEFAULT_PREVIEW_COLOR);
                     } else {
@@ -613,11 +611,11 @@ public class DialogTenPatch extends Dialog {
     
         imageButton = new ImageButton(skin, "color");
         table.add(imageButton);
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+                dialogFactory.showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                     if (colorData == null) {
                         bottom.setColor(Color.WHITE);
                     } else {
@@ -640,11 +638,11 @@ public class DialogTenPatch extends Dialog {
         textButton.setName("okayButton");
         button(textButton, true);
         validateName();
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
         textButton = new TextButton("Cancel", skin);
         button(textButton, false);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
         updatePreview();
         layout();
@@ -659,7 +657,7 @@ public class DialogTenPatch extends Dialog {
         
         switch (selectBox.getSelected()) {
             case "Text":
-                main.getDialogFactory().showInputDialog("Text Content", "Enter the text to be displayed inside of the preview:", "Lorem Ipsum", new DialogFactory.InputDialogListener() {
+                dialogFactory.showInputDialog("Text Content", "Enter the text to be displayed inside of the preview:", "Lorem Ipsum", new DialogFactory.InputDialogListener() {
                     @Override
                     public void confirmed(String text) {
                         var label = new Label(text, skin, "white");
@@ -682,10 +680,10 @@ public class DialogTenPatch extends Dialog {
                 table.add(image).grow();
                 break;
             case "Drawable":
-                var dialog = main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
+                var dialog = dialogFactory.showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
                     @Override
                     public void confirmed(DrawableData drawable, DialogDrawables dialog) {
-                        var image = new Image(main.getAtlasData().getDrawablePairs().get(drawable));
+                        var image = new Image(atlasData.getDrawablePairs().get(drawable));
                         image.setScaling(Scaling.none);
                         image.setColor(previewColor);
                         table.add(image).grow();
@@ -717,11 +715,11 @@ public class DialogTenPatch extends Dialog {
         tenPatchDrawable.setMinWidth(drawableData.minWidth);
         tenPatchDrawable.setMinHeight(drawableData.minHeight);
         tenPatchDrawable.setTiling(drawableData.tenPatchData.tile);
-        if (drawableData.tenPatchData.colorName != null) tenPatchDrawable.setColor(main.getJsonData().getColorByName(drawableData.tenPatchData.colorName).color);
-        if (drawableData.tenPatchData.color1Name != null) tenPatchDrawable.setColor1(main.getJsonData().getColorByName(drawableData.tenPatchData.color1Name).color);
-        if (drawableData.tenPatchData.color2Name != null) tenPatchDrawable.setColor2(main.getJsonData().getColorByName(drawableData.tenPatchData.color2Name).color);
-        if (drawableData.tenPatchData.color3Name != null) tenPatchDrawable.setColor3(main.getJsonData().getColorByName(drawableData.tenPatchData.color3Name).color);
-        if (drawableData.tenPatchData.color4Name != null) tenPatchDrawable.setColor4(main.getJsonData().getColorByName(drawableData.tenPatchData.color4Name).color);
+        if (drawableData.tenPatchData.colorName != null) tenPatchDrawable.setColor(jsonData.getColorByName(drawableData.tenPatchData.colorName).color);
+        if (drawableData.tenPatchData.color1Name != null) tenPatchDrawable.setColor1(jsonData.getColorByName(drawableData.tenPatchData.color1Name).color);
+        if (drawableData.tenPatchData.color2Name != null) tenPatchDrawable.setColor2(jsonData.getColorByName(drawableData.tenPatchData.color2Name).color);
+        if (drawableData.tenPatchData.color3Name != null) tenPatchDrawable.setColor3(jsonData.getColorByName(drawableData.tenPatchData.color3Name).color);
+        if (drawableData.tenPatchData.color4Name != null) tenPatchDrawable.setColor4(jsonData.getColorByName(drawableData.tenPatchData.color4Name).color);
         tenPatchDrawable.setOffsetX(drawableData.tenPatchData.offsetX);
         tenPatchDrawable.setOffsetY(drawableData.tenPatchData.offsetY);
         tenPatchDrawable.setOffsetXspeed(drawableData.tenPatchData.offsetXspeed);
@@ -938,12 +936,12 @@ public class DialogTenPatch extends Dialog {
             fire(new DialogTenPatchEvent(null));
         }
         
-        main.getStage().removeListener(stageResizeListener);
+        stage.removeListener(stageResizeListener);
     }
     
     @Override
     public boolean remove() {
-        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        desktopWorker.removeFilesDroppedListener(filesDroppedListener);
         return super.remove();
     }
     
@@ -1113,7 +1111,7 @@ public class DialogTenPatch extends Dialog {
         
         var textButton = new TextButton("TenPatch on GitHub", skin, "link");
         subTable.add(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -1129,7 +1127,7 @@ public class DialogTenPatch extends Dialog {
         
         textButton = new TextButton("OK", skin);
         dialog.button(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
         dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
         
@@ -1140,7 +1138,7 @@ public class DialogTenPatch extends Dialog {
     public void validateName() {
         var valid = drawableData.name != null && !drawableData.name.matches("^\\d.*|^-.*|.*\\s.*|.*[^a-zA-Z\\d\\s-_ñáéíóúüÑÁÉÍÓÚÜ].*|^$");
         
-        if (valid && main.getProjectData().getAtlasData().getDrawable(drawableData.name) != null) {
+        if (valid && projectData.getAtlasData().getDrawable(drawableData.name) != null) {
             if (!drawableData.name.equals(originalName)) {
                 valid = false;
             }

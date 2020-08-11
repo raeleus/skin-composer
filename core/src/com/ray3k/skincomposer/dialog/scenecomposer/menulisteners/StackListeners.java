@@ -15,14 +15,15 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents.WidgetType;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimStack;
 import com.ray3k.stripe.PopTableClickListener;
+import static com.ray3k.skincomposer.Main.*;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
 
 public class StackListeners {
     public static EventListener stackNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simStack = (SimStack) dialogSceneComposer.simActor;
-        var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -36,14 +37,14 @@ public class StackListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Name:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Name:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
                 textField.setText(simStack.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
-                textField.addListener(DialogSceneComposer.main.getIbeamListener());
-                textField.addListener(new TextTooltip("The name of the Stack to allow for convenient searching via Group#findActor().", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textField.addListener(ibeamListener);
+                textField.addListener(new TextTooltip("The name of the Stack to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene"));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

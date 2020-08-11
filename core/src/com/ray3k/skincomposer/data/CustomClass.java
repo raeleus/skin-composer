@@ -34,7 +34,6 @@ public class CustomClass implements Json.Serializable {
     private boolean declareAfterUIclasses;
     private Array<CustomStyle> styles;
     private CustomStyle templateStyle;
-    private Main main;
 
     public CustomClass() {
         
@@ -87,18 +86,6 @@ public class CustomClass implements Json.Serializable {
         return templateStyle;
     }
 
-    public Main getMain() {
-        return main;
-    }
-
-    public void setMain(Main main) {
-        this.main = main;
-        for (CustomStyle style : styles) {
-            style.setMain(main);
-        }
-        templateStyle.setMain(main);
-    }
-
     public boolean isDeclareAfterUIclasses() {
         return declareAfterUIclasses;
     }
@@ -147,8 +134,6 @@ public class CustomClass implements Json.Serializable {
         }
         
         returnValue.declareAfterUIclasses = declareAfterUIclasses;
-        
-        returnValue.main = main;
         
         return returnValue;
     }

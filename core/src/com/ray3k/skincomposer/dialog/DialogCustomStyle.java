@@ -31,27 +31,25 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.CustomClass;
 import com.ray3k.skincomposer.data.CustomStyle;
 import com.ray3k.skincomposer.data.StyleData;
 
+import static com.ray3k.skincomposer.Main.*;
+
 public class DialogCustomStyle extends Dialog {
     private final TextField nameField;
     private final TextButton okButton;
-    private Main main;
     private boolean allowSameName;
     private String originalName;
     
-    public DialogCustomStyle(Main main, String title, boolean allowSameName) {
-        this(main, title, allowSameName, null);
+    public DialogCustomStyle(String title, boolean allowSameName) {
+        this(title, allowSameName, null);
     }
     
-    public DialogCustomStyle(Main main, String title, boolean allowSameName, String name) {
-        super(title, main.getSkin(), "bg");
+    public DialogCustomStyle(String title, boolean allowSameName, String name) {
+        super(title, skin, "bg");
         getTitleLabel().setAlignment(Align.center);
-        
-        this.main = main;
         
         this.allowSameName = allowSameName;
         originalName = name;
@@ -60,7 +58,7 @@ public class DialogCustomStyle extends Dialog {
         getContentTable().add(label).pad(10.0f).padBottom(5.0f);
         
         getContentTable().row();
-        nameField = new TextField("", main.getSkin());
+        nameField = new TextField("", skin);
         nameField.setFocusTraversal(false);
         nameField.setText(name);
         nameField.addCaptureListener(new InputListener() {
@@ -78,7 +76,7 @@ public class DialogCustomStyle extends Dialog {
             }
             
         });
-        nameField.addListener(main.getIbeamListener());
+        nameField.addListener(ibeamListener);
         getContentTable().add(nameField).growX().padLeft(10.0f).padRight(10.0f);
         
         getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
@@ -88,7 +86,7 @@ public class DialogCustomStyle extends Dialog {
         okButton = (TextButton) getButtonTable().getCells().first().getActor();
         updateOkButton();
         
-        getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        getButtonTable().getCells().get(1).getActor().addListener(handListener);
         
         nameField.addListener(new ChangeListener() {
             @Override
@@ -119,7 +117,7 @@ public class DialogCustomStyle extends Dialog {
         if (StyleData.validate(nameField.getText())) {
             boolean buttonDisabled = false;
             
-            CustomClass customClass = (CustomClass) main.getRootTable().getClassSelectBox().getSelected();
+            CustomClass customClass = (CustomClass) rootTable.getClassSelectBox().getSelected();
             
             if (!allowSameName || !nameField.getText().equals(originalName)) {
                 for (CustomStyle otherStyle : customClass.getStyles()) {
@@ -131,13 +129,13 @@ public class DialogCustomStyle extends Dialog {
             }
             
             okButton.setDisabled(buttonDisabled);
-            if (!buttonDisabled && !okButton.getListeners().contains(main.getHandListener(), true)) {
-                okButton.addListener(main.getHandListener());
+            if (!buttonDisabled && !okButton.getListeners().contains(handListener, true)) {
+                okButton.addListener(handListener);
             }
         } else {
             okButton.setDisabled(true);
-            if (okButton.getListeners().contains(main.getHandListener(), true)) {
-                okButton.removeListener(main.getHandListener());
+            if (okButton.getListeners().contains(handListener, true)) {
+                okButton.removeListener(handListener);
             }
         }
     }

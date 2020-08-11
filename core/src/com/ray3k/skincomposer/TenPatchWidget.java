@@ -41,6 +41,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.dialog.DialogTenPatch.TenPatchData;
 
+import static com.ray3k.skincomposer.Main.skin;
+
 /**
  *
  * @author Raymond
@@ -135,7 +137,7 @@ public class TenPatchWidget extends Stack {
             }
         });
     
-        numberLabel = new Label("52", Main.main.getSkin(), "filter");
+        numberLabel = new Label("52", skin, "filter");
         numberLabel.setTouchable(Touchable.disabled);
         numberLabel.setColor(1, 1, 1, 0);
         numberLabel.setAlignment(Align.center);

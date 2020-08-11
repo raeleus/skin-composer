@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer.dialog;
-import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer.main;
+import static com.ray3k.skincomposer.Main.*;
 
 public class EditWidget extends Button {
     private Actor followActor;
@@ -45,13 +45,13 @@ public class EditWidget extends Button {
                     dialog.model.updatePreview();
                     dialog.populatePath();
                     
-                    var label = new FadeLabel(simActor.toString(), main.getSkin(), "scene-edit-tip");
-                    main.getStage().addActor(label);
+                    var label = new FadeLabel(simActor.toString(), skin, "scene-edit-tip");
+                    stage.addActor(label);
                     label.setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
                 }
             }
         });
-        addListener(main.getHandListener());
+        addListener(handListener);
     }
     
     public Actor getFollowActor() {

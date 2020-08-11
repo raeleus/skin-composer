@@ -51,13 +51,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.stream.Stream;
 
+import static com.ray3k.skincomposer.Main.*;
 /**
  *
  * @author Raymond
  */
 public class DialogImageFont extends Dialog {
-    private Main main;
-    private Skin skin;
     private Table root;
     private static final String NUMBERS = "0123456789";
     private static final String ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -77,17 +76,14 @@ public class DialogImageFont extends Dialog {
     private Json json;
     private ImageFontListener imageFontListener;
     
-    public DialogImageFont(Main main, ImageFontListener imageFontListener) {
-        super("Create Font from Image", main.getSkin(), "bg");
+    public DialogImageFont(ImageFontListener imageFontListener) {
+        super("Create Font from Image", skin, "bg");
         this.imageFontListener = imageFontListener;
         json = new Json(JsonWriter.OutputType.json);
         
         settings = new ImageFontSettings();
         
         kerningPairValues = new Array<>();
-        
-        this.main = main;
-        skin = main.getSkin();
         
         filesDroppedListener = (Array<FileHandle> files) -> {
             if (files.size > 0 && files.first().extension().equalsIgnoreCase("png")) {
@@ -97,11 +93,11 @@ public class DialogImageFont extends Dialog {
                     });
                 };
                 
-                main.getDialogFactory().showDialogLoading(runnable);
+                dialogFactory.showDialogLoading(runnable);
             }
         };
         
-        main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+        desktopWorker.addFilesDroppedListener(filesDroppedListener);
         
         getTitleTable().getCells().first().padLeft(10.0f);
         
@@ -118,8 +114,8 @@ public class DialogImageFont extends Dialog {
         textButton.setDisabled(true);
         updateLabelHighlight("image-label");
         button(textButton, true);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new TextTooltip("Generate bitmap font, save to specified file, and add to list of fonts", main.getTooltipManager(), skin));
+        textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Generate bitmap font, save to specified file, and add to list of fonts", tooltipManager, skin));
         
         addListener(new InputListener() {
             @Override
@@ -138,8 +134,8 @@ public class DialogImageFont extends Dialog {
         
         textButton = new TextButton("Save Settings", skin);
         getButtonTable().add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new TextTooltip("Save dialog settings to JSON", main.getTooltipManager(), skin));
+        textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Save dialog settings to JSON", tooltipManager, skin));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -149,8 +145,8 @@ public class DialogImageFont extends Dialog {
         
         textButton = new TextButton("Load Settings", skin);
         getButtonTable().add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new TextTooltip("Load dialog settings to JSON", main.getTooltipManager(), skin));
+        textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Load dialog settings to JSON", tooltipManager, skin));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -160,8 +156,8 @@ public class DialogImageFont extends Dialog {
         
         textButton = new TextButton("Reset", skin);
         getButtonTable().add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new TextTooltip("Reset all settings to defaults", main.getTooltipManager(), skin));
+        textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Reset all settings to defaults", tooltipManager, skin));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -173,7 +169,7 @@ public class DialogImageFont extends Dialog {
         key(Keys.ESCAPE, false);
         textButton = new TextButton("Cancel", skin);
         button(textButton, false);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
     }
 
     public static interface ImageFontListener {
@@ -182,7 +178,7 @@ public class DialogImageFont extends Dialog {
     
     @Override
     public boolean remove() {
-        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        desktopWorker.removeFilesDroppedListener(filesDroppedListener);
         if (previewFont != null) {
             previewFont.dispose();
         }
@@ -235,8 +231,8 @@ public class DialogImageFont extends Dialog {
         var textField = new TextField(settings.characters, skin);
         textField.setName("characters");
         table.add(textField).growX();
-        textField.addListener(new TextTooltip("Characters to be included in font", main.getTooltipManager(), skin));
-        textField.addListener(main.getIbeamListener());
+        textField.addListener(new TextTooltip("Characters to be included in font", tooltipManager, skin));
+        textField.addListener(ibeamListener);
         textField.setTextFieldFilter((TextField textField1, char c) -> textField1.getText().indexOf(c) == -1);
         
         textField.addListener(new ChangeListener() {
@@ -268,9 +264,9 @@ public class DialogImageFont extends Dialog {
         }
         selectBox.setName("characters select");
         table.add(selectBox);
-        selectBox.addListener(new TextTooltip("Character Presets", main.getTooltipManager(), skin));
-        selectBox.addListener(main.getHandListener());
-        selectBox.getList().addListener(main.getHandListener());
+        selectBox.addListener(new TextTooltip("Character Presets", tooltipManager, skin));
+        selectBox.addListener(handListener);
+        selectBox.getList().addListener(handListener);
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -313,8 +309,8 @@ public class DialogImageFont extends Dialog {
         
         var textButton = new TextButton("Copy", skin);
         table.add(textButton);
-        textButton.addListener(new TextTooltip("Copy characters to clipboard", main.getTooltipManager(), skin));
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Copy characters to clipboard", tooltipManager, skin));
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -345,25 +341,25 @@ public class DialogImageFont extends Dialog {
         textField.setName("imagepath");
         textField.setDisabled(true);
         table.add(textField).growX();
-        textField.addListener(new TextTooltip("Path to source image", main.getTooltipManager(), skin));
+        textField.addListener(new TextTooltip("Path to source image", tooltipManager, skin));
         textField.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 sourceFileBrowse();
             }
         });
-        textField.addListener(main.getHandListener());
+        textField.addListener(handListener);
         
         textButton = new TextButton("Browse", skin);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 sourceFileBrowse();
             }
         });
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
         content.add().width(width);
         
@@ -383,18 +379,18 @@ public class DialogImageFont extends Dialog {
         textField.setName("targetpath");
         textField.setDisabled(true);
         table.add(textField).growX();
-        textField.addListener(new TextTooltip("Path to save file", main.getTooltipManager(), skin));
+        textField.addListener(new TextTooltip("Path to save file", tooltipManager, skin));
         textField.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 saveFileBrowse();
             }
         });
-        textField.addListener(main.getHandListener());
+        textField.addListener(handListener);
         
         textButton = new TextButton("Browse", skin);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -416,10 +412,10 @@ public class DialogImageFont extends Dialog {
         spinner.setMinimum(0);
         content.add(spinner).left().minWidth(100.0f);
         fadables.add(spinner);
-        spinner.addListener(new TextTooltip("Minimum distance between opaque pixels to split characters", main.getTooltipManager(), skin));
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.addListener(new TextTooltip("Minimum distance between opaque pixels to split characters", tooltipManager, skin));
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -431,7 +427,7 @@ public class DialogImageFont extends Dialog {
                     preview(true);
                 } catch (InvalidFontImageException e) {
                     Gdx.app.error(getClass().getName(), "Error processing font source image: " + fileHandle, e);
-                    main.getDialogFactory().showDialogError("Error creating font from image...", "Error creating font from image.\nPlease ensure that the image has 100% transparent pixels\nto break the different characters.\nOpen log?");
+                    dialogFactory.showDialogError("Error creating font from image...", "Error creating font from image.\nPlease ensure that the image has 100% transparent pixels\nto break the different characters.\nOpen log?");
                     refreshTable();
                 }
             }
@@ -441,8 +437,8 @@ public class DialogImageFont extends Dialog {
         textButton.setName("kerning button");
         content.add(textButton).colspan(2).expandX().padLeft(10.0f).padRight(10.0f).minWidth(200.0f).left();
         fadables.add(textButton);
-        textButton.addListener(new TextTooltip("Adjust auto kerning settings", main.getTooltipManager(), skin));
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Adjust auto kerning settings", tooltipManager, skin));
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -463,10 +459,10 @@ public class DialogImageFont extends Dialog {
         spinner.setName("kerning");
         content.add(spinner).left().minWidth(100.0f);
         fadables.add(spinner);
-        spinner.addListener(new TextTooltip("The horizontal spacing between characters", main.getTooltipManager(), skin));
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.addListener(new TextTooltip("The horizontal spacing between characters", tooltipManager, skin));
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -485,10 +481,10 @@ public class DialogImageFont extends Dialog {
         spinner.setName("leading");
         content.add(spinner).expandX().left().minWidth(100.0f);
         fadables.add(spinner);
-        spinner.addListener(new TextTooltip("The vertical spacing between each line", main.getTooltipManager(), skin));
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.addListener(new TextTooltip("The vertical spacing between each line", tooltipManager, skin));
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -511,10 +507,10 @@ public class DialogImageFont extends Dialog {
         spinner.setName("baseline");
         content.add(spinner).expandX().left().minWidth(100.0f).colspan(3);
         fadables.add(spinner);
-        spinner.addListener(new TextTooltip("The distance to the line that the text rests on.", main.getTooltipManager(), skin));
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.addListener(new TextTooltip("The distance to the line that the text rests on.", tooltipManager, skin));
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -538,10 +534,10 @@ public class DialogImageFont extends Dialog {
         spinner.setMinimum(0);
         content.add(spinner).left().minWidth(100.0f);
         fadables.add(spinner);
-        spinner.addListener(new TextTooltip("Set the width of a single space", main.getTooltipManager(), skin));
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.addListener(new TextTooltip("Set the width of a single space", tooltipManager, skin));
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -561,10 +557,10 @@ public class DialogImageFont extends Dialog {
         spinner.setMinimum(0);
         content.add(spinner).expandX().left().minWidth(100.0f);
         fadables.add(spinner);
-        spinner.addListener(new TextTooltip("The number of space characters to make a tab", main.getTooltipManager(), skin));
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.addListener(new TextTooltip("The number of space characters to make a tab", tooltipManager, skin));
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -594,7 +590,7 @@ public class DialogImageFont extends Dialog {
         var textArea = new TextArea(settings.preview, previewStyle);
         textArea.setName("preview");
         scrollTable.add(textArea).grow().minHeight(100.0f);
-        textArea.addListener(main.getIbeamListener());
+        textArea.addListener(ibeamListener);
         textArea.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -618,16 +614,16 @@ public class DialogImageFont extends Dialog {
                     Utils.openFileExplorer(Main.appFolder.child("imagefont/characters/"));
                 } catch (IOException e) {
                     Gdx.app.error(getClass().getName(), "Error opening characters folder", e);
-                    main.getDialogFactory().showDialogError("Folder Error...", "Error opening characters folder.\n\nOpen log?");
+                    dialogFactory.showDialogError("Folder Error...", "Error opening characters folder.\n\nOpen log?");
                 }
             }
         });
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
         textButton = new TextButton("Reset Text", skin);
         table.add(textButton).expandX().right();
-        textButton.addListener(new TextTooltip("Reset preview text to default", main.getTooltipManager(), skin));
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(new TextTooltip("Reset preview text to default", tooltipManager, skin));
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -638,12 +634,12 @@ public class DialogImageFont extends Dialog {
         
         var imageButton = new ImageButton(skin, "color");
         table.add(imageButton);
-        imageButton.addListener(new TextTooltip("Change preview color", main.getTooltipManager(), skin));
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(new TextTooltip("Change preview color", tooltipManager, skin));
+        imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+                dialogFactory.showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                     if (colorData != null) {
                         var textArea = (TextArea) findActor("preview");
                         previewStyle.fontColor = colorData.color;
@@ -655,12 +651,12 @@ public class DialogImageFont extends Dialog {
         
         imageButton = new ImageButton(skin, "color-bg");
         table.add(imageButton);
-        imageButton.addListener(new TextTooltip("Change background color", main.getTooltipManager(), skin));
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(new TextTooltip("Change background color", tooltipManager, skin));
+        imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+                dialogFactory.showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                     if (colorData != null) {
                         var textArea = (TextArea) findActor("preview");
                         previewStyle.background = ((NinePatchDrawable) previewStyle.background).tint(colorData.color);
@@ -677,7 +673,7 @@ public class DialogImageFont extends Dialog {
         Runnable runnable = () -> {
               var textField = (TextField) findActor("imagepath");
 
-            String defaultPath = main.getProjectData().getLastFontPath();
+            String defaultPath = projectData.getLastFontPath();
             FileHandle currentPath = Gdx.files.absolute(textField.getText());
             if (currentPath.exists()) {
                 defaultPath = textField.getText();
@@ -688,7 +684,7 @@ public class DialogImageFont extends Dialog {
                 filterPatterns = new String[]{"*.png;*.jpg"};
             }
 
-            File file = main.getDesktopWorker().openDialog("Select image file...", defaultPath, filterPatterns, "Image files");
+            File file = desktopWorker.openDialog("Select image file...", defaultPath, filterPatterns, "Image files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     FileHandle fileHandle = new FileHandle(file);
@@ -697,14 +693,14 @@ public class DialogImageFont extends Dialog {
             }
         };
 
-        main.getDialogFactory().showDialogLoading(runnable);
+        dialogFactory.showDialogLoading(runnable);
     }
     
     private void processSourceFile(FileHandle fileHandle, boolean setDefaults) {
         try {
             loadPixmap(fileHandle, setDefaults);
             preview(true);
-            main.getProjectData().setLastFontPath(fileHandle.parent().path() + "/");
+            projectData.setLastFontPath(fileHandle.parent().path() + "/");
             
             var textField = (TextField) findActor("imagepath");
             textField.setText(fileHandle.path());
@@ -724,7 +720,7 @@ public class DialogImageFont extends Dialog {
             ((TextButton) findActor("view characters")).setDisabled(false);
         } catch (InvalidFontImageException e) {
             Gdx.app.error(getClass().getName(), "Error processing font source image: " + fileHandle, e);
-            main.getDialogFactory().showDialogError("Error creating font from image...", "Error creating font from image.\nPlease ensure that the image has 100% transparent pixels\nto break the different characters.\nOpen log?");
+            dialogFactory.showDialogError("Error creating font from image...", "Error creating font from image.\nPlease ensure that the image has 100% transparent pixels\nto break the different characters.\nOpen log?");
             refreshTable();
         }
     }
@@ -734,7 +730,7 @@ public class DialogImageFont extends Dialog {
             Gdx.app.postRunnable(() -> {
                 var textField = (TextField) findActor("targetpath");
 
-                String defaultPath = main.getProjectData().getLastFontPath();
+                String defaultPath = projectData.getLastFontPath();
                 FileHandle currentPath = Gdx.files.absolute(textField.getText());
                 if (currentPath.exists()) {
                     defaultPath = textField.getText();
@@ -745,7 +741,7 @@ public class DialogImageFont extends Dialog {
                     filterPatterns = new String[]{"*.fnt"};
                 }
 
-                File file = main.getDesktopWorker().saveDialog("Save as font file...", defaultPath, filterPatterns, "Font files");
+                File file = desktopWorker.saveDialog("Save as font file...", defaultPath, filterPatterns, "Font files");
                 if (file != null) {
                     var fileHandle = new FileHandle(file);
                     if (!fileHandle.extension().equalsIgnoreCase("fnt")) {
@@ -754,12 +750,12 @@ public class DialogImageFont extends Dialog {
 
                     processSaveFile(fileHandle.path());
 
-                    main.getProjectData().setLastFontPath(fileHandle.parent().path() + "/");
+                    projectData.setLastFontPath(fileHandle.parent().path() + "/");
                 }
             });
         };
 
-        main.getDialogFactory().showDialogLoading(runnable);
+        dialogFactory.showDialogLoading(runnable);
     }
     
     private void processSaveFile(String path) {
@@ -774,14 +770,14 @@ public class DialogImageFont extends Dialog {
     
     private void saveSettingsBrowse() {
         Runnable runnable = () -> {
-            String defaultPath = main.getProjectData().getLastFontPath();
+            String defaultPath = projectData.getLastFontPath();
 
             String[] filterPatterns = null;
             if (!Utils.isMac()) {
                 filterPatterns = new String[]{"*.imagefont"};
             }
 
-            File file = main.getDesktopWorker().saveDialog("Save Image Font Settings...", defaultPath, filterPatterns, "Imagefont files");
+            File file = desktopWorker.saveDialog("Save Image Font Settings...", defaultPath, filterPatterns, "Imagefont files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     var fileHandle = new FileHandle(file);
@@ -791,12 +787,12 @@ public class DialogImageFont extends Dialog {
 
                     saveSettings(fileHandle);
 
-                    main.getProjectData().setLastFontPath(fileHandle.parent().path() + "/");
+                    projectData.setLastFontPath(fileHandle.parent().path() + "/");
                 });
             }
         };
 
-        main.getDialogFactory().showDialogLoading(runnable);
+        dialogFactory.showDialogLoading(runnable);
     }
     
     private static class ImageFontSettings {
@@ -838,14 +834,14 @@ public class DialogImageFont extends Dialog {
     private void loadSettingsBrowse() {
         Runnable runnable = () -> {
             Gdx.app.postRunnable(() -> {
-                String defaultPath = main.getProjectData().getLastFontPath();
+                String defaultPath = projectData.getLastFontPath();
 
                 String[] filterPatterns = null;
                 if (!Utils.isMac()) {
                     filterPatterns = new String[]{"*.imagefont"};
                 }
 
-                File file = main.getDesktopWorker().openDialog("Load Image Font Settings...", defaultPath, filterPatterns, "Imagefont files");
+                File file = desktopWorker.openDialog("Load Image Font Settings...", defaultPath, filterPatterns, "Imagefont files");
                 if (file != null) {
                     FileHandle fileHandle = new FileHandle(file);
                     loadSettings(fileHandle);
@@ -853,7 +849,7 @@ public class DialogImageFont extends Dialog {
             });
         };
 
-        main.getDialogFactory().showDialogLoading(runnable);
+        dialogFactory.showDialogLoading(runnable);
     }
     
     private void loadSettings(FileHandle file) {
@@ -891,7 +887,7 @@ public class DialogImageFont extends Dialog {
                         preview(true);
                     } catch (InvalidFontImageException e) {
                         Gdx.app.error(getClass().getName(), "Error processing font source image: " + fileHandle, e);
-                        main.getDialogFactory().showDialogError("Error creating font from image...", "Error creating font from image.\nPlease ensure that the image has 100% transparent pixels\nto break the different characters.\nOpen log?");
+                        dialogFactory.showDialogError("Error creating font from image...", "Error creating font from image.\nPlease ensure that the image has 100% transparent pixels\nto break the different characters.\nOpen log?");
                         refreshTable();
                     }
                 } else {
@@ -903,7 +899,7 @@ public class DialogImageFont extends Dialog {
                         preview(true);
                     } catch (InvalidFontImageException e) {
                         Gdx.app.error(getClass().getName(), "Error processing font source image: " + fileHandle, e);
-                        main.getDialogFactory().showDialogError("Error creating font from image...", "Error creating font from image.\nPlease ensure that the image has 100% transparent pixels\nto break the different characters.\nOpen log?");
+                        dialogFactory.showDialogError("Error creating font from image...", "Error creating font from image.\nPlease ensure that the image has 100% transparent pixels\nto break the different characters.\nOpen log?");
                         refreshTable();
                     }
                 }
@@ -921,8 +917,8 @@ public class DialogImageFont extends Dialog {
         var textField = new TextField(settings.kerningPairs, skin);
         textField.setName("pairs");
         table.add(textField).growX();
-        textField.addListener(main.getIbeamListener());
-        textField.addListener(new TextTooltip("Space separated list of kerning pairs to optimize spacing", main.getTooltipManager(), skin));
+        textField.addListener(ibeamListener);
+        textField.addListener(new TextTooltip("Space separated list of kerning pairs to optimize spacing", tooltipManager, skin));
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -932,8 +928,8 @@ public class DialogImageFont extends Dialog {
         
         var textButton = new TextButton("Reset", skin);
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
-        textButton.addListener(new TextTooltip("Reset kerning pairs to defaults", main.getTooltipManager(), skin));
+        textButton.addListener(handListener);
+        textButton.addListener(new TextTooltip("Reset kerning pairs to defaults", tooltipManager, skin));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -948,10 +944,10 @@ public class DialogImageFont extends Dialog {
         
         var spinner = new Spinner(settings.kerningPairsOffset, 1.0, true, Spinner.Orientation.HORIZONTAL, skin);
         table.add(spinner).left();
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.addListener(new TextTooltip("Offset to add to each kerning pair", main.getTooltipManager(), skin));
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.addListener(new TextTooltip("Offset to add to each kerning pair", tooltipManager, skin));
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -963,11 +959,11 @@ public class DialogImageFont extends Dialog {
         
         textButton = new TextButton("Turn ON Kern Pairs", skin);
         dialog.button(textButton, true);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
         textButton = new TextButton("Turn OFF Kern Pairs", skin);
         dialog.button(textButton, false);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
         dialog.getButtonTable().pad(10.0f);
         
@@ -1332,7 +1328,7 @@ public class DialogImageFont extends Dialog {
 
 
             //texturepack images
-            main.getDesktopWorker().packFontImages(new Array<>(Main.appFolder.child("imagefont/characters").list()), saveFile);
+            desktopWorker.packFontImages(new Array<>(Main.appFolder.child("imagefont/characters").list()), saveFile);
             
             var atlas = new TextureAtlas(saveFile.sibling(saveFile.nameWithoutExtension() + ".atlas"));
 
@@ -1423,10 +1419,10 @@ public class DialogImageFont extends Dialog {
             textArea.setCursorPosition(oldTextArea.getCursorPosition());
             textArea.setName("preview");
             ((Table) oldTextArea.getParent()).getCell(oldTextArea).setActor(textArea);
-            textArea.addListener(main.getIbeamListener());
+            textArea.addListener(ibeamListener);
         } catch (Exception e) {
             Gdx.app.error(getClass().getName(), "Error generating preview...", e);
-            main.getDialogFactory().showDialogError("Error generating preview...", "Error generating preview\nOpen log?");
+            dialogFactory.showDialogError("Error generating preview...", "Error generating preview\nOpen log?");
         }
     }
     
@@ -1472,9 +1468,9 @@ public class DialogImageFont extends Dialog {
     
     private void showCharacterDialog() {
         Runnable runnable = () -> {
-            String defaultPath = main.getProjectData().getLastFontPath();
+            String defaultPath = projectData.getLastFontPath();
 
-            File file = main.getDesktopWorker().openDialog("Select character text file...", defaultPath, null, "All files");
+            File file = desktopWorker.openDialog("Select character text file...", defaultPath, null, "All files");
             if (file != null) {
                 var fileHandle = new FileHandle(file);
                 String characters = fileHandle.readString("utf-8");
@@ -1491,6 +1487,6 @@ public class DialogImageFont extends Dialog {
             }
         };
 
-        main.getDialogFactory().showDialogLoading(runnable);
+        dialogFactory.showDialogLoading(runnable);
     }
 }

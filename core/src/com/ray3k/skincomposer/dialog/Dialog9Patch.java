@@ -49,13 +49,13 @@ import com.ray3k.skincomposer.utils.Utils;
 import java.io.File;
 import java.util.Locale;
 
+import static com.ray3k.skincomposer.Main.*;
+
 /**
  *
  * @author Raymond
  */
 public class Dialog9Patch extends Dialog {
-
-    private final Main main;
     private final ResizeFourArrowListener horizontalResizeListener;
     private final ResizeFourArrowListener verticalResizeListener;
     private final ResizeFourArrowListener nwResizeListener;
@@ -73,23 +73,22 @@ public class Dialog9Patch extends Dialog {
     private Color previewBGcolor;
     private ObjectMap<DrawableData, Drawable> drawablePairs;
 
-    public Dialog9Patch(Main main, ObjectMap<DrawableData, Drawable> drawablePairs) {
-        super("", main.getSkin(), "dialog");
+    public Dialog9Patch(ObjectMap<DrawableData, Drawable> drawablePairs) {
+        super("", skin, "dialog");
         previewBGcolor = new Color(Color.WHITE);
         listeners = new Array<>();
-        this.main = main;
         this.drawablePairs = drawablePairs;
         
-        var cursor = Utils.textureRegionToCursor(main.getSkin().getRegion("cursor_resize_horizontal"), 16, 16);
+        var cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_horizontal"), 16, 16);
         horizontalResizeListener = new ResizeFourArrowListener(cursor);
 
-        cursor = Utils.textureRegionToCursor(main.getSkin().getRegion("cursor_resize_vertical"), 16, 16);
+        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_vertical"), 16, 16);
         verticalResizeListener = new ResizeFourArrowListener(cursor);
 
-        cursor = Utils.textureRegionToCursor(main.getSkin().getRegion("cursor_resize_nw"), 16, 16);
+        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_nw"), 16, 16);
         nwResizeListener = new ResizeFourArrowListener(cursor);
 
-        cursor = Utils.textureRegionToCursor(main.getSkin().getRegion("cursor_resize_ne"), 16, 16);
+        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
         neResizeListener = new ResizeFourArrowListener(cursor);
 
         filesDroppedListener = (Array<FileHandle> files) -> {
@@ -100,11 +99,11 @@ public class Dialog9Patch extends Dialog {
                     });
                 };
                 
-                main.getDialogFactory().showDialogLoading(runnable);
+                dialogFactory.showDialogLoading(runnable);
             }
         };
         
-        main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+        desktopWorker.addFilesDroppedListener(filesDroppedListener);
         
         populate();
     }
@@ -123,7 +122,7 @@ public class Dialog9Patch extends Dialog {
 
         var textButton = new TextButton("Load Image", getSkin());
         horizontalGroup.addActor(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -134,7 +133,7 @@ public class Dialog9Patch extends Dialog {
         textButton = new TextButton("Reset", getSkin());
         textButton.setName("reset-button");
         horizontalGroup.addActor(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -187,7 +186,7 @@ public class Dialog9Patch extends Dialog {
         textButton = new TextButton("Auto Patches", getSkin());
         textButton.setName("auto-button");
         horizontalGroup.addActor(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -198,7 +197,7 @@ public class Dialog9Patch extends Dialog {
         textButton = new TextButton("Load Patches From File", getSkin());
         textButton.setName("load-patches-button");
         horizontalGroup.addActor(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -209,7 +208,7 @@ public class Dialog9Patch extends Dialog {
         textButton = new TextButton("Batch Apply to File(s)", getSkin());
         textButton.setName("batch-button");
         horizontalGroup.addActor(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -234,7 +233,7 @@ public class Dialog9Patch extends Dialog {
         splitPane.setName("split");
         root.add(splitPane).grow();
 
-        splitPane.addListener(main.getVerticalResizeArrowListener());
+        splitPane.addListener(verticalResizeListener);
 
           var table = new Table();
         top.add(table).growX();
@@ -244,9 +243,9 @@ public class Dialog9Patch extends Dialog {
         spinner.setValue(ninePatchLeft);
         spinner.setMinimum(0);
         table.add(spinner).expandX().left().padLeft(50.0f);
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -273,9 +272,9 @@ public class Dialog9Patch extends Dialog {
         spinner.setValue(ninePatchRight);
         spinner.setMinimum(0);
         table.add(spinner).expandX().right().padRight(50.0f);
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -306,9 +305,9 @@ public class Dialog9Patch extends Dialog {
         spinner.setValue(ninePatchTop);
         spinner.setMinimum(0);
         subTable.add(spinner).expandY().top();
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -343,9 +342,9 @@ public class Dialog9Patch extends Dialog {
         spinner.setValue(ninePatchBottom);
         spinner.setMinimum(0);
         subTable.add(spinner).expandY().bottom();
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -368,7 +367,7 @@ public class Dialog9Patch extends Dialog {
         ninePatchWidget.setName("ninePatchWidget");
         ninePatchWidget.setTouchable(Touchable.enabled);
         table.add(ninePatchWidget).grow().pad(5.0f);
-        ninePatchWidget.getPaddingButton().addListener(main.getHandListener());
+        ninePatchWidget.getPaddingButton().addListener(handListener);
         ninePatchWidget.addListener((NinePatchWidget.HandleType handle, int value) -> {
             switch (handle) {
                 case PADDING_LEFT:
@@ -471,9 +470,9 @@ public class Dialog9Patch extends Dialog {
         spinner.setValue(ninePatchContentTop);
         spinner.setMinimum(0);
         subTable.add(spinner).expandY().top();
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -508,9 +507,9 @@ public class Dialog9Patch extends Dialog {
         spinner.setValue(ninePatchContentBottom);
         spinner.setMinimum(0);
         subTable.add(spinner).expandY().bottom();
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -538,9 +537,9 @@ public class Dialog9Patch extends Dialog {
         spinner.setValue(ninePatchContentLeft);
         spinner.setMinimum(0);
         table.add(spinner).expandX().left().padLeft(50.0f);
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -567,9 +566,9 @@ public class Dialog9Patch extends Dialog {
         spinner.setValue(ninePatchContentRight);
         spinner.setMinimum(0);
         table.add(spinner).expandX().right().padRight(50.0f);
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -598,7 +597,7 @@ public class Dialog9Patch extends Dialog {
         imageButton.setName("grid-light");
         imageButton.setProgrammaticChangeEvents(false);
         table.add(imageButton);
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
 
         imageButton.addListener(new ChangeListener() {
             @Override
@@ -618,7 +617,7 @@ public class Dialog9Patch extends Dialog {
         imageButton.setName("grid-dark");
         imageButton.setProgrammaticChangeEvents(false);
         table.add(imageButton);
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
 
         imageButton.addListener(new ChangeListener() {
             @Override
@@ -636,7 +635,7 @@ public class Dialog9Patch extends Dialog {
 
         imageButton = new ImageButton(getSkin(), "resize");
         table.add(imageButton).expandX().right();
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
 
         imageButton.addListener(new ChangeListener() {
             @Override
@@ -648,7 +647,7 @@ public class Dialog9Patch extends Dialog {
         var slider = new Slider(1, 50, 1, false, getSkin(), "zoom-horizontal");
         slider.setName("top-zoom");
         table.add(slider);
-        slider.addListener(main.getHandListener());
+        slider.addListener(handListener);
 
         slider.addListener(new ChangeListener() {
             @Override
@@ -720,8 +719,8 @@ public class Dialog9Patch extends Dialog {
         selectBox.setName("contentSelectBox");
         table.add(selectBox);
         selectBox.setItems("None", "Text", "Color", "Drawable");
-        selectBox.addListener(main.getHandListener());
-        selectBox.getList().addListener(main.getHandListener());
+        selectBox.addListener(handListener);
+        selectBox.getList().addListener(handListener);
         selectBox.getList().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -736,10 +735,10 @@ public class Dialog9Patch extends Dialog {
                         updatePreviewContentActor(null);
                         break;
                     case "Text":
-                        main.getDialogFactory().showInputDialog("Text Content", "Enter the text to be displayed inside of the preview:", "Lorem Ipsum", new DialogFactory.InputDialogListener() {
+                        dialogFactory.showInputDialog("Text Content", "Enter the text to be displayed inside of the preview:", "Lorem Ipsum", new DialogFactory.InputDialogListener() {
                             @Override
                             public void confirmed(String text) {
-                                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+                                dialogFactory.showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                                     if (colorData == null) {
                                         selectBox.setSelected("None");
                                     } else {
@@ -760,7 +759,7 @@ public class Dialog9Patch extends Dialog {
                         });
                         break;
                     case "Color":
-                        main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+                        dialogFactory.showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                             if (colorData == null) {
                                 selectBox.setSelected("None");
                             } else {
@@ -774,7 +773,7 @@ public class Dialog9Patch extends Dialog {
                         }, null);
                         break;
                     case "Drawable":
-                          var dialog = main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
+                          var dialog = dialogFactory.showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
                             @Override
                             public void confirmed(DrawableData drawable, DialogDrawables dialog) {
                                 var image = new Image(drawablePairs.get(drawable));
@@ -803,11 +802,11 @@ public class Dialog9Patch extends Dialog {
         
         imageButton = new ImageButton(getSkin(), "color");
         table.add(imageButton);
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColorPicker(previewBGcolor, new DialogColorPicker.ColorListener() {
+                dialogFactory.showDialogColorPicker(previewBGcolor, new DialogColorPicker.ColorListener() {
                     @Override
                     public void selected(Color color) {
                         if (color != null) {
@@ -818,14 +817,14 @@ public class Dialog9Patch extends Dialog {
                 });
             }
         });
-        var toolTip = new TextTooltip("Background color for preview pane.", main.getTooltipManager(), getSkin());
+        var toolTip = new TextTooltip("Background color for preview pane.", tooltipManager, getSkin());
         imageButton.addListener(toolTip);
 
         slider = new Slider(1.0f, 100.0f, 1.0f, false, getSkin(), "zoom-horizontal");
         slider.setName("bottom-zoom");
         slider.setValue(1.0f);
         table.add(slider).expandX().right();
-        slider.addListener(main.getHandListener());
+        slider.addListener(handListener);
 
         slider.addListener(new ChangeListener() {
             @Override
@@ -889,11 +888,11 @@ public class Dialog9Patch extends Dialog {
         textButton = new TextButton("Save", getSkin());
         textButton.setName("save-button");
         getButtonTable().add(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogLoading(() -> {
+                dialogFactory.showDialogLoading(() -> {
                     String defaultPath = loadedFile.path();
                     if (!defaultPath.toLowerCase(Locale.ROOT).endsWith(".9.png")) {
                         defaultPath = loadedFile.sibling(loadedFile.nameWithoutExtension() + ".9.png").path();
@@ -901,7 +900,7 @@ public class Dialog9Patch extends Dialog {
 
                     String[] filterPatterns = {"*.9.png"};
 
-                    File file = main.getDesktopWorker().saveDialog("Save nine patch file as...", defaultPath, filterPatterns, "Nine Patch files");
+                    File file = desktopWorker.saveDialog("Save nine patch file as...", defaultPath, filterPatterns, "Nine Patch files");
                     if (file != null) {
                         Gdx.app.postRunnable(() -> {
                             FileHandle fileHandle = new FileHandle(file);
@@ -909,7 +908,7 @@ public class Dialog9Patch extends Dialog {
                                 fileHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".9.png");
                             }
                             saveNinePatch(fileHandle);
-                            main.getProjectData().setLastDrawablePath(fileHandle.parent().path() + "/");
+                            projectData.setLastDrawablePath(fileHandle.parent().path() + "/");
                             hide();
 
                             for (var listener : listeners) {
@@ -923,7 +922,7 @@ public class Dialog9Patch extends Dialog {
 
         textButton = new TextButton("Cancel", getSkin());
         button(textButton, false);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
 
         key(Keys.ESCAPE, false);
         
@@ -941,7 +940,7 @@ public class Dialog9Patch extends Dialog {
 
     @Override
     public boolean remove() {
-        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        desktopWorker.removeFilesDroppedListener(filesDroppedListener);
         return super.remove();
     }
 
@@ -985,14 +984,14 @@ public class Dialog9Patch extends Dialog {
 
     private void showLoadImageDialog() {
         Runnable runnable = () -> {
-            String defaultPath = main.getProjectData().getLastDrawablePath();
+            String defaultPath = projectData.getLastDrawablePath();
 
             String[] filterPatterns = null;
             if (!Utils.isMac()) {
                 filterPatterns = new String[]{"*.png;*.jpg"};
             }
 
-            File file = main.getDesktopWorker().openDialog("Open Image...", defaultPath, filterPatterns, "Image files");
+            File file = desktopWorker.openDialog("Open Image...", defaultPath, filterPatterns, "Image files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     var fileHandle = new FileHandle(file);
@@ -1001,7 +1000,7 @@ public class Dialog9Patch extends Dialog {
             }
         };
 
-        main.getDialogFactory().showDialogLoading(runnable);
+        dialogFactory.showDialogLoading(runnable);
     }
     
     private void loadImage(FileHandle fileHandle) {
@@ -1206,7 +1205,7 @@ public class Dialog9Patch extends Dialog {
         spinner = (Spinner) findActor("spinner-content-top");
         spinner.setMaximum(region.getRegionWidth() - ninePatchContentBottom);
 
-        main.getProjectData().setLastDrawablePath(fileHandle.parent().path() + "/");
+        projectData.setLastDrawablePath(fileHandle.parent().path() + "/");
     }
     
     private void saveNinePatch(FileHandle fileHandle) {
@@ -1394,14 +1393,14 @@ public class Dialog9Patch extends Dialog {
     
     private void showLoadPatchesDialog() {
         Runnable runnable = () -> {
-            String defaultPath = main.getProjectData().getLastDrawablePath();
+            String defaultPath = projectData.getLastDrawablePath();
 
             String[] filterPatterns = null;
             if (!Utils.isMac()) {
                 filterPatterns = new String[]{"*.9.png;"};
             }
 
-            File file = main.getDesktopWorker().openDialog("Load Patches from File...", defaultPath, filterPatterns, "Nine Patch files");
+            File file = desktopWorker.openDialog("Load Patches from File...", defaultPath, filterPatterns, "Nine Patch files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     var fileHandle = new FileHandle(file);
@@ -1410,7 +1409,7 @@ public class Dialog9Patch extends Dialog {
             }
         };
 
-        main.getDialogFactory().showDialogLoading(runnable);
+        dialogFactory.showDialogLoading(runnable);
     }
     
     private void loadPatches(FileHandle fileHandle) {
@@ -1569,14 +1568,14 @@ public class Dialog9Patch extends Dialog {
     
     private void showBatchApplyDialog() {
         Runnable runnable = () -> {
-            String defaultPath = main.getProjectData().getLastDrawablePath();
+            String defaultPath = projectData.getLastDrawablePath();
 
             String[] filterPatterns = null;
             if (!Utils.isMac()) {
                 filterPatterns = new String[]{"*.png;", "*.jpg"};
             }
 
-            var files = main.getDesktopWorker().openMultipleDialog("Batch apply to files", defaultPath, filterPatterns, "Image files");
+            var files = desktopWorker.openMultipleDialog("Batch apply to files", defaultPath, filterPatterns, "Image files");
             if (files != null && files.size() > 0) {
                 Gdx.app.postRunnable(() -> {
                     var fileHandles = new Array<FileHandle>();
@@ -1589,7 +1588,7 @@ public class Dialog9Patch extends Dialog {
             }
         };
 
-        main.getDialogFactory().showDialogLoading(runnable);
+        dialogFactory.showDialogLoading(runnable);
     }
     
     private void batchApply(Array<FileHandle> fileHandles) {

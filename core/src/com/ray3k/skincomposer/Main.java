@@ -77,23 +77,25 @@ public class Main extends ApplicationAdapter {
         SplitPaneStyle.class, TextButtonStyle.class, TextFieldStyle.class,
         TextTooltipStyle.class, TouchpadStyle.class, TreeStyle.class,
         WindowStyle.class};
-    private Stage stage;
-    private static Skin skin;
-    private ShapeDrawer shapeDrawer;
-    private GraphDrawer graphDrawer;
-    private DialogFactory dialogFactory;
-    private DesktopWorker desktopWorker;
-    private TenPatchDrawable loadingAnimation;
-    private UndoableManager undoableManager;
-    private ProjectData projectData;
-    private RootTable rootTable;
-    private IbeamListener ibeamListener;
-    private MainListener mainListener;
-    private HandListener handListener;
-    private ScrollFocusListener scrollFocusListener;
-    private ResizeArrowListener verticalResizeArrowListener;
-    private ResizeArrowListener horizontalResizeArrowListener;
-    private TooltipManager tooltipManager;
+    public static Stage stage;
+    public static Skin skin;
+    public static ShapeDrawer shapeDrawer;
+    public static GraphDrawer graphDrawer;
+    public static DialogFactory dialogFactory;
+    public static DesktopWorker desktopWorker;
+    public static TenPatchDrawable loadingAnimation;
+    public static UndoableManager undoableManager;
+    public static ProjectData projectData;
+    public static JsonData jsonData;
+    public static AtlasData atlasData;
+    public static RootTable rootTable;
+    public static IbeamListener ibeamListener;
+    public static MainListener mainListener;
+    public static HandListener handListener;
+    public static ScrollFocusListener scrollFocusListener;
+    public static ResizeArrowListener verticalResizeArrowListener;
+    public static ResizeArrowListener horizontalResizeArrowListener;
+    public static TooltipManager tooltipManager;
     public static FileHandle appFolder;
     private String[] args;
     public static Main main;
@@ -159,17 +161,18 @@ public class Main extends ApplicationAdapter {
         
         ibeamListener = new IbeamListener();
         
+        dialogFactory = new DialogFactory();
         projectData = new ProjectData();
-        projectData.setMain(this);
         projectData.randomizeId();
         projectData.setMaxUndos(30);
+        atlasData = projectData.getAtlasData();
+        jsonData = projectData.getJsonData();
         
         newVersion = VERSION;
         if (projectData.isCheckingForUpdates()) {
             checkForUpdates(this);
         }
         
-        dialogFactory = new DialogFactory(this);
         undoableManager = new UndoableManager(this);
         
         desktopWorker.attachLogListener();
@@ -212,9 +215,9 @@ public class Main extends ApplicationAdapter {
     private void populate() {
         stage.clear();
         
-        rootTable = new RootTable(this);
+        rootTable = new RootTable();
         rootTable.setFillParent(true);
-        mainListener = new MainListener(this);
+        mainListener = new MainListener();
         rootTable.addListener(mainListener);
         rootTable.populate();
         stage.addActor(rootTable);
@@ -253,90 +256,6 @@ public class Main extends ApplicationAdapter {
     public void dispose() {
         stage.dispose();
         skin.dispose();
-    }
-
-    public DesktopWorker getDesktopWorker() {
-        return desktopWorker;
-    }
-    
-    public void setDesktopWorker(DesktopWorker textureWorker) {
-        this.desktopWorker = textureWorker;
-    }
-
-    public Stage getStage() {
-        return stage;
-    }
-
-    public TenPatchDrawable getLoadingAnimation() {
-        return loadingAnimation;
-    }
-
-    public Skin getSkin() {
-        return skin;
-    }
-    
-    public ShapeDrawer getShapeDrawer() {
-        return shapeDrawer;
-    }
-    
-    public GraphDrawer getGraphDrawer() {
-        return graphDrawer;
-    }
-    
-    public UndoableManager getUndoableManager() {
-        return undoableManager;
-    }
-
-    public ProjectData getProjectData() {
-        return projectData;
-    }
-    
-    public JsonData getJsonData() {
-        return projectData.getJsonData();
-    }
-    
-    public AtlasData getAtlasData() {
-        return projectData.getAtlasData();
-    }
-
-    public void setProjectData(ProjectData projectData) {
-        this.projectData = projectData;
-    }
-
-    public RootTable getRootTable() {
-        return rootTable;
-    }
-
-    public DialogFactory getDialogFactory() {
-        return dialogFactory;
-    }
-
-    public IbeamListener getIbeamListener() {
-        return ibeamListener;
-    }
-
-    public MainListener getMainListener() {
-        return mainListener;
-    }
-
-    public HandListener getHandListener() {
-        return handListener;
-    }
-    
-    public ScrollFocusListener getScrollFocusListener() {
-        return scrollFocusListener;
-    }
-    
-    public ResizeArrowListener getVerticalResizeArrowListener() {
-        return verticalResizeArrowListener;
-    }
-
-    public ResizeArrowListener getHorizontalResizeArrowListener() {
-        return horizontalResizeArrowListener;
-    }
-
-    public TooltipManager getTooltipManager() {
-        return tooltipManager;
     }
 
     public static Class basicToStyleClass(Class clazz) {

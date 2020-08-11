@@ -16,14 +16,15 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents.WidgetType;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
+import static com.ray3k.skincomposer.Main.*;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
 
 public class VerticalGroupListeners {
     public static EventListener verticalGroupNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simVerticalGroup = (DialogSceneComposerModel.SimVerticalGroup) dialogSceneComposer.simActor;
-        var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -37,14 +38,14 @@ public class VerticalGroupListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Name:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Name:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
                 textField.setText(simVerticalGroup.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
-                textField.addListener(DialogSceneComposer.main.getIbeamListener());
-                textField.addListener(new TextTooltip("The name of the VerticalGroup to allow for convenient searching via Group#findActor().", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textField.addListener(ibeamListener);
+                textField.addListener(new TextTooltip("The name of the VerticalGroup to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene"));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -76,7 +77,7 @@ public class VerticalGroupListeners {
     public static EventListener verticalGroupExpandFillGrowListener(final DialogSceneComposerEvents events,
                                                                     SimActor simActor) {
         var simVerticalGroup = (DialogSceneComposerModel.SimVerticalGroup) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -87,9 +88,9 @@ public class VerticalGroupListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var expand = new ImageTextButton("Expand", DialogSceneComposer.skin, "scene-checkbox-colored");
-                var fill = new ImageTextButton("Fill", DialogSceneComposer.skin, "scene-checkbox-colored");
-                var grow = new ImageTextButton("Grow", DialogSceneComposer.skin, "scene-checkbox-colored");
+                var expand = new ImageTextButton("Expand", skin, "scene-checkbox-colored");
+                var fill = new ImageTextButton("Fill", skin, "scene-checkbox-colored");
+                var grow = new ImageTextButton("Grow", skin, "scene-checkbox-colored");
                 
                 var changeListener = new ChangeListener() {
                     @Override
@@ -106,8 +107,8 @@ public class VerticalGroupListeners {
                 expand.setChecked(simVerticalGroup.expand);
                 expand.setProgrammaticChangeEvents(false);
                 table.add(expand);
-                expand.addListener(DialogSceneComposer.main.getHandListener());
-                expand.addListener(new TextTooltip("Set the widgets to expand to the available space.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                expand.addListener(handListener);
+                expand.addListener(new TextTooltip("Set the widgets to expand to the available space.", tooltipManager, skin, "scene"));
                 expand.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -124,8 +125,8 @@ public class VerticalGroupListeners {
                 fill.setChecked(simVerticalGroup.fill);
                 fill.setProgrammaticChangeEvents(false);
                 table.add(fill);
-                fill.addListener(DialogSceneComposer.main.getHandListener());
-                fill.addListener(new TextTooltip("Sets the widgets to fill the entire space.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                fill.addListener(handListener);
+                fill.addListener(new TextTooltip("Sets the widgets to fill the entire space.", tooltipManager, skin, "scene"));
                 fill.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -142,8 +143,8 @@ public class VerticalGroupListeners {
                 grow.setChecked(simVerticalGroup.expand && simVerticalGroup.fill);
                 grow.setProgrammaticChangeEvents(false);
                 table.add(grow);
-                grow.addListener(DialogSceneComposer.main.getHandListener());
-                grow.addListener(new TextTooltip("Sets the widgets to expand and fill.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                grow.addListener(handListener);
+                grow.addListener(new TextTooltip("Sets the widgets to expand and fill.", tooltipManager, skin, "scene"));
                 grow.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -163,7 +164,7 @@ public class VerticalGroupListeners {
     public static EventListener verticalGroupPaddingSpacingListener(final DialogSceneComposerEvents events,
                                                                     SimActor simActor) {
         var simVerticalGroup = (DialogSceneComposerModel.SimVerticalGroup) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -178,21 +179,21 @@ public class VerticalGroupListeners {
                 var table = new Table();
                 popTable.add(table);
                 
-                var label = new Label("Padding:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Padding:", skin, "scene-label-colored");
                 table.add(label).colspan(2);
                 
                 table.row();
                 table.defaults().right().spaceRight(5);
-                label = new Label("Left:", DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label("Left:", skin, "scene-label-colored");
                 table.add(label);
                 
-                var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
+                var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
                 spinner.setValue(simVerticalGroup.padLeft);
                 table.add(spinner);
-                spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
-                spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.getButtonPlus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.addListener(new TextTooltip("The padding to the left of the widgets.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                spinner.getTextField().addListener(ibeamListener);
+                spinner.getButtonMinus().addListener(handListener);
+                spinner.getButtonPlus().addListener(handListener);
+                spinner.addListener(new TextTooltip("The padding to the left of the widgets.", tooltipManager, skin, "scene"));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -201,17 +202,17 @@ public class VerticalGroupListeners {
                 });
                 
                 table.row();
-                label = new Label("Right:", DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label("Right:", skin, "scene-label-colored");
                 table.add(label);
                 
-                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
                 spinner.setValue(simVerticalGroup.padRight);
                 spinner.setName("padding-right");
                 table.add(spinner);
-                spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
-                spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.getButtonPlus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.addListener(new TextTooltip("The padding to the right of the widgets.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                spinner.getTextField().addListener(ibeamListener);
+                spinner.getButtonMinus().addListener(handListener);
+                spinner.getButtonPlus().addListener(handListener);
+                spinner.addListener(new TextTooltip("The padding to the right of the widgets.", tooltipManager, skin, "scene"));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -220,17 +221,17 @@ public class VerticalGroupListeners {
                 });
                 
                 table.row();
-                label = new Label("Top:", DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label("Top:", skin, "scene-label-colored");
                 table.add(label);
                 
-                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
                 spinner.setValue(simVerticalGroup.padTop);
                 spinner.setName("padding-top");
                 table.add(spinner);
-                spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
-                spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.getButtonPlus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.addListener(new TextTooltip("The padding to the top of the widgets.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                spinner.getTextField().addListener(ibeamListener);
+                spinner.getButtonMinus().addListener(handListener);
+                spinner.getButtonPlus().addListener(handListener);
+                spinner.addListener(new TextTooltip("The padding to the top of the widgets.", tooltipManager, skin, "scene"));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -239,17 +240,17 @@ public class VerticalGroupListeners {
                 });
                 
                 table.row();
-                label = new Label("Bottom:", DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label("Bottom:", skin, "scene-label-colored");
                 table.add(label);
                 
-                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
                 spinner.setValue(simVerticalGroup.padBottom);
                 spinner.setName("padding-bottom");
                 table.add(spinner);
-                spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
-                spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.getButtonPlus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.addListener(new TextTooltip("The padding to the bottom of the widgets.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                spinner.getTextField().addListener(ibeamListener);
+                spinner.getButtonMinus().addListener(handListener);
+                spinner.getButtonPlus().addListener(handListener);
+                spinner.addListener(new TextTooltip("The padding to the bottom of the widgets.", tooltipManager, skin, "scene"));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -257,24 +258,24 @@ public class VerticalGroupListeners {
                     }
                 });
                 
-                var image = new Image(DialogSceneComposer.skin, "scene-menu-divider");
+                var image = new Image(skin, "scene-menu-divider");
                 popTable.add(image).space(10).growY();
                 
                 table = new Table();
                 popTable.add(table);
                 
                 table.defaults().right().spaceRight(5);
-                label = new Label("Spacing:", DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label("Spacing:", skin, "scene-label-colored");
                 table.add(label);
                 
-                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
+                spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
                 spinner.setValue(simVerticalGroup.space);
                 spinner.setName("spacing-left");
                 table.add(spinner);
-                spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
-                spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.getButtonPlus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.addListener(new TextTooltip("The spacing between the widgets.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                spinner.getTextField().addListener(ibeamListener);
+                spinner.getButtonMinus().addListener(handListener);
+                spinner.getButtonPlus().addListener(handListener);
+                spinner.addListener(new TextTooltip("The spacing between the widgets.", tooltipManager, skin, "scene"));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -291,7 +292,7 @@ public class VerticalGroupListeners {
     
     public static EventListener verticalGroupWrapListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simVerticalGroup = (DialogSceneComposerModel.SimVerticalGroup) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -306,11 +307,11 @@ public class VerticalGroupListeners {
                 popTable.add(table);
                 
                 table.defaults().left().spaceRight(5);
-                var imageTextButton = new ImageTextButton("Wrap", DialogSceneComposer.skin, "scene-checkbox-colored");
+                var imageTextButton = new ImageTextButton("Wrap", skin, "scene-checkbox-colored");
                 imageTextButton.setChecked(simVerticalGroup.wrap);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Whether the widgets will wrap to the next line.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Whether the widgets will wrap to the next line.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -319,17 +320,17 @@ public class VerticalGroupListeners {
                 });
                 
                 table.row();
-                var label = new Label("Wrap Space:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Wrap Space:", skin, "scene-label-colored");
                 table.add(label);
                 
-                var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
+                var spinner = new Spinner(0, 1, true, Spinner.Orientation.RIGHT_STACK, skin, "scene");
                 spinner.setValue(simVerticalGroup.padRight);
                 spinner.setName("padding-right");
                 table.add(spinner);
-                spinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
-                spinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.getButtonPlus().addListener(DialogSceneComposer.main.getHandListener());
-                spinner.addListener(new TextTooltip("The vertical space between rows when wrap is enabled.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                spinner.getTextField().addListener(ibeamListener);
+                spinner.getButtonMinus().addListener(handListener);
+                spinner.getButtonPlus().addListener(handListener);
+                spinner.addListener(new TextTooltip("The vertical space between rows when wrap is enabled.", tooltipManager, skin, "scene"));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -346,7 +347,7 @@ public class VerticalGroupListeners {
     
     public static EventListener verticalGroupAlignmentListener(final DialogSceneComposerEvents events,
                                                                final SimActor simActor) {
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -361,18 +362,18 @@ public class VerticalGroupListeners {
                 var table = new Table();
                 popTable.add(table);
                 
-                var label = new Label("Alignment:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Alignment:", skin, "scene-label-colored");
                 table.add(label).colspan(3);
                 
                 table.row();
                 table.defaults().space(10).left().uniformX();
                 var buttonGroup = new ButtonGroup<ImageTextButton>();
-                var imageTextButton = new ImageTextButton("Top-Left", DialogSceneComposer.skin, "scene-checkbox-colored");
+                var imageTextButton = new ImageTextButton("Top-Left", skin, "scene-checkbox-colored");
                 var topLeft = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the top left.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the top left.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -381,12 +382,12 @@ public class VerticalGroupListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Top", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Top", skin, "scene-checkbox-colored");
                 var top = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the top center.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the top center.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -395,12 +396,12 @@ public class VerticalGroupListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Top-Right", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Top-Right", skin, "scene-checkbox-colored");
                 var topRight = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the top right.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the top right.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -410,12 +411,12 @@ public class VerticalGroupListeners {
                 buttonGroup.add(imageTextButton);
                 
                 table.row();
-                imageTextButton = new ImageTextButton("Left", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Left", skin, "scene-checkbox-colored");
                 var left = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the middle left.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the middle left.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -424,12 +425,12 @@ public class VerticalGroupListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Center", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Center", skin, "scene-checkbox-colored");
                 var center = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the center.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the center.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -438,12 +439,12 @@ public class VerticalGroupListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Right", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Right", skin, "scene-checkbox-colored");
                 var right = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the middle right.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the middle right.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -453,12 +454,12 @@ public class VerticalGroupListeners {
                 buttonGroup.add(imageTextButton);
                 
                 table.row();
-                imageTextButton = new ImageTextButton("Bottom-Left", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Bottom-Left", skin, "scene-checkbox-colored");
                 var bottomLeft = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom left.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom left.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -467,12 +468,12 @@ public class VerticalGroupListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Bottom", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Bottom", skin, "scene-checkbox-colored");
                 var bottom = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom center.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom center.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -481,12 +482,12 @@ public class VerticalGroupListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Bottom-Right", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Bottom-Right", skin, "scene-checkbox-colored");
                 var bottomRight = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom right.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom right.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -534,7 +535,7 @@ public class VerticalGroupListeners {
     
     public static EventListener verticalGroupColumnAlignmentListener(final DialogSceneComposerEvents events,
                                                                      final SimActor simActor) {
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -549,18 +550,18 @@ public class VerticalGroupListeners {
                 var table = new Table();
                 popTable.add(table);
                 
-                var label = new Label("Alignment:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Alignment:", skin, "scene-label-colored");
                 table.add(label).colspan(3);
                 
                 table.row();
                 table.defaults().space(10).left().uniformX();
                 var buttonGroup = new ButtonGroup<ImageTextButton>();
-                var imageTextButton = new ImageTextButton("Top-Left", DialogSceneComposer.skin, "scene-checkbox-colored");
+                var imageTextButton = new ImageTextButton("Top-Left", skin, "scene-checkbox-colored");
                 var topLeft = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the top left.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the top left.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -569,12 +570,12 @@ public class VerticalGroupListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Top", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Top", skin, "scene-checkbox-colored");
                 var top = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the top center.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the top center.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -583,12 +584,12 @@ public class VerticalGroupListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Top-Right", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Top-Right", skin, "scene-checkbox-colored");
                 var topRight = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the top right.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the top right.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -598,12 +599,12 @@ public class VerticalGroupListeners {
                 buttonGroup.add(imageTextButton);
                 
                 table.row();
-                imageTextButton = new ImageTextButton("Left", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Left", skin, "scene-checkbox-colored");
                 var left = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the middle left.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the middle left.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -612,12 +613,12 @@ public class VerticalGroupListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Center", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Center", skin, "scene-checkbox-colored");
                 var center = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the center.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the center.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -626,12 +627,12 @@ public class VerticalGroupListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Right", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Right", skin, "scene-checkbox-colored");
                 var right = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the middle right.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the middle right.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -641,12 +642,12 @@ public class VerticalGroupListeners {
                 buttonGroup.add(imageTextButton);
                 
                 table.row();
-                imageTextButton = new ImageTextButton("Bottom-Left", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Bottom-Left", skin, "scene-checkbox-colored");
                 var bottomLeft = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom left.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom left.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -655,12 +656,12 @@ public class VerticalGroupListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Bottom", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Bottom", skin, "scene-checkbox-colored");
                 var bottom = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom center.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom center.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -669,12 +670,12 @@ public class VerticalGroupListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Bottom-Right", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Bottom-Right", skin, "scene-checkbox-colored");
                 var bottomRight = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom right.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom right.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -722,7 +723,7 @@ public class VerticalGroupListeners {
     
     public static EventListener verticalGroupReverseListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simVerticalGroup = (DialogSceneComposerModel.SimVerticalGroup) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -737,11 +738,11 @@ public class VerticalGroupListeners {
                 popTable.add(table);
                 
                 table.defaults().left().spaceRight(5);
-                var imageTextButton = new ImageTextButton("Reverse", DialogSceneComposer.skin, "scene-checkbox-colored");
+                var imageTextButton = new ImageTextButton("Reverse", skin, "scene-checkbox-colored");
                 imageTextButton.setChecked(simVerticalGroup.reverse);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Reverse the display order of the widgets.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Reverse the display order of the widgets.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

@@ -40,6 +40,8 @@ import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.utils.Utils;
 
+import static com.ray3k.skincomposer.Main.*;
+
 import java.io.File;
 
 public class DialogPathErrors extends Dialog {
@@ -86,11 +88,11 @@ public class DialogPathErrors extends Dialog {
         
         button("Apply", true);
         applyButton = (TextButton) getButtonTable().getCells().first().getActor();
-        applyButton.addListener(main.getHandListener());
+        applyButton.addListener(handListener);
         applyButton.setDisabled(true);
         
         button("Cancel", false);
-        getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        getButtonTable().getCells().get(1).getActor().addListener(handListener);
         
         getCell(getButtonTable()).padBottom(20.0f);
         
@@ -128,14 +130,13 @@ public class DialogPathErrors extends Dialog {
                 dataTable.add(label).growX();
 
                 TextButton textButton = new TextButton("browse...", skin);
-                textButton.addListener(main.getHandListener());
+                textButton.addListener(handListener);
                 dataTable.add(textButton).padLeft(10.0f);
 
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event,
                             Actor actor) {
-                        DesktopWorker desktopWorker = main.getDesktopWorker();
                         String[] filterPatterns = null;
                         if (!Utils.isMac()) {
                             filterPatterns = new String[] {"*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif"};
@@ -203,14 +204,13 @@ public class DialogPathErrors extends Dialog {
                 dataTable.add(label).growX();
 
                 TextButton textButton = new TextButton("browse...", skin);
-                textButton.addListener(main.getHandListener());
+                textButton.addListener(handListener);
                 dataTable.add(textButton);
 
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event,
                             Actor actor) {
-                        DesktopWorker desktopWorker = main.getDesktopWorker();
                         String[] filterPatterns = null;
                         if (!Utils.isMac()) {
                             filterPatterns = new String[] {"*.fnt"};
@@ -278,14 +278,13 @@ public class DialogPathErrors extends Dialog {
                 dataTable.add(label).growX();
             
                 TextButton textButton = new TextButton("browse...", skin);
-                textButton.addListener(main.getHandListener());
+                textButton.addListener(handListener);
                 dataTable.add(textButton);
             
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event,
                                         Actor actor) {
-                        DesktopWorker desktopWorker = main.getDesktopWorker();
                         String[] filterPatterns = null;
                         if (!Utils.isMac()) {
                             filterPatterns = new String[] {"*.ttf"};
@@ -384,14 +383,14 @@ public class DialogPathErrors extends Dialog {
     @Override
     protected void result(Object object) {
         if ((boolean) object == true) {
-            main.getProjectData().setChangesSaved(false);
-            main.getAtlasData().produceAtlas();
-            main.getRootTable().populate();
-            for (FreeTypeFontData font : main.getJsonData().getFreeTypeFonts()) {
-                font.createBitmapFont(main);
+            projectData.setChangesSaved(false);
+            atlasData.produceAtlas();
+            rootTable.populate();
+            for (FreeTypeFontData font : jsonData.getFreeTypeFonts()) {
+                font.createBitmapFont();
             }
         } else {
-            main.getMainListener().newFile();
+            mainListener.newFile();
         }
     }
 

@@ -59,7 +59,7 @@ public class DialogSceneComposerEvents {
     }
     
     public void importTemplate(FileHandle loadFile) {
-        Main.main.getProjectData().setLastImportExportPath(loadFile.path());
+        Main.projectData.setLastImportExportPath(loadFile.path());
         DialogSceneComposerModel.loadFromJson(loadFile);
         dialog.simActor = rootActor;
         dialog.model.updatePreview();
@@ -68,12 +68,12 @@ public class DialogSceneComposerEvents {
     }
     
     public void exportTemplate(FileHandle saveFile) {
-        Main.main.getProjectData().setLastImportExportPath(saveFile.path());
+        Main.projectData.setLastImportExportPath(saveFile.path());
         DialogSceneComposerModel.saveToJson(saveFile);
     }
     
     public void exportJava(FileHandle saveFile) {
-        Main.main.getProjectData().setLastImportExportPath(saveFile.path());
+        Main.projectData.setLastImportExportPath(saveFile.path());
         String java = DialogSceneComposerJavaBuilder.generateJavaFile();
         saveFile.writeString(java, false);
     }
@@ -100,7 +100,7 @@ public class DialogSceneComposerEvents {
         dialog.model.redoables.clear();
         undoable.redo();
         dialog.updateMenuUndoRedo();
-        Main.main.getProjectData().setChangesSaved(false);
+        Main.projectData.setChangesSaved(false);
     }
     
     public void rootAddTable(int columns, int rows) {

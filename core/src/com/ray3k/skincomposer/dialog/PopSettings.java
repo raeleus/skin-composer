@@ -18,7 +18,7 @@ import com.ray3k.stripe.PopTable;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.stripe.Spinner.Orientation;
 
-import static com.ray3k.skincomposer.Main.main;
+import static com.ray3k.skincomposer.Main.*;
 
 public class PopSettings extends PopTable {
     private Integer maxUndos;
@@ -28,17 +28,17 @@ public class PopSettings extends PopTable {
     private boolean allowingUpdates;
     
     public PopSettings() {
-        super(main.getSkin(), "dialog");
+        super(skin, "dialog");
     
         setKeepCenteredInWindow(true);
         setModal(true);
         setHideOnUnfocus(true);
         
-        maxUndos = main.getProjectData().getMaxUndos();
-        resourcesRelative = main.getProjectData().areResourcesRelative();
-        allowingWelcome = main.getProjectData().isAllowingWelcome();
-        exportWarnings = main.getProjectData().isShowingExportWarnings();
-        allowingUpdates = main.getProjectData().isCheckingForUpdates();
+        maxUndos = projectData.getMaxUndos();
+        resourcesRelative = projectData.areResourcesRelative();
+        allowingWelcome = projectData.isAllowingWelcome();
+        exportWarnings = projectData.isShowingExportWarnings();
+        allowingUpdates = projectData.isCheckingForUpdates();
         
         populate();
     }
@@ -59,7 +59,7 @@ public class PopSettings extends PopTable {
         pad(10);
         
         defaults().space(15);
-        var label = new Label("Settings", main.getSkin(), "title");
+        var label = new Label("Settings", skin, "title");
         add(label);
         
         row();
@@ -67,7 +67,7 @@ public class PopSettings extends PopTable {
         add(table);
         
         table.defaults().growX().space(5);
-        var textButton = new TextButton("Open temp/log directory", main.getSkin());
+        var textButton = new TextButton("Open temp/log directory", skin);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -75,15 +75,15 @@ public class PopSettings extends PopTable {
                     Utils.openFileExplorer(Main.appFolder.child("temp/"));
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error opening temp folder", e);
-                    main.getDialogFactory().showDialogError("Folder Error...", "Error opening temp folder.\n\nOpen log?");
+                    dialogFactory.showDialogError("Folder Error...", "Error opening temp folder.\n\nOpen log?");
                 }
             }
         });
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         table.add(textButton);
         
         table.row();
-        textButton = new TextButton("Open preferences directory", main.getSkin());
+        textButton = new TextButton("Open preferences directory", skin);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -91,34 +91,34 @@ public class PopSettings extends PopTable {
                     Utils.openFileExplorer(Gdx.files.external(".prefs/"));
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error opening preferences folder", e);
-                    main.getDialogFactory().showDialogError("Folder Error...", "Error opening preferences folder.\n\nOpen log?");
+                    dialogFactory.showDialogError("Folder Error...", "Error opening preferences folder.\n\nOpen log?");
                 }
             }
         });
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         table.add(textButton);
         
-        if (main.getProjectData().areChangesSaved() && main.getProjectData().getSaveFile().exists()) {
+        if (projectData.areChangesSaved() && projectData.getSaveFile().exists()) {
             table.row();
-            textButton = new TextButton("Open project/import directory", main.getSkin());
+            textButton = new TextButton("Open project/import directory", skin);
             textButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeListener.ChangeEvent event,
                                     Actor actor) {
                     try {
-                        Utils.openFileExplorer(main.getProjectData().getSaveFile().sibling(main.getProjectData().getSaveFile().nameWithoutExtension() + "_data"));
+                        Utils.openFileExplorer(projectData.getSaveFile().sibling(projectData.getSaveFile().nameWithoutExtension() + "_data"));
                     } catch (Exception e) {
                         Gdx.app.error(getClass().getName(), "Error opening project folder", e);
-                        main.getDialogFactory().showDialogError("Folder Error...", "Error opening project folder\n\nOpen log?");
+                        dialogFactory.showDialogError("Folder Error...", "Error opening project folder\n\nOpen log?");
                     }
                 }
             });
-            textButton.addListener(main.getHandListener());
+            textButton.addListener(handListener);
             table.add(textButton);
         }
         
         table.row();
-        textButton = new TextButton("Open texture packer settings file for export", main.getSkin());
+        textButton = new TextButton("Open texture packer settings file for export", skin);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -126,15 +126,15 @@ public class PopSettings extends PopTable {
                     Utils.openFileExplorer(Main.appFolder.child("texturepacker/atlas-export-settings.json"));
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error opening atlas-export-settings.json", e);
-                    main.getDialogFactory().showDialogError("File Error...", "Error opening atlas-export-settings.json\n\nOpen log?");
+                    dialogFactory.showDialogError("File Error...", "Error opening atlas-export-settings.json\n\nOpen log?");
                 }
             }
         });
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         table.add(textButton);
         
         table.row();
-        textButton = new TextButton("Open texture packer settings file for preview", main.getSkin());
+        textButton = new TextButton("Open texture packer settings file for preview", skin);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -142,11 +142,11 @@ public class PopSettings extends PopTable {
                     Utils.openFileExplorer(Main.appFolder.child("texturepacker/atlas-internal-settings.json"));
                 } catch (Exception e) {
                     Gdx.app.error(getClass().getName(), "Error opening atlas-internal-settings.json", e);
-                    main.getDialogFactory().showDialogError("File Error...", "Error opening atlas-internal-settings.json\n\nOpen log?");
+                    dialogFactory.showDialogError("File Error...", "Error opening atlas-internal-settings.json\n\nOpen log?");
                 }
             }
         });
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         table.add(textButton);
         
         row();
@@ -154,10 +154,10 @@ public class PopSettings extends PopTable {
         add(table);
         
         table.defaults().space(5);
-        label = new Label("Max Number of Undos: ", main.getSkin());
+        label = new Label("Max Number of Undos: ", skin);
         table.add(label);
         
-        var spinner = new Spinner(main.getProjectData().getMaxUndos(), 1.0, true, Orientation.HORIZONTAL, getSkin());
+        var spinner = new Spinner(projectData.getMaxUndos(), 1.0, true, Orientation.HORIZONTAL, getSkin());
         spinner.setMinimum(1.0);
         spinner.setMaximum(100.0);
         spinner.addListener(new ChangeListener() {
@@ -174,9 +174,9 @@ public class PopSettings extends PopTable {
             }
             
         });
-        spinner.getTextField().addListener(main.getIbeamListener());
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
+        spinner.getTextField().addListener(ibeamListener);
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
         table.add(spinner).minWidth(100.0f);
         
         row();
@@ -186,7 +186,7 @@ public class PopSettings extends PopTable {
         table.defaults().expandX().left().space(5);
         var relativeCheckBox = new ImageTextButton("Keep resources relative?", getSkin(), "checkbox");
         relativeCheckBox.setChecked(resourcesRelative);
-        relativeCheckBox.addListener(main.getHandListener());
+        relativeCheckBox.addListener(handListener);
         relativeCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -198,7 +198,7 @@ public class PopSettings extends PopTable {
         table.row();
         var welcomeCheckBox = new ImageTextButton("Show welcome screen?", getSkin(), "checkbox");
         welcomeCheckBox.setChecked(allowingWelcome);
-        welcomeCheckBox.addListener(main.getHandListener());
+        welcomeCheckBox.addListener(handListener);
         welcomeCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -210,7 +210,7 @@ public class PopSettings extends PopTable {
         table.row();
         var exportWarningsCheckBox = new ImageTextButton("Show export warnings?", getSkin(), "checkbox");
         exportWarningsCheckBox.setChecked(exportWarnings);
-        exportWarningsCheckBox.addListener(main.getHandListener());
+        exportWarningsCheckBox.addListener(handListener);
         exportWarningsCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -222,7 +222,7 @@ public class PopSettings extends PopTable {
         table.row();
         var updatesCheckBox = new ImageTextButton("Check for updates?", getSkin(), "checkbox");
         updatesCheckBox.setChecked(allowingUpdates);
-        updatesCheckBox.addListener(main.getHandListener());
+        updatesCheckBox.addListener(handListener);
         updatesCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -238,24 +238,24 @@ public class PopSettings extends PopTable {
         
         buttonTable.defaults().minWidth(75).space(5);
         textButton = new TextButton("OK", getSkin());
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         buttonTable.add(textButton);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.getProjectData().setChangesSaved(false);
-                main.getProjectData().setMaxUndos(maxUndos);
-                main.getProjectData().setResourcesRelative(resourcesRelative);
-                main.getProjectData().setAllowingWelcome(allowingWelcome);
-                main.getProjectData().setShowingExportWarnings(exportWarnings);
-                main.getProjectData().setCheckingForUpdates(allowingUpdates);
-                main.getUndoableManager().clearUndoables();
+                projectData.setChangesSaved(false);
+                projectData.setMaxUndos(maxUndos);
+                projectData.setResourcesRelative(resourcesRelative);
+                projectData.setAllowingWelcome(allowingWelcome);
+                projectData.setShowingExportWarnings(exportWarnings);
+                projectData.setCheckingForUpdates(allowingUpdates);
+                undoableManager.clearUndoables();
     
                 if (allowingUpdates) {
                     Main.checkForUpdates(main);
                 } else {
                     Main.newVersion = Main.VERSION;
-                    main.getRootTable().fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.CHECK_FOR_UPDATES_COMPLETE));
+                    rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.CHECK_FOR_UPDATES_COMPLETE));
                 }
                 
                 hide();
@@ -263,7 +263,7 @@ public class PopSettings extends PopTable {
         });
         
         textButton = new TextButton("CANCEL", getSkin());
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         buttonTable.add(textButton);
         textButton.addListener(new ChangeListener() {
             @Override

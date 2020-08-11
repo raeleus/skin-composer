@@ -35,13 +35,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.utils.Utils;
+import static com.ray3k.skincomposer.Main.*;
 
 public class DialogLoading extends Dialog {
     private Runnable runnable;
     private Main main;
     
     public DialogLoading(String title, Runnable runnable, Main main) {
-        super(title, main.getSkin(), "dialog");
+        super(title, skin, "dialog");
         this.main = main;
         this.runnable = runnable;
         setFillParent(true);
@@ -78,12 +79,12 @@ public class DialogLoading extends Dialog {
     
     public void populate() {
         Table t = getContentTable();
-        Label label = new Label("Loading...", main.getSkin(), "title");
+        Label label = new Label("Loading...", skin, "title");
         label.setAlignment(Align.center);
         t.add(label);
         t.row();
-        Table table = new Table(main.getSkin());
-        table.setBackground(main.getLoadingAnimation());
+        Table table = new Table(skin);
+        table.setBackground(loadingAnimation);
         t.add(table);
     }
 }

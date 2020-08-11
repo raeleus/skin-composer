@@ -30,12 +30,12 @@ import com.ray3k.skincomposer.utils.Utils;
 
 import java.io.IOException;
 
+import static com.ray3k.skincomposer.Main.*;
+
 public class DialogError extends Dialog {
-    private Main main;
     
     public DialogError(String title, String message, Main main) {
-        super(title, main.getSkin());
-        this.main = main;
+        super(title, skin);
         getTitleTable().getCells().first().padLeft(5.0f);
         
         text(message);
@@ -44,8 +44,8 @@ public class DialogError extends Dialog {
         getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         button("OK", true).key(Keys.ENTER, true);
         button("Cancel", false).key(Keys.ESCAPE, false);
-        getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
-        getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        getButtonTable().getCells().first().getActor().addListener(handListener);
+        getButtonTable().getCells().get(1).getActor().addListener(handListener);
     }
 
     @Override

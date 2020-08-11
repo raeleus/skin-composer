@@ -48,6 +48,7 @@ import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ray3k.skincomposer.Main.desktopWorker;
 import static org.lwjgl.system.MemoryStack.stackPush;
 
 /**
@@ -398,7 +399,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         config.setWindowSizeLimits(675, 400, -1, -1);
         config.setWindowIcon("logo-16.png", "logo-32.png", "logo-48.png", "logo.png");
         var main = new Main(args);
-        main.setDesktopWorker(desktopLauncher);
+        desktopWorker = desktopLauncher;
         
         try {
             new Lwjgl3Application(main, config);

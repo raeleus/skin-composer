@@ -217,7 +217,7 @@ public class StyleData {
             Class recursiveStyleClass = Main.basicToStyleClass(recursiveClass);
             loop:
             while (recursiveStyleClass != null && Arrays.asList(Main.STYLE_CLASSES).contains(recursiveStyleClass)) {
-                var styles = main.getJsonData().getClassStyleMap().get(recursiveClass);
+                var styles = jsonData.getClassStyleMap().get(recursiveClass);
                 for (int i = 0; i < styles.size; i++) {
                     var style = styles.get(i);
                     if (parent.equals(style.name) && !(clazz.equals(recursiveClass) && name.equals(style.name))) {

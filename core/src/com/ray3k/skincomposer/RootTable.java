@@ -72,11 +72,9 @@ import com.ray3k.tenpatch.TenPatchDrawable;
 
 import java.util.Arrays;
 import java.util.Locale;
+import static com.ray3k.skincomposer.Main.*;
 
 public class RootTable extends Table {
-
-    private final Stage stage;
-    private final Main main;
     private SelectBox classSelectBox;
     private SelectBox styleSelectBox;
     private Table stylePropertiesTable;
@@ -115,17 +113,15 @@ public class RootTable extends Table {
     private Button styleRenameButton;
     private FilesDroppedListener filesDroppedListener;
 
-    public RootTable(Main main) {
-        super(main.getSkin());
-        this.stage = main.getStage();
-        this.main = main;
+    public RootTable() {
+        super(skin);
         
         previewProperties = new ObjectMap<>();
         
         scrollPaneListener = new ScrollPaneListener();
         previewFonts = new Array<>();
         
-        main.getAtlasData().produceAtlas();
+        atlasData.produceAtlas();
         
         filesDroppedListener = (Array<FileHandle> files) -> {
             for (FileHandle fileHandle : files) {
@@ -136,7 +132,7 @@ public class RootTable extends Table {
             }
         };
         
-        main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+        desktopWorker.addFilesDroppedListener(filesDroppedListener);
     }
 
     public void populate() {
@@ -163,7 +159,7 @@ public class RootTable extends Table {
         table.defaults().padRight(2.0f);
         add(table).growX().padTop(2.0f);
     
-        var bar = new StripeMenuBar(main.getStage(), getSkin(), "main");
+        var bar = new StripeMenuBar(stage, getSkin(), "main");
         table.add(bar).growX();
         
         String modifier;
@@ -177,33 +173,33 @@ public class RootTable extends Table {
             saveAsKeyboardShortcut = new KeyboardShortcut("Ctrl+Alt+S", Keys.S,Keys.CONTROL_LEFT, Keys.ALT_LEFT);
         }
         
-        bar.menu("File", main.getHandListener())
-                .item("New", new KeyboardShortcut(modifier + "+N", Keys.N, Keys.CONTROL_LEFT), main.getHandListener(), new MenuBarListener(RootTableEnum.NEW))
-                .item("Open...", new KeyboardShortcut(modifier + "+O", Keys.O, Keys.CONTROL_LEFT), main.getHandListener(), new MenuBarListener(RootTableEnum.OPEN))
-                .menu("Recent Files", main.getHandListener())
+        bar.menu("File", handListener)
+                .item("New", new KeyboardShortcut(modifier + "+N", Keys.N, Keys.CONTROL_LEFT), handListener, new MenuBarListener(RootTableEnum.NEW))
+                .item("Open...", new KeyboardShortcut(modifier + "+O", Keys.O, Keys.CONTROL_LEFT), handListener, new MenuBarListener(RootTableEnum.OPEN))
+                .menu("Recent Files", handListener)
                 
                 .parent()
-                .item("Save", new KeyboardShortcut(modifier + "+S", Keys.S, Keys.CONTROL_LEFT), main.getHandListener(), new MenuBarListener(RootTableEnum.SAVE))
-                .item("Save As...", saveAsKeyboardShortcut, main.getHandListener(), new MenuBarListener(RootTableEnum.SAVE_AS))
-                .item("Welcome Screen...", main.getHandListener(), new MenuBarListener(RootTableEnum.WELCOME))
-                .item("Import...", main.getHandListener(), new MenuBarListener(RootTableEnum.IMPORT))
-                .item("Export...", new KeyboardShortcut(modifier + "+E", Keys.E, Keys.CONTROL_LEFT), main.getHandListener(), new MenuBarListener(RootTableEnum.EXPORT))
-                .item("Exit", main.getHandListener(), new MenuBarListener(RootTableEnum.EXIT));
+                .item("Save", new KeyboardShortcut(modifier + "+S", Keys.S, Keys.CONTROL_LEFT), handListener, new MenuBarListener(RootTableEnum.SAVE))
+                .item("Save As...", saveAsKeyboardShortcut, handListener, new MenuBarListener(RootTableEnum.SAVE_AS))
+                .item("Welcome Screen...", handListener, new MenuBarListener(RootTableEnum.WELCOME))
+                .item("Import...", handListener, new MenuBarListener(RootTableEnum.IMPORT))
+                .item("Export...", new KeyboardShortcut(modifier + "+E", Keys.E, Keys.CONTROL_LEFT), handListener, new MenuBarListener(RootTableEnum.EXPORT))
+                .item("Exit", handListener, new MenuBarListener(RootTableEnum.EXIT));
         
-        bar.menu("Edit", main.getHandListener())
-                .item("Undo", new KeyboardShortcut(modifier + "+Z", Keys.Z, Keys.CONTROL_LEFT), main.getHandListener(), new MenuBarListener(RootTableEnum.UNDO))
-                .item("Redo", new KeyboardShortcut(modifier + "+Y", Keys.Y, Keys.CONTROL_LEFT), main.getHandListener(), new MenuBarListener(RootTableEnum.REDO));
+        bar.menu("Edit", handListener)
+                .item("Undo", new KeyboardShortcut(modifier + "+Z", Keys.Z, Keys.CONTROL_LEFT), handListener, new MenuBarListener(RootTableEnum.UNDO))
+                .item("Redo", new KeyboardShortcut(modifier + "+Y", Keys.Y, Keys.CONTROL_LEFT), handListener, new MenuBarListener(RootTableEnum.REDO));
         
-        bar.menu("Project", main.getHandListener())
-                .item("Settings", main.getHandListener(), new MenuBarListener(RootTableEnum.SETTINGS))
-                .item("Colors...", main.getHandListener(), new MenuBarListener(RootTableEnum.COLORS))
-                .item("Fonts...", main.getHandListener(), new MenuBarListener(RootTableEnum.FONTS))
-                .item("Drawables...", main.getHandListener(), new MenuBarListener(RootTableEnum.DRAWABLES))
-                .item("Refresh Atlas", new KeyboardShortcut("F5", Keys.F5), main.getHandListener(), new MenuBarListener(RootTableEnum.REFRESH_ATLAS))
-                .item("Scene Composer...", new MenuBarListener(RootTableEnum.SCENE_COMPOSER), main.getHandListener(), new MenuBarListener(RootTableEnum.SCENE_COMPOSER));
+        bar.menu("Project", handListener)
+                .item("Settings", handListener, new MenuBarListener(RootTableEnum.SETTINGS))
+                .item("Colors...", handListener, new MenuBarListener(RootTableEnum.COLORS))
+                .item("Fonts...", handListener, new MenuBarListener(RootTableEnum.FONTS))
+                .item("Drawables...", handListener, new MenuBarListener(RootTableEnum.DRAWABLES))
+                .item("Refresh Atlas", new KeyboardShortcut("F5", Keys.F5), handListener, new MenuBarListener(RootTableEnum.REFRESH_ATLAS))
+                .item("Scene Composer...", new MenuBarListener(RootTableEnum.SCENE_COMPOSER), handListener, new MenuBarListener(RootTableEnum.SCENE_COMPOSER));
         
-        bar.menu("Help", main.getHandListener())
-                .item("About...", main.getHandListener(), new MenuBarListener(RootTableEnum.ABOUT));
+        bar.menu("Help", handListener)
+                .item("About...", handListener, new MenuBarListener(RootTableEnum.ABOUT));
     
         recentFilesMenu = bar.findMenu("File").findMenu("Recent Files");
         updateRecentFiles();
@@ -217,8 +213,8 @@ public class RootTable extends Table {
         Button button = new Button(getSkin(), "download");
         button.setName("downloadButton");
         table.add(button);
-        button.addListener(new TextTooltip("Update Available", main.getTooltipManager(), getSkin()));
-        button.addListener(main.getHandListener());
+        button.addListener(new TextTooltip("Update Available", tooltipManager, getSkin()));
+        button.addListener(handListener);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -230,10 +226,10 @@ public class RootTable extends Table {
     
     public void updateRecentFiles() {
         recentFilesMenu.clear();
-        var recentFiles = main.getProjectData().getRecentFiles();
+        var recentFiles = projectData.getRecentFiles();
         recentFiles.reverse();
         for (var recentFile : recentFiles) {
-            recentFilesMenu.item(recentFile.toString(), main.getHandListener(), new RecentFileListener(recentFile));
+            recentFilesMenu.item(recentFile.toString(), handListener, new RecentFileListener(recentFile));
         }
         recentFilesMenu.getParentButton().setDisabled(recentFiles.size == 0);
     }
@@ -263,9 +259,9 @@ public class RootTable extends Table {
         table.add(label).padRight(10.0f).padLeft(10.0f);
 
         classSelectBox = new SelectBox(getSkin());
-        classSelectBox.addListener(main.getHandListener());
-        classSelectBox.getList().addListener(main.getHandListener());
-        classSelectBox.getList().addListener(main.getScrollFocusListener());
+        classSelectBox.addListener(handListener);
+        classSelectBox.getList().addListener(handListener);
+        classSelectBox.getList().addListener(scrollFocusListener);
         table.add(classSelectBox).padRight(5.0f).minWidth(150.0f);
 
         classSelectBox.addListener(new ChangeListener() {
@@ -277,7 +273,7 @@ public class RootTable extends Table {
         });
 
         Button button = new Button(getSkin(), "new");
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         table.add(button);
 
         button.addListener(new ChangeListener() {
@@ -288,12 +284,12 @@ public class RootTable extends Table {
         });
         
         //Tooltip
-        TextTooltip toolTip = new TextTooltip("New Class", main.getTooltipManager(), getSkin());
+        TextTooltip toolTip = new TextTooltip("New Class", tooltipManager, getSkin());
         button.addListener(toolTip);
 
         classDuplicateButton = new Button(getSkin(), "duplicate");
         classDuplicateButton.setDisabled(true);
-        classDuplicateButton.addListener(main.getHandListener());
+        classDuplicateButton.addListener(handListener);
         table.add(classDuplicateButton);
 
         classDuplicateButton.addListener(new ChangeListener() {
@@ -303,7 +299,7 @@ public class RootTable extends Table {
             }
         });
         
-        toolTip = new TextTooltip("Duplicate Class", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Duplicate Class", tooltipManager, getSkin());
         classDuplicateButton.addListener(toolTip);
         
         classDeleteButton = new Button(getSkin(), "delete");
@@ -317,7 +313,7 @@ public class RootTable extends Table {
             }
         });
         
-        toolTip = new TextTooltip("Delete Class", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Delete Class", tooltipManager, getSkin());
         classDeleteButton.addListener(toolTip);
         
         classRenameButton = new Button(getSkin(), "settings");
@@ -331,7 +327,7 @@ public class RootTable extends Table {
             }
         });
         
-        toolTip = new TextTooltip("Rename Class", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Rename Class", tooltipManager, getSkin());
         classRenameButton.addListener(toolTip);
 
         label = new Label("Style:", getSkin());
@@ -347,12 +343,12 @@ public class RootTable extends Table {
             }
         });
         
-        styleSelectBox.addListener(main.getHandListener());
-        styleSelectBox.getList().addListener(main.getHandListener());
-        styleSelectBox.getList().addListener(main.getScrollFocusListener());
+        styleSelectBox.addListener(handListener);
+        styleSelectBox.getList().addListener(handListener);
+        styleSelectBox.getList().addListener(scrollFocusListener);
 
         button = new Button(getSkin(), "new");
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         table.add(button);
 
         button.addListener(new ChangeListener() {
@@ -362,11 +358,11 @@ public class RootTable extends Table {
             }
         });
         
-        toolTip = new TextTooltip("New Style", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("New Style", tooltipManager, getSkin());
         button.addListener(toolTip);
 
         button = new Button(getSkin(), "duplicate");
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         table.add(button);
 
         button.addListener(new ChangeListener() {
@@ -376,11 +372,11 @@ public class RootTable extends Table {
             }
         });
         
-        toolTip = new TextTooltip("Duplicate Style", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Duplicate Style", tooltipManager, getSkin());
         button.addListener(toolTip);
 
         styleDeleteButton = new Button(getSkin(), "delete");
-        styleDeleteButton.addListener(main.getHandListener());
+        styleDeleteButton.addListener(handListener);
         table.add(styleDeleteButton);
 
         styleDeleteButton.addListener(new ChangeListener() {
@@ -390,7 +386,7 @@ public class RootTable extends Table {
             }
         });
         
-        toolTip = new TextTooltip("Delete Style", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Delete Style", tooltipManager, getSkin());
         styleDeleteButton.addListener(toolTip);
 
         styleRenameButton = new Button(getSkin(), "settings");
@@ -403,7 +399,7 @@ public class RootTable extends Table {
             }
         });
         
-        toolTip = new TextTooltip("Rename Style", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Rename Style", tooltipManager, getSkin());
         styleRenameButton.addListener(toolTip);
 
         fire(new LoadClassesEvent(classSelectBox));
@@ -413,12 +409,12 @@ public class RootTable extends Table {
     public void setClassDuplicateButtonDisabled(boolean disabled) {
         classDuplicateButton.setDisabled(disabled);
         if (disabled) {
-            if (classDuplicateButton.getListeners().contains(main.getHandListener(), true)) {
-                classDuplicateButton.removeListener(main.getHandListener());
+            if (classDuplicateButton.getListeners().contains(handListener, true)) {
+                classDuplicateButton.removeListener(handListener);
             }
         } else {
-            if (!classDuplicateButton.getListeners().contains(main.getHandListener(), true)) {
-                classDuplicateButton.addListener(main.getHandListener());
+            if (!classDuplicateButton.getListeners().contains(handListener, true)) {
+                classDuplicateButton.addListener(handListener);
             }
         }
     }
@@ -426,12 +422,12 @@ public class RootTable extends Table {
     public void setClassDeleteButtonDisabled(boolean disabled) {
         classDeleteButton.setDisabled(disabled);
         if (disabled) {
-            if (classDeleteButton.getListeners().contains(main.getHandListener(), true)) {
-                classDeleteButton.removeListener(main.getHandListener());
+            if (classDeleteButton.getListeners().contains(handListener, true)) {
+                classDeleteButton.removeListener(handListener);
             }
         } else {
-            if (!classDeleteButton.getListeners().contains(main.getHandListener(), true)) {
-                classDeleteButton.addListener(main.getHandListener());
+            if (!classDeleteButton.getListeners().contains(handListener, true)) {
+                classDeleteButton.addListener(handListener);
             }
         }
     }
@@ -439,12 +435,12 @@ public class RootTable extends Table {
     public void setClassRenameButtonDisabled(boolean disabled) {
         classRenameButton.setDisabled(disabled);
         if (disabled) {
-            if (classRenameButton.getListeners().contains(main.getHandListener(), true)) {
-                classRenameButton.removeListener(main.getHandListener());
+            if (classRenameButton.getListeners().contains(handListener, true)) {
+                classRenameButton.removeListener(handListener);
             }
         } else {
-            if (!classRenameButton.getListeners().contains(main.getHandListener(), true)) {
-                classRenameButton.addListener(main.getHandListener());
+            if (!classRenameButton.getListeners().contains(handListener, true)) {
+                classRenameButton.addListener(handListener);
             }
         }
     }
@@ -452,12 +448,12 @@ public class RootTable extends Table {
     public void setStyleDeleteButtonDisabled(boolean disabled) {
         styleDeleteButton.setDisabled(disabled);
         if (disabled) {
-            if (styleDeleteButton.getListeners().contains(main.getHandListener(), true)) {
-                styleDeleteButton.removeListener(main.getHandListener());
+            if (styleDeleteButton.getListeners().contains(handListener, true)) {
+                styleDeleteButton.removeListener(handListener);
             }
         } else {
-            if (!styleDeleteButton.getListeners().contains(main.getHandListener(), true)) {
-                styleDeleteButton.addListener(main.getHandListener());
+            if (!styleDeleteButton.getListeners().contains(handListener, true)) {
+                styleDeleteButton.addListener(handListener);
             }
         }
     }
@@ -465,12 +461,12 @@ public class RootTable extends Table {
     public void setStyleRenameButtonDisabled(boolean disabled) {
         styleRenameButton.setDisabled(disabled);
         if (disabled) {
-            if (styleRenameButton.getListeners().contains(main.getHandListener(), true)) {
-                styleRenameButton.removeListener(main.getHandListener());
+            if (styleRenameButton.getListeners().contains(handListener, true)) {
+                styleRenameButton.removeListener(handListener);
             }
         } else {
-            if (!styleRenameButton.getListeners().contains(main.getHandListener(), true)) {
-                styleRenameButton.addListener(main.getHandListener());
+            if (!styleRenameButton.getListeners().contains(handListener, true)) {
+                styleRenameButton.addListener(handListener);
             }
         }
     }
@@ -489,7 +485,7 @@ public class RootTable extends Table {
         SplitPane splitPane = new SplitPane(stylePropertiesTable, right, false, getSkin());
         add(splitPane).grow();
 
-        splitPane.addListener(main.getHorizontalResizeArrowListener());
+        splitPane.addListener(horizontalResizeArrowListener);
     }
 
     public void refreshStyleProperties(boolean preserveScroll) {
@@ -553,15 +549,15 @@ public class RootTable extends Table {
         left.add(stylePropertiesScrollPane).grow().padTop(10.0f).padBottom(10.0f);
 
         //gather all scrollPaneStyles
-        Array<StyleData> scrollPaneStyles = main.getProjectData().getJsonData().getClassStyleMap().get(ScrollPane.class);
+        Array<StyleData> scrollPaneStyles = projectData.getJsonData().getClassStyleMap().get(ScrollPane.class);
 
         //gather all listStyles
-        Array<StyleData> listStyles = main.getProjectData().getJsonData().getClassStyleMap().get(List.class);
+        Array<StyleData> listStyles = projectData.getJsonData().getClassStyleMap().get(List.class);
 
         //gather all labelStyles
-        Array<StyleData> labelStyles = main.getProjectData().getJsonData().getClassStyleMap().get(Label.class);
+        Array<StyleData> labelStyles = projectData.getJsonData().getClassStyleMap().get(Label.class);
     
-        Object selected = main.getRootTable().getStyleSelectBox().getSelected();
+        Object selected = rootTable.getStyleSelectBox().getSelected();
         Array<StyleProperty> styleProperties = selected instanceof StyleData ? ((StyleData) selected).properties.values().toArray() : null;
         Array<CustomProperty> customProperties = selected instanceof CustomStyle ? ((CustomStyle) selected).getProperties() : null;
         if (styleProperties != null) {
@@ -576,7 +572,7 @@ public class RootTable extends Table {
             Class recursiveClass = getSelectedClass();
             Class recursiveStyleClass = Main.basicToStyleClass(recursiveClass);
             while (recursiveStyleClass != null && Arrays.asList(Main.STYLE_CLASSES).contains(recursiveStyleClass)) {
-                for (var style : main.getJsonData().getClassStyleMap().get(recursiveClass)) {
+                for (var style : jsonData.getClassStyleMap().get(recursiveClass)) {
                     if (style != null && !(style.parent != null && style.parent.equals(getSelectedStyle().name)) && !(parentNames.contains(style.name, false) || style.equals(getSelectedStyle()) && recursiveClass.equals(getSelectedClass()))) {
                         parentNames.add(style.name);
                     }
@@ -590,8 +586,8 @@ public class RootTable extends Table {
             parentSelectBox.setItems(parentNames);
             parentSelectBox.setSelected(getSelectedStyle().parent);
             table.add(parentSelectBox);
-            parentSelectBox.addListener(main.getHandListener());
-            parentSelectBox.getList().addListener(main.getHandListener());
+            parentSelectBox.addListener(handListener);
+            parentSelectBox.getList().addListener(handListener);
             parentSelectBox.addListener(new StyleParentChangeListener(getSelectedStyle(), parentSelectBox));
             //make preview respect parent
             
@@ -605,7 +601,7 @@ public class RootTable extends Table {
                     } else {
                         browseField = new BrowseField((String) styleProperty.value, styleProperty.name, getSkin(), "color-required");
                     }
-                    browseField.addListener(main.getHandListener());
+                    browseField.addListener(handListener);
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
@@ -616,7 +612,7 @@ public class RootTable extends Table {
                     } else {
                         browseField = new BrowseField((String) styleProperty.value, styleProperty.name, getSkin(), "font-required");
                     }
-                    browseField.addListener(main.getHandListener());
+                    browseField.addListener(handListener);
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
@@ -627,7 +623,7 @@ public class RootTable extends Table {
                     } else {
                         browseField = new BrowseField((String) styleProperty.value, styleProperty.name, getSkin(), "drawable-required");
                     }
-                    browseField.addListener(main.getHandListener());
+                    browseField.addListener(handListener);
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new StylePropertyChangeListener(styleProperty, browseField));
@@ -641,9 +637,9 @@ public class RootTable extends Table {
 
                     table.row();
                     Spinner spinner = new Spinner((Double) styleProperty.value, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
-                    spinner.getTextField().addListener(main.getIbeamListener());
-                    spinner.getButtonMinus().addListener(main.getHandListener());
-                    spinner.getButtonPlus().addListener(main.getHandListener());
+                    spinner.getTextField().addListener(ibeamListener);
+                    spinner.getButtonMinus().addListener(handListener);
+                    spinner.getButtonPlus().addListener(handListener);
                     table.add(spinner);
 
                     spinner.addListener(new StylePropertyChangeListener(styleProperty, spinner));
@@ -658,8 +654,8 @@ public class RootTable extends Table {
                     table.row();
                     SelectBox<StyleData> selectBox = new SelectBox<>(getSkin());
                     selectBox.setItems(scrollPaneStyles);
-                    selectBox.addListener(main.getHandListener());
-                    selectBox.getList().addListener(main.getHandListener());
+                    selectBox.addListener(handListener);
+                    selectBox.getList().addListener(handListener);
                     
                     if (styleProperty.value != null) {
                         String name = ((String) styleProperty.value);
@@ -690,8 +686,8 @@ public class RootTable extends Table {
                     table.row();
                     SelectBox<StyleData> selectBox = new SelectBox<>(getSkin());
                     selectBox.setItems(listStyles);
-                    selectBox.addListener(main.getHandListener());
-                    selectBox.getList().addListener(main.getHandListener());
+                    selectBox.addListener(handListener);
+                    selectBox.getList().addListener(handListener);
                     
                     if (styleProperty.value != null) {
                         String name = ((String) styleProperty.value);
@@ -721,8 +717,8 @@ public class RootTable extends Table {
                     table.row();
                     SelectBox<StyleData> selectBox = new SelectBox<>(getSkin());
                     selectBox.setItems(labelStyles);
-                    selectBox.addListener(main.getHandListener());
-                    selectBox.getList().addListener(main.getHandListener());
+                    selectBox.addListener(handListener);
+                    selectBox.getList().addListener(handListener);
                     
                     if (styleProperty.value != null) {
                         String name = ((String) styleProperty.value);
@@ -751,7 +747,7 @@ public class RootTable extends Table {
                 if (styleProperty.getType() == PropertyType.COLOR) {
                     String value = "";
                     if (styleProperty.getValue() instanceof String) {
-                        for (ColorData color : main.getJsonData().getColors()) {
+                        for (ColorData color : jsonData.getColors()) {
                             if (color.getName().equals(styleProperty.getValue())) {
                                 value = (String) styleProperty.getValue();
                                 break;
@@ -759,35 +755,35 @@ public class RootTable extends Table {
                         }
                     }
                     BrowseField browseField = new BrowseField(value, styleProperty.getName(), getSkin(), "color");
-                    browseField.addListener(main.getHandListener());
+                    browseField.addListener(handListener);
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new CustomPropertyChangeListener(styleProperty, browseField));
                 } else if (styleProperty.getType() == PropertyType.FONT) {
                     String value = "";
                     if (styleProperty.getValue() instanceof String) {
-                        for (FontData font : main.getJsonData().getFonts()) {
+                        for (FontData font : jsonData.getFonts()) {
                             if (font.getName().equals(styleProperty.getValue())) {
                                 value = (String) styleProperty.getValue();
                                 break;
                             }
                         }
                         
-                        for (FreeTypeFontData font : main.getJsonData().getFreeTypeFonts()) {
+                        for (FreeTypeFontData font : jsonData.getFreeTypeFonts()) {
                             if (font.name.equals(styleProperty.getValue())) {
                                 value = (String) styleProperty.getValue();
                             }
                         }
                     }
                     BrowseField browseField = new BrowseField(value, styleProperty.getName(), getSkin(), "font");
-                    browseField.addListener(main.getHandListener());
+                    browseField.addListener(handListener);
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new CustomPropertyChangeListener(styleProperty, browseField));
                 } else if (styleProperty.getType() == PropertyType.DRAWABLE) {
                     String value = "";
                     if (styleProperty.getValue() instanceof String) {
-                        for (DrawableData drawable : main.getAtlasData().getDrawables()) {
+                        for (DrawableData drawable : atlasData.getDrawables()) {
                             if (drawable.name.equals(styleProperty.getValue())) {
                                 value = (String) styleProperty.getValue();
                                 break;
@@ -795,7 +791,7 @@ public class RootTable extends Table {
                         }
                     }
                     BrowseField browseField = new BrowseField(value, styleProperty.getName(), getSkin(), "drawable");
-                    browseField.addListener(main.getHandListener());
+                    browseField.addListener(handListener);
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new CustomPropertyChangeListener(styleProperty, browseField));
@@ -813,9 +809,9 @@ public class RootTable extends Table {
                     }
                     Spinner spinner = new Spinner(value, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     spinner.setRound(false);
-                    spinner.getTextField().addListener(main.getIbeamListener());
-                    spinner.getButtonMinus().addListener(main.getHandListener());
-                    spinner.getButtonPlus().addListener(main.getHandListener());
+                    spinner.getTextField().addListener(ibeamListener);
+                    spinner.getButtonMinus().addListener(handListener);
+                    spinner.getButtonPlus().addListener(handListener);
                     table.add(spinner);
 
                     spinner.addListener(new CustomPropertyChangeListener(styleProperty, spinner));
@@ -830,7 +826,7 @@ public class RootTable extends Table {
                     }
                     TextField textField = new TextField(value, getSkin());
                     textField.setAlignment(Align.center);
-                    textField.addListener(main.getIbeamListener());
+                    textField.addListener(ibeamListener);
                     table.add(textField);
                     
                     textField.addListener(new CustomPropertyChangeListener(styleProperty, textField));
@@ -848,14 +844,14 @@ public class RootTable extends Table {
                     table.add(button).fill(false);
                     
                     button.addListener(new CustomPropertyChangeListener(styleProperty, button));
-                    button.addListener(main.getHandListener());
+                    button.addListener(handListener);
                 } else if (styleProperty.getType() == PropertyType.STYLE) {
                     String value = "";
                     if (styleProperty.getValue() instanceof String) {
                         value = (String) styleProperty.getValue();
                     }
                     BrowseField browseField = new BrowseField(value, styleProperty.getName(), getSkin(), "style");
-                    browseField.addListener(main.getHandListener());
+                    browseField.addListener(handListener);
                     table.add(browseField).padTop(20.0f);
 
                     browseField.addListener(new CustomPropertyChangeListener(styleProperty, browseField));
@@ -871,9 +867,9 @@ public class RootTable extends Table {
                     }
                 });
                 
-                TextTooltip toolTip = new TextTooltip("Duplicate Style Property", main.getTooltipManager(), getSkin());
+                TextTooltip toolTip = new TextTooltip("Duplicate Style Property", tooltipManager, getSkin());
                 duplicateButton.addListener(toolTip);
-                duplicateButton.addListener(main.getHandListener());
+                duplicateButton.addListener(handListener);
                 
                 Button deleteButton = new Button(getSkin(), "delete");
                 table.add(deleteButton).fill(false).expand(false, false).pad(0).bottom();
@@ -885,9 +881,9 @@ public class RootTable extends Table {
                     }
                 });
                 
-                toolTip = new TextTooltip("Delete Style Property", main.getTooltipManager(), getSkin());
+                toolTip = new TextTooltip("Delete Style Property", tooltipManager, getSkin());
                 deleteButton.addListener(toolTip);
-                deleteButton.addListener(main.getHandListener());
+                deleteButton.addListener(handListener);
                 
                 Button renameButton = new Button(getSkin(), "settings");
                 table.add(renameButton).fill(false).expand(false, false).pad(0).bottom();
@@ -899,9 +895,9 @@ public class RootTable extends Table {
                     }
                 });
                 
-                toolTip = new TextTooltip("Rename Style Property", main.getTooltipManager(), getSkin());
+                toolTip = new TextTooltip("Rename Style Property", tooltipManager, getSkin());
                 renameButton.addListener(toolTip);
-                renameButton.addListener(main.getHandListener());
+                renameButton.addListener(handListener);
                 
                 table.row();
             }
@@ -919,9 +915,9 @@ public class RootTable extends Table {
             });
             table.add(button);
             
-            TextTooltip toolTip = new TextTooltip("New Style Property", main.getTooltipManager(), getSkin());
+            TextTooltip toolTip = new TextTooltip("New Style Property", tooltipManager, getSkin());
             button.addListener(toolTip);
-            button.addListener(main.getHandListener());
+            button.addListener(handListener);
         }
     }
 
@@ -986,7 +982,7 @@ public class RootTable extends Table {
         SplitPane splitPane = new SplitPane(top, bottom, true, getSkin());
         right.add(splitPane).grow();
 
-        splitPane.addListener(main.getVerticalResizeArrowListener());
+        splitPane.addListener(verticalResizeArrowListener);
     }
 
     private void addPreview(Table top, InputListener scrollPaneListener) {
@@ -1031,7 +1027,7 @@ public class RootTable extends Table {
             previewPropertiesTable.add(t).grow();
             t.defaults().pad(3.0f);
             
-            previewProperties.put("bgcolor", main.getProjectData().getPreviewBgColor());
+            previewProperties.put("bgcolor", projectData.getPreviewBgColor());
 
             if (classSelectBox.getSelectedIndex() >= 0 && classSelectBox.getSelectedIndex() < Main.BASIC_CLASSES.length) {
                 t.add(new Label("Stage Color: ", getSkin())).right();
@@ -1039,13 +1035,13 @@ public class RootTable extends Table {
                 browseField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        main.getDialogFactory().showDialogColorPicker((Color) previewProperties.get("bgcolor"), new DialogColorPicker.ColorListener() {
+                        dialogFactory.showDialogColorPicker((Color) previewProperties.get("bgcolor"), new DialogColorPicker.ColorListener() {
                             @Override
                             public void selected(Color color) {
                                 if (color != null) {
                                     browseField.getTextButton().setText((int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
                                     previewProperties.put("bgcolor", color);
-                                    main.getProjectData().setPreviewBgColor(color);
+                                    projectData.setPreviewBgColor(color);
                                     refreshPreview();
                                 }
                             }
@@ -1053,9 +1049,9 @@ public class RootTable extends Table {
                     }
                 });
                 
-                browseField.addListener(main.getHandListener());
+                browseField.addListener(handListener);
                 t.add(browseField).growX();
-                var previewBgColor = main.getProjectData().getPreviewBgColor();
+                var previewBgColor = projectData.getPreviewBgColor();
                 browseField.getTextButton().setText((int) (previewBgColor.r * 255) + "," + (int) (previewBgColor.g * 255) + "," + (int) (previewBgColor.b * 255) + "," + (int) (previewBgColor.a * 255));
 
                 t.row();
@@ -1064,8 +1060,8 @@ public class RootTable extends Table {
                 previewSizeSelectBox = new SelectBox<>(getSkin());
                 previewSizeSelectBox.setItems(DEFAULT_SIZES);
                 previewSizeSelectBox.setSelectedIndex(1);
-                previewSizeSelectBox.addListener(main.getHandListener());
-                previewSizeSelectBox.getList().addListener(main.getHandListener());
+                previewSizeSelectBox.addListener(handListener);
+                previewSizeSelectBox.getList().addListener(handListener);
                 t.add(previewSizeSelectBox).growX().minWidth(200.0f);
                 Class clazz = Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()];
                 if (clazz.equals(Button.class)) {
@@ -1079,7 +1075,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
-                    disabledCheckBox.addListener(main.getHandListener());
+                    disabledCheckBox.addListener(handListener);
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
                     t.add(disabledCheckBox).left();
                 } else if (clazz.equals(CheckBox.class)) {
@@ -1093,7 +1089,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
-                    disabledCheckBox.addListener(main.getHandListener());
+                    disabledCheckBox.addListener(handListener);
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
                     t.add(disabledCheckBox).left();
 
@@ -1101,7 +1097,7 @@ public class RootTable extends Table {
                     t.add(new Label("Text: ", getSkin())).right();
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
-                    previewTextField.addListener(main.getIbeamListener());
+                    previewTextField.addListener(ibeamListener);
                     previewTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1123,7 +1119,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
-                    disabledCheckBox.addListener(main.getHandListener());
+                    disabledCheckBox.addListener(handListener);
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
                     t.add(disabledCheckBox).left();
                 } else if (clazz.equals(ImageTextButton.class)) {
@@ -1137,7 +1133,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
-                    disabledCheckBox.addListener(main.getHandListener());
+                    disabledCheckBox.addListener(handListener);
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
                     t.add(disabledCheckBox).left();
 
@@ -1145,7 +1141,7 @@ public class RootTable extends Table {
                     t.add(new Label("Text: ", getSkin())).right();
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
-                    previewTextField.addListener(main.getIbeamListener());
+                    previewTextField.addListener(ibeamListener);
                     previewTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1161,7 +1157,7 @@ public class RootTable extends Table {
                     t.add(new Label("Text: ", getSkin())).right();
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
-                    previewTextField.addListener(main.getIbeamListener());
+                    previewTextField.addListener(ibeamListener);
                     previewTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1178,7 +1174,7 @@ public class RootTable extends Table {
                     TextArea listItemsTextArea = new TextArea("Lorem ipsum\ndolor sit\namet, consectetur", getSkin());
                     listItemsTextArea.setFocusTraversal(false);
                     listItemsTextArea.setPrefRows(3);
-                    listItemsTextArea.addListener(main.getIbeamListener());
+                    listItemsTextArea.addListener(ibeamListener);
                     listItemsTextArea.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1200,7 +1196,7 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
-                    disabledCheckBox.addListener(main.getHandListener());
+                    disabledCheckBox.addListener(handListener);
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
                     t.add(disabledCheckBox).left();
 
@@ -1215,9 +1211,9 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
-                    valueSpinner.getButtonMinus().addListener(main.getHandListener());
-                    valueSpinner.getButtonPlus().addListener(main.getHandListener());
-                    valueSpinner.getTextField().addListener(main.getIbeamListener());
+                    valueSpinner.getButtonMinus().addListener(handListener);
+                    valueSpinner.getButtonPlus().addListener(handListener);
+                    valueSpinner.getTextField().addListener(ibeamListener);
                     previewProperties.put("value", valueSpinner.getValue());
                     t.add(valueSpinner).growX();
 
@@ -1225,9 +1221,9 @@ public class RootTable extends Table {
                     t.add(new Label("Minimum: ", getSkin())).right();
                     Spinner minimumSpinner = new Spinner(0.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     minimumSpinner.getTextField().setFocusTraversal(false);
-                    minimumSpinner.getTextField().addListener(main.getIbeamListener());
-                    minimumSpinner.getButtonMinus().addListener(main.getHandListener());
-                    minimumSpinner.getButtonPlus().addListener(main.getHandListener());
+                    minimumSpinner.getTextField().addListener(ibeamListener);
+                    minimumSpinner.getButtonMinus().addListener(handListener);
+                    minimumSpinner.getButtonPlus().addListener(handListener);
                     previewProperties.put("minimum", minimumSpinner.getValue());
                     t.add(minimumSpinner).growX();
 
@@ -1235,9 +1231,9 @@ public class RootTable extends Table {
                     t.add(new Label("Maximum: ", getSkin())).right();
                     Spinner maximumSpinner = new Spinner(10f, 1.0f, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     maximumSpinner.getTextField().setFocusTraversal(false);
-                    maximumSpinner.getTextField().addListener(main.getIbeamListener());
-                    maximumSpinner.getButtonMinus().addListener(main.getHandListener());
-                    maximumSpinner.getButtonPlus().addListener(main.getHandListener());
+                    maximumSpinner.getTextField().addListener(ibeamListener);
+                    maximumSpinner.getButtonMinus().addListener(handListener);
+                    maximumSpinner.getButtonPlus().addListener(handListener);
                     previewProperties.put("maximum", maximumSpinner.getValue());
                     t.add(maximumSpinner).growX();
 
@@ -1272,9 +1268,9 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
-                    incrementSpinner.getTextField().addListener(main.getIbeamListener());
-                    incrementSpinner.getButtonMinus().addListener(main.getHandListener());
-                    incrementSpinner.getButtonPlus().addListener(main.getHandListener());
+                    incrementSpinner.getTextField().addListener(ibeamListener);
+                    incrementSpinner.getButtonMinus().addListener(handListener);
+                    incrementSpinner.getButtonPlus().addListener(handListener);
                     previewProperties.put("increment", incrementSpinner.getValue());
                     t.add(incrementSpinner).growX();
 
@@ -1299,8 +1295,8 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
-                    selectBox.addListener(main.getHandListener());
-                    selectBox.getList().addListener(main.getHandListener());
+                    selectBox.addListener(handListener);
+                    selectBox.getList().addListener(handListener);
                     t.add(selectBox).growX();
 
                 } else if (clazz.equals(ScrollPane.class)) {
@@ -1315,7 +1311,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(onTopCheckBox).left();
-                    onTopCheckBox.addListener(main.getHandListener());
+                    onTopCheckBox.addListener(handListener);
                     previewProperties.put("scrollbarsOnTop", onTopCheckBox.isChecked());
 
                     t.row();
@@ -1335,8 +1331,8 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(hScrollPosBox).growX();
-                    hScrollPosBox.addListener(main.getHandListener());
-                    hScrollPosBox.getList().addListener(main.getHandListener());
+                    hScrollPosBox.addListener(handListener);
+                    hScrollPosBox.getList().addListener(handListener);
                     previewProperties.put("hScrollBarPosition", true);
 
                     t.row();
@@ -1356,8 +1352,8 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(vScrollPosBox).growX();
-                    vScrollPosBox.addListener(main.getHandListener());
-                    vScrollPosBox.getList().addListener(main.getHandListener());
+                    vScrollPosBox.addListener(handListener);
+                    vScrollPosBox.getList().addListener(handListener);
                     previewProperties.put("vScrollBarPosition", true);
 
                     t.row();
@@ -1371,7 +1367,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(hScrollCheckBox).left();
-                    hScrollCheckBox.addListener(main.getHandListener());
+                    hScrollCheckBox.addListener(handListener);
                     previewProperties.put("hScrollDisabled", hScrollCheckBox.isChecked());
 
                     t.row();
@@ -1385,7 +1381,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(vScrollCheckBox).left();
-                    vScrollCheckBox.addListener(main.getHandListener());
+                    vScrollCheckBox.addListener(handListener);
                     previewProperties.put("vScrollDisabled", vScrollCheckBox.isChecked());
 
                     t.row();
@@ -1399,7 +1395,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(forceHScrollCheckBox).left();
-                    forceHScrollCheckBox.addListener(main.getHandListener());
+                    forceHScrollCheckBox.addListener(handListener);
                     previewProperties.put("forceHscroll", forceHScrollCheckBox.isChecked());
 
                     t.row();
@@ -1413,7 +1409,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(forceVScrollCheckBox).left();
-                    forceVScrollCheckBox.addListener(main.getHandListener());
+                    forceVScrollCheckBox.addListener(handListener);
                     previewProperties.put("forceVscroll", forceVScrollCheckBox.isChecked());
 
                     t.row();
@@ -1428,7 +1424,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(variableSizeKnobsCheckBox).left();
-                    variableSizeKnobsCheckBox.addListener(main.getHandListener());
+                    variableSizeKnobsCheckBox.addListener(handListener);
                     previewProperties.put("variableSizeKnobs", variableSizeKnobsCheckBox.isChecked());
 
                     t.row();
@@ -1443,7 +1439,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(hOverscrollCheckBox).left();
-                    hOverscrollCheckBox.addListener(main.getHandListener());
+                    hOverscrollCheckBox.addListener(handListener);
                     previewProperties.put("hOverscroll", hOverscrollCheckBox.isChecked());
 
                     t.row();
@@ -1458,7 +1454,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(vOverscrollCheckBox).left();
-                    vOverscrollCheckBox.addListener(main.getHandListener());
+                    vOverscrollCheckBox.addListener(handListener);
                     previewProperties.put("vOverscroll", vOverscrollCheckBox.isChecked());
 
                     t.row();
@@ -1472,7 +1468,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(fadeScrollCheckBox).left();
-                    fadeScrollCheckBox.addListener(main.getHandListener());
+                    fadeScrollCheckBox.addListener(handListener);
                     previewProperties.put("fadeScroll", fadeScrollCheckBox.isChecked());
 
                     t.row();
@@ -1487,7 +1483,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(smoothScrollCheckBox).left();
-                    smoothScrollCheckBox.addListener(main.getHandListener());
+                    smoothScrollCheckBox.addListener(handListener);
                     previewProperties.put("smoothScroll", smoothScrollCheckBox.isChecked());
 
                     t.row();
@@ -1502,7 +1498,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(flickScrollCheckBox).left();
-                    flickScrollCheckBox.addListener(main.getHandListener());
+                    flickScrollCheckBox.addListener(handListener);
                     previewProperties.put("flickScroll", flickScrollCheckBox.isChecked());
 
                     t.row();
@@ -1517,7 +1513,7 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(clampCheckBox).left();
-                    clampCheckBox.addListener(main.getHandListener());
+                    clampCheckBox.addListener(handListener);
                     previewProperties.put("clamp", clampCheckBox.isChecked());
 
                     t.row();
@@ -1525,7 +1521,7 @@ public class RootTable extends Table {
                     TextArea previewTextArea = new TextArea(PARAGRAPH_SAMPLE_EXT, getSkin());
                     previewTextArea.setFocusTraversal(false);
                     previewTextArea.setPrefRows(5);
-                    previewTextArea.addListener(main.getIbeamListener());
+                    previewTextArea.addListener(ibeamListener);
                     previewTextArea.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1549,7 +1545,7 @@ public class RootTable extends Table {
                         }
                     });
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
-                    disabledCheckBox.addListener(main.getHandListener());
+                    disabledCheckBox.addListener(handListener);
                     t.add(disabledCheckBox).left();
 
                     t.row();
@@ -1557,9 +1553,9 @@ public class RootTable extends Table {
                     Spinner spinner = new Spinner(3, 1, true, Spinner.Orientation.HORIZONTAL, getSkin());
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(1);
-                    spinner.getTextField().addListener(main.getIbeamListener());
-                    spinner.getButtonMinus().addListener(main.getHandListener());
-                    spinner.getButtonPlus().addListener(main.getHandListener());
+                    spinner.getTextField().addListener(ibeamListener);
+                    spinner.getButtonMinus().addListener(handListener);
+                    spinner.getButtonPlus().addListener(handListener);
                     t.add(spinner).growX();
                     spinner.addListener(new ChangeListener() {
                         @Override
@@ -1575,7 +1571,7 @@ public class RootTable extends Table {
                     TextArea listItemsTextArea = new TextArea("Lorem ipsum\ndolor sit\namet, consectetur", getSkin());
                     listItemsTextArea.setFocusTraversal(false);
                     listItemsTextArea.setPrefRows(3);
-                    listItemsTextArea.addListener(main.getIbeamListener());
+                    listItemsTextArea.addListener(ibeamListener);
                     listItemsTextArea.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1590,8 +1586,8 @@ public class RootTable extends Table {
                     t.add(new Label("Alignment: ", getSkin())).right();
                     var selectBox = new SelectBox<String>(getSkin());
                     selectBox.setItems("left", "center", "right");
-                    selectBox.addListener(main.getHandListener());
-                    selectBox.getList().addListener(main.getHandListener());
+                    selectBox.addListener(handListener);
+                    selectBox.getList().addListener(handListener);
                     selectBox.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1613,27 +1609,27 @@ public class RootTable extends Table {
                         }
                     });
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
-                    disabledCheckBox.addListener(main.getHandListener());
+                    disabledCheckBox.addListener(handListener);
                     t.add(disabledCheckBox).left();
 
                     t.row();
                     t.add(new Label("Minimum: ", getSkin())).right();
                     Spinner minimumSpinner = new Spinner(0.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     minimumSpinner.getTextField().setFocusTraversal(false);
-                    minimumSpinner.getTextField().addListener(main.getIbeamListener());
+                    minimumSpinner.getTextField().addListener(ibeamListener);
                     t.add(minimumSpinner).growX();
-                    minimumSpinner.getButtonMinus().addListener(main.getHandListener());
-                    minimumSpinner.getButtonPlus().addListener(main.getHandListener());
+                    minimumSpinner.getButtonMinus().addListener(handListener);
+                    minimumSpinner.getButtonPlus().addListener(handListener);
                     previewProperties.put("minimum", minimumSpinner.getValue());
 
                     t.row();
                     t.add(new Label("Maximum: ", getSkin())).right();
                     Spinner maximumSpinner = new Spinner(100.0f, 1.0f, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     maximumSpinner.getTextField().setFocusTraversal(false);
-                    maximumSpinner.getTextField().addListener(main.getIbeamListener());
+                    maximumSpinner.getTextField().addListener(ibeamListener);
                     t.add(maximumSpinner).growX();
-                    maximumSpinner.getButtonMinus().addListener(main.getHandListener());
-                    maximumSpinner.getButtonPlus().addListener(main.getHandListener());
+                    maximumSpinner.getButtonMinus().addListener(handListener);
+                    maximumSpinner.getButtonPlus().addListener(handListener);
                     previewProperties.put("maximum", maximumSpinner.getValue());
                     
                     minimumSpinner.setMaximum(maximumSpinner.getValue());
@@ -1666,10 +1662,10 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
-                    incrementSpinner.getTextField().addListener(main.getIbeamListener());
+                    incrementSpinner.getTextField().addListener(ibeamListener);
                     t.add(incrementSpinner).growX();
-                    incrementSpinner.getButtonMinus().addListener(main.getHandListener());
-                    incrementSpinner.getButtonPlus().addListener(main.getHandListener());
+                    incrementSpinner.getButtonMinus().addListener(handListener);
+                    incrementSpinner.getButtonPlus().addListener(handListener);
                     incrementSpinner.setMinimum(1.0f);
                     previewProperties.put("increment", incrementSpinner.getValue());
 
@@ -1694,8 +1690,8 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
-                    selectBox.addListener(main.getHandListener());
-                    selectBox.getList().addListener(main.getHandListener());
+                    selectBox.addListener(handListener);
+                    selectBox.getList().addListener(handListener);
                     t.add(selectBox).growX();
                 } else if (clazz.equals(SplitPane.class)) {
                     t.row();
@@ -1719,8 +1715,8 @@ public class RootTable extends Table {
                             refreshPreview();
                         }
                     });
-                    selectBox.addListener(main.getHandListener());
-                    selectBox.getList().addListener(main.getHandListener());
+                    selectBox.addListener(handListener);
+                    selectBox.getList().addListener(handListener);
                     t.add(selectBox).growX();
 
                     t.row();
@@ -1728,7 +1724,7 @@ public class RootTable extends Table {
                     TextArea textArea = new TextArea(PARAGRAPH_SAMPLE, getSkin());
                     textArea.setFocusTraversal(false);
                     textArea.setPrefRows(5);
-                    textArea.addListener(main.getIbeamListener());
+                    textArea.addListener(ibeamListener);
                     textArea.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1752,14 +1748,14 @@ public class RootTable extends Table {
                         }
                     });
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
-                    disabledCheckBox.addListener(main.getHandListener());
+                    disabledCheckBox.addListener(handListener);
                     t.add(disabledCheckBox).left();
 
                     t.row();
                     t.add(new Label("Text: ", getSkin())).right();
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
-                    previewTextField.addListener(main.getIbeamListener());
+                    previewTextField.addListener(ibeamListener);
                     previewTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1782,7 +1778,7 @@ public class RootTable extends Table {
                         }
                     });
                     previewProperties.put("disabled", disabledCheckBox.isChecked());
-                    disabledCheckBox.addListener(main.getHandListener());
+                    disabledCheckBox.addListener(handListener);
                     t.add(disabledCheckBox).left();
 
                     t.row();
@@ -1796,14 +1792,14 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(checkBox).left();
-                    checkBox.addListener(main.getHandListener());
+                    checkBox.addListener(handListener);
                     previewProperties.put("passwordMode", checkBox.isChecked());
 
                     t.row();
                     t.add(new Label("Password Character: ", getSkin()));
                     TextField pcTextField = new TextField("*", getSkin());
                     pcTextField.setFocusTraversal(false);
-                    pcTextField.addListener(main.getIbeamListener());
+                    pcTextField.addListener(ibeamListener);
                     pcTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1836,15 +1832,15 @@ public class RootTable extends Table {
                         }
                     });
                     t.add(selectBox).growX();
-                    selectBox.addListener(main.getHandListener());
-                    selectBox.getList().addListener(main.getHandListener());
+                    selectBox.addListener(handListener);
+                    selectBox.getList().addListener(handListener);
                     previewProperties.put("alignment", Align.left);
 
                     t.row();
                     t.add(new Label("Text: ", getSkin())).right();
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
-                    previewTextField.addListener(main.getIbeamListener());
+                    previewTextField.addListener(ibeamListener);
                     previewTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1859,7 +1855,7 @@ public class RootTable extends Table {
                     t.add(new Label("Message Text: ", getSkin())).right();
                     TextField messageTextField = new TextField(TEXT_SAMPLE, getSkin());
                     messageTextField.setFocusTraversal(false);
-                    messageTextField.addListener(main.getIbeamListener());
+                    messageTextField.addListener(ibeamListener);
                     messageTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1875,7 +1871,7 @@ public class RootTable extends Table {
                     t.add(new Label("Text: ", getSkin())).right();
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
-                    previewTextField.addListener(main.getIbeamListener());
+                    previewTextField.addListener(ibeamListener);
                     previewTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1894,9 +1890,9 @@ public class RootTable extends Table {
                     Spinner spinner = new Spinner(2, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(1);
-                    spinner.getTextField().addListener(main.getIbeamListener());
-                    spinner.getButtonMinus().addListener(main.getHandListener());
-                    spinner.getButtonPlus().addListener(main.getHandListener());
+                    spinner.getTextField().addListener(ibeamListener);
+                    spinner.getButtonMinus().addListener(handListener);
+                    spinner.getButtonPlus().addListener(handListener);
                     spinner.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent changeEvent, Actor actor) {
@@ -1912,9 +1908,9 @@ public class RootTable extends Table {
                     spinner = new Spinner(2, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(1);
-                    spinner.getTextField().addListener(main.getIbeamListener());
-                    spinner.getButtonMinus().addListener(main.getHandListener());
-                    spinner.getButtonPlus().addListener(main.getHandListener());
+                    spinner.getTextField().addListener(ibeamListener);
+                    spinner.getButtonMinus().addListener(handListener);
+                    spinner.getButtonPlus().addListener(handListener);
                     spinner.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent changeEvent, Actor actor) {
@@ -1930,9 +1926,9 @@ public class RootTable extends Table {
                     spinner = new Spinner(0, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(0);
-                    spinner.getTextField().addListener(main.getIbeamListener());
-                    spinner.getButtonMinus().addListener(main.getHandListener());
-                    spinner.getButtonPlus().addListener(main.getHandListener());
+                    spinner.getTextField().addListener(ibeamListener);
+                    spinner.getButtonMinus().addListener(handListener);
+                    spinner.getButtonPlus().addListener(handListener);
                     spinner.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent changeEvent, Actor actor) {
@@ -1948,9 +1944,9 @@ public class RootTable extends Table {
                     spinner = new Spinner(4, 1.0, false, Spinner.Orientation.HORIZONTAL, getSkin());
                     spinner.getTextField().setFocusTraversal(false);
                     spinner.setMinimum(1);
-                    spinner.getTextField().addListener(main.getIbeamListener());
-                    spinner.getButtonMinus().addListener(main.getHandListener());
-                    spinner.getButtonPlus().addListener(main.getHandListener());
+                    spinner.getTextField().addListener(ibeamListener);
+                    spinner.getButtonMinus().addListener(handListener);
+                    spinner.getButtonPlus().addListener(handListener);
                     spinner.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent changeEvent, Actor actor) {
@@ -1966,7 +1962,7 @@ public class RootTable extends Table {
                     t.add(new Label("Title Text: ", getSkin())).right();
                     TextField previewTextField = new TextField(TEXT_SAMPLE, getSkin());
                     previewTextField.setFocusTraversal(false);
-                    previewTextField.addListener(main.getIbeamListener());
+                    previewTextField.addListener(ibeamListener);
                     previewTextField.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1980,7 +1976,7 @@ public class RootTable extends Table {
                     t.row();
                     t.add(new Label("Sample Text Color: ", getSkin()));
                     BrowseField textColorField = new BrowseField(null, null, getSkin(), "color");
-                    textColorField.addListener(main.getHandListener());
+                    textColorField.addListener(handListener);
                     t.add(textColorField).growX();
 
                     t.row();
@@ -1988,7 +1984,7 @@ public class RootTable extends Table {
                     TextArea textArea = new TextArea(PARAGRAPH_SAMPLE, getSkin());
                     textArea.setFocusTraversal(false);
                     textArea.setPrefRows(5);
-                    textArea.addListener(main.getIbeamListener());
+                    textArea.addListener(ibeamListener);
                     textArea.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -2018,13 +2014,13 @@ public class RootTable extends Table {
                 browseField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        main.getDialogFactory().showDialogColorPicker((Color) previewProperties.get("bgcolor"), new DialogColorPicker.ColorListener() {
+                        dialogFactory.showDialogColorPicker((Color) previewProperties.get("bgcolor"), new DialogColorPicker.ColorListener() {
                             @Override
                             public void selected(Color color) {
                                 if (color != null) {
                                     browseField.getTextButton().setText((int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
                                     previewProperties.put("bgcolor", color);
-                                    main.getProjectData().setPreviewBgColor(color);
+                                    projectData.setPreviewBgColor(color);
                                     refreshPreview();
                                 }
                             }
@@ -2032,10 +2028,10 @@ public class RootTable extends Table {
                     }
                 });
                 
-                browseField.addListener(main.getHandListener());
+                browseField.addListener(handListener);
                 t.add(browseField).growX();
                 
-                var previewBgColor = main.getProjectData().getPreviewBgColor();
+                var previewBgColor = projectData.getPreviewBgColor();
                 browseField.getTextButton().setText((int) (previewBgColor.r * 255) + "," + (int) (previewBgColor.g * 255) + "," + (int) (previewBgColor.b * 255) + "," + (int) (previewBgColor.a * 255));
             }
         }
@@ -2080,21 +2076,21 @@ public class RootTable extends Table {
                         if (clazz.equals(Button.class)) {
                             widget = new Button((ButtonStyle) style);
                             ((Button) widget).setDisabled((boolean) previewProperties.get("disabled"));
-                            widget.addListener(main.getHandListener());
+                            widget.addListener(handListener);
                         } else if (clazz.equals(CheckBox.class)) {
                             widget = new CheckBox("", (CheckBoxStyle) style);
                             ((CheckBox) widget).setDisabled((boolean) previewProperties.get("disabled"));
                             ((CheckBox) widget).setText((String) previewProperties.get("text"));
-                            widget.addListener(main.getHandListener());
+                            widget.addListener(handListener);
                         } else if (clazz.equals(ImageButton.class)) {
                             widget = new ImageButton((ImageButtonStyle) style);
                             ((ImageButton) widget).setDisabled((boolean) previewProperties.get("disabled"));
-                            widget.addListener(main.getHandListener());
+                            widget.addListener(handListener);
                         } else if (clazz.equals(ImageTextButton.class)) {
                             widget = new ImageTextButton("", (ImageTextButtonStyle) style);
                             ((ImageTextButton) widget).setDisabled((boolean) previewProperties.get("disabled"));
                             ((ImageTextButton) widget).setText((String) previewProperties.get("text"));
-                            widget.addListener(main.getHandListener());
+                            widget.addListener(handListener);
                         } else if (clazz.equals(Label.class)) {
                             widget = new Label("", (LabelStyle) style);
                             ((Label) widget).setText((String) previewProperties.get("text"));
@@ -2102,7 +2098,7 @@ public class RootTable extends Table {
                             widget = new List((ListStyle) style);
                             Array<String> items = new Array<>(((String) previewProperties.get("text")).split("\\n"));
                             ((List) widget).setItems(items);
-                            widget.addListener(main.getHandListener());
+                            widget.addListener(handListener);
                         } else if (clazz.equals(ProgressBar.class)) {
                             widget = new ProgressBar((float) (double) previewProperties.get("minimum"),
                                     (float) (double) previewProperties.get("maximum"),
@@ -2139,15 +2135,15 @@ public class RootTable extends Table {
                             ((SelectBox) widget).setItems(items);
                             ((SelectBox) widget).setMaxListCount((int) previewProperties.get("max-list-count"));
                             ((SelectBox) widget).setAlignment((int) previewProperties.get("alignment"));
-                            widget.addListener(main.getHandListener());
-                            ((SelectBox) widget).getList().addListener(main.getHandListener());
+                            widget.addListener(handListener);
+                            ((SelectBox) widget).getList().addListener(handListener);
                         } else if (clazz.equals(Slider.class)) {
                             widget = new Slider((float) (double) previewProperties.get("minimum"),
                                     (float) (double) previewProperties.get("maximum"),
                                     (float) (double) previewProperties.get("increment"),
                                     (boolean) previewProperties.get("orientation"), (SliderStyle) style);
                             ((Slider) widget).setDisabled((boolean) previewProperties.get("disabled"));
-                            widget.addListener(main.getHandListener());
+                            widget.addListener(handListener);
                         } else if (clazz.equals(SplitPane.class)) {
                             var table1 = new Table();
                             Label label1 = new Label("", getSkin());
@@ -2165,15 +2161,15 @@ public class RootTable extends Table {
                             label2.setText((String) previewProperties.get("text"));
         
                             if ((boolean) previewProperties.get("orientation")) {
-                                widget.addListener(main.getVerticalResizeArrowListener());
+                                widget.addListener(verticalResizeArrowListener);
                             } else {
-                                widget.addListener(main.getHorizontalResizeArrowListener());
+                                widget.addListener(horizontalResizeArrowListener);
                             }
                         } else if (clazz.equals(TextButton.class)) {
                             widget = new TextButton("", (TextButtonStyle) style);
                             ((TextButton) widget).setDisabled((boolean) previewProperties.get("disabled"));
                             ((TextButton) widget).setText((String) previewProperties.get("text"));
-                            widget.addListener(main.getHandListener());
+                            widget.addListener(handListener);
                         } else if (clazz.equals(TextField.class)) {
                             widget = new TextField("", (TextFieldStyle) style);
                             ((TextField) widget).setFocusTraversal(false);
@@ -2186,7 +2182,7 @@ public class RootTable extends Table {
                             if (string.length() > 0) {
                                 ((TextField) widget).setPasswordCharacter(string.charAt(0));
                             }
-                            widget.addListener(main.getIbeamListener());
+                            widget.addListener(ibeamListener);
                         } else if (clazz.equals(TextTooltip.class)) {
                             TooltipManager manager = new TooltipManager();
                             manager.animations = false;
@@ -2202,7 +2198,7 @@ public class RootTable extends Table {
                             widget.addListener(toolTip);
                         } else if (clazz.equals(Touchpad.class)) {
                             widget = new Touchpad(0, (TouchpadStyle) style);
-                            widget.addListener(main.getHandListener());
+                            widget.addListener(handListener);
                         } else if (clazz.equals(Tree.class)) {
                             widget = new Tree((TreeStyle) style);
                             ((Tree) widget).setIconSpacing((int) previewProperties.get("icon-spacing-left"),
@@ -2223,7 +2219,7 @@ public class RootTable extends Table {
                                 }
                                 parentNode = node;
                             }
-                            widget.addListener(main.getHandListener());
+                            widget.addListener(handListener);
                         } else if (clazz.equals(Window.class)) {
                             WindowStyle windowStyle = (WindowStyle) style;
                             if (windowStyle.stageBackground != null) {
@@ -2302,22 +2298,22 @@ public class RootTable extends Table {
                                 dialog.button("Cancel", false);
                                 TextButton okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
                                 okButton.setDisabled(true);
-                                okButton.addListener(main.getHandListener());
-                                widthField.addListener(main.getIbeamListener());
+                                okButton.addListener(handListener);
+                                widthField.addListener(ibeamListener);
                                 widthField.addListener(new ChangeListener() {
                                     @Override
                                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                                         okButton.setDisabled(!widthField.getText().matches("^\\d+$") || !heightField.getText().matches("^\\d+$"));
                                     }
                                 });
-                                heightField.addListener(main.getIbeamListener());
+                                heightField.addListener(ibeamListener);
                                 heightField.addListener(new ChangeListener() {
                                     @Override
                                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                                         okButton.setDisabled(!widthField.getText().matches("^\\d+$") || !heightField.getText().matches("^\\d+$"));
                                     }
                                 });
-                                dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+                                dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
                                 dialog.key(Input.Keys.ESCAPE, false);
                                 dialog.show(stage);
                                 stage.setKeyboardFocus(widthField);
@@ -2400,7 +2396,7 @@ public class RootTable extends Table {
                                     ColorData colorData = null;
 
                                     String colorName = (String) customProperty.getValue();
-                                    for (ColorData cd : main.getJsonData().getColors()) {
+                                    for (ColorData cd : jsonData.getColors()) {
                                         if (cd.getName().equals(colorName)) {
                                             colorData = cd;
                                             break;
@@ -2415,7 +2411,7 @@ public class RootTable extends Table {
                                         colorTable.setTouchable(Touchable.enabled);
 
                                         container.setActor(colorTable);
-                                        container.addListener(new TextTooltip(colorName, main.getTooltipManager(), getSkin()));
+                                        container.addListener(new TextTooltip(colorName, tooltipManager, getSkin()));
                                     }
                                     break;
                                 case FONT:
@@ -2427,7 +2423,7 @@ public class RootTable extends Table {
                                     FontData fontData = null;
 
                                     String fontName = (String) customProperty.getValue();
-                                    for (FontData fd : main.getJsonData().getFonts()) {
+                                    for (FontData fd : jsonData.getFonts()) {
                                         if (fd.getName().equals(fontName)) {
                                             fontData = fd;
                                             font = new BitmapFont(fd.file);
@@ -2440,11 +2436,11 @@ public class RootTable extends Table {
                                         Label labelFont = new Label(fontData.getName(), new LabelStyle(font, Color.WHITE));
                                         container.setActor(labelFont);
     
-                                        container.addListener(new TextTooltip(fontData.getName(), main.getTooltipManager(), getSkin()));
+                                        container.addListener(new TextTooltip(fontData.getName(), tooltipManager, getSkin()));
                                     }
 
                                     FreeTypeFontData freeTypeFontData = null;
-                                    for (FreeTypeFontData fd : main.getJsonData().getFreeTypeFonts()) {
+                                    for (FreeTypeFontData fd : jsonData.getFreeTypeFonts()) {
                                         if (fd.name.equals(fontName)) {
                                             freeTypeFontData = fd;
                                             break;
@@ -2455,7 +2451,7 @@ public class RootTable extends Table {
                                         Label labelFont = new Label(freeTypeFontData.name, new LabelStyle(freeTypeFontData.bitmapFont, Color.WHITE));
                                         container.setActor(labelFont);
     
-                                        container.addListener(new TextTooltip(freeTypeFontData.name, main.getTooltipManager(), getSkin()));
+                                        container.addListener(new TextTooltip(freeTypeFontData.name, tooltipManager, getSkin()));
                                     }
 
                                     break;
@@ -2467,7 +2463,7 @@ public class RootTable extends Table {
                                     DrawableData drawable = null;
 
                                     String drawableName = (String) customProperty.getValue();
-                                    for (DrawableData dd : main.getAtlasData().getDrawables()) {
+                                    for (DrawableData dd : atlasData.getDrawables()) {
                                         if (dd.name.equals(drawableName)) {
                                             drawable = dd;
                                             break;
@@ -2475,10 +2471,10 @@ public class RootTable extends Table {
                                     }
 
                                     if (drawable != null) {
-                                        Image image = new Image(main.getAtlasData().getDrawablePairs().get(drawable));
+                                        Image image = new Image(atlasData.getDrawablePairs().get(drawable));
                                         container.setActor(image);
                                         
-                                        container.addListener(new TextTooltip(drawable.name, main.getTooltipManager(), getSkin()));
+                                        container.addListener(new TextTooltip(drawable.name, tooltipManager, getSkin()));
                                     }
                                     break;
                             }
@@ -2498,16 +2494,16 @@ public class RootTable extends Table {
                 Object value = styleData.getInheritedValue(field.getName());
                 if (value != null) {
                     if (field.getType().equals(Drawable.class)) {
-                        field.set(instance, main.getAtlasData().getDrawablePairs().get(main.getAtlasData().getDrawable((String) value)));
+                        field.set(instance, atlasData.getDrawablePairs().get(atlasData.getDrawable((String) value)));
                     } else if (field.getType().equals(Color.class)) {
-                        for (ColorData data : main.getProjectData().getJsonData().getColors()) {
+                        for (ColorData data : projectData.getJsonData().getColors()) {
                             if (value.equals(data.getName())) {
                                 field.set(instance, data.color);
                                 break;
                             }
                         }
                     } else if (field.getType().equals(BitmapFont.class)) {
-                        for (FontData data : main.getProjectData().getJsonData().getFonts()) {
+                        for (FontData data : projectData.getJsonData().getFonts()) {
                             if (value.equals(data.getName())) {
                                 BitmapFont font = new BitmapFont(data.file);
                                 previewFonts.add(font);
@@ -2515,7 +2511,7 @@ public class RootTable extends Table {
                             }
                         }
                         
-                        for (FreeTypeFontData data : main.getJsonData().getFreeTypeFonts()) {
+                        for (FreeTypeFontData data : jsonData.getFreeTypeFonts()) {
                             if (value.equals(data.name)) {
                                 field.set(instance, data.bitmapFont);
                             }
@@ -2523,7 +2519,7 @@ public class RootTable extends Table {
                     } else if (field.getType().equals(Float.TYPE)) {
                         field.set(instance, (float) (double) value);
                     } else if (field.getType().equals(ListStyle.class)) {
-                        Array<StyleData> datas = main.getProjectData().getJsonData().getClassStyleMap().get(List.class);
+                        Array<StyleData> datas = projectData.getJsonData().getClassStyleMap().get(List.class);
 
                         for (StyleData data : datas) {
                             if (value.equals(data.name)) {
@@ -2533,7 +2529,7 @@ public class RootTable extends Table {
                             }
                         }
                     } else if (field.getType().equals(ScrollPaneStyle.class)) {
-                        Array<StyleData> datas = main.getProjectData().getJsonData().getClassStyleMap().get(ScrollPane.class);
+                        Array<StyleData> datas = projectData.getJsonData().getClassStyleMap().get(ScrollPane.class);
 
                         for (StyleData data : datas) {
                             if (value.equals(data.name)) {
@@ -2543,7 +2539,7 @@ public class RootTable extends Table {
                             }
                         }
                     } else if (field.getType().equals(LabelStyle.class)) {
-                        Array<StyleData> datas = main.getProjectData().getJsonData().getClassStyleMap().get(Label.class);
+                        Array<StyleData> datas = projectData.getJsonData().getClassStyleMap().get(Label.class);
 
                         for (StyleData data : datas) {
                             if (value.equals(data.name)) {
@@ -2558,7 +2554,7 @@ public class RootTable extends Table {
             returnValue = instance;
         } catch (Exception e) {
             Gdx.app.error(RootTable.class.getName(), "Error creating style", e);
-            main.getDialogFactory().showDialogError("Error Creating Style", "Unable to create style " + styleData.name + " for class " + clazz.getSimpleName() + "\nOpen log?");
+            dialogFactory.showDialogError("Error Creating Style", "Unable to create style " + styleData.name + " for class " + clazz.getSimpleName() + "\nOpen log?");
         }
         return returnValue;
     }
@@ -2585,7 +2581,7 @@ public class RootTable extends Table {
     }
 
     public StyleData getSelectedStyle() {
-        var classStyleMap = main.getProjectData().getJsonData().getClassStyleMap();
+        var classStyleMap = projectData.getJsonData().getClassStyleMap();
         var styles = classStyleMap.get(getSelectedClass());
         return styles.get(styleSelectBox.getSelectedIndex());
     }
@@ -2641,25 +2637,25 @@ public class RootTable extends Table {
         public void changed(ChangeEvent event, Actor actor) {
             FileHandle file = recentFile.getFileHandle();
             if (file.exists()) {
-                main.getDialogFactory().showDialogLoading(() -> {
+                dialogFactory.showDialogLoading(() -> {
                     Gdx.app.postRunnable(() -> {
-                        main.getProjectData().load(file);
-                        Array<DrawableData> drawableErrors = main.getProjectData().verifyDrawablePaths();
-                        Array<FontData> fontErrors = main.getProjectData().verifyFontPaths();
-                        var freeTypeFontErrors = main.getProjectData().verifyFreeTypeFontPaths();
+                        projectData.load(file);
+                        Array<DrawableData> drawableErrors = projectData.verifyDrawablePaths();
+                        Array<FontData> fontErrors = projectData.verifyFontPaths();
+                        var freeTypeFontErrors = projectData.verifyFreeTypeFontPaths();
                         if (drawableErrors.size > 0 || fontErrors.size > 0 || freeTypeFontErrors.size > 0) {
-                            main.getDialogFactory().showDialogPathErrors(drawableErrors, fontErrors,
+                            dialogFactory.showDialogPathErrors(drawableErrors, fontErrors,
                                     freeTypeFontErrors);
                         }
         
-                        if (main.getProjectData().checkForInvalidMinWidthHeight()) {
-                            main.getProjectData().setLoadedVersion(Main.VERSION);
-                            main.getDialogFactory().yesNoDialog("Fix minWidth and minHeight errors?",
+                        if (projectData.checkForInvalidMinWidthHeight()) {
+                            projectData.setLoadedVersion(Main.VERSION);
+                            dialogFactory.yesNoDialog("Fix minWidth and minHeight errors?",
                                     "Old project (< v.30) detected.\nResolve minWidth and minHeight errors?",
                                     selection -> {
                                         if (selection == 0) {
-                                            main.getProjectData().fixInvalidMinWidthHeight();
-                                            main.getMainListener().refreshTextureAtlas();
+                                            projectData.fixInvalidMinWidthHeight();
+                                            mainListener.refreshTextureAtlas();
                                         }
                                     }, null);
                         }
@@ -2835,7 +2831,7 @@ public class RootTable extends Table {
     public void act(float delta) {
         super.act(delta);
         
-        for (var drawable : main.getAtlasData().getDrawablePairs().values()) {
+        for (var drawable : atlasData.getDrawablePairs().values()) {
             if (drawable instanceof TenPatchDrawable) {
                 ((TenPatchDrawable) drawable).update(delta);
             }

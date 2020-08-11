@@ -48,6 +48,8 @@ import com.ray3k.skincomposer.dialog.DialogTenPatch;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
+import static com.ray3k.skincomposer.Main.*;
+
 import java.io.StringWriter;
 import java.util.Locale;
 
@@ -57,7 +59,6 @@ public class JsonData implements Json.Serializable {
     private Array<FreeTypeFontData> freeTypeFonts;
     private OrderedMap<Class, Array<StyleData>> classStyleMap;
     private Array<CustomClass> customClasses;
-    private Main main;
     
     public static enum ExportFormat {
         MINIMAL("Minimal", JsonWriter.OutputType.minimal), JAVASCRIPT("JavaScript", JsonWriter.OutputType.javascript), JSON("JSON", JsonWriter.OutputType.json);
@@ -81,7 +82,6 @@ public class JsonData implements Json.Serializable {
     }
 
     public JsonData() {
-        this.main = Main.main;
         colors = new Array<>();
         fonts = new Array<>();
         freeTypeFonts = new Array<>();
@@ -110,24 +110,24 @@ public class JsonData implements Json.Serializable {
     public Array<String> readFile(FileHandle fileHandle) throws Exception {
         Array<String> warnings = new Array<>();
         
-        main.getProjectData().setChangesSaved(false);
+        projectData.setChangesSaved(false);
         
         //read drawables from texture atlas file
         FileHandle atlasHandle = fileHandle.sibling(fileHandle.nameWithoutExtension() + ".atlas");
         if (atlasHandle.exists()) {
-            main.getProjectData().getAtlasData().readAtlas(atlasHandle);
+            projectData.getAtlasData().readAtlas(atlasHandle);
         } else {
             warnings.add("[RED]ERROR:[] Atlas file [BLACK]" + atlasHandle.name() + "[] does not exist.");
             return warnings;
         }
 
         //folder for critical files to be copied to
-        FileHandle saveFile = main.getProjectData().getSaveFile();
+        FileHandle saveFile = projectData.getSaveFile();
         FileHandle targetDirectory;
         if (saveFile != null) {
             targetDirectory = saveFile.sibling(saveFile.nameWithoutExtension() + "_data");
         } else {
-            targetDirectory = new FileHandle(Main.appFolder.child("temp/" + main.getProjectData().getId() + "_data").file());
+            targetDirectory = new FileHandle(Main.appFolder.child("temp/" + projectData.getId() + "_data").file());
         }
 
         //read json file and create styles
@@ -163,11 +163,11 @@ public class JsonData implements Json.Serializable {
                         for (String path : bitmapFontData.imagePaths) {
                             FileHandle file = new FileHandle(path);
                             
-                            var drawable = main.getProjectData().getAtlasData().getDrawable(file.nameWithoutExtension());
+                            var drawable = projectData.getAtlasData().getDrawable(file.nameWithoutExtension());
                             drawable.type = DrawableType.FONT;
                             
-                            main.getProjectData().getAtlasData().getDrawables().removeValue(drawable, false);
-                            main.getProjectData().getAtlasData().getFontDrawables().add(drawable);
+                            projectData.getAtlasData().getDrawables().removeValue(drawable, false);
+                            projectData.getAtlasData().getFontDrawables().add(drawable);
                         }
                     }
                 }
@@ -212,7 +212,7 @@ public class JsonData implements Json.Serializable {
                             fontFile.copyTo(fontCopy);
                         }
                         data.file = fontCopy;
-                        data.createBitmapFont(main);
+                        data.createBitmapFont();
 
                         if (data.bitmapFont != null) {
                             //delete fonts with the same name
@@ -256,14 +256,14 @@ public class JsonData implements Json.Serializable {
             //drawables
             else if (child.name().equals(TextureRegionDrawable.class.getName()) || child.name().equals(TextureRegionDrawable.class.getSimpleName()) || child.name().equals(NinePatchDrawable.class.getName()) || child.name().equals(NinePatchDrawable.class.getSimpleName())) {
                 for (JsonValue jsonValue : child.iterator()) {
-                    DrawableData drawableData = main.getProjectData().getAtlasData().getDrawable(jsonValue.name);
+                    DrawableData drawableData = projectData.getAtlasData().getDrawable(jsonValue.name);
                     if (jsonValue.has("minWidth")) drawableData.minWidth = jsonValue.getFloat("minWidth");
                     if (jsonValue.has("minHeight")) drawableData.minHeight = jsonValue.getFloat("minHeight");
                 }
             } //tiled drawables
             else if (child.name().equals(TiledDrawable.class.getName()) || child.name().equals(TiledDrawable.class.getSimpleName())) {
                 for (JsonValue tiledDrawable : child.iterator()) {
-                    DrawableData drawableData = new DrawableData(main.getProjectData().getAtlasData().getDrawable(tiledDrawable.getString("region")).file);
+                    DrawableData drawableData = new DrawableData(projectData.getAtlasData().getDrawable(tiledDrawable.getString("region")).file);
                     drawableData.type = DrawableType.TILED;
                     drawableData.name = tiledDrawable.name;
                     
@@ -273,18 +273,18 @@ public class JsonData implements Json.Serializable {
                     drawableData.minHeight = tiledDrawable.getFloat("minHeight", 0.0f);
    
                     //delete drawables with the same name
-                    for (DrawableData originalData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {
+                    for (DrawableData originalData : new Array<>(projectData.getAtlasData().getDrawables())) {
                         if (originalData.name.equals(drawableData.name)) {
-                            main.getProjectData().getAtlasData().getDrawables().removeValue(originalData, true);
+                            projectData.getAtlasData().getDrawables().removeValue(originalData, true);
                         }
                     }
                     
-                    main.getProjectData().getAtlasData().getDrawables().add(drawableData);
+                    projectData.getAtlasData().getDrawables().add(drawableData);
                 }
             } //tinted drawables
             else if (child.name().equals(TintedDrawable.class.getName()) || child.name().equals(TintedDrawable.class.getSimpleName())) {
                 for (JsonValue tintedDrawable : child.iterator()) {
-                    DrawableData drawableData = new DrawableData(main.getProjectData().getAtlasData().getDrawable(tintedDrawable.getString("name")).file);
+                    DrawableData drawableData = new DrawableData(projectData.getAtlasData().getDrawable(tintedDrawable.getString("name")).file);
                     drawableData.name = tintedDrawable.name;
                     
                     if (!tintedDrawable.get("color").isString()) {
@@ -304,18 +304,18 @@ public class JsonData implements Json.Serializable {
                     if (tintedDrawable.has("minHeight")) drawableData.minHeight = tintedDrawable.getFloat("minHeight");
                     
                     //delete drawables with the same name
-                    for (DrawableData originalData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {
+                    for (DrawableData originalData : new Array<>(projectData.getAtlasData().getDrawables())) {
                         if (originalData.name.equals(drawableData.name)) {
-                            main.getProjectData().getAtlasData().getDrawables().removeValue(originalData, true);
+                            projectData.getAtlasData().getDrawables().removeValue(originalData, true);
                         }
                     }
                     
-                    main.getProjectData().getAtlasData().getDrawables().add(drawableData);
+                    projectData.getAtlasData().getDrawables().add(drawableData);
                 }
             } //ten patch drawables
             else if (child.name().equals(TenPatchDrawable.class.getName()) || child.name().equals(TenPatchDrawable.class.getSimpleName())) {
                 for (JsonValue value : child.iterator()) {
-                    DrawableData drawableData = new DrawableData(main.getProjectData().getAtlasData().getDrawable(value.getString("region")).file);
+                    DrawableData drawableData = new DrawableData(projectData.getAtlasData().getDrawable(value.getString("region")).file);
                     drawableData.type = DrawableType.TENPATCH;
                     drawableData.name = value.name();
                     drawableData.tenPatchData = new DialogTenPatch.TenPatchData();
@@ -342,13 +342,13 @@ public class JsonData implements Json.Serializable {
                     drawableData.tenPatchData.playMode = value.getInt("playMode", TenPatchDrawable.PlayMode.LOOP);
     
                     //delete drawables with the same name
-                    for (DrawableData originalData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {
+                    for (DrawableData originalData : new Array<>(projectData.getAtlasData().getDrawables())) {
                         if (originalData.name.equals(drawableData.name)) {
-                            main.getProjectData().getAtlasData().getDrawables().removeValue(originalData, true);
+                            projectData.getAtlasData().getDrawables().removeValue(originalData, true);
                         }
                     }
     
-                    main.getProjectData().getAtlasData().getDrawables().add(drawableData);
+                    projectData.getAtlasData().getDrawables().add(drawableData);
                 }
             } //styles
             else {
@@ -395,7 +395,6 @@ public class JsonData implements Json.Serializable {
                     }
                 } else { //custom classes
                     CustomClass customClass = new CustomClass(child.name, child.name.replaceFirst(".*(\\.|\\$)", ""));
-                    customClass.setMain(main);
                     
                     CustomClass existingClass = getCustomClass(customClass.getDisplayName());
                     if (existingClass != null) {
@@ -406,7 +405,6 @@ public class JsonData implements Json.Serializable {
                     for (JsonValue style : child.iterator()) {
                         CustomStyle customStyle = new CustomStyle(style.name);
                         customStyle.setParentClass(customClass);
-                        customStyle.setMain(main);
                         
                         CustomStyle existingStyle = customClass.getStyle(style.name);
                         if (existingStyle != null) {
@@ -423,7 +421,6 @@ public class JsonData implements Json.Serializable {
                             CustomProperty customProperty = new CustomProperty();
                             customProperty.setName(property.name);
                             customProperty.setParentStyle(customStyle);
-                            customProperty.setMain(main);
                             
                             CustomProperty existingProperty = customStyle.getProperty(property.name);
                             if (existingProperty != null) {
@@ -517,7 +514,7 @@ public class JsonData implements Json.Serializable {
                                 }
                             }
                         } else if (property.type == Drawable.class) {
-                            for (DrawableData drawable : main.getAtlasData().getDrawables()) {
+                            for (DrawableData drawable : atlasData.getDrawables()) {
                                 if (property.value.equals(drawable.name)) {
                                     keep = true;
                                     break;
@@ -528,7 +525,7 @@ public class JsonData implements Json.Serializable {
                                 keep = true;
                                 DrawableData customDrawable = new DrawableData((String) property.value);
                                 customDrawable.type = DrawableType.CUSTOM;
-                                main.getAtlasData().getDrawables().add(customDrawable);
+                                atlasData.getDrawables().add(customDrawable);
                             }
                         } else {
                             keep = true;
@@ -558,7 +555,7 @@ public class JsonData implements Json.Serializable {
                                     }
                                 }   break;
                             case DRAWABLE:
-                                for (DrawableData drawable : main.getAtlasData().getDrawables()) {
+                                for (DrawableData drawable : atlasData.getDrawables()) {
                                     if (customProperty.getValue().equals(drawable.name)) {
                                         keep = true;
                                         break;
@@ -623,15 +620,15 @@ public class JsonData implements Json.Serializable {
         
         StringWriter stringWriter = new StringWriter();
         JsonWriter jsonWriter = new JsonWriter(stringWriter);
-        jsonWriter.setOutputType(main.getProjectData().getExportFormat().getOutputType());
+        jsonWriter.setOutputType(projectData.getExportFormat().getOutputType());
         
-        Json json = new Json(main.getProjectData().getExportFormat().getOutputType());
+        Json json = new Json(projectData.getExportFormat().getOutputType());
         json.setWriter(jsonWriter);
         json.writeObjectStart();
 
         //fonts
         if (fonts.size > 0) {
-            String className = main.getProjectData().isUsingSimpleNames() ? BitmapFont.class.getSimpleName() : BitmapFont.class.getName();
+            String className = projectData.isUsingSimpleNames() ? BitmapFont.class.getSimpleName() : BitmapFont.class.getName();
             json.writeObjectStart(className);
             for (FontData font : fonts) {
                 json.writeObjectStart(font.getName());
@@ -643,11 +640,11 @@ public class JsonData implements Json.Serializable {
 
         //colors
         if (colors.size > 0) {
-            String className = main.getProjectData().isUsingSimpleNames() ? Color.class.getSimpleName() : Color.class.getName();
+            String className = projectData.isUsingSimpleNames() ? Color.class.getSimpleName() : Color.class.getName();
             json.writeObjectStart(className);
             for (ColorData color : colors) {
                 json.writeObjectStart(color.getName());
-                if (main.getProjectData().isExportingHex()) {
+                if (projectData.isExportingHex()) {
                     json.writeValue("hex", color.color.toString());
                     json.writeObjectEnd();
                 } else {
@@ -709,7 +706,7 @@ public class JsonData implements Json.Serializable {
         var textureRegionDrawables = new Array<DrawableData>();
         var ninePatchDrawables = new Array<DrawableData>();
         var tenPatchDrawables = new Array<DrawableData>();
-        for (DrawableData drawable : main.getProjectData().getAtlasData().getDrawables()) {
+        for (DrawableData drawable : projectData.getAtlasData().getDrawables()) {
             if (drawable.tiled) {
                 tiledDrawables.add(drawable);
             } else if (drawable.tint != null || drawable.tintName != null) {
@@ -764,7 +761,7 @@ public class JsonData implements Json.Serializable {
         
         //tinted drawables
         if (tintedDrawables.size > 0) {
-            String className = main.getProjectData().isUsingSimpleNames() ? TintedDrawable.class.getSimpleName() : TintedDrawable.class.getName();
+            String className = projectData.isUsingSimpleNames() ? TintedDrawable.class.getSimpleName() : TintedDrawable.class.getName();
             json.writeObjectStart(className);
             for (DrawableData drawable : tintedDrawables) {
                 json.writeObjectStart(drawable.name);
@@ -772,7 +769,7 @@ public class JsonData implements Json.Serializable {
                 json.writeValue("name", DrawableData.proper(drawable.file.name()));
                 if (drawable.tint != null) {
                     json.writeObjectStart("color");
-                    if (main.getProjectData().isExportingHex()) {
+                    if (projectData.isExportingHex()) {
                         json.writeValue("hex", drawable.tint.toString());
                     } else {
                         json.writeValue("r", drawable.tint.r);
@@ -799,7 +796,7 @@ public class JsonData implements Json.Serializable {
         
         //tiled drawables
         if (tiledDrawables.size > 0) {
-            String className = main.getProjectData().isUsingSimpleNames() ? TiledDrawable.class.getSimpleName() : TiledDrawable.class.getName();
+            String className = projectData.isUsingSimpleNames() ? TiledDrawable.class.getSimpleName() : TiledDrawable.class.getName();
             json.writeObjectStart(className);
             for (DrawableData drawable : tiledDrawables) {
                 json.writeObjectStart(drawable.name);
@@ -826,14 +823,14 @@ public class JsonData implements Json.Serializable {
                 if (drawable.tenPatchData.horizontalStretchAreas.size > 0) {
                     json.writeValue("horizontalStretchAreas", drawable.tenPatchData.horizontalStretchAreas.toArray());
                 } else {
-                    var region = main.getAtlasData().getAtlas().findRegion(drawable.file.nameWithoutExtension());
+                    var region = atlasData.getAtlas().findRegion(drawable.file.nameWithoutExtension());
                     json.writeValue("horizontalStretchAreas", new int[]{0, region.getRegionWidth() - 1});
                 }
                 
                 if (drawable.tenPatchData.verticalStretchAreas.size > 0) {
                     json.writeValue("verticalStretchAreas", drawable.tenPatchData.verticalStretchAreas.toArray());
                 } else {
-                    var region = main.getAtlasData().getAtlas().findRegion(drawable.file.nameWithoutExtension());
+                    var region = atlasData.getAtlas().findRegion(drawable.file.nameWithoutExtension());
                     json.writeValue("verticalStretchAreas", new int[]{0, region.getRegionHeight() - 1});
                 }
                 
@@ -920,7 +917,7 @@ public class JsonData implements Json.Serializable {
             }
 
             if (hasMandatoryStyles) {
-                String className = main.getProjectData().isUsingSimpleNames() ? clazz.getSimpleName() : clazz.getName();
+                String className = projectData.isUsingSimpleNames() ? clazz.getSimpleName() : clazz.getName();
                 json.writeObjectStart(className);
                 for (StyleData style : styles) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -1016,7 +1013,7 @@ public class JsonData implements Json.Serializable {
                         }
                     }   break;
                 case DRAWABLE:
-                    for (DrawableData data : main.getAtlasData().getDrawables()) {
+                    for (DrawableData data : atlasData.getDrawables()) {
                         if (data.name.equals(customProperty.getValue())) {
                             returnValue = true;
                             break;
@@ -1178,12 +1175,9 @@ public class JsonData implements Json.Serializable {
             }
             
             customClasses = json.readValue("customClasses", Array.class, CustomClass.class, new Array<>(), jsonData);
-            for (CustomClass customClass : customClasses) {
-                customClass.setMain(main);
-            }
         } catch (ReflectionException e) {
             Gdx.app.log(getClass().getName(), "Error parsing json data during file read", e);
-            main.getDialogFactory().showDialogError("Error while reading file...", "Error while attempting to read save file.\nPlease ensure that file is not corrupted.\n\nOpen error log?");
+            dialogFactory.showDialogError("Error while reading file...", "Error while attempting to read save file.\nPlease ensure that file is not corrupted.\n\nOpen error log?");
         }
     }
     

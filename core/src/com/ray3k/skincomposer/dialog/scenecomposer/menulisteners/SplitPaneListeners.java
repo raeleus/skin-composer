@@ -19,14 +19,15 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimSplitPane;
 import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
+import static com.ray3k.skincomposer.Main.*;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
 
 public class SplitPaneListeners {
     public static EventListener splitPaneNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simSplitPane = (DialogSceneComposerModel.SimSplitPane) dialogSceneComposer.simActor;
-        var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -40,14 +41,14 @@ public class SplitPaneListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Name:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Name:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
                 textField.setText(simSplitPane.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
-                textField.addListener(DialogSceneComposer.main.getIbeamListener());
-                textField.addListener(new TextTooltip("The name of the SplitPane to allow for convenient searching via Group#findActor().", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textField.addListener(ibeamListener);
+                textField.addListener(new TextTooltip("The name of the SplitPane to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene"));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -90,7 +91,7 @@ public class SplitPaneListeners {
     
     public static EventListener splitPaneOrientationListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simSplitPane = (DialogSceneComposerModel.SimSplitPane) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -107,13 +108,13 @@ public class SplitPaneListeners {
                 
                 table.defaults().left().expandX();
                 ButtonGroup buttonGroup = new ButtonGroup();
-                var imageTextButton = new ImageTextButton("Horizontal", DialogSceneComposer.skin, "scene-checkbox-colored");
+                var imageTextButton = new ImageTextButton("Horizontal", skin, "scene-checkbox-colored");
                 imageTextButton.setProgrammaticChangeEvents(false);
                 imageTextButton.setChecked(!simSplitPane.vertical);
                 table.add(imageTextButton);
                 buttonGroup.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Horizontal orientation of the widgets.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Horizontal orientation of the widgets.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -122,13 +123,13 @@ public class SplitPaneListeners {
                 });
                 
                 table.row();
-                imageTextButton = new ImageTextButton("Vertical", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Vertical", skin, "scene-checkbox-colored");
                 imageTextButton.setProgrammaticChangeEvents(false);
                 imageTextButton.setChecked(simSplitPane.vertical);
                 table.add(imageTextButton);
                 buttonGroup.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Vertical orientation of the widgets.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Vertical orientation of the widgets.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -145,7 +146,7 @@ public class SplitPaneListeners {
     
     public static EventListener splitPaneSplitListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simSplitPane = (DialogSceneComposerModel.SimSplitPane) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -156,21 +157,21 @@ public class SplitPaneListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Split:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Split:", skin, "scene-label-colored");
                 popTable.add(label).spaceRight(5);
                 
-                var splitSpinner = new Spinner(0, .1f, false, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
-                var splitMinSpinner = new Spinner(0, .1f, false, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
-                var splitMaxSpinner = new Spinner(0, .1f, false, Spinner.Orientation.RIGHT_STACK, DialogSceneComposer.skin, "scene");
+                var splitSpinner = new Spinner(0, .1f, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                var splitMinSpinner = new Spinner(0, .1f, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");
+                var splitMaxSpinner = new Spinner(0, .1f, false, Spinner.Orientation.RIGHT_STACK, skin, "scene");
                 splitSpinner.setName("pad-left");
                 splitSpinner.setValue(simSplitPane.split);
                 splitSpinner.setMinimum((double) simSplitPane.splitMin);
                 splitSpinner.setMaximum((double) simSplitPane.splitMax);
                 popTable.add(splitSpinner);
-                splitSpinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
-                splitSpinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
-                splitSpinner.getButtonPlus().addListener(DialogSceneComposer.main.getHandListener());
-                splitSpinner.addListener(new TextTooltip("The distance in pixels that the user is allowed to scroll beyond the bounds if overscroll is enabled.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                splitSpinner.getTextField().addListener(ibeamListener);
+                splitSpinner.getButtonMinus().addListener(handListener);
+                splitSpinner.getButtonPlus().addListener(handListener);
+                splitSpinner.addListener(new TextTooltip("The distance in pixels that the user is allowed to scroll beyond the bounds if overscroll is enabled.", tooltipManager, skin, "scene"));
                 splitSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -179,7 +180,7 @@ public class SplitPaneListeners {
                 });
     
                 popTable.row();
-                label = new Label("Split Min:", DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label("Split Min:", skin, "scene-label-colored");
                 popTable.add(label).spaceRight(5);
                 
                 splitMinSpinner.setName("pad-left");
@@ -187,10 +188,10 @@ public class SplitPaneListeners {
                 splitMinSpinner.setMinimum(0);
                 splitMinSpinner.setMaximum(simSplitPane.splitMax);
                 popTable.add(splitMinSpinner);
-                splitMinSpinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
-                splitMinSpinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
-                splitMinSpinner.getButtonPlus().addListener(DialogSceneComposer.main.getHandListener());
-                splitMinSpinner.addListener(new TextTooltip("The minimum speed that scroll returns to the widget bounds when overscroll is enabled.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                splitMinSpinner.getTextField().addListener(ibeamListener);
+                splitMinSpinner.getButtonMinus().addListener(handListener);
+                splitMinSpinner.getButtonPlus().addListener(handListener);
+                splitMinSpinner.addListener(new TextTooltip("The minimum speed that scroll returns to the widget bounds when overscroll is enabled.", tooltipManager, skin, "scene"));
                 splitMinSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -201,7 +202,7 @@ public class SplitPaneListeners {
                 });
     
                 popTable.row();
-                label = new Label("Split Max:", DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label("Split Max:", skin, "scene-label-colored");
                 popTable.add(label).spaceRight(5);
                 
                 splitMaxSpinner.setName("pad-left");
@@ -209,10 +210,10 @@ public class SplitPaneListeners {
                 splitMaxSpinner.setMinimum(simSplitPane.splitMin);
                 splitMaxSpinner.setMaximum(1);
                 popTable.add(splitMaxSpinner);
-                splitMaxSpinner.getTextField().addListener(DialogSceneComposer.main.getIbeamListener());
-                splitMaxSpinner.getButtonMinus().addListener(DialogSceneComposer.main.getHandListener());
-                splitMaxSpinner.getButtonPlus().addListener(DialogSceneComposer.main.getHandListener());
-                splitMaxSpinner.addListener(new TextTooltip("The maximum speed that scroll returns to the widget bounds when overscroll is enabled.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                splitMaxSpinner.getTextField().addListener(ibeamListener);
+                splitMaxSpinner.getButtonMinus().addListener(handListener);
+                splitMaxSpinner.getButtonPlus().addListener(handListener);
+                splitMaxSpinner.addListener(new TextTooltip("The maximum speed that scroll returns to the widget bounds when overscroll is enabled.", tooltipManager, skin, "scene"));
                 splitMaxSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -242,7 +243,7 @@ public class SplitPaneListeners {
             dialogSceneComposer.events.splitPaneChildSecond(widgetType);
             return null;
         } else {
-            var dialog = new Dialog("", DialogSceneComposer.skin, "scene-dialog") {
+            var dialog = new Dialog("", skin, "scene-dialog") {
                 @Override
                 protected void result(Object object) {
                     if ((Boolean) object) {
@@ -261,12 +262,12 @@ public class SplitPaneListeners {
             
             root.add().uniform();
             
-            var label = new Label("Confirm Overwrite Widget", DialogSceneComposer.skin, "scene-title");
+            var label = new Label("Confirm Overwrite Widget", skin, "scene-title");
             root.add(label).expandX();
             
-            var button = new Button(DialogSceneComposer.skin, "scene-close");
+            var button = new Button(skin, "scene-close");
             root.add(button).uniform();
-            button.addListener(DialogSceneComposer.main.getHandListener());
+            button.addListener(handListener);
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -277,19 +278,19 @@ public class SplitPaneListeners {
             root = dialog.getContentTable();
             root.pad(10);
             
-            label = new Label("This will overwrite the existing widget in the cell.\nAre you okay with that?", DialogSceneComposer.skin, "scene-label-colored");
+            label = new Label("This will overwrite the existing widget in the cell.\nAre you okay with that?", skin, "scene-label-colored");
             label.setWrap(true);
             label.setAlignment(Align.center);
             root.add(label).growX();
             
             dialog.getButtonTable().defaults().uniformX();
-            var textButton = new TextButton("OK", DialogSceneComposer.skin, "scene-med");
+            var textButton = new TextButton("OK", skin, "scene-med");
             dialog.button(textButton, true);
-            textButton.addListener(DialogSceneComposer.main.getHandListener());
+            textButton.addListener(handListener);
             
-            textButton = new TextButton("Cancel", DialogSceneComposer.skin, "scene-med");
+            textButton = new TextButton("Cancel", skin, "scene-med");
             dialog.button(textButton, false);
-            textButton.addListener(DialogSceneComposer.main.getHandListener());
+            textButton.addListener(handListener);
             
             dialog.key(Input.Keys.ENTER, true).key(Input.Keys.SPACE, true);
             dialog.key(Input.Keys.ESCAPE, false);

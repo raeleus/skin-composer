@@ -42,6 +42,8 @@ import com.ray3k.skincomposer.utils.Utils;
 
 import java.util.Comparator;
 
+import static com.ray3k.skincomposer.Main.*;
+
 public class DialogColors extends Dialog {
     private Array<ColorData> colors;
     private Table colorTable;
@@ -54,7 +56,7 @@ public class DialogColors extends Dialog {
     private Main main;
     
     public DialogColors(Main main, StyleProperty styleProperty, boolean selectingForTintedDrawable, DialogColorsListener listener) {
-        super("", main.getSkin(), "dialog");
+        super("", skin, "dialog");
         this.styleProperty = styleProperty;
         populate(main, selectingForTintedDrawable, listener);
     }
@@ -64,7 +66,7 @@ public class DialogColors extends Dialog {
     }
     
     public DialogColors(Main main, CustomProperty customProperty, boolean selectingForTintedDrawable, DialogColorsListener listener) {
-        super("", main.getSkin(), "dialog");
+        super("", skin, "dialog");
         this.customProperty = customProperty;
         populate(main, selectingForTintedDrawable, listener);
     }
@@ -78,7 +80,7 @@ public class DialogColors extends Dialog {
         
         this.listener = listener;
         this.selectingForTintedDrawable = selectingForTintedDrawable;
-        colors = main.getJsonData().getColors();
+        colors = jsonData.getColors();
         
         getContentTable().defaults().expandX();
         if (styleProperty != null || customProperty != null) {
@@ -111,8 +113,8 @@ public class DialogColors extends Dialog {
                 sortBySelectedMode();
             }
         });
-        selectBox.addListener(main.getHandListener());
-        selectBox.getList().addListener(main.getHandListener());
+        selectBox.addListener(handListener);
+        selectBox.getList().addListener(handListener);
         table.add(selectBox);
         
         TextButton imageButton = new TextButton("New Color", getSkin(), "new");
@@ -122,7 +124,7 @@ public class DialogColors extends Dialog {
                 showColorPicker();
             }
         });
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
         table.add(imageButton).expandX().left();
         getContentTable().add(table).left().expandX();
         getContentTable().row();
@@ -138,14 +140,14 @@ public class DialogColors extends Dialog {
         if (styleProperty != null || customProperty != null) {
             button("Clear Color", true);
             button("Cancel", false);
-            getButtonTable().getCells().get(0).getActor().addListener(main.getHandListener());
-            getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+            getButtonTable().getCells().get(0).getActor().addListener(handListener);
+            getButtonTable().getCells().get(1).getActor().addListener(handListener);
         } else if (selectingForTintedDrawable) {
             button("Cancel", false);
-            getButtonTable().getCells().get(0).getActor().addListener(main.getHandListener());
+            getButtonTable().getCells().get(0).getActor().addListener(handListener);
         } else {
             button("Close", false);
-            getButtonTable().getCells().get(0).getActor().addListener(main.getHandListener());
+            getButtonTable().getCells().get(0).getActor().addListener(handListener);
         }
         getButtonTable().padBottom(15.0f);
         key(Keys.ESCAPE, false);
@@ -159,7 +161,7 @@ public class DialogColors extends Dialog {
     }
     
     private void showColorPicker() {
-        main.getDialogFactory().showDialogColorPicker(new DialogColorPicker.ColorListener() {
+        dialogFactory.showDialogColorPicker(new DialogColorPicker.ColorListener() {
             @Override
             public void selected(Color color) {
                 if (color != null) {
@@ -177,8 +179,8 @@ public class DialogColors extends Dialog {
                     
                     dialog.button("Ok", true).button("Cancel", false).key(Keys.ESCAPE, false);
                     final TextButton button = (TextButton) dialog.getButtonTable().getCells().first().getActor();
-                    button.addListener(main.getHandListener());
-                    dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+                    button.addListener(handListener);
+                    dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
                     dialog.getButtonTable().pad(15.0f);
 
                     field.setTextFieldListener(new TextField.TextFieldListener() {
@@ -191,12 +193,12 @@ public class DialogColors extends Dialog {
                                         dialog.hide();
                                     }
                                 }
-                                main.getStage().setKeyboardFocus(textField);
+                                stage.setKeyboardFocus(textField);
                             }
                         }
                     });
                     
-                    field.addListener(main.getIbeamListener());
+                    field.addListener(ibeamListener);
 
                     dialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
                     dialog.text("Please enter a name for the new color: ");
@@ -215,7 +217,7 @@ public class DialogColors extends Dialog {
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             boolean disable = !ColorData.validate(field.getText());
                             if (!disable) {
-                                for (ColorData data : main.getJsonData().getColors()) {
+                                for (ColorData data : jsonData.getColors()) {
                                     if (data.getName().equals(field.getText())) {
                                         disable = true;
                                         break;
@@ -241,7 +243,7 @@ public class DialogColors extends Dialog {
             colorTable.defaults().padTop(5.0f);
             for (ColorData color : colors) {
                 Button button = new Button(getSkin(), "color-base");
-                button.addListener(main.getHandListener());
+                button.addListener(handListener);
                 Label label = new Label(color.toString(), getSkin(), "white");
                 label.setTouchable(Touchable.disabled);
                 
@@ -304,7 +306,7 @@ public class DialogColors extends Dialog {
                 });
                 button.add(renameButton).padLeft(10.0f);
                 
-                TextTooltip toolTip = new TextTooltip("Rename Color", main.getTooltipManager(), getSkin());
+                TextTooltip toolTip = new TextTooltip("Rename Color", tooltipManager, getSkin());
                 renameButton.addListener(toolTip);
                 
                 //recolor button
@@ -327,7 +329,7 @@ public class DialogColors extends Dialog {
                 });
                 button.add(recolorButton);
                 
-                toolTip = new TextTooltip("Change Color", main.getTooltipManager(), getSkin());
+                toolTip = new TextTooltip("Change Color", tooltipManager, getSkin());
                 recolorButton.addListener(toolTip);
                 
                 label = new Label("(" + ((int)(color.color.r * 255)) + ", " + ((int)(color.color.g * 255)) + ", " + ((int)(color.color.b * 255)) + ", " + ((int)(color.color.a * 255)) + ")", getSkin());
@@ -360,10 +362,10 @@ public class DialogColors extends Dialog {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         colors.removeValue(deleteColor, true);
-                        main.getProjectData().setChangesSaved(false);
+                        projectData.setChangesSaved(false);
                         
                         //clear style properties that use this color.
-                        for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
+                        for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
                             for (StyleData data : datas) {
                                 for (StyleProperty property : data.properties.values()) {
                                     if (property != null && property.type.equals(Color.class) && property.value != null && property.value.equals(deleteColor.getName())) {
@@ -374,12 +376,12 @@ public class DialogColors extends Dialog {
                         }
                         
                         //delete tinted drawables based on this color.
-                        for(DrawableData drawableData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {
+                        for(DrawableData drawableData : new Array<>(projectData.getAtlasData().getDrawables())) {
                             if (drawableData.tintName != null && drawableData.tintName.equals(deleteColor.getName())) {
-                                main.getProjectData().getAtlasData().getDrawables().removeValue(drawableData, true);
+                                projectData.getAtlasData().getDrawables().removeValue(drawableData, true);
                                 
                                 //clear any style properties based on this tinted drawable.
-                                for (Array<StyleData> styleDatas : main.getJsonData().getClassStyleMap().values()) {
+                                for (Array<StyleData> styleDatas : jsonData.getClassStyleMap().values()) {
                                     for (StyleData styleData : styleDatas) {
                                         for (StyleProperty styleProperty : styleData.properties.values()) {
                                             if (styleProperty != null && styleProperty.type.equals(Drawable.class) && styleProperty.value != null && styleProperty.value.equals(drawableData.toString())) {
@@ -391,10 +393,10 @@ public class DialogColors extends Dialog {
                             }
                         }
                         
-                        main.getUndoableManager().clearUndoables();
+                        undoableManager.clearUndoables();
                         
-                        main.getRootTable().refreshStyleProperties(true);
-                        main.getRootTable().refreshPreview();
+                        rootTable.refreshStyleProperties(true);
+                        rootTable.refreshPreview();
                         
                         event.setBubbles(false);
                         refreshTable();
@@ -409,7 +411,7 @@ public class DialogColors extends Dialog {
                     
                 });
                 
-                toolTip = new TextTooltip("Delete Color", main.getTooltipManager(), getSkin());
+                toolTip = new TextTooltip("Delete Color", tooltipManager, getSkin());
                 closeButton.addListener(toolTip);
                 
                 button.add(closeButton).padLeft(5.0f);
@@ -435,7 +437,7 @@ public class DialogColors extends Dialog {
     }
     
     private void recolorDialog(ColorData colorData) {
-        main.getDialogFactory().showDialogColorPicker(colorData.color, new DialogColorPicker.ColorListener() {
+        dialogFactory.showDialogColorPicker(colorData.color, new DialogColorPicker.ColorListener() {
             @Override
             public void selected(Color color) {
                 if (color != null) {
@@ -448,13 +450,13 @@ public class DialogColors extends Dialog {
     private void recolorColor(ColorData colorData, Color color) {
         colorData.color = color;
 
-        main.getUndoableManager().clearUndoables();
+        undoableManager.clearUndoables();
 
-        main.getRootTable().refreshStyleProperties(true);
-        main.getAtlasData().produceAtlas();
-        main.getRootTable().refreshPreview();
+        rootTable.refreshStyleProperties(true);
+        atlasData.produceAtlas();
+        rootTable.refreshPreview();
         
-        main.getProjectData().setChangesSaved(false);
+        projectData.setChangesSaved(false);
         
         refreshTable();
     }
@@ -474,7 +476,7 @@ public class DialogColors extends Dialog {
             @Override
             public Dialog show(Stage stage) {
                 Dialog dialog = super.show(stage);
-                main.getStage().setKeyboardFocus(textField);
+                stage.setKeyboardFocus(textField);
                 return dialog;
             }
         };
@@ -505,7 +507,7 @@ public class DialogColors extends Dialog {
         dialog.getContentTable().row();
         textField.setText(color.getName());
         textField.selectAll();
-        textField.addListener(main.getIbeamListener());
+        textField.addListener(ibeamListener);
         dialog.getContentTable().add(textField);
         dialog.getCell(dialog.getContentTable()).pad(15.0f);
         
@@ -513,8 +515,8 @@ public class DialogColors extends Dialog {
         dialog.button("Cancel", false).key(Keys.ESCAPE, false);
         okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
         okButton.setDisabled(true);
-        okButton.addListener(main.getHandListener());
-        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        okButton.addListener(handListener);
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
         dialog.getButtonTable().padBottom(15.0f);
         
         textField.addListener(new ChangeListener() {
@@ -522,7 +524,7 @@ public class DialogColors extends Dialog {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 boolean disable = !ColorData.validate(textField.getText());
                 if (!disable) {
-                    for (ColorData data : main.getJsonData().getColors()) {
+                    for (ColorData data : jsonData.getColors()) {
                         if (data.getName().equals(textField.getText())) {
                             disable = true;
                             break;
@@ -550,7 +552,7 @@ public class DialogColors extends Dialog {
     
     private void renameColor(ColorData color, String newName) {
         //style properties
-        for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
+        for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
             for (StyleData data : datas) {
                 for (StyleProperty property : data.properties.values()) {
                     if (property != null && property.type.equals(Color.class) && property.value != null && property.value.equals(color.getName())) {
@@ -560,7 +562,7 @@ public class DialogColors extends Dialog {
             }
         }
         
-        for (DrawableData drawableData : main.getAtlasData().getDrawables()) {
+        for (DrawableData drawableData : atlasData.getDrawables()) {
             //tinted drawables
             if (drawableData.tintName != null && drawableData.tintName.equals(color.getName())) {
                 drawableData.tintName = newName;
@@ -576,15 +578,15 @@ public class DialogColors extends Dialog {
             color.setName(newName);
         } catch (ColorData.NameFormatException ex) {
             Gdx.app.error(getClass().getName(), "Error trying to rename a color.", ex);
-            main.getDialogFactory().showDialogError("Name Error...","Error while naming a color.\\nPlease ensure name is formatted appropriately:\\nNo spaces, don't start with a number, - and _ acceptable.\n\nOpen log?");
+            dialogFactory.showDialogError("Name Error...","Error while naming a color.\\nPlease ensure name is formatted appropriately:\\nNo spaces, don't start with a number, - and _ acceptable.\n\nOpen log?");
         }
 
-        main.getUndoableManager().clearUndoables();
+        undoableManager.clearUndoables();
 
-        main.getRootTable().refreshStyleProperties(true);
-        main.getRootTable().refreshPreview();
+        rootTable.refreshStyleProperties(true);
+        rootTable.refreshPreview();
         
-        main.getProjectData().setChangesSaved(false);
+        projectData.setChangesSaved(false);
         
         refreshTable();
     }
@@ -592,14 +594,14 @@ public class DialogColors extends Dialog {
     private boolean newColor(String name, Color color) {
         if (ColorData.validate(name)) {
             try {
-                main.getProjectData().setChangesSaved(false);
+                projectData.setChangesSaved(false);
                 colors.add(new ColorData(name, color));
                 sortBySelectedMode();
                 refreshTable();
                 return true;
             } catch (Exception e) {
                 Gdx.app.log(getClass().getName(), "Error trying to add color.", e);
-                main.getDialogFactory().showDialogError("Error creating color...", "Error while attempting to create color.\n\nOpen log?");
+                dialogFactory.showDialogError("Error creating color...", "Error while attempting to create color.\n\nOpen log?");
                 return false;
             }
         } else {
@@ -612,20 +614,20 @@ public class DialogColors extends Dialog {
         boolean pressedCancel = false;
         if (styleProperty != null) {
             if (object instanceof ColorData) {
-                main.getProjectData().setChangesSaved(false);
+                projectData.setChangesSaved(false);
                 ColorData color = (ColorData) object;
-                ColorUndoable undoable = new ColorUndoable(main.getRootTable(), main.getJsonData(), styleProperty, styleProperty.value, color.getName());
-                main.getUndoableManager().addUndoable(undoable, true);
+                ColorUndoable undoable = new ColorUndoable(rootTable, jsonData, styleProperty, styleProperty.value, color.getName());
+                undoableManager.addUndoable(undoable, true);
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
-                    main.getProjectData().setChangesSaved(false);
-                    ColorUndoable undoable = new ColorUndoable(main.getRootTable(), main.getJsonData(), styleProperty, styleProperty.value, null);
-                    main.getUndoableManager().addUndoable(undoable, true);
+                    projectData.setChangesSaved(false);
+                    ColorUndoable undoable = new ColorUndoable(rootTable, jsonData, styleProperty, styleProperty.value, null);
+                    undoableManager.addUndoable(undoable, true);
                 } else {
                     pressedCancel = true;
                     
                     boolean hasColor = false;
-                    for (ColorData color : main.getJsonData().getColors()) {
+                    for (ColorData color : jsonData.getColors()) {
                         if (color.getName().equals(styleProperty.value)) {
                             hasColor = true;
                             break;
@@ -633,30 +635,30 @@ public class DialogColors extends Dialog {
                     }
 
                     if (!hasColor) {
-                        main.getProjectData().setChangesSaved(false);
+                        projectData.setChangesSaved(false);
                         styleProperty.value = null;
-                        main.getRootTable().refreshStyleProperties(true);
+                        rootTable.refreshStyleProperties(true);
                     }
                 }
             }
         } else if (customProperty != null) {
             if (object instanceof ColorData) {
-                main.getProjectData().setChangesSaved(false);
+                projectData.setChangesSaved(false);
                 ColorData color = (ColorData) object;
                 CustomColorUndoable undoable = new UndoableManager.CustomColorUndoable(main, customProperty, color.getName());
-                main.getUndoableManager().addUndoable(undoable, true);
+                undoableManager.addUndoable(undoable, true);
             } else if (object instanceof Boolean) {
                 if ((boolean) object) {
-                    main.getProjectData().setChangesSaved(false);
+                    projectData.setChangesSaved(false);
 
                     CustomColorUndoable undoable = new UndoableManager.CustomColorUndoable(main, customProperty, null);
-                    main.getUndoableManager().addUndoable(undoable, true);
-                    main.getRootTable().refreshStyleProperties(true);
+                    undoableManager.addUndoable(undoable, true);
+                    rootTable.refreshStyleProperties(true);
                 } else {
                     pressedCancel = true;
                     
                     boolean hasColor = false;
-                    for (ColorData color : main.getJsonData().getColors()) {
+                    for (ColorData color : jsonData.getColors()) {
                         if (color.getName().equals(customProperty.getValue())) {
                             hasColor = true;
                             break;
@@ -664,9 +666,9 @@ public class DialogColors extends Dialog {
                     }
 
                     if (!hasColor) {
-                        main.getProjectData().setChangesSaved(false);
+                        projectData.setChangesSaved(false);
                         customProperty.setValue(null);
-                        main.getRootTable().refreshStyleProperties(true);
+                        rootTable.refreshStyleProperties(true);
                     }
                 }
             }

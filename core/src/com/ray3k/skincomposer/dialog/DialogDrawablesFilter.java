@@ -28,29 +28,26 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.dialog.DialogDrawables.FilterOptions;
 
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
+import static com.ray3k.skincomposer.Main.*;
 
 /**
  *
  * @author Raymond
  */
 public class DialogDrawablesFilter extends Dialog {
-    private Skin skin;
-    private Main main;
     private DialogDrawables.FilterOptions filterOptions, appliedFilterOptions, defaultFilterOptions;
     
     public static enum Selection {
         APPLY, RESET, CANCEL
     }
 
-    public DialogDrawablesFilter(DialogDrawables.FilterOptions filterOptions, Main main) {
-        super("", main.getSkin(), "dialog");
-        this.main = main;
-        this.skin = main.getSkin();
+    public DialogDrawablesFilter(DialogDrawables.FilterOptions filterOptions) {
+        super("", skin, "dialog");
         this.filterOptions = new FilterOptions();
         defaultFilterOptions = new FilterOptions();
         appliedFilterOptions = filterOptions;
@@ -75,7 +72,7 @@ public class DialogDrawablesFilter extends Dialog {
         var checkBox = new CheckBox("Texture", skin);
         checkBox.setChecked(this.filterOptions.texture);
         subTable.add(checkBox);
-        checkBox.addListener(main.getHandListener());
+        checkBox.addListener(handListener);
         checkBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -86,7 +83,7 @@ public class DialogDrawablesFilter extends Dialog {
         checkBox = new CheckBox("NinePatch", skin);
         checkBox.setChecked(this.filterOptions.ninePatch);
         subTable.add(checkBox);
-        checkBox.addListener(main.getHandListener());
+        checkBox.addListener(handListener);
         checkBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -98,7 +95,7 @@ public class DialogDrawablesFilter extends Dialog {
         checkBox = new CheckBox("Tinted", skin);
         checkBox.setChecked(this.filterOptions.tinted);
         subTable.add(checkBox);
-        checkBox.addListener(main.getHandListener());
+        checkBox.addListener(handListener);
         checkBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -109,7 +106,7 @@ public class DialogDrawablesFilter extends Dialog {
         checkBox = new CheckBox("Tiled", skin);
         checkBox.setChecked(this.filterOptions.tiled);
         subTable.add(checkBox);
-        checkBox.addListener(main.getHandListener());
+        checkBox.addListener(handListener);
         checkBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -121,7 +118,7 @@ public class DialogDrawablesFilter extends Dialog {
         checkBox = new CheckBox("TenPatch", skin);
         checkBox.setChecked(this.filterOptions.tenPatch);
         subTable.add(checkBox);
-        checkBox.addListener(main.getHandListener());
+        checkBox.addListener(handListener);
         checkBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -132,7 +129,7 @@ public class DialogDrawablesFilter extends Dialog {
         checkBox = new CheckBox("Custom", skin);
         checkBox.setChecked(this.filterOptions.custom);
         subTable.add(checkBox);
-        checkBox.addListener(main.getHandListener());
+        checkBox.addListener(handListener);
         checkBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -144,7 +141,7 @@ public class DialogDrawablesFilter extends Dialog {
         checkBox = new CheckBox("Font", skin);
         checkBox.setChecked(this.filterOptions.font);
         subTable.add(checkBox);
-        checkBox.addListener(main.getHandListener());
+        checkBox.addListener(handListener);
         checkBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -155,7 +152,7 @@ public class DialogDrawablesFilter extends Dialog {
         checkBox = new CheckBox("Hidden", skin);
         checkBox.setChecked(this.filterOptions.hidden);
         subTable.add(checkBox);
-        checkBox.addListener(main.getHandListener());
+        checkBox.addListener(handListener);
         checkBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -176,7 +173,7 @@ public class DialogDrawablesFilter extends Dialog {
         checkBox.setName("regular-expression");
         checkBox.setChecked(this.filterOptions.regularExpression);
         table.add(checkBox);
-        checkBox.addListener(main.getHandListener());
+        checkBox.addListener(handListener);
         checkBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -190,7 +187,7 @@ public class DialogDrawablesFilter extends Dialog {
         textField.setName("text");
         textField.setText(this.filterOptions.name);
         table.add(textField);
-        textField.addListener(main.getIbeamListener());
+        textField.addListener(ibeamListener);
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -204,15 +201,15 @@ public class DialogDrawablesFilter extends Dialog {
         var textButton = new TextButton("Apply", skin);
         textButton.setName("apply");
         button(textButton, Selection.APPLY);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
     
         textButton = new TextButton("Reset", skin);
         button(textButton, Selection.RESET);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
     
         textButton = new TextButton("Cancel", skin);
         button(textButton, Selection.CANCEL);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
     
         key(Keys.ENTER, Selection.APPLY).key(Keys.ESCAPE, Selection.CANCEL);
         updateApplyButton();

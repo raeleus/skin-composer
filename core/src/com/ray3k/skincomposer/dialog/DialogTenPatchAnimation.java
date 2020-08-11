@@ -21,11 +21,11 @@ import com.ray3k.tenpatch.TenPatchDrawable;
 import java.util.Comparator;
 import java.util.regex.Pattern;
 
+import static com.ray3k.skincomposer.Main.*;
+
 public class DialogTenPatchAnimation extends Dialog {
     private DrawableData drawableData;
     private DrawableData workingData;
-    private Skin skin;
-    private Main main;
     private Array<DrawableData> drawableDatas;
     private ObjectMap<DrawableData, TextureRegion> drawableToRegionMap;
     private ButtonGroup<Button> buttonGroup;
@@ -33,22 +33,20 @@ public class DialogTenPatchAnimation extends Dialog {
     private static final AlphanumComparator alphanumComparator = new AlphanumComparator();
     private TenPatchDrawable animatedDrawable;
     
-    public DialogTenPatchAnimation(DrawableData drawableData, Skin skin, Main main) {
+    public DialogTenPatchAnimation(DrawableData drawableData) {
         super("TenPatch Animation", skin, "bg");
         drawableToRegionMap = new ObjectMap<>();
         lastClicked = 0;
         this.drawableData = drawableData;
         workingData = new DrawableData(drawableData);
-        this.skin = skin;
-        this.main = main;
         drawableDatas = new Array<>();
         
         for (var name : workingData.tenPatchData.regionNames) {
-            drawableDatas.add(main.getAtlasData().getDrawable(name));
+            drawableDatas.add(atlasData.getDrawable(name));
     
             if (!drawableToRegionMap.containsKey(drawableData)) {
-                var data = main.getAtlasData().getDrawable(name);
-                var region = main.getAtlasData().getAtlas().findRegion(name);
+                var data = atlasData.getDrawable(name);
+                var region = atlasData.getAtlas().findRegion(name);
                 drawableToRegionMap.put(data, region);
             }
         }
@@ -74,7 +72,7 @@ public class DialogTenPatchAnimation extends Dialog {
         
         var splitPane = new SplitPane(top, bottom, true, skin);
         root.add(splitPane).grow();
-        splitPane.addListener(main.getVerticalResizeArrowListener());
+        splitPane.addListener(verticalResizeArrowListener);
         
         top.defaults().space(5);
         top.padBottom(5);
@@ -92,7 +90,7 @@ public class DialogTenPatchAnimation extends Dialog {
         if (matcher.find()) {
             name = matcher.group();
         }
-        animatedDrawable.setRegion(main.getAtlasData().getAtlas().findRegion(name));
+        animatedDrawable.setRegion(atlasData.getAtlas().findRegion(name));
         var table = new Table();
         table.setTouchable(Touchable.enabled);
         table.setName("animation-table");
@@ -112,7 +110,7 @@ public class DialogTenPatchAnimation extends Dialog {
         image.setName("animated-image");
         image.setScaling(Scaling.none);
         table.add(image);
-        table.addListener(main.getHandListener());
+        table.addListener(handListener);
         table.addListener(new ClickListener(-1) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -132,9 +130,9 @@ public class DialogTenPatchAnimation extends Dialog {
         spinner.setMinimum(0.0f);
         spinner.setValue(workingData.tenPatchData.frameDuration);
         table.add(spinner).minWidth(150);
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -173,11 +171,11 @@ public class DialogTenPatchAnimation extends Dialog {
     
         var imageButton = new ImageButton(skin, "color");
         table.add(imageButton);
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+                dialogFactory.showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                     Table table = findActor("animation-table");
                     if (colorData == null) {
                         table.setBackground(skin.newDrawable("white", Color.CLEAR));
@@ -223,44 +221,44 @@ public class DialogTenPatchAnimation extends Dialog {
         
         var button = new Button(skin, "move-frame-left");
         subTable.add(button);
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 moveLeft();
             }
         });
-        var textTooltip = new TextTooltip("LEFT ARROW", main.getTooltipManager(), skin);
+        var textTooltip = new TextTooltip("LEFT ARROW", tooltipManager, skin);
         button.addListener(textTooltip);
         
         button = new Button(skin, "move-frame-right");
         subTable.add(button);
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 moveRight();
             }
         });
-        textTooltip = new TextTooltip("RIGHT ARROW", main.getTooltipManager(), skin);
+        textTooltip = new TextTooltip("RIGHT ARROW", tooltipManager, skin);
         button.addListener(textTooltip);
         
         subTable.row();
         button = new Button(skin, "remove-frame");
         subTable.add(button);
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 eraseSelection();
             }
         });
-        textTooltip = new TextTooltip("DEL", main.getTooltipManager(), skin);
+        textTooltip = new TextTooltip("DEL", tooltipManager, skin);
         button.addListener(textTooltip);
     
         button = new Button(skin, "add-frame");
         subTable.add(button);
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -272,20 +270,20 @@ public class DialogTenPatchAnimation extends Dialog {
         subTable.row();
         var textButton = new TextButton("Duplicate", skin);
         subTable.add(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 duplicateSelection();
             }
         });
-        textTooltip = new TextTooltip("CTRL + D", main.getTooltipManager(), skin);
+        textTooltip = new TextTooltip("CTRL + D", tooltipManager, skin);
         textButton.addListener(textTooltip);
     
         subTable.row();
         textButton = new TextButton("Reverse", skin);
         subTable.add(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -296,7 +294,7 @@ public class DialogTenPatchAnimation extends Dialog {
         subTable.row();
         textButton = new TextButton("Sort A-Z", skin);
         subTable.add(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -307,7 +305,7 @@ public class DialogTenPatchAnimation extends Dialog {
         subTable.row();
         textButton = new TextButton("Sort Z-A", skin);
         subTable.add(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -319,11 +317,11 @@ public class DialogTenPatchAnimation extends Dialog {
         getButtonTable().defaults().uniform().fill();
         textButton = new TextButton("OK", skin);
         button(textButton, true);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
         textButton = new TextButton("Cancel", skin);
         button(textButton, false);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
         key(Input.Keys.ESCAPE, false).key(Input.Keys.ENTER, true);
         addListener(new InputListener() {
@@ -428,7 +426,7 @@ public class DialogTenPatchAnimation extends Dialog {
         var iter = drawableDatas.iterator();
         while (iter.hasNext()) {
             var drawable = iter.next();
-            if (!main.getAtlasData().getDrawablePairs().containsKey(drawable)) {
+            if (!atlasData.getDrawablePairs().containsKey(drawable)) {
                 iter.remove();
             }
         }
@@ -439,7 +437,7 @@ public class DialogTenPatchAnimation extends Dialog {
             if (matcher.find()) {
                 name = matcher.group();
             }
-            var region = main.getAtlasData().getAtlas().findRegion(name);
+            var region = atlasData.getAtlas().findRegion(name);
             drawableToRegionMap.put(drawableData, region);
         }
         
@@ -470,7 +468,7 @@ public class DialogTenPatchAnimation extends Dialog {
                 if (matcher.find()) {
                     name = matcher.group();
                 }
-                var region = main.getAtlasData().getAtlas().findRegion(name);
+                var region = atlasData.getAtlas().findRegion(name);
                 drawableToRegionMap.put(drawableData, region);
             }
         }
@@ -478,7 +476,7 @@ public class DialogTenPatchAnimation extends Dialog {
         var iter = drawableDatas.iterator();
         while (iter.hasNext()) {
             var drawable = iter.next();
-            if (!main.getAtlasData().getDrawablePairs().containsKey(drawable)) {
+            if (!atlasData.getDrawablePairs().containsKey(drawable)) {
                 iter.remove();
             }
         }
@@ -674,7 +672,7 @@ public class DialogTenPatchAnimation extends Dialog {
             button.setProgrammaticChangeEvents(false);
             table.add(button).size(150, 200).space(5);
             buttonGroup.add(button);
-            button.addListener(main.getHandListener());
+            button.addListener(handListener);
     
             final var check = new Button(skin, "check");
             check.setName("check");
@@ -726,7 +724,7 @@ public class DialogTenPatchAnimation extends Dialog {
             button.add().uniform();
             
             button.row();
-            Image image = new Image(main.getAtlasData().getDrawablePairs().get(region));
+            Image image = new Image(atlasData.getDrawablePairs().get(region));
             image.setScaling(Scaling.fit);
             button.add(image).colspan(3).expand();
             
@@ -735,7 +733,7 @@ public class DialogTenPatchAnimation extends Dialog {
             label.setAlignment(Align.center);
             label.setEllipsis("...");
             button.add(label).colspan(3).width(125f);
-            var textTooltip = new TextTooltip(region.name, main.getTooltipManager(), skin);
+            var textTooltip = new TextTooltip(region.name, tooltipManager, skin);
             label.addListener(textTooltip);
         }
         
@@ -763,13 +761,13 @@ public class DialogTenPatchAnimation extends Dialog {
         var filterOptions = new FilterOptions();
         filterOptions.set(DialogDrawables.filterOptions);
         
-        var dialog = main.getDialogFactory().showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
+        var dialog = dialogFactory.showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
             @Override
             public void confirmed(DrawableData drawable, DialogDrawables dialog) {
                 if (drawable.file == null) {
-                    main.getDialogFactory().showMessageDialog("Incorrect drawable!", "Incorrect drawable type! Select a \"texture\" drawable.", null);
+                    dialogFactory.showMessageDialog("Incorrect drawable!", "Incorrect drawable type! Select a \"texture\" drawable.", null);
                 } else {
-                    main.getAtlasData().produceAtlas();
+                    atlasData.produceAtlas();
                     
                     var pattern = Pattern.compile(".+(?=_\\d+$)");
                     var matcher = pattern.matcher(drawable.name);
@@ -777,14 +775,14 @@ public class DialogTenPatchAnimation extends Dialog {
                         var name = matcher.group();
     
                         var matches = new Array<DrawableData>();
-                        for (var drawableData : main.getAtlasData().getDrawablePairs().keys()) {
+                        for (var drawableData : atlasData.getDrawablePairs().keys()) {
                             if (drawableData.name.matches(Pattern.quote(name) + "_\\d+")) {
                                 matches.add(drawableData);
                             }
                         }
 
                         if (matches.size > 1) {
-                            main.getDialogFactory().yesNoDialog("Add all frames?", "Do you want to add all the frames of this animation?", new DialogFactory.ConfirmationListener() {
+                            dialogFactory.yesNoDialog("Add all frames?", "Do you want to add all the frames of this animation?", new DialogFactory.ConfirmationListener() {
                                 @Override
                                 public void selected(int selection) {
                                     if (selection == 0) {

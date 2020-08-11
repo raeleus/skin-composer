@@ -18,14 +18,15 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
 import com.ray3k.stripe.PopTableClickListener;
+import static com.ray3k.skincomposer.Main.*;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
 
 public class LabelListeners {
     public static EventListener labelNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simLabel = (DialogSceneComposerModel.SimLabel) dialogSceneComposer.simActor;
-        var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -39,14 +40,14 @@ public class LabelListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Name:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Name:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
                 textField.setText(simLabel.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
-                textField.addListener(DialogSceneComposer.main.getIbeamListener());
-                textField.addListener(new TextTooltip("The name of the Label to allow for convenient searching via Group#findActor().", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textField.addListener(ibeamListener);
+                textField.addListener(new TextTooltip("The name of the Label to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene"));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -77,8 +78,8 @@ public class LabelListeners {
     
     public static EventListener labelTextListener(final DialogSceneComposer dialogSceneComposer) {
         var simLabel = (DialogSceneComposerModel.SimLabel) dialogSceneComposer.simActor;
-        var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -91,14 +92,14 @@ public class LabelListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Text:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Text:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
                 textField.setText(simLabel.text);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
-                textField.addListener(DialogSceneComposer.main.getIbeamListener());
-                textField.addListener(new TextTooltip("The text for the Label.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textField.addListener(ibeamListener);
+                textField.addListener(new TextTooltip("The text for the Label.", tooltipManager, skin, "scene"));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -141,7 +142,7 @@ public class LabelListeners {
     
     public static EventListener labelColorListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simLabel = (DialogSceneComposerModel.SimLabel) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -152,20 +153,20 @@ public class LabelListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Color:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Color:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
-                var imageButton = new ImageButton(DialogSceneComposer.skin, "scene-color");
+                var imageButton = new ImageButton(skin, "scene-color");
                 imageButton.getImage().setColor(simLabel.color == null ? Color.WHITE : simLabel.color.color);
                 popTable.add(imageButton).minWidth(100);
-                imageButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageButton.addListener(new TextTooltip("Select the color of the Label.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageButton.addListener(handListener);
+                imageButton.addListener(new TextTooltip("Select the color of the Label.", tooltipManager, skin, "scene"));
                 imageButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         popTable.hide();
-                        DialogSceneComposer.main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+                        dialogFactory.showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                             if (!pressedCancel) {
                                 events.labelColor(colorData);
                             }
@@ -184,7 +185,7 @@ public class LabelListeners {
                 });
                 
                 popTable.row();
-                label = new Label(simLabel.color == null ? "white" : simLabel.color.getName(), DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label(simLabel.color == null ? "white" : simLabel.color.getName(), skin, "scene-label-colored");
                 popTable.add(label);
             }
         };
@@ -196,7 +197,7 @@ public class LabelListeners {
     
     public static EventListener labelTextAlignmentListener(final DialogSceneComposerEvents events,
                                                            final SimActor simActor) {
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -211,18 +212,18 @@ public class LabelListeners {
                 var table = new Table();
                 popTable.add(table);
                 
-                var label = new Label("Text Alignment:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Text Alignment:", skin, "scene-label-colored");
                 table.add(label).colspan(3);
                 
                 table.row();
                 table.defaults().space(10).left().uniformX();
                 var buttonGroup = new ButtonGroup<ImageTextButton>();
-                var imageTextButton = new ImageTextButton("Top-Left", DialogSceneComposer.skin, "scene-checkbox-colored");
+                var imageTextButton = new ImageTextButton("Top-Left", skin, "scene-checkbox-colored");
                 var topLeft = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the text of the label to the top left.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the text of the label to the top left.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -231,12 +232,12 @@ public class LabelListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Top", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Top", skin, "scene-checkbox-colored");
                 var top = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the text of the label to the top center.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the text of the label to the top center.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -245,12 +246,12 @@ public class LabelListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Top-Right", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Top-Right", skin, "scene-checkbox-colored");
                 var topRight = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the text of the label to the top right.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the text of the label to the top right.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -260,12 +261,12 @@ public class LabelListeners {
                 buttonGroup.add(imageTextButton);
                 
                 table.row();
-                imageTextButton = new ImageTextButton("Left", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Left", skin, "scene-checkbox-colored");
                 var left = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the text of the label to the middle left.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the text of the label to the middle left.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -274,12 +275,12 @@ public class LabelListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Center", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Center", skin, "scene-checkbox-colored");
                 var center = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the text of the label to the center.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the text of the label to the center.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -288,12 +289,12 @@ public class LabelListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Right", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Right", skin, "scene-checkbox-colored");
                 var right = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the text of the label to the middle right.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the text of the label to the middle right.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -303,12 +304,12 @@ public class LabelListeners {
                 buttonGroup.add(imageTextButton);
                 
                 table.row();
-                imageTextButton = new ImageTextButton("Bottom-Left", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Bottom-Left", skin, "scene-checkbox-colored");
                 var bottomLeft = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the text of the label the bottom left.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the text of the label the bottom left.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -317,12 +318,12 @@ public class LabelListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Bottom", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Bottom", skin, "scene-checkbox-colored");
                 var bottom = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the text of the label to the bottom center.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the text of the label to the bottom center.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -331,12 +332,12 @@ public class LabelListeners {
                 });
                 buttonGroup.add(imageTextButton);
                 
-                imageTextButton = new ImageTextButton("Bottom-Right", DialogSceneComposer.skin, "scene-checkbox-colored");
+                imageTextButton = new ImageTextButton("Bottom-Right", skin, "scene-checkbox-colored");
                 var bottomRight = imageTextButton;
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
-                imageTextButton.addListener(DialogSceneComposer.main.getHandListener());
-                imageTextButton.addListener(new TextTooltip("Align the text of the label to the bottom right.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                imageTextButton.addListener(handListener);
+                imageTextButton.addListener(new TextTooltip("Align the text of the label to the bottom right.", tooltipManager, skin, "scene"));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -384,8 +385,8 @@ public class LabelListeners {
     
     public static EventListener labelEllipsisListener(final DialogSceneComposer dialogSceneComposer) {
         var simLabel = (DialogSceneComposerModel.SimLabel) dialogSceneComposer.simActor;
-        var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -398,15 +399,15 @@ public class LabelListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
     
-                var label = new Label("Ellipsis:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Ellipsis:", skin, "scene-label-colored");
                 popTable.add(label);
     
                 popTable.row();
-                var textButton = new TextButton(simLabel.ellipsis ? "TRUE" : "FALSE", DialogSceneComposer.skin, "scene-small");
+                var textButton = new TextButton(simLabel.ellipsis ? "TRUE" : "FALSE", skin, "scene-small");
                 textButton.setChecked(simLabel.ellipsis);
                 popTable.add(textButton).minWidth(100);
-                textButton.addListener(DialogSceneComposer.main.getHandListener());
-                textButton.addListener(new TextTooltip("Whether ellipsis mode is activated.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textButton.addListener(handListener);
+                textButton.addListener(new TextTooltip("Whether ellipsis mode is activated.", tooltipManager, skin, "scene"));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -416,15 +417,15 @@ public class LabelListeners {
                     }
                 });
                 
-                label = new Label("Ellipsis String:", DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label("Ellipsis String:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
                 textField.setDisabled(!textButton.isChecked());
                 textField.setText(simLabel.ellipsisString);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
-                textField.addListener(DialogSceneComposer.main.getIbeamListener());
-                textField.addListener(new TextTooltip("The String to punctuate the label with when the text is too long.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textField.addListener(ibeamListener);
+                textField.addListener(new TextTooltip("The String to punctuate the label with when the text is too long.", tooltipManager, skin, "scene"));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -455,7 +456,7 @@ public class LabelListeners {
     
     public static EventListener labelWrapListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simLabel = (DialogSceneComposerModel.SimLabel) simActor;
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -466,15 +467,15 @@ public class LabelListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Wrap:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Wrap:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
-                var textButton = new TextButton(simLabel.wrap ? "TRUE" : "FALSE", DialogSceneComposer.skin, "scene-small");
+                var textButton = new TextButton(simLabel.wrap ? "TRUE" : "FALSE", skin, "scene-small");
                 textButton.setChecked(simLabel.wrap);
                 popTable.add(textButton).minWidth(100);
-                textButton.addListener(DialogSceneComposer.main.getHandListener());
-                textButton.addListener(new TextTooltip("Whether the Label wraps when the the text exceeds the width of the label.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textButton.addListener(handListener);
+                textButton.addListener(new TextTooltip("Whether the Label wraps when the the text exceeds the width of the label.", tooltipManager, skin, "scene"));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

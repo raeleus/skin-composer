@@ -27,12 +27,14 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.ray3k.skincomposer.Main;
 
+import static com.ray3k.skincomposer.Main.atlasData;
+import static com.ray3k.skincomposer.Main.jsonData;
+
 public class CustomProperty implements Json.Serializable {
     private String name;
     private Object value;
     private CustomStyle parentStyle;
     private PropertyType type;
-    private Main main;
     
     public static enum PropertyType {
         NONE("None"), NUMBER("Number"), TEXT("Text"), RAW_TEXT("Raw Text (JSON)"), DRAWABLE("Drawable"), FONT("Font"), COLOR("Color"), BOOL("Boolean"), STYLE("Style");
@@ -103,14 +105,6 @@ public class CustomProperty implements Json.Serializable {
         this.type = type;
     }
 
-    public Main getMain() {
-        return main;
-    }
-
-    public void setMain(Main main) {
-        this.main = main;
-    }
-
     @Override
     public String toString() {
         return name;
@@ -120,7 +114,6 @@ public class CustomProperty implements Json.Serializable {
         CustomProperty returnValue = new CustomProperty(name, type);
         returnValue.parentStyle = parentStyle;
         returnValue.value = value;
-        returnValue.main = main;
         return returnValue;
     }
 
@@ -140,28 +133,28 @@ public class CustomProperty implements Json.Serializable {
             if (type == PropertyType.TEXT || type == PropertyType.RAW_TEXT || type == PropertyType.STYLE) {
                 writeValue = true;
             } else if (type == PropertyType.COLOR) {
-                for (ColorData data : main.getJsonData().getColors()) {
+                for (ColorData data : jsonData.getColors()) {
                     if (data.getName().equals(value)) {
                         writeValue = true;
                         break;
                     }
                 }
             } else if (type == PropertyType.DRAWABLE) {
-                for (DrawableData data : main.getAtlasData().getDrawables()) {
+                for (DrawableData data : atlasData.getDrawables()) {
                     if (data.name.equals(value)) {
                         writeValue = true;
                         break;
                     }
                 }
             } else if (type == PropertyType.FONT) {
-                for (FontData data : main.getJsonData().getFonts()) {
+                for (FontData data : jsonData.getFonts()) {
                     if (data.getName().equals(value)) {
                         writeValue = true;
                         break;
                     }
                 }
                 
-                for (var data : main.getJsonData().getFreeTypeFonts()) {
+                for (var data : jsonData.getFreeTypeFonts()) {
                     if (data.name.equals(value)) {
                         writeValue = true;
                         break;

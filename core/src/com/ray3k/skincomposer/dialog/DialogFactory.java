@@ -57,16 +57,15 @@ import com.ray3k.skincomposer.dialog.DialogFreeTypeFont.DialogFreeTypeFontListen
 import com.ray3k.skincomposer.dialog.DialogImageFont.ImageFontListener;
 import com.ray3k.skincomposer.dialog.DialogTenPatch.DialogTenPatchListener;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
+import static com.ray3k.skincomposer.Main.*;
 
 public class DialogFactory {
     private static DialogFactory instance;
     private boolean showingCloseDialog;
-    private final Main main;
 
-    public DialogFactory(Main main) {
+    public DialogFactory() {
         instance = this;
         showingCloseDialog = false;
-        this.main = main;
     }
 
     public void showDialogAbout(DialogListener listener) {
@@ -74,24 +73,24 @@ public class DialogFactory {
         if (listener != null) {
             pop.addListener(listener);
         }
-        pop.show(main.getStage());
+        pop.show(stage);
     }
     
     public DialogExport showDialogExport(DialogListener listener) {
-        var dialog = new DialogExport(main);
+        var dialog = new DialogExport();
         if (listener != null) {
             dialog.addListener(listener);
         }
-        dialog.show(main.getStage());
+        dialog.show(stage);
         return dialog;
     }
     
     public DialogImport showDialogImport(DialogListener listener) {
-        var dialog = new DialogImport(main);
+        var dialog = new DialogImport();
         if (listener != null) {
             dialog.addListener(listener);
         }
-        dialog.show(main.getStage());
+        dialog.show(stage);
         return dialog;
     }
     
@@ -102,7 +101,7 @@ public class DialogFactory {
             dialog.addListener(dialogListener);
         }
         dialog.setFillParent(true);
-        dialog.show(main.getStage());
+        dialog.show(stage);
         dialog.refreshTable();
         return dialog;
     }
@@ -113,7 +112,7 @@ public class DialogFactory {
             dialog.addListener(dialogListener);
         }
         dialog.setFillParent(true);
-        dialog.show(main.getStage());
+        dialog.show(stage);
         dialog.refreshTable();
         return dialog;
     }
@@ -141,7 +140,7 @@ public class DialogFactory {
         if (dialogListener != null) {
             dialog.addListener(dialogListener);
         }
-        dialog.show(main.getStage());
+        dialog.show(stage);
         return dialog;
     }
     
@@ -152,7 +151,7 @@ public class DialogFactory {
             dialog.addListener(dialogListener);
         }
         dialog.setFillParent(true);
-        dialog.show(main.getStage());
+        dialog.show(stage);
         return dialog;
     }
 
@@ -181,12 +180,12 @@ public class DialogFactory {
     }
 
     public DialogFonts showDialogFonts(StyleProperty styleProperty, EventListener listener, DialogListener dialogListener) {
-        DialogFonts dialog = new DialogFonts(main, styleProperty, listener);
+        DialogFonts dialog = new DialogFonts(styleProperty, listener);
         if (dialogListener != null) {
             dialog.addListener(dialogListener);
         }
         dialog.setFillParent(true);
-        dialog.show(main.getStage());
+        dialog.show(stage);
         dialog.refreshTable();
         return dialog;
     }
@@ -196,12 +195,12 @@ public class DialogFactory {
     }
     
     public DialogFonts showDialogFonts(CustomProperty customProperty, EventListener listener, DialogListener dialogListener) {
-        DialogFonts dialog = new DialogFonts(main, customProperty, listener);
+        DialogFonts dialog = new DialogFonts(customProperty, listener);
         if (dialogListener != null) {
             dialog.addListener(dialogListener);
         }
         dialog.setFillParent(true);
-        dialog.show(main.getStage());
+        dialog.show(stage);
         dialog.refreshTable();
         return dialog;
     }
@@ -219,7 +218,7 @@ public class DialogFactory {
         if (dialogListener != null) {
             pop.addListener(dialogListener);
         }
-        pop.show(main.getStage());
+        pop.show(stage);
     }
 
     public void showDialogColorPicker(DialogColorPicker.ColorListener listener) {
@@ -228,39 +227,39 @@ public class DialogFactory {
 
     public void showDialogColorPicker(Color previousColor,
             DialogColorPicker.ColorListener listener) {
-        DialogColorPicker dialog = new DialogColorPicker(main, "dialog", listener, previousColor);
-        dialog.show(main.getStage());
+        DialogColorPicker dialog = new DialogColorPicker("dialog", listener, previousColor);
+        dialog.show(stage);
     }
 
     public void showNewStyleDialog(Skin skin, Stage stage) {
-        Class selectedClass = main.getRootTable().getSelectedClass();
+        Class selectedClass = rootTable.getSelectedClass();
 
         final TextField textField = new TextField("", skin);
         Dialog dialog = new Dialog("New Style", skin, "bg") {
             @Override
             protected void result(Object object) {
                 if ((Boolean) object) {
-                    main.getUndoableManager().addUndoable(new NewStyleUndoable(selectedClass, textField.getText(), main), true);
+                    undoableManager.addUndoable(new NewStyleUndoable(selectedClass, textField.getText(), main), true);
                 }
             }
         };
         dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("OK", true).button("Cancel", false);
-        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
-        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().first().getActor().addListener(handListener);
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
         final TextButton okButton = (TextButton) dialog.getButtonTable().getCells().get(0).getActor();
 
         textField.setTextFieldListener((TextField textField1, char c) -> {
             if (c == '\n') {
                 if (!okButton.isDisabled()) {
-                    main.getUndoableManager().addUndoable(new NewStyleUndoable(selectedClass, textField1.getText(), main), true);
+                    undoableManager.addUndoable(new NewStyleUndoable(selectedClass, textField1.getText(), main), true);
                     dialog.hide();
                 }
-                main.getStage().setKeyboardFocus(textField1);
+                stage.setKeyboardFocus(textField1);
             }
         });
 
-        textField.addListener(main.getIbeamListener());
+        textField.addListener(ibeamListener);
 
         dialog.getTitleLabel().setAlignment(Align.center);
         dialog.getContentTable().defaults().padLeft(10.0f).padRight(10.0f);
@@ -270,7 +269,7 @@ public class DialogFactory {
         dialog.getContentTable().add(textField).growX();
         okButton.setDisabled(true);
 
-        Array<StyleData> currentStyles = main.getProjectData().getJsonData().getClassStyleMap().get(selectedClass);
+        Array<StyleData> currentStyles = projectData.getJsonData().getClassStyleMap().get(selectedClass);
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -297,15 +296,15 @@ public class DialogFactory {
     }
 
     public void showDuplicateStyleDialog(Skin skin, Stage stage) {
-        Class selectedClass = main.getRootTable().getSelectedClass();
-        StyleData originalStyle = main.getRootTable().getSelectedStyle();
+        Class selectedClass = rootTable.getSelectedClass();
+        StyleData originalStyle = rootTable.getSelectedStyle();
 
         final TextField textField = new TextField("", skin);
         Dialog dialog = new Dialog("Duplicate Style", skin, "bg") {
             @Override
             protected void result(Object object) {
                 if ((Boolean) object) {
-                    main.getUndoableManager().addUndoable(new DuplicateStyleUndoable(originalStyle, textField.getText(), main), true);
+                    undoableManager.addUndoable(new DuplicateStyleUndoable(originalStyle, textField.getText(), main), true);
                 }
             }
         };
@@ -313,20 +312,20 @@ public class DialogFactory {
         dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("OK", true).button("Cancel", false);
         final TextButton okButton = (TextButton) dialog.getButtonTable().getCells().get(0).getActor();
-        okButton.addListener(main.getHandListener());
-        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        okButton.addListener(handListener);
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
 
         textField.setTextFieldListener((TextField textField1, char c) -> {
             if (c == '\n') {
                 if (!okButton.isDisabled()) {
-                    main.getUndoableManager().addUndoable(new DuplicateStyleUndoable(originalStyle, textField.getText(), main), true);
+                    undoableManager.addUndoable(new DuplicateStyleUndoable(originalStyle, textField.getText(), main), true);
                     dialog.hide();
                 }
-                main.getStage().setKeyboardFocus(textField1);
+                stage.setKeyboardFocus(textField1);
             }
         });
 
-        textField.addListener(main.getIbeamListener());
+        textField.addListener(ibeamListener);
 
         dialog.getTitleLabel().setAlignment(Align.center);
         dialog.getContentTable().defaults().padLeft(10.0f).padRight(10.0f);
@@ -336,7 +335,7 @@ public class DialogFactory {
         dialog.getContentTable().add(textField).growX();
         okButton.setDisabled(true);
 
-        Array<StyleData> currentStyles = main.getProjectData().getJsonData().getClassStyleMap().get(selectedClass);
+        Array<StyleData> currentStyles = projectData.getJsonData().getClassStyleMap().get(selectedClass);
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -364,13 +363,13 @@ public class DialogFactory {
     }
 
     public void showDeleteStyleDialog(Skin skin, Stage stage) {
-        StyleData styleData = main.getRootTable().getSelectedStyle();
+        StyleData styleData = rootTable.getSelectedStyle();
 
         Dialog dialog = new Dialog("Delete Style", skin, "bg") {
             @Override
             protected void result(Object object) {
                 if ((Boolean) object) {
-                    main.getUndoableManager().addUndoable(new DeleteStyleUndoable(styleData, main), true);
+                    undoableManager.addUndoable(new DeleteStyleUndoable(styleData, main), true);
                 }
             }
         };
@@ -381,8 +380,8 @@ public class DialogFactory {
 
         dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("Yes, delete the style", true).button("No", false);
-        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
-        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().first().getActor().addListener(handListener);
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
 
         dialog.key(Input.Keys.ENTER, true).key(Input.Keys.ESCAPE, false);
 
@@ -390,44 +389,44 @@ public class DialogFactory {
     }
 
     public void showRenameStyleDialog(Skin skin, Stage stage) {
-        Class selectedClass = main.getRootTable().getSelectedClass();
+        Class selectedClass = rootTable.getSelectedClass();
 
-        final TextField textField = new TextField(main.getRootTable().getSelectedStyle().name, skin);
+        final TextField textField = new TextField(rootTable.getSelectedStyle().name, skin);
         Dialog dialog = new Dialog("Rename Style", skin, "bg") {
             @Override
             protected void result(Object object) {
                 if ((Boolean) object) {
-                    main.getUndoableManager().addUndoable(new UndoableManager.RenameStyleUndoable(main.getRootTable().getSelectedStyle(), main, textField.getText()), true);
+                    undoableManager.addUndoable(new UndoableManager.RenameStyleUndoable(rootTable.getSelectedStyle(), main, textField.getText()), true);
                 }
             }
         };
         dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("OK", true).button("Cancel", false);
-        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
-        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().first().getActor().addListener(handListener);
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
         final TextButton okButton = (TextButton) dialog.getButtonTable().getCells().get(0).getActor();
 
         textField.setTextFieldListener((TextField textField1, char c) -> {
             if (c == '\n') {
                 if (!okButton.isDisabled()) {
-                    main.getUndoableManager().addUndoable(new UndoableManager.RenameStyleUndoable(main.getRootTable().getSelectedStyle(), main, textField1.getText()), true);
+                    undoableManager.addUndoable(new UndoableManager.RenameStyleUndoable(rootTable.getSelectedStyle(), main, textField1.getText()), true);
                     dialog.hide();
                 }
-                main.getStage().setKeyboardFocus(textField1);
+                stage.setKeyboardFocus(textField1);
             }
         });
 
-        textField.addListener(main.getIbeamListener());
+        textField.addListener(ibeamListener);
 
         dialog.getTitleLabel().setAlignment(Align.center);
         dialog.getContentTable().defaults().padLeft(10.0f).padRight(10.0f);
-        dialog.text("What would you like to rename the style \"" + main.getRootTable().getSelectedStyle().name + "\" to?");
+        dialog.text("What would you like to rename the style \"" + rootTable.getSelectedStyle().name + "\" to?");
         dialog.getContentTable().getCells().first().pad(10.0f);
         dialog.getContentTable().row();
         dialog.getContentTable().add(textField).growX();
         okButton.setDisabled(true);
 
-        Array<StyleData> currentStyles = main.getProjectData().getJsonData().getClassStyleMap().get(selectedClass);
+        Array<StyleData> currentStyles = projectData.getJsonData().getClassStyleMap().get(selectedClass);
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -474,8 +473,8 @@ public class DialogFactory {
         };
         dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("OK", true).button("Cancel", false);
-        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
-        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().first().getActor().addListener(handListener);
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
         final TextButton okButton = (TextButton) dialog.getButtonTable().getCells().get(0).getActor();
 
         textField.setTextFieldListener((TextField textField1, char c) -> {
@@ -485,11 +484,11 @@ public class DialogFactory {
                     
                     dialog.hide();
                 }
-                main.getStage().setKeyboardFocus(textField1);
+                stage.setKeyboardFocus(textField1);
             }
         });
 
-        textField.addListener(main.getIbeamListener());
+        textField.addListener(ibeamListener);
         if (modifyDrawable != null) {
             textField.setText(modifyDrawable.name);
         }
@@ -512,7 +511,7 @@ public class DialogFactory {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 boolean disable = !StyleData.validate(textField.getText());
 
-                if (main.getAtlasData().getDrawable(textField.getText()) != null) {
+                if (atlasData.getDrawable(textField.getText()) != null) {
                     disable = true;
                 }
 
@@ -562,9 +561,9 @@ public class DialogFactory {
         spinner.setMinimum(-1);
         spinner.setName("minWidth");
         root.add(spinner).width(100);
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         
         root.row();
         label = new Label("minHeight:", skin);
@@ -574,18 +573,18 @@ public class DialogFactory {
         spinner.setMinimum(-1);
         spinner.setName("minHeight");
         root.add(spinner).width(100);
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         
         var textButton = new TextButton("OK", skin);
         dialog.button(textButton, true);
         dialog.getButtonTable().add(textButton).uniform();
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
         textButton = new TextButton("Cancel", skin);
         dialog.button(textButton, false);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
         dialog.show(stage);
     }
@@ -595,12 +594,12 @@ public class DialogFactory {
     }
 
     public Dialog showCloseDialog(DialogListener dialogListener) {
-        if (main.getProjectData().areChangesSaved() || main.getProjectData().isNewProject()) {
+        if (projectData.areChangesSaved() || projectData.isNewProject()) {
             Gdx.app.exit();
         } else {
             if (!showingCloseDialog) {
                 showingCloseDialog = true;
-                Dialog dialog = new Dialog("Save Changes?", main.getSkin(), "bg") {
+                Dialog dialog = new Dialog("Save Changes?", skin, "bg") {
                     @Override
                     public Dialog show(Stage stage, Action action) {
                         fire(new DialogEvent(DialogEvent.Type.OPEN));
@@ -609,8 +608,8 @@ public class DialogFactory {
                     @Override
                     protected void result(Object object) {
                         if ((int) object == 0) {
-                            main.getMainListener().saveFile(() -> {
-                                if (main.getProjectData().areChangesSaved()) {
+                            mainListener.saveFile(() -> {
+                                if (projectData.areChangesSaved()) {
                                     Gdx.app.postRunnable(() -> {
                                         Gdx.app.exit();
                                     });
@@ -630,17 +629,17 @@ public class DialogFactory {
                 }
                 
                 dialog.getTitleTable().getCells().first().padLeft(5.0f);
-                Label label = new Label("Do you want to save\nyour changes before you quit?", main.getSkin());
+                Label label = new Label("Do you want to save\nyour changes before you quit?", skin);
                 label.setAlignment(Align.center);
                 dialog.text(label);
                 dialog.getContentTable().getCells().first().pad(10.0f);
                 dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
                 dialog.button("Yes", 0).button("No", 1).button("Cancel", 2);
-                dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
-                dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
-                dialog.getButtonTable().getCells().get(2).getActor().addListener(main.getHandListener());
+                dialog.getButtonTable().getCells().first().getActor().addListener(handListener);
+                dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
+                dialog.getButtonTable().getCells().get(2).getActor().addListener(handListener);
                 java.awt.Toolkit.getDefaultToolkit().beep();
-                dialog.show(main.getStage());
+                dialog.show(stage);
                 return dialog;
             }
         }
@@ -650,16 +649,16 @@ public class DialogFactory {
 
     public void showDialogLoading(Runnable runnable) {
         DialogLoading dialog = new DialogLoading("", runnable, main);
-        dialog.show(main.getStage());
+        dialog.show(stage);
     }
     
     public void showSceneComposerDialog() {
         DialogSceneComposer dialog = new DialogSceneComposer();
-        dialog.show(main.getStage());
+        dialog.show(stage);
     }
     
     public Dialog showMessageDialog(String title, String text, DialogListener dialogListener) {
-        Dialog dialog = new Dialog(title, main.getSkin(), "bg") {
+        Dialog dialog = new Dialog(title, skin, "bg") {
             @Override
             public Dialog show(Stage stage, Action action) {
                 fire(new DialogEvent(DialogEvent.Type.OPEN));
@@ -676,7 +675,7 @@ public class DialogFactory {
         }
         
         dialog.getTitleTable().getCells().first().padLeft(5.0f);
-        Label label = new Label(text, main.getSkin());
+        Label label = new Label(text, skin);
         label.setAlignment(Align.center);
         dialog.text(label);
         dialog.getContentTable().getCells().first().pad(10.0f);
@@ -685,13 +684,13 @@ public class DialogFactory {
         dialog.key(Input.Keys.ESCAPE, 0);
         dialog.key(Keys.ENTER, 0);
         dialog.key(Keys.SPACE, 0);
-        dialog.show(main.getStage());
+        dialog.show(stage);
         return dialog;
     }
 
     public Dialog yesNoDialog(String title, String text,
             ConfirmationListener listener, DialogListener dialogListener) {
-        Dialog dialog = new Dialog(title, main.getSkin(), "bg") {
+        Dialog dialog = new Dialog(title, skin, "bg") {
             @Override
             public Dialog show(Stage stage, Action action) {
                 fire(new DialogEvent(DialogEvent.Type.OPEN));
@@ -709,25 +708,25 @@ public class DialogFactory {
         }
 
         dialog.getTitleTable().getCells().first().padLeft(5.0f);
-        Label label = new Label(text, main.getSkin());
+        Label label = new Label(text, skin);
         label.setAlignment(Align.center);
         dialog.text(label);
         dialog.getContentTable().getCells().first().pad(10.0f);
         dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("Yes", 0);
         dialog.button("No", 1);
-        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
-        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().first().getActor().addListener(handListener);
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
         dialog.key(Input.Keys.ESCAPE, 1);
         dialog.key(Keys.ENTER, 0);
         dialog.key(Keys.SPACE, 0);
-        dialog.show(main.getStage());
+        dialog.show(stage);
         return dialog;
     }
 
     public Dialog yesNoCancelDialog(String title, String text,
             ConfirmationListener listener, DialogListener dialogListener) {
-        Dialog dialog = new Dialog(title, main.getSkin(), "bg") {
+        Dialog dialog = new Dialog(title, skin, "bg") {
             @Override
             public Dialog show(Stage stage, Action action) {
                 fire(new DialogEvent(DialogEvent.Type.OPEN));
@@ -746,7 +745,7 @@ public class DialogFactory {
 
 
         dialog.getTitleTable().getCells().first().padLeft(5.0f);
-        Label label = new Label(text, main.getSkin());
+        Label label = new Label(text, skin);
         label.setAlignment(Align.center);
         dialog.text(label);
         dialog.getContentTable().getCells().first().pad(10.0f);
@@ -754,18 +753,18 @@ public class DialogFactory {
         dialog.button("Yes", 0);
         dialog.button("No", 1);
         dialog.button("Cancel", 2);
-        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
-        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
-        dialog.getButtonTable().getCells().get(2).getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().first().getActor().addListener(handListener);
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
+        dialog.getButtonTable().getCells().get(2).getActor().addListener(handListener);
         dialog.key(Input.Keys.ESCAPE, 2);
         dialog.key(Keys.ENTER, 0);
         dialog.key(Keys.SPACE, 0);
-        dialog.show(main.getStage());
+        dialog.show(stage);
         return dialog;
     }
     
     public void showInputDialog(String title, String message, String defaultText, InputDialogListener listener) {
-        var dialog = new Dialog(title, main.getSkin(), "bg") {
+        var dialog = new Dialog(title, skin, "bg") {
             @Override
             protected void result(Object object) {
                 if ((Boolean) object) {
@@ -782,31 +781,31 @@ public class DialogFactory {
         root.pad(5);
         
         root.defaults().space(5.0f);
-        var label = new Label(message, main.getSkin());
+        var label = new Label(message, skin);
         root.add(label);
         
         root.row();
-        var textField = new TextField(defaultText, main.getSkin());
+        var textField = new TextField(defaultText, skin);
         textField.setName("textField");
         textField.setSelection(0, textField.getText().length());
         root.add(textField).growX();
-        textField.addListener(main.getIbeamListener());
+        textField.addListener(ibeamListener);
         
         dialog.getButtonTable().pad(5);
         dialog.getButtonTable().defaults().space(5).minWidth(100);
         
-        var button = new TextButton("OK", main.getSkin());
+        var button = new TextButton("OK", skin);
         dialog.button(button, true);
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         
-        button = new TextButton("Cancel", main.getSkin());
+        button = new TextButton("Cancel", skin);
         dialog.button(button, false);
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         
         dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
         
-        dialog.show(main.getStage());
-        main.getStage().setKeyboardFocus(textField);
+        dialog.show(stage);
+        stage.setKeyboardFocus(textField);
     }
     
     public static interface InputDialogListener {
@@ -815,7 +814,7 @@ public class DialogFactory {
     }
 
     public void showDialogError(String title, String message, Runnable runnable) {
-        Dialog dialog = new Dialog(title, main.getSkin(), "bg") {
+        Dialog dialog = new Dialog(title, skin, "bg") {
             @Override
             public boolean remove() {
                 if (runnable != null) {
@@ -828,13 +827,13 @@ public class DialogFactory {
 
         dialog.text(message);
         dialog.button("OK");
-        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
-        dialog.show(main.getStage());
+        dialog.getButtonTable().getCells().first().getActor().addListener(handListener);
+        dialog.show(stage);
     }
 
     public void showDialogError(String title, String message) {
         DialogError dialog = new DialogError(title, message, main);
-        dialog.show(main.getStage());
+        dialog.show(stage);
     }
 
     public static void showDialogErrorStatic(String title, String message) {
@@ -851,74 +850,74 @@ public class DialogFactory {
     public void showNewClassDialog(CustomClassListener listener) {
         DialogCustomClass dialog = new DialogCustomClass(main, "New Custom Class", false);
         dialog.addListener(listener);
-        dialog.show(main.getStage());
+        dialog.show(stage);
     }
     
     public void showRenameClassDialog(CustomClassListener listener) {
-        Object selected = main.getRootTable().getClassSelectBox().getSelected();
+        Object selected = rootTable.getClassSelectBox().getSelected();
         if (selected instanceof CustomClass) {
             DialogCustomClass dialog = new DialogCustomClass(main, "Rename Custom Class", true, 
                     ((CustomClass) selected).getFullyQualifiedName(), 
                     ((CustomClass) selected).getDisplayName(), ((CustomClass) selected).isDeclareAfterUIclasses());
             dialog.addListener(listener);
-            dialog.show(main.getStage());
+            dialog.show(stage);
         }
     }
     
     public void showDuplicateClassDialog(CustomClassListener listener) {
-        Object selected = main.getRootTable().getClassSelectBox().getSelected();
+        Object selected = rootTable.getClassSelectBox().getSelected();
         if (selected instanceof CustomClass) {
             DialogCustomClass dialog = new DialogCustomClass(main, "Duplicate Class", false,
                     ((CustomClass) selected).getFullyQualifiedName(), 
                     ((CustomClass) selected).getDisplayName(), ((CustomClass) selected).isDeclareAfterUIclasses());
             dialog.addListener(listener);
-            dialog.show(main.getStage());
+            dialog.show(stage);
         }
         
     }
 
     public void showNewCustomStyleDialog(CustomStyleListener listener) {
-        DialogCustomStyle dialog = new DialogCustomStyle(main, "New Style", false);
+        DialogCustomStyle dialog = new DialogCustomStyle("New Style", false);
         dialog.addListener(listener);
-        dialog.show(main.getStage());
+        dialog.show(stage);
     }
     
     public void showDuplicateCustomStyleDialog(CustomStyleListener listener) {
-        Object selected = main.getRootTable().getStyleSelectBox().getSelected();
+        Object selected = rootTable.getStyleSelectBox().getSelected();
         if (selected instanceof CustomStyle) {
-            DialogCustomStyle dialog = new DialogCustomStyle(main, "Duplicate Style", false,
+            DialogCustomStyle dialog = new DialogCustomStyle("Duplicate Style", false,
                     ((CustomStyle) selected).getName());
             dialog.addListener(listener);
-            dialog.show(main.getStage());
+            dialog.show(stage);
         }
     }
     
     public void showRenameCustomStyleDialog(CustomStyleListener listener) {
-        Object selected = main.getRootTable().getStyleSelectBox().getSelected();
+        Object selected = rootTable.getStyleSelectBox().getSelected();
         if (selected instanceof CustomStyle) {
-            DialogCustomStyle dialog = new DialogCustomStyle(main, "Rename Style", false,
+            DialogCustomStyle dialog = new DialogCustomStyle("Rename Style", false,
                     ((CustomStyle) selected).getName());
             dialog.addListener(listener);
-            dialog.show(main.getStage());
+            dialog.show(stage);
         }
     }
     
     public void showNewStylePropertyDialog(CustomStylePropertyListener listener) {
-        DialogCustomProperty dialog = new DialogCustomProperty(main, "New Custom Property");
+        DialogCustomProperty dialog = new DialogCustomProperty("New Custom Property");
         dialog.addListener(listener);
-        dialog.show(main.getStage());
+        dialog.show(stage);
     }
     
     public void showRenameStylePropertyDialog(String propertyName, PropertyType propertyType, CustomStylePropertyListener listener) {
-        DialogCustomProperty dialog = new DialogCustomProperty(main, "Rename Custom Property", propertyName, propertyType, true);
+        DialogCustomProperty dialog = new DialogCustomProperty("Rename Custom Property", propertyName, propertyType, true);
         dialog.addListener(listener);
-        dialog.show(main.getStage());
+        dialog.show(stage);
     }
     
     public void showDuplicateStylePropertyDialog(String propertyName, PropertyType propertyType, CustomStylePropertyListener listener) {
-        DialogCustomProperty dialog = new DialogCustomProperty(main, "Duplicate Custom Property", propertyName, propertyType, false);
+        DialogCustomProperty dialog = new DialogCustomProperty("Duplicate Custom Property", propertyName, propertyType, false);
         dialog.addListener(listener);
-        dialog.show(main.getStage());
+        dialog.show(stage);
     }
     
     public void showDialogWelcome(WelcomeListener listener, DialogListener dialogListener) {
@@ -929,56 +928,56 @@ public class DialogFactory {
         }
         
         pop.addListener(listener);
-        pop.show(main.getStage());
+        pop.show(stage);
     }
     
     public void showWarningDialog(Array<String> warnings) {
         DialogWarnings dialog = new DialogWarnings(main, true, warnings);
-        dialog.show(main.getStage());
+        dialog.show(stage);
     }
     
     public void showWarningDialog(boolean showCheckBox, Array<String> warnings) {
         DialogWarnings dialog = new DialogWarnings(main, showCheckBox, warnings);
-        dialog.show(main.getStage());
+        dialog.show(stage);
     }
     
     public void showDialogPathErrors(Array<DrawableData> drawableErrors, Array<FontData> fontErrors, Array<FreeTypeFontData> freeTypeFontErrors) {
-        DialogPathErrors dialog = new DialogPathErrors(main, main.getSkin(), "dialog", drawableErrors, fontErrors, freeTypeFontErrors);
-        dialog.show(main.getStage());
+        DialogPathErrors dialog = new DialogPathErrors(main, skin, "dialog", drawableErrors, fontErrors, freeTypeFontErrors);
+        dialog.show(stage);
     }
     
     public void showDialogFreeTypeFont(DialogFreeTypeFontListener listener) {
         DialogFreeTypeFont dialog = new DialogFreeTypeFont(main);
         dialog.addListener(listener);
         dialog.setFillParent(true);
-        dialog.show(main.getStage());
-        main.getStage().setKeyboardFocus(dialog.findActor("fontName"));
-        main.getStage().setScrollFocus(dialog.findActor("scrollPane"));
+        dialog.show(stage);
+        stage.setKeyboardFocus(dialog.findActor("fontName"));
+        stage.setScrollFocus(dialog.findActor("scrollPane"));
     }
     
     public void showDialogFreeTypeFont(FreeTypeFontData data, DialogFreeTypeFontListener listener) {
         DialogFreeTypeFont dialog = new DialogFreeTypeFont(main, data);
         dialog.addListener(listener);
         dialog.setFillParent(true);
-        dialog.show(main.getStage());
-        main.getStage().setKeyboardFocus(dialog.findActor("fontName"));
-        main.getStage().setScrollFocus(dialog.findActor("scrollPane"));
+        dialog.show(stage);
+        stage.setKeyboardFocus(dialog.findActor("fontName"));
+        stage.setScrollFocus(dialog.findActor("scrollPane"));
     }
     
     public void showDialogImageFont(ImageFontListener imageFontListener) {
-        DialogImageFont dialog = new DialogImageFont(main, imageFontListener);
+        DialogImageFont dialog = new DialogImageFont(imageFontListener);
         dialog.setFillParent(true);
-        dialog.show(main.getStage());
-        main.getStage().setKeyboardFocus(dialog.findActor("characters"));
-        main.getStage().setScrollFocus(dialog.findActor("scroll"));
+        dialog.show(stage);
+        stage.setKeyboardFocus(dialog.findActor("characters"));
+        stage.setScrollFocus(dialog.findActor("scroll"));
     }
     
     public void showDialogBitmapFont(DialogBitmapFontListener listener) {
-        DialogBitmapFont dialog = new DialogBitmapFont(main);
+        DialogBitmapFont dialog = new DialogBitmapFont();
         dialog.addListener(listener);
         dialog.setFillParent(true);
-        dialog.show(main.getStage());
-        main.getStage().setScrollFocus(dialog.findActor("scrollPane"));
+        dialog.show(stage);
+        stage.setScrollFocus(dialog.findActor("scrollPane"));
     }
     
     public void showDialogUpdate(Skin skin, Stage stage) {
@@ -994,7 +993,7 @@ public class DialogFactory {
         table.row();
         TextButton textButton = new TextButton("Download Here", skin, "link");
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1005,7 +1004,7 @@ public class DialogFactory {
         dialog.getButtonTable().defaults().minWidth(80.0f);
         textButton = new TextButton("OK", skin);
         dialog.button(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
         dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
         
@@ -1013,20 +1012,20 @@ public class DialogFactory {
     }
     
     public void showDialog9Patch(ObjectMap<DrawableData, Drawable> drawablePairs, Dialog9PatchListener listener) {
-        Dialog9Patch dialog = new Dialog9Patch(main, drawablePairs);
+        Dialog9Patch dialog = new Dialog9Patch(drawablePairs);
         dialog.addDialog9PatchListener(listener);
         dialog.setFillParent(true);
-        dialog.show(main.getStage());
+        dialog.show(stage);
     }
     
     public DialogCustomStyleSelection showDialogCustomStyleSelection(CustomProperty customProperty, DialogListener dialogListener) {
-        var dialog = new DialogCustomStyleSelection(main);
+        var dialog = new DialogCustomStyleSelection();
         dialog.addListener(dialogListener);
-        dialog.show(main.getStage());
+        dialog.show(stage);
         dialog.addListener(new DialogCustomStyleSelection.DialogCustomStyleSelectionListener() {
             @Override
             public void confirmed(String style) {
-                main.getUndoableManager().addUndoable(new UndoableManager.CustomStyleSelectionUndoable(main, customProperty, style), true);
+                undoableManager.addUndoable(new UndoableManager.CustomStyleSelectionUndoable(main, customProperty, style), true);
             }
 
             @Override
@@ -1038,19 +1037,19 @@ public class DialogFactory {
     }
     
     public void showDialogDrawablesFilter(DialogDrawables.FilterOptions filterOptions, EventListener listener) {
-        var dialog = new DialogDrawablesFilter(filterOptions, main);
+        var dialog = new DialogDrawablesFilter(filterOptions);
         dialog.addListener(listener);
-        dialog.show(main.getStage());
+        dialog.show(stage);
     }
     
     public void showDialogTenPatch(DrawableData drawableData, boolean newDrawable, DialogTenPatchListener listener) {
-        DialogTenPatch dialog = new DialogTenPatch(main, drawableData, newDrawable);
+        DialogTenPatch dialog = new DialogTenPatch(drawableData, newDrawable);
         dialog.addListener(listener);
-        dialog.show(main.getStage());
+        dialog.show(stage);
     }
     
     public void showDuplicateDialog(String title, String message, String defaultText, InputDialogListener listener) {
-        var dialog = new Dialog(title, main.getSkin(), "bg") {
+        var dialog = new Dialog(title, skin, "bg") {
             @Override
             protected void result(Object object) {
                 if ((Boolean) object) {
@@ -1067,21 +1066,21 @@ public class DialogFactory {
         root.pad(5);
         
         root.defaults().space(5.0f);
-        var label = new Label(message, main.getSkin());
+        var label = new Label(message, skin);
         root.add(label);
         
         root.row();
-        var textField = new TextField(defaultText, main.getSkin());
+        var textField = new TextField(defaultText, skin);
         textField.setName("textField");
         textField.setSelection(0, textField.getText().length());
         root.add(textField).growX();
-        textField.addListener(main.getIbeamListener());
+        textField.addListener(ibeamListener);
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 TextButton textButton = dialog.findActor("ok-button");
     
-                boolean disable = !DrawableData.validate(textField.getText()) || (main.getAtlasData().checkIfNameExists(textField.getText()));
+                boolean disable = !DrawableData.validate(textField.getText()) || (atlasData.checkIfNameExists(textField.getText()));
                 textButton.setDisabled(disable);
             }
         });
@@ -1089,19 +1088,19 @@ public class DialogFactory {
         dialog.getButtonTable().pad(5);
         dialog.getButtonTable().defaults().space(5).minWidth(100);
         
-        var button = new TextButton("OK", main.getSkin());
+        var button = new TextButton("OK", skin);
         button.setName("ok-button");
         button.setDisabled(true);
         dialog.button(button, true);
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         
-        button = new TextButton("Cancel", main.getSkin());
+        button = new TextButton("Cancel", skin);
         dialog.button(button, false);
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         
         dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
         
-        dialog.show(main.getStage());
-        main.getStage().setKeyboardFocus(textField);
+        dialog.show(stage);
+        stage.setKeyboardFocus(textField);
     }
 }

@@ -2,29 +2,27 @@ package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
-import com.ray3k.skincomposer.StageResizeListener;
 import com.ray3k.stripe.PopTable;
 
-import static com.ray3k.skincomposer.Main.main;
+import static com.ray3k.skincomposer.Main.*;
 
 public class PopWelcome extends PopTable {
     private float resetWidth, resetHeight;
     private ScrollPane scrollPane;
     
     public PopWelcome() {
-        super(main.getSkin(), "dialog");
+        super(skin, "dialog");
     
         setKeepCenteredInWindow(true);
         setModal(true);
         setHideOnUnfocus(true);
         
         Button button = new Button(getSkin(), "close");
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -37,7 +35,7 @@ public class PopWelcome extends PopTable {
         Table table = new Table();
         table.pad(10.0f).padTop(0.0f);
         table.defaults().space(10.0f);
-        scrollPane = new ScrollPane(table, main.getSkin());
+        scrollPane = new ScrollPane(table, skin);
         scrollPane.setFadeScrollBars(false);
         scrollPane.setFlickScroll(false);
         scrollPane.setScrollingDisabled(true, false);
@@ -51,7 +49,7 @@ public class PopWelcome extends PopTable {
         
         subTable.row();
         ImageButton imageButton = new ImageButton(getSkin(), "thumb-video");
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -79,7 +77,7 @@ public class PopWelcome extends PopTable {
         organizerTable.add(subTable);
         
         imageButton = new ImageButton(getSkin(), "thumb-scene2d");
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -97,7 +95,7 @@ public class PopWelcome extends PopTable {
         organizerTable.add(subTable);
         
         imageButton = new ImageButton(getSkin(), "thumb-vis-ui");
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -129,7 +127,7 @@ public class PopWelcome extends PopTable {
         organizerTable.add(subTable);
         
         imageButton = new ImageButton(getSkin(), "thumb-plain-james");
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -148,7 +146,7 @@ public class PopWelcome extends PopTable {
         organizerTable.add(subTable);
         
         imageButton = new ImageButton(getSkin(), "thumb-neon");
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -167,7 +165,7 @@ public class PopWelcome extends PopTable {
         organizerTable.add(subTable);
         
         imageButton = new ImageButton(getSkin(), "thumb-neutralizer");
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -183,9 +181,9 @@ public class PopWelcome extends PopTable {
         subTable.add(label);
         
         row();
-        final ImageTextButton checkBox = new ImageTextButton("Do not show again", main.getSkin(), "checkbox");
-        checkBox.setChecked(!main.getProjectData().isAllowingWelcome());
-        checkBox.addListener(main.getHandListener());
+        final ImageTextButton checkBox = new ImageTextButton("Do not show again", skin, "checkbox");
+        checkBox.setChecked(!projectData.isAllowingWelcome());
+        checkBox.addListener(handListener);
         checkBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -217,7 +215,7 @@ public class PopWelcome extends PopTable {
         
         resetWidth = getWidth();
         resetHeight = getHeight();
-        main.getStage().setScrollFocus(scrollPane);
+        stage.setScrollFocus(scrollPane);
         fire(new DialogEvent(DialogEvent.Type.OPEN));
     }
     
@@ -239,7 +237,7 @@ public class PopWelcome extends PopTable {
         
         resetWidth = getWidth();
         resetHeight = getHeight();
-        main.getStage().setScrollFocus(scrollPane);
+        stage.setScrollFocus(scrollPane);
         fire(new DialogEvent(DialogEvent.Type.OPEN));
     }
     

@@ -39,6 +39,8 @@ import com.ray3k.skincomposer.utils.Utils;
 
 import java.util.Iterator;
 
+import static com.ray3k.skincomposer.Main.*;
+
 public class ProjectData implements Json.Serializable {
     private static Preferences generalPref;
     private ObjectMap<String, Object> preferences;
@@ -46,7 +48,6 @@ public class ProjectData implements Json.Serializable {
     private boolean changesSaved;
     private boolean newProject;
     private static final int MAX_RECENT_FILES = 5;
-    private Main main;
     private final JsonData jsonData;
     private final AtlasData atlasData;
     private String loadedVersion;
@@ -109,11 +110,6 @@ public class ProjectData implements Json.Serializable {
         preferences = new ObjectMap<>();
         generalPref = Gdx.app.getPreferences("com.ray3k.skincomposer");
         clear();
-    }
-
-    public void setMain(Main main) {
-        this.main = main;
-        atlasData.setMain(main);
     }
     
     public int getId() {
@@ -188,7 +184,7 @@ public class ProjectData implements Json.Serializable {
             }
             generalPref.flush();
     
-            main.getRootTable().updateRecentFiles();
+            rootTable.updateRecentFiles();
         }
     }
     
@@ -362,7 +358,7 @@ public class ProjectData implements Json.Serializable {
     public void makeResourcesRelative(FileHandle saveFile) {
         FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
         
-        for (DrawableData drawableData : main.getAtlasData().getDrawables()) {
+        for (DrawableData drawableData : atlasData.getDrawables()) {
             if (drawableData.file != null && drawableData.file.exists() && !targetFolder.equals(drawableData.file.parent())) {
                 targetFolder.mkdirs();
                 drawableData.file.copyTo(targetFolder);
@@ -370,7 +366,7 @@ public class ProjectData implements Json.Serializable {
             }
         }
         
-        for (DrawableData drawableData : main.getAtlasData().getFontDrawables()) {
+        for (DrawableData drawableData : atlasData.getFontDrawables()) {
             if (drawableData.file.exists() && !targetFolder.equals(drawableData.file.parent())) {
                 targetFolder.mkdirs();
                 drawableData.file.copyTo(targetFolder);
@@ -378,14 +374,14 @@ public class ProjectData implements Json.Serializable {
             }
         }
         
-        for (FontData fontData : main.getJsonData().getFonts()) {
+        for (FontData fontData : jsonData.getFonts()) {
             if (fontData.file.exists() && !targetFolder.equals(fontData.file.parent())) {
                 fontData.file.copyTo(targetFolder);
                 fontData.file = targetFolder.child(fontData.file.name());
             }
         }
         
-        for (FreeTypeFontData fontData : main.getJsonData().getFreeTypeFonts()) {
+        for (FreeTypeFontData fontData : jsonData.getFreeTypeFonts()) {
             if (fontData.file != null && fontData.file.exists() && !targetFolder.equals(fontData.file.parent())) {
                 fontData.file.copyTo(targetFolder);
                 fontData.file = targetFolder.child(fontData.file.name());
@@ -400,7 +396,7 @@ public class ProjectData implements Json.Serializable {
     public void save(FileHandle file) {
         moveImportedFiles(saveFile, file);
         
-        if (main.getProjectData().areResourcesRelative()) {
+        if (projectData.areResourcesRelative()) {
             makeResourcesRelative(file);
         }
         
@@ -419,16 +415,11 @@ public class ProjectData implements Json.Serializable {
         newProject = instance.newProject;
         jsonData.set(instance.jsonData);
         for (FreeTypeFontData font : jsonData.getFreeTypeFonts()) {
-            font.createBitmapFont(main);
+            font.createBitmapFont();
         }
         atlasData.set(instance.atlasData);
         preferences.clear();
         preferences.putAll(instance.preferences);
-        
-        //set main for custom classes, styles, and properties
-        for (CustomClass customClass : jsonData.getCustomClasses()) {
-            customClass.setMain(main);
-        }
         
         saveFile = file;
         putRecentFile(file.path());
@@ -439,8 +430,8 @@ public class ProjectData implements Json.Serializable {
         correctFilePaths();
         
         if (verifyDrawablePaths().size == 0 && verifyFontPaths().size == 0) {
-            main.getAtlasData().produceAtlas();
-            main.getRootTable().populate();
+            atlasData.produceAtlas();
+            rootTable.populate();
         }
         setChangesSaved(true);
     }
@@ -553,7 +544,7 @@ public class ProjectData implements Json.Serializable {
     private void correctFilePaths() {
         FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
         
-        boolean resourcesRelative = main.getProjectData().areResourcesRelative();
+        boolean resourcesRelative = projectData.areResourcesRelative();
         
         if (targetFolder.exists()) {
             for (DrawableData drawableData : atlasData.getDrawables()) {
@@ -601,10 +592,8 @@ public class ProjectData implements Json.Serializable {
         saveFile = null;
         DialogSceneComposerModel.rootActor = null;
         
-        if (main != null) {
-            main.getAtlasData().produceAtlas();
-            main.getRootTable().populate();
-        }
+        if (Main.atlasData != null) atlasData.produceAtlas();
+        if (rootTable != null) rootTable.populate();
         setChangesSaved(false);
         newProject = true;
     }

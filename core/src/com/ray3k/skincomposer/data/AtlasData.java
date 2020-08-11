@@ -49,11 +49,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 
+import static com.ray3k.skincomposer.Main.*;
+
 public class AtlasData implements Json.Serializable {
     public boolean atlasCurrent = false;
     private Array<DrawableData> drawables;
     private Array<DrawableData> fontDrawables;
-    private Main main;
     private TextureAtlas atlas;
     public ObjectMap<DrawableData, Drawable> drawablePairs;
     
@@ -61,10 +62,6 @@ public class AtlasData implements Json.Serializable {
         drawables = new Array<>();
         fontDrawables = new Array<>();
         drawablePairs = new ObjectMap<>();
-    }
-
-    public void setMain(Main main) {
-        this.main = main;
     }
     
     public void clear() {
@@ -107,12 +104,12 @@ public class AtlasData implements Json.Serializable {
     
     public void readAtlas(FileHandle fileHandle) throws Exception {
         if (fileHandle.exists()) {
-            FileHandle saveFile = main.getProjectData().getSaveFile();
+            FileHandle saveFile = projectData.getSaveFile();
             FileHandle targetDirectory;
             if (saveFile != null) {
                 targetDirectory = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
             } else {
-                targetDirectory = Main.appFolder.child("temp/" + main.getProjectData().getId() + "_data/");
+                targetDirectory = Main.appFolder.child("temp/" + projectData.getId() + "_data/");
             }
             
             targetDirectory.mkdirs();
@@ -192,9 +189,9 @@ public class AtlasData implements Json.Serializable {
                 }
                 
                 //delete drawables with the same name
-                for (DrawableData originalData : new Array<>(main.getProjectData().getAtlasData().getDrawables())) {
+                for (DrawableData originalData : new Array<>(projectData.getAtlasData().getDrawables())) {
                     if (originalData.name.equals(drawable.name)) {
-                        main.getProjectData().getAtlasData().getDrawables().removeValue(originalData, true);
+                        projectData.getAtlasData().getDrawables().removeValue(originalData, true);
                     }
                 }
                     
@@ -208,7 +205,7 @@ public class AtlasData implements Json.Serializable {
     }
     
     public Array<String> writeAtlas(FileHandle settingsFile) throws Exception {
-        return writeAtlas(Main.appFolder.child("temp/" + main.getProjectData().getId() + ".atlas"), settingsFile);
+        return writeAtlas(Main.appFolder.child("temp/" + projectData.getId() + ".atlas"), settingsFile);
     }
     
     public Array<String> writeAtlas(FileHandle targetFile, FileHandle settingsFile) throws Exception {
@@ -233,7 +230,7 @@ public class AtlasData implements Json.Serializable {
                 files.add(drawable.file);
             }
             
-            if (!main.getProjectData().resourceExists(drawable.file)) {
+            if (!projectData.resourceExists(drawable.file)) {
                 warnings.add("[RED]ERROR:[] Drawable file [BLACK]" + drawable.file + "[] does not exist.");
             }
         }
@@ -244,19 +241,19 @@ public class AtlasData implements Json.Serializable {
                     files.add(drawable.file);
                 }
 
-                if (!main.getProjectData().resourceExists(drawable.file)) {
+                if (!projectData.resourceExists(drawable.file)) {
                     warnings.add("[RED]ERROR:[] Drawable file [BLACK]" + drawable.file + "[] does not exist.");
                 }
             }
         }
         
-        main.getDesktopWorker().texturePack(files, main.getProjectData().getSaveFile(), targetFile, settingsFile);
+        desktopWorker.texturePack(files, projectData.getSaveFile(), targetFile, settingsFile);
         return warnings;
     }
     
     public TextureAtlas getAtlas() {
         TextureAtlas atlas = null;
-        FileHandle atlasFile = Main.appFolder.child("temp/" + main.getProjectData().getId() + ".atlas");
+        FileHandle atlasFile = Main.appFolder.child("temp/" + projectData.getId() + ".atlas");
         if (atlasFile.exists()) {
             atlas = new TextureAtlas(atlasFile);
         }
@@ -368,23 +365,23 @@ public class AtlasData implements Json.Serializable {
         try {
             drawablePairs.clear();
             
-            if (!main.getAtlasData().atlasCurrent) {
+            if (!atlasData.atlasCurrent) {
                 if (atlas != null) {
                     atlas.dispose();
                     atlas = null;
                 }
                 FileHandle defaultsFile = Main.appFolder.child("texturepacker/atlas-internal-settings.json");
-                main.getAtlasData().writeAtlas(defaultsFile);
-                main.getAtlasData().atlasCurrent = true;
+                atlasData.writeAtlas(defaultsFile);
+                atlasData.atlasCurrent = true;
                 
                 //clear all regions in any tenPatchData
-                for (var data : main.getAtlasData().getDrawables()) {
+                for (var data : atlasData.getDrawables()) {
                     if (data.tenPatchData != null) {
                         data.tenPatchData.regions = null;
                     }
                 }
             }
-            atlas = main.getAtlasData().getAtlas();
+            atlas = atlasData.getAtlas();
             
             var combined = new Array<>(getDrawables());
             combined.addAll(getFontDrawables());
@@ -392,7 +389,7 @@ public class AtlasData implements Json.Serializable {
             for (DrawableData data : combined) {
                 Drawable drawable;
                 if (data.customized) {
-                    drawable = main.getSkin().getDrawable("custom");
+                    drawable = skin.getDrawable("custom");
                 } else if (data.tenPatchData != null) {
                     var region = atlas.findRegion(DrawableData.proper(data.file.name()));
                     drawable = new TenPatchDrawable(data.tenPatchData.horizontalStretchAreas.toArray(),
@@ -411,11 +408,11 @@ public class AtlasData implements Json.Serializable {
                     
                     if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
                     if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
-                    if (data.tenPatchData.colorName != null) ((TenPatchDrawable) drawable).setColor(main.getJsonData().getColorByName(data.tenPatchData.colorName).color);
-                    if (data.tenPatchData.color1Name != null) ((TenPatchDrawable) drawable).setColor1(main.getJsonData().getColorByName(data.tenPatchData.color1Name).color);
-                    if (data.tenPatchData.color2Name != null) ((TenPatchDrawable) drawable).setColor2(main.getJsonData().getColorByName(data.tenPatchData.color2Name).color);
-                    if (data.tenPatchData.color3Name != null) ((TenPatchDrawable) drawable).setColor3(main.getJsonData().getColorByName(data.tenPatchData.color3Name).color);
-                    if (data.tenPatchData.color4Name != null) ((TenPatchDrawable) drawable).setColor4(main.getJsonData().getColorByName(data.tenPatchData.color4Name).color);
+                    if (data.tenPatchData.colorName != null) ((TenPatchDrawable) drawable).setColor(jsonData.getColorByName(data.tenPatchData.colorName).color);
+                    if (data.tenPatchData.color1Name != null) ((TenPatchDrawable) drawable).setColor1(jsonData.getColorByName(data.tenPatchData.color1Name).color);
+                    if (data.tenPatchData.color2Name != null) ((TenPatchDrawable) drawable).setColor2(jsonData.getColorByName(data.tenPatchData.color2Name).color);
+                    if (data.tenPatchData.color3Name != null) ((TenPatchDrawable) drawable).setColor3(jsonData.getColorByName(data.tenPatchData.color3Name).color);
+                    if (data.tenPatchData.color4Name != null) ((TenPatchDrawable) drawable).setColor4(jsonData.getColorByName(data.tenPatchData.color4Name).color);
                     ((TenPatchDrawable) drawable).setOffsetX(data.tenPatchData.offsetX);
                     ((TenPatchDrawable) drawable).setOffsetY(data.tenPatchData.offsetY);
                     ((TenPatchDrawable) drawable).setOffsetXspeed(data.tenPatchData.offsetXspeed);
@@ -435,7 +432,7 @@ public class AtlasData implements Json.Serializable {
                     drawable = new TiledDrawable(atlas.findRegion(name));
                     drawable.setMinWidth(data.minWidth);
                     drawable.setMinHeight(data.minHeight);
-                    ((TiledDrawable) drawable).getColor().set(main.getJsonData().getColorByName(data.tintName).color);
+                    ((TiledDrawable) drawable).getColor().set(jsonData.getColorByName(data.tintName).color);
                 } else if (Utils.isNinePatch(data.file.name())) {
                     String name = data.file.name();
                     name = DrawableData.proper(name);
@@ -443,7 +440,7 @@ public class AtlasData implements Json.Serializable {
                     if (data.tint != null) {
                         drawable = ((NinePatchDrawable) drawable).tint(data.tint);
                     } else if (data.tintName != null) {
-                        drawable = ((NinePatchDrawable) drawable).tint(main.getJsonData().getColorByName(data.tintName).color);
+                        drawable = ((NinePatchDrawable) drawable).tint(jsonData.getColorByName(data.tintName).color);
                     }
                     if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
                     if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
@@ -454,7 +451,7 @@ public class AtlasData implements Json.Serializable {
                     if (data.tint != null) {
                         drawable = ((SpriteDrawable) drawable).tint(data.tint);
                     } else if (data.tintName != null) {
-                        drawable = ((SpriteDrawable) drawable).tint(main.getJsonData().getColorByName(data.tintName).color);
+                        drawable = ((SpriteDrawable) drawable).tint(jsonData.getColorByName(data.tintName).color);
                     }
                     if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
                     if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
@@ -465,7 +462,7 @@ public class AtlasData implements Json.Serializable {
             return true;
         } catch (Exception e) {
             Gdx.app.error(getClass().getName(), "Error while attempting to generate drawables.", e);
-            main.getDialogFactory().showDialogError("Atlas Error...","Error while attempting to generate drawables.\n\nOpen log?");
+            dialogFactory.showDialogError("Atlas Error...","Error while attempting to generate drawables.\n\nOpen log?");
             return false;
         }
     }

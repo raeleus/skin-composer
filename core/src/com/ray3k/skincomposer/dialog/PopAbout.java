@@ -11,12 +11,12 @@ import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.stripe.PopTable;
 
-import static com.ray3k.skincomposer.Main.main;
+import static com.ray3k.skincomposer.Main.handListener;
+import static com.ray3k.skincomposer.Main.skin;
 
 public class PopAbout extends PopTable {
     public PopAbout() {
-        super(main.getSkin(), "dialog");
-        var skin = main.getSkin();
+        super(skin, "dialog");
         
         setKeepCenteredInWindow(true);
         setModal(true);
@@ -33,7 +33,7 @@ public class PopAbout extends PopTable {
         add(label).padBottom(0);
         row();
         var button = new TextButton("github.com/raeleus/skin-composer", skin, "link");
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -45,7 +45,7 @@ public class PopAbout extends PopTable {
         row();
         var textButton = new TextButton("Close", skin);
         add(textButton).padBottom(20);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

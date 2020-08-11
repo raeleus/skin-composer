@@ -16,19 +16,15 @@ import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer.View;
 import com.ray3k.skincomposer.dialog.scenecomposer.undoables.SceneComposerUndoable;
-import com.ray3k.skincomposer.utils.Utils;
 
-import java.lang.StringBuilder;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.ray3k.skincomposer.Main.*;
 import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer.dialog;
-import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer.skin;
 
 public class DialogSceneComposerModel {
-    private transient Main main;
     public transient Array<SceneComposerUndoable> undoables;
     public transient Array<SceneComposerUndoable> redoables;
     public static SimRootGroup rootActor;
@@ -90,7 +86,6 @@ public class DialogSceneComposerModel {
         undoables = new Array<>();
         redoables = new Array<>();
         preview = new Stack();
-        main = Main.main;
     
         json = new Json();
         json.setSerializer(ColorData.class, new Json.Serializer<>() {
@@ -101,7 +96,7 @@ public class DialogSceneComposerModel {
 
             @Override
             public ColorData read(Json json, JsonValue jsonData, Class type) {
-                return Main.main.getJsonData().getColorByName(jsonData.asString());
+                return Main.jsonData.getColorByName(jsonData.asString());
             }
         });
         json.setSerializer(DrawableData.class, new Json.Serializer<>() {
@@ -112,7 +107,7 @@ public class DialogSceneComposerModel {
 
             @Override
             public DrawableData read(Json json, JsonValue jsonData, Class type) {
-                return Main.main.getAtlasData().getDrawable(jsonData.asString());
+                return Main.atlasData.getDrawable(jsonData.asString());
             }
         });
         json.setSerializer(StyleData.class, new Json.Serializer<>() {
@@ -127,7 +122,7 @@ public class DialogSceneComposerModel {
             @Override
             public StyleData read(Json json, JsonValue jsonData, Class type) {
                 try {
-                    return Main.main.getJsonData().findStyle(ClassReflection.forName(jsonData.getString("clazz")), jsonData.getString("name"));
+                    return Main.jsonData.findStyle(ClassReflection.forName(jsonData.getString("clazz")), jsonData.getString("name"));
                 } catch (ReflectionException e) {
                     e.printStackTrace();
                     return null;
@@ -178,10 +173,10 @@ public class DialogSceneComposerModel {
                 try {
                     var style = (StyleData) field.get(simActor);
                     if (style != null) {
-                        StyleData foundStyle = main.getJsonData().findStyle(style.clazz, style.name);
-                        if (foundStyle == null) foundStyle = main.getJsonData().findStyle(style.clazz, "default");
+                        StyleData foundStyle = jsonData.findStyle(style.clazz, style.name);
+                        if (foundStyle == null) foundStyle = jsonData.findStyle(style.clazz, "default");
                         if (foundStyle == null)
-                            foundStyle = main.getJsonData().findStyle(style.clazz, "default-horizontal");
+                            foundStyle = jsonData.findStyle(style.clazz, "default-horizontal");
                         field.set(simActor, foundStyle);
                     }
                 } catch (ReflectionException e) {
@@ -191,7 +186,7 @@ public class DialogSceneComposerModel {
                 try {
                     var drawable = (DrawableData) field.get(simActor);
                     if (drawable != null) {
-                        var foundDrawable = main.getAtlasData().getDrawable(drawable.name);
+                        var foundDrawable = atlasData.getDrawable(drawable.name);
                         field.set(simActor, foundDrawable);
                     }
                 } catch (ReflectionException e) {
@@ -230,11 +225,11 @@ public class DialogSceneComposerModel {
             redoables.add(undoable);
             
             undoable.undo();
-            var fadeLabel = new FadeLabel(undoable.getUndoString(), main.getSkin(), "scene-edit-tip");
+            var fadeLabel = new FadeLabel(undoable.getUndoString(), skin, "scene-edit-tip");
             temp.set(dialog.previewTable.getWidth() / 2, dialog.previewTable.getHeight() / 2);
             dialog.previewTable.localToStageCoordinates(temp);
             fadeLabel.setPosition(temp.x - (int) fadeLabel.getWidth() / 2, temp.y - (int) fadeLabel.getHeight() / 2);
-            main.getStage().addActor(fadeLabel);
+            stage.addActor(fadeLabel);
         }
     }
     
@@ -306,7 +301,7 @@ public class DialogSceneComposerModel {
     
     private void createEditWidgets() {
         if (dialog.simActor.parent != null) {
-            var edit = new EditWidget(main.getSkin(), "scene-select-back");
+            var edit = new EditWidget(skin, "scene-select-back");
             edit.setFillParent(true);
             edit.setSimActorTarget(dialog.simActor.parent);
             preview.add(edit);
@@ -314,19 +309,19 @@ public class DialogSceneComposerModel {
         
         if (dialog.simActor instanceof SimRootGroup) {
             var simGroup = (SimRootGroup) dialog.simActor;
-            var edit = new EditWidget(main.getSkin(), "scene-selection");
+            var edit = new EditWidget(skin, "scene-selection");
             edit.setFillParent(true);
             edit.setSimActorTarget(dialog.simActor.parent);
             preview.add(edit);
     
             if (simGroup.children.size > 0) {
-                edit = new EditWidget(main.getSkin(), "scene-selector");
+                edit = new EditWidget(skin, "scene-selector");
                 edit.setFillParent(true);
                 edit.setSimActorTarget(simGroup.children.peek());
                 preview.add(edit);
             }
         } else if (dialog.simActor instanceof SimTable) {
-            var edit = new EditWidget(main.getSkin(), "scene-selection");
+            var edit = new EditWidget(skin, "scene-selection");
             edit.setFollowActor(dialog.simActor.previewActor);
             edit.setSimActorTarget(dialog.simActor.parent);
             preview.add(edit);
@@ -336,7 +331,7 @@ public class DialogSceneComposerModel {
                 var table = (Table) simTable.previewActor;
                 var cell = findCell(table, simCell.row, simCell.column);
                 
-                edit = new EditWidget(main.getSkin(), "scene-selector");
+                edit = new EditWidget(skin, "scene-selector");
                 edit.setCell(cell);
                 edit.setSimActorTarget(simCell);
                 preview.add(edit);
@@ -346,19 +341,19 @@ public class DialogSceneComposerModel {
             var table = (Table) ((SimTable) simCell.parent).previewActor;
             var cell = findCell(table, simCell.row, simCell.column);
             
-            var edit = new EditWidget(main.getSkin(), "scene-selection");
+            var edit = new EditWidget(skin, "scene-selection");
             edit.setCell(cell);
             edit.setSimActorTarget(dialog.simActor.parent);
             preview.add(edit);
             
             if (simCell.child != null) {
-                edit = new EditWidget(main.getSkin(), "scene-selector");
+                edit = new EditWidget(skin, "scene-selector");
                 edit.setFollowActor(simCell.child.previewActor);
                 edit.setSimActorTarget(simCell.child);
                 preview.add(edit);
             }
         }  else if (dialog.simActor.previewActor != null) {
-            var edit = new EditWidget(main.getSkin(), "scene-selection");
+            var edit = new EditWidget(skin, "scene-selection");
             edit.setFollowActor(dialog.simActor.previewActor);
             edit.setSimActorTarget(dialog.simActor.parent);
             preview.add(edit);
@@ -366,7 +361,7 @@ public class DialogSceneComposerModel {
             if (dialog.simActor instanceof SimSingleChild) {
                 var child = ((SimSingleChild) dialog.simActor).getChild();
                 if (child != null) {
-                    edit = new EditWidget(main.getSkin(), "scene-selector");
+                    edit = new EditWidget(skin, "scene-selector");
                     edit.setFollowActor(child.previewActor);
                     edit.setSimActorTarget(child);
                     preview.add(edit);
@@ -376,7 +371,7 @@ public class DialogSceneComposerModel {
             if (dialog.simActor instanceof SimMultipleChildren) {
                 var children = ((SimMultipleChildren) dialog.simActor).getChildren();
                 for (var child : children) {
-                    edit = new EditWidget(main.getSkin(), "scene-selector");
+                    edit = new EditWidget(skin, "scene-selector");
                     edit.setFollowActor(child.previewActor);
                     edit.setSimActorTarget(child);
                     preview.add(edit);
@@ -418,7 +413,7 @@ public class DialogSceneComposerModel {
             table.setName(simTable.name);
         
             if (simTable.background != null) {
-                table.setBackground(main.getAtlasData().getDrawablePairs().get(simTable.background));
+                table.setBackground(atlasData.getDrawablePairs().get(simTable.background));
             }
         
             if (simTable.color != null) {
@@ -475,7 +470,7 @@ public class DialogSceneComposerModel {
         } else if (simActor instanceof SimTextButton) {
             var simTextButton = (SimTextButton) simActor;
             if (simTextButton.style != null && simTextButton.style.hasMandatoryFields()) {
-                var style = main.getRootTable().createPreviewStyle(TextButton.TextButtonStyle.class, simTextButton.style);
+                var style = rootTable.createPreviewStyle(TextButton.TextButtonStyle.class, simTextButton.style);
                 var textButton = new TextButton(simTextButton.text == null ? "" : convertEscapedCharacters(simTextButton.text), style);
                 textButton.setName(simTextButton.name);
                 textButton.setChecked(simTextButton.checked);
@@ -489,7 +484,7 @@ public class DialogSceneComposerModel {
                 if (!MathUtils.isZero(simTextButton.padLeft)) textButton.padTop(simTextButton.padLeft);
                 if (!MathUtils.isZero(simTextButton.padRight)) textButton.padTop(simTextButton.padRight);
                 
-                textButton.addListener(main.getHandListener());
+                textButton.addListener(handListener);
                 actor = textButton;
             } else if (dialog.view == View.EDIT) {
                 var container = new Container();
@@ -499,7 +494,7 @@ public class DialogSceneComposerModel {
         } else if (simActor instanceof SimButton) {
             var simButton = (SimButton) simActor;
             if (simButton.style != null && simButton.style.hasMandatoryFields()) {
-                var style = main.getRootTable().createPreviewStyle(Button.ButtonStyle.class, simButton.style);
+                var style = rootTable.createPreviewStyle(Button.ButtonStyle.class, simButton.style);
                 var button = new Button(style);
                 button.setName(simButton.name);
                 button.setChecked(simButton.checked);
@@ -508,7 +503,7 @@ public class DialogSceneComposerModel {
                     button.setColor(simButton.color.color);
                 }
                 button.pad(simButton.padTop, simButton.padLeft, simButton.padBottom, simButton.padRight);
-                button.addListener(main.getHandListener());
+                button.addListener(handListener);
                 actor = button;
             } else if (dialog.view == View.EDIT) {
                 var container = new Container();
@@ -518,7 +513,7 @@ public class DialogSceneComposerModel {
         }  else if (simActor instanceof SimImageButton) {
             var simImageButton = (SimImageButton) simActor;
             if (simImageButton.style != null && simImageButton.style.hasMandatoryFields()) {
-                var style = main.getRootTable().createPreviewStyle(ImageButton.ImageButtonStyle.class, simImageButton.style);
+                var style = rootTable.createPreviewStyle(ImageButton.ImageButtonStyle.class, simImageButton.style);
                 var imageButton = new ImageButton(style);
                 imageButton.setName(simImageButton.name);
                 imageButton.setChecked(simImageButton.checked);
@@ -532,7 +527,7 @@ public class DialogSceneComposerModel {
                 if (!MathUtils.isZero(simImageButton.padLeft)) imageButton.padTop(simImageButton.padLeft);
                 if (!MathUtils.isZero(simImageButton.padRight)) imageButton.padTop(simImageButton.padRight);
                 
-                imageButton.addListener(main.getHandListener());
+                imageButton.addListener(handListener);
                 actor = imageButton;
             } else if (dialog.view == View.EDIT) {
                 var container = new Container();
@@ -542,7 +537,7 @@ public class DialogSceneComposerModel {
         } else if (simActor instanceof SimImageTextButton) {
             var simImageTextButton = (SimImageTextButton) simActor;
             if (simImageTextButton.style != null && simImageTextButton.style.hasMandatoryFields()) {
-                var style = main.getRootTable().createPreviewStyle(ImageTextButton.ImageTextButtonStyle.class, simImageTextButton.style);
+                var style = rootTable.createPreviewStyle(ImageTextButton.ImageTextButtonStyle.class, simImageTextButton.style);
                 var imageTextButton = new ImageTextButton(simImageTextButton.text == null ? "" : convertEscapedCharacters(simImageTextButton.text), style);
                 imageTextButton.setName(simImageTextButton.name);
                 imageTextButton.setChecked(simImageTextButton.checked);
@@ -556,7 +551,7 @@ public class DialogSceneComposerModel {
                 if (!MathUtils.isZero(simImageTextButton.padLeft)) imageTextButton.padTop(simImageTextButton.padLeft);
                 if (!MathUtils.isZero(simImageTextButton.padRight)) imageTextButton.padTop(simImageTextButton.padRight);
                 
-                imageTextButton.addListener(main.getHandListener());
+                imageTextButton.addListener(handListener);
                 actor = imageTextButton;
             } else if (dialog.view == View.EDIT) {
                 var container = new Container();
@@ -566,7 +561,7 @@ public class DialogSceneComposerModel {
         } else if (simActor instanceof SimCheckBox) {
             var simCheckBox = (SimCheckBox) simActor;
             if (simCheckBox.style != null && simCheckBox.style.hasMandatoryFields()) {
-                var style = main.getRootTable().createPreviewStyle(CheckBox.CheckBoxStyle.class, simCheckBox.style);
+                var style = rootTable.createPreviewStyle(CheckBox.CheckBoxStyle.class, simCheckBox.style);
                 var checkBox = new CheckBox(simCheckBox.text == null ? "" : convertEscapedCharacters(simCheckBox.text), style);
                 checkBox.setName(simCheckBox.name);
                 checkBox.setChecked(simCheckBox.checked);
@@ -580,7 +575,7 @@ public class DialogSceneComposerModel {
                 if (!MathUtils.isZero(simCheckBox.padLeft)) checkBox.padTop(simCheckBox.padLeft);
                 if (!MathUtils.isZero(simCheckBox.padRight)) checkBox.padTop(simCheckBox.padRight);
                 
-                checkBox.addListener(main.getHandListener());
+                checkBox.addListener(handListener);
                 actor = checkBox;
             } else if (dialog.view == View.EDIT) {
                 var container = new Container();
@@ -590,7 +585,7 @@ public class DialogSceneComposerModel {
         } else if (simActor instanceof SimImage) {
             var simImage = (SimImage) simActor;
             if (simImage.drawable != null) {
-                var image = new Image(main.getAtlasData().getDrawablePairs().get(simImage.drawable));
+                var image = new Image(atlasData.getDrawablePairs().get(simImage.drawable));
                 image.setScaling(simImage.scaling);
                 actor = image;
             } else if (dialog.view == View.EDIT) {
@@ -601,7 +596,7 @@ public class DialogSceneComposerModel {
         } else if (simActor instanceof SimLabel) {
             var simLabel = (SimLabel) simActor;
             if (simLabel.style != null && simLabel.style.hasMandatoryFields()) {
-                var style = main.getRootTable().createPreviewStyle(Label.LabelStyle.class, simLabel.style);
+                var style = rootTable.createPreviewStyle(Label.LabelStyle.class, simLabel.style);
                 var label = new Label(simLabel.text == null ? "" : convertEscapedCharacters(simLabel.text), style);
                 label.setName(simLabel.name);
                 label.setAlignment(simLabel.textAlignment);
@@ -619,7 +614,7 @@ public class DialogSceneComposerModel {
         } else if (simActor instanceof SimList) {
             var simList = (SimList) simActor;
             if (simList.style != null && simList.style.hasMandatoryFields()) {
-                var style = main.getRootTable().createPreviewStyle(List.ListStyle.class, simList.style);
+                var style = rootTable.createPreviewStyle(List.ListStyle.class, simList.style);
                 var list = new List<String>(style);
                 list.setName(simList.name);
                 var newList = new Array<String>();
@@ -627,7 +622,7 @@ public class DialogSceneComposerModel {
                     newList.add(convertEscapedCharacters(item));
                 }
                 list.setItems(newList);
-                list.addListener(main.getHandListener());
+                list.addListener(handListener);
                 actor = list;
             } else if (dialog.view == View.EDIT) {
                 var container = new Container();
@@ -637,7 +632,7 @@ public class DialogSceneComposerModel {
         } else if (simActor instanceof SimProgressBar) {
             var sim = (SimProgressBar) simActor;
             if (sim.style != null && sim.style.hasMandatoryFields()) {
-                var style = main.getRootTable().createPreviewStyle(ProgressBar.ProgressBarStyle.class, sim.style);
+                var style = rootTable.createPreviewStyle(ProgressBar.ProgressBarStyle.class, sim.style);
                 var progressBar = new ProgressBar(sim.minimum, sim.maximum, sim.increment, sim.vertical, style);
                 progressBar.setName(sim.name);
                 progressBar.setDisabled(sim.disabled);
@@ -655,7 +650,7 @@ public class DialogSceneComposerModel {
         } else if (simActor instanceof SimSelectBox) {
             var sim = (SimSelectBox) simActor;
             if (sim.list.size > 0 && sim.style != null && sim.style.hasMandatoryFields()) {
-                var style = main.getRootTable().createPreviewStyle(SelectBox.SelectBoxStyle.class, sim.style);
+                var style = rootTable.createPreviewStyle(SelectBox.SelectBoxStyle.class, sim.style);
                 var selectBox = new SelectBox<String>(style);
                 selectBox.setName(sim.name);
                 selectBox.setDisabled(sim.disabled);
@@ -668,8 +663,8 @@ public class DialogSceneComposerModel {
                 selectBox.setAlignment(sim.alignment);
                 selectBox.setSelectedIndex(sim.selected);
                 selectBox.setScrollingDisabled(sim.scrollingDisabled);
-                selectBox.addListener(main.getHandListener());
-                selectBox.getList().addListener(main.getHandListener());
+                selectBox.addListener(handListener);
+                selectBox.getList().addListener(handListener);
                 actor = selectBox;
             } else if (dialog.view == View.EDIT) {
                 var container = new Container();
@@ -679,7 +674,7 @@ public class DialogSceneComposerModel {
         } else if (simActor instanceof SimSlider) {
             var sim = (SimSlider) simActor;
             if (sim.style != null && sim.style.hasMandatoryFields()) {
-                var style = main.getRootTable().createPreviewStyle(Slider.SliderStyle.class, sim.style);
+                var style = rootTable.createPreviewStyle(Slider.SliderStyle.class, sim.style);
                 var slider = new Slider(sim.minimum, sim.maximum, sim.increment, sim.vertical, style);
                 slider.setName(sim.name);
                 slider.setDisabled(sim.disabled);
@@ -697,7 +692,7 @@ public class DialogSceneComposerModel {
         } else if (simActor instanceof SimTextField) {
             var sim = (SimTextField) simActor;
             if (sim.style != null && sim.style.hasMandatoryFields()) {
-                var style = main.getRootTable().createPreviewStyle(TextField.TextFieldStyle.class, sim.style);
+                var style = rootTable.createPreviewStyle(TextField.TextFieldStyle.class, sim.style);
                 var textField = new TextField(sim.text == null ? "" : convertEscapedCharacters(sim.text), style);
                 textField.setName(sim.name);
                 textField.setPasswordCharacter(sim.passwordCharacter);
@@ -713,7 +708,7 @@ public class DialogSceneComposerModel {
                 textField.setFocusTraversal(sim.focusTraversal);
                 textField.setMaxLength(sim.maxLength);
                 textField.setMessageText(sim.messageText);
-                textField.addListener(main.getIbeamListener());
+                textField.addListener(ibeamListener);
                 actor = textField;
             } else if (dialog.view == View.EDIT) {
                 var container = new Container();
@@ -723,7 +718,7 @@ public class DialogSceneComposerModel {
         } else if (simActor instanceof SimTextArea) {
             var sim = (SimTextArea) simActor;
             if (sim.style != null && sim.style.hasMandatoryFields()) {
-                var style = main.getRootTable().createPreviewStyle(TextField.TextFieldStyle.class, sim.style);
+                var style = rootTable.createPreviewStyle(TextField.TextFieldStyle.class, sim.style);
                 var textArea = new TextArea(sim.text == null ? "" : convertEscapedCharacters(sim.text), style);
                 textArea.setName(sim.name);
                 textArea.setPasswordCharacter(sim.passwordCharacter);
@@ -740,7 +735,7 @@ public class DialogSceneComposerModel {
                 textArea.setMaxLength(sim.maxLength);
                 textArea.setMessageText(sim.messageText);
                 textArea.setPrefRows(sim.preferredRows);
-                textArea.addListener(main.getIbeamListener());
+                textArea.addListener(ibeamListener);
                 actor = textArea;
             } else if (dialog.view == View.EDIT) {
                 var container = new Container();
@@ -750,7 +745,7 @@ public class DialogSceneComposerModel {
         } else if (simActor instanceof SimTouchPad) {
             var sim = (SimTouchPad) simActor;
             if (sim.style != null && sim.style.hasMandatoryFields()) {
-                var style = main.getRootTable().createPreviewStyle(Touchpad.TouchpadStyle.class, sim.style);
+                var style = rootTable.createPreviewStyle(Touchpad.TouchpadStyle.class, sim.style);
                 var touchPad = new Touchpad(sim.deadZone, style);
                 touchPad.setResetOnTouchUp(sim.resetOnTouchUp);
                 actor = touchPad;
@@ -764,7 +759,7 @@ public class DialogSceneComposerModel {
             var container = new Container();
             container.align(sim.alignment);
             if (sim.background != null) {
-                container.setBackground(main.getAtlasData().drawablePairs.get(sim.background));
+                container.setBackground(atlasData.drawablePairs.get(sim.background));
             }
             container.fill(sim.fillX, sim.fillY);
             if (sim.minWidth > 0) container.minWidth(sim.minWidth);
@@ -811,7 +806,7 @@ public class DialogSceneComposerModel {
         } else if (simActor instanceof SimScrollPane) {
             var sim = (SimScrollPane) simActor;
             if (sim.style != null && sim.style.hasMandatoryFields() && !sim.style.hasAllNullFields()) {
-                var style = main.getRootTable().createPreviewStyle(ScrollPane.ScrollPaneStyle.class, sim.style);
+                var style = rootTable.createPreviewStyle(ScrollPane.ScrollPaneStyle.class, sim.style);
                 var scrollPane = new ScrollPane(createPreviewWidget(sim.child), style);
                 scrollPane.setName(sim.name);
                 scrollPane.setFadeScrollBars(sim.fadeScrollBars);
@@ -852,7 +847,7 @@ public class DialogSceneComposerModel {
         } else if (simActor instanceof SimSplitPane) {
             var sim = (SimSplitPane) simActor;
             if (sim.style != null && sim.style.hasMandatoryFields()) {
-                var style = main.getRootTable().createPreviewStyle(SplitPane.SplitPaneStyle.class, sim.style);
+                var style = rootTable.createPreviewStyle(SplitPane.SplitPaneStyle.class, sim.style);
                 var splitPane = new SplitPane(createPreviewWidget(sim.childFirst), createPreviewWidget(sim.childSecond), sim.vertical, style);
                 splitPane.setName(sim.name);
                 splitPane.setSplitAmount(sim.split);
@@ -867,7 +862,7 @@ public class DialogSceneComposerModel {
         } else if (simActor instanceof SimTree) {
             var sim = (SimTree) simActor;
             if (sim.style != null && sim.style.hasMandatoryFields()) {
-                var style = main.getRootTable().createPreviewStyle(Tree.TreeStyle.class, sim.style);
+                var style = rootTable.createPreviewStyle(Tree.TreeStyle.class, sim.style);
                 var tree = new Tree(style);
                 tree.setName(sim.name);
                 tree.setPadding(sim.padLeft, sim.padRight);
@@ -887,7 +882,7 @@ public class DialogSceneComposerModel {
                     node.setActor(container);
                     tree.add(node);
                 }
-                tree.addListener(main.getHandListener());
+                tree.addListener(handListener);
                 actor = tree;
             } else if (dialog.view == View.EDIT) {
                 var container = new Container();
@@ -943,7 +938,7 @@ public class DialogSceneComposerModel {
             Actor actor = createPreviewWidget(simNode.actor == null  && dialog.view == View.EDIT ? new SimActor() : simNode.actor);
             if (actor == null) return null;
             node.setActor(actor);
-            if (simNode.icon != null) node.setIcon(main.getAtlasData().drawablePairs.get(simNode.icon));
+            if (simNode.icon != null) node.setIcon(atlasData.drawablePairs.get(simNode.icon));
             node.setSelectable(simNode.selectable);
             for (var child : simNode.nodes) {
                 Tree.Node newNode = createPreviewNode(child);
@@ -1368,7 +1363,7 @@ public class DialogSceneComposerModel {
         }
     
         public SimButton() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            var styles = Main.jsonData.getClassStyleMap().get(Button.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -1386,7 +1381,7 @@ public class DialogSceneComposerModel {
         public void reset() {
             name = null;
             style = null;
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Button.class);
+            var styles = Main.jsonData.getClassStyleMap().get(Button.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -1457,7 +1452,7 @@ public class DialogSceneComposerModel {
         }
     
         public SimCheckBox() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(CheckBox.class);
+            var styles = Main.jsonData.getClassStyleMap().get(CheckBox.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -1475,7 +1470,7 @@ public class DialogSceneComposerModel {
         public void reset() {
             name = null;
             style = null;
-            var styles = Main.main.getJsonData().getClassStyleMap().get(CheckBox.class);
+            var styles = Main.jsonData.getClassStyleMap().get(CheckBox.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -1595,7 +1590,7 @@ public class DialogSceneComposerModel {
         }
     
         public SimImageButton() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(ImageButton.class);
+            var styles = Main.jsonData.getClassStyleMap().get(ImageButton.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -1676,7 +1671,7 @@ public class DialogSceneComposerModel {
         }
     
         public SimImageTextButton() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(ImageTextButton.class);
+            var styles = Main.jsonData.getClassStyleMap().get(ImageTextButton.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -1754,7 +1749,7 @@ public class DialogSceneComposerModel {
         }
     
         public SimLabel() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Label.class);
+            var styles = Main.jsonData.getClassStyleMap().get(Label.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -1772,7 +1767,7 @@ public class DialogSceneComposerModel {
         public void reset() {
             name = null;
             style = null;
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Label.class);
+            var styles = Main.jsonData.getClassStyleMap().get(Label.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -1828,7 +1823,7 @@ public class DialogSceneComposerModel {
         }
     
         public SimList() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(List.class);
+            var styles = Main.jsonData.getClassStyleMap().get(List.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -1849,7 +1844,7 @@ public class DialogSceneComposerModel {
             touchable = Touchable.enabled;
             visible = true;
             
-            var styles = Main.main.getJsonData().getClassStyleMap().get(List.class);
+            var styles = Main.jsonData.getClassStyleMap().get(List.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -1916,7 +1911,7 @@ public class DialogSceneComposerModel {
         }
     
         public SimProgressBar() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(ProgressBar.class);
+            var styles = Main.jsonData.getClassStyleMap().get(ProgressBar.class);
             for (var style : styles) {
                 if (style.name.equals("default-horizontal")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -1947,7 +1942,7 @@ public class DialogSceneComposerModel {
             touchable = Touchable.enabled;
             visible = true;
     
-            var styles = Main.main.getJsonData().getClassStyleMap().get(ProgressBar.class);
+            var styles = Main.jsonData.getClassStyleMap().get(ProgressBar.class);
             for (var style : styles) {
                 if (style.name.equals("default-horizontal")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -2005,7 +2000,7 @@ public class DialogSceneComposerModel {
         }
     
         public SimSelectBox() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(SelectBox.class);
+            var styles = Main.jsonData.getClassStyleMap().get(SelectBox.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -2032,7 +2027,7 @@ public class DialogSceneComposerModel {
             touchable = Touchable.enabled;
             visible = true;
     
-            var styles = Main.main.getJsonData().getClassStyleMap().get(SelectBox.class);
+            var styles = Main.jsonData.getClassStyleMap().get(SelectBox.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -2098,7 +2093,7 @@ public class DialogSceneComposerModel {
         }
     
         public SimSlider() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Slider.class);
+            var styles = Main.jsonData.getClassStyleMap().get(Slider.class);
             for (var style : styles) {
                 if (style.name.equals("default-horizontal")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -2129,7 +2124,7 @@ public class DialogSceneComposerModel {
             touchable = Touchable.enabled;
             visible = true;
     
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Slider.class);
+            var styles = Main.jsonData.getClassStyleMap().get(Slider.class);
             for (var style : styles) {
                 if (style.name.equals("default-horizontal")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -2191,7 +2186,7 @@ public class DialogSceneComposerModel {
         }
     
         public SimTextButton() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(TextButton.class);
+            var styles = Main.jsonData.getClassStyleMap().get(TextButton.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -2210,7 +2205,7 @@ public class DialogSceneComposerModel {
             name = null;
             text = null;
             style = null;
-            var styles = Main.main.getJsonData().getClassStyleMap().get(TextButton.class);
+            var styles = Main.jsonData.getClassStyleMap().get(TextButton.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -2288,7 +2283,7 @@ public class DialogSceneComposerModel {
         }
     
         public SimTextField() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(TextField.class);
+            var styles = Main.jsonData.getClassStyleMap().get(TextField.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -2321,7 +2316,7 @@ public class DialogSceneComposerModel {
             touchable = Touchable.enabled;
             visible = true;
     
-            var styles = Main.main.getJsonData().getClassStyleMap().get(TextField.class);
+            var styles = Main.jsonData.getClassStyleMap().get(TextField.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -2393,7 +2388,7 @@ public class DialogSceneComposerModel {
         }
     
         public SimTextArea() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(TextField.class);
+            var styles = Main.jsonData.getClassStyleMap().get(TextField.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -2427,7 +2422,7 @@ public class DialogSceneComposerModel {
             touchable = Touchable.enabled;
             visible = true;
     
-            var styles = Main.main.getJsonData().getClassStyleMap().get(TextField.class);
+            var styles = Main.jsonData.getClassStyleMap().get(TextField.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -2476,7 +2471,7 @@ public class DialogSceneComposerModel {
         }
     
         public SimTouchPad() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Touchpad.class);
+            var styles = Main.jsonData.getClassStyleMap().get(Touchpad.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -2498,7 +2493,7 @@ public class DialogSceneComposerModel {
             resetOnTouchUp = true;
             touchable = Touchable.enabled;
     
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Touchpad.class);
+            var styles = Main.jsonData.getClassStyleMap().get(Touchpad.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -2796,7 +2791,7 @@ public class DialogSceneComposerModel {
         }
     
         public SimScrollPane() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(ScrollPane.class);
+            var styles = Main.jsonData.getClassStyleMap().get(ScrollPane.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -2838,7 +2833,7 @@ public class DialogSceneComposerModel {
             touchable = Touchable.enabled;
             visible = true;
     
-            var styles = Main.main.getJsonData().getClassStyleMap().get(ScrollPane.class);
+            var styles = Main.jsonData.getClassStyleMap().get(ScrollPane.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -2977,7 +2972,7 @@ public class DialogSceneComposerModel {
         }
     
         public SimSplitPane() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(SplitPane.class);
+            var styles = Main.jsonData.getClassStyleMap().get(SplitPane.class);
             for (var style : styles) {
                 if (style.name.equals("default-horizontal")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -3005,7 +3000,7 @@ public class DialogSceneComposerModel {
             visible = true;
             tempChildren.clear();
     
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Stack.class);
+            var styles = Main.jsonData.getClassStyleMap().get(Stack.class);
             for (var style : styles) {
                 if (style.name.equals("default-horizontal")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -3160,7 +3155,7 @@ public class DialogSceneComposerModel {
         }
     
         public SimTree() {
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Tree.class);
+            var styles = Main.jsonData.getClassStyleMap().get(Tree.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {
@@ -3188,7 +3183,7 @@ public class DialogSceneComposerModel {
             touchable = Touchable.enabled;
             visible = true;
     
-            var styles = Main.main.getJsonData().getClassStyleMap().get(Tree.class);
+            var styles = Main.jsonData.getClassStyleMap().get(Tree.class);
             for (var style : styles) {
                 if (style.name.equals("default")) {
                     if (style.hasMandatoryFields() && !style.hasAllNullFields()) {

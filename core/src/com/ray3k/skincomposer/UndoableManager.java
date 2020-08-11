@@ -31,70 +31,71 @@ import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 
 import java.util.Iterator;
 
+import static com.ray3k.skincomposer.Main.*;
+import static com.ray3k.skincomposer.Main.atlasData;
+
 public class UndoableManager {
     private final Array<Undoable> undoables;
     private int undoIndex;
-    private final Main main;
 
     public UndoableManager(Main main) {
         undoables = new Array<>();
         undoIndex = -1;
-        this.main = main;
     }
     
     public void clearUndoables() {
         undoables.clear();
         undoIndex = -1;
         
-        main.getRootTable().setUndoText("Undo");
-        main.getRootTable().setRedoText("Redo");
+        rootTable.setUndoText("Undo");
+        rootTable.setRedoText("Redo");
         
-        main.getRootTable().setUndoDisabled(true);
-        main.getRootTable().setRedoDisabled(true);
+        rootTable.setUndoDisabled(true);
+        rootTable.setRedoDisabled(true);
         
     }
     
     public void undo() {
         if (undoIndex >= 0 && undoIndex < undoables.size) {
-            main.getProjectData().setChangesSaved(false);
+            projectData.setChangesSaved(false);
             Undoable undoable = undoables.get(undoIndex);
             undoable.undo();
             undoIndex--;
 
             if (undoIndex < 0) {
-                main.getRootTable().setUndoDisabled(true);
-                main.getRootTable().setUndoText("Undo");
+                rootTable.setUndoDisabled(true);
+                rootTable.setUndoText("Undo");
             } else {
-                main.getRootTable().setUndoText("Undo " + undoables.get(undoIndex).getUndoText());
+                rootTable.setUndoText("Undo " + undoables.get(undoIndex).getUndoText());
             }
 
-            main.getRootTable().setRedoDisabled(false);
-            main.getRootTable().setRedoText("Redo " + undoable.getUndoText());
+            rootTable.setRedoDisabled(false);
+            rootTable.setRedoText("Redo " + undoable.getUndoText());
         }
     }
     
     public void redo() {
         if (undoIndex >= -1 && undoIndex < undoables.size) {
-            main.getProjectData().setChangesSaved(false);
+            projectData.setChangesSaved(false);
             if (undoIndex < undoables.size - 1) {
                 undoIndex++;
                 undoables.get(undoIndex).redo();
             }
 
             if (undoIndex >= undoables.size - 1) {
-                main.getRootTable().setRedoDisabled(true);
-                main.getRootTable().setRedoText("Redo");
+                rootTable.setRedoDisabled(true);
+                rootTable.setRedoText("Redo");
             } else {
-                main.getRootTable().setRedoText("Redo " + undoables.get(undoIndex + 1).getUndoText());
+                rootTable.setRedoText("Redo " + undoables.get(undoIndex + 1).getUndoText());
             }
 
-            main.getRootTable().setUndoDisabled(false);
-            main.getRootTable().setUndoText("Undo " + undoables.get(undoIndex).getUndoText());
+            rootTable.setUndoDisabled(false);
+            rootTable.setUndoText("Undo " + undoables.get(undoIndex).getUndoText());
         }
     }
     
     public void addUndoable(Undoable undoable, boolean redoImmediately) {
-        main.getProjectData().setChangesSaved(false);
+        projectData.setChangesSaved(false);
         undoIndex++;
         if (undoIndex <= undoables.size - 1) {
             undoables.removeRange(undoIndex, undoables.size - 1);
@@ -105,13 +106,13 @@ public class UndoableManager {
             undoable.redo();
         }
         
-        main.getRootTable().setUndoDisabled(false);
-        main.getRootTable().setRedoDisabled(true);
-        main.getRootTable().setRedoText("Redo");
-        main.getRootTable().setUndoText("Undo " + undoable.getUndoText());
+        rootTable.setUndoDisabled(false);
+        rootTable.setRedoDisabled(true);
+        rootTable.setRedoText("Redo");
+        rootTable.setUndoText("Undo " + undoable.getUndoText());
         
-        if (undoables.size > main.getProjectData().getMaxUndos()) {
-            int offset = undoables.size - main.getProjectData().getMaxUndos();
+        if (undoables.size > projectData.getMaxUndos()) {
+            int offset = undoables.size - projectData.getMaxUndos();
             
             undoIndex -= offset;
             undoIndex = MathUtils.clamp(undoIndex, -1, undoables.size - 1);
@@ -136,21 +137,21 @@ public class UndoableManager {
             this.main = main;
             
             property.value = newValue;
-            main.getRootTable().refreshPreview();
+            rootTable.refreshPreview();
         }
         
         @Override
         public void undo() {
             property.value = oldValue;
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
         public void redo() {
             property.value = newValue;
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -172,21 +173,21 @@ public class UndoableManager {
             this.main = main;
             
             property.setValue(newValue);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshPreview();
         }
         
         @Override
         public void undo() {
             property.setValue(oldValue);
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
         public void redo() {
             property.setValue(newValue);
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -208,21 +209,21 @@ public class UndoableManager {
             this.main = main;
             
             property.setValue(newValue);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshPreview();
         }
         
         @Override
         public void undo() {
             property.setValue(oldValue);
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
         public void redo() {
             property.setValue(newValue);
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -244,21 +245,21 @@ public class UndoableManager {
             this.main = main;
             
             property.setValue(newValue);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshPreview();
         }
         
         @Override
         public void undo() {
             property.setValue(oldValue);
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
         public void redo() {
             property.setValue(newValue);
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -282,15 +283,15 @@ public class UndoableManager {
         @Override
         public void undo() {
             property.setValue(oldValue);
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
     
         @Override
         public void redo() {
             property.setValue(newValue);
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -315,7 +316,7 @@ public class UndoableManager {
 
         @Override
         public void undo() {
-            Main.main.getAtlasData().produceAtlas();
+            atlasData.produceAtlas();
             if (oldValue == null || atlasData.getDrawable((String) oldValue) != null) {
                 property.value = oldValue;
             }
@@ -325,7 +326,7 @@ public class UndoableManager {
 
         @Override
         public void redo() {
-            Main.main.getAtlasData().produceAtlas();
+            atlasData.produceAtlas();
             if (newValue == null || atlasData.getDrawable((String) newValue) != null) {
                 property.value = newValue;
             }
@@ -354,22 +355,22 @@ public class UndoableManager {
 
         @Override
         public void undo() {
-            main.getAtlasData().produceAtlas();
-            if (oldValue == null || main.getAtlasData().getDrawable(oldValue) != null) {
+            atlasData.produceAtlas();
+            if (oldValue == null || atlasData.getDrawable(oldValue) != null) {
                 property.setValue(oldValue);
             }
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
         public void redo() {
-            Main.main.getAtlasData().produceAtlas();
-            if (newValue == null || main.getAtlasData().getDrawable(newValue) != null) {
+            atlasData.produceAtlas();
+            if (newValue == null || atlasData.getDrawable(newValue) != null) {
                 property.setValue(newValue);
             }
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -448,15 +449,15 @@ public class UndoableManager {
             if (oldValue == null) {
                 property.setValue(oldValue);
             } else {
-                for (ColorData color : main.getJsonData().getColors()) {
+                for (ColorData color : jsonData.getColors()) {
                     if (color.getName().equals((String) oldValue)) {
                         property.setValue(oldValue);
                         break;
                     }
                 }
             }
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -464,15 +465,15 @@ public class UndoableManager {
             if (newValue == null) {
                 property.setValue(newValue);
             } else {
-                for (ColorData color : main.getJsonData().getColors()) {
+                for (ColorData color : jsonData.getColors()) {
                     if (color.getName().equals((String) newValue)) {
                         property.setValue(newValue);
                         break;
                     }
                 }
             }
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -564,22 +565,22 @@ public class UndoableManager {
             if (oldValue == null) {
                 property.setValue(oldValue);
             } else {
-                for (FontData font : main.getJsonData().getFonts()) {
+                for (FontData font : jsonData.getFonts()) {
                     if (font.getName().equals((String) oldValue)) {
                         property.setValue(oldValue);
                         break;
                     }
                 }
                 
-                for (FreeTypeFontData font : main.getJsonData().getFreeTypeFonts()) {
+                for (FreeTypeFontData font : jsonData.getFreeTypeFonts()) {
                     if (font.name.equals((String) oldValue)) {
                         property.setValue(oldValue);
                         break;
                     }
                 }
             }
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
     
         @Override
@@ -587,22 +588,22 @@ public class UndoableManager {
             if (newValue == null) {
                 property.setValue(newValue);
             } else {
-                for (FontData font : main.getJsonData().getFonts()) {
+                for (FontData font : jsonData.getFonts()) {
                     if (font.getName().equals((String) newValue)) {
                         property.setValue(newValue);
                         break;
                     }
                 }
                 
-                for (FreeTypeFontData font : main.getJsonData().getFreeTypeFonts()) {
+                for (FreeTypeFontData font : jsonData.getFreeTypeFonts()) {
                     if (font.name.equals((String) newValue)) {
                         property.setValue(newValue);
                         break;
                     }
                 }
             }
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -698,14 +699,14 @@ public class UndoableManager {
         
         @Override
         public void undo() {
-            main.getJsonData().deleteStyle(styleData);
-            main.getRootTable().refreshStyles(true);
+            jsonData.deleteStyle(styleData);
+            rootTable.refreshStyles(true);
         }
 
         @Override
         public void redo() {
-            styleData = main.getJsonData().newStyle(selectedClass, name);
-            main.getRootTable().refreshStyles(true);
+            styleData = jsonData.newStyle(selectedClass, name);
+            rootTable.refreshStyles(true);
         }
 
         @Override
@@ -728,14 +729,14 @@ public class UndoableManager {
         
         @Override
         public void undo() {
-            main.getJsonData().deleteStyle(styleData);
-            main.getRootTable().refreshStyles(true);
+            jsonData.deleteStyle(styleData);
+            rootTable.refreshStyles(true);
         }
 
         @Override
         public void redo() {
-            styleData = main.getJsonData().copyStyle(originalStyle, name);
-            main.getRootTable().refreshStyles(true);
+            styleData = jsonData.copyStyle(originalStyle, name);
+            rootTable.refreshStyles(true);
         }
 
         @Override
@@ -755,14 +756,14 @@ public class UndoableManager {
 
         @Override
         public void undo() {
-            main.getJsonData().copyStyle(styleData, styleData.name);
-            main.getRootTable().refreshStyles(true);
+            jsonData.copyStyle(styleData, styleData.name);
+            rootTable.refreshStyles(true);
         }
 
         @Override
         public void redo() {
-            main.getJsonData().deleteStyle(styleData);
-            main.getRootTable().refreshStyles(true);
+            jsonData.deleteStyle(styleData);
+            rootTable.refreshStyles(true);
         }
 
         @Override
@@ -789,7 +790,7 @@ public class UndoableManager {
         public void undo() {
             styleData.name = oldName;
             
-            for (Array<StyleData> styles : main.getJsonData().getClassStyleMap().values()) {
+            for (Array<StyleData> styles : jsonData.getClassStyleMap().values()) {
                 for (StyleData style : styles) {
                     for (StyleProperty styleProperty : style.properties.values()) {
                         if (styleProperty.type.equals(Main.basicToStyleClass(styleData.clazz)) && styleProperty.value.equals(newName)) {
@@ -799,15 +800,15 @@ public class UndoableManager {
                 }
             }
             
-            main.getRootTable().refreshStyles(false);
-            main.getRootTable().getStyleSelectBox().setSelected(styleData);
+            rootTable.refreshStyles(false);
+            rootTable.getStyleSelectBox().setSelected(styleData);
         }
 
         @Override
         public void redo() {
             styleData.name = newName;
             
-            for (Array<StyleData> styles : main.getJsonData().getClassStyleMap().values()) {
+            for (Array<StyleData> styles : jsonData.getClassStyleMap().values()) {
                 for (StyleData style : styles) {
                     for (StyleProperty styleProperty : style.properties.values()) {
                         if (styleProperty.type.equals(Main.basicToStyleClass(styleData.clazz)) && styleProperty.value.equals(oldName)) {
@@ -817,8 +818,8 @@ public class UndoableManager {
                 }
             }
             
-            main.getRootTable().refreshStyles(false);
-            main.getRootTable().getStyleSelectBox().setSelected(styleData);
+            rootTable.refreshStyles(false);
+            rootTable.getStyleSelectBox().setSelected(styleData);
             
         }
 
@@ -839,20 +840,19 @@ public class UndoableManager {
             this.main = main;
             customClass = new CustomClass(fullyQualifiedName, displayName);
             customClass.setDeclareAfterUIclasses(declareAfterUIclasses);
-            customClass.setMain(main);
         }
         
         @Override
         public void undo() {
-            main.getJsonData().getCustomClasses().removeValue(customClass, true);
-            main.getRootTable().refreshPreview();
+            jsonData.getCustomClasses().removeValue(customClass, true);
+            rootTable.refreshPreview();
         }
 
         @Override
         public void redo() {
-            main.getJsonData().getCustomClasses().add(customClass);
-            main.getRootTable().refreshClasses(true);
-            main.getRootTable().refreshPreview();
+            jsonData.getCustomClasses().add(customClass);
+            rootTable.refreshClasses(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -876,7 +876,7 @@ public class UndoableManager {
             this.displayName = displayName;
             this.fullyQualifiedName = fullyQualifiedName;
             this.declareAfterUIclasses = declareAfterUIclasses;
-            customClass = (CustomClass) main.getRootTable().getClassSelectBox().getSelected();
+            customClass = (CustomClass) rootTable.getClassSelectBox().getSelected();
             oldName = customClass.getDisplayName();
             oldFullyQualifiedName = customClass.getFullyQualifiedName();
             oldDeclareAfterUIclasses = customClass.isDeclareAfterUIclasses();
@@ -887,8 +887,8 @@ public class UndoableManager {
             customClass.setDisplayName(oldName);
             customClass.setFullyQualifiedName(oldFullyQualifiedName);
             customClass.setDeclareAfterUIclasses(oldDeclareAfterUIclasses);
-            main.getRootTable().refreshClasses(false);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshClasses(false);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -896,8 +896,8 @@ public class UndoableManager {
             customClass.setDisplayName(displayName);
             customClass.setFullyQualifiedName(fullyQualifiedName);
             customClass.setDeclareAfterUIclasses(declareAfterUIclasses);
-            main.getRootTable().refreshClasses(false);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshClasses(false);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -913,21 +913,21 @@ public class UndoableManager {
 
         public DeleteCustomClassUndoable(Main main) {
             this.main = main;
-            customClass = (CustomClass) main.getRootTable().getClassSelectBox().getSelected();
+            customClass = (CustomClass) rootTable.getClassSelectBox().getSelected();
         }
         
         @Override
         public void undo() {
-            main.getJsonData().getCustomClasses().add(customClass);
-            main.getRootTable().refreshClasses(false);
-            main.getRootTable().refreshPreview();
+            jsonData.getCustomClasses().add(customClass);
+            rootTable.refreshClasses(false);
+            rootTable.refreshPreview();
         }
 
         @Override
         public void redo() {
-            main.getJsonData().getCustomClasses().removeValue(customClass, true);
-            main.getRootTable().refreshClasses(false);
-            main.getRootTable().refreshPreview();
+            jsonData.getCustomClasses().removeValue(customClass, true);
+            rootTable.refreshClasses(false);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -944,7 +944,7 @@ public class UndoableManager {
         public DuplicateCustomClassUndoable(Main main, String displayName, String fullyQualifiedName, boolean declareAfterUIclasses) {
             this.main = main;
             
-            Object selected = main.getRootTable().getClassSelectBox().getSelected();
+            Object selected = rootTable.getClassSelectBox().getSelected();
 
             if (selected instanceof CustomClass) {
                 customClass = ((CustomClass) selected).copy();
@@ -956,16 +956,16 @@ public class UndoableManager {
         
         @Override
         public void undo() {
-            main.getJsonData().getCustomClasses().removeValue(customClass, true);
-            main.getRootTable().refreshClasses(true);
-            main.getRootTable().refreshPreview();
+            jsonData.getCustomClasses().removeValue(customClass, true);
+            rootTable.refreshClasses(true);
+            rootTable.refreshPreview();
         }
 
         @Override
         public void redo() {
-            main.getJsonData().getCustomClasses().add(customClass);
-            main.getRootTable().refreshClasses(true);
-            main.getRootTable().refreshPreview();
+            jsonData.getCustomClasses().add(customClass);
+            rootTable.refreshClasses(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -983,8 +983,7 @@ public class UndoableManager {
             this.main = main;
             
             customProperty = new CustomProperty(propertyName, propertyType);
-            customProperty.setMain(main);
-            customClass = (CustomClass) main.getRootTable().getClassSelectBox().getSelected();
+            customClass = (CustomClass) rootTable.getClassSelectBox().getSelected();
             customProperty.setParentStyle(customClass.getTemplateStyle());
         }
         
@@ -1003,8 +1002,8 @@ public class UndoableManager {
                 }
             }
             
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -1016,8 +1015,8 @@ public class UndoableManager {
                 property.setParentStyle(style);
                 style.getProperties().add(property);
             }
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -1027,18 +1026,15 @@ public class UndoableManager {
     }
     
     public static class DuplicateCustomPropertyUndoable implements Undoable {
-        private final Main main;
         private final CustomClass customClass;
         private final CustomProperty customProperty;
 
-        public DuplicateCustomPropertyUndoable(Main main, CustomProperty originalProperty, String propertyName, PropertyType propertyType) {
-            this.main = main;
-            
+        public DuplicateCustomPropertyUndoable(CustomProperty originalProperty, String propertyName, PropertyType propertyType) {
             customProperty = originalProperty.copy();
             customProperty.setName(propertyName);
             customProperty.setType(propertyType);
             
-            customClass = (CustomClass) main.getRootTable().getClassSelectBox().getSelected();
+            customClass = (CustomClass) rootTable.getClassSelectBox().getSelected();
         }
         
         
@@ -1056,8 +1052,8 @@ public class UndoableManager {
                 }
             }
             
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -1068,8 +1064,8 @@ public class UndoableManager {
                 style.getProperties().add(customProperty.copy());
             }
             
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -1092,7 +1088,7 @@ public class UndoableManager {
             
             this.customProperty = customProperty;
             
-            customClass = (CustomClass) main.getRootTable().getClassSelectBox().getSelected();
+            customClass = (CustomClass) rootTable.getClassSelectBox().getSelected();
             
             oldName = customProperty.getName();
             oldType = customProperty.getType();
@@ -1115,8 +1111,8 @@ public class UndoableManager {
                 }
             }
             
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -1134,8 +1130,8 @@ public class UndoableManager {
                 }
             }
 
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -1154,7 +1150,7 @@ public class UndoableManager {
             
             this.customProperty = customProperty;
             
-            customClass = (CustomClass) main.getRootTable().getClassSelectBox().getSelected();
+            customClass = (CustomClass) rootTable.getClassSelectBox().getSelected();
         }
         
         @Override
@@ -1165,8 +1161,8 @@ public class UndoableManager {
                 style.getProperties().add(customProperty.copy());
             }
             
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
         
         @Override
@@ -1184,8 +1180,8 @@ public class UndoableManager {
                 }
             }
             
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -1210,16 +1206,16 @@ public class UndoableManager {
         @Override
         public void undo() {
             parent.getStyles().removeValue(style, true);
-            main.getRootTable().refreshStyles(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyles(true);
+            rootTable.refreshPreview();
         }
 
         @Override
         public void redo() {
             parent.getStyles().add(style);
-            main.getRootTable().getClassSelectBox().setSelected(parent);
-            main.getRootTable().refreshStyles(true);
-            main.getRootTable().refreshPreview();
+            rootTable.getClassSelectBox().setSelected(parent);
+            rootTable.refreshStyles(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -1243,16 +1239,16 @@ public class UndoableManager {
         @Override
         public void undo() {
             style.getParentClass().getStyles().removeValue(style, true);
-            main.getRootTable().refreshStyles(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyles(true);
+            rootTable.refreshPreview();
         }
 
         @Override
         public void redo() {
             style.getParentClass().getStyles().add(style);
-            main.getRootTable().getClassSelectBox().setSelected(style.getParentClass());
-            main.getRootTable().refreshStyles(true);
-            main.getRootTable().refreshPreview();
+            rootTable.getClassSelectBox().setSelected(style.getParentClass());
+            rootTable.refreshStyles(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -1274,16 +1270,16 @@ public class UndoableManager {
         @Override
         public void undo() {
             style.getParentClass().getStyles().add(style);
-            main.getRootTable().getClassSelectBox().setSelected(style.getParentClass());
-            main.getRootTable().refreshStyles(true);
-            main.getRootTable().refreshPreview();
+            rootTable.getClassSelectBox().setSelected(style.getParentClass());
+            rootTable.refreshStyles(true);
+            rootTable.refreshPreview();
         }
 
         @Override
         public void redo() {
             style.getParentClass().getStyles().removeValue(style, true);
-            main.getRootTable().refreshStyles(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyles(true);
+            rootTable.refreshPreview();
         }
 
         @Override
@@ -1309,16 +1305,16 @@ public class UndoableManager {
         public void undo() {
             style.setName(oldName);
             style.getParentClass().getStyles().removeValue(style, true);
-            main.getRootTable().refreshStyles(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyles(true);
+            rootTable.refreshPreview();
         }
 
         @Override
         public void redo() {
             style.setName(name);
-            main.getRootTable().getClassSelectBox().setSelected(style.getParentClass());
-            main.getRootTable().refreshStyles(true);
-            main.getRootTable().refreshPreview();
+            rootTable.getClassSelectBox().setSelected(style.getParentClass());
+            rootTable.refreshStyles(true);
+            rootTable.refreshPreview();
         }
 
         @Override

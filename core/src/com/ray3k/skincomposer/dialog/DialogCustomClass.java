@@ -31,6 +31,7 @@ import com.badlogic.gdx.utils.Align;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.CustomClass;
 import com.ray3k.skincomposer.data.DrawableData;
+import static com.ray3k.skincomposer.Main.*;
 
 public class DialogCustomClass extends Dialog {
     private boolean customNameEntered;
@@ -45,7 +46,7 @@ public class DialogCustomClass extends Dialog {
     }
     
     public DialogCustomClass(Main main, String title, boolean allowSameName, String fullyQualifiedName, String displayName, boolean declareAfterUIclasses) {
-        super(title, main.getSkin(), "bg");
+        super(title, skin, "bg");
         getTitleLabel().setAlignment(Align.center);
         
         this.main = main;
@@ -94,7 +95,7 @@ public class DialogCustomClass extends Dialog {
         classField.setText(fullyQualifiedName);
         classField.addCaptureListener(enterListener);
         classField.selectAll();
-        classField.addListener(main.getIbeamListener());
+        classField.addListener(ibeamListener);
         getContentTable().add(classField).growX().padLeft(10.0f).padRight(10.0f);
         
         getContentTable().row();
@@ -105,7 +106,7 @@ public class DialogCustomClass extends Dialog {
         getContentTable().add(label).pad(10.0f).padTop(0.0f).padBottom(5.0f);
         
         getContentTable().row();
-        displayField = new TextField("", main.getSkin()) {
+        displayField = new TextField("", skin) {
             @Override
             public void next(boolean up) {
                 getStage().setKeyboardFocus(classField);
@@ -114,7 +115,7 @@ public class DialogCustomClass extends Dialog {
         };
         displayField.setText(displayName);
         displayField.addCaptureListener(enterListener);
-        displayField.addListener(main.getIbeamListener());
+        displayField.addListener(ibeamListener);
         getContentTable().add(displayField).growX().padLeft(10.0f).padRight(10.0f);
         
         getContentTable().row();
@@ -122,7 +123,7 @@ public class DialogCustomClass extends Dialog {
         checkBox.setChecked(declareAfterUIclasses);
         checkBox.setName("declareAfterUIcheckBox");
         getContentTable().add(checkBox).padLeft(10.0f).padRight(10.0f).left().padTop(10.0f);
-        checkBox.addListener(main.getHandListener());
+        checkBox.addListener(handListener);
         
         getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         button("OK", true);
@@ -131,7 +132,7 @@ public class DialogCustomClass extends Dialog {
         okButton = (TextButton) getButtonTable().getCells().first().getActor();
         updateOkButton();
         
-        getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        getButtonTable().getCells().get(1).getActor().addListener(handListener);
         
         classField.addListener(new ChangeListener() {
             @Override
@@ -177,7 +178,7 @@ public class DialogCustomClass extends Dialog {
             boolean buttonDisabled = false;
             
             if (!allowSameName || !classField.getText().equals(originalFullyQualifiedName) || !displayField.getText().equals(originalDisplayName)) {
-                for (CustomClass otherClass : main.getJsonData().getCustomClasses()) {
+                for (CustomClass otherClass : jsonData.getCustomClasses()) {
                     if (!allowSameName) {
                         if ((otherClass.getDisplayName().equals(displayField.getText()))
                                 || otherClass.getFullyQualifiedName().equals(classField.getText())) {
@@ -209,13 +210,13 @@ public class DialogCustomClass extends Dialog {
             }
             
             okButton.setDisabled(buttonDisabled);
-            if (!buttonDisabled && !okButton.getListeners().contains(main.getHandListener(), true)) {
-                okButton.addListener(main.getHandListener());
+            if (!buttonDisabled && !okButton.getListeners().contains(handListener, true)) {
+                okButton.addListener(handListener);
             }
         } else {
             okButton.setDisabled(true);
-            if (okButton.getListeners().contains(main.getHandListener(), true)) {
-                okButton.removeListener(main.getHandListener());
+            if (okButton.getListeners().contains(handListener, true)) {
+                okButton.removeListener(handListener);
             }
         }
     }

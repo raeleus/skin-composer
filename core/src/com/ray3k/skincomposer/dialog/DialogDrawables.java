@@ -59,6 +59,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import static com.ray3k.skincomposer.Main.*;
+
 public class DialogDrawables extends Dialog {
     public static DialogDrawables instance;
     private final static int[] sizes = {40, 135, 160, 210, 260};
@@ -87,13 +89,13 @@ public class DialogDrawables extends Dialog {
     }
     
     public DialogDrawables(Main main, StyleProperty property, DialogDrawablesListener listener) {
-        super("", main.getSkin(), "dialog");
+        super("", skin, "dialog");
         this.property = property;
         initialize(main, listener);
     }
     
     public DialogDrawables(Main main, CustomProperty property, DialogDrawablesListener listener) {
-        super("", main.getSkin(), "dialog");
+        super("", skin, "dialog");
         this.customProperty = property;
         initialize(main, listener);
     }
@@ -147,11 +149,11 @@ public class DialogDrawables extends Dialog {
             }
         };
         
-        main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+        desktopWorker.addFilesDroppedListener(filesDroppedListener);
         
         gatherDrawables();
         
-        main.getAtlasData().produceAtlas();
+        atlasData.produceAtlas();
         
         populate();
     }
@@ -160,8 +162,8 @@ public class DialogDrawables extends Dialog {
      * Recreates the drawables array only including visible drawables.
      */
     private void gatherDrawables() {
-        drawables = new Array<>(main.getAtlasData().getDrawables());
-        drawables.addAll(main.getAtlasData().getFontDrawables());
+        drawables = new Array<>(atlasData.getDrawables());
+        drawables.addAll(atlasData.getFontDrawables());
     }
     
     public void populate() {
@@ -185,13 +187,13 @@ public class DialogDrawables extends Dialog {
         button.setName("filter");
         button.setProgrammaticChangeEvents(false);
         table.add(button);
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 var button = (Button) actor;
                 button.setChecked(true);
-                main.getDialogFactory().showDialogDrawablesFilter(filterOptions, new DialogDrawablesFilter.FilterListener() {
+                dialogFactory.showDialogDrawablesFilter(filterOptions, new DialogDrawablesFilter.FilterListener() {
                     @Override
                     public void applied() {
                         sortBySelectedMode();
@@ -222,13 +224,13 @@ public class DialogDrawables extends Dialog {
                 sortBySelectedMode();
             }
         });
-        sortSelectBox.addListener(main.getHandListener());
-        sortSelectBox.getList().addListener(main.getHandListener());
+        sortSelectBox.addListener(handListener);
+        sortSelectBox.getList().addListener(handListener);
         table.add(sortSelectBox);
         
         TextButton textButton = new TextButton("Add...", getSkin());
         table.add(textButton);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new AddClickListener());
         
         table.add(new Label("Zoom:", getSkin())).right().expandX();
@@ -241,7 +243,7 @@ public class DialogDrawables extends Dialog {
                 refreshDrawableDisplay();
             }
         });
-        zoomSlider.addListener(main.getHandListener());
+        zoomSlider.addListener(handListener);
         table.add(zoomSlider);
         
         getContentTable().row();
@@ -262,11 +264,11 @@ public class DialogDrawables extends Dialog {
         if (property != null || customProperty != null) {
             button("Clear Drawable", true);
             button("Cancel", false);
-            getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
-            getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+            getButtonTable().getCells().first().getActor().addListener(handListener);
+            getButtonTable().getCells().get(1).getActor().addListener(handListener);
         } else {
             button("Close", false);
-            getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
+            getButtonTable().getCells().first().getActor().addListener(handListener);
         }
         
         addListener(new InputListener() {
@@ -304,7 +306,7 @@ public class DialogDrawables extends Dialog {
             
             var textButton = new TextButton("Image File", getSkin(), "new");
             table.add(textButton);
-            textButton.addListener(main.getHandListener());
+            textButton.addListener(handListener);
             textButton.addListener(hideListener);
             textButton.addListener(new ChangeListener() {
                 @Override
@@ -318,7 +320,7 @@ public class DialogDrawables extends Dialog {
                 table.row();
                 textButton = new TextButton("Custom Placeholder", getSkin(), "new");
                 table.add(textButton);
-                textButton.addListener(main.getHandListener());
+                textButton.addListener(handListener);
                 textButton.addListener(hideListener);
                 textButton.addListener(new ChangeListener() {
                     @Override
@@ -331,26 +333,26 @@ public class DialogDrawables extends Dialog {
                 table.row();
                 textButton = new TextButton("Create 9-Patch", getSkin(), "new");
                 table.add(textButton);
-                textButton.addListener(main.getHandListener());
+                textButton.addListener(handListener);
                 textButton.addListener(hideListener);
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
-                        main.getDialogFactory().showDialog9Patch(main.getAtlasData().getDrawablePairs(),
+                        desktopWorker.removeFilesDroppedListener(filesDroppedListener);
+                        dialogFactory.showDialog9Patch(atlasData.getDrawablePairs(),
                                 new Dialog9Patch.Dialog9PatchListener() {
                                     @Override
                                     public void fileSaved(FileHandle fileHandle) {
                                         if (fileHandle.exists()) {
                                             drawablesSelected(new Array<>(new FileHandle[]{fileHandle}));
-                                            main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+                                            desktopWorker.addFilesDroppedListener(filesDroppedListener);
                                         }
                                     }
                             
                                     @Override
                                     public void cancelled() {
-                                        main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+                                        desktopWorker.addFilesDroppedListener(filesDroppedListener);
                                     }
                                 });
                     }
@@ -375,7 +377,7 @@ public class DialogDrawables extends Dialog {
         
         if (drawables.size == 0) {
             Label label = new Label("No drawables have been added!", getSkin());
-            if (main.getAtlasData().getDrawables().size > 0) {
+            if (atlasData.getDrawables().size > 0) {
                 label.setText("No drawables match filter!");
             }
             contentTable.add(label);
@@ -403,7 +405,7 @@ public class DialogDrawables extends Dialog {
                         hide();
                     }
                 });
-                drawableButton.addListener(main.getHandListener());
+                drawableButton.addListener(handListener);
             } else {
                 drawableButton = new Button(getSkin(), "color-base-static");
             }
@@ -420,7 +422,7 @@ public class DialogDrawables extends Dialog {
             bg.setBackground(getSkin().getDrawable("white"));
             bg.setColor(drawable.bgColor);
             
-            Image image = new Image(main.getAtlasData().getDrawablePairs().get(drawable));
+            Image image = new Image(atlasData.getDrawablePairs().get(drawable));
             if (MathUtils.isEqual(zoomSlider.getValue(), 1)) {
                 image.setScaling(Scaling.fit);
                 bg.fill(false);
@@ -448,7 +450,7 @@ public class DialogDrawables extends Dialog {
                 //more button
                 var button = new Button(getSkin(),  "more");
                 table.add(button);
-                button.addListener(main.getHandListener());
+                button.addListener(handListener);
                 button.addListener(new MoreClickListener(drawable));
                 //prevent click from activating parent button.
                 button.addListener(new ChangeListener() {
@@ -462,7 +464,7 @@ public class DialogDrawables extends Dialog {
             }
             
             //Tooltip
-            var toolTip = new TextTooltip(drawable.name, main.getTooltipManager(), getSkin());
+            var toolTip = new TextTooltip(drawable.name, tooltipManager, getSkin());
             label.addListener(toolTip);
         }
     }
@@ -474,9 +476,9 @@ public class DialogDrawables extends Dialog {
     
         DrawableData selectedDrawable = null;
         if (property != null) {
-            selectedDrawable = main.getAtlasData().getDrawable((String) property.value);
+            selectedDrawable = atlasData.getDrawable((String) property.value);
         } else if (customProperty != null) {
-            selectedDrawable = main.getAtlasData().getDrawable((String) customProperty.getValue());
+            selectedDrawable = atlasData.getDrawable((String) customProperty.getValue());
         }
         
         for (var drawable : drawables) {
@@ -491,7 +493,7 @@ public class DialogDrawables extends Dialog {
                         hide();
                     }
                 });
-                drawableButton.addListener(main.getHandListener());
+                drawableButton.addListener(handListener);
             } else {
                 drawableButton = new Button(getSkin(), "color-base-static");
             }
@@ -513,7 +515,7 @@ public class DialogDrawables extends Dialog {
                 //more button
                 var button = new Button(getSkin(),  "more");
                 subTable.add(button).right().expandX();
-                button.addListener(main.getHandListener());
+                button.addListener(handListener);
                 button.addListener(new MoreClickListener(drawable));
                 //prevent click from activating parent button.
                 button.addListener(new ChangeListener() {
@@ -533,7 +535,7 @@ public class DialogDrawables extends Dialog {
             bg.setBackground(getSkin().getDrawable("white"));
             bg.setColor(drawable.bgColor);
         
-            image = new Image(main.getAtlasData().getDrawablePairs().get(drawable));
+            image = new Image(atlasData.getDrawablePairs().get(drawable));
             if (MathUtils.isEqual(zoomSlider.getValue(), 1)) {
                 image.setScaling(Scaling.fit);
                 bg.fill(false);
@@ -553,7 +555,7 @@ public class DialogDrawables extends Dialog {
             table.add(label).colspan(6).growX().width(sizes[MathUtils.floor(zoomSlider.getValue())]);
         
             //Tooltip
-            Tooltip toolTip = new TextTooltip(drawable.name, main.getTooltipManager(), getSkin());
+            Tooltip toolTip = new TextTooltip(drawable.name, tooltipManager, getSkin());
             label.addListener(toolTip);
         }
     }
@@ -583,7 +585,7 @@ public class DialogDrawables extends Dialog {
                     button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
-                    button.addListener(main.getHandListener());
+                    button.addListener(handListener);
                     button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
@@ -597,7 +599,7 @@ public class DialogDrawables extends Dialog {
                     button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
-                    button.addListener(main.getHandListener());
+                    button.addListener(handListener);
                     button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
@@ -611,7 +613,7 @@ public class DialogDrawables extends Dialog {
                     button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
-                    button.addListener(main.getHandListener());
+                    button.addListener(handListener);
                     button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
@@ -634,7 +636,7 @@ public class DialogDrawables extends Dialog {
                     button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
-                    button.addListener(main.getHandListener());
+                    button.addListener(handListener);
                     button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
@@ -646,23 +648,23 @@ public class DialogDrawables extends Dialog {
                             drawableData.bgColor = drawable.bgColor;
                             drawableData.tenPatchData = new TenPatchData();
             
-                            main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
-                            main.getDialogFactory().showDialogTenPatch(drawableData, true, new DialogTenPatch.DialogTenPatchListener() {
+                            desktopWorker.removeFilesDroppedListener(filesDroppedListener);
+                            dialogFactory.showDialogTenPatch(drawableData, true, new DialogTenPatch.DialogTenPatchListener() {
                                 @Override
                                 public void selected(DrawableData drawableData) {
-                                    main.getProjectData().getAtlasData().getDrawables().add(drawableData);
-                                    main.getProjectData().setChangesSaved(false);
+                                    projectData.getAtlasData().getDrawables().add(drawableData);
+                                    projectData.setChangesSaved(false);
                                     gatherDrawables();
-                                    main.getAtlasData().produceAtlas();
+                                    atlasData.produceAtlas();
                                     sortBySelectedMode();
                                     getStage().setScrollFocus(scrollPane);
-                                    main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+                                    desktopWorker.addFilesDroppedListener(filesDroppedListener);
                                     refreshDrawableDisplay();
                                 }
                 
                                 @Override
                                 public void cancelled() {
-                                    main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+                                    desktopWorker.addFilesDroppedListener(filesDroppedListener);
                                     refreshDrawableDisplay();
                                 }
                             });
@@ -674,14 +676,14 @@ public class DialogDrawables extends Dialog {
                     button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
-                    button.addListener(main.getHandListener());
+                    button.addListener(handListener);
                     button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                            main.getDialogFactory().showDrawableSettingsDialog(getSkin(), getStage(), drawable, (boolean accepted) -> {
+                            dialogFactory.showDrawableSettingsDialog(getSkin(), getStage(), drawable, (boolean accepted) -> {
                                 if (accepted) {
-                                    main.getAtlasData().produceAtlas();
+                                    atlasData.produceAtlas();
                                     refreshDrawableDisplay();
                                 }
                             });
@@ -694,7 +696,7 @@ public class DialogDrawables extends Dialog {
                     button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
-                    button.addListener(main.getHandListener());
+                    button.addListener(handListener);
                     button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
@@ -702,13 +704,13 @@ public class DialogDrawables extends Dialog {
                             var drawableData = new DrawableData();
                             drawableData.set(drawable);
             
-                            main.getDialogFactory().showDuplicateDialog("Duplicate Tiled Drawable", "Please enter the name of the duplicated drawable", drawable.name, new DialogFactory.InputDialogListener() {
+                            dialogFactory.showDuplicateDialog("Duplicate Tiled Drawable", "Please enter the name of the duplicated drawable", drawable.name, new DialogFactory.InputDialogListener() {
                                 @Override
                                 public void confirmed(String text) {
                                     drawableData.name = text;
-                                    main.getAtlasData().getDrawables().add(drawableData);
+                                    atlasData.getDrawables().add(drawableData);
                                     gatherDrawables();
-                                    main.getAtlasData().produceAtlas();
+                                    atlasData.produceAtlas();
                                     sortBySelectedMode();
                                 }
                 
@@ -725,7 +727,7 @@ public class DialogDrawables extends Dialog {
                     button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
-                    button.addListener(main.getHandListener());
+                    button.addListener(handListener);
                     button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
@@ -741,7 +743,7 @@ public class DialogDrawables extends Dialog {
                     button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
-                    button.addListener(main.getHandListener());
+                    button.addListener(handListener);
                     button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
@@ -749,13 +751,13 @@ public class DialogDrawables extends Dialog {
                             var drawableData = new DrawableData();
                             drawableData.set(drawable);
             
-                            main.getDialogFactory().showDuplicateDialog("Duplicate Tiled Drawable", "Please enter the name of the duplicated drawable", drawable.name, new DialogFactory.InputDialogListener() {
+                            dialogFactory.showDuplicateDialog("Duplicate Tiled Drawable", "Please enter the name of the duplicated drawable", drawable.name, new DialogFactory.InputDialogListener() {
                                 @Override
                                 public void confirmed(String text) {
                                     drawableData.name = text;
-                                    main.getAtlasData().getDrawables().add(drawableData);
+                                    atlasData.getDrawables().add(drawableData);
                                     gatherDrawables();
-                                    main.getAtlasData().produceAtlas();
+                                    atlasData.produceAtlas();
                                     sortBySelectedMode();
                                 }
                 
@@ -772,7 +774,7 @@ public class DialogDrawables extends Dialog {
                     button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
-                    button.addListener(main.getHandListener());
+                    button.addListener(handListener);
                     button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
@@ -787,7 +789,7 @@ public class DialogDrawables extends Dialog {
                     button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
-                    button.addListener(main.getHandListener());
+                    button.addListener(handListener);
                     button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
@@ -803,29 +805,29 @@ public class DialogDrawables extends Dialog {
                     root.add(button);
                     root.row();
                     button.addListener(hideListener);
-                    button.addListener(main.getHandListener());
+                    button.addListener(handListener);
                     button.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
                             var drawableData = new DrawableData(drawable);
             
-                            main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
-                            main.getDialogFactory().showDialogTenPatch(drawableData, false, new DialogTenPatch.DialogTenPatchListener() {
+                            desktopWorker.removeFilesDroppedListener(filesDroppedListener);
+                            dialogFactory.showDialogTenPatch(drawableData, false, new DialogTenPatch.DialogTenPatchListener() {
                                 @Override
                                 public void selected(DrawableData drawableData) {
                                     drawable.set(drawableData);
-                                    main.getProjectData().setChangesSaved(false);
+                                    projectData.setChangesSaved(false);
                                     gatherDrawables();
-                                    main.getAtlasData().produceAtlas();
+                                    atlasData.produceAtlas();
                                     sortBySelectedMode();
                                     getStage().setScrollFocus(scrollPane);
-                                    main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+                                    desktopWorker.addFilesDroppedListener(filesDroppedListener);
                                     refreshDrawableDisplay();
                                 }
                 
                                 @Override
                                 public void cancelled() {
-                                    main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+                                    desktopWorker.addFilesDroppedListener(filesDroppedListener);
                                     refreshDrawableDisplay();
                                 }
                             });
@@ -837,7 +839,7 @@ public class DialogDrawables extends Dialog {
                     button.getLabelCell().expandX().left();
                     root.add(button);
                     root.row();
-                    button.addListener(main.getHandListener());
+                    button.addListener(handListener);
                     button.addListener(hideListener);
                     button.addListener(new ChangeListener() {
                         @Override
@@ -845,13 +847,13 @@ public class DialogDrawables extends Dialog {
                             var drawableData = new DrawableData();
                             drawableData.set(drawable);
             
-                            main.getDialogFactory().showDuplicateDialog("Duplicate Ten Patch Drawable", "Please enter the name of the duplicated ten patch drawable", drawable.name, new DialogFactory.InputDialogListener() {
+                            dialogFactory.showDuplicateDialog("Duplicate Ten Patch Drawable", "Please enter the name of the duplicated ten patch drawable", drawable.name, new DialogFactory.InputDialogListener() {
                                 @Override
                                 public void confirmed(String text) {
                                     drawableData.name = text;
-                                    main.getAtlasData().getDrawables().add(drawableData);
+                                    atlasData.getDrawables().add(drawableData);
                                     gatherDrawables();
-                                    main.getAtlasData().produceAtlas();
+                                    atlasData.produceAtlas();
                                     sortBySelectedMode();
                                 }
                 
@@ -874,13 +876,13 @@ public class DialogDrawables extends Dialog {
                 button.setChecked(drawable.hidden);
                 root.add(button);
                 root.row();
-                button.addListener(main.getHandListener());
+                button.addListener(handListener);
                 button.addListener(hideListener);
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         drawable.hidden = ((ImageTextButton) actor).isChecked();
-                        main.getProjectData().setChangesSaved(false);
+                        projectData.setChangesSaved(false);
     
                         gatherDrawables();
                         sortBySelectedMode();
@@ -898,7 +900,7 @@ public class DialogDrawables extends Dialog {
                         deleteDrawable(drawable);
                     }
                 });
-                button.addListener(main.getHandListener());
+                button.addListener(handListener);
             }
         }
     
@@ -933,7 +935,7 @@ public class DialogDrawables extends Dialog {
                 final TextField textField = new TextField(drawableData.name, getSkin());
                 final TextButton button = new TextButton("OK", getSkin());
                 button.setDisabled(!DrawableData.validate(textField.getText()) || checkIfNameExists(textField.getText()));
-                button.addListener(main.getHandListener());
+                button.addListener(handListener);
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event,
@@ -941,22 +943,22 @@ public class DialogDrawables extends Dialog {
                         button.setDisabled(!DrawableData.validate(textField.getText()) || checkIfNameExists(textField.getText()));
                     }
                 });
-                textField.addListener(main.getIbeamListener());
+                textField.addListener(ibeamListener);
 
                 Dialog approveDialog = new Dialog("TintedDrawable...", getSkin(), "bg") {
                     @Override
                     protected void result(Object object) {
                         if (object instanceof Boolean && (boolean) object) {
                             tintedDrawable.name = textField.getText();
-                            main.getAtlasData().getDrawables().add(tintedDrawable);
-                            main.getProjectData().setChangesSaved(false);
+                            atlasData.getDrawables().add(tintedDrawable);
+                            projectData.setChangesSaved(false);
                         }
                     }
 
                     @Override
                     public boolean remove() {
                         gatherDrawables();
-                        main.getAtlasData().produceAtlas();
+                        atlasData.produceAtlas();
                         sortBySelectedMode();
                         getStage().setScrollFocus(scrollPane);
                         return super.remove();
@@ -968,8 +970,8 @@ public class DialogDrawables extends Dialog {
                         if (keycode2 == Input.Keys.ENTER) {
                             if (!button.isDisabled()) {
                                 tintedDrawable.name = textField.getText();
-                                main.getAtlasData().getDrawables().add(tintedDrawable);
-                                main.getProjectData().setChangesSaved(false);
+                                atlasData.getDrawables().add(tintedDrawable);
+                                projectData.setChangesSaved(false);
                                 approveDialog.hide();
                             }
                         }
@@ -983,7 +985,7 @@ public class DialogDrawables extends Dialog {
 
                 approveDialog.text("What is the name of the new tinted drawable?");
 
-                Drawable drawable = main.getAtlasData().getDrawablePairs().get(drawableData);
+                Drawable drawable = atlasData.getDrawablePairs().get(drawableData);
                 Drawable preview = null;
                 if (drawable instanceof SpriteDrawable) {
                     preview = ((SpriteDrawable) drawable).tint(colorData.color);
@@ -1002,7 +1004,7 @@ public class DialogDrawables extends Dialog {
 
                 approveDialog.button(button, true);
                 approveDialog.button("Cancel", false);
-                approveDialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+                approveDialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
                 approveDialog.key(Input.Keys.ESCAPE, false);
                 approveDialog.show(getStage());
                 getStage().setKeyboardFocus(textField);
@@ -1027,7 +1029,7 @@ public class DialogDrawables extends Dialog {
                     applyTintedDrawableSettings(drawable, textField.getText());
                     drawable.minWidth = ((Spinner) findActor("minWidth")).getValueAsInt();
                     drawable.minHeight = ((Spinner) findActor("minHeight")).getValueAsInt();
-                    main.getAtlasData().produceAtlas();
+                    atlasData.produceAtlas();
                     refreshDrawableDisplay();
                 }
                 getStage().setScrollFocus(scrollPane);
@@ -1054,8 +1056,8 @@ public class DialogDrawables extends Dialog {
         dialog.button("OK", true);
         dialog.button("Cancel", false).key(Keys.ESCAPE, false);
         TextButton okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
-        okButton.addListener(main.getHandListener());
-        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        okButton.addListener(handListener);
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
         
         dialog.getContentTable().row();
         textField.setText(drawable.name);
@@ -1075,7 +1077,7 @@ public class DialogDrawables extends Dialog {
                 }
             }
         });
-        textField.addListener(main.getIbeamListener());
+        textField.addListener(ibeamListener);
         dialog.getContentTable().add(textField);
         
         dialog.getContentTable().row();
@@ -1094,9 +1096,9 @@ public class DialogDrawables extends Dialog {
         spinner.setMinimum(-1);
         spinner.setName("minWidth");
         table.add(spinner).width(100);
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         
         table.row();
         label = new Label("minHeight:", getSkin());
@@ -1106,9 +1108,9 @@ public class DialogDrawables extends Dialog {
         spinner.setMinimum(-1);
         spinner.setName("minHeight");
         table.add(spinner).width(100);
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         
         textField.setFocusTraversal(false);
         
@@ -1119,14 +1121,14 @@ public class DialogDrawables extends Dialog {
         String oldName = drawable.name;
         drawable.name = name;
 
-        main.getUndoableManager().clearUndoables();
+        undoableManager.clearUndoables();
         updateStyleValuesForRename(oldName, name);
         
-        main.getRootTable().refreshStyleProperties(true);
-        main.getAtlasData().produceAtlas();
-        main.getRootTable().refreshPreview();
+        rootTable.refreshStyleProperties(true);
+        atlasData.produceAtlas();
+        rootTable.refreshPreview();
         
-        main.getProjectData().setChangesSaved(false);
+        projectData.setChangesSaved(false);
         
         sortBySelectedMode();
     }
@@ -1178,8 +1180,8 @@ public class DialogDrawables extends Dialog {
         tileDialog.button("OK", true);
         tileDialog.button("Cancel", false).key(Keys.ESCAPE, false);
         TextButton okButton = (TextButton) tileDialog.getButtonTable().getCells().first().getActor();
-        okButton.addListener(main.getHandListener());
-        tileDialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        okButton.addListener(handListener);
+        tileDialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
         
         tileDialog.getContentTable().row();
         var table = new Table();
@@ -1202,14 +1204,14 @@ public class DialogDrawables extends Dialog {
         var button = new Button(getSkin(), "color-selector");
         button.setName("color-selector");
         if (drawable.tintName != null) {
-            button.setColor(main.getJsonData().getColorByName(drawable.tintName).color);
+            button.setColor(jsonData.getColorByName(drawable.tintName).color);
         } else {
             label = new Label("none", getSkin());
             button.add(label);
         }
-        button.setUserObject(main.getJsonData().getColorByName(drawable.tintName));
+        button.setUserObject(jsonData.getColorByName(drawable.tintName));
         subTable.add(button).grow().pad(3);
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent ce, Actor actor) {
@@ -1242,9 +1244,9 @@ public class DialogDrawables extends Dialog {
         table.add(minWidthSpinner).minWidth(150.0f);
         minWidthSpinner.setTransversalPrevious(textField);
         minWidthSpinner.setTransversalNext(minHeightSpinner.getTextField());
-        minWidthSpinner.getButtonMinus().addListener(main.getHandListener());
-        minWidthSpinner.getButtonPlus().addListener(main.getHandListener());
-        minWidthSpinner.getTextField().addListener(main.getIbeamListener());
+        minWidthSpinner.getButtonMinus().addListener(handListener);
+        minWidthSpinner.getButtonPlus().addListener(handListener);
+        minWidthSpinner.getTextField().addListener(ibeamListener);
 
         table.row();
         label = new Label("MinHeight:", getSkin());
@@ -1254,9 +1256,9 @@ public class DialogDrawables extends Dialog {
         table.add(minHeightSpinner).minWidth(150.0f);
         minHeightSpinner.setTransversalPrevious(minWidthSpinner.getTextField());
         minHeightSpinner.setTransversalNext(textField);
-        minHeightSpinner.getButtonMinus().addListener(main.getHandListener());
-        minHeightSpinner.getButtonPlus().addListener(main.getHandListener());
-        minHeightSpinner.getTextField().addListener(main.getIbeamListener());
+        minHeightSpinner.getButtonMinus().addListener(handListener);
+        minHeightSpinner.getButtonPlus().addListener(handListener);
+        minHeightSpinner.getTextField().addListener(ibeamListener);
 
         okButton.setDisabled(!validateTiledDrawable(tileDialog, textField.getText(), drawable.name, (ColorData) button.getUserObject(), newDrawable));
         
@@ -1280,7 +1282,7 @@ public class DialogDrawables extends Dialog {
                 }
             }
         });
-        textField.addListener(main.getIbeamListener());
+        textField.addListener(ibeamListener);
 
         tileDialog.show(getStage());
     }
@@ -1343,18 +1345,18 @@ public class DialogDrawables extends Dialog {
             drawable.bgColor = Color.WHITE;
         }
         
-        if (!main.getAtlasData().getDrawables().contains(drawable, false)) {
-            main.getAtlasData().getDrawables().add(drawable);
+        if (!atlasData.getDrawables().contains(drawable, false)) {
+            atlasData.getDrawables().add(drawable);
         }
-        main.getProjectData().setChangesSaved(false);
+        projectData.setChangesSaved(false);
         gatherDrawables();
-        main.getAtlasData().produceAtlas();
+        atlasData.produceAtlas();
         sortBySelectedMode();
         getStage().setScrollFocus(scrollPane);
     }
     
     private void updateStyleValuesForRename(String oldName, String newName) {
-        Values<Array<StyleData>> values = main.getJsonData().getClassStyleMap().values();
+        Values<Array<StyleData>> values = jsonData.getClassStyleMap().values();
         for (Array<StyleData> styles : values) {
             for (StyleData style : styles) {
                 for (StyleProperty styleProperty : style.properties.values()) {
@@ -1373,9 +1375,9 @@ public class DialogDrawables extends Dialog {
             showConfirmDeleteDialog(drawable);
         } else {
             removeRegionFromTenPatches(drawable);
-            main.getAtlasData().getDrawables().removeValue(drawable, true);
+            atlasData.getDrawables().removeValue(drawable, true);
 
-            for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
+            for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
                 for (StyleData data : datas) {
                     for (StyleProperty styleProperty : data.properties.values()) {
                         if (styleProperty != null && styleProperty.type.equals(Drawable.class) && styleProperty.value != null && styleProperty.value.equals(drawable.toString())) {
@@ -1385,12 +1387,12 @@ public class DialogDrawables extends Dialog {
                 }
             }
 
-            main.getRootTable().refreshStyleProperties(true);
-            main.getRootTable().refreshPreview();
+            rootTable.refreshStyleProperties(true);
+            rootTable.refreshPreview();
 
-            main.getUndoableManager().clearUndoables();
+            undoableManager.clearUndoables();
             
-            main.getProjectData().setChangesSaved(false);
+            projectData.setChangesSaved(false);
 
             gatherDrawables();
             sortBySelectedMode();
@@ -1408,7 +1410,7 @@ public class DialogDrawables extends Dialog {
             @Override
             protected void result(Object object) {
                 if ((boolean) object) {
-                    main.getProjectData().setChangesSaved(false);
+                    projectData.setChangesSaved(false);
                     removeDuplicateDrawables(drawable.file);
                     removeRegionFromTenPatches(drawable);
                     gatherDrawables();
@@ -1425,15 +1427,15 @@ public class DialogDrawables extends Dialog {
                 + "Delete duplicates?");
         dialog.button("OK", true);
         dialog.button("Cancel", false);
-        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
-        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().first().getActor().addListener(handListener);
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
         dialog.key(Input.Keys.ENTER, true);
         dialog.key(Input.Keys.ESCAPE, false);
         dialog.show(getStage());
     }
     
     private void removeRegionFromTenPatches(DrawableData drawable) {
-        for (var data : main.getAtlasData().getDrawables()) {
+        for (var data : atlasData.getDrawables()) {
             if (data.tenPatchData != null) {
                 var iter = data.tenPatchData.regionNames.iterator();
                 while (iter.hasNext()) {
@@ -1607,8 +1609,8 @@ public class DialogDrawables extends Dialog {
     private boolean checkDuplicateDrawables(FileHandle handle, int minimum) {
         int count = 0;
         String name = DrawableData.proper(handle.name());
-        for (int i = 0; i < main.getAtlasData().getDrawables().size; i++) {
-            DrawableData data = main.getAtlasData().getDrawables().get(i);
+        for (int i = 0; i < atlasData.getDrawables().size; i++) {
+            DrawableData data = atlasData.getDrawables().get(i);
             if (data.file != null && name.equals(DrawableData.proper(data.file.name()))) {
                 count++;
             }
@@ -1619,8 +1621,8 @@ public class DialogDrawables extends Dialog {
     
     private boolean checkDuplicateDrawables(String name, int minimum) {
         int count = 0;
-        for (int i = 0; i < main.getAtlasData().getDrawables().size; i++) {
-            DrawableData data = main.getAtlasData().getDrawables().get(i);
+        for (int i = 0; i < atlasData.getDrawables().size; i++) {
+            DrawableData data = atlasData.getDrawables().get(i);
             if (data.name != null && name.equals(data.name)) {
                 count++;
             }
@@ -1631,8 +1633,8 @@ public class DialogDrawables extends Dialog {
     
     private boolean checkDuplicateFontDrawables(String name, int minimum) {
         int count = 0;
-        for (int i = 0; i < main.getAtlasData().getFontDrawables().size; i++) {
-            DrawableData data = main.getAtlasData().getFontDrawables().get(i);
+        for (int i = 0; i < atlasData.getFontDrawables().size; i++) {
+            DrawableData data = atlasData.getFontDrawables().get(i);
             if (data.name != null && name.equals(data.name)) {
                 count++;
             }
@@ -1660,13 +1662,13 @@ public class DialogDrawables extends Dialog {
     private void removeDuplicateDrawables(FileHandle handle, boolean deleteStyleValues) {
         boolean refreshDrawables = false;
         String name = DrawableData.proper(handle.name());
-        for (int i = 0; i < main.getAtlasData().getDrawables().size; i++) {
-            DrawableData data = main.getAtlasData().getDrawables().get(i);
+        for (int i = 0; i < atlasData.getDrawables().size; i++) {
+            DrawableData data = atlasData.getDrawables().get(i);
             if (name.equals(DrawableData.proper(data.file.name()))) {
-                main.getAtlasData().getDrawables().removeValue(data, true);
+                atlasData.getDrawables().removeValue(data, true);
                 
                 if (deleteStyleValues) {
-                    for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
+                    for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
                         for (StyleData tempData : datas) {
                             for (StyleProperty prop : tempData.properties.values()) {
                                 if (prop != null && prop.type.equals(Drawable.class) && prop.value != null && prop.value.equals(data.toString())) {
@@ -1682,8 +1684,8 @@ public class DialogDrawables extends Dialog {
             }
         }
         
-        main.getRootTable().refreshStyleProperties(true);
-        main.getRootTable().refreshPreview();
+        rootTable.refreshStyleProperties(true);
+        rootTable.refreshPreview();
         
         if (refreshDrawables) {
             gatherDrawables();
@@ -1696,13 +1698,13 @@ public class DialogDrawables extends Dialog {
      */
     private void removeDuplicateDrawables(String name, boolean deleteStyleValues) {
         boolean refreshDrawables = false;
-        for (int i = 0; i < main.getAtlasData().getDrawables().size; i++) {
-            DrawableData data = main.getAtlasData().getDrawables().get(i);
+        for (int i = 0; i < atlasData.getDrawables().size; i++) {
+            DrawableData data = atlasData.getDrawables().get(i);
             if (data.name != null && name.equals(data.name)) {
-                main.getAtlasData().getDrawables().removeValue(data, true);
+                atlasData.getDrawables().removeValue(data, true);
                 
                 if (deleteStyleValues) {
-                    for (Array<StyleData> datas : main.getJsonData().getClassStyleMap().values()) {
+                    for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
                         for (StyleData tempData : datas) {
                             for (StyleProperty prop : tempData.properties.values()) {
                                 if (prop != null && prop.type.equals(Drawable.class) && prop.value != null && prop.value.equals(data.toString())) {
@@ -1718,8 +1720,8 @@ public class DialogDrawables extends Dialog {
             }
         }
         
-        main.getRootTable().refreshStyleProperties(true);
-        main.getRootTable().refreshPreview();
+        rootTable.refreshStyleProperties(true);
+        rootTable.refreshPreview();
         
         if (refreshDrawables) {
             gatherDrawables();
@@ -1741,19 +1743,19 @@ public class DialogDrawables extends Dialog {
         dialog.text(label);
         
         var textButton = new TextButton("OK", getSkin());
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         dialog.button(textButton);
         dialog.show(getStage());
     }
     
     private void newDrawableDialog() {
-        main.getDialogFactory().showDialogLoading(() -> {
+        dialogFactory.showDialogLoading(() -> {
             String defaultPath = "";
 
-            if (main.getProjectData().getLastDrawablePath() != null) {
-                FileHandle fileHandle = new FileHandle(main.getProjectData().getLastDrawablePath());
+            if (projectData.getLastDrawablePath() != null) {
+                FileHandle fileHandle = new FileHandle(projectData.getLastDrawablePath());
                 if (fileHandle.parent().exists()) {
-                    defaultPath = main.getProjectData().getLastDrawablePath();
+                    defaultPath = projectData.getLastDrawablePath();
                 }
             }
 
@@ -1762,7 +1764,7 @@ public class DialogDrawables extends Dialog {
                 filterPatterns = new String[]{"*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif"};
             }
 
-            List<File> files = main.getDesktopWorker().openMultipleDialog("Choose drawable file(s)...", defaultPath, filterPatterns, "Image files");
+            List<File> files = desktopWorker.openMultipleDialog("Choose drawable file(s)...", defaultPath, filterPatterns, "Image files");
             if (files != null && files.size() > 0) {
                 Gdx.app.postRunnable(() -> {
                     drawablesSelected(files);
@@ -1774,30 +1776,30 @@ public class DialogDrawables extends Dialog {
     private void customDrawableDialog() {
         Array<DrawableData> backup = new Array<>();
         
-        main.getDialogFactory().showCustomDrawableDialog(getSkin(), getStage(), (String name1) -> {
+        dialogFactory.showCustomDrawableDialog(getSkin(), getStage(), (String name1) -> {
             DrawableData drawable = new DrawableData(name1);
             drawable.type = DrawableType.CUSTOM;
-            main.getAtlasData().getDrawables().add(drawable);
+            atlasData.getDrawables().add(drawable);
             gatherDrawables();
-            main.getDialogFactory().showDialogLoading(() -> {
+            dialogFactory.showDialogLoading(() -> {
                 Gdx.app.postRunnable(() -> {
-                    if (!main.getAtlasData().produceAtlas()) {
+                    if (!atlasData.produceAtlas()) {
                         showDrawableError();
                         Gdx.app.log(getClass().getName(), "Attempting to reload drawables backup...");
-                        main.getAtlasData().getDrawables().clear();
-                        main.getAtlasData().getDrawables().addAll(backup);
+                        atlasData.getDrawables().clear();
+                        atlasData.getDrawables().addAll(backup);
                         gatherDrawables();
-                        if (main.getAtlasData().produceAtlas()) {
+                        if (atlasData.produceAtlas()) {
                             Gdx.app.log(getClass().getName(), "Successfully rolled back changes to drawables");
                         } else {
                             Gdx.app.error(getClass().getName(), "Critical failure, could not roll back changes to drawables");
                         }
                     } else {
-                        if (main.getProjectData().areResourcesRelative()) {
-                            main.getProjectData().makeResourcesRelative();
+                        if (projectData.areResourcesRelative()) {
+                            projectData.makeResourcesRelative();
                         }
                         
-                        main.getProjectData().setChangesSaved(false);
+                        projectData.setChangesSaved(false);
                     }
                     
                     sortBySelectedMode();
@@ -1807,7 +1809,7 @@ public class DialogDrawables extends Dialog {
     }
     
     private void renameCustomDrawableDialog(DrawableData drawableData) {
-        main.getDialogFactory().showCustomDrawableDialog(main.getSkin(), main.getStage(), drawableData, (String name1) -> {
+        dialogFactory.showCustomDrawableDialog(skin, stage, drawableData, (String name1) -> {
             applyTintedDrawableSettings(drawableData, name1);
         });
     }
@@ -1828,12 +1830,12 @@ public class DialogDrawables extends Dialog {
     }
     
     private void drawablesSelected(Array<FileHandle> files) {
-        main.getAtlasData().atlasCurrent = false;
-        Array<DrawableData> backup = new Array<>(main.getAtlasData().getDrawables());
+        atlasData.atlasCurrent = false;
+        Array<DrawableData> backup = new Array<>(atlasData.getDrawables());
         Array<FileHandle> unhandledFiles = new Array<>();
         Array<FileHandle> filesToProcess = new Array<>();
         
-        main.getProjectData().setLastDrawablePath(files.get(0).parent().path() + "/");
+        projectData.setLastDrawablePath(files.get(0).parent().path() + "/");
         for (FileHandle fileHandle : files) {
             var duplicateDrawable = checkDuplicateDrawables(DrawableData.proper(fileHandle.name()), 0);
             var duplicateFontDrawable = checkDuplicateFontDrawables(DrawableData.proper(fileHandle.name()), 0);
@@ -1872,8 +1874,8 @@ public class DialogDrawables extends Dialog {
                     }
                 }
                 finalizeDrawables(backup, filesToProcess);
-                main.getAtlasData().produceAtlas();
-                main.getRootTable().refreshPreview();
+                atlasData.produceAtlas();
+                rootTable.refreshPreview();
             }
         };
         
@@ -1900,8 +1902,8 @@ public class DialogDrawables extends Dialog {
         
         dialog.button("OK", true);
         dialog.button("Cancel", false);
-        dialog.getButtonTable().getCells().first().getActor().addListener(main.getHandListener());
-        dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+        dialog.getButtonTable().getCells().first().getActor().addListener(handListener);
+        dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
         dialog.key(Input.Keys.ENTER, true);
         dialog.key(Input.Keys.ESCAPE, false);
         dialog.show(getStage());
@@ -1922,31 +1924,31 @@ public class DialogDrawables extends Dialog {
                 data.type = DrawableType.TEXTURE;
             }
             if (!checkIfNameExists(data.name)) {
-                main.getAtlasData().getDrawables().add(data);
+                atlasData.getDrawables().add(data);
             }
         }
         
         gatherDrawables();
 
-        main.getDialogFactory().showDialogLoading(() -> {
+        dialogFactory.showDialogLoading(() -> {
             Gdx.app.postRunnable(() -> {
-                if (!main.getAtlasData().produceAtlas()) {
+                if (!atlasData.produceAtlas()) {
                     showDrawableError();
                     Gdx.app.log(getClass().getName(), "Attempting to reload drawables backup...");
-                    main.getAtlasData().getDrawables().clear();
-                    main.getAtlasData().getDrawables().addAll(backup);
+                    atlasData.getDrawables().clear();
+                    atlasData.getDrawables().addAll(backup);
                     gatherDrawables();
-                    if (main.getAtlasData().produceAtlas()) {
+                    if (atlasData.produceAtlas()) {
                         Gdx.app.log(getClass().getName(), "Successfully rolled back changes to drawables");
                     } else {
                         Gdx.app.error(getClass().getName(), "Critical failure, could not roll back changes to drawables");
                     }
                 } else {
-                    if (main.getProjectData().areResourcesRelative()) {
-                        main.getProjectData().makeResourcesRelative();
+                    if (projectData.areResourcesRelative()) {
+                        projectData.makeResourcesRelative();
                     }
 
-                    main.getProjectData().setChangesSaved(false);
+                    projectData.setChangesSaved(false);
                 }
 
                 sortBySelectedMode();
@@ -1964,7 +1966,7 @@ public class DialogDrawables extends Dialog {
         if (drawableData.tint != null) {
             previousColor = drawableData.tint;
         }
-        main.getDialogFactory().showDialogColorPicker(previousColor, new DialogColorPicker.ColorListener() {
+        dialogFactory.showDialogColorPicker(previousColor, new DialogColorPicker.ColorListener() {
             @Override
             public void selected(Color color) {
                 if (color != null) {
@@ -1990,22 +1992,22 @@ public class DialogDrawables extends Dialog {
                             button.setDisabled(!DrawableData.validate(textField.getText()) || checkIfNameExists(textField.getText()));
                         }
                     });
-                    textField.addListener(main.getIbeamListener());
+                    textField.addListener(ibeamListener);
 
                     Dialog dialog = new Dialog("TintedDrawable...", getSkin(), "bg") {
                         @Override
                         protected void result(Object object) {
                             if (object instanceof Boolean && (boolean) object) {
                                 tintedDrawable.name = textField.getText();
-                                main.getAtlasData().getDrawables().add(tintedDrawable);
-                                main.getProjectData().setChangesSaved(false);
+                                atlasData.getDrawables().add(tintedDrawable);
+                                projectData.setChangesSaved(false);
                             }
                         }
 
                         @Override
                         public boolean remove() {
                             gatherDrawables();
-                            main.getAtlasData().produceAtlas();
+                            atlasData.produceAtlas();
                             sortBySelectedMode();
                             getStage().setScrollFocus(scrollPane);
                             return super.remove();
@@ -2018,8 +2020,8 @@ public class DialogDrawables extends Dialog {
                             if (keycode2 == Input.Keys.ENTER) {
                                 if (!button.isDisabled()) {
                                     tintedDrawable.name = textField.getText();
-                                    main.getAtlasData().getDrawables().add(tintedDrawable);
-                                    main.getProjectData().setChangesSaved(false);
+                                    atlasData.getDrawables().add(tintedDrawable);
+                                    projectData.setChangesSaved(false);
                                     dialog.hide();
                                 }
                             }
@@ -2029,7 +2031,7 @@ public class DialogDrawables extends Dialog {
                     dialog.text("What is the name of the new tinted drawable?");
                     dialog.getContentTable().getCells().first().pad(10.0f);
 
-                    Drawable drawable = main.getAtlasData().getDrawablePairs().get(drawableData);
+                    Drawable drawable = atlasData.getDrawablePairs().get(drawableData);
                     Drawable preview = null;
                     if (drawable instanceof SpriteDrawable) {
                         preview = ((SpriteDrawable) drawable).tint(color);
@@ -2048,9 +2050,9 @@ public class DialogDrawables extends Dialog {
 
                     dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
                     dialog.button(button, true);
-                    button.addListener(main.getHandListener());
+                    button.addListener(handListener);
                     dialog.button("Cancel", false);
-                    dialog.getButtonTable().getCells().get(1).getActor().addListener(main.getHandListener());
+                    dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
                     dialog.key(Input.Keys.ESCAPE, false);
                     dialog.show(getStage());
                     getStage().setKeyboardFocus(textField);
@@ -2073,7 +2075,7 @@ public class DialogDrawables extends Dialog {
     private boolean checkIfDrawableNameExists(String name) {
         boolean returnValue = false;
         
-        for (DrawableData drawable : main.getAtlasData().getDrawables()) {
+        for (DrawableData drawable : atlasData.getDrawables()) {
             if (drawable.name.equals(name)) {
                 returnValue = true;
                 break;
@@ -2091,7 +2093,7 @@ public class DialogDrawables extends Dialog {
     private boolean checkIfFontDrawableNameExists(String name) {
         boolean returnValue = false;
         
-        for (DrawableData drawable : main.getAtlasData().getFontDrawables()) {
+        for (DrawableData drawable : atlasData.getFontDrawables()) {
             if (drawable.name.equals(name)) {
                 returnValue = true;
                 break;
@@ -2105,17 +2107,17 @@ public class DialogDrawables extends Dialog {
     public boolean remove() {
         scrollPosition = scrollPane.getScrollY();
 
-        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        desktopWorker.removeFilesDroppedListener(filesDroppedListener);
 
         try {
-            if (!main.getAtlasData().atlasCurrent) {
+            if (!atlasData.atlasCurrent) {
                 FileHandle defaultsFile = Main.appFolder.child("texturepacker/atlas-internal-settings.json");
-                main.getAtlasData().writeAtlas(defaultsFile);
-                main.getAtlasData().atlasCurrent = true;
+                atlasData.writeAtlas(defaultsFile);
+                atlasData.atlasCurrent = true;
             }
         } catch (Exception e) {
             Gdx.app.error(getClass().getName(), "Error creating atlas upon drawable dialog exit", e);
-            main.getDialogFactory().showDialogError("Atlas Error...", "Error creating atlas upon drawable dialog exit.\n\nOpen log?");
+            dialogFactory.showDialogError("Atlas Error...", "Error creating atlas upon drawable dialog exit.\n\nOpen log?");
         }
 
         fire(new DialogEvent(DialogEvent.Type.CLOSE));
@@ -2127,17 +2129,17 @@ public class DialogDrawables extends Dialog {
         instance = null;
         if (object != null) {
             if (object instanceof DrawableData) {
-                main.getProjectData().setChangesSaved(false);
+                projectData.setChangesSaved(false);
                 DrawableData drawable = (DrawableData) object;
 
                 Undoable undoable;
                 if (property != null) {
-                    undoable = new DrawableUndoable(main.getRootTable(), main.getAtlasData(),
+                    undoable = new DrawableUndoable(rootTable, atlasData,
                                     property, property.value, drawable.name);
                 } else {
                     undoable = new UndoableManager.CustomDrawableUndoable(main, customProperty, drawable.name);
                 }
-                main.getUndoableManager().addUndoable(undoable, true);
+                undoableManager.addUndoable(undoable, true);
                 
                 if (listener != null) {
                     listener.confirmed(drawable, this);
@@ -2145,18 +2147,18 @@ public class DialogDrawables extends Dialog {
             } else if (object instanceof Boolean) {
                 if (property != null) {
                     if ((boolean) object) {
-                        main.getProjectData().setChangesSaved(false);
+                        projectData.setChangesSaved(false);
                         DrawableUndoable undoable =
-                                new DrawableUndoable(main.getRootTable(), main.getAtlasData(),
+                                new DrawableUndoable(rootTable, atlasData,
                                         property, property.value, null);
-                        main.getUndoableManager().addUndoable(undoable, true);
+                        undoableManager.addUndoable(undoable, true);
                         
                         if (listener != null) {
                             listener.emptied(this);
                         }
                     } else {
                         boolean hasDrawable = false;
-                        for (DrawableData drawable : main.getAtlasData().getDrawables()) {
+                        for (DrawableData drawable : atlasData.getDrawables()) {
                             if (drawable.name.equals(property.value)) {
                                 hasDrawable = true;
                                 break;
@@ -2164,10 +2166,10 @@ public class DialogDrawables extends Dialog {
                         }
 
                         if (!hasDrawable) {
-                            main.getProjectData().setChangesSaved(false);
-                            main.getUndoableManager().clearUndoables();
+                            projectData.setChangesSaved(false);
+                            undoableManager.clearUndoables();
                             property.value = null;
-                            main.getRootTable().refreshStyleProperties(true);
+                            rootTable.refreshStyleProperties(true);
                         }
                         
                         if (listener != null) {
@@ -2176,16 +2178,16 @@ public class DialogDrawables extends Dialog {
                     }
                 } else if (customProperty != null) {
                     if ((boolean) object) {
-                        main.getProjectData().setChangesSaved(false);
+                        projectData.setChangesSaved(false);
                         CustomDrawableUndoable undoable = new CustomDrawableUndoable(main, customProperty, null);
-                        main.getUndoableManager().addUndoable(undoable, true);
+                        undoableManager.addUndoable(undoable, true);
                         
                         if (listener != null) {
                             listener.emptied(this);
                         }
                     } else {
                         boolean hasDrawable = false;
-                        for (DrawableData drawable : main.getAtlasData().getDrawables()) {
+                        for (DrawableData drawable : atlasData.getDrawables()) {
                             if (drawable.name.equals(customProperty.getValue())) {
                                 hasDrawable = true;
                                 break;
@@ -2193,10 +2195,10 @@ public class DialogDrawables extends Dialog {
                         }
 
                         if (!hasDrawable) {
-                            main.getProjectData().setChangesSaved(false);
-                            main.getUndoableManager().clearUndoables();
+                            projectData.setChangesSaved(false);
+                            undoableManager.clearUndoables();
                             customProperty.setValue(null);
-                            main.getRootTable().refreshStyleProperties(true);
+                            rootTable.refreshStyleProperties(true);
                         }
                         
                         if (listener != null) {
@@ -2215,8 +2217,8 @@ public class DialogDrawables extends Dialog {
             }
         }
     
-        main.getAtlasData().produceAtlas();
-        main.getRootTable().refreshPreview();
+        atlasData.produceAtlas();
+        rootTable.refreshPreview();
     }
 
     public boolean isShowing9patchButton() {

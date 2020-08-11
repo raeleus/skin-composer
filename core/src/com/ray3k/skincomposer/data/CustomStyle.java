@@ -33,7 +33,6 @@ public class CustomStyle implements Json.Serializable {
     private Array<CustomProperty> properties;
     private CustomClass parentClass;
     private boolean deletable;
-    private Main main;
 
     public CustomStyle() {
         
@@ -82,17 +81,6 @@ public class CustomStyle implements Json.Serializable {
     public void setDeletable(boolean deletable) {
         this.deletable = deletable;
     }
-
-    public Main getMain() {
-        return main;
-    }
-
-    public void setMain(Main main) {
-        this.main = main;
-        for (CustomProperty property : properties) {
-            property.setMain(main);
-        }
-    }
     
     @Override
     public String toString() {
@@ -108,7 +96,6 @@ public class CustomStyle implements Json.Serializable {
         
         returnValue.parentClass = parentClass;
         returnValue.deletable = deletable;
-        returnValue.main = main;
 
         return returnValue;
     }

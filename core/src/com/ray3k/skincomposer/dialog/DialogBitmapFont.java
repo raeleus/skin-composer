@@ -45,6 +45,8 @@ import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
 
+import static com.ray3k.skincomposer.Main.*;
+
 import java.io.File;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -52,8 +54,6 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 public class DialogBitmapFont extends Dialog {
-    private Main main;
-    private Skin skin;
     private Table root;
     private Table buttons;
     private FreeTypeFontData data;
@@ -69,8 +69,8 @@ public class DialogBitmapFont extends Dialog {
     private Json json;
     private Color previewBGcolor;
 
-    public DialogBitmapFont(Main main) {
-        super("Create new Bitmap Font", main.getSkin(), "bg");
+    public DialogBitmapFont() {
+        super("Create new Bitmap Font", skin, "bg");
         previewBGcolor = new Color(Color.WHITE);
 
         json = new Json(JsonWriter.OutputType.json);
@@ -88,9 +88,6 @@ public class DialogBitmapFont extends Dialog {
                 data.previewTTF = files[0].nameWithoutExtension();
             }
         }
-
-        this.main = main;
-        skin = main.getSkin();
 
         previewStyle = new TextFieldStyle(skin.get("free-type-preview", TextFieldStyle.class));
         previewText = "Lorem ipsum dolor sit";
@@ -118,14 +115,14 @@ public class DialogBitmapFont extends Dialog {
                         });
                     };
 
-                    main.getDialogFactory().showDialogLoading(runnable);
+                    dialogFactory.showDialogLoading(runnable);
                 } else if (extension.equals("scmp-font")) {
                     loadSettings(files.first());
                 }
             }
         };
 
-        main.getDesktopWorker().addFilesDroppedListener(filesDroppedListener);
+        desktopWorker.addFilesDroppedListener(filesDroppedListener);
     }
 
     @Override
@@ -151,7 +148,7 @@ public class DialogBitmapFont extends Dialog {
 
     @Override
     public boolean remove() {
-        main.getDesktopWorker().removeFilesDroppedListener(filesDroppedListener);
+        desktopWorker.removeFilesDroppedListener(filesDroppedListener);
         return super.remove();
     }
 
@@ -180,7 +177,7 @@ public class DialogBitmapFont extends Dialog {
         textField.setAlignment(Align.center);
         previewTable.add(textField).growX();
 
-        textField.addListener(main.getIbeamListener());
+        textField.addListener(ibeamListener);
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -191,11 +188,11 @@ public class DialogBitmapFont extends Dialog {
         root.row();
         var imageButton = new ImageButton(getSkin(), "color");
         root.add(imageButton).expandX().right();
-        imageButton.addListener(main.getHandListener());
+        imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                main.getDialogFactory().showDialogColorPicker(previewBGcolor, new DialogColorPicker.ColorListener() {
+                dialogFactory.showDialogColorPicker(previewBGcolor, new DialogColorPicker.ColorListener() {
                     @Override
                     public void selected(Color color) {
                         if (color != null) {
@@ -206,7 +203,7 @@ public class DialogBitmapFont extends Dialog {
                 });
             }
         });
-        var toolTip = new TextTooltip("Background color for preview text.", main.getTooltipManager(), getSkin());
+        var toolTip = new TextTooltip("Background color for preview text.", tooltipManager, getSkin());
         imageButton.addListener(toolTip);
 
         root.row();
@@ -246,23 +243,23 @@ public class DialogBitmapFont extends Dialog {
             }
         });
 
-        toolTip = new TextTooltip("Path to source TTF file to be read", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Path to source TTF file to be read", tooltipManager, getSkin());
         textField.addListener(toolTip);
         textButton.addListener(toolTip);
-        textField.addListener(main.getHandListener());
-        textButton.addListener(main.getHandListener());
+        textField.addListener(handListener);
+        textButton.addListener(handListener);
         var sourceChangeListener = new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 Runnable runnable = () -> {
-                    String defaultPath = main.getProjectData().getLastFontPath();
+                    String defaultPath = projectData.getLastFontPath();
 
                     String[] filterPatterns = null;
                     if (!Utils.isMac()) {
                         filterPatterns = new String[]{"*.ttf"};
                     }
 
-                    File file = main.getDesktopWorker().openDialog("Select TTF file...", defaultPath, filterPatterns, "True Type Font files");
+                    File file = desktopWorker.openDialog("Select TTF file...", defaultPath, filterPatterns, "True Type Font files");
                     if (file != null) {
                         Gdx.app.postRunnable(() -> {
                             loadTTFsource(new FileHandle(file));
@@ -270,7 +267,7 @@ public class DialogBitmapFont extends Dialog {
                     }
                 };
 
-                main.getDialogFactory().showDialogLoading(runnable);
+                dialogFactory.showDialogLoading(runnable);
             }
         };
         textField.addListener(sourceChangeListener);
@@ -297,23 +294,23 @@ public class DialogBitmapFont extends Dialog {
             }
         });
 
-        toolTip = new TextTooltip("Path to target FNT file to be saved", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Path to target FNT file to be saved", tooltipManager, getSkin());
         textField.addListener(toolTip);
         textButton.addListener(toolTip);
-        textField.addListener(main.getHandListener());
-        textButton.addListener(main.getHandListener());
+        textField.addListener(handListener);
+        textButton.addListener(handListener);
         var targetChangeListener = new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 Runnable runnable = () -> {
-                    String defaultPath = main.getProjectData().getLastFontPath();
+                    String defaultPath = projectData.getLastFontPath();
 
                     String[] filterPatterns = null;
                     if (!Utils.isMac()) {
                         filterPatterns = new String[]{"*.fnt"};
                     }
 
-                    File file = main.getDesktopWorker().saveDialog("Select FNT file...", defaultPath, filterPatterns, "Bitmap Font files");
+                    File file = desktopWorker.saveDialog("Select FNT file...", defaultPath, filterPatterns, "Bitmap Font files");
                     if (file != null) {
                         Gdx.app.postRunnable(() -> {
                             target = new FileHandle(file);
@@ -325,14 +322,14 @@ public class DialogBitmapFont extends Dialog {
                             textField.setText(target.path());
                             textField.setCursorPosition(textField.getText().length() - 1);
 
-                            main.getProjectData().setLastFontPath(target.parent().path() + "/");
+                            projectData.setLastFontPath(target.parent().path() + "/");
 
                             updatePreviewAndOK();
                         });
                     }
                 };
 
-                main.getDialogFactory().showDialogLoading(runnable);
+                dialogFactory.showDialogLoading(runnable);
             }
         };
         textField.addListener(targetChangeListener);
@@ -348,8 +345,8 @@ public class DialogBitmapFont extends Dialog {
         charactersTextField.setName("characters");
         table.add(charactersTextField).growX();
 
-        charactersTextField.addListener(main.getIbeamListener());
-        toolTip = new TextTooltip("The characters the font should contain. Leave blank for defaults.", main.getTooltipManager(), getSkin());
+        charactersTextField.addListener(ibeamListener);
+        toolTip = new TextTooltip("The characters the font should contain. Leave blank for defaults.", tooltipManager, getSkin());
         charactersTextField.addListener(toolTip);
 
         var characterSelectBox = new SelectBox<String>(skin);
@@ -357,9 +354,9 @@ public class DialogBitmapFont extends Dialog {
         characterSelectBox.setItems("default", "0-9", "a-zA-Z", "a-zA-Z0-9", "custom", "Load from file (UTF-8)...");
         table.add(characterSelectBox).fillX();
 
-        characterSelectBox.addListener(main.getHandListener());
-        characterSelectBox.getList().addListener(main.getHandListener());
-        toolTip = new TextTooltip("Character preset list", main.getTooltipManager(), getSkin());
+        characterSelectBox.addListener(handListener);
+        characterSelectBox.getList().addListener(handListener);
+        toolTip = new TextTooltip("Character preset list", tooltipManager, getSkin());
         characterSelectBox.addListener(toolTip);
         characterSelectBox.addListener(new ChangeListener() {
             @Override
@@ -422,12 +419,12 @@ public class DialogBitmapFont extends Dialog {
         spinner.setMinimum(5);
         bottom.add(spinner).left().minWidth(100.0f);
 
-        toolTip = new TextTooltip("The size in pixels", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("The size in pixels", tooltipManager, getSkin());
         spinner.addListener(toolTip);
 
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -446,10 +443,10 @@ public class DialogBitmapFont extends Dialog {
         button.setChecked(data.mono);
         bottom.add(button).left();
 
-        toolTip = new TextTooltip("If on, font smoothing is disabled", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("If on, font smoothing is disabled", tooltipManager, getSkin());
         button.addListener(toolTip);
 
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -472,11 +469,11 @@ public class DialogBitmapFont extends Dialog {
         selectBox.setSelected(data.hinting);
         bottom.add(selectBox).left();
 
-        toolTip = new TextTooltip("Strength of hinting", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Strength of hinting", tooltipManager, getSkin());
         selectBox.addListener(toolTip);
 
-        selectBox.addListener(main.getHandListener());
-        selectBox.getList().addListener(main.getHandListener());
+        selectBox.addListener(handListener);
+        selectBox.getList().addListener(handListener);
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -497,16 +494,16 @@ public class DialogBitmapFont extends Dialog {
         textButton.add(image).space(10.0f);
         bottom.add(textButton).left();
 
-        toolTip = new TextTooltip("Foreground color (Required)", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Foreground color (Required)", tooltipManager, getSkin());
         textButton.addListener(toolTip);
 
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 TextButton textButton = (TextButton) actor;
 
-                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+                dialogFactory.showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                     if (colorData != null) {
                         textButton.setText(colorData.getName());
                         textButton.setUserObject(colorData);
@@ -531,12 +528,12 @@ public class DialogBitmapFont extends Dialog {
         spinner.setName("gamma");
         bottom.add(spinner).left().minWidth(100.0f);
 
-        toolTip = new TextTooltip("Glyph gamma. Values > 1 reduce antialiasing.", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Glyph gamma. Values > 1 reduce antialiasing.", tooltipManager, getSkin());
         spinner.addListener(toolTip);
 
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -554,12 +551,12 @@ public class DialogBitmapFont extends Dialog {
         spinner.setName("renderCount");
         bottom.add(spinner).left().minWidth(100.0f);
 
-        toolTip = new TextTooltip("Number of times to render the glyph. Useful with a shadow or border, so it doesn't show through the glyph.", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Number of times to render the glyph. Useful with a shadow or border, so it doesn't show through the glyph.", tooltipManager, getSkin());
         spinner.addListener(toolTip);
 
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -578,12 +575,12 @@ public class DialogBitmapFont extends Dialog {
         spinner.setName("borderWidth");
         bottom.add(spinner).left().minWidth(100.0f);
 
-        toolTip = new TextTooltip("Border width in pixels, 0 to disable", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Border width in pixels, 0 to disable", tooltipManager, getSkin());
         spinner.addListener(toolTip);
 
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -604,16 +601,16 @@ public class DialogBitmapFont extends Dialog {
         textButton.add(image).space(10.0f);
         bottom.add(textButton).left();
 
-        toolTip = new TextTooltip("Border color; Required if borderWidth > 0", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Border color; Required if borderWidth > 0", tooltipManager, getSkin());
         textButton.addListener(toolTip);
 
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 TextButton textButton = (TextButton) actor;
 
-                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+                dialogFactory.showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                     if (colorData != null) {
                         textButton.setText(colorData.getName());
                         textButton.setUserObject(colorData);
@@ -638,10 +635,10 @@ public class DialogBitmapFont extends Dialog {
         button.setChecked(data.borderStraight);
         bottom.add(button).left();
 
-        toolTip = new TextTooltip("On for straight (mitered), off for rounded borders", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("On for straight (mitered), off for rounded borders", tooltipManager, getSkin());
         button.addListener(toolTip);
 
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -659,12 +656,12 @@ public class DialogBitmapFont extends Dialog {
         spinner.setName("borderGamma");
         bottom.add(spinner).left().minWidth(100.0f);
 
-        toolTip = new TextTooltip("Values < 1 increase the border size.", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Values < 1 increase the border size.", tooltipManager, getSkin());
         spinner.addListener(toolTip);
 
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -683,12 +680,12 @@ public class DialogBitmapFont extends Dialog {
         spinner.setName("shadowOffsetX");
         bottom.add(spinner).left().minWidth(100.0f);
 
-        toolTip = new TextTooltip("Offset of text shadow on X axis in pixels, 0 to disable", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Offset of text shadow on X axis in pixels, 0 to disable", tooltipManager, getSkin());
         spinner.addListener(toolTip);
 
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -706,12 +703,12 @@ public class DialogBitmapFont extends Dialog {
         spinner.setName("shadowOffsetY");
         bottom.add(spinner).left().minWidth(100.0f);
 
-        toolTip = new TextTooltip("Offset of text shadow on Y axis in pixels, 0 to disable", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Offset of text shadow on Y axis in pixels, 0 to disable", tooltipManager, getSkin());
         spinner.addListener(toolTip);
 
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -733,16 +730,16 @@ public class DialogBitmapFont extends Dialog {
         textButton.add(image).space(10.0f);
         bottom.add(textButton).left();
 
-        toolTip = new TextTooltip("Shadow color; required if shadowOffset > 0.", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Shadow color; required if shadowOffset > 0.", tooltipManager, getSkin());
         textButton.addListener(toolTip);
 
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 TextButton textButton = (TextButton) actor;
 
-                main.getDialogFactory().showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+                dialogFactory.showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
                     if (colorData != null) {
                         textButton.setText(colorData.getName());
                         textButton.setUserObject(colorData);
@@ -767,10 +764,10 @@ public class DialogBitmapFont extends Dialog {
         bottom.add(button).left();
 
         toolTip = new TextTooltip("When true, glyphs are rendered on the fly to the \n"
-                + "font's glyph page textures as they are needed.", main.getTooltipManager(), getSkin());
+                + "font's glyph page textures as they are needed.", tooltipManager, getSkin());
         button.addListener(toolTip);
 
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -789,12 +786,12 @@ public class DialogBitmapFont extends Dialog {
         spinner.setName("spaceX");
         bottom.add(spinner).left().minWidth(100.0f);
 
-        toolTip = new TextTooltip("Pixels to add to glyph spacing. Can be negative.", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Pixels to add to glyph spacing. Can be negative.", tooltipManager, getSkin());
         spinner.addListener(toolTip);
 
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -812,12 +809,12 @@ public class DialogBitmapFont extends Dialog {
         spinner.setName("spaceY");
         bottom.add(spinner).left().minWidth(100.0f);
 
-        toolTip = new TextTooltip("Pixels to add to glyph spacing. Can be negative.", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Pixels to add to glyph spacing. Can be negative.", tooltipManager, getSkin());
         spinner.addListener(toolTip);
 
-        spinner.getButtonMinus().addListener(main.getHandListener());
-        spinner.getButtonPlus().addListener(main.getHandListener());
-        spinner.getTextField().addListener(main.getIbeamListener());
+        spinner.getButtonMinus().addListener(handListener);
+        spinner.getButtonPlus().addListener(handListener);
+        spinner.getTextField().addListener(ibeamListener);
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -837,10 +834,10 @@ public class DialogBitmapFont extends Dialog {
         button.setChecked(data.kerning);
         bottom.add(button).left();
 
-        toolTip = new TextTooltip("Whether the font should include kerning", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Whether the font should include kerning", tooltipManager, getSkin());
         button.addListener(toolTip);
 
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -860,10 +857,10 @@ public class DialogBitmapFont extends Dialog {
         button.setChecked(data.flip);
         bottom.add(button).left();
 
-        toolTip = new TextTooltip("Whether to flip the font vertically", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Whether to flip the font vertically", tooltipManager, getSkin());
         button.addListener(toolTip);
 
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -882,10 +879,10 @@ public class DialogBitmapFont extends Dialog {
         button.setChecked(data.genMipMaps);
         bottom.add(button).left();
 
-        toolTip = new TextTooltip("Whether to generate mip maps for the resulting texture", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Whether to generate mip maps for the resulting texture", tooltipManager, getSkin());
         button.addListener(toolTip);
 
-        button.addListener(main.getHandListener());
+        button.addListener(handListener);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -906,11 +903,11 @@ public class DialogBitmapFont extends Dialog {
         selectBox.setSelected(data.minFilter);
         bottom.add(selectBox).left();
 
-        toolTip = new TextTooltip("Minification filter", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Minification filter", tooltipManager, getSkin());
         selectBox.addListener(toolTip);
 
-        selectBox.addListener(main.getHandListener());
-        selectBox.getList().addListener(main.getHandListener());
+        selectBox.addListener(handListener);
+        selectBox.getList().addListener(handListener);
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -930,11 +927,11 @@ public class DialogBitmapFont extends Dialog {
         selectBox.setSelected(data.magFilter);
         bottom.add(selectBox).left();
 
-        toolTip = new TextTooltip("Magnification filter", main.getTooltipManager(), getSkin());
+        toolTip = new TextTooltip("Magnification filter", tooltipManager, getSkin());
         selectBox.addListener(toolTip);
 
-        selectBox.addListener(main.getHandListener());
-        selectBox.getList().addListener(main.getHandListener());
+        selectBox.addListener(handListener);
+        selectBox.getList().addListener(handListener);
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -949,12 +946,12 @@ public class DialogBitmapFont extends Dialog {
         buttons.defaults().minWidth(75.0f).space(25.0f);
         textButton = new TextButton("Generate Font", skin);
         textButton.setName("okButton");
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         button(textButton, ButtonType.GENERATE);
 
         textButton = new TextButton("Save Settings", skin);
         textButton.setName("saveButton");
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         getButtonTable().add(textButton);
         textButton.addListener(new ChangeListener() {
             @Override
@@ -965,7 +962,7 @@ public class DialogBitmapFont extends Dialog {
 
         textButton = new TextButton("Load Settings", skin);
         textButton.setName("loadButton");
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         getButtonTable().add(textButton);
         textButton.addListener(new ChangeListener() {
             @Override
@@ -976,7 +973,7 @@ public class DialogBitmapFont extends Dialog {
 
         textButton = new TextButton("Cancel", skin);
         textButton.setName("cancelButton");
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         button(textButton, ButtonType.CANCEL);
         
         updateLabelHighlight(null);
@@ -988,7 +985,7 @@ public class DialogBitmapFont extends Dialog {
         var textField = (TextField) DialogBitmapFont.this.findActor("sourceFileField");
         textField.setText(data.file.path());
         textField.setCursorPosition(textField.getText().length() - 1);
-        main.getProjectData().setLastFontPath(data.file.parent().path() + "/");
+        projectData.setLastFontPath(data.file.parent().path() + "/");
 
         if (target == null) {
             target = data.file.sibling(data.file.nameWithoutExtension() + ".fnt");
@@ -1003,7 +1000,7 @@ public class DialogBitmapFont extends Dialog {
     private void updateColors() {
         TextButton textButton = findActor("colorTextButton");
         ColorData colorData = (ColorData) textButton.getUserObject();
-        if (colorData != null && main.getJsonData().getColors().contains(colorData, false)) {
+        if (colorData != null && jsonData.getColors().contains(colorData, false)) {
             data.color = colorData.getName();
         } else {
             data.color = null;
@@ -1012,7 +1009,7 @@ public class DialogBitmapFont extends Dialog {
 
         textButton = findActor("borderColorTextButton");
         colorData = (ColorData) textButton.getUserObject();
-        if (colorData != null && main.getJsonData().getColors().contains(colorData, false)) {
+        if (colorData != null && jsonData.getColors().contains(colorData, false)) {
             data.borderColor = colorData.getName();
         } else {
             data.borderColor = null;
@@ -1021,7 +1018,7 @@ public class DialogBitmapFont extends Dialog {
 
         textButton = findActor("shadowColorTextButton");
         colorData = (ColorData) textButton.getUserObject();
-        if (colorData != null && main.getJsonData().getColors().contains(colorData, false)) {
+        if (colorData != null && jsonData.getColors().contains(colorData, false)) {
             data.shadowColor = colorData.getName();
         } else {
             data.shadowColor = null;
@@ -1059,7 +1056,7 @@ public class DialogBitmapFont extends Dialog {
             textField.setAlignment(Align.center);
             cell.setActor(textField);
 
-            textField.addListener(main.getIbeamListener());
+            textField.addListener(ibeamListener);
             textField.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1067,7 +1064,7 @@ public class DialogBitmapFont extends Dialog {
                 }
             });
         } else {
-            data.createBitmapFont(main);
+            data.createBitmapFont();
             if (data.bitmapFont != null) {
                 TextField textField = findActor("previewField");
                 Cell cell = ((Table) textField.getParent()).getCell(textField);
@@ -1077,7 +1074,7 @@ public class DialogBitmapFont extends Dialog {
                 textField.setAlignment(Align.center);
                 cell.setActor(textField);
 
-                textField.addListener(main.getIbeamListener());
+                textField.addListener(ibeamListener);
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -1097,14 +1094,14 @@ public class DialogBitmapFont extends Dialog {
 
     private void saveSettings() {
         Runnable runnable = () -> {
-            String defaultPath = main.getProjectData().getLastFontPath();
+            String defaultPath = projectData.getLastFontPath();
 
             String[] filterPatterns = null;
             if (!Utils.isMac()) {
                 filterPatterns = new String[]{"*.scmp-font"};
             }
 
-            File file = main.getDesktopWorker().saveDialog("Save Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
+            File file = desktopWorker.saveDialog("Save Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     var fileHandle = new FileHandle(file);
@@ -1118,7 +1115,7 @@ public class DialogBitmapFont extends Dialog {
             }
         };
 
-        main.getDialogFactory().showDialogLoading(runnable);
+        dialogFactory.showDialogLoading(runnable);
     }
 
     private void saveSettings(FileHandle fileHandle) {
@@ -1195,14 +1192,14 @@ public class DialogBitmapFont extends Dialog {
 
     private void loadSettings() {
         Runnable runnable = () -> {
-            String defaultPath = main.getProjectData().getLastFontPath();
+            String defaultPath = projectData.getLastFontPath();
 
             String[] filterPatterns = null;
             if (!Utils.isMac()) {
                 filterPatterns = new String[]{"*.scmp-font"};
             }
 
-            File file = main.getDesktopWorker().openDialog("Select Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
+            File file = desktopWorker.openDialog("Select Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     loadSettings(new FileHandle(file));
@@ -1210,7 +1207,7 @@ public class DialogBitmapFont extends Dialog {
             }
         };
 
-        main.getDialogFactory().showDialogLoading(runnable);
+        dialogFactory.showDialogLoading(runnable);
     }
     
     private void loadSettings(FileHandle fileHandle) {
@@ -1229,14 +1226,14 @@ public class DialogBitmapFont extends Dialog {
         data.hinting = fontSettings.hinting;
         
         if (fontSettings.color != null) {
-            var color = main.getJsonData().getColorByName(fontSettings.color);
+            var color = jsonData.getColorByName(fontSettings.color);
             if (color == null) {
                 try {
                     color = new ColorData(fontSettings.color, new Color(fontSettings.colorValue));
                 } catch (ColorData.NameFormatException ex) {
                     Gdx.app.error(getClass().getName(), "Error creating color.", ex);
                 }
-                main.getJsonData().getColors().add(color);
+                jsonData.getColors().add(color);
             }
             ((TextButton) findActor("colorTextButton")).setUserObject(color);
             data.color = fontSettings.color;
@@ -1252,14 +1249,14 @@ public class DialogBitmapFont extends Dialog {
         data.borderWidth = fontSettings.borderWidth;
         
         if (fontSettings.borderColor != null) {
-            var color = main.getJsonData().getColorByName(fontSettings.borderColor);
+            var color = jsonData.getColorByName(fontSettings.borderColor);
             if (color == null) {
                 try {
                     color = new ColorData(fontSettings.borderColor, new Color(fontSettings.borderColorValue));
                 } catch (ColorData.NameFormatException ex) {
                     Gdx.app.error(getClass().getName(), "Error creating color.", ex);
                 }
-                main.getJsonData().getColors().add(color);
+                jsonData.getColors().add(color);
             }
             ((TextButton) findActor("borderColorTextButton")).setUserObject(color);
             data.borderColor = fontSettings.borderColor;
@@ -1278,14 +1275,14 @@ public class DialogBitmapFont extends Dialog {
         data.shadowOffsetY = fontSettings.shadowOffsetY;
         
         if (fontSettings.shadowColor != null) {
-            var color = main.getJsonData().getColorByName(fontSettings.shadowColor);
+            var color = jsonData.getColorByName(fontSettings.shadowColor);
             if (color == null) {
                 try {
                     color = new ColorData(fontSettings.shadowColor, new Color(fontSettings.shadowColorValue));
                 } catch (ColorData.NameFormatException ex) {
                     Gdx.app.error(getClass().getName(), "Error creating color.", ex);
                 }
-                main.getJsonData().getColors().add(color);
+                jsonData.getColors().add(color);
             }
             ((TextButton) findActor("shadowColorTextButton")).setUserObject(color);
             data.shadowColor = fontSettings.shadowColor;
@@ -1348,9 +1345,9 @@ public class DialogBitmapFont extends Dialog {
     
     private void showCharacterDialog() {
         Runnable runnable = () -> {
-            String defaultPath = main.getProjectData().getLastFontPath();
+            String defaultPath = projectData.getLastFontPath();
 
-            File file = main.getDesktopWorker().openDialog("Select character text file...", defaultPath, null, "All files");
+            File file = desktopWorker.openDialog("Select character text file...", defaultPath, null, "All files");
             if (file != null) {
                 var fileHandle = new FileHandle(file);
                 String characters = fileHandle.readString("utf-8");
@@ -1366,6 +1363,6 @@ public class DialogBitmapFont extends Dialog {
             }
         };
 
-        main.getDialogFactory().showDialogLoading(runnable);
+        dialogFactory.showDialogLoading(runnable);
     }
 }

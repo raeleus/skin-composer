@@ -16,14 +16,15 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
 import com.ray3k.stripe.PopTableClickListener;
+import static com.ray3k.skincomposer.Main.*;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
 
 public class ListListeners {
     public static EventListener listNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simList = (DialogSceneComposerModel.SimList) dialogSceneComposer.simActor;
-        var textField = new TextField("", DialogSceneComposer.skin, "scene");
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        var textField = new TextField("", skin, "scene");
+        var popTableClickListener = new PopTableClickListener(skin) {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -37,14 +38,14 @@ public class ListListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("Name:", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("Name:", skin, "scene-label-colored");
                 popTable.add(label);
                 
                 popTable.row();
                 textField.setText(simList.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
-                textField.addListener(DialogSceneComposer.main.getIbeamListener());
-                textField.addListener(new TextTooltip("The name of the List to allow for convenient searching via Group#findActor().", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textField.addListener(ibeamListener);
+                textField.addListener(new TextTooltip("The name of the List to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene"));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -87,24 +88,24 @@ public class ListListeners {
     
     public static EventListener listTextListListener(final DialogSceneComposer dialogSceneComposer) {
         var simList = (DialogSceneComposerModel.SimList) dialogSceneComposer.simActor;
-        var textField = new TextField("", DialogSceneComposer.skin, "scene");
+        var textField = new TextField("", skin, "scene");
         textField.setFocusTraversal(false);
-        var draggableTextList = new DraggableTextList(true, DialogSceneComposer.skin, "scene-unchecked");
+        var draggableTextList = new DraggableTextList(true, skin, "scene-unchecked");
         draggableTextList.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 dialogSceneComposer.events.listList(draggableTextList.getTexts());
             }
         });
-        var scrollPane = new ScrollPane(draggableTextList, DialogSceneComposer.skin, "scene");
+        var scrollPane = new ScrollPane(draggableTextList, skin, "scene");
         scrollPane.setFadeScrollBars(false);
-        scrollPane.addListener(DialogSceneComposer.main.getScrollFocusListener());
-        var popTableClickListener = new PopTableClickListener(DialogSceneComposer.skin) {
+        scrollPane.addListener(scrollFocusListener);
+        var popTableClickListener = new PopTableClickListener(skin) {
             {
                 popTable.setAutomaticallyResized(true);
                 
-                textField.addListener(DialogSceneComposer.main.getIbeamListener());
-                textField.addListener(new TextTooltip("The text to add to the list.", DialogSceneComposer.main.getTooltipManager(), DialogSceneComposer.skin, "scene"));
+                textField.addListener(ibeamListener);
+                textField.addListener(new TextTooltip("The text to add to the list.", tooltipManager, skin, "scene"));
                 textField.addListener(new InputListener() {
                     @Override
                     public boolean keyDown(InputEvent event, int keycode) {
@@ -128,7 +129,7 @@ public class ListListeners {
                 var popTable = getPopTable();
                 popTable.clearChildren();
                 
-                var label = new Label("List Entries:\n(Drag to change order)", DialogSceneComposer.skin, "scene-label-colored");
+                var label = new Label("List Entries:\n(Drag to change order)", skin, "scene-label-colored");
                 label.setAlignment(Align.center);
                 popTable.add(label).colspan(2);
                 
@@ -138,16 +139,16 @@ public class ListListeners {
                 popTable.add(scrollPane).colspan(2).minHeight(150).growX();
     
                 popTable.row();
-                label = new Label("Add New Item:", DialogSceneComposer.skin, "scene-label-colored");
+                label = new Label("Add New Item:", skin, "scene-label-colored");
                 popTable.add(label).colspan(2).padTop(10);
                 
                 popTable.row();
                 textField.setText("");
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 
-                var textButton = new Button(DialogSceneComposer.skin, "scene-plus");
+                var textButton = new Button(skin, "scene-plus");
                 popTable.add(textButton);
-                textButton.addListener(DialogSceneComposer.main.getHandListener());
+                textButton.addListener(handListener);
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

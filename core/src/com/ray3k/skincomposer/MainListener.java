@@ -53,43 +53,32 @@ import com.ray3k.skincomposer.dialog.PopWelcome.WelcomeListener;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.utils.Utils;
 
+import static com.ray3k.skincomposer.Main.*;
+
 import java.io.File;
 import java.util.Locale;
 
 public class MainListener extends RootTableListener {
-    private final RootTable root;
-    private final DialogFactory dialogFactory;
-    private final DesktopWorker desktopWorker;
-    private final ProjectData projectData;
-    private final JsonData jsonData;
-    private final Main main;
     private WelcomeDialogListener welcomeListener;
     private DialogListener dialogListener;
     
-    public MainListener(Main main) {
-        this.root = main.getRootTable();
-        this.dialogFactory = main.getDialogFactory();
-        this.desktopWorker = main.getDesktopWorker();
-        this.projectData = main.getProjectData();
-        this.jsonData = main.getProjectData().getJsonData();
-        this.main = main;
-        
+    public MainListener() {
         dialogListener = new DialogListener() {
             @Override
             public void opened() {
-                main.getDesktopWorker().removeFilesDroppedListener(main.getRootTable().getFilesDroppedListener());
+                desktopWorker.removeFilesDroppedListener(rootTable.getFilesDroppedListener());
             }
 
             @Override
             public void closed() {
-                main.getDesktopWorker().addFilesDroppedListener(main.getRootTable().getFilesDroppedListener());
+                desktopWorker.addFilesDroppedListener(rootTable.getFilesDroppedListener());
             }
         };
     }
     
     public void createWelcomeListener() {
         welcomeListener = new WelcomeDialogListener();
-        if (main.getProjectData().isAllowingWelcome()) {
+        if (projectData.isAllowingWelcome()) {
             dialogFactory.showDialogWelcome(welcomeListener, dialogListener);
         }
     }
@@ -110,22 +99,22 @@ public class MainListener extends RootTableListener {
                 saveAsFile(null);
                 break;
             case WELCOME:
-                main.getDialogFactory().showDialogWelcome(getWelcomeListener(), dialogListener);
+                dialogFactory.showDialogWelcome(getWelcomeListener(), dialogListener);
                 break;
             case IMPORT:
-                main.getDialogFactory().showDialogImport(dialogListener);
+                dialogFactory.showDialogImport(dialogListener);
                 break;
             case EXPORT:
-                main.getDialogFactory().showDialogExport(dialogListener);
+                dialogFactory.showDialogExport(dialogListener);
                 break;
             case EXIT:
                 dialogFactory.showCloseDialog(dialogListener);
                 break;
             case UNDO:
-                main.getUndoableManager().undo();
+                undoableManager.undo();
                 break;
             case REDO:
-                main.getUndoableManager().redo();
+                undoableManager.redo();
                 break;
             case SETTINGS:
                 dialogFactory.showDialogSettings(dialogListener);
@@ -150,7 +139,7 @@ public class MainListener extends RootTableListener {
                     @Override
                     public void newClassEntered(String fullyQualifiedName,
                             String displayName, boolean declareAfterUIclasses) {
-                        main.getUndoableManager().addUndoable(
+                        undoableManager.addUndoable(
                                 new NewCustomClassUndoable(fullyQualifiedName, displayName, declareAfterUIclasses, main), true);
                     }
 
@@ -165,7 +154,7 @@ public class MainListener extends RootTableListener {
                     @Override
                     public void newClassEntered(String fullyQualifiedName,
                             String displayName, boolean declareAfterUIclasses) {
-                        main.getUndoableManager().addUndoable(new DuplicateCustomClassUndoable(main, displayName, fullyQualifiedName, declareAfterUIclasses), true);
+                        undoableManager.addUndoable(new DuplicateCustomClassUndoable(main, displayName, fullyQualifiedName, declareAfterUIclasses), true);
                     }
 
                     @Override
@@ -175,14 +164,14 @@ public class MainListener extends RootTableListener {
                 });
                 break;
             case DELETE_CLASS:
-                main.getUndoableManager().addUndoable(new DeleteCustomClassUndoable(main), true);
+                undoableManager.addUndoable(new DeleteCustomClassUndoable(main), true);
                 break;
             case RENAME_CLASS:
                 dialogFactory.showRenameClassDialog(new DialogCustomClass.CustomClassListener() {
                     @Override
                     public void newClassEntered(String fullyQualifiedName,
                             String displayName, boolean declareAfterUIclasses) {
-                        main.getUndoableManager().addUndoable(new UndoableManager.RenameCustomClassUndoable(main, displayName, fullyQualifiedName, declareAfterUIclasses), true);
+                        undoableManager.addUndoable(new UndoableManager.RenameCustomClassUndoable(main, displayName, fullyQualifiedName, declareAfterUIclasses), true);
                     }
 
                     @Override
@@ -195,16 +184,16 @@ public class MainListener extends RootTableListener {
                 updateStyleProperties();
                 break;
             case NEW_STYLE:
-                if (main.getRootTable().getClassSelectBox().getSelectedIndex() < Main.BASIC_CLASSES.length) {
-                    dialogFactory.showNewStyleDialog(main.getSkin(), main.getStage());
+                if (rootTable.getClassSelectBox().getSelectedIndex() < Main.BASIC_CLASSES.length) {
+                    dialogFactory.showNewStyleDialog(skin, stage);
                 } else {
                     dialogFactory.showNewCustomStyleDialog(new DialogCustomStyle.CustomStyleListener() {
                         @Override
                         public void newStyleEntered(String name) {
-                            main.getUndoableManager().addUndoable(
+                            undoableManager.addUndoable(
                                     new UndoableManager.NewCustomStyleUndoable(main,
                                             name,
-                                            (CustomClass) main.getRootTable().getClassSelectBox().getSelected()), true);
+                                            (CustomClass) rootTable.getClassSelectBox().getSelected()), true);
                         }
 
                         @Override
@@ -214,16 +203,16 @@ public class MainListener extends RootTableListener {
                 }
                 break;
             case DUPLICATE_STYLE:
-                if (main.getRootTable().getClassSelectBox().getSelectedIndex() < Main.BASIC_CLASSES.length) {
-                    dialogFactory.showDuplicateStyleDialog(main.getSkin(), main.getStage());
+                if (rootTable.getClassSelectBox().getSelectedIndex() < Main.BASIC_CLASSES.length) {
+                    dialogFactory.showDuplicateStyleDialog(skin, stage);
                 } else {
                     dialogFactory.showDuplicateCustomStyleDialog(new DialogCustomStyle.CustomStyleListener() {
                         @Override
                         public void newStyleEntered(String name) {
-                            main.getUndoableManager().addUndoable(
+                            undoableManager.addUndoable(
                                     new UndoableManager.DuplicateCustomStyleUndoable(main,
                                             name,
-                                            (CustomStyle) main.getRootTable().getStyleSelectBox().getSelected()), true);
+                                            (CustomStyle) rootTable.getStyleSelectBox().getSelected()), true);
                         }
 
                         @Override
@@ -233,23 +222,23 @@ public class MainListener extends RootTableListener {
                 }
                 break;
             case DELETE_STYLE:
-                if (main.getRootTable().getClassSelectBox().getSelectedIndex() < Main.BASIC_CLASSES.length) {
-                    dialogFactory.showDeleteStyleDialog(main.getSkin(), main.getStage());
+                if (rootTable.getClassSelectBox().getSelectedIndex() < Main.BASIC_CLASSES.length) {
+                    dialogFactory.showDeleteStyleDialog(skin, stage);
                 } else {
-                    main.getUndoableManager().addUndoable(new UndoableManager.DeleteCustomStyleUndoable(main, (CustomStyle) main.getRootTable().getStyleSelectBox().getSelected()), true);
+                    undoableManager.addUndoable(new UndoableManager.DeleteCustomStyleUndoable(main, (CustomStyle) rootTable.getStyleSelectBox().getSelected()), true);
                 }
                 break;
             case RENAME_STYLE:
-                if (main.getRootTable().getClassSelectBox().getSelectedIndex() < Main.BASIC_CLASSES.length) {
-                    dialogFactory.showRenameStyleDialog(main.getSkin(), main.getStage());
+                if (rootTable.getClassSelectBox().getSelectedIndex() < Main.BASIC_CLASSES.length) {
+                    dialogFactory.showRenameStyleDialog(skin, stage);
                 } else {
                     dialogFactory.showRenameCustomStyleDialog(new DialogCustomStyle.CustomStyleListener() {
                         @Override
                         public void newStyleEntered(String name) {
-                            main.getUndoableManager().addUndoable(
+                            undoableManager.addUndoable(
                                     new UndoableManager.RenameCustomStyleUndoable(main,
                                             name,
-                                            (CustomStyle) main.getRootTable().getStyleSelectBox().getSelected()), true);
+                                            (CustomStyle) rootTable.getStyleSelectBox().getSelected()), true);
                         }
 
                         @Override
@@ -270,7 +259,7 @@ public class MainListener extends RootTableListener {
                 downloadUpdate();
                 break;
             case CHECK_FOR_UPDATES_COMPLETE:
-                root.findActor("downloadButton").setVisible(!Main.VERSION.equals(Main.newVersion));
+                rootTable.findActor("downloadButton").setVisible(!Main.VERSION.equals(Main.newVersion));
                 break;
         }
     }
@@ -294,12 +283,12 @@ public class MainListener extends RootTableListener {
             dialog.addListener(new DialogListener() {
                 @Override
                 public void opened() {
-                    main.getDesktopWorker().removeFilesDroppedListener(main.getRootTable().getFilesDroppedListener());
+                    desktopWorker.removeFilesDroppedListener(rootTable.getFilesDroppedListener());
                 }
 
                 @Override
                 public void closed() {
-                    main.getDesktopWorker().addFilesDroppedListener(main.getRootTable().getFilesDroppedListener());
+                    desktopWorker.addFilesDroppedListener(rootTable.getFilesDroppedListener());
                 }
             });
         } else {
@@ -330,7 +319,7 @@ public class MainListener extends RootTableListener {
                     
                     if (projectData.checkForInvalidMinWidthHeight()) {
                         projectData.setLoadedVersion(Main.VERSION);
-                        main.getDialogFactory().yesNoDialog("Fix minWidth and minHeight errors?", "Old project (< v.30) detected.\nResolve minWidth and minHeight errors?", new DialogFactory.ConfirmationListener() {
+                        dialogFactory.yesNoDialog("Fix minWidth and minHeight errors?", "Old project (< v.30) detected.\nResolve minWidth and minHeight errors?", new DialogFactory.ConfirmationListener() {
                             @Override
                             public void selected(int selection) {
                                 if (selection == 0) {
@@ -342,8 +331,8 @@ public class MainListener extends RootTableListener {
                     }
                     
                     projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
-                    root.populate();
-                    root.updateRecentFiles();
+                    rootTable.populate();
+                    rootTable.updateRecentFiles();
                 });
             }
         };
@@ -363,12 +352,12 @@ public class MainListener extends RootTableListener {
             dialog.addListener(new DialogListener() {
                 @Override
                 public void opened() {
-                    main.getDesktopWorker().removeFilesDroppedListener(main.getRootTable().getFilesDroppedListener());
+                    desktopWorker.removeFilesDroppedListener(rootTable.getFilesDroppedListener());
                 }
 
                 @Override
                 public void closed() {
-                    main.getDesktopWorker().addFilesDroppedListener(main.getRootTable().getFilesDroppedListener());
+                    desktopWorker.addFilesDroppedListener(rootTable.getFilesDroppedListener());
                 }
             });
         } else {
@@ -390,7 +379,7 @@ public class MainListener extends RootTableListener {
     
                     if (projectData.checkForInvalidMinWidthHeight()) {
                         projectData.setLoadedVersion(Main.VERSION);
-                        main.getDialogFactory().yesNoDialog("Fix minWidth and minHeight errors?", "Old project (< v.30) detected.\nResolve minWidth and minHeight errors?", new DialogFactory.ConfirmationListener() {
+                        dialogFactory.yesNoDialog("Fix minWidth and minHeight errors?", "Old project (< v.30) detected.\nResolve minWidth and minHeight errors?", new DialogFactory.ConfirmationListener() {
                             @Override
                             public void selected(int selection) {
                                 if (selection == 0) {
@@ -402,8 +391,8 @@ public class MainListener extends RootTableListener {
                     }
                     
                     projectData.setLastOpenSavePath(fileHandle.parent().path() + "/");
-                    root.populate();
-                    root.updateRecentFiles();
+                    rootTable.populate();
+                    rootTable.updateRecentFiles();
                 });
             }
         };
@@ -423,12 +412,12 @@ public class MainListener extends RootTableListener {
             dialog.addListener(new DialogListener() {
                 @Override
                 public void opened() {
-                    main.getDesktopWorker().removeFilesDroppedListener(main.getRootTable().getFilesDroppedListener());
+                    desktopWorker.removeFilesDroppedListener(rootTable.getFilesDroppedListener());
                 }
 
                 @Override
                 public void closed() {
-                    main.getDesktopWorker().addFilesDroppedListener(main.getRootTable().getFilesDroppedListener());
+                    desktopWorker.addFilesDroppedListener(rootTable.getFilesDroppedListener());
                 }
             });
         } else {
@@ -482,7 +471,7 @@ public class MainListener extends RootTableListener {
         for (Class clazz : Main.BASIC_CLASSES) {
             names.add(clazz.getSimpleName());
         }
-        for (CustomClass customClass : main.getJsonData().getCustomClasses()) {
+        for (CustomClass customClass : jsonData.getCustomClasses()) {
             names.add(customClass);
         }
         classSelectBox.setItems(names);
@@ -511,57 +500,57 @@ public class MainListener extends RootTableListener {
         } else if (styleProperty.type == BitmapFont.class) {
             dialogFactory.showDialogFonts(styleProperty, dialogListener);
         } else if (styleProperty.type == Float.TYPE) {
-            main.getUndoableManager().addUndoable(new UndoableManager.DoubleUndoable(main, styleProperty, ((Spinner) styleActor).getValue()), false);
+            undoableManager.addUndoable(new UndoableManager.DoubleUndoable(main, styleProperty, ((Spinner) styleActor).getValue()), false);
         } else if (styleProperty.type == ScrollPaneStyle.class) {
-            main.getUndoableManager().addUndoable(new UndoableManager.SelectBoxUndoable(root, styleProperty, (SelectBox) styleActor), true);
+            undoableManager.addUndoable(new UndoableManager.SelectBoxUndoable(rootTable, styleProperty, (SelectBox) styleActor), true);
         } else if (styleProperty.type == LabelStyle.class) {
-            main.getUndoableManager().addUndoable(new UndoableManager.SelectBoxUndoable(root, styleProperty, (SelectBox) styleActor), true);
+            undoableManager.addUndoable(new UndoableManager.SelectBoxUndoable(rootTable, styleProperty, (SelectBox) styleActor), true);
         } else if (styleProperty.type == ListStyle.class) {
-            main.getUndoableManager().addUndoable(new UndoableManager.SelectBoxUndoable(root, styleProperty, (SelectBox) styleActor), true);
+            undoableManager.addUndoable(new UndoableManager.SelectBoxUndoable(rootTable, styleProperty, (SelectBox) styleActor), true);
         }
     }
 
     @Override
     public void styleParentChanged(StyleData style, SelectBox<String> selectBox) {
-        main.getUndoableManager().addUndoable(new UndoableManager.ParentUndoable(root, style, selectBox), true);
+        undoableManager.addUndoable(new UndoableManager.ParentUndoable(rootTable, style, selectBox), true);
     }
     
     private void updateStyleProperties() {
-        int classIndex = root.getClassSelectBox().getSelectedIndex();
+        int classIndex = rootTable.getClassSelectBox().getSelectedIndex();
         if (classIndex >= 0 && classIndex < Main.BASIC_CLASSES.length) {
-            root.setClassDuplicateButtonDisabled(true);
-            root.setClassDeleteButtonDisabled(true);
-            root.setClassRenameButtonDisabled(true);
+            rootTable.setClassDuplicateButtonDisabled(true);
+            rootTable.setClassDeleteButtonDisabled(true);
+            rootTable.setClassRenameButtonDisabled(true);
 
             Array<StyleData> styleDatas = jsonData.getClassStyleMap().get(Main.BASIC_CLASSES[classIndex]);
             
-            int styleIndex = root.getStyleSelectBox().getSelectedIndex();
+            int styleIndex = rootTable.getStyleSelectBox().getSelectedIndex();
             if (styleIndex >= 0 && styleIndex < styleDatas.size) {
                 StyleData styleData = styleDatas.get(styleIndex);
 
-                root.setStyleDeleteButtonDisabled(!styleData.deletable);
-                root.setStyleRenameButtonDisabled(!styleData.deletable);
+                rootTable.setStyleDeleteButtonDisabled(!styleData.deletable);
+                rootTable.setStyleRenameButtonDisabled(!styleData.deletable);
                 
-                root.refreshStyleProperties(false);
-                root.refreshPreviewProperties();
-                root.refreshPreview();
+                rootTable.refreshStyleProperties(false);
+                rootTable.refreshPreviewProperties();
+                rootTable.refreshPreview();
             }
         } else {
-            main.getRootTable().setClassDuplicateButtonDisabled(false);
-            main.getRootTable().setClassDeleteButtonDisabled(false);
-            main.getRootTable().setClassRenameButtonDisabled(false);
+            rootTable.setClassDuplicateButtonDisabled(false);
+            rootTable.setClassDeleteButtonDisabled(false);
+            rootTable.setClassRenameButtonDisabled(false);
             
-            Object selected = main.getRootTable().getStyleSelectBox().getSelected();
+            Object selected = rootTable.getStyleSelectBox().getSelected();
             
             if (selected instanceof CustomStyle) {
                 CustomStyle customStyle = (CustomStyle) selected;
                 
-                main.getRootTable().setStyleDeleteButtonDisabled(!customStyle.isDeletable());
-                main.getRootTable().setStyleRenameButtonDisabled(!customStyle.isDeletable());
+                rootTable.setStyleDeleteButtonDisabled(!customStyle.isDeletable());
+                rootTable.setStyleRenameButtonDisabled(!customStyle.isDeletable());
                 
-                root.refreshStyleProperties(false);
-                root.refreshPreviewProperties();
-                root.refreshPreview();
+                rootTable.refreshStyleProperties(false);
+                rootTable.refreshPreviewProperties();
+                rootTable.refreshPreview();
             }
         }
     }
@@ -571,7 +560,7 @@ public class MainListener extends RootTableListener {
         dialogFactory.showNewStylePropertyDialog(new CustomStylePropertyListener() {
             @Override
             public void newPropertyEntered(String propertyName, PropertyType propertyType) {
-                main.getUndoableManager().addUndoable(new UndoableManager.NewCustomPropertyUndoable(main, propertyName, propertyType), true);
+                undoableManager.addUndoable(new UndoableManager.NewCustomPropertyUndoable(main, propertyName, propertyType), true);
             }
 
             @Override
@@ -585,7 +574,7 @@ public class MainListener extends RootTableListener {
         dialogFactory.showDuplicateStylePropertyDialog(customProperty.getName(), customProperty.getType(), new CustomStylePropertyListener() {
             @Override
             public void newPropertyEntered(String propertyName, PropertyType propertyType) {
-                main.getUndoableManager().addUndoable(new UndoableManager.DuplicateCustomPropertyUndoable(main, customProperty, propertyName, propertyType), true);
+                undoableManager.addUndoable(new UndoableManager.DuplicateCustomPropertyUndoable(customProperty, propertyName, propertyType), true);
             }
 
             @Override
@@ -596,7 +585,7 @@ public class MainListener extends RootTableListener {
 
     @Override
     public void deleteCustomProperty(CustomProperty customProperty) {
-        main.getUndoableManager().addUndoable(new UndoableManager.DeleteCustomPropertyUndoable(main, customProperty), true);
+        undoableManager.addUndoable(new UndoableManager.DeleteCustomPropertyUndoable(main, customProperty), true);
     }
 
     @Override
@@ -604,7 +593,7 @@ public class MainListener extends RootTableListener {
         dialogFactory.showRenameStylePropertyDialog(customProperty.getName(), customProperty.getType(), new CustomStylePropertyListener() {
             @Override
             public void newPropertyEntered(String propertyName, PropertyType propertyType) {
-                main.getUndoableManager().addUndoable(new UndoableManager.RenameCustomPropertyUndoable(main, customProperty, propertyName, propertyType), true);
+                undoableManager.addUndoable(new UndoableManager.RenameCustomPropertyUndoable(main, customProperty, propertyName, propertyType), true);
             }
 
             @Override
@@ -627,14 +616,14 @@ public class MainListener extends RootTableListener {
                 dialogFactory.showDialogFonts(customProperty, dialogListener);
                 break;
             case NUMBER:
-                main.getUndoableManager().addUndoable(new UndoableManager.CustomDoubleUndoable(main, customProperty, ((Spinner) styleActor).getValue()), false);
+                undoableManager.addUndoable(new UndoableManager.CustomDoubleUndoable(main, customProperty, ((Spinner) styleActor).getValue()), false);
                 break;
             case TEXT:
             case RAW_TEXT:
-                main.getUndoableManager().addUndoable(new UndoableManager.CustomTextUndoable(main, customProperty, ((TextField) styleActor).getText()), false);
+                undoableManager.addUndoable(new UndoableManager.CustomTextUndoable(main, customProperty, ((TextField) styleActor).getText()), false);
                 break;
             case BOOL:
-                main.getUndoableManager().addUndoable(new UndoableManager.CustomBoolUndoable(main, customProperty, ((Button) styleActor).isChecked()), false);
+                undoableManager.addUndoable(new UndoableManager.CustomBoolUndoable(main, customProperty, ((Button) styleActor).isChecked()), false);
                 break;
             case STYLE:
                 dialogFactory.showDialogCustomStyleSelection(customProperty, dialogListener);
@@ -650,29 +639,29 @@ public class MainListener extends RootTableListener {
     }
     
     public void refreshTextureAtlas() {
-        main.getDialogFactory().showDialogLoading(() -> {
+        dialogFactory.showDialogLoading(() -> {
             Gdx.app.postRunnable(() -> {
                 try {
                     FileHandle defaultsFile = Main.appFolder.child("texturepacker/atlas-internal-settings.json");
-                    main.getProjectData().getAtlasData().writeAtlas(defaultsFile);
-                    main.getProjectData().getAtlasData().atlasCurrent = true;
-                    main.getAtlasData().produceAtlas();
-                    main.getRootTable().refreshPreview();
+                    projectData.getAtlasData().writeAtlas(defaultsFile);
+                    projectData.getAtlasData().atlasCurrent = true;
+                    atlasData.produceAtlas();
+                    rootTable.refreshPreview();
                 } catch (Exception e) {
-                    main.getDialogFactory().showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
+                    dialogFactory.showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
                     Gdx.app.error(getClass().getName(), "Unable to write texture atlas to temporary storage!", e);
-                    main.getDialogFactory().showDialogError("Atlas Error...", "Unable to write texture atlas to temporary storage.\n\nOpen log?");
+                    dialogFactory.showDialogError("Atlas Error...", "Unable to write texture atlas to temporary storage.\n\nOpen log?");
                 }
             });
         });
     }
     
     public void showSceneComposer() {
-        main.getDialogFactory().showSceneComposerDialog();
+        dialogFactory.showSceneComposerDialog();
     }
     
     public void downloadUpdate() {
-        main.getDialogFactory().showDialogUpdate(main.getSkin(), main.getStage());
+        dialogFactory.showDialogUpdate(skin, stage);
     }
     
     public WelcomeListener getWelcomeListener() {
@@ -747,7 +736,7 @@ public class MainListener extends RootTableListener {
 
         @Override
         public void dontShowClicked(boolean value) {
-            main.getProjectData().setAllowingWelcome(!value);
+            projectData.setAllowingWelcome(!value);
         }
     }
 }

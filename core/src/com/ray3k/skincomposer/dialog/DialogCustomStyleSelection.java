@@ -31,16 +31,16 @@ import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.CustomClass;
 
+import static com.ray3k.skincomposer.Main.*;
+
 /**
  *
  * @author Raymond
  */
 public class DialogCustomStyleSelection extends Dialog {
-    private Main main;
     
-    public DialogCustomStyleSelection(Main main) {
-        super("Select a style...", main.getSkin(), "bg");
-        this.main = main;
+    public DialogCustomStyleSelection() {
+        super("Select a style...", skin, "bg");
         
         populate();
     }
@@ -59,7 +59,7 @@ public class DialogCustomStyleSelection extends Dialog {
         var selectBox = new SelectBox<String>(getSkin());
         selectBox.setName("classes");
         table.add(selectBox).growX().minWidth(100);
-        selectBox.addListener(main.getHandListener());
+        selectBox.addListener(handListener);
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -75,7 +75,7 @@ public class DialogCustomStyleSelection extends Dialog {
         selectBox = new SelectBox<>(getSkin());
         selectBox.setName("styles");
         table.add(selectBox).growX().minWidth(100);
-        selectBox.addListener(main.getHandListener());
+        selectBox.addListener(handListener);
         
         populateClasses();
         populateStyles(0);
@@ -86,11 +86,11 @@ public class DialogCustomStyleSelection extends Dialog {
         t.defaults().space(5).minWidth(75);
         var textButton = new TextButton("OK", getSkin());
         button(textButton, true);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
         textButton = new TextButton("Cancel", getSkin());
         button(textButton, false);
-        textButton.addListener(main.getHandListener());
+        textButton.addListener(handListener);
         
         key(Keys.ENTER, true).key(Keys.ESCAPE, false);
     }
@@ -100,7 +100,7 @@ public class DialogCustomStyleSelection extends Dialog {
         for (Class clazz : Main.BASIC_CLASSES) {
             classNames.add(clazz.getSimpleName());
         }
-        for (CustomClass clazz : main.getJsonData().getCustomClasses()) {
+        for (CustomClass clazz : jsonData.getCustomClasses()) {
             classNames.add(clazz.getDisplayName());
         }
         
@@ -111,12 +111,12 @@ public class DialogCustomStyleSelection extends Dialog {
     private void populateStyles(int index) {
         var styleNames = new Array<String>();
         if (index < Main.BASIC_CLASSES.length) {
-            var styles = main.getJsonData().getClassStyleMap().get(Main.BASIC_CLASSES[index]);
+            var styles = jsonData.getClassStyleMap().get(Main.BASIC_CLASSES[index]);
             for (var style : styles) {
                 styleNames.add(style.name);
             }
         } else {
-            var styles = main.getJsonData().getCustomClasses().get(index - Main.BASIC_CLASSES.length).getStyles();
+            var styles = jsonData.getCustomClasses().get(index - Main.BASIC_CLASSES.length).getStyles();
             for (var style : styles) {
                 styleNames.add(style.getName());
             }
