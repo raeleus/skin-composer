@@ -22,10 +22,9 @@ import com.ray3k.stripe.PopTable;
 import com.ray3k.stripe.PopTableClickListener;
 import com.ray3k.stripe.StripeMenuBar;
 import com.ray3k.stripe.StripeMenuBar.KeyboardShortcut;
-import space.earlygrey.shapedrawer.GraphDrawer;
 
-import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.*;
 import static com.ray3k.skincomposer.Main.*;
+import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.*;
 
 public class DialogSceneComposer extends Dialog {
     public static DialogSceneComposer dialog;
