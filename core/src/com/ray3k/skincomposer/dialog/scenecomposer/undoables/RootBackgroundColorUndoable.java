@@ -10,14 +10,11 @@ import static com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerMod
 
 public class RootBackgroundColorUndoable implements SceneComposerUndoable {
     private DialogSceneComposer dialog;
-    private DialogSceneComposerModel model;
-    private SimRootGroup group;
     private ColorData color;
     private ColorData colorPrevious;
     
     public RootBackgroundColorUndoable(ColorData newColor) {
         dialog = DialogSceneComposer.dialog;
-        model = dialog.model;
         
         colorPrevious = rootActor.backgroundColor;
         color = newColor;
