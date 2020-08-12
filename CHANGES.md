@@ -7,6 +7,7 @@
 * JSON exports are guaranteed to be UTF-8 formatted to prevent issues with loading unicode characters.
 * Scene Composer now exports to clipboard without fully qualified names.
 * Background color of font is automatically adjusted based on font color in Bitmap Font Dialog.
+* Prevent colors with the same name from being generated.
 * Fixed crash if setting increment on Sliders/ProgressBars to a value less than 1
 * Fixed crash when renaming a Color and there is a TenPatch that does not have a color defined.
 * Fixed Lwjgl3FileHandle issue when reading/writing SCMP files.

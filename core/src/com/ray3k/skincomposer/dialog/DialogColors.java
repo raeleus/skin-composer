@@ -211,7 +211,16 @@ public class DialogColors extends Dialog {
                     table.setBackground("white");
                     table.setColor(color);
                     dialog.getContentTable().add(table).minSize(50.0f);
-                    button.setDisabled(!ColorData.validate(field.getText()));
+                    boolean disable = !ColorData.validate(field.getText());
+                    if (!disable) {
+                        for (ColorData data : jsonData.getColors()) {
+                            if (data.getName().equals(field.getText())) {
+                                disable = true;
+                                break;
+                            }
+                        }
+                    }
+                    button.setDisabled(disable);
                     field.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
