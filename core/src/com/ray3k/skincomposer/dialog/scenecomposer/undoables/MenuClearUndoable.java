@@ -1,5 +1,7 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.undoables;
 
+import com.badlogic.gdx.graphics.Color;
+import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimRootGroup;
 
@@ -19,7 +21,8 @@ public class MenuClearUndoable implements SceneComposerUndoable {
     @Override
     public void undo() {
         rootActor = previousGroup;
-    
+        
+        dialog.previewTable.setColor(rootActor.backgroundColor.color);
         dialog.simActor = previousGroup;
         dialog.populateProperties();
         dialog.populatePath();
@@ -29,7 +32,8 @@ public class MenuClearUndoable implements SceneComposerUndoable {
     @Override
     public void redo() {
         rootActor = group;
-        
+    
+        dialog.previewTable.setColor(rootActor.backgroundColor == null ? Color.WHITE : rootActor.backgroundColor.color);
         dialog.simActor = group;
         dialog.populateProperties();
         dialog.populatePath();
