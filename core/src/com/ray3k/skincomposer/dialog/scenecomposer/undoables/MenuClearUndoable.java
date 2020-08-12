@@ -22,7 +22,7 @@ public class MenuClearUndoable implements SceneComposerUndoable {
     public void undo() {
         rootActor = previousGroup;
         
-        dialog.previewTable.setColor(rootActor.backgroundColor.color);
+        dialog.previewTable.setColor(rootActor.backgroundColor == null ? Color.WHITE : rootActor.backgroundColor.color);
         dialog.simActor = previousGroup;
         dialog.populateProperties();
         dialog.populatePath();
