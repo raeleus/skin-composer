@@ -38,6 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.FilesDroppedListener;
+import com.ray3k.skincomposer.LeadingTruncateLabel;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.ColorData;
@@ -233,12 +234,12 @@ public class DialogBitmapFont extends Dialog {
         label.setName("source-label");
         table.add(label).right();
 
-        label = new Label(data.file == null ? "" : data.file.path(), skin, "field");
-        label.setName("sourceFileField");
-        label.setEllipsis(true);
-        table.add(label).growX().minWidth(0).prefWidth(0);
-        label.addListener(handListener);
-        label.addListener(new ClickListener() {
+        var ltLabel = new LeadingTruncateLabel(data.file == null ? "" : data.file.path(), skin, "field");
+        ltLabel.setName("sourceFileField");
+        ltLabel.setEllipsis(true);
+        table.add(ltLabel).growX().minWidth(0).prefWidth(0);
+        ltLabel.addListener(handListener);
+        ltLabel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 event.getListenerActor().fire(new ChangeListener.ChangeEvent());
@@ -249,7 +250,7 @@ public class DialogBitmapFont extends Dialog {
         table.add(textButton).fillX();
 
         toolTip = new TextTooltip("Path to source TTF file to be read", tooltipManager, getSkin());
-        label.addListener(toolTip);
+        ltLabel.addListener(toolTip);
         textButton.addListener(toolTip);
         textButton.addListener(handListener);
         var sourceChangeListener = new ChangeListener() {
@@ -274,7 +275,7 @@ public class DialogBitmapFont extends Dialog {
                 dialogFactory.showDialogLoading(runnable);
             }
         };
-        label.addListener(sourceChangeListener);
+        ltLabel.addListener(sourceChangeListener);
         textButton.addListener(sourceChangeListener);
 
         table.row();
@@ -284,11 +285,11 @@ public class DialogBitmapFont extends Dialog {
         label.setEllipsis(true);
         table.add(label).right();
 
-        label = new Label(target == null ? "" : data.file.path(), skin, "field");
-        label.setName("targetFileField");
-        label.setEllipsis(true);
-        table.add(label).growX().minWidth(0).prefWidth(0);
-        label.addListener(new ClickListener() {
+        ltLabel = new LeadingTruncateLabel(target == null ? "" : data.file.path(), skin, "field");
+        ltLabel.setName("targetFileField");
+        ltLabel.setEllipsis(true);
+        table.add(ltLabel).growX().minWidth(0).prefWidth(0);
+        ltLabel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 event.getListenerActor().fire(new ChangeListener.ChangeEvent());
@@ -300,9 +301,9 @@ public class DialogBitmapFont extends Dialog {
 
 
         toolTip = new TextTooltip("Path to target FNT file to be saved", tooltipManager, getSkin());
-        label.addListener(toolTip);
+        ltLabel.addListener(toolTip);
         textButton.addListener(toolTip);
-        label.addListener(handListener);
+        ltLabel.addListener(handListener);
         textButton.addListener(handListener);
         var targetChangeListener = new ChangeListener() {
             @Override
@@ -337,7 +338,7 @@ public class DialogBitmapFont extends Dialog {
                 dialogFactory.showDialogLoading(runnable);
             }
         };
-        label.addListener(targetChangeListener);
+        ltLabel.addListener(targetChangeListener);
         textButton.addListener(targetChangeListener);
 
         table.row();
@@ -987,14 +988,14 @@ public class DialogBitmapFont extends Dialog {
     private void loadTTFsource(FileHandle file) {
         data.file = file;
 
-        Label label =  DialogBitmapFont.this.findActor("sourceFileField");
-        label.setText(data.file.path());
+        LeadingTruncateLabel ltLabel =  DialogBitmapFont.this.findActor("sourceFileField");
+        ltLabel.setText(data.file.path());
         projectData.setLastFontPath(data.file.parent().path() + "/");
 
         if (target == null) {
             target = data.file.sibling(data.file.nameWithoutExtension() + ".fnt");
-            label = DialogBitmapFont.this.findActor("targetFileField");
-            label.setText(target.path());
+            ltLabel = DialogBitmapFont.this.findActor("targetFileField");
+            ltLabel.setText(target.path());
         }
 
         updatePreviewAndOK();

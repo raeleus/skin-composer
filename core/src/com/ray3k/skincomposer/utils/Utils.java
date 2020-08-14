@@ -28,9 +28,13 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 import javax.imageio.ImageIO;
@@ -417,5 +421,24 @@ public class Utils {
     
     public static boolean isNinePatch(String name) {
         return name.matches(".*\\.9\\.[a-zA-Z0-9]*$");
+    }
+    
+    private final static GlyphLayout glyphLayout = new GlyphLayout();
+    
+    public static String leadingTruncate(BitmapFont font, CharSequence text, String truncate, float width) {
+        if (text.length() == 0) return text.toString();
+        var stringBuilder = new StringBuilder(text);
+        stringBuilder = stringBuilder.reverse();
+        
+        glyphLayout.setText(font, stringBuilder, 0, stringBuilder.length(), Color.WHITE, width, Align.left, false, truncate);
+    
+        Array<Glyph> glyphs = glyphLayout.runs.first().glyphs;
+        stringBuilder = new StringBuilder(glyphs.size);
+        for (int i = glyphs.size - 1; i >= 0; i--) {
+            Glyph g = glyphs.get(i);
+            stringBuilder.append((char)g.id);
+        }
+        
+        return stringBuilder.toString();
     }
 }
