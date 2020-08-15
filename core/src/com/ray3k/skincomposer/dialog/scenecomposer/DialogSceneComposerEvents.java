@@ -59,7 +59,7 @@ public class DialogSceneComposerEvents {
     }
     
     public void importTemplate(FileHandle loadFile) {
-        Main.projectData.setLastImportExportPath(loadFile.path());
+        Main.projectData.setLastSceneComposerJson(loadFile.path());
         DialogSceneComposerModel.loadFromJson(loadFile);
         dialog.simActor = rootActor;
         dialog.model.updatePreview();
@@ -68,12 +68,12 @@ public class DialogSceneComposerEvents {
     }
     
     public void exportTemplate(FileHandle saveFile) {
-        Main.projectData.setLastImportExportPath(saveFile.path());
+        Main.projectData.setLastSceneComposerJson(saveFile.path());
         DialogSceneComposerModel.saveToJson(saveFile);
     }
     
     public void exportJava(FileHandle saveFile) {
-        Main.projectData.setLastImportExportPath(saveFile.path());
+        Main.projectData.setLastSceneComposerJson(saveFile.path());
         String java = DialogSceneComposerJavaBuilder.generateJavaFile();
         saveFile.writeString(java, false);
     }

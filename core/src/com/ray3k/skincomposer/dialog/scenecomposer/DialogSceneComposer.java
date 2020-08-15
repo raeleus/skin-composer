@@ -106,7 +106,7 @@ public class DialogSceneComposer extends Dialog {
                 .item("Import", handListener, new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        var file = desktopWorker.openDialog("Import JSON...", projectData.getLastImportExportPath(), new String[] {"*.json"}, "JSON Files (*.json)");
+                        var file = desktopWorker.openDialog("Import JSON...", projectData.getLastSceneComposerJson(), new String[] {"*.json"}, "JSON Files (*.json)");
                 
                         if (file != null) {
                             events.importTemplate(new FileHandle(file));
@@ -2227,7 +2227,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                var file = desktopWorker.saveDialog("Export JSON...", projectData.getLastImportExportPath(), new String[] {"*.json"}, "JSON Files (*.json)");
+                var file = desktopWorker.saveDialog("Export JSON...", projectData.getLastSceneComposerJson(), new String[] {"*.json"}, "JSON Files (*.json)");
                 if (file != null) {
                     events.exportTemplate(new FileHandle(file));
                 }
@@ -2261,7 +2261,7 @@ public class DialogSceneComposer extends Dialog {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                var file = desktopWorker.saveDialog("Export Java...", projectData.getLastImportExportPath(), new String[] {"*.java"}, "Java Files (*.java)");
+                var file = desktopWorker.saveDialog("Export Java...", projectData.getLastSceneComposerJson(), new String[] {"*.java"}, "Java Files (*.java)");
                 var fileHandle = new FileHandle(file);
                 if (file != null) {
                     if (!fileHandle.extension().equalsIgnoreCase("java")) fileHandle = fileHandle.sibling(fileHandle.name() + ".java");

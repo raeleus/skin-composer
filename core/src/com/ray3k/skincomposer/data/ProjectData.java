@@ -655,11 +655,21 @@ public class ProjectData implements Json.Serializable {
     public String getLastImportExportPath() {
         return (String) preferences.get("last-import-export-path", Utils.sanitizeFilePath(System.getProperty("user.home")) + "/");
     }
+    
+    public String getLastSceneComposerJson() {
+        return (String) preferences.get("last-scene-composer-json", Utils.sanitizeFilePath(System.getProperty("user.home")) + "/");
+    }
 
     public void setLastImportExportPath(String importExportPath) {
         preferences.put("last-import-export-path", importExportPath);
 
         setLastPath(importExportPath);
+    }
+    
+    public void setLastSceneComposerJson(String sceneComposerJson) {
+        preferences.put("last-scene-composer-json", sceneComposerJson);
+        
+        setLastPath(sceneComposerJson);
     }
 
     public String getLastFontPath() {

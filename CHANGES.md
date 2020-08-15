@@ -6,6 +6,7 @@
 * Updated instructions for Custom Serializer in FreeType Font dialog to include link to FreeTypeSkin.
 * JSON exports are guaranteed to be UTF-8 formatted to prevent issues with loading unicode characters.
 * Scene Composer now exports to clipboard without fully qualified names.
+* Scene Composer now tracks its own last path to avoid accidentally overwriting your Skin export.
 * Background color of font is automatically adjusted based on font color in Bitmap Font Dialog.
 * Prevent colors with the same name from being generated.
 * Fixed crash if setting increment on Sliders/ProgressBars to a value less than 1
