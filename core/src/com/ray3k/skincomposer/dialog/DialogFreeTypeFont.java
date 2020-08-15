@@ -41,6 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.FilesDroppedListener;
+import com.ray3k.skincomposer.LeadingTruncateLabel;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.*;
@@ -460,16 +461,16 @@ public class DialogFreeTypeFont extends Dialog {
         label.setName("source-label");
         table.add(label).right();
         
-        textField = new TextField(data.file == null ? "" : data.file.path(), skin);
-        textField.setName("fileField");
-        textField.setDisabled(true);
-        table.add(textField).growX();
-        
-        textField.addListener(new ClickListener() {
+        var ltLabel = new LeadingTruncateLabel(data.file == null ? "" : data.file.path(), skin, "field");
+        ltLabel.setName("fileField");
+        ltLabel.setEllipsis(true);
+        table.add(ltLabel).growX().minWidth(0).prefWidth(0);
+    
+        ltLabel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                var textField = findActor("fileField");
-                textField.fire(new ChangeListener.ChangeEvent());
+                var ltLabel = findActor("fileField");
+                ltLabel.fire(new ChangeListener.ChangeEvent());
             }
         });
         
@@ -477,9 +478,9 @@ public class DialogFreeTypeFont extends Dialog {
         table.add(textButton).fillX();
         
         toolTip = new TextTooltip("Path to TTF font to be distributed with skin", tooltipManager, getSkin());
-        textField.addListener(toolTip);
+        ltLabel.addListener(toolTip);
         textButton.addListener(toolTip);
-        textField.addListener(handListener);
+        ltLabel.addListener(handListener);
         textButton.addListener(handListener);
         var changeListener = new ChangeListener() {
             @Override
@@ -505,7 +506,7 @@ public class DialogFreeTypeFont extends Dialog {
             }
         };
         textButton.addListener(changeListener);
-        textField.addListener(changeListener);
+        ltLabel.addListener(changeListener);
         
         table.row();
         
@@ -1344,7 +1345,7 @@ public class DialogFreeTypeFont extends Dialog {
     private void loadTTF(FileHandle fileHandle) {
         data.file = fileHandle;
         updateDisabledFields();
-        ((TextField) DialogFreeTypeFont.this.findActor("fileField")).setText(fileHandle.path());
+        ((LeadingTruncateLabel) DialogFreeTypeFont.this.findActor("fileField")).setText(fileHandle.path());
         projectData.setLastFontPath(fileHandle.parent().path() + "/");
     }
     
