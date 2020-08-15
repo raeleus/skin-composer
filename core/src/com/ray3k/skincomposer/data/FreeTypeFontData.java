@@ -34,6 +34,7 @@ import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.Hinting;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.ray3k.skincomposer.Main;
@@ -164,7 +165,11 @@ public class FreeTypeFontData implements Json.Serializable {
             parameter.spaceX = spaceX;
             parameter.spaceY = spaceY;
             
-            bitmapFont = generator.generateFont(parameter);
+            try {
+                bitmapFont = generator.generateFont(parameter);
+            } catch (GdxRuntimeException e) {
+                bitmapFont = null;
+            }
             generator.dispose();
         }
     }
