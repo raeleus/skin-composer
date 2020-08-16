@@ -1720,7 +1720,7 @@ public class DialogSceneComposerModel {
     public static class SimLabel extends SimActor implements SimNamed, SimTouchable, SimVisible {
         public String name;
         public StyleData style;
-        public String text;
+        public String text = "Lorem ipsum";
         public int textAlignment = Align.left;
         public boolean ellipsis;
         public String ellipsisString = "...";
