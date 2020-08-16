@@ -8,6 +8,7 @@
 * Scene Composer now exports to clipboard without fully qualified names.
 * Scene Composer now tracks its own last path to avoid accidentally overwriting your Skin export.
 * Background color of font is automatically adjusted based on font color in Bitmap Font Dialog.
+* An appropriate background color is generated for FreeType font previews in the Fonts dialog.
 * Prevent colors with the same name from being generated.
 * Fixed crash if setting increment on Sliders/ProgressBars to a value less than 1
 * Fixed crash when renaming a Color and there is a TenPatch that does not have a color defined.
