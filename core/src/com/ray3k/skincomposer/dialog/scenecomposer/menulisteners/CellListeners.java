@@ -1,5 +1,6 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.menulisteners;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -427,6 +428,10 @@ public class CellListeners {
     public static EventListener cellSizeListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ENTER, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -929,6 +934,10 @@ public class CellListeners {
     public static EventListener cellColSpanListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ENTER, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -973,6 +982,10 @@ public class CellListeners {
     public static EventListener cellPaddingSpacingListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ENTER, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

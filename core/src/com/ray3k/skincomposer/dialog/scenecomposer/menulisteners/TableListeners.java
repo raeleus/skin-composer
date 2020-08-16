@@ -1,6 +1,7 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.menulisteners;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.ray3k.stripe.PopTable;
+import com.ray3k.stripe.PopTable.KeyListener;
 import com.ray3k.stripe.PopTableClickListener;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.StyleProperty;
@@ -135,6 +137,10 @@ public class TableListeners {
     public static EventListener tablePaddingListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTable = (DialogSceneComposerModel.SimTable) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ENTER, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

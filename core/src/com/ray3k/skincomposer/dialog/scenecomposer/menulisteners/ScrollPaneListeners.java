@@ -1,6 +1,7 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.menulisteners;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -266,6 +267,10 @@ public class ScrollPaneListeners {
     public static EventListener scrollPaneScrollListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simScrollPane = (DialogSceneComposerModel.SimScrollPane) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ENTER, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

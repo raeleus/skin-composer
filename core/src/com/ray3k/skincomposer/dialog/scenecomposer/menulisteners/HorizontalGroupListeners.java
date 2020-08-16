@@ -1,6 +1,7 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.menulisteners;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -165,6 +166,10 @@ public class HorizontalGroupListeners {
                                                                       SimActor simActor) {
         var simHorizontalGroup = (DialogSceneComposerModel.SimHorizontalGroup) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ENTER, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -293,6 +298,10 @@ public class HorizontalGroupListeners {
     public static EventListener horizontalGroupWrapListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simHorizontalGroup = (DialogSceneComposerModel.SimHorizontalGroup) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ENTER, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

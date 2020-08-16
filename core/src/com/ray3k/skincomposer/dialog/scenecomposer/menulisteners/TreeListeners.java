@@ -1,6 +1,7 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.menulisteners;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -89,6 +90,10 @@ public class TreeListeners {
     public static EventListener treePaddingListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTree = (SimTree) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ENTER, popTable::hide);
+            }
+            
             @Override
             public void tableShown(Event event) {
                 var popTable = getPopTable();
@@ -140,6 +145,10 @@ public class TreeListeners {
     public static EventListener treeSpacingListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTree = (SimTree) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ENTER, popTable::hide);
+            }
+            
             @Override
             public void tableShown(Event event) {
                 var popTable = getPopTable();
