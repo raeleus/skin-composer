@@ -26,6 +26,10 @@ public class TreeListeners {
         var simTree = (SimTree) dialogSceneComposer.simActor;
         var textField = new TextField("", skin, "scene");
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -92,6 +96,7 @@ public class TreeListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override
@@ -147,6 +152,7 @@ public class TreeListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override
@@ -301,6 +307,10 @@ public class TreeListeners {
     public static EventListener nodeOptionsListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simNode = (SimNode) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

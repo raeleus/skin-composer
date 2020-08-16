@@ -28,6 +28,10 @@ public class TableListeners {
     public static EventListener tableNameListener(final DialogSceneComposer dialogSceneComposer) {
         var simTable = (DialogSceneComposerModel.SimTable) dialogSceneComposer.simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -79,6 +83,10 @@ public class TableListeners {
     public static EventListener tableColorListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTable = (DialogSceneComposerModel.SimTable) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -139,6 +147,7 @@ public class TableListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override
@@ -281,6 +290,10 @@ public class TableListeners {
     public static EventListener tableAlignListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTable = (DialogSceneComposerModel.SimTable) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -468,6 +481,7 @@ public class TableListeners {
     public static EventListener tableSetCellsListener(final DialogSceneComposerEvents events) {
         var popTableClickListener = new PopTableClickListener(skin, "dark");
         var popTable = popTableClickListener.getPopTable();
+        popTable.key(Keys.ESCAPE, popTable::hide);
         
         var label = new Label("Erase contents\nand create\nnew cells:", skin, "scene-label");
         label.setAlignment(Align.center);

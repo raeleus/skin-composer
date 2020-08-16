@@ -24,6 +24,10 @@ public class CellListeners {
         var simTable = (SimTable) simActor.parent;
         
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -149,6 +153,10 @@ public class CellListeners {
         var simTable = (SimTable) simActor.parent;
         
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -379,6 +387,10 @@ public class CellListeners {
     public static EventListener cellUniformListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -430,6 +442,7 @@ public class CellListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override
@@ -610,6 +623,10 @@ public class CellListeners {
     
     public static EventListener cellAlignmentListener(final DialogSceneComposerEvents events, final SimActor simActor) {
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -798,6 +815,10 @@ public class CellListeners {
     public static EventListener cellExpandFillGrowListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simCell = (DialogSceneComposerModel.SimCell) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -936,6 +957,7 @@ public class CellListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override
@@ -984,6 +1006,7 @@ public class CellListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override

@@ -1,6 +1,7 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.menulisteners;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -25,6 +26,10 @@ public class ProgressBarListeners {
         var simList = (DialogSceneComposerModel.SimProgressBar) dialogSceneComposer.simActor;
         var textField = new TextField("", skin, "scene");
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -90,6 +95,10 @@ public class ProgressBarListeners {
                                                                  SimActor simActor) {
         var simProgressBar = (DialogSceneComposerModel.SimProgressBar) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -197,6 +206,10 @@ public class ProgressBarListeners {
                                                                SimActor simActor) {
         var simProgressBar = (DialogSceneComposerModel.SimProgressBar) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -236,6 +249,10 @@ public class ProgressBarListeners {
     public static EventListener progressBarAnimationListener(final DialogSceneComposer dialogSceneComposer) {
         var simProgressBar = (DialogSceneComposerModel.SimProgressBar) dialogSceneComposer.simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -292,6 +309,10 @@ public class ProgressBarListeners {
     public static EventListener progressBarRoundListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simProgressBar = (DialogSceneComposerModel.SimProgressBar) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -329,6 +350,10 @@ public class ProgressBarListeners {
     public static EventListener progressBarDisabledListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simProgressBar = (DialogSceneComposerModel.SimProgressBar) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

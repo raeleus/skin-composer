@@ -1870,6 +1870,7 @@ public class DialogSceneComposer extends Dialog {
     private EventListener rootAddTableListener() {
         var popTableClickListener = new PopTableClickListener(skin, "dark");
         var popTable = popTableClickListener.getPopTable();
+        popTable.key(Keys.ESCAPE, popTable::hide);
         
         var label = new Label("New Table:", skin, "scene-label");
         popTable.add(label);

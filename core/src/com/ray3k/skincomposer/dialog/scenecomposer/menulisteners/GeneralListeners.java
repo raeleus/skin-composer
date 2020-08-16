@@ -1,5 +1,6 @@
 package com.ray3k.skincomposer.dialog.scenecomposer.menulisteners;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -25,6 +26,7 @@ public class GeneralListeners {
     public static EventListener widgetResetListener(String name, Runnable runnable) {
         var popTableClickListener = new PopTableClickListener(skin);
         var popTable = popTableClickListener.getPopTable();
+        popTable.key(Keys.ESCAPE, popTable::hide);
         
         var label = new Label("Are you sure you want to reset this " + name + "?", skin, "scene-label-colored");
         popTable.add(label);
@@ -48,6 +50,7 @@ public class GeneralListeners {
     public static EventListener widgetDeleteListener(String name, Runnable runnable) {
         var popTableClickListener = new PopTableClickListener(skin);
         var popTable = popTableClickListener.getPopTable();
+        popTable.key(Keys.ESCAPE, popTable::hide);
         
         var label = new Label("Are you sure you want to delete this " + name + "?", skin, "scene-label-colored");
         popTable.add(label);
@@ -80,6 +83,10 @@ public class GeneralListeners {
         
         
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -414,6 +421,10 @@ public class GeneralListeners {
     public static EventListener selectDrawableListener(DrawableData originalDrawable, String toolTipText,
                                                        DrawableSelected drawableSelected) {
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -501,6 +512,10 @@ public class GeneralListeners {
         var table = new Table();
         var scrollPane = new ScrollPane(table, skin, "scene");
         var listener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void tableShown(Event event) {
                 dialogSceneComposer.getStage().setScrollFocus(scrollPane);
@@ -564,6 +579,10 @@ public class GeneralListeners {
     public static EventListener touchableListener(SimActor simActor, TouchableSelected touchableSelected) {
         var simTouchable = (SimTouchable) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -628,6 +647,10 @@ public class GeneralListeners {
     public static EventListener visibleListener(SimActor simActor, VisibleSelected visibleSelected) {
         var simVisible = (SimVisible) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

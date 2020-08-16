@@ -28,6 +28,10 @@ public class ScrollPaneListeners {
         var simScrollPane = (DialogSceneComposerModel.SimScrollPane) dialogSceneComposer.simActor;
         var textField = new TextField("", skin, "scene");
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -92,6 +96,10 @@ public class ScrollPaneListeners {
     public static EventListener scrollPaneKnobsListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simScrollPane = (DialogSceneComposerModel.SimScrollPane) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -269,6 +277,7 @@ public class ScrollPaneListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override

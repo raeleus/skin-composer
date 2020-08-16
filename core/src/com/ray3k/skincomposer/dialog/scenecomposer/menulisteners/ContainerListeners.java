@@ -26,6 +26,10 @@ public class ContainerListeners {
         var simContainer = (DialogSceneComposerModel.SimContainer) dialogSceneComposer.simActor;
         var textField = new TextField("", skin, "scene");
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -78,6 +82,10 @@ public class ContainerListeners {
     public static EventListener containerFillListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simContainer = (DialogSceneComposerModel.SimContainer) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -128,6 +136,7 @@ public class ContainerListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override
@@ -276,6 +285,7 @@ public class ContainerListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override
@@ -374,6 +384,10 @@ public class ContainerListeners {
     public static EventListener containerAlignmentListener(final DialogSceneComposerEvents events,
                                                            final SimActor simActor) {
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

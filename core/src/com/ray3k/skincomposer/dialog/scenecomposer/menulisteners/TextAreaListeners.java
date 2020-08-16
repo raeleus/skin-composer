@@ -97,6 +97,10 @@ public class TextAreaListeners {
         var simTextArea = (DialogSceneComposerModel.SimTextArea) dialogSceneComposer.simActor;
         var textField = new TextField("", skin, "scene");
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -149,6 +153,10 @@ public class TextAreaListeners {
         var simTextField = (DialogSceneComposerModel.SimTextArea) dialogSceneComposer.simActor;
         var textField = new TextField("", skin, "scene");
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -201,6 +209,10 @@ public class TextAreaListeners {
         var simTextArea = (DialogSceneComposerModel.SimTextArea) dialogSceneComposer.simActor;
         var textField = new TextField("", skin, "scene");
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -275,6 +287,10 @@ public class TextAreaListeners {
     public static EventListener textAreaSelectionListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTextArea = (DialogSceneComposerModel.SimTextArea) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -370,6 +386,10 @@ public class TextAreaListeners {
     public static EventListener textAreaAlignmentListener(final DialogSceneComposerEvents events,
                                                           final SimActor simActor) {
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -559,6 +579,10 @@ public class TextAreaListeners {
                                                                SimActor simActor) {
         var simTextArea = (DialogSceneComposerModel.SimTextArea) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -598,6 +622,7 @@ public class TextAreaListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override
@@ -648,6 +673,7 @@ public class TextAreaListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override
@@ -691,6 +717,10 @@ public class TextAreaListeners {
     public static EventListener textAreaDisabledListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simTextArea = (DialogSceneComposerModel.SimTextArea) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

@@ -28,6 +28,10 @@ public class LabelListeners {
         var simLabel = (DialogSceneComposerModel.SimLabel) dialogSceneComposer.simActor;
         var textField = new TextField("", skin, "scene");
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -81,6 +85,10 @@ public class LabelListeners {
         var simLabel = (DialogSceneComposerModel.SimLabel) dialogSceneComposer.simActor;
         var textField = new TextField("", skin, "scene");
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -144,6 +152,10 @@ public class LabelListeners {
     public static EventListener labelColorListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simLabel = (DialogSceneComposerModel.SimLabel) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -199,6 +211,10 @@ public class LabelListeners {
     public static EventListener labelTextAlignmentListener(final DialogSceneComposerEvents events,
                                                            final SimActor simActor) {
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -390,6 +406,7 @@ public class LabelListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override
@@ -462,6 +479,10 @@ public class LabelListeners {
     public static EventListener labelWrapListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simLabel = (DialogSceneComposerModel.SimLabel) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

@@ -28,6 +28,10 @@ public class ImageTextButtonListeners {
         var simImageTextButton = (DialogSceneComposerModel.SimImageTextButton) dialogSceneComposer.simActor;
         var textField = new TextField("", skin, "scene");
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -81,6 +85,10 @@ public class ImageTextButtonListeners {
         var simImageTextButton = (DialogSceneComposerModel.SimImageTextButton) dialogSceneComposer.simActor;
         var textField = new TextField("", skin, "scene");
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -145,6 +153,10 @@ public class ImageTextButtonListeners {
                                                                SimActor simActor) {
         var simImageTextButton = (DialogSceneComposerModel.SimImageTextButton) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -183,6 +195,10 @@ public class ImageTextButtonListeners {
                                                                 SimActor simActor) {
         var simImageTextButton = (DialogSceneComposerModel.SimImageTextButton) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -220,6 +236,10 @@ public class ImageTextButtonListeners {
     public static EventListener imageTextButtonColorListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simImageTextButton = (DialogSceneComposerModel.SimImageTextButton) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -278,6 +298,7 @@ public class ImageTextButtonListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override

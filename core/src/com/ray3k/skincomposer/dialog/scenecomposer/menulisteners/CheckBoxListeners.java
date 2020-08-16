@@ -28,6 +28,10 @@ public class CheckBoxListeners {
         var simCheckBox = (DialogSceneComposerModel.SimCheckBox) dialogSceneComposer.simActor;
         var textField = new TextField("", skin, "scene");
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -93,6 +97,10 @@ public class CheckBoxListeners {
         var simCheckBox = (DialogSceneComposerModel.SimCheckBox) dialogSceneComposer.simActor;
         var textField = new TextField("", skin, "scene");
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -144,6 +152,10 @@ public class CheckBoxListeners {
     public static EventListener checkBoxCheckedListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simCheckBox = (DialogSceneComposerModel.SimCheckBox) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -181,6 +193,10 @@ public class CheckBoxListeners {
     public static EventListener checkBoxColorListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simCheckBox = (DialogSceneComposerModel.SimCheckBox) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -236,6 +252,10 @@ public class CheckBoxListeners {
     public static EventListener checkBoxPaddingListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simCheckBox = (DialogSceneComposerModel.SimCheckBox) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -327,6 +347,10 @@ public class CheckBoxListeners {
     public static EventListener checkBoxDisabledListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simCheckBox = (DialogSceneComposerModel.SimCheckBox) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

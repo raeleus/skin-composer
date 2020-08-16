@@ -27,6 +27,10 @@ public class ButtonListeners {
     public static EventListener buttonCheckedListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simButton = (DialogSceneComposerModel.SimButton) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -65,6 +69,10 @@ public class ButtonListeners {
         var simButton = (DialogSceneComposerModel.SimButton) dialogSceneComposer.simActor;
         var textField = new TextField("", skin, "scene");
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -129,6 +137,10 @@ public class ButtonListeners {
     public static EventListener buttonDisabledListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simButton = (DialogSceneComposerModel.SimButton) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -166,6 +178,10 @@ public class ButtonListeners {
     public static EventListener buttonColorListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simButton = (DialogSceneComposerModel.SimButton) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -223,6 +239,7 @@ public class ButtonListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override

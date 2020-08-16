@@ -1,5 +1,6 @@
 package com.ray3k.skincomposer.dialog.scenecomposer;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -18,6 +19,7 @@ public class StyleSelectorPopTable extends PopTableClickListener {
     public StyleSelectorPopTable(Class clazz, String selectedStyle) {
         super(Main.skin);
         
+        popTable.key(Keys.ESCAPE, popTable::hide);
         popTable.pad(15);
         var label = new Label(clazz.getSimpleName() + " Styles", skin, "scene-label-colored");
         popTable.add(label).colspan(2);

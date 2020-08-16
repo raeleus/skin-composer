@@ -26,6 +26,10 @@ public class SliderListeners {
         var simSlider = (DialogSceneComposerModel.SimSlider) dialogSceneComposer.simActor;
         var textField = new TextField("", skin, "scene");
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -92,6 +96,7 @@ public class SliderListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override
@@ -200,6 +205,10 @@ public class SliderListeners {
     public static EventListener sliderOrientationListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simSlider = (DialogSceneComposerModel.SimSlider) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -241,6 +250,7 @@ public class SliderListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override
@@ -299,6 +309,10 @@ public class SliderListeners {
     public static EventListener sliderRoundListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simSlider = (DialogSceneComposerModel.SimSlider) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -336,6 +350,10 @@ public class SliderListeners {
     public static EventListener sliderDisabledListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simSlider = (DialogSceneComposerModel.SimSlider) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);

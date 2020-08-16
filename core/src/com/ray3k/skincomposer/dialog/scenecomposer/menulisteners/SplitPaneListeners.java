@@ -29,6 +29,10 @@ public class SplitPaneListeners {
         var simSplitPane = (DialogSceneComposerModel.SimSplitPane) dialogSceneComposer.simActor;
         var textField = new TextField("", skin, "scene");
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -93,6 +97,10 @@ public class SplitPaneListeners {
     public static EventListener splitPaneOrientationListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simSplitPane = (DialogSceneComposerModel.SimSplitPane) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -150,6 +158,7 @@ public class SplitPaneListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override

@@ -27,6 +27,10 @@ public class SelectBoxListeners {
         var simSelectBox = (DialogSceneComposerModel.SimSelectBox) dialogSceneComposer.simActor;
         var textField = new TextField("", skin, "scene");
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -106,6 +110,7 @@ public class SelectBoxListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 popTable.setAutomaticallyResized(true);
+                popTable.key(Keys.ESCAPE, popTable::hide);
                 
                 textField.addListener(ibeamListener);
                 textField.addListener(new TextTooltip("The text to add to the list.", tooltipManager, skin, "scene"));
@@ -184,6 +189,7 @@ public class SelectBoxListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
             @Override
@@ -231,6 +237,10 @@ public class SelectBoxListeners {
     public static EventListener selectBoxAlignmentListener(final DialogSceneComposerEvents events,
                                                            final SimActor simActor) {
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -419,6 +429,10 @@ public class SelectBoxListeners {
     public static EventListener selectBoxScrollingListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simSelectBox = (DialogSceneComposerModel.SimSelectBox) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -456,6 +470,10 @@ public class SelectBoxListeners {
     public static EventListener selectBoxDisabledListener(final DialogSceneComposerEvents events, SimActor simActor) {
         var simSelectBox = (DialogSceneComposerModel.SimSelectBox) simActor;
         var popTableClickListener = new PopTableClickListener(skin) {
+            {
+                getPopTable().key(Keys.ESCAPE, popTable::hide);
+            }
+            
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
