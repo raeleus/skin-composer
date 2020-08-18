@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -39,6 +40,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.dialog.PopWelcome.WelcomeListener;
+import com.ray3k.stripe.PopTable;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.UndoableManager;
 import com.ray3k.skincomposer.UndoableManager.DeleteStyleUndoable;
@@ -1102,5 +1104,13 @@ public class DialogFactory {
         
         dialog.show(stage);
         stage.setKeyboardFocus(textField);
+    }
+    
+    public PopTable showToast(float duration, Skin skin, String style) {
+        var popTable = new PopTable(skin, style);
+        popTable.show(stage, Actions.fadeIn(.5f));
+        popTable.addAction(Actions.sequence(Actions.delay(duration), Actions.run(() -> popTable.hide(Actions.fadeOut(.5f)))));
+        
+        return popTable;
     }
 }

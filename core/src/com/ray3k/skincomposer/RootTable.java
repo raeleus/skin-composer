@@ -70,8 +70,11 @@ import com.ray3k.stripe.StripeMenuBar;
 import com.ray3k.stripe.StripeMenuBar.KeyboardShortcut;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
+import java.lang.annotation.Target;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.stream.IntStream;
+
 import static com.ray3k.skincomposer.Main.*;
 
 public class RootTable extends Table {
@@ -2578,6 +2581,12 @@ public class RootTable extends Table {
 
     public Class getSelectedClass() {
         return Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()];
+    }
+    
+    public void setSelectedClass(Class clazz) {
+        int index = IntStream.range(0, BASIC_CLASSES.length).filter(i -> clazz.equals(BASIC_CLASSES[i])).findFirst().orElse(-1);
+        
+        if (index != -1) classSelectBox.setSelectedIndex(index);
     }
 
     public StyleData getSelectedStyle() {

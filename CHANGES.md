@@ -7,6 +7,7 @@
 * JSON exports are guaranteed to be UTF-8 formatted to prevent issues with loading unicode characters.
 * Scene Composer now exports to clipboard without fully qualified names.
 * Scene Composer now tracks its own last path to avoid accidentally overwriting your Skin export.
+* Clicking on a disabled class in SetWidget for SceneComposer takes you to the class that requires the style in Skin Composer. 
 * Background color of font is automatically adjusted based on font color in Bitmap Font Dialog.
 * An appropriate background color is generated for FreeType font previews in the Fonts dialog.
 * Prevent colors with the same name from being generated.

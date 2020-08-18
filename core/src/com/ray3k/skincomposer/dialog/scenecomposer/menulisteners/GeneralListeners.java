@@ -4,10 +4,14 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
+import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.RunListener;
 import com.ray3k.skincomposer.data.DrawableData;
+import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.dialog.DialogDrawables;
 import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
@@ -21,6 +25,7 @@ import com.ray3k.stripe.PopTableClickListener;
 import space.earlygrey.shapedrawer.scene2d.GraphDrawerDrawable;
 
 import static com.ray3k.skincomposer.Main.*;
+import static com.ray3k.skincomposer.RunListener.rl;
 
 public class GeneralListeners {
     public static EventListener widgetResetListener(String name, Runnable runnable) {
@@ -113,31 +118,65 @@ public class GeneralListeners {
         popTable.add(scrollPane).grow();
     
         var textButton = new TextButton("Button", skin, "scene-med");
-        var valid = jsonData.classHasValidStyles(Button.class);
-        textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("Buttons are the most basic component to UI design. These are clickable widgets that can perform a certain action such as starting a game or activating a power.", tooltipManager, skin, "scene"));
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                widgetSelectedListener.widgetSelected(WidgetType.BUTTON, popTable);
-            }
-        });
+        var valid = jsonData.classHasValidStyles(Button.class);
+        textButton.addListener(handListener);
+        if (!valid) {
+            textButton.setStyle(skin.get("scene-med-disabled", TextButtonStyle.class));
+            textButton.addListener(new TextTooltip(
+                    "Missing valid style for widget. Click to open in Skin Composer.\nButtons are the most basic component to UI design. These are clickable widgets that can perform a certain action such as starting a game or activating a power.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(rl(() -> {
+                dialogSceneComposer.hide();
+                popTable.hide();
+                rootTable.setSelectedClass(Button.class);
+                var toast = dialogFactory.showToast(2f, skin, "dialog-no-bg");
+                toast.pad(10f);
+                var l = new Label("Please enter all required fields for style", skin);
+                toast.add(l);
+            }));
+        } else {
+            textButton.addListener(new TextTooltip(
+                    "Buttons are the most basic component to UI design. These are clickable widgets that can perform a certain action such as starting a game or activating a power.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    widgetSelectedListener.widgetSelected(WidgetType.BUTTON, popTable);
+                }
+            });
+        }
     
         table.row();
         textButton = new TextButton("CheckBox", skin, "scene-med");
         valid = jsonData.classHasValidStyles(CheckBox.class);
-        textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("CheckBoxes are great for setting/displaying boolean values for an options screen.", tooltipManager, skin, "scene"));
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                widgetSelectedListener.widgetSelected(WidgetType.CHECK_BOX, popTable);
-            }
-        });
+        textButton.addListener(handListener);
+        if (!valid) {
+            textButton.setStyle(skin.get("scene-med-disabled", TextButtonStyle.class));
+            textButton.addListener(new TextTooltip(
+                    "Missing valid style for widget. Click to open in Skin Composer.\nCheckBoxes are great for setting/displaying boolean values for an options screen.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(rl(() -> {
+                dialogSceneComposer.hide();
+                popTable.hide();
+                rootTable.setSelectedClass(CheckBox.class);
+                var toast = dialogFactory.showToast(2f, skin, "dialog-no-bg");
+                toast.pad(10f);
+                var l = new Label("Please enter all required fields for style", skin);
+                toast.add(l);
+            }));
+        } else {
+            textButton.addListener(new TextTooltip(
+                    "CheckBoxes are great for setting/displaying boolean values for an options screen.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    widgetSelectedListener.widgetSelected(WidgetType.CHECK_BOX, popTable);
+                }
+            });
+        }
     
         table.row();
         textButton = new TextButton("Image", skin, "scene-med");
@@ -154,93 +193,219 @@ public class GeneralListeners {
         table.row();
         textButton = new TextButton("ImageButton", skin, "scene-med");
         valid = jsonData.classHasValidStyles(ImageButton.class);
-        textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("A Button with an image graphic in it. The image can change depending on the state of the button.", tooltipManager, skin, "scene"));
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                widgetSelectedListener.widgetSelected(WidgetType.IMAGE_BUTTON, popTable);
-            }
-        });
+        textButton.addListener(handListener);
+        if (!valid) {
+            textButton.setStyle(skin.get("scene-med-disabled", TextButtonStyle.class));
+            textButton.addListener(new TextTooltip(
+                    "Missing valid style for widget. Click to open in Skin Composer.\nA Button with an image graphic in it. The image can change depending on the state of the button.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(rl(() -> {
+                dialogSceneComposer.hide();
+                popTable.hide();
+                rootTable.setSelectedClass(ImageButton.class);
+                var toast = dialogFactory.showToast(2f, skin, "dialog-no-bg");
+                toast.pad(10f);
+                var l = new Label("Please enter all required fields for style", skin);
+                toast.add(l);
+            }));
+        } else {
+            textButton.addListener(new TextTooltip(
+                    "A Button with an image graphic in it. The image can change depending on the state of the button.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    widgetSelectedListener.widgetSelected(WidgetType.IMAGE_BUTTON, popTable);
+                }
+            });
+        }
     
         table.row();
         textButton = new TextButton("ImageTextButton", skin, "scene-med");
         valid = jsonData.classHasValidStyles(ImageTextButton.class);
-        textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("A Button with an image graphic followed by text in it. The image and text color can change depending on the state of the button.", tooltipManager, skin, "scene"));
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                widgetSelectedListener.widgetSelected(WidgetType.IMAGE_TEXT_BUTTON, popTable);
-            }
-        });
+        textButton.addListener(handListener);
+        if (!valid) {
+            textButton.setStyle(skin.get("scene-med-disabled", TextButtonStyle.class));
+            textButton.addListener(new TextTooltip(
+                    "Missing valid style for widget. Click to open in Skin Composer.\nA Button with an image graphic followed by text in it. The image and text color can change depending on the state of the button.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(rl(() -> {
+                dialogSceneComposer.hide();
+                popTable.hide();
+                rootTable.setSelectedClass(ImageTextButton.class);
+                var toast = dialogFactory.showToast(2f, skin, "dialog-no-bg");
+                toast.pad(10f);
+                var l = new Label("Please enter all required fields for style", skin);
+                toast.add(l);
+            }));
+        } else {
+            textButton.addListener(new TextTooltip(
+                    "A Button with an image graphic followed by text in it. The image and text color can change depending on the state of the button.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    widgetSelectedListener.widgetSelected(WidgetType.IMAGE_TEXT_BUTTON, popTable);
+                }
+            });
+        }
     
         table.row();
         textButton = new TextButton("Label", skin, "scene-med");
         valid = jsonData.classHasValidStyles(Label.class);
-        textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("The most common way to display text in your layouts. Wrapping and ellipses options help mitigate sizing issues in small spaces.", tooltipManager, skin, "scene"));
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                widgetSelectedListener.widgetSelected(WidgetType.LABEL, popTable);
-            }
-        });
+        textButton.addListener(handListener);
+        if (!valid) {
+            textButton.setStyle(skin.get("scene-med-disabled", TextButtonStyle.class));
+            textButton.addListener(new TextTooltip(
+                    "Missing valid style for widget. Click to open in Skin Composer.\nThe most common way to display text in your layouts. Wrapping and ellipses options help mitigate sizing issues in small spaces.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(rl(() -> {
+                dialogSceneComposer.hide();
+                popTable.hide();
+                rootTable.setSelectedClass(Label.class);
+                var toast = dialogFactory.showToast(2f, skin, "dialog-no-bg");
+                toast.pad(10f);
+                var l = new Label("Please enter all required fields for style", skin);
+                toast.add(l);
+            }));
+        } else {
+            textButton.addListener(new TextTooltip(
+                    "The most common way to display text in your layouts. Wrapping and ellipses options help mitigate sizing issues in small spaces.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    widgetSelectedListener.widgetSelected(WidgetType.LABEL, popTable);
+                }
+            });
+        }
     
         table.row();
         textButton = new TextButton("List", skin, "scene-med");
         valid = jsonData.classHasValidStyles(List.class);
-        textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("List presents text options in a clickable menu.", tooltipManager, skin, "scene"));
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                widgetSelectedListener.widgetSelected(WidgetType.LIST, popTable);
-            }
-        });
+        textButton.addListener(handListener);
+        if (!valid) {
+            textButton.setStyle(skin.get("scene-med-disabled", TextButtonStyle.class));
+            textButton.addListener(new TextTooltip(
+                    "Missing valid style for widget. Click to open in Skin Composer.\nList presents text options in a clickable menu.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(rl(() -> {
+                dialogSceneComposer.hide();
+                popTable.hide();
+                rootTable.setSelectedClass(List.class);
+                var toast = dialogFactory.showToast(2f, skin, "dialog-no-bg");
+                toast.pad(10f);
+                var l = new Label("Please enter all required fields for style", skin);
+                toast.add(l);
+            }));
+        } else {
+            textButton.addListener(new TextTooltip(
+                    "List presents text options in a clickable menu.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    widgetSelectedListener.widgetSelected(WidgetType.LIST, popTable);
+                }
+            });
+        }
     
         table.row();
         textButton = new TextButton("ProgressBar", skin, "scene-med");
         valid = jsonData.classHasValidStyles(ProgressBar.class);
-        textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("Commonly used to display loading progress or as a health/mana indicator in HUD's.", tooltipManager, skin, "scene"));
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                widgetSelectedListener.widgetSelected(WidgetType.PROGRESS_BAR, popTable);
-            }
-        });
+        textButton.addListener(handListener);
+        if (!valid) {
+            textButton.setStyle(skin.get("scene-med-disabled", TextButtonStyle.class));
+            textButton.addListener(new TextTooltip(
+                    "Missing valid style for widget. Click to open in Skin Composer.\nCommonly used to display loading progress or as a health/mana indicator in HUD's.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(rl(() -> {
+                dialogSceneComposer.hide();
+                popTable.hide();
+                rootTable.setSelectedClass(ProgressBar.class);
+                var toast = dialogFactory.showToast(2f, skin, "dialog-no-bg");
+                toast.pad(10f);
+                var l = new Label("Please enter all required fields for style", skin);
+                toast.add(l);
+            }));
+        } else {
+            textButton.addListener(new TextTooltip(
+                    "Commonly used to display loading progress or as a health/mana indicator in HUD's.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    widgetSelectedListener.widgetSelected(WidgetType.PROGRESS_BAR, popTable);
+                }
+            });
+        }
     
         table.row();
         textButton = new TextButton("SelectBox", skin, "scene-med");
         valid = jsonData.classHasValidStyles(SelectBox.class);
-        textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("SelectBox is a kind of button that displays a selectable option list when opened.", tooltipManager, skin, "scene"));
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                widgetSelectedListener.widgetSelected(WidgetType.SELECT_BOX, popTable);
-            }
-        });
+        textButton.addListener(handListener);
+        if (!valid) {
+            textButton.setStyle(skin.get("scene-med-disabled", TextButtonStyle.class));
+            textButton.addListener(new TextTooltip(
+                    "Missing valid style for widget. Click to open in Skin Composer.\nSelectBox is a kind of button that displays a selectable option list when opened.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(rl(() -> {
+                dialogSceneComposer.hide();
+                popTable.hide();
+                rootTable.setSelectedClass(SelectBox.class);
+                var toast = dialogFactory.showToast(2f, skin, "dialog-no-bg");
+                toast.pad(10f);
+                var l = new Label("Please enter all required fields for style", skin);
+                toast.add(l);
+            }));
+        } else {
+            textButton.addListener(new TextTooltip(
+                    "SelectBox is a kind of button that displays a selectable option list when opened.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    widgetSelectedListener.widgetSelected(WidgetType.SELECT_BOX, popTable);
+                }
+            });
+        }
     
         table.row();
         textButton = new TextButton("Slider", skin, "scene-med");
         valid = jsonData.classHasValidStyles(Slider.class);
-        textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(handListener);
+        textButton.addListener(handListener);
+        if (!valid) {
+            textButton.setStyle(skin.get("scene-med-disabled", TextButtonStyle.class));
+            textButton.addListener(new TextTooltip(
+                    "Missing valid style for widget. Click to open in Skin Composer.\nSlider is a kind of user interactable ProgressBar that allows a user to select a value along a sliding scale.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(rl(() -> {
+                dialogSceneComposer.hide();
+                popTable.hide();
+                rootTable.setSelectedClass(Slider.class);
+                var toast = dialogFactory.showToast(2f, skin, "dialog-no-bg");
+                toast.pad(10f);
+                var l = new Label("Please enter all required fields for style", skin);
+                toast.add(l);
+            }));
+        } else {
+            textButton.addListener(new TextTooltip(
+                    "Slider is a kind of user interactable ProgressBar that allows a user to select a value along a sliding scale.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    widgetSelectedListener.widgetSelected(WidgetType.SLIDER, popTable);
+                }
+            });
+        }
         textButton.addListener(new TextTooltip("Slider is a kind of user interactable ProgressBar that allows a user to select a value along a sliding scale.", tooltipManager, skin, "scene"));
         textButton.addListener(new ChangeListener() {
             @Override
@@ -252,58 +417,126 @@ public class GeneralListeners {
         table.row();
         textButton = new TextButton("TextButton", skin, "scene-med");
         valid = jsonData.classHasValidStyles(TextButton.class);
-        textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("A kind of button that contains a text element inside of it. The text color can change depending on the state of the button.", tooltipManager, skin, "scene"));
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                widgetSelectedListener.widgetSelected(WidgetType.TEXT_BUTTON, popTable);
-            }
-        });
+        textButton.addListener(handListener);
+        if (!valid) {
+            textButton.setStyle(skin.get("scene-med-disabled", TextButtonStyle.class));
+            textButton.addListener(new TextTooltip(
+                    "Missing valid style for widget. Click to open in Skin Composer.\nA kind of button that contains a text element inside of it. The text color can change depending on the state of the button.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(rl(() -> {
+                dialogSceneComposer.hide();
+                popTable.hide();
+                rootTable.setSelectedClass(TextButton.class);
+                var toast = dialogFactory.showToast(2f, skin, "dialog-no-bg");
+                toast.pad(10f);
+                var l = new Label("Please enter all required fields for style", skin);
+                toast.add(l);
+            }));
+        } else {
+            textButton.addListener(new TextTooltip(
+                    "A kind of button that contains a text element inside of it. The text color can change depending on the state of the button.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    widgetSelectedListener.widgetSelected(WidgetType.TEXT_BUTTON, popTable);
+                }
+            });
+        }
     
         table.row();
         textButton = new TextButton("TextField", skin, "scene-med");
         valid = jsonData.classHasValidStyles(TextField.class);
-        textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("TextFields are the primary way of getting text input from the user.", tooltipManager, skin, "scene"));
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                widgetSelectedListener.widgetSelected(WidgetType.TEXT_FIELD, popTable);
-            }
-        });
+        textButton.addListener(handListener);
+        if (!valid) {
+            textButton.setStyle(skin.get("scene-med-disabled", TextButtonStyle.class));
+            textButton.addListener(new TextTooltip(
+                    "Missing valid style for widget. Click to open in Skin Composer.\nTextFields are the primary way of getting text input from the user.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(rl(() -> {
+                dialogSceneComposer.hide();
+                popTable.hide();
+                rootTable.setSelectedClass(TextField.class);
+                var toast = dialogFactory.showToast(2f, skin, "dialog-no-bg");
+                toast.pad(10f);
+                var l = new Label("Please enter all required fields for style", skin);
+                toast.add(l);
+            }));
+        } else {
+            textButton.addListener(new TextTooltip(
+                    "TextFields are the primary way of getting text input from the user.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    widgetSelectedListener.widgetSelected(WidgetType.TEXT_FIELD, popTable);
+                }
+            });
+        }
     
         table.row();
         textButton = new TextButton("TextArea", skin, "scene-med");
         valid = jsonData.classHasValidStyles(TextField.class);
-        textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("TextAreas are a multiline version of a TextField.", tooltipManager, skin, "scene"));
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                widgetSelectedListener.widgetSelected(WidgetType.TEXT_AREA, popTable);
-            }
-        });
+        textButton.addListener(handListener);
+        if (!valid) {
+            textButton.setStyle(skin.get("scene-med-disabled", TextButtonStyle.class));
+            textButton.addListener(new TextTooltip(
+                    "Missing valid style for widget. Click to open in Skin Composer.\nTextAreas are a multiline version of a TextField.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(rl(() -> {
+                dialogSceneComposer.hide();
+                popTable.hide();
+                rootTable.setSelectedClass(TextArea.class);
+                var toast = dialogFactory.showToast(2f, skin, "dialog-no-bg");
+                toast.pad(10f);
+                var l = new Label("Please enter all required fields for style", skin);
+                toast.add(l);
+            }));
+        } else {
+            textButton.addListener(new TextTooltip(
+                    "TextAreas are a multiline version of a TextField.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    widgetSelectedListener.widgetSelected(WidgetType.TEXT_AREA, popTable);
+                }
+            });
+        }
     
         table.row();
         textButton = new TextButton("Touchpad", skin, "scene-med");
         valid = jsonData.classHasValidStyles(Touchpad.class);
-        textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("Touchpad is a UI element common to mobile games. It is used lieu of keyboard input, for example.", tooltipManager, skin, "scene"));
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                widgetSelectedListener.widgetSelected(WidgetType.TOUCH_PAD, popTable);
-            }
-        });
+        textButton.addListener(handListener);
+        if (!valid) {
+            textButton.setStyle(skin.get("scene-med-disabled", TextButtonStyle.class));
+            textButton.addListener(new TextTooltip(
+                    "Missing valid style for widget. Click to open in Skin Composer.\nTouchpad is a UI element common to mobile games. It is used lieu of keyboard input, for example.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(rl(() -> {
+                dialogSceneComposer.hide();
+                popTable.hide();
+                rootTable.setSelectedClass(Touchpad.class);
+                var toast = dialogFactory.showToast(2f, skin, "dialog-no-bg");
+                toast.pad(10f);
+                var l = new Label("Please enter all required fields for style", skin);
+                toast.add(l);
+            }));
+        } else {
+            textButton.addListener(new TextTooltip(
+                    "Touchpad is a UI element common to mobile games. It is used lieu of keyboard input, for example.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    widgetSelectedListener.widgetSelected(WidgetType.TOUCH_PAD, popTable);
+                }
+            });
+        }
     
         table = new Table();
         scrollPane = new ScrollPane(table, skin, "scene");
@@ -340,16 +573,33 @@ public class GeneralListeners {
         table.row();
         textButton = new TextButton("ScrollPane", skin, "scene-med");
         valid = jsonData.classHasValidStyles(ScrollPane.class);
-        textButton.setDisabled(!valid);
         table.add(textButton);
         textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("Creates a scrollable layout for your widgets. It is commonly used to adapt the UI to variable content and screen sizes.", tooltipManager, skin, "scene"));
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                widgetSelectedListener.widgetSelected(WidgetType.SCROLL_PANE, popTable);
-            }
-        });
+        if (!valid) {
+            textButton.setStyle(skin.get("scene-med-disabled", TextButtonStyle.class));
+            textButton.addListener(new TextTooltip(
+                    "Missing valid style for widget. Click to open in Skin Composer.\nCreates a scrollable layout for your widgets. It is commonly used to adapt the UI to variable content and screen sizes.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(rl(() -> {
+                dialogSceneComposer.hide();
+                popTable.hide();
+                rootTable.setSelectedClass(ScrollPane.class);
+                var toast = dialogFactory.showToast(2f, skin, "dialog-no-bg");
+                toast.pad(10f);
+                var l = new Label("Please enter all required fields for style", skin);
+                toast.add(l);
+            }));
+        } else {
+            textButton.addListener(new TextTooltip(
+                    "Creates a scrollable layout for your widgets. It is commonly used to adapt the UI to variable content and screen sizes.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    widgetSelectedListener.widgetSelected(WidgetType.SCROLL_PANE, popTable);
+                }
+            });
+        }
     
         table.row();
         textButton = new TextButton("Stack", skin, "scene-med");
@@ -366,16 +616,33 @@ public class GeneralListeners {
         table.row();
         textButton = new TextButton("SplitPane", skin, "scene-med");
         valid = jsonData.classHasValidStyles(SplitPane.class);
-        textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("An organizational layout that allows the user to adjust the width or height of two widgets next to each other.", tooltipManager, skin, "scene"));
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                widgetSelectedListener.widgetSelected(WidgetType.SPLIT_PANE, popTable);
-            }
-        });
+        textButton.addListener(handListener);
+        if (!valid) {
+            textButton.setStyle(skin.get("scene-med-disabled", TextButtonStyle.class));
+            textButton.addListener(new TextTooltip(
+                    "Missing valid style for widget. Click to open in Skin Composer.\nAn organizational layout that allows the user to adjust the width or height of two widgets next to each other.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(rl(() -> {
+                dialogSceneComposer.hide();
+                popTable.hide();
+                rootTable.setSelectedClass(SplitPane.class);
+                var toast = dialogFactory.showToast(2f, skin, "dialog-no-bg");
+                toast.pad(10f);
+                var l = new Label("Please enter all required fields for style", skin);
+                toast.add(l);
+            }));
+        } else {
+            textButton.addListener(new TextTooltip(
+                    "An organizational layout that allows the user to adjust the width or height of two widgets next to each other.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    widgetSelectedListener.widgetSelected(WidgetType.SPLIT_PANE, popTable);
+                }
+            });
+        }
     
         table.row();
         textButton = new TextButton("Table", skin, "scene-med");
@@ -392,16 +659,33 @@ public class GeneralListeners {
         table.row();
         textButton = new TextButton("Tree", skin, "scene-med");
         valid = jsonData.classHasValidStyles(Tree.class);
-        textButton.setDisabled(!valid);
         table.add(textButton);
-        if (valid) textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("Tree is an organizational widget that allows collapsing and expanding elements like file structures.", tooltipManager, skin, "scene"));
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                widgetSelectedListener.widgetSelected(WidgetType.TREE, popTable);
-            }
-        });
+        textButton.addListener(handListener);
+        if (!valid) {
+            textButton.setStyle(skin.get("scene-med-disabled", TextButtonStyle.class));
+            textButton.addListener(new TextTooltip(
+                    "Missing valid style for widget. Click to open in Skin Composer.\nTree is an organizational widget that allows collapsing and expanding elements like file structures.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(rl(() -> {
+                dialogSceneComposer.hide();
+                popTable.hide();
+                rootTable.setSelectedClass(Tree.class);
+                var toast = dialogFactory.showToast(2f, skin, "dialog-no-bg");
+                toast.pad(10f);
+                var l = new Label("Please enter all required fields for style", skin);
+                toast.add(l);
+            }));
+        } else {
+            textButton.addListener(new TextTooltip(
+                    "Tree is an organizational widget that allows collapsing and expanding elements like file structures.",
+                    tooltipManager, skin, "scene"));
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    widgetSelectedListener.widgetSelected(WidgetType.TREE, popTable);
+                }
+            });
+        }
     
         table.row();
         textButton = new TextButton("VerticalGroup", skin, "scene-med");
