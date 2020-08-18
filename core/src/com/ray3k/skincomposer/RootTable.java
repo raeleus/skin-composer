@@ -2665,22 +2665,6 @@ public class RootTable extends Table {
         }
     }
 
-    private static class MenuItem {
-
-        String text;
-        RootTableEnum event;
-
-        public MenuItem(String text, RootTableEnum enumeration) {
-            this.text = text;
-            this.event = enumeration;
-        }
-
-        @Override
-        public String toString() {
-            return text;
-        }
-    }
-
     public enum RootTableEnum {
         NEW, OPEN, SAVE, SAVE_AS, IMPORT, EXPORT, EXIT, UNDO,
         REDO, SETTINGS, COLORS, FONTS, DRAWABLES, ABOUT, CLASS_SELECTED,
