@@ -3502,7 +3502,7 @@ jsonData: {
 						}
 						{
 							name: overFontColor
-							type: FONT
+							type: COLOR
 							value: null
 						}
 						{
@@ -3512,7 +3512,7 @@ jsonData: {
 						}
 						{
 							name: checkedOverFontColor
-							type: FONT
+							type: COLOR
 							value: null
 						}
 						{
