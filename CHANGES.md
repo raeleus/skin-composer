@@ -19,6 +19,7 @@
 * Fixed background color not being persisted in Scene Composer.
 * Fixed background color not being reset when Scene >> Clear is selected in Scene Composer.
 * Replaced incorrect quote character in Scene Composer font.
+* Fixed error with incorrect cell alignment when exporting from Scene Composer.
 * Fixed selected drawable not being highlighted in detail view of Drawables dialog.
 * Fixed crash when using FreeTypeFonts that are unusually small and decreasing their size until they are not visible.
 * Minor UI tweaks and bug fixes

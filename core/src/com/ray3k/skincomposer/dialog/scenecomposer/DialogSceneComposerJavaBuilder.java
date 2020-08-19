@@ -207,7 +207,7 @@ public class DialogSceneComposerJavaBuilder {
                 }
     
                 if (cell.alignment != Align.center) {
-                    builder.add(".align($T.$L)", classNameGetter.get(Align.class), alignmentToName(table.alignment));
+                    builder.add(".align($T.$L)", classNameGetter.get(Align.class), alignmentToName(cell.alignment));
                 }
     
                 boolean minWidth = false, minHeight = false, maxWidth = false, maxHeight = false, preferredWidth = false, preferredHeight = false;
