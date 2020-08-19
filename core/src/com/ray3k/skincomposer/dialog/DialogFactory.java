@@ -1108,7 +1108,7 @@ public class DialogFactory {
     
     public PopTable showToast(float duration, Skin skin, String style) {
         var popTable = new PopTable(skin, style);
-        popTable.show(stage, Actions.fadeIn(.5f));
+        popTable.show(stage);
         popTable.addAction(Actions.sequence(Actions.delay(duration), Actions.run(() -> popTable.hide(Actions.fadeOut(.5f)))));
         
         return popTable;
