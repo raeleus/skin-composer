@@ -67,87 +67,94 @@ public class PopSettings extends PopTable {
         add(table);
         
         table.defaults().growX().space(5);
-        var textButton = new TextButton("Open temp/log directory", skin);
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                try {
-                    Utils.openFileExplorer(Main.appFolder.child("temp/"));
-                } catch (Exception e) {
-                    Gdx.app.error(getClass().getName(), "Error opening temp folder", e);
-                    dialogFactory.showDialogError("Folder Error...", "Error opening temp folder.\n\nOpen log?");
-                }
-            }
-        });
-        textButton.addListener(handListener);
-        table.add(textButton);
-        
-        table.row();
-        textButton = new TextButton("Open preferences directory", skin);
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                try {
-                    Utils.openFileExplorer(Gdx.files.external(".prefs/"));
-                } catch (Exception e) {
-                    Gdx.app.error(getClass().getName(), "Error opening preferences folder", e);
-                    dialogFactory.showDialogError("Folder Error...", "Error opening preferences folder.\n\nOpen log?");
-                }
-            }
-        });
-        textButton.addListener(handListener);
-        table.add(textButton);
-        
-        if (projectData.areChangesSaved() && projectData.getSaveFile().exists()) {
-            table.row();
-            textButton = new TextButton("Open project/import directory", skin);
+        if (!Utils.isMac()) {
+            var textButton = new TextButton("Open temp/log directory", skin);
             textButton.addListener(new ChangeListener() {
                 @Override
-                public void changed(ChangeListener.ChangeEvent event,
-                                    Actor actor) {
+                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                     try {
-                        Utils.openFileExplorer(projectData.getSaveFile().sibling(projectData.getSaveFile().nameWithoutExtension() + "_data"));
+                        Utils.openFileExplorer(Main.appFolder.child("temp/"));
                     } catch (Exception e) {
-                        Gdx.app.error(getClass().getName(), "Error opening project folder", e);
-                        dialogFactory.showDialogError("Folder Error...", "Error opening project folder\n\nOpen log?");
+                        Gdx.app.error(getClass().getName(), "Error opening temp folder", e);
+                        dialogFactory.showDialogError("Folder Error...", "Error opening temp folder.\n\nOpen log?");
+                    }
+                }
+            });
+            textButton.addListener(handListener);
+            table.add(textButton);
+    
+            table.row();
+            textButton = new TextButton("Open preferences directory", skin);
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                    try {
+                        Utils.openFileExplorer(Gdx.files.external(".prefs/"));
+                    } catch (Exception e) {
+                        Gdx.app.error(getClass().getName(), "Error opening preferences folder", e);
+                        dialogFactory.showDialogError("Folder Error...",
+                                "Error opening preferences folder.\n\nOpen log?");
+                    }
+                }
+            });
+            textButton.addListener(handListener);
+            table.add(textButton);
+    
+            if (projectData.areChangesSaved() && projectData.getSaveFile().exists()) {
+                table.row();
+                textButton = new TextButton("Open project/import directory", skin);
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event,
+                                        Actor actor) {
+                        try {
+                            Utils.openFileExplorer(projectData.getSaveFile().sibling(
+                                    projectData.getSaveFile().nameWithoutExtension() + "_data"));
+                        } catch (Exception e) {
+                            Gdx.app.error(getClass().getName(), "Error opening project folder", e);
+                            dialogFactory.showDialogError("Folder Error...",
+                                    "Error opening project folder\n\nOpen log?");
+                        }
+                    }
+                });
+                textButton.addListener(handListener);
+                table.add(textButton);
+            }
+    
+            table.row();
+            textButton = new TextButton("Open texture packer settings file for export", skin);
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                    try {
+                        Utils.openFileExplorer(Main.appFolder.child("texturepacker/atlas-export-settings.json"));
+                    } catch (Exception e) {
+                        Gdx.app.error(getClass().getName(), "Error opening atlas-export-settings.json", e);
+                        dialogFactory.showDialogError("File Error...",
+                                "Error opening atlas-export-settings.json\n\nOpen log?");
+                    }
+                }
+            });
+            textButton.addListener(handListener);
+            table.add(textButton);
+    
+            table.row();
+            textButton = new TextButton("Open texture packer settings file for preview", skin);
+            textButton.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                    try {
+                        Utils.openFileExplorer(Main.appFolder.child("texturepacker/atlas-internal-settings.json"));
+                    } catch (Exception e) {
+                        Gdx.app.error(getClass().getName(), "Error opening atlas-internal-settings.json", e);
+                        dialogFactory.showDialogError("File Error...",
+                                "Error opening atlas-internal-settings.json\n\nOpen log?");
                     }
                 }
             });
             textButton.addListener(handListener);
             table.add(textButton);
         }
-        
-        table.row();
-        textButton = new TextButton("Open texture packer settings file for export", skin);
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                try {
-                    Utils.openFileExplorer(Main.appFolder.child("texturepacker/atlas-export-settings.json"));
-                } catch (Exception e) {
-                    Gdx.app.error(getClass().getName(), "Error opening atlas-export-settings.json", e);
-                    dialogFactory.showDialogError("File Error...", "Error opening atlas-export-settings.json\n\nOpen log?");
-                }
-            }
-        });
-        textButton.addListener(handListener);
-        table.add(textButton);
-        
-        table.row();
-        textButton = new TextButton("Open texture packer settings file for preview", skin);
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                try {
-                    Utils.openFileExplorer(Main.appFolder.child("texturepacker/atlas-internal-settings.json"));
-                } catch (Exception e) {
-                    Gdx.app.error(getClass().getName(), "Error opening atlas-internal-settings.json", e);
-                    dialogFactory.showDialogError("File Error...", "Error opening atlas-internal-settings.json\n\nOpen log?");
-                }
-            }
-        });
-        textButton.addListener(handListener);
-        table.add(textButton);
         
         row();
         table = new Table();
@@ -237,7 +244,7 @@ public class PopSettings extends PopTable {
         add(buttonTable);
         
         buttonTable.defaults().minWidth(75).space(5);
-        textButton = new TextButton("OK", getSkin());
+        var textButton = new TextButton("OK", getSkin());
         textButton.addListener(handListener);
         buttonTable.add(textButton);
         textButton.addListener(new ChangeListener() {
