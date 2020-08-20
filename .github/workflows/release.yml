@@ -79,7 +79,7 @@ jobs:
 
 
   release:
-    needs: [jar, linux-tar, windows-exe]
+    needs: [jar, linux-tar, windows-zip]
     runs-on: ubuntu-latest
     steps:
       - name: Download all artifacts
