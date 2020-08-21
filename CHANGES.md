@@ -1,3 +1,6 @@
+### Skin Composer Version 39 ###
+* Fixed Scene Composer exporting redundant Label#setEllipsis() if using default values. 
+
 ### Skin Composer Version 38 ###
 
 * Added shortcut "Ctrl+e" for export in Scene Composer.

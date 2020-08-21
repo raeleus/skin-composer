@@ -453,9 +453,11 @@ public class DialogSceneComposerJavaBuilder {
             if (label.textAlignment != Align.left) {
                 builder.addStatement("$L.setAlignment($T.$L)", variableName, classNameGetter.get(Align.class), alignmentToName(label.textAlignment));
             }
-    
-            if (label.ellipsis) builder.addStatement("$L.setEllipsis($L)", variableName, true);
-            if (label.ellipsisString != null) builder.addStatement("$L.setEllipsis($S)", variableName, label.ellipsisString);
+            
+            if (label.ellipsis && label.ellipsisString != null) {
+                if (label.ellipsisString.equals("...")) builder.addStatement("$L.setEllipsis($L)", variableName, true);
+                else builder.addStatement("$L.setEllipsis($S)", variableName, label.ellipsisString);
+            }
             if (label.wrap) builder.addStatement("$L.setWrap($L)", variableName, true);
             if (label.color != null) builder.addStatement("$L.setColor(skin.getColor($S))", variableName, label.color.getName());
     
