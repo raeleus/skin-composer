@@ -39,6 +39,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.LeadingTruncateLabel;
@@ -68,6 +70,8 @@ public class DialogFreeTypeFont extends Dialog {
     private static DecimalFormat df;
     private Array<DialogFreeTypeFontListener> listeners;
     private TextFieldStyle previewStyle;
+    private SpriteDrawable previewCursor;
+    private SpriteDrawable previewSelection;
     private String previewText;
     private boolean automaticBgColor;
     private static final String SERIALIZER_TEXT = "skin = new Skin(Gdx.files.internal(\"skin-name.json\")) {\n" +
@@ -150,6 +154,10 @@ public class DialogFreeTypeFont extends Dialog {
         }
         
         previewStyle = new TextFieldStyle(skin.get("free-type-preview", TextFieldStyle.class));
+        previewCursor = (SpriteDrawable) ((TextureRegionDrawable) skin.getDrawable("white")).tint(Color.BLACK);
+        previewStyle.cursor = previewCursor;
+        previewSelection = (SpriteDrawable) ((TextureRegionDrawable) skin.getDrawable("white")).tint(Color.DARK_GRAY);
+        previewStyle.selection = previewSelection;
         previewText = "Lorem ipsum dolor sit";
         
         getTitleTable().pad(10.0f);
@@ -685,6 +693,8 @@ public class DialogFreeTypeFont extends Dialog {
                         data.color = colorData.getName();
                         if (automaticBgColor) {
                             previewBGcolor.set(Utils.blackOrWhiteBgColor(colorData.color));
+                            previewCursor.getSprite().setColor(colorData.color);
+                            previewSelection.getSprite().setColor(previewBGcolor == Color.BLACK ? Color.LIGHT_GRAY : Color.DARK_GRAY);
                             previewTable.setColor(previewBGcolor);
                         }
                     } else {
@@ -1246,6 +1256,7 @@ public class DialogFreeTypeFont extends Dialog {
                 TextField textField = findActor("previewField");
                 Cell cell = ((Table) textField.getParent()).getCell(textField);
                 previewStyle.font = data.bitmapFont;
+                
                 textField = new TextField(previewText, previewStyle);
                 textField.setName("previewField");
                 textField.setAlignment(Align.center);
