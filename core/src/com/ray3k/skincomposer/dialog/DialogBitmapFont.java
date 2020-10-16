@@ -33,7 +33,6 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin.TintedDrawable;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.*;
@@ -63,6 +62,7 @@ public class DialogBitmapFont extends Dialog {
     private Array<DialogBitmapFontListener> listeners;
     private TextFieldStyle previewStyle;
     private SpriteDrawable previewCursor;
+    private SpriteDrawable previewSelection;
     private String previewText;
     private FilesDroppedListener filesDroppedListener;
     private static enum ButtonType {
@@ -97,6 +97,8 @@ public class DialogBitmapFont extends Dialog {
         previewStyle = new TextFieldStyle(skin.get("free-type-preview", TextFieldStyle.class));
         previewCursor = (SpriteDrawable) ((TextureRegionDrawable) skin.getDrawable("white")).tint(Color.WHITE);
         previewStyle.cursor = previewCursor;
+        previewSelection = (SpriteDrawable) ((TextureRegionDrawable) skin.getDrawable("white")).tint(Color.LIGHT_GRAY);
+        previewStyle.selection = previewSelection;
         previewText = "Lorem ipsum dolor sit";
 
         getTitleTable().pad(10.0f);
@@ -1012,12 +1014,15 @@ public class DialogBitmapFont extends Dialog {
                 previewBGcolor.set(Utils.blackOrWhiteBgColor(colorData.color));
                 previewTable.setColor(previewBGcolor);
                 previewCursor.getSprite().setColor(colorData.color);
+                previewSelection.getSprite().setColor(previewBGcolor == Color.BLACK ? Color.LIGHT_GRAY : Color.DARK_GRAY);
             }
         } else {
             data.color = null;
             if (automaticBgColor) {
                 previewBGcolor.set(Color.BLACK);
                 previewTable.setColor(previewBGcolor);
+                previewCursor.getSprite().setColor(Color.WHITE);
+                previewSelection.getSprite().setColor(Color.LIGHT_GRAY);
             }
         }
         textButton.setText(data.color);
