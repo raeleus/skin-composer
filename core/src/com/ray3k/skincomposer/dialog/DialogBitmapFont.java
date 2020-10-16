@@ -33,9 +33,9 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin.TintedDrawable;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.LeadingTruncateLabel;
@@ -62,6 +62,7 @@ public class DialogBitmapFont extends Dialog {
     private static DecimalFormat df;
     private Array<DialogBitmapFontListener> listeners;
     private TextFieldStyle previewStyle;
+    private SpriteDrawable previewCursor;
     private String previewText;
     private FilesDroppedListener filesDroppedListener;
     private static enum ButtonType {
@@ -94,6 +95,8 @@ public class DialogBitmapFont extends Dialog {
         }
 
         previewStyle = new TextFieldStyle(skin.get("free-type-preview", TextFieldStyle.class));
+        previewCursor = (SpriteDrawable) ((TextureRegionDrawable) skin.getDrawable("white")).tint(Color.WHITE);
+        previewStyle.cursor = previewCursor;
         previewText = "Lorem ipsum dolor sit";
 
         getTitleTable().pad(10.0f);
@@ -1008,6 +1011,7 @@ public class DialogBitmapFont extends Dialog {
             if (automaticBgColor) {
                 previewBGcolor.set(Utils.blackOrWhiteBgColor(colorData.color));
                 previewTable.setColor(previewBGcolor);
+                previewCursor.getSprite().setColor(colorData.color);
             }
         } else {
             data.color = null;
