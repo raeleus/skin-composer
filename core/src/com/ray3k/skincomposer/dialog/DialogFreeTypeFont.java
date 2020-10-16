@@ -698,6 +698,9 @@ public class DialogFreeTypeFont extends Dialog {
                 }, null);
             }
         });
+        if (data.color != null) {
+            textButton.setUserObject(jsonData.getColorByName(data.color));
+        }
         
         bottom.row();
         label = new Label("Gamma:", skin);
@@ -804,6 +807,9 @@ public class DialogFreeTypeFont extends Dialog {
                 }, null);
             }
         });
+        if (data.borderColor != null) {
+            textButton.setUserObject(jsonData.getColorByName(data.borderColor));
+        }
         
         bottom.row();
         label = new Label("Border Straight:", skin);
@@ -933,6 +939,9 @@ public class DialogFreeTypeFont extends Dialog {
                 }, null);
             }
         });
+        if (data.shadowColor != null) {
+            textButton.setUserObject(jsonData.getColorByName(data.shadowColor));
+        }
         
         label = new Label("Incremental:", skin);
         bottom.add(label).right();
