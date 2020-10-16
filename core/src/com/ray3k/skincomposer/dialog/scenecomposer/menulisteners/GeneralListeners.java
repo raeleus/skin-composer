@@ -406,13 +406,6 @@ public class GeneralListeners {
                 }
             });
         }
-        textButton.addListener(new TextTooltip("Slider is a kind of user interactable ProgressBar that allows a user to select a value along a sliding scale.", tooltipManager, skin, "scene"));
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                widgetSelectedListener.widgetSelected(WidgetType.SLIDER, popTable);
-            }
-        });
     
         table.row();
         textButton = new TextButton("TextButton", skin, "scene-med");

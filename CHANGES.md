@@ -1,5 +1,6 @@
 ### Skin Composer Version 40 ###
 * Fixed improper behavior of colors in FreeTypeFont dialog when changing a color value. (Thanks piotr-j)
+* Fixed crash when adding a Slider to Scene Composer.
 
 ### Skin Composer Version 39 ###
 * Fixed Scene Composer exporting redundant Label#setEllipsis() if using default values.
