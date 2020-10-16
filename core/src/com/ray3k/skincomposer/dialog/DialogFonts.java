@@ -518,7 +518,7 @@ public class DialogFonts extends Dialog {
                 label.setTouchable(Touchable.disabled);
                 Table bg = new Table(getSkin());
                 bg.setBackground("white");
-                if (Utils.brightness(jsonData.getColorByName(font.color).color) < .5f) {
+                if (font.color == null || Utils.brightness(jsonData.getColorByName(font.color).color) < .5f) {
                     bg.setColor(Color.WHITE);
                 } else {
                     bg.setColor(Color.BLACK);

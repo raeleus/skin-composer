@@ -1,6 +1,7 @@
 ### Skin Composer Version 40 ###
 * The cursor and selection in the preview of the BitmapFont/FreeTypeFont dialogs now changes color based on font color.
 * Fixed improper behavior of colors in FreeTypeFont dialog when changing a color value. (Thanks piotr-j)
+* Fixed crash when using a FreeTypeFont placeholder.
 * Fixed crash when pressing escape in BitmapFont dialog.
 * Fixed crash when adding a Slider to Scene Composer.
 * Fixed defaults being exported unnecessarily in Scene Composer.
