@@ -324,8 +324,8 @@ public class DialogBitmapFont extends Dialog {
                                 target = target.sibling(target.name() + ".fnt");
                             }
 
-                            var textField = (LeadingTruncateLabel) DialogBitmapFont.this.findActor("targetFileField");
-                            textField.setText(target.path());
+                            var leadingTruncateLabel = (LeadingTruncateLabel) DialogBitmapFont.this.findActor("targetFileField");
+                            leadingTruncateLabel.setText(target.path());
 
                             projectData.setLastFontPath(target.parent().path() + "/");
 
