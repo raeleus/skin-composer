@@ -997,9 +997,15 @@ public class DialogBitmapFont extends Dialog {
         projectData.setLastFontPath(data.file.parent().path() + "/");
 
         if (target == null) {
-            target = data.file.sibling(data.file.nameWithoutExtension() + ".fnt");
+            var name = data.file.nameWithoutExtension();
+            target = data.file.sibling(name + ".fnt");
+            var counter = 1;
+            while (target.exists()) {
+                target = target.sibling(name + "(" + counter + ").fnt");
+                counter++;
+            }
             ltLabel = DialogBitmapFont.this.findActor("targetFileField");
-            ltLabel.setText(target.path());
+            ltLabel.setText(this.target.path());
         }
 
         updatePreviewAndOK();
