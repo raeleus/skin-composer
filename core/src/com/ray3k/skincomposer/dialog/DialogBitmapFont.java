@@ -105,7 +105,7 @@ public class DialogBitmapFont extends Dialog {
 
         updatePreviewAndOK();
 
-        key(Keys.ESCAPE, false).key(Keys.ENTER, true);
+        key(Keys.ESCAPE, ButtonType.CANCEL);
 
         listeners = new Array<>();
 
