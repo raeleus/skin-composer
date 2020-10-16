@@ -359,7 +359,7 @@ public class DialogSceneComposerJavaBuilder {
             if (image.name != null) builder.addStatement("$L.setName($S)", variableName, image.name);
             if (image.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, image.touchable);
             if (!image.visible) builder.addStatement("$L.setTouchable($L)", variableName, image.visible);
-            if (image.scaling != null) builder.addStatement("$L.setScaling($T.$L)", variableName, classNameGetter.get(Scaling.class), image.scaling.name());
+            if (image.scaling != null && image.scaling != Scaling.stretch) builder.addStatement("$L.setScaling($T.$L)", variableName, classNameGetter.get(Scaling.class), image.scaling.name());
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimImageButton) {
@@ -500,12 +500,12 @@ public class DialogSceneComposerJavaBuilder {
             if (progressBar.name != null) builder.addStatement("$L.setName($S)", variableName, progressBar.name);
             if (progressBar.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, progressBar.touchable);
             if (!progressBar.visible) builder.addStatement("$L.setTouchable($L)", variableName, progressBar.visible);
-            if (MathUtils.isZero(progressBar.value)) builder.addStatement("$L.setValue($Lf)", variableName, progressBar.value);
-            if (MathUtils.isZero(progressBar.animationDuration)) builder.addStatement("$L.setAnimationDuration($Lf)", variableName, progressBar.animationDuration);
-            if (progressBar.animateInterpolation != null) builder.addStatement("$L.setAnimateInterpolation($T.$L)", variableName,
+            if (!MathUtils.isZero(progressBar.value)) builder.addStatement("$L.setValue($Lf)", variableName, progressBar.value);
+            if (!MathUtils.isZero(progressBar.animationDuration)) builder.addStatement("$L.setAnimationDuration($Lf)", variableName, progressBar.animationDuration);
+            if (progressBar.animateInterpolation != null && progressBar.animateInterpolation != Interpol.LINEAR) builder.addStatement("$L.setAnimateInterpolation($T.$L)", variableName,
                     classNameGetter.get(Interpolation.class), progressBar.animateInterpolation.code);
-            if (progressBar.round) builder.addStatement("$L.setRound($L)", variableName, progressBar.round);
-            if (progressBar.visualInterpolation != null) builder.addStatement("$L.setVisualInterpolation($T.$L)", variableName,
+            if (!progressBar.round) builder.addStatement("$L.setRound($L)", variableName, progressBar.round);
+            if (progressBar.visualInterpolation != null && progressBar.visualInterpolation != Interpol.LINEAR) builder.addStatement("$L.setVisualInterpolation($T.$L)", variableName,
                     classNameGetter.get(Interpolation.class), progressBar.visualInterpolation.code);
     
             return new WidgetNamePair(builder.build(), variableName);
@@ -558,12 +558,12 @@ public class DialogSceneComposerJavaBuilder {
             if (slider.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, slider.touchable);
             if (!slider.visible) builder.addStatement("$L.setTouchable($L)", variableName, slider.visible);
             if (slider.disabled) builder.addStatement("$L.setDisabled($L)", variableName, slider.disabled);
-            if (MathUtils.isZero(slider.value)) builder.addStatement("$L.setValue($Lf)", variableName, slider.value);
-            if (MathUtils.isZero(slider.animationDuration)) builder.addStatement("$L.setAnimationDuration($Lf)", variableName, slider.animationDuration);
-            if (slider.animateInterpolation != null) builder.addStatement("$L.setAnimateInterpolation($T.$L)", variableName,
+            if (!MathUtils.isZero(slider.value)) builder.addStatement("$L.setValue($Lf)", variableName, slider.value);
+            if (!MathUtils.isZero(slider.animationDuration)) builder.addStatement("$L.setAnimationDuration($Lf)", variableName, slider.animationDuration);
+            if (slider.animateInterpolation != null && slider.animateInterpolation != Interpol.LINEAR) builder.addStatement("$L.setAnimateInterpolation($T.$L)", variableName,
                     classNameGetter.get(Interpolation.class), slider.animateInterpolation.code);
-            if (slider.round) builder.addStatement("$L.setRound($L)", variableName, slider.round);
-            if (slider.visualInterpolation != null) builder.addStatement("$L.setVisualInterpolation($T.$L)", variableName,
+            if (!slider.round) builder.addStatement("$L.setRound($L)", variableName, slider.round);
+            if (slider.visualInterpolation != null && slider.visualInterpolation != Interpol.LINEAR) builder.addStatement("$L.setVisualInterpolation($T.$L)", variableName,
                     classNameGetter.get(Interpolation.class), slider.visualInterpolation.code);
     
             return new WidgetNamePair(builder.build(), variableName);
@@ -866,7 +866,7 @@ public class DialogSceneComposerJavaBuilder {
             if (!scrollPane.fadeScrollBars) builder.addStatement("$L.setFadeScrollBars($L)", variableName, false);
             if (scrollPane.clamp) builder.addStatement("$L.setClamp($L)", variableName, true);
             if (!scrollPane.flickScroll) builder.addStatement("$L.setFlickScroll($L)", variableName, false);
-            if (MathUtils.isEqual(scrollPane.flingTime, 1f)) builder.addStatement("$L.setFlingTime($Lf)", variableName, scrollPane.flingTime);
+            if (!MathUtils.isEqual(scrollPane.flingTime, 1f)) builder.addStatement("$L.setFlingTime($Lf)", variableName, scrollPane.flingTime);
             
             if (scrollPane.forceScrollX || scrollPane.forceScrollY) {
                 builder.addStatement("$L.setForceScroll($L, $L)", variableName, scrollPane.forceScrollX, scrollPane.forceScrollY);
@@ -950,9 +950,9 @@ public class DialogSceneComposerJavaBuilder {
             if (splitPane.name != null) builder.addStatement("$L.setName($S)", variableName, splitPane.name);
             if (splitPane.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, splitPane.touchable);
             if (!splitPane.visible) builder.addStatement("$L.setTouchable($L)", variableName, splitPane.visible);
-            if (MathUtils.isEqual(.5f, splitPane.split)) builder.addStatement("$L.setSplit($L)", variableName, splitPane.split);
-            if (MathUtils.isZero(splitPane.splitMin)) builder.addStatement("$L.setMinSplitAmount($L)", variableName, splitPane.splitMin);
-            if (MathUtils.isEqual(1, splitPane.splitMax)) builder.addStatement("$L.setMaxSplitAmount($L)", variableName, splitPane.splitMax);
+            if (!MathUtils.isEqual(.5f, splitPane.split)) builder.addStatement("$L.setSplit($L)", variableName, splitPane.split);
+            if (!MathUtils.isZero(splitPane.splitMin)) builder.addStatement("$L.setMinSplitAmount($L)", variableName, splitPane.splitMin);
+            if (!MathUtils.isEqual(1, splitPane.splitMax)) builder.addStatement("$L.setMaxSplitAmount($L)", variableName, splitPane.splitMax);
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimTree) {
@@ -1030,8 +1030,8 @@ public class DialogSceneComposerJavaBuilder {
     
             var builder = CodeBlock.builder();
             var variableName = createVariableName("verticalGroup", variables);
-            if (!usedVariables.contains(variableName)) builder.add("$T ", classNameGetter.get(HorizontalGroup.class));
-            builder.addStatement("$L = new $T()", variableName, classNameGetter.get(HorizontalGroup.class));
+            if (!usedVariables.contains(variableName)) builder.add("$T ", classNameGetter.get(VerticalGroup.class));
+            builder.addStatement("$L = new $T()", variableName, classNameGetter.get(VerticalGroup.class));
     
             if (verticalGroup.name != null) builder.addStatement("$L.setName($S)", variableName, verticalGroup.name);
             if (verticalGroup.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, verticalGroup.touchable);

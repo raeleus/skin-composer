@@ -2245,7 +2245,7 @@ public class DialogSceneComposerModel {
         public String text;
         public char passwordCharacter = '•';
         public boolean passwordMode;
-        public int alignment = Align.center;
+        public int alignment = Align.left;
         public boolean disabled;
         public int cursorPosition;
         public int selectionStart;
@@ -2348,13 +2348,13 @@ public class DialogSceneComposerModel {
         public String text;
         public char passwordCharacter = '•';
         public boolean passwordMode;
-        public int alignment = Align.center;
+        public int alignment = Align.left;
         public boolean disabled;
         public int cursorPosition;
         public int selectionStart;
         public int selectionEnd;
         public boolean selectAll;
-        public boolean focusTraversal;
+        public boolean focusTraversal = true;
         public int maxLength;
         public String messageText;
         public int preferredRows;
