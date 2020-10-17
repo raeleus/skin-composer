@@ -1889,12 +1889,14 @@ public class DialogDrawables extends Dialog {
     }
     
     private void pixelDrawableSettingsDialog(DrawableData drawable) {
-        dialogFactory.showPixelDrawableDialog(skin, stage, drawable, (String name, ColorData colorData) -> {
+        dialogFactory.showPixelDrawableDialog(skin, stage, drawable, (String name, ColorData colorData, int minWidth, int minHeight) -> {
             
             undoableManager.clearUndoables();
             updateStyleValuesForRename(drawable.name, name);
             drawable.name = name;
             drawable.tintName = colorData.getName();
+            drawable.minWidth = minWidth;
+            drawable.minHeight = minHeight;
             if (Utils.brightness(colorData.color) > .5f) {
                 drawable.bgColor = Color.BLACK;
             } else {
@@ -1914,11 +1916,13 @@ public class DialogDrawables extends Dialog {
     private void pixelDrawableDialog() {
         Array<DrawableData> backup = new Array<>();
         
-        dialogFactory.showPixelDrawableDialog(skin, stage, (String name, ColorData colorData) -> {
+        dialogFactory.showPixelDrawableDialog(skin, stage, (String name, ColorData colorData, int minWidth, int minHeight) -> {
             DrawableData drawable = new DrawableData(name);
             drawable.type = DrawableType.PIXEL;
             drawable.tintName = colorData.getName();
             drawable.customized = false;
+            drawable.minWidth = minWidth;
+            drawable.minHeight = minHeight;
             
             if (Utils.brightness(colorData.color) > .5f) {
                 drawable.bgColor = Color.BLACK;

@@ -62,6 +62,8 @@ import com.ray3k.skincomposer.dialog.DialogFreeTypeFont.DialogFreeTypeFontListen
 import com.ray3k.skincomposer.dialog.DialogImageFont.ImageFontListener;
 import com.ray3k.skincomposer.dialog.DialogTenPatch.DialogTenPatchListener;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
+import com.ray3k.stripe.Spinner.Orientation;
+
 import static com.ray3k.skincomposer.Main.*;
 
 public class DialogFactory {
@@ -533,7 +535,7 @@ public class DialogFactory {
     }
     
     public interface PixelDrawableListener {
-        void run(String name, ColorData colorData);
+        void run(String name, ColorData colorData, int minWidth, int minHeight);
     }
     
     public void showPixelDrawableDialog(Skin skin, Stage stage, PixelDrawableListener pixelDrawableListener) {
@@ -556,12 +558,15 @@ public class DialogFactory {
             imageButton.getImage().setColor(colorData.color);
             imageButton.setUserObject(colorData);
         }
+    
+        var widthSpinner = new Spinner(modifyDrawable == null ? -1 : modifyDrawable.minWidth, 1, true, Orientation.HORIZONTAL, skin);
+        var heightSpinner = new Spinner(modifyDrawable == null ? -1 : modifyDrawable.minHeight, 1, true, Orientation.HORIZONTAL, skin);
         
         Dialog dialog = new Dialog("New Pixel Drawable", skin, "bg") {
             @Override
             protected void result(Object object) {
                 if ((Boolean) object) {
-                    pixelDrawableListener.run(textField.getText(), (ColorData) imageButton.getUserObject());
+                    pixelDrawableListener.run(textField.getText(), (ColorData) imageButton.getUserObject(), widthSpinner.getValueAsInt(), heightSpinner.getValueAsInt());
                 }
             }
         };
@@ -577,7 +582,7 @@ public class DialogFactory {
         textField.setTextFieldListener((TextField textField1, char c) -> {
             if (c == '\n') {
                 if (!okButton.isDisabled()) {
-                    pixelDrawableListener.run(textField.getText(), (ColorData) imageButton.getUserObject());
+                    pixelDrawableListener.run(textField.getText(), (ColorData) imageButton.getUserObject(), widthSpinner.getValueAsInt(), heightSpinner.getValueAsInt());
                     
                     dialog.hide();
                 }
@@ -637,6 +642,29 @@ public class DialogFactory {
                 });
             }
         });
+    
+        dialog.getContentTable().row();
+        var subTable = new Table();
+        dialog.getContentTable().add(subTable);
+        
+        subTable.defaults().space(2);
+        label = new Label("Min Width:", skin);
+        subTable.add(label);
+        
+        widthSpinner.setMinimum(-1);
+        subTable.add(widthSpinner).width(100).spaceRight(15);
+        widthSpinner.getButtonMinus().addListener(handListener);
+        widthSpinner.getTextField().addListener(ibeamListener);
+        widthSpinner.getButtonPlus().addListener(handListener);
+    
+        label = new Label("Min Height:", skin);
+        subTable.add(label);
+    
+        heightSpinner.setMinimum(-1);
+        subTable.add(heightSpinner).width(100).spaceRight(5);
+        heightSpinner.getButtonMinus().addListener(handListener);
+        heightSpinner.getTextField().addListener(ibeamListener);
+        heightSpinner.getButtonPlus().addListener(handListener);
         
         okButton.setDisabled(modifyDrawable == null);
         

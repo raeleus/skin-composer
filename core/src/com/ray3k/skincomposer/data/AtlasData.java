@@ -396,6 +396,8 @@ public class AtlasData implements Json.Serializable {
                     drawable = skin.getDrawable("custom");
                 } else if (data.type == DrawableType.PIXEL) {
                     drawable = ((TextureRegionDrawable) skin.getDrawable("white")).tint(jsonData.getColorByName(data.tintName).color);
+                    drawable.setMinWidth(data.minWidth);
+                    drawable.setMinHeight(data.minHeight);
                 } else if (data.type == DrawableType.TENPATCH) {
                     var region = atlas.findRegion(DrawableData.proper(data.file.name()));
                     drawable = new TenPatchDrawable(data.tenPatchData.horizontalStretchAreas.toArray(),
