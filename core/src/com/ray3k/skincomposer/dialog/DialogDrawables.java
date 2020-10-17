@@ -29,6 +29,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -327,6 +328,19 @@ public class DialogDrawables extends Dialog {
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                         customDrawableDialog();
+                    }
+                });
+    
+                table.row();
+                textButton = new TextButton("Add pixel", getSkin(), "new");
+                table.add(textButton);
+                textButton.addListener(handListener);
+                textButton.addListener(hideListener);
+                textButton.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        Gdx.graphics.setSystemCursor(SystemCursor.Arrow);
+                        pixelDrawableDialog();
                     }
                 });
     
@@ -788,6 +802,51 @@ public class DialogDrawables extends Dialog {
                         @Override
                         public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                             tintedDrawableSettingsDialog(drawable);
+                        }
+                    });
+                    break;
+                case PIXEL:
+                    //duplicate
+                    button = new ImageTextButton("Duplicate", getSkin(), "duplicate-small");
+                    button.getLabelCell().expandX().left();
+                    root.add(button);
+                    root.row();
+                    button.addListener(handListener);
+                    button.addListener(hideListener);
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            var drawableData = new DrawableData(drawable);
+            
+                            dialogFactory.showDuplicateDialog("Duplicate Pixel", "Please enter the name of the duplicated pixel", drawable.name, new DialogFactory.InputDialogListener() {
+                                @Override
+                                public void confirmed(String text) {
+                                    drawableData.name = text;
+                                    atlasData.getDrawables().add(drawableData);
+                                    gatherDrawables();
+                                    atlasData.produceAtlas();
+                                    sortBySelectedMode();
+                                }
+                
+                                @Override
+                                public void cancelled() {
+                    
+                                }
+                            });
+                        }
+                    });
+    
+                    //settings
+                    button = new ImageTextButton("Settings", getSkin(), "settings-small");
+                    button.getLabelCell().expandX().left();
+                    root.add(button);
+                    root.row();
+                    button.addListener(handListener);
+                    button.addListener(hideListener);
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                            pixelDrawableSettingsDialog(drawable);
                         }
                     });
                     break;
@@ -1546,6 +1605,13 @@ public class DialogDrawables extends Dialog {
                     continue;
                 }
             }
+    
+            if (!filterOptions.pixel) {
+                if (drawable.type == DrawableType.PIXEL) {
+                    iter.remove();
+                    continue;
+                }
+            }
             
             if (!filterOptions.hidden) {
                 if (drawable.hidden) {
@@ -1819,6 +1885,73 @@ public class DialogDrawables extends Dialog {
     private void renameCustomDrawableDialog(DrawableData drawableData) {
         dialogFactory.showCustomDrawableDialog(skin, stage, drawableData, (String name1) -> {
             applyTintedDrawableSettings(drawableData, name1);
+        });
+    }
+    
+    private void pixelDrawableSettingsDialog(DrawableData drawable) {
+        dialogFactory.showPixelDrawableDialog(skin, stage, drawable, (String name, ColorData colorData) -> {
+            
+            undoableManager.clearUndoables();
+            updateStyleValuesForRename(drawable.name, name);
+            drawable.name = name;
+            drawable.tintName = colorData.getName();
+            if (Utils.brightness(colorData.color) > .5f) {
+                drawable.bgColor = Color.BLACK;
+            } else {
+                drawable.bgColor = Color.WHITE;
+            }
+    
+            rootTable.refreshStyleProperties(true);
+            atlasData.produceAtlas();
+            rootTable.refreshPreview();
+    
+            projectData.setChangesSaved(false);
+    
+            sortBySelectedMode();
+        });
+    }
+    
+    private void pixelDrawableDialog() {
+        Array<DrawableData> backup = new Array<>();
+        
+        dialogFactory.showPixelDrawableDialog(skin, stage, (String name, ColorData colorData) -> {
+            DrawableData drawable = new DrawableData(name);
+            drawable.type = DrawableType.PIXEL;
+            drawable.tintName = colorData.getName();
+            drawable.customized = false;
+            
+            if (Utils.brightness(colorData.color) > .5f) {
+                drawable.bgColor = Color.BLACK;
+            } else {
+                drawable.bgColor = Color.WHITE;
+            }
+            
+            atlasData.getDrawables().add(drawable);
+            gatherDrawables();
+            dialogFactory.showDialogLoading(() -> {
+                Gdx.app.postRunnable(() -> {
+                    if (!atlasData.produceAtlas()) {
+                        showDrawableError();
+                        Gdx.app.log(getClass().getName(), "Attempting to reload drawables backup...");
+                        atlasData.getDrawables().clear();
+                        atlasData.getDrawables().addAll(backup);
+                        gatherDrawables();
+                        if (atlasData.produceAtlas()) {
+                            Gdx.app.log(getClass().getName(), "Successfully rolled back changes to drawables");
+                        } else {
+                            Gdx.app.error(getClass().getName(), "Critical failure, could not roll back changes to drawables");
+                        }
+                    } else {
+                        if (projectData.areResourcesRelative()) {
+                            projectData.makeResourcesRelative();
+                        }
+                        
+                        projectData.setChangesSaved(false);
+                    }
+                    
+                    sortBySelectedMode();
+                });
+            });
         });
     }
 
@@ -2266,6 +2399,7 @@ public class DialogDrawables extends Dialog {
         public boolean hidden = false;
         public boolean font = false;
         public boolean regularExpression = false;
+        public boolean pixel = true;
         public String name = "";
 
         void set(FilterOptions filterOptions) {
@@ -2279,6 +2413,7 @@ public class DialogDrawables extends Dialog {
             name = filterOptions.name;
             hidden = filterOptions.hidden;
             font = filterOptions.font;
+            pixel = filterOptions.pixel;
         }
     }
     

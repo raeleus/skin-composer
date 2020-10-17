@@ -33,11 +33,14 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.dialog.PopWelcome.WelcomeListener;
 import com.ray3k.stripe.PopTable;
@@ -455,8 +458,8 @@ public class DialogFactory {
         textField.setFocusTraversal(false);
     }
     
-    public static interface CustomDrawableListener {
-        public void run(String name);
+    public interface CustomDrawableListener {
+        void run(String name);
     }
     
     public void showCustomDrawableDialog(Skin skin, Stage stage, CustomDrawableListener customDrawableListener) {
@@ -523,6 +526,134 @@ public class DialogFactory {
 
         dialog.key(Input.Keys.ESCAPE, false);
 
+        dialog.show(stage);
+        stage.setKeyboardFocus(textField);
+        textField.selectAll();
+        textField.setFocusTraversal(false);
+    }
+    
+    public interface PixelDrawableListener {
+        void run(String name, ColorData colorData);
+    }
+    
+    public void showPixelDrawableDialog(Skin skin, Stage stage, PixelDrawableListener pixelDrawableListener) {
+        showPixelDrawableDialog(skin, stage, null, pixelDrawableListener);
+    }
+    
+    public void showPixelDrawableDialog(Skin skin, Stage stage, DrawableData modifyDrawable, PixelDrawableListener pixelDrawableListener) {
+        final var textField = new TextField("", skin);
+        
+        final var imageButtonStyle = new ImageButtonStyle(skin.get("default", ImageButtonStyle.class));
+        imageButtonStyle.imageUp = skin.newDrawable("white");
+        imageButtonStyle.imageUp.setMinWidth(25);
+        imageButtonStyle.imageUp.setMinHeight(25);
+        
+        var imageButton = new ImageButton(imageButtonStyle);
+        if (modifyDrawable == null) {
+            imageButton.getImage().setColor(new Color(1, 1, 1, 0));
+        } else {
+            var colorData = jsonData.getColorByName(modifyDrawable.tintName);
+            imageButton.getImage().setColor(colorData.color);
+            imageButton.setUserObject(colorData);
+        }
+        
+        Dialog dialog = new Dialog("New Pixel Drawable", skin, "bg") {
+            @Override
+            protected void result(Object object) {
+                if ((Boolean) object) {
+                    pixelDrawableListener.run(textField.getText(), (ColorData) imageButton.getUserObject());
+                }
+            }
+        };
+        dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
+        var okButton = new TextButton("OK", skin);
+        dialog.button(okButton, true);
+        okButton.addListener(handListener);
+        
+        var textButton = new TextButton("Cancel", skin);
+        dialog.button(textButton, false);
+        textButton.addListener(handListener);
+        
+        textField.setTextFieldListener((TextField textField1, char c) -> {
+            if (c == '\n') {
+                if (!okButton.isDisabled()) {
+                    pixelDrawableListener.run(textField.getText(), (ColorData) imageButton.getUserObject());
+                    
+                    dialog.hide();
+                }
+                stage.setKeyboardFocus(textField1);
+            }
+        });
+        
+        textField.addListener(ibeamListener);
+        if (modifyDrawable != null) {
+            textField.setText(modifyDrawable.name);
+        }
+        
+        dialog.getTitleLabel().setAlignment(Align.center);
+        dialog.getContentTable().defaults().padLeft(10.0f).padRight(10.0f);
+        if (modifyDrawable == null) {
+            dialog.text("Create a 1x1 pixel texture region with the selected tint.\nEnter the name for the pixel drawable.");
+        } else {
+            dialog.text("Enter the new name for the pixel drawable:");
+        }
+        ((Label)dialog.getContentTable().getCells().first().getActor()).setAlignment(Align.center);
+        dialog.getContentTable().getCells().first().pad(10.0f);
+        dialog.getContentTable().row();
+        dialog.getContentTable().add(textField).growX();
+    
+        dialog.getContentTable().row();
+        var label = new Label("Choose a tint color:", skin);
+        dialog.text(label);
+        
+        dialog.getContentTable().row();
+        dialog.getContentTable().add(imageButton);
+        imageButton.addListener(handListener);
+        imageButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                dialogFactory.showDialogColors(new StyleProperty(), (colorData, cancelled) -> {
+                    if (!cancelled) {
+                        imageButton.setUserObject(colorData);
+                        imageButton.getImage().setColor(colorData.color);
+    
+                        boolean disable = !StyleData.validate(textField.getText());
+                        if (modifyDrawable != null && textField.getText().equals(modifyDrawable.name)) disable = false;
+                        var foundDrawable = atlasData.getDrawable(textField.getText());
+                        if (foundDrawable != null && foundDrawable != modifyDrawable) disable = true;
+                        if (imageButton.getUserObject() == null) disable = true;
+                        okButton.setDisabled(disable);
+                    }
+                }, new DialogListener() {
+                    @Override
+                    public void opened() {
+        
+                    }
+    
+                    @Override
+                    public void closed() {
+        
+                    }
+                });
+            }
+        });
+        
+        okButton.setDisabled(modifyDrawable == null);
+        
+        textField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                boolean disable = !StyleData.validate(textField.getText());
+                if (modifyDrawable != null && textField.getText().equals(modifyDrawable.name)) disable = false;
+                var foundDrawable = atlasData.getDrawable(textField.getText());
+                if (foundDrawable != null && foundDrawable != modifyDrawable) disable = true;
+                if (imageButton.getUserObject() == null) disable = true;
+                okButton.setDisabled(disable);
+            }
+        });
+        
+        dialog.key(Input.Keys.ESCAPE, false);
+        
         dialog.show(stage);
         stage.setKeyboardFocus(textField);
         textField.selectAll();

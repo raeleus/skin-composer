@@ -701,18 +701,27 @@ public class JsonData implements Json.Serializable {
             json.writeObjectEnd();
         }
         
-        Array<DrawableData> tintedDrawables = new Array<>();
-        Array<DrawableData> tiledDrawables = new Array<>();
+        var tintedDrawables = new Array<DrawableData>();
+        var tiledDrawables = new Array<DrawableData>();
+        var pixelDrawables = new Array<DrawableData>();
         var textureRegionDrawables = new Array<DrawableData>();
         var ninePatchDrawables = new Array<DrawableData>();
         var tenPatchDrawables = new Array<DrawableData>();
         for (DrawableData drawable : projectData.getAtlasData().getDrawables()) {
-            if (drawable.tiled) {
-                tiledDrawables.add(drawable);
-            } else if (drawable.tint != null || drawable.tintName != null) {
-                tintedDrawables.add(drawable);
-            } else if (drawable.tenPatchData != null) {
-                tenPatchDrawables.add(drawable);
+            switch (drawable.type) {
+                case TILED:
+                    tiledDrawables.add(drawable);
+                    break;
+                case TINTED:
+                case TINTED_FROM_COLOR_DATA:
+                    tintedDrawables.add(drawable);
+                    break;
+                case TENPATCH:
+                    tenPatchDrawables.add(drawable);
+                    break;
+                case PIXEL:
+                    pixelDrawables.add(drawable);
+                    break;
             }
             
             if (!drawable.tiled  && drawable.tint == null && drawable.tintName == null && drawable.tenPatchData == null) {
@@ -804,6 +813,20 @@ public class JsonData implements Json.Serializable {
                 json.writeValue("color", drawable.tintName);
                 json.writeValue("minWidth", drawable.minWidth);
                 json.writeValue("minHeight", drawable.minHeight);
+                json.writeObjectEnd();
+            }
+            json.writeObjectEnd();
+        }
+    
+        //pixel drawables
+        if (pixelDrawables.size > 0) {
+            json.writeObjectStart(TextureRegionDrawable.class.getName());
+            for (var drawable : pixelDrawables) {
+                json.writeObjectStart(drawable.name);
+                json.writeValue("region", "white-pixel");
+                json.writeValue("color", drawable.tintName);
+                if (!MathUtils.isEqual(drawable.minWidth, -1)) json.writeValue("minWidth", drawable.minWidth);
+                if (!MathUtils.isEqual(drawable.minHeight, -1)) json.writeValue("minHeight", drawable.minHeight);
                 json.writeObjectEnd();
             }
             json.writeObjectEnd();

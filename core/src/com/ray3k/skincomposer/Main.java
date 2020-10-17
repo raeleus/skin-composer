@@ -138,6 +138,12 @@ public class Main extends ApplicationAdapter {
         if (!fileHandle.exists()) {
             Gdx.files.internal("atlas-internal-settings.json").copyTo(fileHandle);
         }
+    
+        //copy white-pixel.png for pixel drawables
+        fileHandle = appFolder.child("texturepacker/white-pixel.png");
+        if (!fileHandle.exists()) {
+            Gdx.files.internal("white-pixel.png").copyTo(fileHandle);
+        }
         
         //copy preview fonts to preview fonts folder if they do not exist
         fileHandle = appFolder.child("preview fonts/IBMPlexSerif-Medium.ttf");

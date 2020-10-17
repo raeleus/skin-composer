@@ -32,6 +32,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.data.DrawableData.DrawableType;
 import com.ray3k.skincomposer.data.JsonData.ExportFormat;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimRootGroup;
@@ -447,13 +448,13 @@ public class ProjectData implements Json.Serializable {
         
         if (!areResourcesRelative()) {
             for (DrawableData drawable : atlasData.getDrawables()) {
-                if (!drawable.customized && (drawable.file == null || !drawable.file.exists())) {
+                if (drawable.type != DrawableType.CUSTOM && drawable.type != DrawableType.PIXEL && (drawable.file == null || !drawable.file.exists())) {
                     errors.add(drawable);
                 }
             }
             
             for (DrawableData drawable : atlasData.getFontDrawables()) {
-                if (!drawable.customized && (drawable.file == null || !drawable.file.exists())) {
+                if (drawable.type != DrawableType.CUSTOM && drawable.type != DrawableType.PIXEL && (drawable.file == null || !drawable.file.exists())) {
                     errors.add(drawable);
                 }
             }
@@ -461,7 +462,7 @@ public class ProjectData implements Json.Serializable {
             FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
             
             for (DrawableData drawable : atlasData.getDrawables()) {
-                if (!drawable.customized) {
+                if (drawable.type != DrawableType.CUSTOM && drawable.type != DrawableType.PIXEL) {
                     if (drawable.file == null) {
                         errors.add(drawable);
                     } else {
@@ -474,7 +475,7 @@ public class ProjectData implements Json.Serializable {
             }
             
             for (DrawableData drawable : atlasData.getFontDrawables()) {
-                if (!drawable.customized) {
+                if (drawable.type != DrawableType.CUSTOM && drawable.type != DrawableType.PIXEL) {
                     if (drawable.file == null) {
                         errors.add(drawable);
                     } else {

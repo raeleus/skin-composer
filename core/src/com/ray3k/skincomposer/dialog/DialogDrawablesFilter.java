@@ -138,6 +138,17 @@ public class DialogDrawablesFilter extends Dialog {
         });
     
         subTable.row();
+        checkBox = new CheckBox("Pixel", skin);
+        checkBox.setChecked(this.filterOptions.pixel);
+        subTable.add(checkBox);
+        checkBox.addListener(handListener);
+        checkBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                DialogDrawablesFilter.this.filterOptions.pixel = ((CheckBox) actor).isChecked();
+            }
+        });
+        
         checkBox = new CheckBox("Font", skin);
         checkBox.setChecked(this.filterOptions.font);
         subTable.add(checkBox);
@@ -149,6 +160,7 @@ public class DialogDrawablesFilter extends Dialog {
             }
         });
     
+        subTable.row();
         checkBox = new CheckBox("Hidden", skin);
         checkBox.setChecked(this.filterOptions.hidden);
         subTable.add(checkBox);

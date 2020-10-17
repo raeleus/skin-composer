@@ -32,10 +32,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
@@ -235,8 +232,10 @@ public class AtlasData implements Json.Serializable {
             }
         }
         
+        boolean addWhite = false;
         for (DrawableData drawable : drawables) {
-            if (!drawable.customized) {
+            if (drawable.type == DrawableType.PIXEL) addWhite = true;
+            if (drawable.type != DrawableType.CUSTOM && drawable.type != DrawableType.PIXEL) {
                 if (!files.contains(drawable.file, false)) {
                     files.add(drawable.file);
                 }
@@ -245,6 +244,11 @@ public class AtlasData implements Json.Serializable {
                     warnings.add("[RED]ERROR:[] Drawable file [BLACK]" + drawable.file + "[] does not exist.");
                 }
             }
+        }
+        
+        if (addWhite) {
+            var fileHandle = appFolder.child("texturepacker/white-pixel.png");
+            files.add(fileHandle);
         }
         
         desktopWorker.texturePack(files, projectData.getSaveFile(), targetFile, settingsFile);
@@ -388,9 +392,11 @@ public class AtlasData implements Json.Serializable {
             
             for (DrawableData data : combined) {
                 Drawable drawable;
-                if (data.customized) {
+                if (data.type == DrawableType.CUSTOM) {
                     drawable = skin.getDrawable("custom");
-                } else if (data.tenPatchData != null) {
+                } else if (data.type == DrawableType.PIXEL) {
+                    drawable = ((TextureRegionDrawable) skin.getDrawable("white")).tint(jsonData.getColorByName(data.tintName).color);
+                } else if (data.type == DrawableType.TENPATCH) {
                     var region = atlas.findRegion(DrawableData.proper(data.file.name()));
                     drawable = new TenPatchDrawable(data.tenPatchData.horizontalStretchAreas.toArray(),
                             data.tenPatchData.verticalStretchAreas.toArray(), data.tenPatchData.tile, region);
@@ -426,14 +432,14 @@ public class AtlasData implements Json.Serializable {
                         }
                     }
                     ((TenPatchDrawable) drawable).setRegions(data.tenPatchData.regions);
-                } else if (data.tiled) {
+                } else if (data.type == DrawableType.TILED) {
                     String name = data.file.name();
                     name = DrawableData.proper(name);
                     drawable = new TiledDrawable(atlas.findRegion(name));
                     drawable.setMinWidth(data.minWidth);
                     drawable.setMinHeight(data.minHeight);
                     ((TiledDrawable) drawable).getColor().set(jsonData.getColorByName(data.tintName).color);
-                } else if (Utils.isNinePatch(data.file.name())) {
+                } else if (data.type == DrawableType.NINE_PATCH) {
                     String name = data.file.name();
                     name = DrawableData.proper(name);
                     drawable = new NinePatchDrawable(atlas.createPatch(name));

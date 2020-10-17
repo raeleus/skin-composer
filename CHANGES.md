@@ -1,4 +1,5 @@
 ### Skin Composer Version 40 ###
+* Added an option to create a single pixel texture region that will be added to the drawables.
 * The cursor and selection in the preview of the BitmapFont/FreeTypeFont dialogs now changes color based on font color.
 * The auto generated FNT name for BitmapFont dialog no longer defaults to a name that overwrites an existing file.
 * Fixed improper behavior of colors in FreeTypeFont dialog when changing a color value. (Thanks piotr-j)
