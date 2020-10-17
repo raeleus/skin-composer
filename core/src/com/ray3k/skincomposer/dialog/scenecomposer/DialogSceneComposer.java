@@ -2493,4 +2493,8 @@ public class DialogSceneComposer extends Dialog {
         
         return root;
     }
+    
+    public static boolean isShowing() {
+        return dialog != null && stage.getRoot().getChildren().contains(dialog, true);
+    }
 }

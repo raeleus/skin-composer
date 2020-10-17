@@ -7,6 +7,7 @@
 * Fixed crash when adding a Slider to Scene Composer.
 * Fixed defaults being exported unnecessarily in Scene Composer.
 * Fixed incorrect classes and defaults for Scene Composer widgets.
+* Minor UI tweaks and bug fixes.
 
 ### Skin Composer Version 39 ###
 * Fixed Scene Composer exporting redundant Label#setEllipsis() if using default values.

@@ -601,7 +601,7 @@ public class DialogFactory {
         } else {
             if (!showingCloseDialog) {
                 showingCloseDialog = true;
-                Dialog dialog = new Dialog("Save Changes?", skin, "bg") {
+                Dialog dialog = new Dialog("Save Changes?", skin, !DialogSceneComposer.isShowing() ? "bg" : "sc-window") {
                     @Override
                     public Dialog show(Stage stage, Action action) {
                         fire(new DialogEvent(DialogEvent.Type.OPEN));
@@ -631,12 +631,17 @@ public class DialogFactory {
                 }
                 
                 dialog.getTitleTable().getCells().first().padLeft(5.0f);
-                Label label = new Label("Do you want to save\nyour changes before you quit?", skin);
+                Label label = new Label("Do you want to save\nyour changes before you quit?", skin, !DialogSceneComposer.isShowing() ? "default" : "scene-label");
                 label.setAlignment(Align.center);
                 dialog.text(label);
                 dialog.getContentTable().getCells().first().pad(10.0f);
                 dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
-                dialog.button("Yes", 0).button("No", 1).button("Cancel", 2);
+                var textButton = new TextButton("Yes", skin, !DialogSceneComposer.isShowing() ? "default" : "scene-small");
+                dialog.button(textButton, 0);
+                textButton = new TextButton("No", skin, !DialogSceneComposer.isShowing() ? "default" : "scene-small");
+                dialog.button(textButton, 1);
+                textButton = new TextButton("Cancel", skin, !DialogSceneComposer.isShowing() ? "default" : "scene-small");
+                dialog.button(textButton, 2);
                 dialog.getButtonTable().getCells().first().getActor().addListener(handListener);
                 dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
                 dialog.getButtonTable().getCells().get(2).getActor().addListener(handListener);

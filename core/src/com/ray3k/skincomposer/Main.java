@@ -84,6 +84,7 @@ public class Main extends ApplicationAdapter {
     public static DialogFactory dialogFactory;
     public static DesktopWorker desktopWorker;
     public static TenPatchDrawable loadingAnimation;
+    public static TenPatchDrawable loadingAnimation2;
     public static UndoableManager undoableManager;
     public static ProjectData projectData;
     public static JsonData jsonData;
@@ -194,6 +195,7 @@ public class Main extends ApplicationAdapter {
         });
         
         loadingAnimation = skin.get("loading-animation", TenPatchDrawable.class);
+        loadingAnimation2 = skin.get("loading-animation2", TenPatchDrawable.class);
         
         projectData.getAtlasData().clearTempData();
         handListener = new HandListener();
