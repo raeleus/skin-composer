@@ -275,33 +275,8 @@ public class DialogTenPatch extends Dialog {
         });
         
         table.defaults().uniform().fill();
-        var textButton = new TextButton("Load Patches", skin);
-        table.add(textButton);
-        textButton.addListener(handListener);
-        textButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Runnable runnable = () -> {
-                    String[] filterPatterns = null;
-                    if (!Utils.isMac()) {
-                        filterPatterns = new String[]{"*.9.png"};
-                    }
-                    var file = desktopWorker.openDialog("Load patches from file...", projectData.getLastDrawablePath(), filterPatterns, "Nine patch files");
-                    if (file != null) {
-                        Gdx.app.postRunnable(() -> {
-                            var fileHandle = new FileHandle(file);
-                            if (fileHandle.name().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
-                                loadPatchesFromFile(fileHandle);
-                            }
-                        });
-                    }
-                };
-    
-                dialogFactory.showDialogLoading(runnable);
-            }
-        });
         
-        textButton = new TextButton("Save to File", skin);
+        var textButton = new TextButton("Save to File", skin);
         table.add(textButton);
         textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
@@ -488,6 +463,70 @@ public class DialogTenPatch extends Dialog {
                     }
                 });
                 dialog.show(getStage());
+            }
+        });
+        
+        textButton = new TextButton("Load Patches", skin);
+        table.add(textButton);
+        textButton.addListener(handListener);
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Runnable runnable = () -> {
+                    String[] filterPatterns = null;
+                    if (!Utils.isMac()) {
+                        filterPatterns = new String[]{"*.9.png"};
+                    }
+                    var file = desktopWorker.openDialog("Load patches from file...", projectData.getLastDrawablePath(), filterPatterns, "Nine patch files");
+                    if (file != null) {
+                        Gdx.app.postRunnable(() -> {
+                            var fileHandle = new FileHandle(file);
+                            if (fileHandle.name().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
+                                loadPatchesFromFile(fileHandle);
+                            }
+                        });
+                    }
+                };
+            
+                dialogFactory.showDialogLoading(runnable);
+            }
+        });
+    
+        textButton = new TextButton("Auto Patches", skin);
+        table.add(textButton);
+        textButton.addListener(handListener);
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                var pixmap = new Pixmap(fileHandle);
+    
+                if (fileHandle.path().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
+                    var cropped = new Pixmap(pixmap.getWidth() - 2, pixmap.getHeight() - 2, Pixmap.Format.RGBA8888);
+                    cropped.setBlending(Pixmap.Blending.None);
+        
+                    cropped.drawPixmap(pixmap, 0, 0, 1, 1, pixmap.getWidth() - 2, pixmap.getHeight() - 2);
+                    pixmap.dispose();
+                    pixmap = cropped;
+                }
+    
+                var patches = Utils.calculatePatches(pixmap);
+    
+                drawableData.tenPatchData.horizontalStretchAreas.clear();
+                drawableData.tenPatchData.horizontalStretchAreas.add(patches.left);
+                drawableData.tenPatchData.horizontalStretchAreas.add(pixmap.getWidth() - patches.right - 1);
+    
+                drawableData.tenPatchData.verticalStretchAreas.clear();
+                drawableData.tenPatchData.verticalStretchAreas.add(patches.bottom);
+                drawableData.tenPatchData.verticalStretchAreas.add(pixmap.getHeight() - patches.top - 1);
+                
+                drawableData.tenPatchData.combineContiguousSretchAreas(true);
+                drawableData.tenPatchData.removeInvalidStretchAreas(true);
+                drawableData.tenPatchData.combineContiguousSretchAreas(false);
+                drawableData.tenPatchData.removeInvalidStretchAreas(false);
+    
+                updatePreview();
+                
+                pixmap.dispose();
             }
         });
     
