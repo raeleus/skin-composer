@@ -441,4 +441,89 @@ public class Utils {
         
         return stringBuilder.toString();
     }
+    
+    public static class PatchDefinition {
+        public int left;
+        public int right;
+        public int top;
+        public int bottom;
+    }
+    
+    public static PatchDefinition calculatePatches(Pixmap pixmap) {
+        var patchDefinition = new PatchDefinition();
+    
+        var startX = pixmap.getWidth() / 2;
+        var color = new Color();
+        var colorPrevious = new Color();
+        var foundBreak = false;
+    
+        for (var x = startX - 1; x >= 0 && !foundBreak; x--) {
+            for (var y = 0; y < pixmap.getHeight(); y++) {
+                color.set(pixmap.getPixel(x, y));
+                colorPrevious.set(pixmap.getPixel(x + 1, y));
+            
+                if (!color.equals(colorPrevious)) {
+                    patchDefinition.left = x + 1;
+                    foundBreak = true;
+                    break;
+                }
+            }
+        }
+        if (!foundBreak) {
+            patchDefinition.left = 0;
+        }
+        
+        foundBreak = false;
+        for (var x = startX + 1; x < pixmap.getWidth() && !foundBreak; x++) {
+            for (var y = 0; y < pixmap.getHeight(); y++) {
+                color.set(pixmap.getPixel(x, y));
+                colorPrevious.set(pixmap.getPixel(x - 1, y));
+            
+                if (!color.equals(colorPrevious)) {
+                    patchDefinition.right = pixmap.getWidth() - x;
+                    foundBreak = true;
+                    break;
+                }
+            }
+        }
+        if (!foundBreak) {
+            patchDefinition.right = 0;
+        }
+    
+        var startY = pixmap.getHeight() / 2;
+        foundBreak = false;
+        for (var y = startY - 1; y >= 0 && !foundBreak; y--) {
+            for (var x = 0; x < pixmap.getWidth(); x++) {
+                color.set(pixmap.getPixel(x, y));
+                colorPrevious.set(pixmap.getPixel(x, y + 1));
+            
+                if (!color.equals(colorPrevious)) {
+                    patchDefinition.top = y + 1;
+                    foundBreak = true;
+                    break;
+                }
+            }
+        }
+        if (!foundBreak) {
+            patchDefinition.top = 0;
+        }
+    
+        foundBreak = false;
+        for (var y = startY + 1; y < pixmap.getHeight() && !foundBreak; y++) {
+            for (var x = 0; x < pixmap.getWidth(); x++) {
+                color.set(pixmap.getPixel(x, y));
+                colorPrevious.set(pixmap.getPixel(x, y - 1));
+            
+                if (!color.equals(colorPrevious)) {
+                    patchDefinition.bottom = pixmap.getHeight() - y;
+                    foundBreak = true;
+                    break;
+                }
+            }
+        }
+        if (!foundBreak) {
+            patchDefinition.bottom = 0;
+        }
+        return patchDefinition;
+    }
 }

@@ -1282,103 +1282,40 @@ public class Dialog9Patch extends Dialog {
             originalImage = cropped;
         }
         
-        var startX = originalImage.getWidth() / 2;
-        var color = new Color();
-        var colorPrevious = new Color();
-        var widget = (NinePatchWidget) findActor("ninePatchWidget");
-        var foundBreak = false;
+        var patches = Utils.calculatePatches(originalImage);
+        ninePatchLeft = patches.left;
+        ninePatchRight = patches.right;
+        ninePatchTop = patches.top;
+        ninePatchBottom = patches.bottom;
         
-        for (var x = startX - 1; x >= 0 && !foundBreak; x--) {
-            for (var y = 0; y < originalImage.getHeight(); y++) {
-                color.set(originalImage.getPixel(x, y));
-                colorPrevious.set(originalImage.getPixel(x + 1, y));
-                
-                if (!color.equals(colorPrevious)) {
-                    ninePatchLeft = x + 1;
-                    foundBreak = true;
-                    break;
-                }
-            }
-        }
-        if (!foundBreak) {
-            ninePatchLeft = 0;
-        }
+        var widget = (NinePatchWidget) findActor("ninePatchWidget");
         var spinnerItem = (Spinner) findActor("spinner-padding-left");
         spinnerItem.setValue(ninePatchLeft);
         widget.setPaddingLeft(ninePatchLeft);
         
         ninePatchContentLeft = ninePatchLeft;
-        spinnerItem = (Spinner) findActor("spinner-content-left");
+        spinnerItem = findActor("spinner-content-left");
         spinnerItem.setValue(ninePatchContentLeft);
         widget.setContentLeft(ninePatchContentLeft);
         
-        foundBreak = false;
-        for (var x = startX + 1; x < originalImage.getWidth() && !foundBreak; x++) {
-            for (var y = 0; y < originalImage.getHeight(); y++) {
-                color.set(originalImage.getPixel(x, y));
-                colorPrevious.set(originalImage.getPixel(x - 1, y));
-                
-                if (!color.equals(colorPrevious)) {
-                    ninePatchRight = originalImage.getWidth() - x;
-                    foundBreak = true;
-                    break;
-                }
-            }
-        }
-        if (!foundBreak) {
-            ninePatchRight = 0;
-        }
-        spinnerItem = (Spinner) findActor("spinner-padding-right");
+        spinnerItem = findActor("spinner-padding-right");
         spinnerItem.setValue(ninePatchRight);
         widget.setPaddingRight(ninePatchRight);
         
         ninePatchContentRight = ninePatchRight;
-        spinnerItem = (Spinner) findActor("spinner-content-right");
+        spinnerItem = findActor("spinner-content-right");
         spinnerItem.setValue(ninePatchContentRight);
         widget.setContentRight(ninePatchContentRight);
         
-        var startY = originalImage.getHeight() / 2;
-        foundBreak = false;
-        for (var y = startY - 1; y >= 0 && !foundBreak; y--) {
-            for (var x = 0; x < originalImage.getWidth(); x++) {
-                color.set(originalImage.getPixel(x, y));
-                colorPrevious.set(originalImage.getPixel(x, y + 1));
-                
-                if (!color.equals(colorPrevious)) {
-                    ninePatchTop = y + 1;
-                    foundBreak = true;
-                    break;
-                }
-            }
-        }
-        if (!foundBreak) {
-            ninePatchTop = 0;
-        }
-        spinnerItem = (Spinner) findActor("spinner-padding-top");
+        spinnerItem = findActor("spinner-padding-top");
         spinnerItem.setValue(ninePatchTop);
         widget.setPaddingTop(ninePatchTop);
         
         ninePatchContentTop = ninePatchTop;
-        spinnerItem = (Spinner) findActor("spinner-content-top");
+        spinnerItem = findActor("spinner-content-top");
         spinnerItem.setValue(ninePatchContentTop);
         widget.setContentTop(ninePatchContentTop);
         
-        foundBreak = false;
-        for (var y = startY + 1; y < originalImage.getHeight() && !foundBreak; y++) {
-            for (var x = 0; x < originalImage.getWidth(); x++) {
-                color.set(originalImage.getPixel(x, y));
-                colorPrevious.set(originalImage.getPixel(x, y - 1));
-                
-                if (!color.equals(colorPrevious)) {
-                    ninePatchBottom = originalImage.getHeight() - y;
-                    foundBreak = true;
-                    break;
-                }
-            }
-        }
-        if (!foundBreak) {
-            ninePatchBottom = 0;
-        }
         spinnerItem = (Spinner) findActor("spinner-padding-bottom");
         spinnerItem.setValue(ninePatchBottom);
         widget.setPaddingBottom(ninePatchBottom);
