@@ -30,7 +30,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -62,15 +61,15 @@ import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.ProjectData.RecentFile;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
-import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.stripe.DraggableList.DraggableListListener;
+import com.ray3k.stripe.DraggableSelectBox;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.stripe.StripeMenu;
 import com.ray3k.stripe.StripeMenuBar;
 import com.ray3k.stripe.StripeMenuBar.KeyboardShortcut;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
-import java.lang.annotation.Target;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.IntStream;
@@ -79,7 +78,7 @@ import static com.ray3k.skincomposer.Main.*;
 
 public class RootTable extends Table {
     private SelectBox classSelectBox;
-    private SelectBox styleSelectBox;
+    private DraggableSelectBox styleBox;
     private Table stylePropertiesTable;
     private Table previewPropertiesTable;
     private Table previewTable;
@@ -270,7 +269,7 @@ public class RootTable extends Table {
         classSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                fire(new LoadStylesEvent(classSelectBox, styleSelectBox));
+                fire(new LoadStylesEvent(classSelectBox, styleBox));
                 fire(new RootTableEvent(RootTableEnum.CLASS_SELECTED));
             }
         });
@@ -336,19 +335,36 @@ public class RootTable extends Table {
         label = new Label("Style:", getSkin());
         table.add(label).padRight(10.0f);
 
-        styleSelectBox = new SelectBox(getSkin());
-        table.add(styleSelectBox).padRight(5.0f).minWidth(150.0f);
-        
-        styleSelectBox.addListener(new ChangeListener() {
+        styleBox = new DraggableSelectBox(skin);
+        styleBox.setAlignment(Align.left);
+        styleBox.getDraggableTextList().setAlignment(Align.left);
+        styleBox.getDraggableTextList().setAllowRemoval(false);
+        styleBox.addListener(new DraggableListListener() {
             @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+            public void removed(Actor actor) {
+            }
+    
+            @Override
+            public void reordered(Actor actor, int indexBefore, int indexAfter) {
+                var selectedClass = rootTable.getSelectedClass();
+                if (selectedClass != null) {
+                    fire(new ReorderStylesEvent(selectedClass, indexBefore, indexAfter));
+                } else {
+                    var customClass = rootTable.getSelectedCustomClass();
+                    fire(new ReorderCustomStylesEvent(customClass, indexBefore, indexAfter));
+                }
+                styleBox.getPopTable().hide();
+            }
+    
+            @Override
+            public void selected(Actor actor) {
                 fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.STYLE_SELECTED));
             }
         });
         
-        styleSelectBox.addListener(handListener);
-        styleSelectBox.getList().addListener(handListener);
-        styleSelectBox.getList().addListener(scrollFocusListener);
+        table.add(styleBox).padRight(5.0f).minWidth(150.0f);
+        styleBox.addListener(handListener);
+        styleBox.getDraggableTextList().addListener(handListener);
 
         button = new Button(getSkin(), "new");
         button.addListener(handListener);
@@ -406,7 +422,7 @@ public class RootTable extends Table {
         styleRenameButton.addListener(toolTip);
 
         fire(new LoadClassesEvent(classSelectBox));
-        fire(new LoadStylesEvent(classSelectBox, styleSelectBox));
+        fire(new LoadStylesEvent(classSelectBox, styleBox));
     }
     
     public void setClassDuplicateButtonDisabled(boolean disabled) {
@@ -533,7 +549,7 @@ public class RootTable extends Table {
         populate();
         classSelectBox.setSelectedIndex(classSelectedIndex);
         if (scrollToNewest) {
-            styleSelectBox.setSelectedIndex(styleSelectBox.getItems().size - 1);
+            styleBox.setSelected(styleBox.getItems().size - 1);
         }
     }
 
@@ -559,11 +575,10 @@ public class RootTable extends Table {
 
         //gather all labelStyles
         Array<StyleData> labelStyles = projectData.getJsonData().getClassStyleMap().get(Label.class);
-    
-        Object selected = rootTable.getStyleSelectBox().getSelected();
-        Array<StyleProperty> styleProperties = selected instanceof StyleData ? ((StyleData) selected).properties.values().toArray() : null;
-        Array<CustomProperty> customProperties = selected instanceof CustomStyle ? ((CustomStyle) selected).getProperties() : null;
-        if (styleProperties != null) {
+        
+        if (getClassSelectBox().getSelectedIndex() < BASIC_CLASSES.length) {
+            Array<StyleProperty> styleProperties = rootTable.getSelectedStyle().properties.values().toArray();
+            
             //add parent selection box
             label = new Label("parent", getSkin());
             table.add(label).padTop(20.0f).fill(false).expand(false, false);
@@ -745,7 +760,10 @@ public class RootTable extends Table {
 
                 table.row();
             }
-        } else if (customProperties != null) {
+        } else {
+            var customStyle = getSelectedCustomStyle();
+            Array<CustomProperty> customProperties = customStyle.getProperties();
+            
             for (CustomProperty styleProperty : customProperties) {
                 if (styleProperty.getType() == PropertyType.COLOR) {
                     String value = "";
@@ -2328,8 +2346,8 @@ public class RootTable extends Table {
                     }
                 }
             } else {
-                
-                CustomStyle customStyle = (CustomStyle) styleSelectBox.getSelected();
+                var customClass = (CustomClass) classSelectBox.getSelected();
+                CustomStyle customStyle = customClass.getStyles().get(styleBox.getSelectedIndex());
                 
                 boolean showMessage = true;
                 
@@ -2575,11 +2593,12 @@ public class RootTable extends Table {
         return classSelectBox;
     }
 
-    public SelectBox getStyleSelectBox() {
-        return styleSelectBox;
+    public DraggableSelectBox getStyleSelectBox() {
+        return styleBox;
     }
 
     public Class getSelectedClass() {
+        if (classSelectBox.getSelectedIndex() >= BASIC_CLASSES.length) return null;
         return Main.BASIC_CLASSES[classSelectBox.getSelectedIndex()];
     }
     
@@ -2592,7 +2611,22 @@ public class RootTable extends Table {
     public StyleData getSelectedStyle() {
         var classStyleMap = projectData.getJsonData().getClassStyleMap();
         var styles = classStyleMap.get(getSelectedClass());
-        return styles.get(styleSelectBox.getSelectedIndex());
+        return styles.get(styleBox.getSelectedIndex());
+    }
+    
+    public CustomClass getSelectedCustomClass() {
+        if (getClassSelectBox().getSelectedIndex() < BASIC_CLASSES.length) return null;
+        else {
+            return (CustomClass) classSelectBox.getSelected();
+        }
+    }
+    
+    public CustomStyle getSelectedCustomStyle() {
+        var customClass = getSelectedCustomClass();
+        if (customClass == null) return null;
+         else {
+             return customClass.getStyles().get(styleBox.getSelectedIndex());
+        }
     }
 
     public FilesDroppedListener getFilesDroppedListener() {
@@ -2702,12 +2736,35 @@ public class RootTable extends Table {
 
     private static class LoadStylesEvent extends Event {
         SelectBox classSelectBox;
-        SelectBox styleSelectBox;
+        DraggableSelectBox styleBox;
 
-        public LoadStylesEvent(SelectBox classSelectBox,
-                SelectBox styleSelectBox) {
+        public LoadStylesEvent(SelectBox classSelectBox, DraggableSelectBox styleBox) {
             this.classSelectBox = classSelectBox;
-            this.styleSelectBox = styleSelectBox;
+            this.styleBox = styleBox;
+        }
+    }
+    
+    private static class ReorderStylesEvent extends Event {
+        Class widgetClass;
+        int indexBefore;
+        int indexAfter;
+        
+        public ReorderStylesEvent(Class widgetClass, int indexBefore, int indexAfter) {
+            this.widgetClass = widgetClass;
+            this.indexBefore = indexBefore;
+            this.indexAfter = indexAfter;
+        }
+    }
+    
+    private static class ReorderCustomStylesEvent extends Event {
+        CustomClass customClass;
+        int indexBefore;
+        int indexAfter;
+        
+        public ReorderCustomStylesEvent(CustomClass customClass, int indexBefore, int indexAfter) {
+            this.customClass = customClass;
+            this.indexBefore = indexBefore;
+            this.indexAfter = indexAfter;
         }
     }
 
@@ -2765,7 +2822,13 @@ public class RootTable extends Table {
             } else if (event instanceof LoadClassesEvent) {
                 loadClasses(((LoadClassesEvent) event).classSelectBox);
             } else if (event instanceof LoadStylesEvent) {
-                loadStyles(((LoadStylesEvent) event).classSelectBox, ((LoadStylesEvent) event).styleSelectBox);
+                loadStyles(((LoadStylesEvent) event).classSelectBox, ((LoadStylesEvent) event).styleBox);
+            } else if (event instanceof  ReorderStylesEvent) {
+                ReorderStylesEvent reorderStylesEvent = (ReorderStylesEvent) event;
+                reorderStyles(reorderStylesEvent.widgetClass, reorderStylesEvent.indexBefore, reorderStylesEvent.indexAfter);
+            } else if (event instanceof  ReorderCustomStylesEvent) {
+                ReorderCustomStylesEvent reorderStylesEvent = (ReorderCustomStylesEvent) event;
+                reorderCustomStyles(reorderStylesEvent.customClass, reorderStylesEvent.indexBefore, reorderStylesEvent.indexAfter);
             } else if (event instanceof StylePropertyEvent) {
                 stylePropertyChanged(((StylePropertyEvent) event).styleProperty, ((StylePropertyEvent) event).styleActor);
             } else if (event instanceof StyleParentEvent) {
@@ -2805,8 +2868,12 @@ public class RootTable extends Table {
         
         public abstract void loadClasses(SelectBox classSelectBox);
 
-        public abstract void loadStyles(SelectBox classSelectBox, SelectBox styleSelectBox);
+        public abstract void loadStyles(SelectBox classSelectBox, DraggableSelectBox styleBox);
     
+        public abstract void reorderStyles(Class widgetClass, int indexBefore, int indexAfter);
+    
+        public abstract void reorderCustomStyles(CustomClass customClass, int indexBefore, int indexAfter);
+        
         public abstract void newCustomProperty();
         
         public abstract void duplicateCustomProperty(CustomProperty customProperty);

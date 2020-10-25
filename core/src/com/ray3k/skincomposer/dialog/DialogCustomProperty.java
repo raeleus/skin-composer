@@ -121,7 +121,7 @@ public class DialogCustomProperty extends Dialog {
     private void updateOkButton() {
         if (validate(nameField.getText())) {
             boolean unique = true;
-            for (CustomProperty customProperty : ((CustomStyle)rootTable.getStyleSelectBox().getSelected()).getProperties()) {
+            for (CustomProperty customProperty : rootTable.getSelectedCustomStyle().getProperties()) {
                 if (!allowSameName) {
                     if (customProperty.getName().equals(nameField.getText())) {
                         unique = false;

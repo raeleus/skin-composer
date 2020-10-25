@@ -38,9 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.RootTable.RootTableListener;
-import com.ray3k.skincomposer.UndoableManager.DeleteCustomClassUndoable;
-import com.ray3k.skincomposer.UndoableManager.DuplicateCustomClassUndoable;
-import com.ray3k.skincomposer.UndoableManager.NewCustomClassUndoable;
+import com.ray3k.skincomposer.UndoableManager.*;
 import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.dialog.DialogCustomClass;
@@ -50,6 +48,8 @@ import com.ray3k.skincomposer.dialog.DialogCustomStyle;
 import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.dialog.PopWelcome.WelcomeListener;
+import com.ray3k.stripe.DraggableSelectBox;
+import com.ray3k.stripe.DraggableTextList;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.utils.Utils;
 
@@ -212,7 +212,7 @@ public class MainListener extends RootTableListener {
                             undoableManager.addUndoable(
                                     new UndoableManager.DuplicateCustomStyleUndoable(main,
                                             name,
-                                            (CustomStyle) rootTable.getStyleSelectBox().getSelected()), true);
+                                            rootTable.getSelectedCustomStyle()), true);
                         }
 
                         @Override
@@ -225,7 +225,7 @@ public class MainListener extends RootTableListener {
                 if (rootTable.getClassSelectBox().getSelectedIndex() < Main.BASIC_CLASSES.length) {
                     dialogFactory.showDeleteStyleDialog(skin, stage);
                 } else {
-                    undoableManager.addUndoable(new UndoableManager.DeleteCustomStyleUndoable(main, (CustomStyle) rootTable.getStyleSelectBox().getSelected()), true);
+                    undoableManager.addUndoable(new UndoableManager.DeleteCustomStyleUndoable(main, rootTable.getSelectedCustomStyle()), true);
                 }
                 break;
             case RENAME_STYLE:
@@ -238,7 +238,7 @@ public class MainListener extends RootTableListener {
                             undoableManager.addUndoable(
                                     new UndoableManager.RenameCustomStyleUndoable(main,
                                             name,
-                                            (CustomStyle) rootTable.getStyleSelectBox().getSelected()), true);
+                                            rootTable.getSelectedCustomStyle()), true);
                         }
 
                         @Override
@@ -478,18 +478,34 @@ public class MainListener extends RootTableListener {
     }
 
     @Override
-    public void loadStyles(SelectBox classSelectBox, SelectBox styleSelectBox) {
+    public void loadStyles(SelectBox classSelectBox, DraggableSelectBox styleBox) {
         int selection = classSelectBox.getSelectedIndex();
         if (selection < Main.BASIC_CLASSES.length) { 
             Class selectedClass = Main.BASIC_CLASSES[selection];
-            styleSelectBox.setItems(jsonData.getClassStyleMap().get(selectedClass));
-            styleSelectBox.setSelectedIndex(0);
+            styleBox.clearItems();
+            for (var style : jsonData.getClassStyleMap().get(selectedClass)) {
+                styleBox.addItem(style.toString());
+            }
+            styleBox.setSelected(0);
         } else {
             CustomClass customClass = (CustomClass) classSelectBox.getSelected();
-            styleSelectBox.setItems(customClass.getStyles());
+            styleBox.clearItems();
+            for (var style : customClass.getStyles()) {
+                styleBox.addItem(style.toString());
+            }
         }
     }
-
+    
+    @Override
+    public void reorderStyles(Class widgetClass, int indexBefore, int indexAfter) {
+        undoableManager.addUndoable(new ReorderStylesUndoable(widgetClass, indexBefore, indexAfter), true);
+    }
+    
+    @Override
+    public void reorderCustomStyles(CustomClass customClass, int indexBefore, int indexAfter) {
+        undoableManager.addUndoable(new ReorderCustomStylesUndoable(customClass, indexBefore, indexAfter), true);
+    }
+    
     @Override
     public void stylePropertyChanged(StyleProperty styleProperty,
             Actor styleActor) {
@@ -540,11 +556,9 @@ public class MainListener extends RootTableListener {
             rootTable.setClassDeleteButtonDisabled(false);
             rootTable.setClassRenameButtonDisabled(false);
             
-            Object selected = rootTable.getStyleSelectBox().getSelected();
+            var customStyle = rootTable.getSelectedCustomStyle();
             
-            if (selected instanceof CustomStyle) {
-                CustomStyle customStyle = (CustomStyle) selected;
-                
+            if (customStyle != null) {
                 rootTable.setStyleDeleteButtonDisabled(!customStyle.isDeletable());
                 rootTable.setStyleRenameButtonDisabled(!customStyle.isDeletable());
                 

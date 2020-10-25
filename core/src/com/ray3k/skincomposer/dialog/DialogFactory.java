@@ -1049,20 +1049,18 @@ public class DialogFactory {
     }
     
     public void showDuplicateCustomStyleDialog(CustomStyleListener listener) {
-        Object selected = rootTable.getStyleSelectBox().getSelected();
-        if (selected instanceof CustomStyle) {
-            DialogCustomStyle dialog = new DialogCustomStyle("Duplicate Style", false,
-                    ((CustomStyle) selected).getName());
+        var customStyle = rootTable.getSelectedCustomStyle();
+        if (customStyle != null) {
+            DialogCustomStyle dialog = new DialogCustomStyle("Duplicate Style", false, customStyle.getName());
             dialog.addListener(listener);
             dialog.show(stage);
         }
     }
     
     public void showRenameCustomStyleDialog(CustomStyleListener listener) {
-        Object selected = rootTable.getStyleSelectBox().getSelected();
-        if (selected instanceof CustomStyle) {
-            DialogCustomStyle dialog = new DialogCustomStyle("Rename Style", false,
-                    ((CustomStyle) selected).getName());
+        var customStyle = rootTable.getSelectedCustomStyle();
+        if (customStyle != null) {
+            DialogCustomStyle dialog = new DialogCustomStyle("Rename Style", false, customStyle.getName());
             dialog.addListener(listener);
             dialog.show(stage);
         }

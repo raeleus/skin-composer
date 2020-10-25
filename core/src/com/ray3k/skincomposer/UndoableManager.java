@@ -801,7 +801,12 @@ public class UndoableManager {
             }
             
             rootTable.refreshStyles(false);
-            rootTable.getStyleSelectBox().setSelected(styleData);
+            int index = 0;
+            for (var style : jsonData.getClassStyleMap().get(rootTable.getSelectedClass())) {
+                if (style == styleData) break;
+                index++;
+            }
+            rootTable.getStyleSelectBox().setSelected(index);
         }
 
         @Override
@@ -819,8 +824,12 @@ public class UndoableManager {
             }
             
             rootTable.refreshStyles(false);
-            rootTable.getStyleSelectBox().setSelected(styleData);
-            
+            int index = 0;
+            for (var style : jsonData.getClassStyleMap().get(rootTable.getSelectedClass())) {
+                if (style == styleData) break;
+                index++;
+            }
+            rootTable.getStyleSelectBox().setSelected(index);
         }
 
         @Override
@@ -828,6 +837,96 @@ public class UndoableManager {
             return "Rename Style \"" + styleData.name + "\"";
         }
         
+    }
+    
+    public static class ReorderStylesUndoable implements Undoable {
+        private final Class widgetClass;
+        private final int indexBefore;
+        private final int indexAfter;
+    
+        public ReorderStylesUndoable(Class widgetClass, int indexBefore, int indexAfter) {
+            this.widgetClass = widgetClass;
+            this.indexBefore = indexBefore;
+            this.indexAfter = indexAfter;
+        }
+    
+        @Override
+        public void undo() {
+            var styles = jsonData.getClassStyleMap().get(widgetClass);
+            var styleData = styles.get(indexAfter);
+            styles.removeIndex(indexAfter);
+            styles.insert(indexBefore, styleData);
+        
+            rootTable.refreshStyles(false);
+            int classIndex;
+            for (classIndex = 0; classIndex < BASIC_CLASSES.length; classIndex++) {
+                if (widgetClass.equals(BASIC_CLASSES[classIndex])) break;
+            }
+            rootTable.getClassSelectBox().setSelectedIndex(classIndex);
+            rootTable.getStyleSelectBox().setSelected(indexBefore);
+        }
+    
+        @Override
+        public void redo() {
+            var styles = jsonData.getClassStyleMap().get(widgetClass);
+            var styleData = styles.get(indexBefore);
+            styles.removeIndex(indexBefore);
+            styles.insert(indexAfter, styleData);
+    
+            rootTable.refreshStyles(false);
+            int classIndex;
+            for (classIndex = 0; classIndex < BASIC_CLASSES.length; classIndex++) {
+                if (widgetClass.equals(BASIC_CLASSES[classIndex])) break;
+            }
+            rootTable.getClassSelectBox().setSelectedIndex(classIndex);
+            rootTable.getStyleSelectBox().setSelected(indexAfter);
+        }
+    
+        @Override
+        public String getUndoText() {
+            return "Reorder styles for class \"" + widgetClass.getSimpleName() + "\"";
+        }
+    }
+    
+    public static class ReorderCustomStylesUndoable implements Undoable {
+        private final CustomClass customClass;
+        private final int indexBefore;
+        private final int indexAfter;
+        
+        public ReorderCustomStylesUndoable(CustomClass customClass, int indexBefore, int indexAfter) {
+            this.customClass = customClass;
+            this.indexBefore = indexBefore;
+            this.indexAfter = indexAfter;
+        }
+        
+        @Override
+        public void undo() {
+            var styles = customClass.getStyles();
+            var customStyle = styles.get(indexAfter);
+            styles.removeIndex(indexAfter);
+            styles.insert(indexBefore, customStyle);
+            
+            rootTable.refreshStyles(false);
+            rootTable.getClassSelectBox().setSelected(customClass);
+            rootTable.getStyleSelectBox().setSelected(indexBefore);
+        }
+        
+        @Override
+        public void redo() {
+            var styles = customClass.getStyles();
+            var customStyle = styles.get(indexBefore);
+            styles.removeIndex(indexBefore);
+            styles.insert(indexAfter, customStyle);
+            
+            rootTable.refreshStyles(false);
+            rootTable.getClassSelectBox().setSelected(customClass);
+            rootTable.getStyleSelectBox().setSelected(indexAfter);
+        }
+        
+        @Override
+        public String getUndoText() {
+            return "Reorder styles for class \"" + customClass.getDisplayName() + "\"";
+        }
     }
 
     public static class NewCustomClassUndoable implements Undoable {
