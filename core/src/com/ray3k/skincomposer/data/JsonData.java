@@ -49,6 +49,7 @@ import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
 import static com.ray3k.skincomposer.Main.*;
+import static com.ray3k.skincomposer.data.DrawableData.DrawableType.*;
 
 import java.io.StringWriter;
 import java.util.Locale;
@@ -288,7 +289,7 @@ public class JsonData implements Json.Serializable {
                     drawableData.name = tintedDrawable.name;
                     
                     if (!tintedDrawable.get("color").isString()) {
-                        drawableData.type = DrawableType.TINTED;
+                        drawableData.type = TINTED;
                         drawableData.tint = new Color();
                         if (tintedDrawable.get("color").has("hex")) {
                             drawableData.tint.set(Color.valueOf(tintedDrawable.get("color").getString("hex")));
@@ -296,7 +297,7 @@ public class JsonData implements Json.Serializable {
                             drawableData.tint.set(tintedDrawable.get("color").getFloat("r", 1.0f), tintedDrawable.get("color").getFloat("g", 1.0f), tintedDrawable.get("color").getFloat("b", 1.0f), tintedDrawable.get("color").getFloat("a", 1.0f));
                         }
                     } else {
-                        drawableData.type = DrawableType.TINTED_FROM_COLOR_DATA;
+                        drawableData.type = TINTED_FROM_COLOR_DATA;
                         drawableData.tintName = tintedDrawable.getString("color");
                     }
     
@@ -769,14 +770,16 @@ public class JsonData implements Json.Serializable {
         }
         
         //tinted drawables
-        if (tintedDrawables.size > 0) {
+        if (tintedDrawables.size > 0 || pixelDrawables.size > 0) {
             String className = projectData.isUsingSimpleNames() ? TintedDrawable.class.getSimpleName() : TintedDrawable.class.getName();
             json.writeObjectStart(className);
-            for (DrawableData drawable : tintedDrawables) {
+            var drawables = new Array<>(tintedDrawables);
+            drawables.addAll(pixelDrawables);
+            for (DrawableData drawable : drawables) {
                 json.writeObjectStart(drawable.name);
     
-                json.writeValue("name", DrawableData.proper(drawable.file.name()));
-                if (drawable.tint != null) {
+                json.writeValue("name", drawable.type == PIXEL ? "white-pixel" : DrawableData.proper(drawable.file.name()));
+                if (drawable.type == TINTED) {
                     json.writeObjectStart("color");
                     if (projectData.isExportingHex()) {
                         json.writeValue("hex", drawable.tint.toString());
@@ -787,7 +790,7 @@ public class JsonData implements Json.Serializable {
                         json.writeValue("a", drawable.tint.a);
                     }
                     json.writeObjectEnd();
-                } else if (drawable.tintName != null) {
+                } else if (drawable.type == TINTED_FROM_COLOR_DATA || drawable.type == PIXEL) {
                     json.writeValue("color", drawable.tintName);
                 }
                 
@@ -813,20 +816,6 @@ public class JsonData implements Json.Serializable {
                 json.writeValue("color", drawable.tintName);
                 json.writeValue("minWidth", drawable.minWidth);
                 json.writeValue("minHeight", drawable.minHeight);
-                json.writeObjectEnd();
-            }
-            json.writeObjectEnd();
-        }
-    
-        //pixel drawables
-        if (pixelDrawables.size > 0) {
-            json.writeObjectStart(TextureRegionDrawable.class.getName());
-            for (var drawable : pixelDrawables) {
-                json.writeObjectStart(drawable.name);
-                json.writeValue("region", "white-pixel");
-                json.writeValue("color", drawable.tintName);
-                if (!MathUtils.isEqual(drawable.minWidth, -1)) json.writeValue("minWidth", drawable.minWidth);
-                if (!MathUtils.isEqual(drawable.minHeight, -1)) json.writeValue("minHeight", drawable.minHeight);
                 json.writeObjectEnd();
             }
             json.writeObjectEnd();
