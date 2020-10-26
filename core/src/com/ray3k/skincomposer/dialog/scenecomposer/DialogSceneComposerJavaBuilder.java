@@ -406,7 +406,7 @@ public class DialogSceneComposerJavaBuilder {
             var builder = CodeBlock.builder();
             var variableName = createVariableName("imageTextButton", variables);
             if (!usedVariables.contains(variableName)) builder.add("$T ", classNameGetter.get(ImageTextButton.class));
-            builder.addStatement("$L = new $T($S, skin$L)", variableName, classNameGetter.get(ImageTextButton.class), imageTextButton.text,
+            builder.addStatement("$L = new $T($S, skin$L)", variableName, classNameGetter.get(ImageTextButton.class), convertEscapedCharacters(imageTextButton.text),
                     imageTextButton.style.name.equals("default") ? "" : ", \"" + imageTextButton.style.name + "\"");
             
             if (imageTextButton.name != null) builder.addStatement("$L.setName($S)", variableName, imageTextButton.name);
@@ -443,7 +443,7 @@ public class DialogSceneComposerJavaBuilder {
             var builder = CodeBlock.builder();
             var variableName = createVariableName("label", variables);
             if (!usedVariables.contains(variableName)) builder.add("$T ", classNameGetter.get(Label.class));
-            builder.addStatement("$L = new $T($S, skin$L)", variableName, classNameGetter.get(Label.class), label.text,
+            builder.addStatement("$L = new $T($S, skin$L)", variableName, classNameGetter.get(Label.class), convertEscapedCharacters(label.text),
                     label.style.name.equals("default") ? "" : ", \"" + label.style.name + "\"");
                 
             if (label.name != null) builder.addStatement("$L.setName($S)", variableName, label.name);
@@ -574,7 +574,7 @@ public class DialogSceneComposerJavaBuilder {
             var builder = CodeBlock.builder();
             var variableName = createVariableName("textButton", variables);
             if (!usedVariables.contains(variableName)) builder.add("$T ", classNameGetter.get(TextButton.class));
-            builder.addStatement("$L = new $T($S, skin$L)", variableName, classNameGetter.get(TextButton.class), textButton.text,
+            builder.addStatement("$L = new $T($S, skin$L)", variableName, classNameGetter.get(TextButton.class), convertEscapedCharacters(textButton.text),
                     textButton.style.name.equals("default") ? "" : ", \"" + textButton.style.name + "\"");
     
             if (textButton.name != null) builder.addStatement("$L.setName($S)", variableName, textButton.name);
@@ -611,7 +611,7 @@ public class DialogSceneComposerJavaBuilder {
             var builder = CodeBlock.builder();
             var variableName = createVariableName("textField", variables);
             if (!usedVariables.contains(variableName)) builder.add("$T ", classNameGetter.get(TextField.class));
-                builder.addStatement("$L = new $T($S, skin$L)", variableName, classNameGetter.get(TextField.class), textField.text,
+                builder.addStatement("$L = new $T($S, skin$L)", variableName, classNameGetter.get(TextField.class), convertEscapedCharacters(textField.text),
                         textField.style.name.equals("default") ? "" : ", \"" + textField.style.name + "\"");
             
             if (textField.name != null) builder.addStatement("$L.setName($S)", variableName, textField.name);
@@ -626,7 +626,7 @@ public class DialogSceneComposerJavaBuilder {
     
             if (textField.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
             if (textField.cursorPosition != 0) builder.addStatement("$L.setCursorPosition($L)", variableName, textField.cursorPosition);
-            if (textField.selectAll) builder.addStatement("$L.setSelection($L, $L)", variableName, 0, textField.text.length());
+            if (textField.selectAll) builder.addStatement("$L.setSelection($L, $L)", variableName, 0, convertEscapedCharacters(textField.text).length());
             else if (textField.selectionStart != 0 || textField.selectionEnd != 0)
                 builder.addStatement("$L.setSelection($L, $L)", variableName, textField.selectionStart, textField.selectionEnd);
             if (!textField.focusTraversal) builder.addStatement("$L.setFocusTraversal($L)", variableName, false);
@@ -641,7 +641,7 @@ public class DialogSceneComposerJavaBuilder {
             var builder = CodeBlock.builder();
             var variableName = createVariableName("textArea", variables);
             if (!usedVariables.contains(variableName)) builder.add("$T ", classNameGetter.get(TextArea.class));
-            builder.addStatement("$L = new $T($S, skin$L)", variableName, classNameGetter.get(TextArea.class), textArea.text,
+            builder.addStatement("$L = new $T($S, skin$L)", variableName, classNameGetter.get(TextArea.class), convertEscapedCharacters(textArea.text),
                     textArea.style.name.equals("default") ? "" : ", \"" + textArea.style.name + "\"");
     
             if (textArea.name != null) builder.addStatement("$L.setName($S)", variableName, textArea.name);
@@ -656,7 +656,7 @@ public class DialogSceneComposerJavaBuilder {
     
             if (textArea.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
             if (textArea.cursorPosition != 0) builder.addStatement("$L.setCursorPosition($L)", variableName, textArea.cursorPosition);
-            if (textArea.selectAll) builder.addStatement("$L.setSelection($L, $L)", variableName, 0, textArea.text.length());
+            if (textArea.selectAll) builder.addStatement("$L.setSelection($L, $L)", variableName, 0, convertEscapedCharacters(textArea.text).length());
             else if (textArea.selectionStart != 0 || textArea.selectionEnd != 0)
                 builder.addStatement("$L.setSelection($L, $L)", variableName, textArea.selectionStart, textArea.selectionEnd);
             if (!textArea.focusTraversal) builder.addStatement("$L.setFocusTraversal($L)", variableName, false);

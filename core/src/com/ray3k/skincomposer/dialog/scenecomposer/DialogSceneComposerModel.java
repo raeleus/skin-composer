@@ -16,6 +16,8 @@ import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleData;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer.View;
 import com.ray3k.skincomposer.dialog.scenecomposer.undoables.SceneComposerUndoable;
+import com.ray3k.stripe.scenecomposer.SimMultipleChildren;
+import com.ray3k.stripe.scenecomposer.SimSingleChild;
 
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -389,17 +391,22 @@ public class DialogSceneComposerModel {
         }
     }
     
-    private String convertEscapedCharacters(String string) {
-        string = string.replaceAll("(?<!\\\\)\\\\n", "\n")
-                .replace("(?<!\\\\)\\\\t", "\t")
-                .replace("(?<!\\\\)\\\\r", "\r");
-        var result = string;
-        Pattern pattern = Pattern.compile("(?<!\\\\)(\\\\u[\\d,a-f,A-F]{4})");
-        Matcher matcher = pattern.matcher(string);
-        while (matcher.find()) {
-            result = result.replaceFirst("(?<!\\\\)(\\\\u[\\d,a-f,A-F]{4})", new String(Character.toChars(Integer.parseInt(matcher.group().substring(2), 16))));
+    public static String convertEscapedCharacters(String string) {
+        if (string != null) {
+            string = string.replaceAll("(?<!\\\\)\\\\n", "\n")
+                    .replace("(?<!\\\\)\\\\t", "\t")
+                    .replace("(?<!\\\\)\\\\r", "\r");
+            var result = string;
+            Pattern pattern = Pattern.compile("(?<!\\\\)(\\\\u[\\d,a-f,A-F]{4})");
+            Matcher matcher = pattern.matcher(string);
+            while (matcher.find()) {
+                result = result.replaceFirst("(?<!\\\\)(\\\\u[\\d,a-f,A-F]{4})",
+                        new String(Character.toChars(Integer.parseInt(matcher.group().substring(2), 16))));
+            }
+            return result.replace("\\\\", "\\");
+        } else {
+            return null;
         }
-        return result.replace("\\\\", "\\");
     }
     
     private Actor createPreviewWidget(SimActor simActor) {
