@@ -257,11 +257,11 @@ public class DialogSceneComposerJavaBuilder {
                 }
     
                 if (cell.uniformX && cell.uniformY) {
-                    builder.add(".uniform(true)");
+                    builder.add(".uniform()");
                 } else if (cell.uniformX) {
-                    builder.add(".uniformX(true)");
+                    builder.add(".uniformX()");
                 } else if (cell.uniformY) {
-                    builder.add(".uniformY(true)");
+                    builder.add(".uniformY()");
                 }
                 
                 if (cell.colSpan > 1) builder.add(".colspan($L)", cell.colSpan);
