@@ -1,3 +1,5 @@
+### Skin Composer Version 41 ###
+
 ### Skin Composer Version 40 ###
 * Allow reordering of styles by drag and drop in the styles menu.
 * Added an option to create a single pixel texture region that will be added to the drawables.
