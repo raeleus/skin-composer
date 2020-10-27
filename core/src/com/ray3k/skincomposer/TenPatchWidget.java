@@ -196,7 +196,7 @@ public class TenPatchWidget extends Stack {
     public void setZoomScale(float zoomPointX, float zoomPointY, float zoomScale) {
         position.x -= (int) ((zoomScale - this.zoomScale) * (zoomPointX - position.x) / this.zoomScale);
         position.y -= (int) ((zoomScale - this.zoomScale) * (zoomPointY - position.y) / this.zoomScale);
-        this.zoomScale = zoomScale;
+        this.zoomScale = Math.max(zoomScale, 1);
     }
 
     public Vector2 getPosition() {
