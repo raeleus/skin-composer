@@ -1,5 +1,6 @@
 ### Skin Composer Version 41 ###
 * Fixed being unable to open huge files in the TenPatch Dialog.
+* Fixed Cell Reset causing the cell to go to 0,0 in SceneComposer.
 
 ### Skin Composer Version 40 ###
 * Allow reordering of styles by drag and drop in the styles menu.

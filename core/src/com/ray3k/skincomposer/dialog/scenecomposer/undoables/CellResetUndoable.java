@@ -31,6 +31,8 @@ public class CellResetUndoable implements SceneComposerUndoable {
     private boolean previousUniformX;
     private boolean previousUniformY;
     private int previousColSpan;
+    private int column;
+    private int row;
     
     public CellResetUndoable() {
         dialog = DialogSceneComposer.dialog;
@@ -61,6 +63,8 @@ public class CellResetUndoable implements SceneComposerUndoable {
         previousUniformX = cell.uniformX;
         previousUniformY = cell.uniformY;
         previousColSpan = cell.colSpan;
+        column = cell.column;
+        row = cell.row;
     }
     
     @Override
@@ -102,6 +106,8 @@ public class CellResetUndoable implements SceneComposerUndoable {
     @Override
     public void redo() {
         cell.reset();
+        cell.column = column;
+        cell.row = row;
         
         if (dialog.simActor != cell) {
             dialog.simActor = cell;
