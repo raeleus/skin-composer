@@ -182,6 +182,16 @@ public class PopSettings extends PopTable {
         var textButton = new TextButton("Auto", skin);
         table.add(textButton);
         textButton.addListener(handListener);
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                var display = Gdx.graphics.getDisplayMode();
+                uiScale = display.height >= 1440 ? 2 : 1;
+                slider.setValue(uiScale);
+                scaleLabel.setText(uiScale + "x");
+                main.resizeUiScale(uiScale, uiScale > 1);
+            }
+        });
         
         row();
         table = new Table();
