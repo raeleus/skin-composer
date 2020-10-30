@@ -79,6 +79,7 @@ public class Main extends ApplicationAdapter {
         WindowStyle.class};
     public static Stage stage;
     public static Skin skin;
+    public static ScreenViewport viewport;
     public static ShapeDrawer shapeDrawer;
     public static GraphDrawer graphDrawer;
     public static DialogFactory dialogFactory;
@@ -111,7 +112,9 @@ public class Main extends ApplicationAdapter {
         appFolder = Gdx.files.external(".skincomposer/");
         
         skin = new FreeTypeSkin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
-        stage = new Stage(new ScreenViewport());
+        viewport = new ScreenViewport();
+//        viewport.setUnitsPerPixel(.5f);
+        stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
         
         shapeDrawer = new ShapeDrawer(stage.getBatch(), skin.getRegion("white"));
@@ -120,6 +123,8 @@ public class Main extends ApplicationAdapter {
         initDefaults();
         
         populate();
+    
+        resizeUiScale(projectData.getUiScale());
     }
     
     private void initDefaults() {
@@ -183,8 +188,6 @@ public class Main extends ApplicationAdapter {
         undoableManager = new UndoableManager(this);
         
         desktopWorker.attachLogListener();
-        desktopWorker.sizeWindowToFit(800, 800, 50, Gdx.graphics);
-        desktopWorker.centerWindow(Gdx.graphics);
         desktopWorker.setCloseListener(() -> {
             dialogFactory.showCloseDialog(new DialogListener() {
                 @Override
@@ -264,6 +267,21 @@ public class Main extends ApplicationAdapter {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+    }
+    
+    public void resizeUiScale(int scale) {
+        resizeUiScale(scale, scale > 1);
+    }
+    
+    public void resizeUiScale(int scale, boolean large) {
+        if (large) {
+            desktopWorker.sizeWindowToFit(1440, 1440, 50, Gdx.graphics);
+        } else {
+            desktopWorker.sizeWindowToFit(800, 800, 50, Gdx.graphics);
+        }
+        desktopWorker.centerWindow(Gdx.graphics);
+        viewport.setUnitsPerPixel(1f / scale);
+        viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
     }
 
     public static Class basicToStyleClass(Class clazz) {

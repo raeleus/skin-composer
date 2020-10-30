@@ -5,10 +5,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.ray3k.skincomposer.Main;
@@ -21,6 +18,7 @@ import com.ray3k.stripe.Spinner.Orientation;
 import static com.ray3k.skincomposer.Main.*;
 
 public class PopSettings extends PopTable {
+    private int uiScale;
     private Integer maxUndos;
     private boolean resourcesRelative;
     private boolean allowingWelcome;
@@ -34,6 +32,7 @@ public class PopSettings extends PopTable {
         setModal(true);
         setHideOnUnfocus(true);
         
+        uiScale = projectData.getUiScale();
         maxUndos = projectData.getMaxUndos();
         resourcesRelative = projectData.areResourcesRelative();
         allowingWelcome = projectData.isAllowingWelcome();
@@ -161,6 +160,34 @@ public class PopSettings extends PopTable {
         add(table);
         
         table.defaults().space(5);
+        label = new Label("UI Scale:", skin);
+        table.add(label);
+        
+        var slider = new Slider(1, 3, 1, false, skin);
+        slider.setValue(uiScale);
+        table.add(slider);
+        slider.addListener(handListener);
+        
+        var scaleLabel = new Label(uiScale + "x", skin);
+        table.add(scaleLabel).width(25);
+        slider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                uiScale = (int) slider.getValue();
+                scaleLabel.setText(uiScale + "x");
+                main.resizeUiScale(uiScale, uiScale > 1);
+            }
+        });
+        
+        var textButton = new TextButton("Auto", skin);
+        table.add(textButton);
+        textButton.addListener(handListener);
+        
+        row();
+        table = new Table();
+        add(table);
+        
+        table.defaults().space(5);
         label = new Label("Max Number of Undos: ", skin);
         table.add(label);
         
@@ -244,28 +271,13 @@ public class PopSettings extends PopTable {
         add(buttonTable);
         
         buttonTable.defaults().minWidth(75).space(5);
-        var textButton = new TextButton("OK", getSkin());
+        textButton = new TextButton("OK", getSkin());
         textButton.addListener(handListener);
         buttonTable.add(textButton);
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                projectData.setChangesSaved(false);
-                projectData.setMaxUndos(maxUndos);
-                projectData.setResourcesRelative(resourcesRelative);
-                projectData.setAllowingWelcome(allowingWelcome);
-                projectData.setShowingExportWarnings(exportWarnings);
-                projectData.setCheckingForUpdates(allowingUpdates);
-                undoableManager.clearUndoables();
-    
-                if (allowingUpdates) {
-                    Main.checkForUpdates(main);
-                } else {
-                    Main.newVersion = Main.VERSION;
-                    rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.CHECK_FOR_UPDATES_COMPLETE));
-                }
-                
-                hide();
+                approve();
             }
         });
         
@@ -275,12 +287,37 @@ public class PopSettings extends PopTable {
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                hide();
+                cancel();
             }
         });
     
         key(Keys.ESCAPE,() -> {
-            hide();
+            cancel();
         });
+    }
+    
+    private void approve() {
+        projectData.setChangesSaved(false);
+        projectData.setMaxUndos(maxUndos);
+        projectData.setResourcesRelative(resourcesRelative);
+        projectData.setAllowingWelcome(allowingWelcome);
+        projectData.setUiScale(uiScale);
+        projectData.setShowingExportWarnings(exportWarnings);
+        projectData.setCheckingForUpdates(allowingUpdates);
+        undoableManager.clearUndoables();
+    
+        if (allowingUpdates) {
+            Main.checkForUpdates(main);
+        } else {
+            Main.newVersion = Main.VERSION;
+            rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.CHECK_FOR_UPDATES_COMPLETE));
+        }
+    
+        hide();
+    }
+    
+    private void cancel() {
+        main.resizeUiScale(projectData.getUiScale());
+        hide();
     }
 }

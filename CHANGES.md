@@ -1,4 +1,5 @@
 ### Skin Composer Version 41 ###
+* Added UI Scaling options and default HiDPI support. Thanks to Hangman and MGSX. Resolves #85.
 * Fixed being unable to open huge files in the TenPatch Dialog.
 * Fixed Cell Reset causing the cell to go to 0,0 in SceneComposer.
 

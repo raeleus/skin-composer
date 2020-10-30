@@ -206,6 +206,16 @@ public class ProjectData implements Json.Serializable {
         return generalPref.getBoolean("allowingWelcome", true);
     }
     
+    public void setUiScale(int uiScale) {
+        generalPref.putInteger("uiScale", uiScale);
+        generalPref.flush();
+    }
+    
+    public int getUiScale() {
+        var display = Gdx.graphics.getDisplayMode();
+        return generalPref.getInteger("uiScale", display.height >= 1440 ? 2 : 1);
+    }
+    
     public void setCheckingForUpdates(boolean allow) {
         generalPref.putBoolean("checkForUpdates", allow);
         generalPref.flush();
