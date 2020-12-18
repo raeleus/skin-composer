@@ -1,5 +1,5 @@
 ### Skin Composer Version 42 ###
-* 
+* Fixed NPE when loading a project with a place holder FreeType font.
 
 ### Skin Composer Version 41 ###
 * Added UI Scaling options and default HiDPI support. Thanks to Hangman and MGSX. Resolves #85.
