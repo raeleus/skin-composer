@@ -531,7 +531,7 @@ public class ProjectData implements Json.Serializable {
         
         if (!areResourcesRelative()) {
             for (var font : jsonData.getFreeTypeFonts()) {
-                if (font.file == null || !font.file.exists()) {
+                if (font.useCustomSerializer && (font.file == null || !font.file.exists())) {
                     errors.add(font);
                 }
             }
@@ -539,7 +539,7 @@ public class ProjectData implements Json.Serializable {
             FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
             
             for (var font : jsonData.getFreeTypeFonts()) {
-                if (font.file == null) {
+                if (font.file == null && font.useCustomSerializer) {
                     errors.add(font);
                 } else {
                     FileHandle localFile = targetFolder.child(font.file.name());
