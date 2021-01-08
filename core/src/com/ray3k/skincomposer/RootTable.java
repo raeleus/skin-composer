@@ -590,10 +590,14 @@ public class RootTable extends Table {
             Class recursiveClass = getSelectedClass();
             Class recursiveStyleClass = Main.basicToStyleClass(recursiveClass);
             while (recursiveStyleClass != null && Arrays.asList(Main.STYLE_CLASSES).contains(recursiveStyleClass)) {
+                int index = 0;
                 for (var style : jsonData.getClassStyleMap().get(recursiveClass)) {
-                    if (style != null && !(style.parent != null && style.parent.equals(getSelectedStyle().name)) && !(parentNames.contains(style.name, false) || style.equals(getSelectedStyle()) && recursiveClass.equals(getSelectedClass()))) {
+                    if (style != null && !(style.parent != null && style.parent.equals(getSelectedStyle().name)) &&
+                            !(parentNames.contains(style.name, false) || style.equals(getSelectedStyle()) && recursiveClass.equals(getSelectedClass()))
+                    && (getSelectedClass() != recursiveClass || index < getSelectedStyleIndex())) {
                         parentNames.add(style.name);
                     }
+                    index++;
                 }
                 
                 recursiveClass = recursiveClass.getSuperclass();
@@ -2612,6 +2616,10 @@ public class RootTable extends Table {
         var classStyleMap = projectData.getJsonData().getClassStyleMap();
         var styles = classStyleMap.get(getSelectedClass());
         return styles.get(styleBox.getSelectedIndex());
+    }
+    
+    public int getSelectedStyleIndex() {
+        return styleBox.getSelectedIndex();
     }
     
     public CustomClass getSelectedCustomClass() {
