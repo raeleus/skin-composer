@@ -392,7 +392,20 @@ public class DialogFonts extends Dialog {
                 LabelStyle style = new LabelStyle();
                 style.font = fontMap.get(font);
                 style.fontColor = Color.WHITE;
-                label = new Label("Lorem Ipsum", style);
+                var previewText = "Lorem Ipsum";
+                if (!Utils.fontHasAllChars(style.font.getData(), previewText)) {
+                    previewText = "LOREM IPSUM";
+                }
+                if (!Utils.fontHasAllChars(style.font.getData(), previewText)) {
+                    previewText = "lorem ipsum";
+                }
+                if (!Utils.fontHasAllChars(style.font.getData(), previewText)) {
+                    previewText = "0123456789";
+                }
+                if (!Utils.fontHasAllChars(style.font.getData(), previewText)) {
+                    previewText = "Lorem Ipsum";
+                }
+                label = new Label(previewText, style);
                 label.setAlignment(Align.center);
                 label.setTouchable(Touchable.disabled);
                 Table bg = new Table(getSkin());
@@ -513,7 +526,20 @@ public class DialogFonts extends Dialog {
                 LabelStyle style = new LabelStyle();
                 style.font = font.bitmapFont;
                 style.fontColor = Color.WHITE;
-                label = new Label("Lorem Ipsum", style);
+                var previewText = "Lorem Ipsum";
+                if (!Utils.fontHasAllChars(style.font.getData(), previewText)) {
+                    previewText = "LOREM IPSUM";
+                }
+                if (!Utils.fontHasAllChars(style.font.getData(), previewText)) {
+                    previewText = "lorem ipsum";
+                }
+                if (!Utils.fontHasAllChars(style.font.getData(), previewText)) {
+                    previewText = "0123456789";
+                }
+                if (!Utils.fontHasAllChars(style.font.getData(), previewText)) {
+                    previewText = "Lorem Ipsum";
+                }
+                label = new Label(previewText, style);
                 label.setAlignment(Align.center);
                 label.setTouchable(Touchable.disabled);
                 Table bg = new Table(getSkin());
