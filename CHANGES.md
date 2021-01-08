@@ -1,4 +1,5 @@
 ### Skin Composer Version 43 ###
+* Preview text adapts to available glyphs in Fonts Dialog. 
 
 ### Skin Composer Version 42 ###
 * Fixed NPE when loading a project with a place holder FreeType font.
