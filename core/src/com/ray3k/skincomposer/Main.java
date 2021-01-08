@@ -63,7 +63,7 @@ import space.earlygrey.shapedrawer.GraphDrawer;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "42";
+    public final static String VERSION = "43";
     public static String newVersion;
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,

@@ -1,3 +1,5 @@
+### Skin Composer Version 43 ###
+
 ### Skin Composer Version 42 ###
 * Fixed NPE when loading a project with a place holder FreeType font.
 
