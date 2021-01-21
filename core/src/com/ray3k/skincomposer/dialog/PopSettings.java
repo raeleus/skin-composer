@@ -23,6 +23,7 @@ public class PopSettings extends PopTable {
     private boolean resourcesRelative;
     private boolean allowingWelcome;
     private boolean exportWarnings;
+    private boolean recentFullPath;
     private boolean allowingUpdates;
     
     public PopSettings() {
@@ -37,6 +38,7 @@ public class PopSettings extends PopTable {
         resourcesRelative = projectData.areResourcesRelative();
         allowingWelcome = projectData.isAllowingWelcome();
         exportWarnings = projectData.isShowingExportWarnings();
+        recentFullPath = projectData.isFullPathInRecentFiles();
         allowingUpdates = projectData.isCheckingForUpdates();
         
         populate();
@@ -264,6 +266,18 @@ public class PopSettings extends PopTable {
         table.add(exportWarningsCheckBox);
         
         table.row();
+        var fullPathCheckBox = new ImageTextButton("Show full path in recent files", getSkin(), "checkbox");
+        fullPathCheckBox.setChecked(recentFullPath);
+        fullPathCheckBox.addListener(handListener);
+        fullPathCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                recentFullPath = fullPathCheckBox.isChecked();
+            }
+        });
+        table.add(fullPathCheckBox);
+
+        table.row();
         var updatesCheckBox = new ImageTextButton("Check for updates?", getSkin(), "checkbox");
         updatesCheckBox.setChecked(allowingUpdates);
         updatesCheckBox.addListener(handListener);
@@ -313,6 +327,7 @@ public class PopSettings extends PopTable {
         projectData.setAllowingWelcome(allowingWelcome);
         projectData.setUiScale(uiScale);
         projectData.setShowingExportWarnings(exportWarnings);
+        projectData.setFullPathInRecentFiles(recentFullPath);
         projectData.setCheckingForUpdates(allowingUpdates);
         undoableManager.clearUndoables();
     
@@ -322,7 +337,8 @@ public class PopSettings extends PopTable {
             Main.newVersion = Main.VERSION;
             rootTable.fire(new RootTable.RootTableEvent(RootTable.RootTableEnum.CHECK_FOR_UPDATES_COMPLETE));
         }
-    
+        Main.rootTable.updateRecentFiles();
+
         hide();
     }
     

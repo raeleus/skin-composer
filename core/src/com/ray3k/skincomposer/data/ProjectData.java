@@ -134,7 +134,7 @@ public class ProjectData implements Json.Serializable {
             FileHandle file = new FileHandle(path);
             RecentFile recentFile = new RecentFile();
             recentFile.fileHandle = file;
-            recentFile.name = file.nameWithoutExtension();
+            recentFile.name = isFullPathInRecentFiles() ? file.path() : file.nameWithoutExtension();
             if (file.exists()) {
                 returnValue.add(recentFile);
             }
@@ -275,7 +275,7 @@ public class ProjectData implements Json.Serializable {
         newProject = false;
         String title = "Skin Composer";
         if (saveFile != null && saveFile.exists()) {
-            title += " - " + saveFile.nameWithoutExtension();
+            title += " - " + (isFullPathInRecentFiles() ? saveFile.path() : saveFile.nameWithoutExtension());
             if (!changesSaved) {
                 title += "*";
             }
@@ -779,7 +779,15 @@ public class ProjectData implements Json.Serializable {
     public void setPreviewBgColor(Color color) {
         preferences.put("preview-bg-color", color);
     }
-    
+
+    public boolean isFullPathInRecentFiles() {
+        return (boolean) preferences.get("recent-fullpath", false);
+    }
+
+    public void setFullPathInRecentFiles(boolean fullPath) {
+        preferences.put("recent-fullpath", fullPath);
+    }
+
     /**
      * Returns true if file exists and depending on the state of relative resources
      * and save file state.
