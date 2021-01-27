@@ -781,11 +781,12 @@ public class ProjectData implements Json.Serializable {
     }
 
     public boolean isFullPathInRecentFiles() {
-        return (boolean) preferences.get("recent-fullpath", false);
+        return generalPref.getBoolean("recent-fullpath", false);
     }
 
     public void setFullPathInRecentFiles(boolean fullPath) {
-        preferences.put("recent-fullpath", fullPath);
+        generalPref.putBoolean("recent-fullpath", fullPath);
+        generalPref.flush();
     }
 
     /**
