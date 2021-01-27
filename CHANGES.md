@@ -2,6 +2,7 @@
 * Preview text adapts to available glyphs in Fonts Dialog.
 * Prevent users from selecting a parent listed further down the styles list which would cause an error when loaded in game. Resolves #90
 * Added setting to allow showing the full path in the Recent Files menu (Thanks Grisgram). Resolves #91
+* Fixed exported skins overwriting content padding when minWidth/minHeight is specified. Resolves #93
 
 ### Skin Composer Version 42 ###
 * Fixed NPE when loading a project with a place holder FreeType font.

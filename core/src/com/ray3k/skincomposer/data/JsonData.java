@@ -764,6 +764,12 @@ public class JsonData implements Json.Serializable {
                 else json.writeValue("minWidth", Utils.imageDimensions(drawable.file).x);
                 if (!MathUtils.isEqual(drawable.minHeight, -1)) json.writeValue("minHeight", drawable.minHeight);
                 else json.writeValue("minHeight", Utils.imageDimensions(drawable.file).y);
+                
+                var atlasDrawable = atlasData.getDrawablePairs().get(drawable);
+                json.writeValue("leftWidth", atlasDrawable.getLeftWidth());
+                json.writeValue("rightWidth", atlasDrawable.getRightWidth());
+                json.writeValue("topHeight", atlasDrawable.getTopHeight());
+                json.writeValue("bottomHeight", atlasDrawable.getBottomHeight());
                 json.writeObjectEnd();
             }
             json.writeObjectEnd();
