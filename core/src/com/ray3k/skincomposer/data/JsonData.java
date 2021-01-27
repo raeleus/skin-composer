@@ -757,7 +757,7 @@ public class JsonData implements Json.Serializable {
             var className = NinePatchDrawable.class.getName();
             json.writeObjectStart(className);
             for (var drawable : ninePatchDrawables) {
-                var name = drawable.file.name().toLowerCase(Locale.ROOT).replaceAll("\\.9.*$", "");
+                var name = drawable.file.name().replaceAll("\\.9.*$", "");
                 json.writeObjectStart(name);
                 json.writeValue("patch", name);
                 if (!MathUtils.isEqual(drawable.minWidth, -1)) json.writeValue("minWidth", drawable.minWidth);
