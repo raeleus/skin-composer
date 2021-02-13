@@ -125,7 +125,7 @@ public class AtlasData implements Json.Serializable {
                 Pixmap savePixmap;
                 String name;
                 
-                if (region.splits == null && region.pads == null) {
+                if (region.findValue("split") == null && region.findValue("pad") == null) {
                     name = region.name + ".png";
                     savePixmap = new Pixmap(region.getRegionWidth(), region.getRegionHeight(), Pixmap.Format.RGBA8888);
                     savePixmap.setBlending(Pixmap.Blending.None);
@@ -145,26 +145,30 @@ public class AtlasData implements Json.Serializable {
                     //draw 9 patch lines
                     savePixmap.setColor(Color.BLACK);
 
-                    if (region.splits != null) {
+                    if (region.findValue("split") != null) {
+                        int[] splits = region.findValue("split");
+                        
                         x = 0;
-                        for (y = region.splits[2] + 1; y < savePixmap.getHeight() - region.splits[3] - 1; y++) {
+                        for (y = splits[2] + 1; y < savePixmap.getHeight() - splits[3] - 1; y++) {
                             savePixmap.drawPixel(x, y);
                         }
                         
                         y = 0;
-                        for (x = region.splits[0] + 1; x < savePixmap.getWidth() - region.splits[1] - 1; x++) {
+                        for (x = splits[0] + 1; x < savePixmap.getWidth() - splits[1] - 1; x++) {
                             savePixmap.drawPixel(x, y);
                         }
                     }
                     
-                    if (region.pads != null) {
+                    if (region.findValue("pad") != null) {
+                        int[] pads = region.findValue("pad");
+                        
                         x = savePixmap.getWidth() - 1;
-                        for (y = region.pads[2] + 1; y < savePixmap.getHeight() - region.pads[3] - 1; y++) {
+                        for (y = pads[2] + 1; y < savePixmap.getHeight() - pads[3] - 1; y++) {
                             savePixmap.drawPixel(x, y);
                         }
                         
                         y = savePixmap.getHeight() - 1;
-                        for (x = region.pads[0] + 1; x < savePixmap.getWidth() - region.pads[1] - 1; x++) {
+                        for (x = pads[0] + 1; x < savePixmap.getWidth() - pads[1] - 1; x++) {
                             savePixmap.drawPixel(x, y);
                         }
                     }

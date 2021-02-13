@@ -454,9 +454,9 @@ public class Dialog9Patch extends Dialog {
             }
 
             @Override
-            public boolean scrolled(InputEvent event, float x, float y, int amount) {
+            public boolean scrolled(InputEvent event, float x, float y, float amountX, float amountY) {
                 var slider = (Slider) findActor("top-zoom");
-                slider.setValue(slider.getValue() - amount * 3);
+                slider.setValue(slider.getValue() - amountY * 3);
                 return true;
             }
         };
@@ -692,9 +692,9 @@ public class Dialog9Patch extends Dialog {
             }
 
             @Override
-            public boolean scrolled(InputEvent event, float x, float y, int amount) {
+            public boolean scrolled(InputEvent event, float x, float y, float amountX, float amountY) {
                   var slider = (Slider) findActor("bottom-zoom");
-                slider.setValue(slider.getValue() - amount * 5);
+                slider.setValue(slider.getValue() - amountY * 5);
                 return true;
             }
         });

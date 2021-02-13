@@ -350,10 +350,10 @@ public class DialogTenPatch extends Dialog {
             }
             
             @Override
-            public boolean scrolled(InputEvent event, float x, float y, int amount) {
+            public boolean scrolled(InputEvent event, float x, float y, float amountX, float amountY) {
                 zoomToMouse = true;
                 Slider slider = findActor("ten-patch-zoom");
-                slider.setValue(slider.getValue() - SCROLL_AMOUNT * amount);
+                slider.setValue(slider.getValue() - SCROLL_AMOUNT * amountY);
                 return true;
             }
         });
