@@ -1,3 +1,5 @@
+### Skin Composer Version 44 ###
+
 ### Skin Composer Version 43 ###
 * Preview text adapts to available glyphs in Fonts Dialog.
 * Prevent users from selecting a parent listed further down the styles list which would cause an error when loaded in game. Resolves #90
