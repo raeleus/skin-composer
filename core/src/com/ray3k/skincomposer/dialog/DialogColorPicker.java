@@ -241,28 +241,28 @@ public class DialogColorPicker extends Dialog {
         brightnessSpinner.getButtonMinus().addListener(handListener);
         brightnessSpinner.getButtonPlus().addListener(handListener);
         
-        redSpinner = new Spinner(selectedColor.r * 255.0f, 1.0, true, Orientation.HORIZONTAL, skin);
+        redSpinner = new Spinner(Math.floor(selectedColor.r * 255.0f), 1.0, true, Orientation.HORIZONTAL, skin);
         redSpinner.setMinimum(0.0);
         redSpinner.setMaximum(255.0);
         redSpinner.getTextField().addListener(ibeamListener);
         redSpinner.getButtonMinus().addListener(handListener);
         redSpinner.getButtonPlus().addListener(handListener);
         
-        greenSpinner = new Spinner(selectedColor.g * 255.0f, 1.0, true, Orientation.HORIZONTAL, skin);
+        greenSpinner = new Spinner(Math.floor(selectedColor.g * 255.0f), 1.0, true, Orientation.HORIZONTAL, skin);
         greenSpinner.setMinimum(0.0);
         greenSpinner.setMaximum(255.0);
         greenSpinner.getTextField().addListener(ibeamListener);
         greenSpinner.getButtonMinus().addListener(handListener);
         greenSpinner.getButtonPlus().addListener(handListener);
         
-        blueSpinner = new Spinner(selectedColor.b * 255.0f, 1.0, true, Orientation.HORIZONTAL, skin);
+        blueSpinner = new Spinner(Math.floor(selectedColor.b * 255.0f), 1.0, true, Orientation.HORIZONTAL, skin);
         blueSpinner.setMinimum(0.0);
         blueSpinner.setMaximum(255.0);
         blueSpinner.getTextField().addListener(ibeamListener);
         blueSpinner.getButtonMinus().addListener(handListener);
         blueSpinner.getButtonPlus().addListener(handListener);
         
-        alphaSpinner = new Spinner(selectedColor.a * 255.0f, 1.0, true, Orientation.HORIZONTAL, skin);
+        alphaSpinner = new Spinner(Math.floor(selectedColor.a * 255.0f), 1.0, true, Orientation.HORIZONTAL, skin);
         alphaSpinner.setMinimum(0.0);
         alphaSpinner.setMaximum(255.0);
         alphaSpinner.getTextField().addListener(ibeamListener);
