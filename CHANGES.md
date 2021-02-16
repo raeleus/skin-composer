@@ -1,4 +1,5 @@
 ### Skin Composer Version 44 ###
+* Fixed TintedDrawables created from NinePatches not working.
 
 ### Skin Composer Version 43 ###
 * Preview text adapts to available glyphs in Fonts Dialog.
