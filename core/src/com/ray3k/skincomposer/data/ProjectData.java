@@ -539,13 +539,13 @@ public class ProjectData implements Json.Serializable {
             FileHandle targetFolder = saveFile.sibling(saveFile.nameWithoutExtension() + "_data/");
             
             for (var font : jsonData.getFreeTypeFonts()) {
-                if (font.file == null && font.useCustomSerializer) {
-                    errors.add(font);
-                } else {
+                if (font.file != null) {
                     FileHandle localFile = targetFolder.child(font.file.name());
                     if (!localFile.exists()) {
                         errors.add(font);
                     }
+                } else if (font.useCustomSerializer) {
+                    errors.add(font);
                 }
             }
         }
