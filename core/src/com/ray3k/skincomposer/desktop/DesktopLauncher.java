@@ -344,7 +344,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
 	 * if multiple selection mode the list of Files selected 
 	 * if single selection mode a list with one File Object
 	 * if nothing selected or dialog is cancelled:
-	 *    a list with a 'null' item  
+	 *    an empty list
 	*/ 
     private List<File> showFileChooser(int mode, String title, String defaultPath, String[] filterPatterns, String filterDescription) {
 
@@ -397,9 +397,6 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
                 Collections.addAll(returnValue, fileChooser.getSelectedFiles());
             else
                 returnValue.add(fileChooser.getSelectedFile());
-        }
-        else {
-			returnValue.add(null);
         }
 
         return returnValue;
