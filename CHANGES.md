@@ -1,3 +1,5 @@
+### Skin Composer Version 45 ###
+
 ### Skin Composer Version 44 ###
 * Fixed TintedDrawables created from NinePatches not working.
 * Fixed Color Picker to correctly show numeric values for imported colors. Resolves #95
