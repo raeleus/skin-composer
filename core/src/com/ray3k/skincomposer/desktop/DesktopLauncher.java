@@ -44,9 +44,13 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.ray3k.skincomposer.Main.desktopWorker;
@@ -59,6 +63,14 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     private Array<FilesDroppedListener> filesDroppedListeners;
     private CloseListener closeListener;
+
+    //constans for showFileChooser mode param
+    private static final int OPEN_MULTIPLE=1;
+    private static final int OPEN=2;
+    private static final int SAVE=3;
+    //flag for use swing JFileChooser
+    private static boolean useSwing;
+
 
     public DesktopLauncher() {
         filesDroppedListeners = new Array<>();
@@ -202,6 +214,13 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     @Override
     public List<File> openMultipleDialog(String title, String defaultPath,
             String[] filterPatterns, String filterDescription) {
+        
+        if (useSwing){
+            return showFileChooser(OPEN_MULTIPLE,title,defaultPath, 
+							filterPatterns, filterDescription);
+        }
+
+
         String result = null;
         
         //fix file path characters
@@ -236,10 +255,17 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
             return null;
         }
     }
-    
+
     @Override
     public File openDialog(String title, String defaultPath,
             String[] filterPatterns, String filterDescription) {
+        
+        if (useSwing){
+            return showFileChooser(OPEN, title, defaultPath, 
+						filterPatterns, filterDescription).get(0);
+        }
+
+
         String result = null;
         
         //fix file path characters
@@ -274,6 +300,13 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     @Override
     public File saveDialog(String title, String defaultPath,
             String[] filterPatterns, String filterDescription) {
+
+        if (useSwing){
+            return showFileChooser(SAVE, title, defaultPath, 
+						filterPatterns, filterDescription).get(0);
+        }
+
+
         String result = null;
         
         //fix file path characters
@@ -304,6 +337,69 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         } else {
             return null;
         }
+    }
+
+	/* Opens a swing JFileChooser
+	 * returns:
+	 * if multiple selection mode the list of Files selected 
+	 * if single selection mode a list with one File Object
+	 * if nothing selected or dialog is cancelled:
+	 *    an empty list
+	*/ 
+    private List<File> showFileChooser(int mode, String title, String defaultPath, String[] filterPatterns, String filterDescription) {
+
+        JFrame frame= new JFrame();
+        frame.setVisible(true);
+        frame.toFront();
+        frame.setAlwaysOnTop(true);
+        frame.setVisible(false);
+        JFileChooser fileChooser= new JFileChooser(defaultPath);
+        fileChooser.setDialogTitle(title);
+
+        //process filterPatterns
+        if (filterPatterns!=null && filterPatterns.length>0) {
+            if (filterDescription==null){
+                filterDescription="null";
+            }
+            
+            //extract extensions from patterns
+            for (int i = 0; i < filterPatterns.length; ++i) {
+                String filter = filterPatterns[i];
+                if (filter.startsWith("*.")) {
+                      filterPatterns[i] = filter.substring(2);
+                }
+            }
+            
+            FileFilter filter = new FileNameExtensionFilter(filterDescription, filterPatterns);
+            fileChooser.addChoosableFileFilter(filter);
+            fileChooser.setFileFilter(filter);
+        }
+
+
+        int res;
+        if (mode == OPEN_MULTIPLE){
+            fileChooser.setMultiSelectionEnabled(true);
+            res= fileChooser.showOpenDialog(frame);
+        }
+        else if (mode == OPEN ){
+            fileChooser.setMultiSelectionEnabled(false);
+            res= fileChooser.showOpenDialog(frame);
+        }
+        else{
+            res= fileChooser.showSaveDialog(frame);
+        }
+        frame.dispose();
+
+        var returnValue= new ArrayList<File>();
+        
+        if (res==JFileChooser.APPROVE_OPTION){
+            if (fileChooser.isMultiSelectionEnabled()) 
+                Collections.addAll(returnValue, fileChooser.getSelectedFiles());
+            else
+                returnValue.add(fileChooser.getSelectedFile());
+        }
+
+        return returnValue;
     }
 
     @Override
@@ -388,6 +484,15 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
             return;
         }
         
+        //setting a flag for use JFileChooser if "-swingfd" arg is in commandline 
+        useSwing=false;
+        for (var arg: args){
+            if (arg.equals("-swingfd")){
+                useSwing=true;
+                break;
+            }
+        }
+
         var config = new Lwjgl3ApplicationConfiguration();
         config.setResizable(true);
         config.useVsync(true);
@@ -449,7 +554,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         
         List<String> inputArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
         
-        ArrayList<String> jvmArgs = new ArrayList<String>();
+        ArrayList<String> jvmArgs = new ArrayList<>();
         
         jvmArgs.add(jvmPath);
         jvmArgs.add("-XstartOnFirstThread");
