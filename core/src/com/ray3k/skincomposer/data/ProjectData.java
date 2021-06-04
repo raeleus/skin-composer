@@ -559,7 +559,7 @@ public class ProjectData implements Json.Serializable {
         
         if (targetFolder.exists()) {
             for (DrawableData drawableData : atlasData.getDrawables()) {
-                if (resourcesRelative || drawableData.file != null && !drawableData.file.exists()) {
+                if (drawableData.type != DrawableType.PIXEL && (resourcesRelative || drawableData.file != null && !drawableData.file.exists())) {
                     FileHandle newFile = targetFolder.child(drawableData.file.name());
                     if (newFile.exists()) {
                         drawableData.file = newFile;
