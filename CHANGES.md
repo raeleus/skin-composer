@@ -1,5 +1,6 @@
 ### Skin Composer Version 45 ###
 * Added commandline option -swingfd to use swing.JFileChooser for platforms that can't use Tiny File Dialogs.
+* Fixed code path that bypasses null check in ProjectData when loading a skin with placeholder fonts.
 
 ### Skin Composer Version 44 ###
 * Fixed TintedDrawables created from NinePatches not working.
