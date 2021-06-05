@@ -128,7 +128,7 @@ public class JsonData implements Json.Serializable {
         if (saveFile != null) {
             targetDirectory = saveFile.sibling(saveFile.nameWithoutExtension() + "_data");
         } else {
-            targetDirectory = new FileHandle(Main.appFolder.child("temp/" + projectData.getId() + "_data").file());
+            targetDirectory = Main.appFolder.child("temp/" + projectData.getId() + "_data");
         }
 
         //read json file and create styles
