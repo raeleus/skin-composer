@@ -1,6 +1,7 @@
 package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -14,27 +15,40 @@ import com.ray3k.skincomposer.ResizeWidget;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.stripe.PopTable;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
 import static com.ray3k.skincomposer.Main.*;
 
-public class DialogTenPatchSettings extends Dialog {
+public class DialogTenPatchSettings extends PopTable {
     private DrawableData drawableData;
     private DrawableData workingData;
     private TenPatchDrawable preview;
     
     public DialogTenPatchSettings(DrawableData drawableData, TenPatchDrawable tenPatchDrawable) {
-        super("TenPatch Settings", skin, "bg");
+        super(skin, "dialog");
         this.drawableData = drawableData;
         workingData = new DrawableData(drawableData);
         preview = new TenPatchDrawable(tenPatchDrawable);
-    
-        getTitleTable().padLeft(5);
         
-        var root = getContentTable();
+        setKeepCenteredInWindow(true);
+        setKeepSizedWithinStage(true);
+        
+        var root = new Table();
         root.pad(10);
+        
+        var scrollPane = new ScrollPane(root, skin);
+        scrollPane.setFadeScrollBars(false);
+        scrollPane.setFlickScroll(false);
+        add(scrollPane);
+        scrollPane.addListener(scrollFocusListener);
+        
+        var label = new Label("TenPatch Settings", skin);
+        root.add(label);
     
+        root.defaults().growX().space(10);
+        root.row();
         var resizer = new ResizeWidget(null, skin);
         resizer.setName("resizer");
         resizer.setTouchable(Touchable.enabled);
@@ -59,14 +73,13 @@ public class DialogTenPatchSettings extends Dialog {
         resizeFourArrowListener = new ResizeFourArrowListener(cursor);
         resizer.getLeftHandle().addListener(resizeFourArrowListener);
         resizer.getRightHandle().addListener(resizeFourArrowListener);
-        root.add(resizer).height(250).growX();
+        root.add(resizer).height(250);
         
         var image = new Image(preview);
         resizer.setActor(image);
         
         root.row();
-        root.defaults().growX();
-        var label = new Label("Bounds", skin, "black-underline");
+        label = new Label("Bounds", skin, "black-underline");
         root.add(label);
         
         root.row();
@@ -395,21 +408,37 @@ public class DialogTenPatchSettings extends Dialog {
                 preview.crushMode = workingData.tenPatchData.crushMode;
             }
         });
-    
-        getButtonTable().pad(10);
-        getButtonTable().defaults().uniform().fill();
+        
+        root.row();
+        table = new Table();
+        table.pad(10);
+        table.defaults().uniform().fill();
+        
         var textButton = new TextButton("OK", skin);
-        button(textButton, true);
+        table.add(textButton);
         textButton.addListener(handListener);
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                result(true);
+            }
+        });
         
         textButton = new TextButton("Cancel", skin);
-        button(textButton, false);
+        table.add(textButton);
         textButton.addListener(handListener);
+        textButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                result(false);
+            }
+        });
         
-        key(Input.Keys.ESCAPE, false).key(Input.Keys.ENTER, true);
+        key(Keys.ESCAPE, () -> result(false));
+        
+        key(Keys.ENTER, () -> result(true));
     }
     
-    @Override
     protected void result(Object object) {
         if ((Boolean) object) {
             drawableData.set(workingData);
