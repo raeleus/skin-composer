@@ -317,6 +317,30 @@ public class DialogTenPatchSettings extends Dialog {
             }
         });
     
+        root.row();
+        label = new Label("Crush Mode", skin, "black-underline");
+        root.add(label);
+    
+        root.row();
+        table = new Table();
+        root.add(table);
+    
+        table.defaults().space(5);
+        label = new Label("Crush Mode:", skin);
+        table.add(label).right();
+    
+        var selectBox = new SelectBox<String>(skin);
+        selectBox.setItems("Shrink", "Crop", "Crop-Reversed", "None");
+        selectBox.setSelectedIndex(workingData.tenPatchData.crushMode);
+        table.add(selectBox);
+        selectBox.addListener(handListener);
+        selectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                workingData.tenPatchData.crushMode = selectBox.getSelectedIndex();
+            }
+        });
+    
         getButtonTable().pad(10);
         getButtonTable().defaults().uniform().fill();
         var textButton = new TextButton("OK", skin);

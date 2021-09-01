@@ -47,6 +47,7 @@ import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.dialog.DialogTenPatch;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.tenpatch.TenPatchDrawable;
+import com.ray3k.tenpatch.TenPatchDrawable.CrushMode;
 
 import static com.ray3k.skincomposer.Main.*;
 import static com.ray3k.skincomposer.data.DrawableData.DrawableType.*;
@@ -341,6 +342,7 @@ public class JsonData implements Json.Serializable {
                     drawableData.tenPatchData.frameDuration = value.getFloat("frameDuration", 0);
                     drawableData.tenPatchData.regionNames = new Array<>(value.get("regions").asStringArray());
                     drawableData.tenPatchData.playMode = value.getInt("playMode", TenPatchDrawable.PlayMode.LOOP);
+                    drawableData.tenPatchData.crushMode = value.getInt("crushMode", CrushMode.SHRINK);
     
                     //delete drawables with the same name
                     for (DrawableData originalData : new Array<>(projectData.getAtlasData().getDrawables())) {
@@ -880,6 +882,7 @@ public class JsonData implements Json.Serializable {
                 json.writeValue("frameDuration", drawable.tenPatchData.frameDuration);
                 json.writeValue("regions", drawable.tenPatchData.regionNames, Array.class, String.class);
                 json.writeValue("playMode", drawable.tenPatchData.playMode);
+                json.writeValue("crushMode", drawable.tenPatchData.crushMode);
                 json.writeObjectEnd();
             }
             json.writeObjectEnd();

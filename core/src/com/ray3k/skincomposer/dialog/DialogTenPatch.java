@@ -51,6 +51,7 @@ import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.PopTable;
 import com.ray3k.tenpatch.TenPatchDrawable;
+import com.ray3k.tenpatch.TenPatchDrawable.CrushMode;
 
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -771,6 +772,7 @@ public class DialogTenPatch extends Dialog {
         }
         tenPatchDrawable.setFrameDuration(drawableData.tenPatchData.frameDuration);
         tenPatchDrawable.setPlayMode(drawableData.tenPatchData.playMode);
+        tenPatchDrawable.crushMode = drawableData.tenPatchData.crushMode;
         
         Table table = findActor("tenPatchTable");
         if (table.getCells().size > 0) {
@@ -1033,6 +1035,7 @@ public class DialogTenPatch extends Dialog {
         public Array<String> regionNames = new Array<>();
         public transient Array<TextureRegion> regions;
         public int playMode;
+        public int crushMode;
     
         public TenPatchData() {
             clear();
@@ -1061,6 +1064,7 @@ public class DialogTenPatch extends Dialog {
             offsetYspeed = 0;
             frameDuration = .03f;
             playMode = TenPatchDrawable.PlayMode.LOOP;
+            crushMode = CrushMode.SHRINK;
         }
     
         public void removeInvalidStretchAreas(boolean horizontal) {
@@ -1124,6 +1128,7 @@ public class DialogTenPatch extends Dialog {
             regionNames = new Array<>(other.regionNames);
             regions = other.regions == null ? null : new Array<>(other.regions);
             playMode = other.playMode;
+            crushMode = other.crushMode;
         }
     }
     

@@ -1,4 +1,5 @@
 ### Skin Composer Version 46 ###
+* Added CrushMode options to TenPatch.
 
 ### Skin Composer Version 45 ###
 * Added commandline option -swingfd to use swing.JFileChooser for platforms that can't use Tiny File Dialogs.
