@@ -5,29 +5,66 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Scaling;
+import com.ray3k.skincomposer.ResizeFourArrowListener;
+import com.ray3k.skincomposer.ResizeWidget;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
+import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.Spinner;
+import com.ray3k.tenpatch.TenPatchDrawable;
 
 import static com.ray3k.skincomposer.Main.*;
 
 public class DialogTenPatchSettings extends Dialog {
     private DrawableData drawableData;
     private DrawableData workingData;
+    private TenPatchDrawable preview;
     
-    public DialogTenPatchSettings(DrawableData drawableData) {
+    public DialogTenPatchSettings(DrawableData drawableData, TenPatchDrawable tenPatchDrawable) {
         super("TenPatch Settings", skin, "bg");
         this.drawableData = drawableData;
         workingData = new DrawableData(drawableData);
+        preview = new TenPatchDrawable(tenPatchDrawable);
     
         getTitleTable().padLeft(5);
         
         var root = getContentTable();
         root.pad(10);
+    
+        var resizer = new ResizeWidget(null, skin);
+        resizer.setName("resizer");
+        resizer.setTouchable(Touchable.enabled);
+        resizer.setResizeFromCenter(true);
+    
+        var cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
+        var resizeFourArrowListener = new ResizeFourArrowListener(cursor);
+        resizer.getBottomLeftHandle().addListener(resizeFourArrowListener);
+        resizer.getTopRightHandle().addListener(resizeFourArrowListener);
+    
+        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_nw"), 16, 16);
+        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
+        resizer.getTopLeftHandle().addListener(resizeFourArrowListener);
+        resizer.getBottomRightHandle().addListener(resizeFourArrowListener);
+    
+        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_vertical"), 16, 16);
+        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
+        resizer.getBottomHandle().addListener(resizeFourArrowListener);
+        resizer.getTopHandle().addListener(resizeFourArrowListener);
+    
+        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_horizontal"), 16, 16);
+        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
+        resizer.getLeftHandle().addListener(resizeFourArrowListener);
+        resizer.getRightHandle().addListener(resizeFourArrowListener);
+        root.add(resizer).height(250).growX();
         
+        var image = new Image(preview);
+        resizer.setActor(image);
+        
+        root.row();
         root.defaults().growX();
         var label = new Label("Bounds", skin, "black-underline");
         root.add(label);
@@ -50,6 +87,7 @@ public class DialogTenPatchSettings extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 workingData.minWidth = ((Spinner) actor).getValueAsInt();
+                preview.setMinWidth(workingData.minWidth);
             }
         });
     
@@ -66,6 +104,7 @@ public class DialogTenPatchSettings extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 workingData.minHeight = ((Spinner) actor).getValueAsInt();
+                preview.setMinHeight(workingData.minHeight);
             }
         });
     
@@ -84,7 +123,7 @@ public class DialogTenPatchSettings extends Dialog {
         var imageButton = new ImageButton(skin, "color");
         table.add(imageButton).spaceRight(15);
         imageButton.addListener(handListener);
-        var image = new Image(skin, "white");
+        image = new Image(skin, "white");
         image.setScaling(Scaling.stretch);
         imageButton.add(image).size(15, 15).space(5);
         image.setColor(workingData.tenPatchData.colorName == null ? Color.WHITE : jsonData.getColorByName(workingData.tenPatchData.colorName).color);
@@ -96,9 +135,11 @@ public class DialogTenPatchSettings extends Dialog {
                     if (colorData == null) {
                         workingData.tenPatchData.colorName = null;
                         ((ImageButton) actor).getCells().peek().getActor().setColor(Color.WHITE);
+                        preview.setColor(null);
                     } else {
                         workingData.tenPatchData.colorName = colorData.getName();
                         ((ImageButton) actor).getCells().peek().getActor().setColor(colorData.color);
+                        preview.setColor(colorData.color);
                     }
                 }, null);
             }
@@ -126,9 +167,11 @@ public class DialogTenPatchSettings extends Dialog {
                     if (colorData == null) {
                         workingData.tenPatchData.color2Name = null;
                         ((ImageButton) actor).getCells().peek().getActor().setColor(Color.WHITE);
+                        preview.setColor2(null);
                     } else {
                         workingData.tenPatchData.color2Name = colorData.getName();
                         ((ImageButton) actor).getCells().peek().getActor().setColor(colorData.color);
+                        preview.setColor2(colorData.color);
                     }
                 }, null);
             }
@@ -154,9 +197,11 @@ public class DialogTenPatchSettings extends Dialog {
                     if (colorData == null) {
                         workingData.tenPatchData.color3Name = null;
                         ((ImageButton) actor).getCells().peek().getActor().setColor(Color.WHITE);
+                        preview.setColor3(null);
                     } else {
                         workingData.tenPatchData.color3Name = colorData.getName();
                         ((ImageButton) actor).getCells().peek().getActor().setColor(colorData.color);
+                        preview.setColor3(colorData.color);
                     }
                 }, null);
             }
@@ -183,9 +228,11 @@ public class DialogTenPatchSettings extends Dialog {
                     if (colorData == null) {
                         workingData.tenPatchData.color1Name = null;
                         ((ImageButton) actor).getCells().peek().getActor().setColor(Color.WHITE);
+                        preview.setColor1(null);
                     } else {
                         workingData.tenPatchData.color1Name = colorData.getName();
                         ((ImageButton) actor).getCells().peek().getActor().setColor(colorData.color);
+                        preview.setColor1(colorData.color);
                     }
                 }, null);
             }
@@ -211,9 +258,11 @@ public class DialogTenPatchSettings extends Dialog {
                     if (colorData == null) {
                         workingData.tenPatchData.color4Name = null;
                         ((ImageButton) actor).getCells().peek().getActor().setColor(Color.WHITE);
+                        preview.setColor4(null);
                     } else {
                         workingData.tenPatchData.color4Name = colorData.getName();
                         ((ImageButton) actor).getCells().peek().getActor().setColor(colorData.color);
+                        preview.setColor1(colorData.color);
                     }
                 }, null);
             }
@@ -239,6 +288,7 @@ public class DialogTenPatchSettings extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 workingData.tenPatchData.tile = ((Button) actor).isChecked();
+                preview.setTiling(workingData.tenPatchData.tile);
             }
         });
         
@@ -259,6 +309,7 @@ public class DialogTenPatchSettings extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 workingData.tenPatchData.offsetX = ((Spinner) actor).getValueAsInt();
+                preview.setOffsetX(workingData.tenPatchData.offsetX);
             }
         });
     
@@ -277,6 +328,7 @@ public class DialogTenPatchSettings extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 workingData.tenPatchData.offsetY = ((Spinner) actor).getValueAsInt();
+                preview.setOffsetY(workingData.tenPatchData.offsetY);
             }
         });
     
@@ -296,6 +348,7 @@ public class DialogTenPatchSettings extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 workingData.tenPatchData.offsetXspeed = ((Spinner) actor).getValueAsInt();
+                preview.setOffsetXspeed(workingData.tenPatchData.offsetXspeed);
             }
         });
     
@@ -314,6 +367,7 @@ public class DialogTenPatchSettings extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 workingData.tenPatchData.offsetYspeed = ((Spinner) actor).getValueAsInt();
+                preview.setOffsetYspeed(workingData.tenPatchData.offsetYspeed);
             }
         });
     
@@ -338,6 +392,7 @@ public class DialogTenPatchSettings extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 workingData.tenPatchData.crushMode = selectBox.getSelectedIndex();
+                preview.crushMode = workingData.tenPatchData.crushMode;
             }
         });
     

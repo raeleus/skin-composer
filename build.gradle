@@ -43,7 +43,7 @@ project(":core") {
         compile ("com.badlogicgames.gdx:gdx-tools:$gdxVersion") {
             exclude group: 'com.badlogicgames.gdx', module: 'gdx-backend-lwjgl'
         }
-        compile "com.github.raeleus.TenPatch:tenpatch:5.2.0"
+        compile "com.github.raeleus.TenPatch:tenpatch:5.2.2"
         compile "space.earlygrey:shapedrawer:2.2.0"
         compile 'com.squareup:javapoet:1.12.1'
         compile 'com.github.raeleus:stripe:master-SNAPSHOT'

@@ -537,7 +537,7 @@ public class DialogTenPatch extends Dialog {
         imageTextButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                var dialog = new DialogTenPatchSettings(drawableData);
+                var dialog = new DialogTenPatchSettings(drawableData, tenPatchDrawable);
                 dialog.addListener(new DialogTenPatchSettings.DialogTenPatchSettingsListener() {
                     @Override
                     public void settingsUpdated(DialogTenPatchSettings.DialogTenPatchSettingsEvent event) {
