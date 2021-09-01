@@ -431,6 +431,7 @@ public class AtlasData implements Json.Serializable {
                     ((TenPatchDrawable) drawable).setOffsetYspeed(data.tenPatchData.offsetYspeed);
                     ((TenPatchDrawable) drawable).setFrameDuration(data.tenPatchData.frameDuration);
                     ((TenPatchDrawable) drawable).setPlayMode(data.tenPatchData.playMode);
+                    ((TenPatchDrawable) drawable).crushMode = data.tenPatchData.crushMode;
                     if (data.tenPatchData.regions == null) {
                         data.tenPatchData.regions = new Array<>();
                         for (var name : data.tenPatchData.regionNames) {
