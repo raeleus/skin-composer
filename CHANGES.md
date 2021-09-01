@@ -1,3 +1,5 @@
+### Skin Composer Version 46 ###
+
 ### Skin Composer Version 45 ###
 * Added commandline option -swingfd to use swing.JFileChooser for platforms that can't use Tiny File Dialogs.
 * Fixed code path that bypasses null check in ProjectData when loading a skin with placeholder fonts.
