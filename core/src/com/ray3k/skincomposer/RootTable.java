@@ -2353,6 +2353,7 @@ public class RootTable extends Table {
                                 dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
                                 dialog.button("OK", true);
                                 dialog.button("Cancel", false);
+                                dialog.key(Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true).key(Keys.ESCAPE, false);
                                 TextButton okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
                                 okButton.setDisabled(true);
                                 okButton.addListener(handListener);
