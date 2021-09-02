@@ -86,7 +86,7 @@ public class RootTable extends Table {
     private final ScrollPaneListener scrollPaneListener;
     private final ObjectMap<String, Object> previewProperties;
     private SelectBox<String> previewSizeSelectBox;
-    private static final String[] DEFAULT_SIZES = {"small", "default", "large", "growX", "growY", "grow", "custom"};
+    private static final String[] DEFAULT_SIZES = {"small", "default", "large", "growX", "growY", "grow", "free transform", "custom"};
     private static final String TEXT_SAMPLE = "Lorem ipsum dolor sit";
     private static final String PARAGRAPH_SAMPLE = 
             "Lorem ipsum dolor sit amet, consectetur\n"
@@ -114,6 +114,7 @@ public class RootTable extends Table {
     private Button styleDeleteButton;
     private Button styleRenameButton;
     private FilesDroppedListener filesDroppedListener;
+    private ResizeWidget previewResizeWidget;
 
     public RootTable() {
         super(skin);
@@ -135,6 +136,31 @@ public class RootTable extends Table {
         };
         
         desktopWorker.addFilesDroppedListener(filesDroppedListener);
+    
+        previewResizeWidget = new ResizeWidget(null, skin);
+        previewResizeWidget.setName("resizer");
+        previewResizeWidget.setTouchable(Touchable.enabled);
+        previewResizeWidget.setResizeFromCenter(true);
+    
+        var cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
+        var resizeFourArrowListener = new ResizeFourArrowListener(cursor);
+        previewResizeWidget.getBottomLeftHandle().addListener(resizeFourArrowListener);
+        previewResizeWidget.getTopRightHandle().addListener(resizeFourArrowListener);
+    
+        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_nw"), 16, 16);
+        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
+        previewResizeWidget.getTopLeftHandle().addListener(resizeFourArrowListener);
+        previewResizeWidget.getBottomRightHandle().addListener(resizeFourArrowListener);
+    
+        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_vertical"), 16, 16);
+        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
+        previewResizeWidget.getBottomHandle().addListener(resizeFourArrowListener);
+        previewResizeWidget.getTopHandle().addListener(resizeFourArrowListener);
+    
+        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_horizontal"), 16, 16);
+        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
+        previewResizeWidget.getLeftHandle().addListener(resizeFourArrowListener);
+        previewResizeWidget.getRightHandle().addListener(resizeFourArrowListener);
     }
 
     public void populate() {
@@ -2025,7 +2051,7 @@ public class RootTable extends Table {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                         previewProperties.put("size", previewSizeSelectBox.getSelectedIndex());
-                        if (previewSizeSelectBox.getSelectedIndex() != 7) {
+                        if (previewSizeSelectBox.getSelectedIndex() != 8) {
                             refreshPreview();
                         }
                     }
@@ -2288,6 +2314,12 @@ public class RootTable extends Table {
                                 previewSizeSelectBox.setItems(DEFAULT_SIZES);
                                 break;
                             case (6):
+                                previewResizeWidget.setActor(widget);
+                                previewResizeWidget.setTouchable(Touchable.enabled);
+                                previewTable.add(previewResizeWidget).grow();
+                                previewSizeSelectBox.setItems(DEFAULT_SIZES);
+                                break;
+                            case (7):
                                 Actor addWidget = widget;
                                 TraversalTextField widthField = new TraversalTextField("", getSkin());
                                 TraversalTextField heightField = new TraversalTextField("", getSkin());
@@ -2303,7 +2335,7 @@ public class RootTable extends Table {
                                             previewProperties.put("sizeX", Integer.parseInt(widthField.getText()));
                                             previewProperties.put("sizeY", Integer.parseInt(heightField.getText()));
                                             previewSizeSelectBox.setItems(items);
-                                            previewSizeSelectBox.setSelectedIndex(7);
+                                            previewSizeSelectBox.setSelectedIndex(8);
                                         } else {
                                             previewSizeSelectBox.setSelectedIndex(1);
                                         }
@@ -2343,7 +2375,7 @@ public class RootTable extends Table {
                                 dialog.show(stage);
                                 stage.setKeyboardFocus(widthField);
                                 break;
-                            case (7):
+                            case (8):
                                 previewTable.add(widget).size((int) previewProperties.get("sizeX"), (int) previewProperties.get("sizeY"));
                                 break;
                         }

@@ -1,6 +1,7 @@
 ### Skin Composer Version 46 ###
 * Added CrushMode options to TenPatch.
 * Added resizable preview to the "More Settings" dialog of TenPatch.
+* Added Free Transform size option to the preview properties of widgets.
 
 ### Skin Composer Version 45 ###
 * Added commandline option -swingfd to use swing.JFileChooser for platforms that can't use Tiny File Dialogs.
