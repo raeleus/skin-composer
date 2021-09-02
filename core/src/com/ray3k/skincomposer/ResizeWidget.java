@@ -639,6 +639,7 @@ public class ResizeWidget extends Table {
         
         if (style.foreground != null) {
             foreground = new Image(style.foreground);
+            foreground.setTouchable(Touchable.disabled);
             foreground.setScaling(Scaling.stretch);
         } else {
             foreground = null;
