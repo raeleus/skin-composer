@@ -11,12 +11,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 import com.ray3k.stripe.PopTableClickListener;
+import org.lwjgl.system.CallbackI.S;
+
 import static com.ray3k.skincomposer.Main.*;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
@@ -80,9 +83,10 @@ public class ImageListeners {
     }
     
     public static EventListener imageScalingListener(final DialogSceneComposerEvents events, SimActor simActor) {
+        var scalingNames = new Array<>(new String[] {"none", "fill", "fillX", "fillY", "fit", "stretch", "stretchX", "stretchY"});
         var simImage = (DialogSceneComposerModel.SimImage) simActor;
-        var selectBox = new SelectBox<Scaling>(skin, "scene");
-        selectBox.setItems(Scaling.none, Scaling.fill, Scaling.fillX, Scaling.fillY, Scaling.fit, Scaling.stretch, Scaling.stretchX, Scaling.stretchY);
+        var selectBox = new SelectBox<String>(skin, "scene");
+        selectBox.setItems(scalingNames);
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ESCAPE, popTable::hide);

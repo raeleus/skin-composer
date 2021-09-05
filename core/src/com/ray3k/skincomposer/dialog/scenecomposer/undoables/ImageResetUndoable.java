@@ -10,7 +10,7 @@ public class ImageResetUndoable implements SceneComposerUndoable {
     private DialogSceneComposer dialog;
     private String previousName;
     private DrawableData previousDrawable;
-    private Scaling previousScaling;
+    private String previousScaling;
     
     public ImageResetUndoable() {
         dialog = DialogSceneComposer.dialog;

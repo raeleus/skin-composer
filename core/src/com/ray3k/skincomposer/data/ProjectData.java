@@ -30,7 +30,9 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3FileHandle;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Json.Serializer;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.DrawableData.DrawableType;
 import com.ray3k.skincomposer.data.JsonData.ExportFormat;
@@ -38,6 +40,7 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimRootGroup;
 import com.ray3k.skincomposer.utils.Utils;
 
+import java.lang.reflect.Field;
 import java.util.Iterator;
 
 import static com.ray3k.skincomposer.Main.*;
@@ -635,6 +638,54 @@ public class ProjectData implements Json.Serializable {
         }
     
         loadedVersion = jsonValue.getString("version", "none");
+        json.setSerializer(Scaling.class, new Serializer<>() {
+            @Override
+            public void write(Json json, Scaling object, Class knownType) {
+                if (object == Scaling.fit) {
+                    json.writeValue("fit");
+                } else if (object == Scaling.fill) {
+                    json.writeValue("fill");
+                } else if (object == Scaling.fillX) {
+                    json.writeValue("fillX");
+                } else if (object == Scaling.fillY) {
+                    json.writeValue("fillY");
+                } else if (object == Scaling.stretch) {
+                    json.writeValue("stretch");
+                } else if (object == Scaling.stretchX) {
+                    json.writeValue("stretchX");
+                } else if (object == Scaling.stretchY) {
+                    json.writeValue("stretchY");
+                } else if (object == Scaling.none) {
+                    json.writeValue("none");
+                } else {
+                    json.writeValue("stretch");
+                }
+            }
+    
+            @Override
+            public Scaling read(Json json, JsonValue jsonData, Class type) {
+                switch (jsonData.asString()) {
+                    case "fit":
+                        return Scaling.fit;
+                    case "fill":
+                        return Scaling.fill;
+                    case "fillX":
+                        return Scaling.fillX;
+                    case "fillY":
+                        return Scaling.fillY;
+                    case "stretch":
+                        return Scaling.stretch;
+                    case "stretchX":
+                        return Scaling.stretchX;
+                    case "stretchY":
+                        return Scaling.stretchY;
+                    case "none":
+                        return Scaling.none;
+                    default:
+                        return Scaling.stretch;
+                }
+            }
+        });
         DialogSceneComposerModel.rootActor = json.readValue("sceneComposer", SimRootGroup.class, jsonValue);
     }
 

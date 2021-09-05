@@ -611,7 +611,7 @@ public class DialogSceneComposerEvents {
         processUndoable(new ImageResetUndoable());
    }
    
-   public void imageScaling(Scaling scaling) {
+   public void imageScaling(String scaling) {
         processUndoable(new ImageScalingUndoable(scaling));
    }
    

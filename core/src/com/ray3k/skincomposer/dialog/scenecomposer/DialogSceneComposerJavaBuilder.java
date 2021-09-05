@@ -359,7 +359,7 @@ public class DialogSceneComposerJavaBuilder {
             if (image.name != null) builder.addStatement("$L.setName($S)", variableName, image.name);
             if (image.touchable != Touchable.enabled)  builder.addStatement("$L.setTouchable($L)", variableName, image.touchable);
             if (!image.visible) builder.addStatement("$L.setTouchable($L)", variableName, image.visible);
-            if (image.scaling != null && image.scaling != Scaling.stretch) builder.addStatement("$L.setScaling($T.$L)", variableName, classNameGetter.get(Scaling.class), image.scaling.name());
+            if (image.scaling != null && !image.scaling.equals("stretch")) builder.addStatement("$L.setScaling($T.$L)", variableName, classNameGetter.get(Scaling.class), image.scaling);
     
             return new WidgetNamePair(builder.build(), variableName);
         } else if (actor instanceof SimImageButton) {

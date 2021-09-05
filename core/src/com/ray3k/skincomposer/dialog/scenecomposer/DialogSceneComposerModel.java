@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.ray3k.skincomposer.Main;
@@ -104,6 +105,7 @@ public class DialogSceneComposerModel {
         json.setSerializer(DrawableData.class, new Json.Serializer<>() {
             @Override
             public void write(Json json, DrawableData object, Class knownType) {
+                System.out.println("drawable");
                 json.writeValue(object.name);
             }
 
@@ -115,6 +117,7 @@ public class DialogSceneComposerModel {
         json.setSerializer(StyleData.class, new Json.Serializer<>() {
             @Override
             public void write(Json json, StyleData object, Class knownType) {
+                System.out.println("style");
                 json.writeObjectStart();
                 json.writeValue("clazz", object.clazz.getName());
                 json.writeValue("name", object.name);
@@ -593,7 +596,9 @@ public class DialogSceneComposerModel {
             var simImage = (SimImage) simActor;
             if (simImage.drawable != null) {
                 var image = new Image(atlasData.getDrawablePairs().get(simImage.drawable));
-                image.setScaling(simImage.scaling);
+                try {
+                    image.setScaling((Scaling) Scaling.class.getField(simImage.scaling).get(null));
+                } catch (Exception e) {}
                 actor = image;
             } else if (dialog.view == View.EDIT) {
                 var container = new Container();
@@ -1516,7 +1521,7 @@ public class DialogSceneComposerModel {
     public static class SimImage extends SimActor implements SimNamed, SimTouchable, SimVisible {
         public String name;
         public DrawableData drawable;
-        public Scaling scaling = Scaling.stretch;
+        public String scaling = "stretch";
         public Touchable touchable = Touchable.enabled;
         public boolean visible = true;
     
@@ -1542,7 +1547,7 @@ public class DialogSceneComposerModel {
         public void reset() {
             name = null;
             drawable = null;
-            scaling  = Scaling.stretch;
+            scaling  = "stretch";
             touchable = Touchable.enabled;
             visible = true;
         }

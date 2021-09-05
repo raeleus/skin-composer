@@ -6,11 +6,11 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 
 public class ImageScalingUndoable implements SceneComposerUndoable {
     private DialogSceneComposerModel.SimImage image;
-    private Scaling scaling;
-    private Scaling previousScaling;
+    private String scaling;
+    private String previousScaling;
     private DialogSceneComposer dialog;
     
-    public ImageScalingUndoable(Scaling scaling) {
+    public ImageScalingUndoable(String scaling) {
         this.scaling = scaling;
         dialog = DialogSceneComposer.dialog;
         image = (DialogSceneComposerModel.SimImage) dialog.simActor;
