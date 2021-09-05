@@ -32,7 +32,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -45,11 +44,15 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.Scaling;
-import com.ray3k.skincomposer.*;
+import com.ray3k.skincomposer.FilesDroppedListener;
+import com.ray3k.skincomposer.ResizeFourArrowListener;
+import com.ray3k.skincomposer.StageResizeListener;
+import com.ray3k.skincomposer.TenPatchWidget;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.PopTable;
+import com.ray3k.stripe.ResizeWidget;
 import com.ray3k.tenpatch.TenPatchDrawable;
 import com.ray3k.tenpatch.TenPatchDrawable.CrushMode;
 
@@ -558,7 +561,8 @@ public class DialogTenPatch extends Dialog {
         var resizer = new ResizeWidget(null, skin);
         resizer.setName("resizer");
         resizer.setTouchable(Touchable.enabled);
-        resizer.setResizeFromCenter(true);
+        resizer.setResizingFromCenter(true);
+        resizer.setAllowDragging(false);
         
         var cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
         var resizeFourArrowListener = new ResizeFourArrowListener(cursor);

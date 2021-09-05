@@ -40,11 +40,14 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Scaling;
-import com.ray3k.skincomposer.*;
+import com.ray3k.skincomposer.FilesDroppedListener;
+import com.ray3k.skincomposer.NinePatchWidget;
+import com.ray3k.skincomposer.ResizeFourArrowListener;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.stripe.ResizeWidget;
+import com.ray3k.stripe.Spinner;
 
 import java.io.File;
 import java.util.Locale;
@@ -676,7 +679,7 @@ public class Dialog9Patch extends Dialog {
             table.setBackground(new NinePatchDrawable(previewZoomed));
 
         }
-        resizer.setResizeFromCenter(true);
+        resizer.setResizingFromCenter(true);
         resizer.getBottomLeftHandle().addListener(neResizeListener);
         resizer.getBottomRightHandle().addListener(nwResizeListener);
         resizer.getTopLeftHandle().addListener(nwResizeListener);

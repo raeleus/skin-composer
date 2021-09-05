@@ -62,11 +62,8 @@ import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.ProjectData.RecentFile;
 import com.ray3k.skincomposer.dialog.DialogColorPicker;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.stripe.*;
 import com.ray3k.stripe.DraggableList.DraggableListListener;
-import com.ray3k.stripe.DraggableSelectBox;
-import com.ray3k.stripe.Spinner;
-import com.ray3k.stripe.StripeMenu;
-import com.ray3k.stripe.StripeMenuBar;
 import com.ray3k.stripe.StripeMenuBar.KeyboardShortcut;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
@@ -140,7 +137,8 @@ public class RootTable extends Table {
         previewResizeWidget = new ResizeWidget(null, skin);
         previewResizeWidget.setName("resizer");
         previewResizeWidget.setTouchable(Touchable.enabled);
-        previewResizeWidget.setResizeFromCenter(true);
+        previewResizeWidget.setResizingFromCenter(true);
+        previewResizeWidget.setAllowDragging(false);
     
         var cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
         var resizeFourArrowListener = new ResizeFourArrowListener(cursor);

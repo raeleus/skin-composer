@@ -11,11 +11,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.ResizeFourArrowListener;
-import com.ray3k.skincomposer.ResizeWidget;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.PopTable;
+import com.ray3k.stripe.ResizeWidget;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
@@ -52,7 +52,8 @@ public class DialogTenPatchSettings extends PopTable {
         var resizer = new ResizeWidget(null, skin);
         resizer.setName("resizer");
         resizer.setTouchable(Touchable.enabled);
-        resizer.setResizeFromCenter(true);
+        resizer.setResizingFromCenter(true);
+        resizer.setAllowDragging(false);
     
         var cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
         var resizeFourArrowListener = new ResizeFourArrowListener(cursor);
