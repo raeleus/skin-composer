@@ -987,7 +987,7 @@ public class DialogDrawables extends Dialog {
         DialogColors dialog = new DialogColors(main, (StyleProperty) null, true, (colorData, pressedCancel) -> {
             if (colorData != null) {
                 final DrawableData tintedDrawable = new DrawableData(drawableData.file);
-                tintedDrawable.type = Utils.isNinePatch(drawableData.file.name()) ? DrawableType.NINE_PATCH : DrawableType.TINTED_FROM_COLOR_DATA;
+                tintedDrawable.type = DrawableType.TINTED_FROM_COLOR_DATA;
                 tintedDrawable.tintName = colorData.getName();
 
                 //Fix background color for new, tinted drawable
@@ -2116,7 +2116,7 @@ public class DialogDrawables extends Dialog {
             public void selected(Color color) {
                 if (color != null) {
                     final DrawableData tintedDrawable = new DrawableData(drawableData.file);
-                    tintedDrawable.type = Utils.isNinePatch(drawableData.file.name()) ? DrawableType.NINE_PATCH : DrawableType.TINTED;
+                    tintedDrawable.type = DrawableType.TINTED;
                     tintedDrawable.tint = color;
                     
                     //Fix background color for new, tinted drawable

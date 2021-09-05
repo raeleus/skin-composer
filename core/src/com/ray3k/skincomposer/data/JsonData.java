@@ -725,16 +725,16 @@ public class JsonData implements Json.Serializable {
                 case PIXEL:
                     pixelDrawables.add(drawable);
                     break;
-            }
-            
-            if (!drawable.tiled  && drawable.tint == null && drawable.tintName == null && drawable.tenPatchData == null) {
-                if (drawable.file != null && (!MathUtils.isEqual(drawable.minWidth, -1f) || !MathUtils.isEqual(drawable.minHeight, -1f))) {
-                    if (drawable.file.name().toLowerCase(Locale.ROOT).endsWith(".9.png")) {
-                        ninePatchDrawables.add(drawable);
-                    } else {
+                case TEXTURE:
+                    //only include if minSize has been modified
+                    if (!MathUtils.isEqual(drawable.minWidth, -1f) || !MathUtils.isEqual(drawable.minHeight, -1f)) {
                         textureRegionDrawables.add(drawable);
                     }
-                }
+                case NINE_PATCH:
+                    //only include if minSize has been modified
+                    if (!MathUtils.isEqual(drawable.minWidth, -1f) || !MathUtils.isEqual(drawable.minHeight, -1f)) {
+                        ninePatchDrawables.add(drawable);
+                    }
             }
         }
         
@@ -759,13 +759,26 @@ public class JsonData implements Json.Serializable {
             var className = NinePatchDrawable.class.getName();
             json.writeObjectStart(className);
             for (var drawable : ninePatchDrawables) {
-                var name = drawable.file.name().replaceAll("\\.9.*$", "");
+                var name = drawable.name;
                 json.writeObjectStart(name);
-                json.writeValue("patch", name);
+                json.writeValue("patch", drawable.file.name().replaceAll("\\.9.*$", ""));
                 if (!MathUtils.isEqual(drawable.minWidth, -1)) json.writeValue("minWidth", drawable.minWidth);
                 else json.writeValue("minWidth", Utils.imageDimensions(drawable.file).x);
                 if (!MathUtils.isEqual(drawable.minHeight, -1)) json.writeValue("minHeight", drawable.minHeight);
                 else json.writeValue("minHeight", Utils.imageDimensions(drawable.file).y);
+                if (drawable.tintName != null) json.writeValue("color", drawable.tintName);
+                if (drawable.tint != null) {
+                    json.writeObjectStart("color");
+                    if (projectData.isExportingHex()) {
+                        json.writeValue("hex", drawable.tint.toString());
+                    } else {
+                        json.writeValue("r", drawable.tint.r);
+                        json.writeValue("g", drawable.tint.g);
+                        json.writeValue("b", drawable.tint.b);
+                        json.writeValue("a", drawable.tint.a);
+                    }
+                    json.writeObjectEnd();
+                }
                 
                 var atlasDrawable = atlasData.getDrawablePairs().get(drawable);
                 json.writeValue("leftWidth", atlasDrawable.getLeftWidth());

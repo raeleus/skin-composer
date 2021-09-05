@@ -2,6 +2,7 @@
 * Added CrushMode options to TenPatch.
 * Added resizable preview to the "More Settings" dialog of TenPatch.
 * Added Free Transform size option to the preview properties of widgets.
+* Fixed Tinted NinePatches not being exported.
 * Minor UI changes and bug fixes.
 
 ### Skin Composer Version 45 ###
