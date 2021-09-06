@@ -3,6 +3,7 @@
 * Added resizable preview to the "More Settings" dialog of TenPatch.
 * Added Free Transform size option to the preview properties of widgets.
 * Fixed Tinted NinePatches not being exported.
+* Fixed Tinted NinePatches being displayed in the preview as TextureRegions.
 * Minor UI changes and bug fixes.
 
 ### Skin Composer Version 45 ###

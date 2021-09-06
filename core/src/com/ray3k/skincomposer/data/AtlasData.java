@@ -457,15 +457,34 @@ public class AtlasData implements Json.Serializable {
                     }
                     if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
                     if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
+                } else if (data.type == DrawableType.TINTED) {
+                    String name = DrawableData.proper(data.file.name());
+                    if (Utils.isNinePatch(data.file.name())) {
+                        NinePatchDrawable ninePatchDrawable = new NinePatchDrawable(atlas.createPatch(name));
+                        drawable = ninePatchDrawable.tint(data.tint);
+                    }
+                    else {
+                        SpriteDrawable spriteDrawable = new SpriteDrawable(atlas.createSprite(name));
+                        drawable = spriteDrawable.tint(data.tint);
+                    }
+                    if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
+                    if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
+                } else if (data.type == DrawableType.TINTED_FROM_COLOR_DATA) {
+                    String name = DrawableData.proper(data.file.name());
+                    if (Utils.isNinePatch(data.file.name())) {
+                        NinePatchDrawable ninePatchDrawable = new NinePatchDrawable(atlas.createPatch(name));
+                        drawable = ninePatchDrawable.tint(jsonData.getColorByName(data.tintName).color);
+                    }
+                    else {
+                        SpriteDrawable spriteDrawable = new SpriteDrawable(atlas.createSprite(name));
+                        drawable = spriteDrawable.tint(jsonData.getColorByName(data.tintName).color);
+                    }
+                    if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
+                    if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
                 } else {
                     String name = data.file.name();
                     name = DrawableData.proper(name);
                     drawable = new SpriteDrawable(atlas.createSprite(name));
-                    if (data.tint != null) {
-                        drawable = ((SpriteDrawable) drawable).tint(data.tint);
-                    } else if (data.tintName != null) {
-                        drawable = ((SpriteDrawable) drawable).tint(jsonData.getColorByName(data.tintName).color);
-                    }
                     if (!MathUtils.isEqual(data.minWidth, -1)) drawable.setMinWidth(data.minWidth);
                     if (!MathUtils.isEqual(data.minHeight, -1)) drawable.setMinHeight(data.minHeight);
                 }
