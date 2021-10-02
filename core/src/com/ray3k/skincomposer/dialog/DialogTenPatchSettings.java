@@ -1,6 +1,5 @@
 package com.ray3k.skincomposer.dialog;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -34,6 +33,7 @@ public class DialogTenPatchSettings extends PopTable {
         
         setKeepCenteredInWindow(true);
         setKeepSizedWithinStage(true);
+        setModal(true);
         
         var root = new Table();
         root.pad(10);
@@ -149,7 +149,7 @@ public class DialogTenPatchSettings extends PopTable {
                     if (colorData == null) {
                         workingData.tenPatchData.colorName = null;
                         ((ImageButton) actor).getCells().peek().getActor().setColor(Color.WHITE);
-                        preview.setColor(null);
+                        preview.setColor(Color.WHITE);
                     } else {
                         workingData.tenPatchData.colorName = colorData.getName();
                         ((ImageButton) actor).getCells().peek().getActor().setColor(colorData.color);
@@ -181,7 +181,7 @@ public class DialogTenPatchSettings extends PopTable {
                     if (colorData == null) {
                         workingData.tenPatchData.color2Name = null;
                         ((ImageButton) actor).getCells().peek().getActor().setColor(Color.WHITE);
-                        preview.setColor2(null);
+                        preview.setColor2(Color.WHITE);
                     } else {
                         workingData.tenPatchData.color2Name = colorData.getName();
                         ((ImageButton) actor).getCells().peek().getActor().setColor(colorData.color);
@@ -211,7 +211,7 @@ public class DialogTenPatchSettings extends PopTable {
                     if (colorData == null) {
                         workingData.tenPatchData.color3Name = null;
                         ((ImageButton) actor).getCells().peek().getActor().setColor(Color.WHITE);
-                        preview.setColor3(null);
+                        preview.setColor3(Color.WHITE);
                     } else {
                         workingData.tenPatchData.color3Name = colorData.getName();
                         ((ImageButton) actor).getCells().peek().getActor().setColor(colorData.color);
@@ -242,7 +242,7 @@ public class DialogTenPatchSettings extends PopTable {
                     if (colorData == null) {
                         workingData.tenPatchData.color1Name = null;
                         ((ImageButton) actor).getCells().peek().getActor().setColor(Color.WHITE);
-                        preview.setColor1(null);
+                        preview.setColor1(Color.WHITE);
                     } else {
                         workingData.tenPatchData.color1Name = colorData.getName();
                         ((ImageButton) actor).getCells().peek().getActor().setColor(colorData.color);
@@ -272,7 +272,7 @@ public class DialogTenPatchSettings extends PopTable {
                     if (colorData == null) {
                         workingData.tenPatchData.color4Name = null;
                         ((ImageButton) actor).getCells().peek().getActor().setColor(Color.WHITE);
-                        preview.setColor4(null);
+                        preview.setColor4(Color.WHITE);
                     } else {
                         workingData.tenPatchData.color4Name = colorData.getName();
                         ((ImageButton) actor).getCells().peek().getActor().setColor(colorData.color);
@@ -413,8 +413,9 @@ public class DialogTenPatchSettings extends PopTable {
         root.row();
         table = new Table();
         table.pad(10);
-        table.defaults().uniform().fill();
+        root.add(table);
         
+        table.defaults().uniform().fill().space(10);
         var textButton = new TextButton("OK", skin);
         table.add(textButton);
         textButton.addListener(handListener);
@@ -441,6 +442,8 @@ public class DialogTenPatchSettings extends PopTable {
     }
     
     protected void result(Object object) {
+        hide();
+        
         if ((Boolean) object) {
             drawableData.set(workingData);
             fire(new DialogTenPatchSettingsEvent(drawableData));
