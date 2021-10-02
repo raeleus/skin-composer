@@ -64,7 +64,7 @@ public class DialogPathErrors extends Dialog {
         
         setFillParent(true);
         
-        key(Keys.ENTER, true);
+        key(Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true);
         key(Keys.ESCAPE, false);
         Table table = getContentTable();
         table.defaults().pad(10.0f);

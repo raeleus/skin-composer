@@ -42,7 +42,7 @@ public class DialogError extends Dialog {
         getContentTable().getCells().first().pad(10.0f);
         
         getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
-        button("OK", true).key(Keys.ENTER, true);
+        button("OK", true).key(Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true);
         button("Cancel", false).key(Keys.ESCAPE, false);
         getButtonTable().getCells().first().getActor().addListener(handListener);
         getButtonTable().getCells().get(1).getActor().addListener(handListener);

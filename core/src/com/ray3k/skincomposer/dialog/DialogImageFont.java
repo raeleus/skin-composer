@@ -120,7 +120,7 @@ public class DialogImageFont extends Dialog {
         addListener(new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
-                if (keycode == Keys.ENTER) {
+                if (keycode == Keys.ENTER || keycode == Keys.NUMPAD_ENTER) {
                     if (getStage().getKeyboardFocus() != findActor("preview")) {
                         var textButton = ((TextButton) findActor("generate"));
                         if (!textButton.isDisabled()) {
@@ -955,7 +955,7 @@ public class DialogImageFont extends Dialog {
             }
         });
         
-        dialog.key(Keys.ESCAPE, false).key(Keys.ENTER, true);
+        dialog.key(Keys.ESCAPE, false).key(Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true);
         
         textButton = new TextButton("Turn ON Kern Pairs", skin);
         dialog.button(textButton, true);

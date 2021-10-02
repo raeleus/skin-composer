@@ -223,7 +223,7 @@ public class DialogDrawablesFilter extends Dialog {
         button(textButton, Selection.CANCEL);
         textButton.addListener(handListener);
     
-        key(Keys.ENTER, Selection.APPLY).key(Keys.ESCAPE, Selection.CANCEL);
+        key(Keys.ENTER, Selection.APPLY).key(Keys.NUMPAD_ENTER, Selection.APPLY).key(Keys.ESCAPE, Selection.CANCEL);
         updateApplyButton();
     }
 

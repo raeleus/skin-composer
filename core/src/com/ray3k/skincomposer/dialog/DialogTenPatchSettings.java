@@ -439,6 +439,7 @@ public class DialogTenPatchSettings extends PopTable {
         key(Keys.ESCAPE, () -> result(false));
         
         key(Keys.ENTER, () -> result(true));
+        key(Keys.NUMPAD_ENTER, () -> result(true));
     }
     
     protected void result(Object object) {

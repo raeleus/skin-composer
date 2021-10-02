@@ -114,7 +114,7 @@ public class DialogWarnings extends Dialog {
         }
         
         getButtonTable().defaults().minWidth(100.0f).pad(10.0f);
-        button("OK", false).key(Keys.ESCAPE, false).key(Keys.ENTER, false);
+        button("OK", false).key(Keys.ESCAPE, false).key(Keys.ENTER, false).key(Keys.NUMPAD_ENTER, false);
         button("Export to Text File", true);
         getButtonTable().getCells().first().getActor().addListener(handListener);
         

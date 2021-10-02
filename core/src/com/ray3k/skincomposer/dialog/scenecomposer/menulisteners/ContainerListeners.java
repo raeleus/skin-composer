@@ -60,7 +60,7 @@ public class ContainerListeners {
                 textField.addListener(new InputListener() {
                     @Override
                     public boolean keyDown(InputEvent event, int keycode) {
-                        if (keycode == Input.Keys.ENTER) {
+                        if (keycode == Input.Keys.ENTER || keycode == Keys.NUMPAD_ENTER) {
                             popTable.hide();
                             return true;
                         } else {
@@ -136,6 +136,7 @@ public class ContainerListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.NUMPAD_ENTER, popTable::hide);
                 getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
@@ -285,6 +286,7 @@ public class ContainerListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.NUMPAD_ENTER, popTable::hide);
                 getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
@@ -625,8 +627,9 @@ public class ContainerListeners {
             textButton = new TextButton("Cancel", skin, "scene-med");
             dialog.button(textButton, false);
             textButton.addListener(handListener);
+    
+            dialog.key(Input.Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true).key(Input.Keys.SPACE, true);
             
-            dialog.key(Input.Keys.ENTER, true).key(Input.Keys.SPACE, true);
             dialog.key(Input.Keys.ESCAPE, false);
             
             dialog.show(dialogSceneComposer.getStage());

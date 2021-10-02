@@ -1034,7 +1034,7 @@ public class DialogDrawables extends Dialog {
                 approveDialog.addCaptureListener(new InputListener() {
                     @Override
                     public boolean keyDown(InputEvent event, int keycode2) {
-                        if (keycode2 == Input.Keys.ENTER) {
+                        if (keycode2 == Input.Keys.ENTER || keycode2 == Keys.NUMPAD_ENTER) {
                             if (!button.isDisabled()) {
                                 tintedDrawable.name = textField.getText();
                                 atlasData.getDrawables().add(tintedDrawable);
@@ -1496,7 +1496,7 @@ public class DialogDrawables extends Dialog {
         dialog.button("Cancel", false);
         dialog.getButtonTable().getCells().first().getActor().addListener(handListener);
         dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
-        dialog.key(Input.Keys.ENTER, true);
+        dialog.key(Input.Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true);
         dialog.key(Input.Keys.ESCAPE, false);
         dialog.show(getStage());
     }
@@ -2049,7 +2049,7 @@ public class DialogDrawables extends Dialog {
         dialog.button("Cancel", false);
         dialog.getButtonTable().getCells().first().getActor().addListener(handListener);
         dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
-        dialog.key(Input.Keys.ENTER, true);
+        dialog.key(Input.Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true);
         dialog.key(Input.Keys.ESCAPE, false);
         dialog.show(getStage());
     }
@@ -2162,7 +2162,7 @@ public class DialogDrawables extends Dialog {
                     dialog.addCaptureListener(new InputListener() {
                         @Override
                         public boolean keyDown(InputEvent event, int keycode2) {
-                            if (keycode2 == Input.Keys.ENTER) {
+                            if (keycode2 == Input.Keys.ENTER || keycode2 == Keys.NUMPAD_ENTER) {
                                 if (!button.isDisabled()) {
                                     tintedDrawable.name = textField.getText();
                                     atlasData.getDrawables().add(tintedDrawable);

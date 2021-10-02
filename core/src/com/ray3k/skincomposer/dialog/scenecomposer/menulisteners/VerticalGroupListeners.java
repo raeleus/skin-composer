@@ -60,7 +60,7 @@ public class VerticalGroupListeners {
                 textField.addListener(new InputListener() {
                     @Override
                     public boolean keyDown(InputEvent event, int keycode) {
-                        if (keycode == Input.Keys.ENTER) {
+                        if (keycode == Input.Keys.ENTER || keycode == Keys.NUMPAD_ENTER) {
                             popTable.hide();
                             return true;
                         } else {
@@ -176,6 +176,7 @@ public class VerticalGroupListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.NUMPAD_ENTER, popTable::hide);
                 getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
@@ -309,6 +310,7 @@ public class VerticalGroupListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.NUMPAD_ENTER, popTable::hide);
                 getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             

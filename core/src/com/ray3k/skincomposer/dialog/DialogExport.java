@@ -172,7 +172,7 @@ public class DialogExport extends Dialog {
         button(textButton, false);
         textButton.addListener(handListener);
         
-        key(Keys.ENTER, true).key(Keys.ESCAPE, false);
+        key(Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true).key(Keys.ESCAPE, false);
     }
     
     private void showFileBrowser() {

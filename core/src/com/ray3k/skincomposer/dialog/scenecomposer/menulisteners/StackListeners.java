@@ -59,7 +59,7 @@ public class StackListeners {
                 textField.addListener(new InputListener() {
                     @Override
                     public boolean keyDown(InputEvent event, int keycode) {
-                        if (keycode == Input.Keys.ENTER) {
+                        if (keycode == Input.Keys.ENTER || keycode == Keys.NUMPAD_ENTER) {
                             popTable.hide();
                             return true;
                         } else {

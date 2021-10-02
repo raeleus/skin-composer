@@ -86,7 +86,7 @@ public class DialogCustomProperty extends Dialog {
         getContentTable().add(propertyTypeBox).growX().padLeft(10.0f).padRight(10.0f);
 
         getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
-        button("OK", true).key(Keys.ENTER, true);
+        button("OK", true).key(Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true);
         button("Cancel", false).key(Keys.ESCAPE, false);
         
         okButton = (TextButton) getButtonTable().getCells().first().getActor();

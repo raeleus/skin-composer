@@ -55,12 +55,9 @@ public class PopAbout extends PopTable {
     
         setWidth(200);
         
-        key(Keys.ESCAPE,() -> {
-            hide();
-        });
-        key(Keys.ENTER,() -> {
-            hide();
-        });
+        key(Keys.ESCAPE,() -> hide());
+        key(Keys.ENTER,() -> hide());
+        key(Keys.NUMPAD_ENTER,() -> hide());
     }
     
     @Override

@@ -390,7 +390,7 @@ public class DialogFactory {
         dialog.getButtonTable().getCells().first().getActor().addListener(handListener);
         dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
 
-        dialog.key(Input.Keys.ENTER, true).key(Input.Keys.ESCAPE, false);
+        dialog.key(Input.Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true).key(Input.Keys.ESCAPE, false);
 
         dialog.show(stage);
     }
@@ -849,6 +849,7 @@ public class DialogFactory {
         dialog.button("OK");
         dialog.key(Input.Keys.ESCAPE, 0);
         dialog.key(Keys.ENTER, 0);
+        dialog.key(Keys.NUMPAD_ENTER, 0);
         dialog.key(Keys.SPACE, 0);
         dialog.show(stage);
         return dialog;
@@ -885,6 +886,7 @@ public class DialogFactory {
         dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
         dialog.key(Input.Keys.ESCAPE, 1);
         dialog.key(Keys.ENTER, 0);
+        dialog.key(Keys.NUMPAD_ENTER, 0);
         dialog.key(Keys.SPACE, 0);
         dialog.show(stage);
         return dialog;
@@ -924,6 +926,7 @@ public class DialogFactory {
         dialog.getButtonTable().getCells().get(2).getActor().addListener(handListener);
         dialog.key(Input.Keys.ESCAPE, 2);
         dialog.key(Keys.ENTER, 0);
+        dialog.key(Keys.NUMPAD_ENTER, 0);
         dialog.key(Keys.SPACE, 0);
         dialog.show(stage);
         return dialog;
@@ -968,7 +971,7 @@ public class DialogFactory {
         dialog.button(button, false);
         button.addListener(handListener);
         
-        dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
+        dialog.key(Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true).key(Keys.ESCAPE, false);
         
         dialog.show(stage);
         stage.setKeyboardFocus(textField);
@@ -1170,7 +1173,7 @@ public class DialogFactory {
         dialog.button(textButton);
         textButton.addListener(handListener);
         
-        dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
+        dialog.key(Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true).key(Keys.ESCAPE, false);
         
         dialog.show(stage);
     }
@@ -1262,7 +1265,7 @@ public class DialogFactory {
         dialog.button(button, false);
         button.addListener(handListener);
         
-        dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
+        dialog.key(Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true).key(Keys.ESCAPE, false);
         
         dialog.show(stage);
         stage.setKeyboardFocus(textField);

@@ -140,7 +140,7 @@ public class DialogImport extends Dialog {
         button(textButton, Result.CANCEL);
         textButton.addListener(handListener);
         
-        key(Keys.ENTER, Result.CURRENT).key(Keys.ESCAPE, Result.CANCEL);
+        key(Keys.ENTER, Result.CURRENT).key(Keys.NUMPAD_ENTER, Result.CURRENT).key(Keys.ESCAPE, Result.CANCEL);
     }
 
     @Override

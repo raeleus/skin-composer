@@ -442,6 +442,7 @@ public class CellListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.NUMPAD_ENTER, popTable::hide);
                 getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
@@ -957,6 +958,7 @@ public class CellListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.NUMPAD_ENTER, popTable::hide);
                 getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             
@@ -1006,6 +1008,7 @@ public class CellListeners {
         var popTableClickListener = new PopTableClickListener(skin) {
             {
                 getPopTable().key(Keys.ENTER, popTable::hide);
+                getPopTable().key(Keys.NUMPAD_ENTER, popTable::hide);
                 getPopTable().key(Keys.ESCAPE, popTable::hide);
             }
             

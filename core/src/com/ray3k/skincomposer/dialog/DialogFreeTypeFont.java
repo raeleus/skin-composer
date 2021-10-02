@@ -169,7 +169,7 @@ public class DialogFreeTypeFont extends Dialog {
         
         updateDisabledFields();
         
-        key(Keys.ESCAPE, false).key(Keys.ENTER, true);
+        key(Keys.ESCAPE, false).key(Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true);
         
         listeners = new Array<>();
         
@@ -1354,7 +1354,7 @@ public class DialogFreeTypeFont extends Dialog {
         });
         
 
-        dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
+        dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false).key(Keys.NUMPAD_ENTER, true);
         dialog.getButtonTable().defaults().minWidth(100.0f);
         textButton = new TextButton("OK", skin);
         dialog.button(textButton, true);

@@ -2,6 +2,7 @@ package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.*;
@@ -143,7 +144,7 @@ public class DialogTenPatchAnimation extends Dialog {
         spinner.getTextField().addListener(new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
-                if (keycode == Input.Keys.ENTER || keycode == Input.Keys.TAB) {
+                if (keycode == Input.Keys.ENTER || keycode == Keys.NUMPAD_ENTER || keycode == Input.Keys.TAB) {
                     getStage().setKeyboardFocus(DialogTenPatchAnimation.this);
                 }
                 return super.keyDown(event, keycode);
@@ -323,7 +324,7 @@ public class DialogTenPatchAnimation extends Dialog {
         button(textButton, false);
         textButton.addListener(handListener);
         
-        key(Input.Keys.ESCAPE, false).key(Input.Keys.ENTER, true);
+        key(Input.Keys.ESCAPE, false).key(Input.Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true);
         addListener(new InputListener() {
             @Override
             public boolean keyUp(InputEvent event, int keycode) {

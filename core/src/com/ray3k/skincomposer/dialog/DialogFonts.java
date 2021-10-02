@@ -1019,7 +1019,7 @@ public class DialogFonts extends Dialog {
             textButton.addListener(handListener);
             dialog.button(textButton, false);
             
-            dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
+            dialog.key(Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true).key(Keys.ESCAPE, false);
             
             dialog.show(getStage());
         }
@@ -1200,7 +1200,7 @@ public class DialogFonts extends Dialog {
         
         dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
         dialog.button("Ok");
-        dialog.key(Keys.ENTER, null).key(Keys.ESCAPE, null);
+        dialog.key(Keys.ENTER, null).key(Keys.NUMPAD_ENTER, null).key(Keys.ESCAPE, null);
         dialog.show(getStage());
     }
 }

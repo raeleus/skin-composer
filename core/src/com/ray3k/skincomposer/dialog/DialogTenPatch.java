@@ -1177,7 +1177,7 @@ public class DialogTenPatch extends Dialog {
         dialog.button(textButton);
         textButton.addListener(handListener);
         
-        dialog.key(Keys.ENTER, true).key(Keys.ESCAPE, false);
+        dialog.key(Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true).key(Keys.ESCAPE, false);
         
         dialog.show(getStage());
         dialog.setWidth(425);

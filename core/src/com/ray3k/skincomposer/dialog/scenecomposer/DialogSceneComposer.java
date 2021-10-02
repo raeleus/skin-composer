@@ -2339,7 +2339,7 @@ public class DialogSceneComposer extends Dialog {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 TextButton textButton = root.findActor("find-button");
-                if (!textButton.isDisabled() && keycode == Keys.ENTER) {
+                if (!textButton.isDisabled() && (keycode == Keys.ENTER || keycode == Keys.NUMPAD_ENTER)) {
                     textButton.setChecked(true);
                     return true;
                 } else {
