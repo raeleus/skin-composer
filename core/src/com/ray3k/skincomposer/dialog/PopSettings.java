@@ -25,6 +25,7 @@ public class PopSettings extends PopTable {
     private boolean exportWarnings;
     private boolean recentFullPath;
     private boolean allowingUpdates;
+    private boolean changedUIscale;
     
     public PopSettings() {
         super(skin, "dialog");
@@ -178,6 +179,7 @@ public class PopSettings extends PopTable {
                 uiScale = (int) slider.getValue();
                 scaleLabel.setText(uiScale + "x");
                 main.resizeUiScale(uiScale, uiScale > 1);
+                changedUIscale = true;
             }
         });
         
@@ -192,6 +194,7 @@ public class PopSettings extends PopTable {
                 slider.setValue(uiScale);
                 scaleLabel.setText(uiScale + "x");
                 main.resizeUiScale(uiScale, uiScale > 1);
+                changedUIscale = true;
             }
         });
         
@@ -343,7 +346,9 @@ public class PopSettings extends PopTable {
     }
     
     private void cancel() {
-        main.resizeUiScale(projectData.getUiScale());
+        if (changedUIscale) {
+            main.resizeUiScale(projectData.getUiScale());
+        }
         hide();
     }
 }
