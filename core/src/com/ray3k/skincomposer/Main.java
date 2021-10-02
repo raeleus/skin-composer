@@ -58,6 +58,7 @@ import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.FreeTypeSkin;
+import com.ray3k.stripe.ScrollFocusListener;
 import com.ray3k.tenpatch.TenPatchDrawable;
 import space.earlygrey.shapedrawer.GraphDrawer;
 import space.earlygrey.shapedrawer.ShapeDrawer;
