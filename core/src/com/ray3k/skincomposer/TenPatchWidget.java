@@ -48,6 +48,7 @@ import static com.ray3k.skincomposer.Main.skin;
  * @author Raymond
  */
 public class TenPatchWidget extends Stack {
+    private static final float MINIMUM_HANDLE_RANGE = 4;
     private TenPatchWidgetStyle style;
     private TextureRegion textureRegion;
     private Button stretchSwitchButton;
@@ -591,7 +592,15 @@ public class TenPatchWidget extends Stack {
                             for (var index = 0; index < stretchAreas.size && !resizeCursor; index++) {
                                 var handleX = stretchAreas.get(index);
                                 if ((index & 1) == 0) {
-                                    if (x >= MathUtils.floor(handleX * widget.zoomScale + widget.position.x) && x < MathUtils.ceil((handleX + .5f) * widget.zoomScale + widget.position.x)) {
+                                    var min = MathUtils.floor((handleX - .25f) * widget.zoomScale + widget.position.x);
+                                    var max = MathUtils.ceil((handleX + .25f) * widget.zoomScale + widget.position.x);
+                                    
+                                    if (max - min < MINIMUM_HANDLE_RANGE) {
+                                        min = MathUtils.floor((handleX) * widget.zoomScale + widget.position.x - MINIMUM_HANDLE_RANGE / 2f);
+                                        max = MathUtils.floor((handleX) * widget.zoomScale + widget.position.x + MINIMUM_HANDLE_RANGE / 2f);
+                                    }
+                                    
+                                    if (x >= min && x < max) {
                                         resizeCursor = true;
                                         draggingHandle = true;
                                         dragIndex = index;
@@ -600,7 +609,15 @@ public class TenPatchWidget extends Stack {
                                         draggingHandle = false;
                                     }
                                 } else {
-                                    if (x >= MathUtils.floor((handleX + .5f) * widget.zoomScale + widget.position.x) && x < MathUtils.ceil((handleX + 1) * widget.zoomScale + widget.position.x)) {
+                                    var min = MathUtils.floor((handleX + .75f) * widget.zoomScale + widget.position.x);
+                                    var max = MathUtils.ceil((handleX + 1.25f) * widget.zoomScale + widget.position.x);
+    
+                                    if (max - min < MINIMUM_HANDLE_RANGE) {
+                                        min = MathUtils.floor((handleX + 1) * widget.zoomScale + widget.position.x - MINIMUM_HANDLE_RANGE / 2f);
+                                        max = MathUtils.floor((handleX + 1) * widget.zoomScale + widget.position.x + MINIMUM_HANDLE_RANGE / 2f);
+                                    }
+                                    
+                                    if (x >= min && x < max) {
                                         resizeCursor = true;
                                         draggingHandle = true;
                                         dragIndex = index;
@@ -624,7 +641,15 @@ public class TenPatchWidget extends Stack {
                             for (var index = 0; index < stretchAreas.size && !resizeCursor; index++) {
                                 var handleY = stretchAreas.get(index);
                                 if ((index & 1) == 0) {
-                                    if (y >= MathUtils.floor(handleY * widget.zoomScale + widget.position.y) && y < MathUtils.ceil((handleY + .5f) * widget.zoomScale + widget.position.y)) {
+                                    var min = MathUtils.floor((handleY - .25f) * widget.zoomScale + widget.position.y);
+                                    var max = MathUtils.ceil((handleY + .25f) * widget.zoomScale + widget.position.y);
+    
+                                    if (max - min < MINIMUM_HANDLE_RANGE) {
+                                        min = MathUtils.floor((handleY) * widget.zoomScale + widget.position.y - MINIMUM_HANDLE_RANGE / 2f);
+                                        max = MathUtils.floor((handleY) * widget.zoomScale + widget.position.y + MINIMUM_HANDLE_RANGE / 2f);
+                                    }
+                                    
+                                    if (y >= min && y < max) {
                                         resizeCursor = true;
                                         draggingHandle = true;
                                         dragIndex = index;
@@ -633,7 +658,15 @@ public class TenPatchWidget extends Stack {
                                         draggingHandle = false;
                                     }
                                 } else {
-                                    if (y >= MathUtils.floor((handleY + .5f) * widget.zoomScale + widget.position.y) && y < MathUtils.ceil((handleY + 1) * widget.zoomScale + widget.position.y)) {
+                                    var min = MathUtils.floor((handleY + .75f) * widget.zoomScale + widget.position.y);
+                                    var max = MathUtils.ceil((handleY + 1.25f) * widget.zoomScale + widget.position.y);
+    
+                                    if (max - min < MINIMUM_HANDLE_RANGE) {
+                                        min = MathUtils.floor((handleY + 1) * widget.zoomScale + widget.position.y - MINIMUM_HANDLE_RANGE / 2f);
+                                        max = MathUtils.floor((handleY + 1) * widget.zoomScale + widget.position.y + MINIMUM_HANDLE_RANGE / 2f);
+                                    }
+    
+                                    if (y >= min && y < max) {
                                         resizeCursor = true;
                                         draggingHandle = true;
                                         dragIndex = index;
@@ -656,11 +689,27 @@ public class TenPatchWidget extends Stack {
                     } else {
                         var region = widget.textureRegion;
                         if (widget.horizontalMode) {
-                            if (x >= widget.position.x + (widget.tenPatchData.contentLeft - .5f) * widget.zoomScale && x < widget.position.x + (widget.tenPatchData.contentLeft  + .5f) * widget.zoomScale) {
+                            var minLeft = widget.position.x + (widget.tenPatchData.contentLeft - .5f) * widget.zoomScale;
+                            var maxLeft = widget.position.x + (widget.tenPatchData.contentLeft  + .5f) * widget.zoomScale;
+    
+                            if (maxLeft - minLeft < MINIMUM_HANDLE_RANGE) {
+                                minLeft = widget.position.x + (widget.tenPatchData.contentLeft) * widget.zoomScale - MINIMUM_HANDLE_RANGE / 2;
+                                maxLeft = widget.position.x + (widget.tenPatchData.contentLeft) * widget.zoomScale + MINIMUM_HANDLE_RANGE / 2;
+                            }
+    
+                            var minRight = widget.position.x + (region.getRegionWidth() - widget.tenPatchData.contentRight - .5f) * widget.zoomScale;
+                            var maxRight = widget.position.x + (region.getRegionWidth() - widget.tenPatchData.contentRight + .5f) * widget.zoomScale;
+    
+                            if (maxRight - minRight < MINIMUM_HANDLE_RANGE) {
+                                minRight = widget.position.x + (region.getRegionWidth() - widget.tenPatchData.contentRight - .5f) * widget.zoomScale - MINIMUM_HANDLE_RANGE / 2;
+                                maxRight = widget.position.x + (region.getRegionWidth() - widget.tenPatchData.contentRight + .5f) * widget.zoomScale + MINIMUM_HANDLE_RANGE / 2;
+                            }
+                            
+                            if (x >= minLeft && x < maxLeft) {
                                 resizeCursor = true;
                                 draggingHandle = true;
                                 dragIndex = 0;
-                            } else if (x < widget.position.x + (region.getRegionWidth() - widget.tenPatchData.contentRight + .5f) * widget.zoomScale && x >= widget.position.x + (region.getRegionWidth() - widget.tenPatchData.contentRight - .5f) * widget.zoomScale) {
+                            } else if (x >= minRight && x < maxRight) {
                                 resizeCursor = true;
                                 draggingHandle = true;
                                 dragIndex = 1;
@@ -677,11 +726,27 @@ public class TenPatchWidget extends Stack {
                                 numberLabel.setColor(1,1,1,0);
                             }
                         } else {
-                            if (y >= widget.position.y + (widget.tenPatchData.contentBottom - .5f) * widget.zoomScale && y < widget.position.y + (widget.tenPatchData.contentBottom + .5f) * widget.zoomScale) {
+                            var minBottom = widget.position.y + (widget.tenPatchData.contentBottom - .5f) * widget.zoomScale;
+                            var maxBottom = widget.position.y + (widget.tenPatchData.contentBottom  + .5f) * widget.zoomScale;
+    
+                            if (maxBottom - minBottom < MINIMUM_HANDLE_RANGE) {
+                                minBottom = widget.position.y + (widget.tenPatchData.contentBottom) * widget.zoomScale - MINIMUM_HANDLE_RANGE / 2;
+                                maxBottom = widget.position.y + (widget.tenPatchData.contentBottom) * widget.zoomScale + MINIMUM_HANDLE_RANGE / 2;
+                            }
+    
+                            var minTop = widget.position.y + (region.getRegionHeight() - widget.tenPatchData.contentTop - .5f) * widget.zoomScale;
+                            var maxTop = widget.position.y + (region.getRegionHeight() - widget.tenPatchData.contentTop + .5f) * widget.zoomScale;
+    
+                            if (maxTop - minTop < MINIMUM_HANDLE_RANGE) {
+                                minTop = widget.position.y + (region.getRegionHeight() - widget.tenPatchData.contentTop - .5f) * widget.zoomScale - MINIMUM_HANDLE_RANGE / 2;
+                                maxTop = widget.position.y + (region.getRegionHeight() - widget.tenPatchData.contentTop + .5f) * widget.zoomScale + MINIMUM_HANDLE_RANGE / 2;
+                            }
+                            
+                            if (y >= minBottom && y < maxBottom) {
                                 resizeCursor = true;
                                 draggingHandle = true;
                                 dragIndex = 0;
-                            } else if (y < widget.position.y + (region.getRegionHeight() - widget.tenPatchData.contentTop + .5f) * widget.zoomScale && y >= widget.position.y + (region.getRegionHeight() - widget.tenPatchData.contentTop - .5f) * widget.zoomScale) {
+                            } else if (y >= minTop && y < maxTop) {
                                 resizeCursor = true;
                                 draggingHandle = true;
                                 dragIndex = 1;
