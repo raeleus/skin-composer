@@ -730,11 +730,13 @@ public class JsonData implements Json.Serializable {
                     if (!MathUtils.isEqual(drawable.minWidth, -1f) || !MathUtils.isEqual(drawable.minHeight, -1f)) {
                         textureRegionDrawables.add(drawable);
                     }
+                    break;
                 case NINE_PATCH:
                     //only include if minSize has been modified
                     if (!MathUtils.isEqual(drawable.minWidth, -1f) || !MathUtils.isEqual(drawable.minHeight, -1f)) {
                         ninePatchDrawables.add(drawable);
                     }
+                    break;
             }
         }
         
