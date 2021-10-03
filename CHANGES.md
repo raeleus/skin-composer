@@ -2,6 +2,7 @@
 * Added CrushMode options to TenPatch.
 * Added resizable preview to the "More Settings" dialog of TenPatch.
 * Added Free Transform size option to the preview properties of widgets.
+* Bitmap Font and FreeType Font dialogs now allow for OTF files to be loaded.
 * Fixed Tinted NinePatches not being exported.
 * Fixed Tinted NinePatches being displayed in the preview as TextureRegions.
 * Grabbing handles in the 9patch TenPatch dialog is easier when zoomed out completely.

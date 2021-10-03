@@ -117,7 +117,7 @@ public class DialogBitmapFont extends Dialog {
         filesDroppedListener = (Array<FileHandle> files) -> {
             if (files.size > 0) {
                 var extension = files.first().extension().toLowerCase(Locale.ROOT);
-                if (extension.equals("ttf")) {
+                if (extension.equals("ttf") || extension.equals("otf")) {
                     Runnable runnable = () -> {
                         Gdx.app.postRunnable(() -> {
                             loadTTFsource(files.first());
@@ -235,7 +235,7 @@ public class DialogBitmapFont extends Dialog {
         bottom.add(table).growX().colspan(5).spaceBottom(15.0f);
 
         table.defaults().space(5.0f);
-        label = new Label("Source TTF Path:", skin);
+        label = new Label("Source Font Path:", skin);
         label.setName("source-label");
         table.add(label).right();
 
@@ -254,7 +254,7 @@ public class DialogBitmapFont extends Dialog {
         var textButton = new TextButton("Browse...", skin);
         table.add(textButton).fillX();
 
-        toolTip = new TextTooltip("Path to source TTF file to be read", tooltipManager, getSkin());
+        toolTip = new TextTooltip("Path to source Font file to be read", tooltipManager, getSkin());
         ltLabel.addListener(toolTip);
         textButton.addListener(toolTip);
         textButton.addListener(handListener);
@@ -266,10 +266,10 @@ public class DialogBitmapFont extends Dialog {
 
                     String[] filterPatterns = null;
                     if (!Utils.isMac()) {
-                        filterPatterns = new String[]{"*.ttf"};
+                        filterPatterns = new String[]{"*.ttf", "*.otf"};
                     }
 
-                    File file = desktopWorker.openDialog("Select TTF file...", defaultPath, filterPatterns, "True Type Font files");
+                    File file = desktopWorker.openDialog("Select Font file...", defaultPath, filterPatterns, "Font Files (*.TTF;*.OTF)");
                     if (file != null) {
                         Gdx.app.postRunnable(() -> {
                             loadTTFsource(new FileHandle(file));

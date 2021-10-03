@@ -178,7 +178,7 @@ public class DialogFreeTypeFont extends Dialog {
                 CheckBox checkBox = findActor("serializerCheckBox");
                 
                 var extension = files.first().extension().toLowerCase(Locale.ROOT);
-                if (extension.equals("ttf")) {
+                if (extension.equals("ttf") || extension.equals("otf")) {
                     checkBox.setChecked(true);
                     loadTTF(files.first());
                 } else if (extension.equals("scmp-font")) {
@@ -400,7 +400,7 @@ public class DialogFreeTypeFont extends Dialog {
         root.add(table);
         
         table.defaults().space(5.0f);
-        CheckBox checkBox = new CheckBox("Use custom serializer and integrate TTF in Skin JSON", skin);
+        CheckBox checkBox = new CheckBox("Use custom serializer and integrate FreeType in Skin JSON", skin);
         checkBox.setName("serializerCheckBox");
         checkBox.setChecked(data.useCustomSerializer);
         table.add(checkBox);
@@ -465,7 +465,7 @@ public class DialogFreeTypeFont extends Dialog {
         bottom.add(table).growX().colspan(5).spaceBottom(15.0f);
         
         table.defaults().space(5.0f);
-        label = new Label("TTF Path:", skin);
+        label = new Label("Font Path:", skin);
         label.setName("source-label");
         table.add(label).right();
         
@@ -485,7 +485,7 @@ public class DialogFreeTypeFont extends Dialog {
         textButton = new TextButton("Browse...", skin);
         table.add(textButton).fillX();
         
-        toolTip = new TextTooltip("Path to TTF font to be distributed with skin", tooltipManager, getSkin());
+        toolTip = new TextTooltip("Path to font to be distributed with skin", tooltipManager, getSkin());
         ltLabel.addListener(toolTip);
         textButton.addListener(toolTip);
         ltLabel.addListener(handListener);
@@ -498,10 +498,10 @@ public class DialogFreeTypeFont extends Dialog {
 
                     String[] filterPatterns = null;
                     if (!Utils.isMac()) {
-                        filterPatterns = new String[]{"*.ttf"};
+                        filterPatterns = new String[]{"*.ttf", "*.otf"};
                     }
 
-                    File file = desktopWorker.openDialog("Select TTF file...", defaultPath, filterPatterns, "True Type Font files");
+                    File file = desktopWorker.openDialog("Select Font file...", defaultPath, filterPatterns, "Font Files (*.TTF;*.OTF)");
                     if (file != null) {
                         Gdx.app.postRunnable(() -> {
                             FileHandle fileHandle = new FileHandle(file);

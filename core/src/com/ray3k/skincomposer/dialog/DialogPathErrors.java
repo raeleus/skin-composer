@@ -287,12 +287,12 @@ public class DialogPathErrors extends Dialog {
                                         Actor actor) {
                         String[] filterPatterns = null;
                         if (!Utils.isMac()) {
-                            filterPatterns = new String[] {"*.ttf"};
+                            filterPatterns = new String[] {"*.ttf", "*.otf"};
                         }
                     
                         var defaultPath = font.file.parent().exists() ? font.file.parent().path() + "/": "";
                     
-                        File file = desktopWorker.openDialog("Locate " + font.file.name() + "...", defaultPath, filterPatterns, "TTF files");
+                        File file = desktopWorker.openDialog("Locate " + font.file.name() + "...", defaultPath, filterPatterns, "Font Files (*.TTF;*.OTF");
                         if (file != null) {
                             FileHandle fileHandle = new FileHandle(file);
                             font.file = fileHandle;
