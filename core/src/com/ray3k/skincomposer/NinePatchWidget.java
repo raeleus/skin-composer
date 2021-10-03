@@ -60,6 +60,7 @@ public class NinePatchWidget extends Stack {
     }
     private GridType gridType;
     private static final int ZOOMED_OUT_STYLE_RANGE = 2;
+    private static final float MINIMUM_HANDLE_RANGE = 4;
     
     public NinePatchWidget(NinePatchWidgetStyle style) {
         listeners = new Array<>();
@@ -211,20 +212,17 @@ public class NinePatchWidget extends Stack {
 
             @Override
             public boolean mouseMoved(InputEvent event, float x, float y) {
-                var worldX = (x - image.getWidth() / 2.0f) / zoom - positionX;
-                var worldY = (y - image.getHeight() / 2.0f) / zoom - positionY;
-                
                 if (!showContent) {
-                    if (MathUtils.ceil(worldX) == paddingLeft) {
+                    if (x >= (paddingLeft + positionX - 1) * zoom + image.getWidth() / 2.0f - MINIMUM_HANDLE_RANGE / 2 && x < (paddingLeft + positionX) * zoom + image.getWidth() / 2.0f + MINIMUM_HANDLE_RANGE / 2) {
                         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.HorizontalResize);
                         currentHandle = HandleType.PADDING_LEFT;
-                    } else if (MathUtils.floor(worldX) == regionWidth - paddingRight) {
+                    } else if (x >= (regionWidth - paddingRight + positionX) * zoom + image.getWidth() / 2.0f - MINIMUM_HANDLE_RANGE / 2 && x < (regionWidth - paddingRight + positionX + 1) * zoom + image.getWidth() / 2.0f + MINIMUM_HANDLE_RANGE / 2) {
                         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.HorizontalResize);
                         currentHandle = HandleType.PADDING_RIGHT;
-                    } else if (MathUtils.floor(worldY) == regionHeight - paddingTop) {
+                    } else if (y >= (regionHeight - paddingTop + positionY) * zoom + image.getHeight() / 2.0f - MINIMUM_HANDLE_RANGE / 2 && y < (regionHeight - paddingTop + positionY + 1) * zoom + image.getHeight() / 2.0f + MINIMUM_HANDLE_RANGE / 2) {
                         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.VerticalResize);
                         currentHandle = HandleType.PADDING_TOP;
-                    } else if (MathUtils.ceil(worldY) == paddingBottom) {
+                    } else if (y >= (paddingBottom + positionY - 1) * zoom + image.getHeight() / 2.0f - MINIMUM_HANDLE_RANGE / 2 && y < (paddingBottom + positionY) * zoom + image.getHeight() / 2.0f + MINIMUM_HANDLE_RANGE / 2) {
                         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.VerticalResize);
                         currentHandle = HandleType.PADDING_BOTTOM;
                     } else {
@@ -232,16 +230,16 @@ public class NinePatchWidget extends Stack {
                         currentHandle = HandleType.NONE;
                     }
                 } else {
-                    if (MathUtils.ceil(worldX) == contentLeft) {
+                    if (x >= (contentLeft + positionX - 1) * zoom + image.getWidth() / 2.0f - MINIMUM_HANDLE_RANGE / 2 && x < (contentLeft + positionX) * zoom + image.getWidth() / 2.0f + MINIMUM_HANDLE_RANGE / 2) {
                         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.HorizontalResize);
                         currentHandle = HandleType.CONTENT_LEFT;
-                    } else if (MathUtils.floor(worldX) == regionWidth - contentRight) {
+                    } else if (x >= (regionWidth - contentRight + positionX) * zoom + image.getWidth() / 2.0f - MINIMUM_HANDLE_RANGE / 2 && x < (regionWidth - contentRight + positionX + 1) * zoom + image.getWidth() / 2.0f + MINIMUM_HANDLE_RANGE / 2) {
                         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.HorizontalResize);
                         currentHandle = HandleType.CONTENT_RIGHT;
-                    } else if (MathUtils.floor(worldY) == regionHeight - contentTop) {
+                    } else if (y >= (regionHeight - contentTop + positionY) * zoom + image.getHeight() / 2.0f - MINIMUM_HANDLE_RANGE / 2 && y < (regionHeight - contentTop + positionY + 1) * zoom + image.getHeight() / 2.0f + MINIMUM_HANDLE_RANGE / 2) {
                         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.VerticalResize);
                         currentHandle = HandleType.CONTENT_TOP;
-                    } else if (MathUtils.ceil(worldY) == contentBottom) {
+                    } else if (y >= (contentBottom + positionY - 1) * zoom + image.getHeight() / 2.0f - MINIMUM_HANDLE_RANGE / 2 && y < (contentBottom + positionY) * zoom + image.getHeight() / 2.0f + MINIMUM_HANDLE_RANGE / 2) {
                         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.VerticalResize);
                         currentHandle = HandleType.CONTENT_BOTTOM;
                     } else {

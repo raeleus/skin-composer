@@ -4,7 +4,7 @@
 * Added Free Transform size option to the preview properties of widgets.
 * Fixed Tinted NinePatches not being exported.
 * Fixed Tinted NinePatches being displayed in the preview as TextureRegions.
-* Grabbing handles in the TenPatch dialog is easier when zoomed out completely.
+* Grabbing handles in the 9patch TenPatch dialog is easier when zoomed out completely.
 * Minor UI changes and bug fixes.
 
 ### Skin Composer Version 45 ###
