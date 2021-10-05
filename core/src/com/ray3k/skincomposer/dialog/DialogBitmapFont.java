@@ -534,7 +534,7 @@ public class DialogBitmapFont extends Dialog {
         label = new Label("Gamma:", skin);
         bottom.add(label).right();
 
-        spinner = new Spinner(Double.parseDouble(df.format(data.gamma)), 1.0, false, Spinner.Orientation.HORIZONTAL, skin);
+        spinner = new Spinner(Double.parseDouble(df.format(data.gamma)), .1, false, Spinner.Orientation.HORIZONTAL, skin);
         spinner.setName("gamma");
         bottom.add(spinner).left().minWidth(100.0f);
 
