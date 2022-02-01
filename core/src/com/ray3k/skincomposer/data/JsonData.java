@@ -1317,6 +1317,9 @@ public class JsonData implements Json.Serializable {
     }
 
     public void set(JsonData jsonData) {
+        if (jsonData == null) {
+            return;
+        }
         colors.clear();
         colors.addAll(jsonData.colors);
         

@@ -39,6 +39,7 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimR
 import com.ray3k.skincomposer.utils.Utils;
 
 import java.util.Iterator;
+import java.util.Optional;
 
 import static com.ray3k.skincomposer.Main.projectData;
 import static com.ray3k.skincomposer.Main.rootTable;
@@ -115,7 +116,9 @@ public class ProjectData implements Json.Serializable {
     }
     
     public int getId() {
-        return (int) preferences.get("id");
+        return Optional.ofNullable(preferences.get("id"))
+                .map(id -> (int) id)
+                .orElse(0);
     }
     
     public void setId(int id) {
@@ -431,7 +434,9 @@ public class ProjectData implements Json.Serializable {
         }
         atlasData.set(instance.atlasData);
         preferences.clear();
-        preferences.putAll(instance.preferences);
+        if (instance.preferences != null) {
+            preferences.putAll(instance.preferences);
+        }
         
         saveFile = file;
         putRecentFile(file.path());
@@ -631,11 +636,13 @@ public class ProjectData implements Json.Serializable {
         atlasData.set(json.readValue("atlasData", AtlasData.class, jsonValue));
         jsonData.translateFontDrawables(atlasData);
         
-        if (!jsonValue.get("saveFile").isNull()) {
-            saveFile = new FileHandle(jsonValue.getString("saveFile"));
+        if (jsonValue != null) {
+            if (jsonValue.get("saveFile") != null && !jsonValue.get("saveFile").isNull()) {
+                saveFile = new FileHandle(jsonValue.getString("saveFile"));
+            }
+            loadedVersion = jsonValue.getString("version", "none");
         }
-    
-        loadedVersion = jsonValue.getString("version", "none");
+
         DialogSceneComposerModel.rootActor = json.readValue("sceneComposer", SimRootGroup.class, jsonValue);
     }
 

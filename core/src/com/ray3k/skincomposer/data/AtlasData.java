@@ -45,6 +45,7 @@ import com.ray3k.tenpatch.TenPatchDrawable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.util.Optional;
 
 import static com.ray3k.skincomposer.Main.*;
 
@@ -206,7 +207,10 @@ public class AtlasData implements Json.Serializable {
     }
     
     public Array<String> writeAtlas(FileHandle settingsFile) throws Exception {
-        return writeAtlas(Main.appFolder.child("temp/" + projectData.getId() + ".atlas"), settingsFile);
+        final int id = Optional.ofNullable(projectData)
+                .map(ProjectData::getId)
+                .orElse(0);
+        return writeAtlas(Main.appFolder.child("temp/" + id + ".atlas"), settingsFile);
     }
     
     public Array<String> writeAtlas(FileHandle targetFile, FileHandle settingsFile) throws Exception {
@@ -275,10 +279,14 @@ public class AtlasData implements Json.Serializable {
     
     public void set(AtlasData atlasData) {
         drawables.clear();
-        drawables.addAll(atlasData.drawables);
+        if (atlasData != null) {
+            drawables.addAll(atlasData.drawables);
+        }
         
         fontDrawables.clear();
-        fontDrawables.addAll(atlasData.fontDrawables);
+        if (atlasData != null) {
+            fontDrawables.addAll(atlasData.fontDrawables);
+        }
     }
 
     @Override
