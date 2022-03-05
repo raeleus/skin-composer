@@ -1,3 +1,6 @@
+### Skin Composer Version 47 ###
+
+
 ### Skin Composer Version 46 ###
 * Added CrushMode options to TenPatch.
 * Added resizable preview to the "More Settings" dialog of TenPatch.
