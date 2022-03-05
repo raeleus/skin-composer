@@ -1,7 +1,7 @@
 /** *****************************************************************************
  * MIT License
  *
- * Copyright (c) 2021 Raymond Buckley
+ * Copyright (c) 2022 Raymond Buckley
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -2620,7 +2620,7 @@ public class RootTable extends Table {
         table.setBackground(getSkin().getDrawable("status-bar"));
         add(table).growX();
         
-        Label label = new Label("ver. " + Main.VERSION + "    RAY3K.WORDPRESS.COM    © 2021 Raymond \"Raeleus\" Buckley", getSkin());
+        Label label = new Label("ver. " + Main.VERSION + "    RAY3K.WORDPRESS.COM    © 2022 Raymond \"Raeleus\" Buckley", getSkin());
         table.add(label).expandX().right().padRight(25.0f);
     }
 

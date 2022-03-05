@@ -45,7 +45,7 @@ The installer/uninstaller depends on mt.exe (to give the executable admin rights
 ### License ###
 MIT License
 
-Copyright (c) 2021 Raymond Buckley
+Copyright (c) 2022 Raymond Buckley
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
