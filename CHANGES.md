@@ -1,5 +1,6 @@
 ### Skin Composer Version 47 ###
-
+* Fixed file dialogs not opening on various platforms.
+* Fixed SceneComposer exporting SplitPane incorrectly.
 
 ### Skin Composer Version 46 ###
 * Added CrushMode options to TenPatch.
