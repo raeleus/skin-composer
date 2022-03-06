@@ -300,12 +300,7 @@ public class MainListener extends RootTableListener {
         Runnable runnable = () -> {
             String defaultPath = projectData.getLastOpenSavePath();
 
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[] {"*.scmp"};
-            }
-
-            File file = desktopWorker.openDialog("Open Skin Composer file...", defaultPath, filterPatterns, "Skin Composer files");
+            File file = desktopWorker.openDialog("Open Skin Composer file...", defaultPath, "scmp", "Skin Composer files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     FileHandle fileHandle = new FileHandle(file);
@@ -443,12 +438,7 @@ public class MainListener extends RootTableListener {
         dialogFactory.showDialogLoading(() -> {
             String defaultPath = projectData.getLastOpenSavePath();
 
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[] {"*.scmp"};
-            }
-
-            File file = desktopWorker.saveDialog("Save Skin Composer file as...", defaultPath, filterPatterns, "Skin Composer files");
+            File file = desktopWorker.saveDialog("Save Skin Composer file as...", defaultPath, "scmp", "Skin Composer files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     FileHandle fileHandle = new FileHandle(file);

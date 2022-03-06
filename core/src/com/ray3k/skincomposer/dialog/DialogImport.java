@@ -236,13 +236,8 @@ public class DialogImport extends Dialog {
     }
     
     private void showFileBrowser() {
-        String[] filterPatterns = null;
-        if (!Utils.isMac()) {
-            filterPatterns = new String[] {"*.json"};
-        }
-
         TextField textField  = findActor("path");
-        var file = desktopWorker.openDialog("Import skin...", textField.getText(), filterPatterns, "Json files");
+        var file = desktopWorker.openDialog("Import skin...", textField.getText(), "json", "Json files");
         if (file != null) {
             var fileHandle = new FileHandle(file);
             

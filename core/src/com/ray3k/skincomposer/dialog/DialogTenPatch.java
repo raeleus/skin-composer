@@ -287,11 +287,7 @@ public class DialogTenPatch extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Runnable runnable = () -> {
-                    String[] filterPatterns = null;
-                    if (!Utils.isMac()) {
-                        filterPatterns = new String[]{"*.png"};
-                    }
-                    var file = desktopWorker.saveDialog("Save as 9patch...", projectData.getLastDrawablePath(), filterPatterns, "Image files");
+                    var file = desktopWorker.saveDialog("Save as 9patch...", projectData.getLastDrawablePath(), "png", "Image files");
                     if (file != null) {
                         Gdx.app.postRunnable(() -> {
                             var fileHandle = new FileHandle(file);
@@ -477,11 +473,7 @@ public class DialogTenPatch extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Runnable runnable = () -> {
-                    String[] filterPatterns = null;
-                    if (!Utils.isMac()) {
-                        filterPatterns = new String[]{"*.9.png"};
-                    }
-                    var file = desktopWorker.openDialog("Load patches from file...", projectData.getLastDrawablePath(), filterPatterns, "Nine patch files");
+                    var file = desktopWorker.openDialog("Load patches from file...", projectData.getLastDrawablePath(), "9.png", "Nine patch files");
                     if (file != null) {
                         Gdx.app.postRunnable(() -> {
                             var fileHandle = new FileHandle(file);

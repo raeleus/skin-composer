@@ -901,9 +901,7 @@ public class Dialog9Patch extends Dialog {
                         defaultPath = loadedFile.sibling(loadedFile.nameWithoutExtension() + ".9.png").path();
                     }
 
-                    String[] filterPatterns = {"*.9.png"};
-
-                    File file = desktopWorker.saveDialog("Save nine patch file as...", defaultPath, filterPatterns, "Nine Patch files");
+                    File file = desktopWorker.saveDialog("Save nine patch file as...", defaultPath, "9.png", "Nine Patch files");
                     if (file != null) {
                         Gdx.app.postRunnable(() -> {
                             FileHandle fileHandle = new FileHandle(file);
@@ -989,12 +987,7 @@ public class Dialog9Patch extends Dialog {
         Runnable runnable = () -> {
             String defaultPath = projectData.getLastDrawablePath();
 
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[]{"*.png;*.jpg"};
-            }
-
-            File file = desktopWorker.openDialog("Open Image...", defaultPath, filterPatterns, "Image files");
+            File file = desktopWorker.openDialog("Open Image...", defaultPath, "png,jpg", "Image files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     var fileHandle = new FileHandle(file);
@@ -1335,12 +1328,7 @@ public class Dialog9Patch extends Dialog {
         Runnable runnable = () -> {
             String defaultPath = projectData.getLastDrawablePath();
 
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[]{"*.9.png;"};
-            }
-
-            File file = desktopWorker.openDialog("Load Patches from File...", defaultPath, filterPatterns, "Nine Patch files");
+            File file = desktopWorker.openDialog("Load Patches from File...", defaultPath, "9.png", "Nine Patch files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     var fileHandle = new FileHandle(file);
@@ -1509,13 +1497,9 @@ public class Dialog9Patch extends Dialog {
     private void showBatchApplyDialog() {
         Runnable runnable = () -> {
             String defaultPath = projectData.getLastDrawablePath();
+            
 
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[]{"*.png;", "*.jpg"};
-            }
-
-            var files = desktopWorker.openMultipleDialog("Batch apply to files", defaultPath, filterPatterns, "Image files");
+            var files = desktopWorker.openMultipleDialog("Batch apply to files", defaultPath, "png,jpg", "Image files");
             if (files != null && files.size() > 0) {
                 Gdx.app.postRunnable(() -> {
                     var fileHandles = new Array<FileHandle>();

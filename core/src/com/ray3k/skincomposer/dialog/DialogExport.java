@@ -176,13 +176,8 @@ public class DialogExport extends Dialog {
     }
     
     private void showFileBrowser() {
-        String[] filterPatterns = null;
-        if (!Utils.isMac()) {
-             filterPatterns = new String[] {"*.json"};
-        }
-
         TextField textField  = findActor("path");
-        var file = desktopWorker.saveDialog("Export skin...", textField.getText(), filterPatterns, "Json files");
+        var file = desktopWorker.saveDialog("Export skin...", textField.getText(), "json", "Json files");
         if (file != null) {
             var fileHandle = new FileHandle(file);
             if (fileHandle.extension().equals("")) {

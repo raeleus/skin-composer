@@ -264,12 +264,7 @@ public class DialogBitmapFont extends Dialog {
                 Runnable runnable = () -> {
                     String defaultPath = projectData.getLastFontPath();
 
-                    String[] filterPatterns = null;
-                    if (!Utils.isMac()) {
-                        filterPatterns = new String[]{"*.ttf", "*.otf"};
-                    }
-
-                    File file = desktopWorker.openDialog("Select Font file...", defaultPath, filterPatterns, "Font Files (*.TTF;*.OTF)");
+                    File file = desktopWorker.openDialog("Select Font file...", defaultPath, "ttf,otf", "Font Files (*.TTF;*.OTF)");
                     if (file != null) {
                         Gdx.app.postRunnable(() -> {
                             loadTTFsource(new FileHandle(file));
@@ -316,12 +311,7 @@ public class DialogBitmapFont extends Dialog {
                 Runnable runnable = () -> {
                     String defaultPath = projectData.getLastFontPath();
 
-                    String[] filterPatterns = null;
-                    if (!Utils.isMac()) {
-                        filterPatterns = new String[]{"*.fnt"};
-                    }
-
-                    File file = desktopWorker.saveDialog("Select FNT file...", defaultPath, filterPatterns, "Bitmap Font files");
+                    File file = desktopWorker.saveDialog("Select FNT file...", defaultPath, "fnt", "Bitmap Font files");
                     if (file != null) {
                         Gdx.app.postRunnable(() -> {
                             target = new FileHandle(file);
@@ -1122,12 +1112,7 @@ public class DialogBitmapFont extends Dialog {
         Runnable runnable = () -> {
             String defaultPath = projectData.getLastFontPath();
 
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[]{"*.scmp-font"};
-            }
-
-            File file = desktopWorker.saveDialog("Save Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
+            File file = desktopWorker.saveDialog("Save Bitmap Font settings...", defaultPath, "scmp-font", "Font Settings files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     var fileHandle = new FileHandle(file);
@@ -1220,12 +1205,7 @@ public class DialogBitmapFont extends Dialog {
         Runnable runnable = () -> {
             String defaultPath = projectData.getLastFontPath();
 
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[]{"*.scmp-font"};
-            }
-
-            File file = desktopWorker.openDialog("Select Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
+            File file = desktopWorker.openDialog("Select Bitmap Font settings...", defaultPath, "scmp-font", "Font Settings files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     loadSettings(new FileHandle(file));

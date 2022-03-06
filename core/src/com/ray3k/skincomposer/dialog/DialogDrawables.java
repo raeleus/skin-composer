@@ -30,6 +30,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
+import com.badlogic.gdx.graphics.PixmapIO.PNG;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -1833,12 +1834,7 @@ public class DialogDrawables extends Dialog {
                 }
             }
 
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[]{"*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif"};
-            }
-
-            List<File> files = desktopWorker.openMultipleDialog("Choose drawable file(s)...", defaultPath, filterPatterns, "Image files");
+            List<File> files = desktopWorker.openMultipleDialog("Choose drawable file(s)...", defaultPath, "png,jpg,jpeg,bmp,gif", "Image files");
             if (files != null && files.size() > 0) {
                 Gdx.app.postRunnable(() -> {
                     drawablesSelected(files);
