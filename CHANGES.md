@@ -1,4 +1,5 @@
 ### Skin Composer Version 47 ###
+* Custom preview sizes are persisted from session to session.
 * Fixed file dialogs not opening on various platforms.
 * Fixed SceneComposer exporting SplitPane incorrectly.
 

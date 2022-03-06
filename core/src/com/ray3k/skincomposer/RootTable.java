@@ -2320,7 +2320,9 @@ public class RootTable extends Table {
                             case (7):
                                 Actor addWidget = widget;
                                 TraversalTextField widthField = new TraversalTextField("", getSkin());
+                                widthField.setText(Integer.toString(projectData.getPreviewCustomWidth()));
                                 TraversalTextField heightField = new TraversalTextField("", getSkin());
+                                heightField.setText(Integer.toString(projectData.getPreviewCustomHeight()));
                                 widthField.setNextFocus(heightField);
                                 heightField.setNextFocus(widthField);
                                 Dialog dialog = new Dialog("Enter dimensions...", getSkin()) {
@@ -2330,8 +2332,13 @@ public class RootTable extends Table {
                                             previewTable.add(addWidget).size(Integer.parseInt(widthField.getText()), Integer.parseInt(heightField.getText()));
                                             Array<String> items = new Array<>(DEFAULT_SIZES);
                                             items.add(widthField.getText() + "x" + heightField.getText());
-                                            previewProperties.put("sizeX", Integer.parseInt(widthField.getText()));
-                                            previewProperties.put("sizeY", Integer.parseInt(heightField.getText()));
+                                            
+                                            int width = Integer.parseInt(widthField.getText());
+                                            int height = Integer.parseInt(heightField.getText());
+                                            previewProperties.put("sizeX", width);
+                                            previewProperties.put("sizeY", height);
+                                            projectData.setPreviewCustomSize(width, height);
+                                            
                                             previewSizeSelectBox.setItems(items);
                                             previewSizeSelectBox.setSelectedIndex(8);
                                         } else {
@@ -2353,7 +2360,6 @@ public class RootTable extends Table {
                                 dialog.button("Cancel", false);
                                 dialog.key(Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true).key(Keys.ESCAPE, false);
                                 TextButton okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
-                                okButton.setDisabled(true);
                                 okButton.addListener(handListener);
                                 widthField.addListener(ibeamListener);
                                 widthField.addListener(new ChangeListener() {

@@ -235,6 +235,30 @@ public class ProjectData implements Json.Serializable {
         return generalPref.getBoolean("exportWarnings", true);
     }
     
+    public int getPreviewCustomWidth() {
+        return generalPref.getInteger("previewCustomWidth", 100);
+    }
+    
+    public int getPreviewCustomHeight() {
+        return generalPref.getInteger("previewCustomHeight", 100);
+    }
+    
+    public void setPreviewCustomWidth(int width) {
+        generalPref.putInteger("previewCustomWidth", width);
+        generalPref.flush();
+    }
+    
+    public void setPreviewCustomHeight(int height) {
+        generalPref.putInteger("previewCustomHeight", height);
+        generalPref.flush();
+    }
+    
+    public void setPreviewCustomSize(int width, int height) {
+        generalPref.putInteger("previewCustomWidth", width);
+        generalPref.putInteger("previewCustomHeight", height);
+        generalPref.flush();
+    }
+    
     public void setExportFormat(ExportFormat exportFormat) {
         generalPref.putString("exportFormat", exportFormat.toString());
     }
