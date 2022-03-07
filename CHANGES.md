@@ -3,6 +3,7 @@
 * Fixed file dialogs not opening on various platforms.
 * Fixed SceneComposer exporting SplitPane incorrectly.
 * Fixed crash when pressing enter or escape in the FreeType dialog.
+* Fixed color of TenPatch preview being changed even when user chooses cancel.
 * Minor UI changes and bug fixes.
 
 ### Skin Composer Version 46 ###
