@@ -658,6 +658,7 @@ public class DialogTenPatch extends Dialog {
                         bottom.setColor(colorData.color);
                     }
                     updatePreview();
+                    tenPatchWidget.setBgColor(bottom.getColor());
                 }, null);
             
             }
