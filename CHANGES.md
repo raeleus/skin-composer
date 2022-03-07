@@ -3,6 +3,7 @@
 * TenPatch settings editor can also set the background color.
 * Refresh button and F5 keyboard shortcut is added to the Drawables dialog to reload all images.
 * Custom preview sizes are persisted from session to session.
+* Fixed background color of FreeType font not being set correctly when the font is edited.
 * Fixed file dialogs not opening on various platforms.
 * Fixed SceneComposer exporting SplitPane incorrectly.
 * Fixed crash when pressing enter or escape in the FreeType dialog.

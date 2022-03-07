@@ -153,6 +153,7 @@ public class DialogFreeTypeFont extends Dialog {
             originalData = freeTypeFontData;
         }
         
+        if (data.color != null) previewBGcolor.set(Utils.blackOrWhiteBgColor(jsonData.getColorByName(data.color).color));
         previewStyle = new TextFieldStyle(skin.get("free-type-preview", TextFieldStyle.class));
         previewCursor = (SpriteDrawable) ((TextureRegionDrawable) skin.getDrawable("white")).tint(Color.BLACK);
         previewStyle.cursor = previewCursor;
@@ -353,6 +354,7 @@ public class DialogFreeTypeFont extends Dialog {
         root.row();
         final var previewTable = new Table();
         previewTable.setBackground(getSkin().getDrawable("white"));
+        previewTable.setColor(previewBGcolor);
         root.add(previewTable).growX();
         
         textField = new TextField(previewText, previewStyle);
