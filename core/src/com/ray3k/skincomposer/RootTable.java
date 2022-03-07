@@ -389,6 +389,7 @@ public class RootTable extends Table {
         table.add(styleBox).padRight(5.0f).minWidth(150.0f);
         styleBox.addListener(handListener);
         styleBox.getDraggableTextList().addListener(handListener);
+        styleBox.getScrollPane().addListener(scrollFocusListener);
 
         button = new Button(getSkin(), "new");
         button.addListener(handListener);
