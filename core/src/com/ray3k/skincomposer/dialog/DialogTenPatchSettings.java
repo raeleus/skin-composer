@@ -19,6 +19,7 @@ import com.ray3k.stripe.Spinner;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
 import static com.ray3k.skincomposer.Main.*;
+import static com.ray3k.skincomposer.utils.Utils.*;
 
 public class DialogTenPatchSettings extends PopTable {
     private DrawableData drawableData;
@@ -47,44 +48,64 @@ public class DialogTenPatchSettings extends PopTable {
         var label = new Label("TenPatch Settings", skin);
         root.add(label);
     
-        root.defaults().growX().space(10);
+        root.defaults().growX().space(5);
         root.row();
+        var container = new Container<>();
+        root.add(container).height(250).grow();
+        
         var resizer = new ResizeWidget(null, skin);
         resizer.setName("resizer");
         resizer.setTouchable(Touchable.enabled);
         resizer.setResizingFromCenter(true);
         resizer.setAllowDragging(false);
     
-        var cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
+        var cursor = textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
         var resizeFourArrowListener = new ResizeFourArrowListener(cursor);
         resizer.getBottomLeftHandle().addListener(resizeFourArrowListener);
         resizer.getTopRightHandle().addListener(resizeFourArrowListener);
     
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_nw"), 16, 16);
+        cursor = textureRegionToCursor(skin.getRegion("cursor_resize_nw"), 16, 16);
         resizeFourArrowListener = new ResizeFourArrowListener(cursor);
         resizer.getTopLeftHandle().addListener(resizeFourArrowListener);
         resizer.getBottomRightHandle().addListener(resizeFourArrowListener);
     
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_vertical"), 16, 16);
+        cursor = textureRegionToCursor(skin.getRegion("cursor_resize_vertical"), 16, 16);
         resizeFourArrowListener = new ResizeFourArrowListener(cursor);
         resizer.getBottomHandle().addListener(resizeFourArrowListener);
         resizer.getTopHandle().addListener(resizeFourArrowListener);
     
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_horizontal"), 16, 16);
+        cursor = textureRegionToCursor(skin.getRegion("cursor_resize_horizontal"), 16, 16);
         resizeFourArrowListener = new ResizeFourArrowListener(cursor);
         resizer.getLeftHandle().addListener(resizeFourArrowListener);
         resizer.getRightHandle().addListener(resizeFourArrowListener);
-        root.add(resizer).height(250);
+        container.setActor(resizer);
+        container.fill();
+        container.setBackground(skin.getDrawable("white"));
         
         var image = new Image(preview);
         resizer.setActor(image);
+        
+        root.row();
+        var table = new Table();
+        root.add(table);
+        
+        var button = new Button(skin, "colorwheel");
+        table.add(button).expandX().right();
+        button.addListener(handListener);
+        onChange(button, () -> dialogFactory.showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
+            if (colorData == null) {
+                container.setColor(Color.WHITE);
+            } else {
+                container.setColor(colorData.color);
+            }
+        }, null));
         
         root.row();
         label = new Label("Bounds", skin, "black-underline");
         root.add(label);
         
         root.row();
-        var table = new Table();
+        table = new Table();
         root.add(table);
         
         table.defaults().space(5);
@@ -294,7 +315,7 @@ public class DialogTenPatchSettings extends PopTable {
         label = new Label("Tiling:", skin);
         table.add(label).right();
         
-        var button = new Button(skin, "switch");
+        button = new Button(skin, "switch");
         button.setChecked(workingData.tenPatchData.tile);
         table.add(button).left();
         button.addListener(handListener);

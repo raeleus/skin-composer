@@ -1,5 +1,6 @@
 ### Skin Composer Version 47 ###
 * TenPatch editor background color can be changed by adjusting the preview background color.
+* TenPatch settings editor can also set the background color.
 * Refresh button and F5 keyboard shortcut is added to the Drawables dialog to reload all images.
 * Custom preview sizes are persisted from session to session.
 * Fixed file dialogs not opening on various platforms.
