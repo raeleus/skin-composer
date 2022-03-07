@@ -2,6 +2,7 @@
 * Custom preview sizes are persisted from session to session.
 * Fixed file dialogs not opening on various platforms.
 * Fixed SceneComposer exporting SplitPane incorrectly.
+* Fixed crash when pressing enter or escape in the FreeType dialog.
 * Minor UI changes and bug fixes.
 
 ### Skin Composer Version 46 ###

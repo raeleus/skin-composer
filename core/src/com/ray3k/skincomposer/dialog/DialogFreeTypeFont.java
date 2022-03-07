@@ -169,7 +169,7 @@ public class DialogFreeTypeFont extends Dialog {
         
         updateDisabledFields();
         
-        key(Keys.ESCAPE, false).key(Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true);
+        key(Keys.ESCAPE, ButtonType.CANCEL);
         
         listeners = new Array<>();
         
