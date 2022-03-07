@@ -123,6 +123,24 @@ public class DialogDrawables extends Dialog {
         
         this.listener = listener;
         
+        addListener(new InputListener() {
+            /**
+             * Called when a key goes down. When true is returned, the event is {@link
+             * Event#handle() handled}.
+             *
+             * @param event
+             * @param keycode
+             */
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Keys.F5) {
+                    reloadAtlas();
+                    return true;
+                }
+                return false;
+            }
+        });
+        
         filesDroppedListener = (Array<FileHandle> files) -> {
             Iterator<FileHandle> iter = files.iterator();
             while (iter.hasNext()) {
@@ -214,6 +232,11 @@ public class DialogDrawables extends Dialog {
             }
         });
         
+        button = new Button(getSkin(), "refresh");
+        button.setName("refresh");
+        Utils.onChange(button, () -> reloadAtlas());
+        table.add(button);
+        
         table.add("Sort:");
         
         sortSelectBox = new SelectBox(getSkin());
@@ -284,6 +307,23 @@ public class DialogDrawables extends Dialog {
                 return false;
             }
         });
+    }
+    
+    private void reloadAtlas() {
+        dialogFactory.showDialogLoading(() -> Gdx.app.postRunnable(() -> {
+            try {
+                FileHandle defaultsFile = Main.appFolder.child("texturepacker/atlas-internal-settings.json");
+                projectData.getAtlasData().writeAtlas(defaultsFile);
+                projectData.getAtlasData().atlasCurrent = true;
+                atlasData.produceAtlas();
+                sortBySelectedMode();
+            } catch (Exception e) {
+                dialogFactory.showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
+                Gdx.app.error(getClass().getName(), "Unable to write texture atlas to temporary storage!", e);
+                dialogFactory.showDialogError("Atlas Error...",
+                        "Unable to write texture atlas to temporary storage.\n\nOpen log?");
+            }
+        }));
     }
     
     public class AddClickListener extends PopTableClickListener {
