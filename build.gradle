@@ -46,7 +46,9 @@ project(":core") {
         compile "com.github.raeleus.TenPatch:tenpatch:5.2.2"
         compile "space.earlygrey:shapedrawer:2.2.0"
         compile 'com.squareup:javapoet:1.12.1'
-        compile 'com.github.raeleus:stripe:0.2.0'
+        compile 'com.github.raeleus:stripe:1.2.0'
+        compile 'com.github.raeleus.stripe:freetype:1.1.0'
+        compile 'com.esotericsoftware.spine:spine-libgdx:4.0.18.1'
     }
 }
 

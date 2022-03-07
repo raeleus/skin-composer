@@ -32,6 +32,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
@@ -51,13 +52,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.esotericsoftware.spine.AnimationStateData;
+import com.esotericsoftware.spine.SkeletonData;
+import com.esotericsoftware.spine.SkeletonJson;
+import com.esotericsoftware.spine.SkeletonRenderer;
+import com.esotericsoftware.spine.utils.TwoColorPolygonBatch;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.dialog.DialogListener;
+import com.ray3k.skincomposer.dialog.PopFloppy;
+import com.ray3k.skincomposer.dialog.PopFloppy.PopFloppyEventListener;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.FreeTypeSkin;
+import com.ray3k.stripe.PopTable;
 import com.ray3k.stripe.ScrollFocusListener;
 import com.ray3k.tenpatch.TenPatchDrawable;
 import org.lwjgl.PointerBuffer;
@@ -106,6 +115,9 @@ public class Main extends ApplicationAdapter {
     public static FileHandle appFolder;
     private String[] args;
     public static Main main;
+    public static SkeletonRenderer skeletonRenderer;
+    public static SkeletonData floppySkeletonData;
+    public static AnimationStateData floppyAnimationStateData;
     
     public Main (String[] args) {
         this.args = args;
@@ -119,11 +131,17 @@ public class Main extends ApplicationAdapter {
         skin = new FreeTypeSkin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
         viewport = new ScreenViewport();
 //        viewport.setUnitsPerPixel(.5f);
-        stage = new Stage(viewport);
+        var batch = new TwoColorPolygonBatch();
+        stage = new Stage(viewport, batch);
         Gdx.input.setInputProcessor(stage);
         
         shapeDrawer = new ShapeDrawer(stage.getBatch(), skin.getRegion("white"));
         graphDrawer = new GraphDrawer(shapeDrawer);
+        
+        skeletonRenderer = new SkeletonRenderer();
+        var skeletonJson = new SkeletonJson(Main.skin.getAtlas());
+        floppySkeletonData = skeletonJson.readSkeletonData(Gdx.files.internal("spine/floppy.json"));
+        floppyAnimationStateData = new AnimationStateData(floppySkeletonData);
         
         initDefaults();
         

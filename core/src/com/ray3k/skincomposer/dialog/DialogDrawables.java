@@ -683,6 +683,7 @@ public class DialogDrawables extends Dialog {
                                     getStage().setScrollFocus(scrollPane);
                                     desktopWorker.addFilesDroppedListener(filesDroppedListener);
                                     refreshDrawableDisplay();
+                                    dialogFactory.showTipTenPatch();
                                 }
                 
                                 @Override

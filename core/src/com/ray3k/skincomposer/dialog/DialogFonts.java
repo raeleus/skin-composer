@@ -1043,6 +1043,7 @@ public class DialogFonts extends Dialog {
                 refreshTable();
                 
                 desktopWorker.addFilesDroppedListener(filesDroppedListener);
+                dialogFactory.showTipFreeType();
             }
 
             @Override

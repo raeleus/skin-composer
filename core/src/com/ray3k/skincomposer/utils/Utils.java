@@ -35,6 +35,10 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
@@ -536,5 +540,23 @@ public class Utils {
             }
         }
         return true;
+    }
+    
+    public static void onChange(Actor actor, Runnable runnable) {
+        actor.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                runnable.run();
+            }
+        });
+    }
+    
+    public static void onEnter(Actor actor, Runnable runnable) {
+        actor.addListener(new InputListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                if (pointer == -1 && fromActor != event.getListenerActor() && !fromActor.isDescendantOf(event.getListenerActor())) runnable.run();
+            }
+        });
     }
 }

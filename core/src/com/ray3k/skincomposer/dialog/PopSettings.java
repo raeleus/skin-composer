@@ -26,6 +26,7 @@ public class PopSettings extends PopTable {
     private boolean recentFullPath;
     private boolean allowingUpdates;
     private boolean changedUIscale;
+    private boolean resetTips;
     
     public PopSettings() {
         super(skin, "dialog");
@@ -153,6 +154,14 @@ public class PopSettings extends PopTable {
                                 "Error opening atlas-internal-settings.json\n\nOpen log?");
                     }
                 }
+            });
+            textButton.addListener(handListener);
+            table.add(textButton);
+            
+            table.row();
+            textButton = new TextButton("Reset all tips", skin);
+            Utils.onChange(textButton, () -> {
+                resetTips = true;
             });
             textButton.addListener(handListener);
             table.add(textButton);
@@ -334,6 +343,12 @@ public class PopSettings extends PopTable {
         projectData.setCheckingForUpdates(allowingUpdates);
         undoableManager.clearUndoables();
     
+        if (resetTips) {
+            projectData.setTipTVG(true);
+            projectData.setTipFreeType(true);
+            projectData.setTipTenPatch(true);
+        }
+        
         if (allowingUpdates) {
             Main.checkForUpdates(main);
         } else {

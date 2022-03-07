@@ -259,6 +259,33 @@ public class ProjectData implements Json.Serializable {
         generalPref.flush();
     }
     
+    public boolean getTipTVG() {
+        return generalPref.getBoolean("tipTVG", true);
+    }
+    
+    public void setTipTVG(boolean showTip) {
+        generalPref.putBoolean("tipTVG", showTip);
+        generalPref.flush();
+    }
+    
+    public boolean getTipFreeType() {
+        return generalPref.getBoolean("tipFreeType", true);
+    }
+    
+    public void setTipFreeType(boolean showTip) {
+        generalPref.putBoolean("tipFreeType", showTip);
+        generalPref.flush();
+    }
+    
+    public boolean getTipTenPatch() {
+        return generalPref.getBoolean("tipTenPatch", true);
+    }
+    
+    public void setTipTenPatch(boolean showTip) {
+        generalPref.putBoolean("tipTenPatch", showTip);
+        generalPref.flush();
+    }
+    
     public void setExportFormat(ExportFormat exportFormat) {
         generalPref.putString("exportFormat", exportFormat.toString());
     }
