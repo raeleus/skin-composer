@@ -41,6 +41,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.ray3k.skincomposer.ResizeFourArrowListener;
+import com.ray3k.stripe.ResizeWidget;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -53,9 +55,12 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import static com.ray3k.skincomposer.Main.*;
 
 public class Utils {
     public static String os;
@@ -428,6 +433,10 @@ public class Utils {
         return name.matches(".*\\.9\\.[a-zA-Z0-9]*$");
     }
     
+    public static boolean isTvg(String name) {
+        return name.toLowerCase(Locale.ROOT).matches(".*\\.tvg$");
+    }
+    
     private final static GlyphLayout glyphLayout = new GlyphLayout();
     
     public static String leadingTruncate(BitmapFont font, CharSequence text, String truncate, float width) {
@@ -445,6 +454,10 @@ public class Utils {
         }
         
         return stringBuilder.toString();
+    }
+    
+    public static boolean isBitmap(String fileName) {
+        return fileName.toLowerCase(Locale.ROOT).matches("^.*\\.(jpg)|(jpeg)|(png)|(bmp)|(gif)");
     }
     
     public static class PatchDefinition {
@@ -558,5 +571,23 @@ public class Utils {
                 if (pointer == -1 && fromActor != event.getListenerActor() && !fromActor.isDescendantOf(event.getListenerActor())) runnable.run();
             }
         });
+    }
+    
+    public static void applyResizeArrowListener(ResizeWidget resizeWidget) {
+        var resizeFourArrowListener = new ResizeFourArrowListener(cursorNE);
+        resizeWidget.getBottomLeftHandle().addListener(resizeFourArrowListener);
+        resizeWidget.getTopRightHandle().addListener(resizeFourArrowListener);
+        
+        resizeFourArrowListener = new ResizeFourArrowListener(cursorNW);
+        resizeWidget.getTopLeftHandle().addListener(resizeFourArrowListener);
+        resizeWidget.getBottomRightHandle().addListener(resizeFourArrowListener);
+        
+        resizeFourArrowListener = new ResizeFourArrowListener(cursorVertical);
+        resizeWidget.getBottomHandle().addListener(resizeFourArrowListener);
+        resizeWidget.getTopHandle().addListener(resizeFourArrowListener);
+        
+        resizeFourArrowListener = new ResizeFourArrowListener(cursorHorizontal);
+        resizeWidget.getLeftHandle().addListener(resizeFourArrowListener);
+        resizeWidget.getRightHandle().addListener(resizeFourArrowListener);
     }
 }

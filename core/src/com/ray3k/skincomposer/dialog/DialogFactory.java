@@ -42,6 +42,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.dialog.DialogTVG.DialogTvgListener;
 import com.ray3k.skincomposer.dialog.PopFloppy.PopFloppyEventListener;
 import com.ray3k.skincomposer.dialog.PopWelcome.WelcomeListener;
 import com.ray3k.stripe.PopTable;
@@ -1212,6 +1213,12 @@ public class DialogFactory {
     
     public void showDialogTenPatch(DrawableData drawableData, boolean newDrawable, DialogTenPatchListener listener) {
         DialogTenPatch dialog = new DialogTenPatch(drawableData, newDrawable);
+        dialog.addListener(listener);
+        dialog.show(stage);
+    }
+    
+    public void showDialogTVG(DrawableData drawableData, boolean newDrawable, DialogTvgListener listener) {
+        var dialog = new DialogTVG(drawableData);
         dialog.addListener(listener);
         dialog.show(stage);
     }

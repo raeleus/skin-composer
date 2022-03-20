@@ -44,10 +44,13 @@ import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.DrawableData.DrawableType;
 import com.ray3k.skincomposer.dialog.DialogFactory;
+import com.ray3k.skincomposer.dialog.DialogTVG;
+import com.ray3k.skincomposer.dialog.DialogTVG.TvgData;
 import com.ray3k.skincomposer.dialog.DialogTenPatch;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.tenpatch.TenPatchDrawable;
 import com.ray3k.tenpatch.TenPatchDrawable.CrushMode;
+import dev.lyze.gdxtinyvg.scene2d.TinyVGDrawable;
 
 import static com.ray3k.skincomposer.Main.*;
 import static com.ray3k.skincomposer.data.DrawableData.DrawableType.*;
@@ -351,6 +354,37 @@ public class JsonData implements Json.Serializable {
                         }
                     }
     
+                    projectData.getAtlasData().getDrawables().add(drawableData);
+                }
+            } //TVG drawables
+            else if (child.name().equals(TinyVGDrawable.class.getName()) || child.name().equals(TinyVGDrawable.class.getSimpleName())) {
+                for (JsonValue value : child.iterator()) {
+                    DrawableData drawableData = new DrawableData();
+                    
+                    FileHandle tvgFile = fileHandle.sibling(value.getString("file"));
+                    System.out.println("tvgFile.path() = " + tvgFile.path());
+                    if (!tvgFile.exists()) {
+                        warnings.add("[RED]ERROR:[] TVG file [BLACK]" + tvgFile.name() + "[] does not exist.");
+                        return warnings;
+                    }
+                    FileHandle tvgCopy = targetDirectory.child(value.getString("file"));
+                    if (!tvgCopy.parent().equals(tvgFile.parent()) && !tvgCopy.exists()) {
+                        tvgFile.copyTo(tvgCopy);
+                    }
+                    drawableData.file = tvgCopy;
+                    
+                    drawableData.type = TVG;
+                    drawableData.name = value.name();
+                    drawableData.tvgData = new TvgData();
+                    drawableData.tvgData.clipBasedOnTVGsize = value.getBoolean("clipBasedOnTVGsize");
+        
+                    //delete drawables with the same name
+                    for (DrawableData originalData : new Array<>(projectData.getAtlasData().getDrawables())) {
+                        if (originalData.name.equals(drawableData.name)) {
+                            projectData.getAtlasData().getDrawables().removeValue(originalData, true);
+                        }
+                    }
+        
                     projectData.getAtlasData().getDrawables().add(drawableData);
                 }
             } //styles
@@ -710,6 +744,7 @@ public class JsonData implements Json.Serializable {
         var textureRegionDrawables = new Array<DrawableData>();
         var ninePatchDrawables = new Array<DrawableData>();
         var tenPatchDrawables = new Array<DrawableData>();
+        var tvgDrawables = new Array<DrawableData>();
         for (DrawableData drawable : projectData.getAtlasData().getDrawables()) {
             switch (drawable.type) {
                 case TILED:
@@ -721,6 +756,9 @@ public class JsonData implements Json.Serializable {
                     break;
                 case TENPATCH:
                     tenPatchDrawables.add(drawable);
+                    break;
+                case TVG:
+                    tvgDrawables.add(drawable);
                     break;
                 case PIXEL:
                     pixelDrawables.add(drawable);
@@ -898,6 +936,19 @@ public class JsonData implements Json.Serializable {
                 json.writeValue("regions", drawable.tenPatchData.regionNames, Array.class, String.class);
                 json.writeValue("playMode", drawable.tenPatchData.playMode);
                 json.writeValue("crushMode", drawable.tenPatchData.crushMode);
+                json.writeObjectEnd();
+            }
+            json.writeObjectEnd();
+        }
+        
+        //tvg drawables
+        if (tvgDrawables.size > 0) {
+            String className = TinyVGDrawable.class.getName();
+            json.writeObjectStart(className);
+            for (DrawableData drawable : tvgDrawables) {
+                json.writeObjectStart(drawable.name);
+                json.writeValue("file", drawable.file.name());
+                json.writeValue("clipBasedOnTVGsize", drawable.tvgData.clipBasedOnTVGsize);
                 json.writeObjectEnd();
             }
             json.writeObjectEnd();

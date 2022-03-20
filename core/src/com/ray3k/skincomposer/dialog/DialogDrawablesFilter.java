@@ -161,6 +161,17 @@ public class DialogDrawablesFilter extends Dialog {
         });
     
         subTable.row();
+        checkBox = new CheckBox("TinyVG", skin);
+        checkBox.setChecked(this.filterOptions.tvg);
+        subTable.add(checkBox);
+        checkBox.addListener(handListener);
+        checkBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                DialogDrawablesFilter.this.filterOptions.tvg = ((CheckBox) actor).isChecked();
+            }
+        });
+        
         checkBox = new CheckBox("Hidden", skin);
         checkBox.setChecked(this.filterOptions.hidden);
         subTable.add(checkBox);

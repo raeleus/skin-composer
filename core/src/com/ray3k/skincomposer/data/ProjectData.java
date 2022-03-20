@@ -812,8 +812,16 @@ public class ProjectData implements Json.Serializable {
         return (boolean) preferences.get("export-fonts", true);
     }
     
-    public void setExportingFonts(boolean exportAtlas) {
-        preferences.put("export-fonts", exportAtlas);
+    public void setExportingFonts(boolean exportFonts) {
+        preferences.put("export-fonts", exportFonts);
+    }
+    
+    public boolean isExportingTVG() {
+        return (boolean) preferences.get("export-tvg", true);
+    }
+    
+    public void setExportingTVG(boolean exportTVG) {
+        preferences.put("export-tvg", exportTVG);
     }
     
     public boolean isExportingHex() {

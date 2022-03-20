@@ -140,25 +140,7 @@ public class RootTable extends Table {
         previewResizeWidget.setResizingFromCenter(true);
         previewResizeWidget.setAllowDragging(false);
     
-        var cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
-        var resizeFourArrowListener = new ResizeFourArrowListener(cursor);
-        previewResizeWidget.getBottomLeftHandle().addListener(resizeFourArrowListener);
-        previewResizeWidget.getTopRightHandle().addListener(resizeFourArrowListener);
-    
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_nw"), 16, 16);
-        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
-        previewResizeWidget.getTopLeftHandle().addListener(resizeFourArrowListener);
-        previewResizeWidget.getBottomRightHandle().addListener(resizeFourArrowListener);
-    
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_vertical"), 16, 16);
-        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
-        previewResizeWidget.getBottomHandle().addListener(resizeFourArrowListener);
-        previewResizeWidget.getTopHandle().addListener(resizeFourArrowListener);
-    
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_horizontal"), 16, 16);
-        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
-        previewResizeWidget.getLeftHandle().addListener(resizeFourArrowListener);
-        previewResizeWidget.getRightHandle().addListener(resizeFourArrowListener);
+        Utils.applyResizeArrowListener(previewResizeWidget);
     }
 
     public void populate() {

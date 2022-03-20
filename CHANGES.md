@@ -1,4 +1,5 @@
 ### Skin Composer Version 47 ###
+* Added TinyVGDrawable as a drawable option. A custom serializer must be implmented to read TinyVG from a skin JSON.
 * TenPatch editor background color can be changed by adjusting the preview background color.
 * TenPatch settings editor can also set the background color.
 * Refresh button and F5 keyboard shortcut is added to the Drawables dialog to reload all images.

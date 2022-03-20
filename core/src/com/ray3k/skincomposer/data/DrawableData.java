@@ -25,6 +25,8 @@ package com.ray3k.skincomposer.data;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.ray3k.skincomposer.dialog.DialogTVG;
+import com.ray3k.skincomposer.dialog.DialogTVG.TvgData;
 import com.ray3k.skincomposer.dialog.DialogTenPatch;
 import com.ray3k.skincomposer.utils.Utils;
 
@@ -33,7 +35,8 @@ public class DrawableData {
         TINTED("Tinted", "button-colorwheel"), TINTED_FROM_COLOR_DATA("Tinted", "button-swatches"),
         TILED("Tiled", "button-tiles"), TENPATCH("TenPatch", "button-tenpatch"),
         TEXTURE("Texture", "icon-texture"), NINE_PATCH("NinePatch", "icon-ninepatch"),
-        CUSTOM("Custom", "icon-custom"), FONT("Font", "icon-font"), PIXEL("Pixel", "icon-pixel");
+        CUSTOM("Custom", "icon-custom"), FONT("Font", "icon-font"), PIXEL("Pixel", "icon-pixel"),
+        TVG("TinyVG", "icon-tvg");
         
         public String formattedName;
         public String iconName;
@@ -58,14 +61,19 @@ public class DrawableData {
     public float minHeight;
     public boolean customized;
     public DialogTenPatch.TenPatchData tenPatchData;
+    public DialogTVG.TvgData tvgData;
     public DrawableType type;
     public boolean hidden;
 
     public DrawableData(FileHandle file) {
         this.file = file;
-        Color temp = Utils.averageEdgeColor(file);
-        if (Utils.brightness(temp) > .5f) {
-            bgColor = Color.BLACK;
+        if (Utils.isBitmap(file.name())) {
+            Color temp = Utils.averageEdgeColor(file);
+            if (Utils.brightness(temp) > .5f) {
+                bgColor = Color.BLACK;
+            } else {
+                bgColor = Color.WHITE;
+            }
         } else {
             bgColor = Color.WHITE;
         }
@@ -87,6 +95,7 @@ public class DrawableData {
     public DrawableData() {
         minWidth = -1;
         minHeight = -1;
+        bgColor = Color.WHITE;
     }
     
     public DrawableData(DrawableData drawableData) {
@@ -106,6 +115,10 @@ public class DrawableData {
         if (drawableData.tenPatchData != null) {
             if (tenPatchData == null) tenPatchData = new DialogTenPatch.TenPatchData();
             this.tenPatchData.set(drawableData.tenPatchData);
+        }
+        if (drawableData.tvgData != null) {
+            if (tvgData == null) tvgData = new TvgData();
+            this.tvgData.set(drawableData.tvgData);
         }
         this.type = drawableData.type;
         this.hidden = drawableData.hidden;
