@@ -134,7 +134,8 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         var g = (Lwjgl3Graphics) graphics;
         var mode = g.getDisplayMode();
         var window = g.getWindow();
-        window.setPosition(mode.width / 2 - g.getWidth() / 2, mode.height / 2 - g.getHeight() / 2);
+        var monitor = g.getMonitor();
+        window.setPosition(monitor.virtualX + mode.width / 2 - g.getWidth() / 2, monitor.virtualY + mode.height / 2 - g.getHeight() / 2);
     }
 
     @Override
