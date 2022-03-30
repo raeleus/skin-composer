@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2021 Raymond Buckley.
+ * Copyright 2022 Raymond Buckley.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ package com.ray3k.skincomposer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -63,6 +64,7 @@ public class TenPatchWidget extends Stack {
     private int newHandleStart;
     private int newHandleEnd;
     private static Label numberLabel;
+    private Color bgColor = new Color(Color.WHITE);
     
     public static enum GridMode {
         NONE, LIGHT, DARK
@@ -235,6 +237,14 @@ public class TenPatchWidget extends Stack {
         this.gridMode = gridMode;
     }
     
+    public Color getBgColor() {
+        return bgColor;
+    }
+    
+    public void setBgColor(Color bgColor) {
+        this.bgColor.set(bgColor);
+    }
+    
     public TenPatchWidgetStyle getStyle() {
         return style;
     }
@@ -258,7 +268,7 @@ public class TenPatchWidget extends Stack {
         public Drawable modeSwitchOffOver;
     }
     
-    private static class TenPatchDisplay extends Widget {
+    private class TenPatchDisplay extends Widget {
         private TenPatchWidgetStyle style;
         private TenPatchWidget widget;
 
@@ -791,6 +801,9 @@ public class TenPatchWidget extends Stack {
         }
         
         private void drawTiles(Batch batch) {
+            var oldColor = new Color(batch.getColor());
+            batch.setColor(bgColor);
+            System.out.println("bgColor = " + bgColor);
             if (MathUtils.isEqual(1f, widget.getZoomScale())) {
                 style.gridLight.draw(batch, getX(), getY(), getWidth(), getHeight());
             } else {
@@ -805,6 +818,7 @@ public class TenPatchWidget extends Stack {
                     even = !even;
                 }
             }
+            batch.setColor(oldColor);
         }
         
         private void drawRegion(Batch batch) {

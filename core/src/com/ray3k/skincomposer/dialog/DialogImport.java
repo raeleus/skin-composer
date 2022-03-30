@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021 Raymond Buckley.
+ * Copyright (c) 2022 Raymond Buckley.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -236,13 +236,8 @@ public class DialogImport extends Dialog {
     }
     
     private void showFileBrowser() {
-        String[] filterPatterns = null;
-        if (!Utils.isMac()) {
-            filterPatterns = new String[] {"*.json"};
-        }
-
         TextField textField  = findActor("path");
-        var file = desktopWorker.openDialog("Import skin...", textField.getText(), filterPatterns, "Json files");
+        var file = desktopWorker.openDialog("Import skin...", textField.getText(), "json", "Json files");
         if (file != null) {
             var fileHandle = new FileHandle(file);
             

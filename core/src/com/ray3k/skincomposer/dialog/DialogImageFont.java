@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021 Raymond Buckley.
+ * Copyright (c) 2022 Raymond Buckley.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -679,12 +679,7 @@ public class DialogImageFont extends Dialog {
                 defaultPath = textField.getText();
             }
 
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[]{"*.png;*.jpg"};
-            }
-
-            File file = desktopWorker.openDialog("Select image file...", defaultPath, filterPatterns, "Image files");
+            File file = desktopWorker.openDialog("Select image file...", defaultPath, "png,jpg", "Image files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     FileHandle fileHandle = new FileHandle(file);
@@ -736,12 +731,7 @@ public class DialogImageFont extends Dialog {
                     defaultPath = textField.getText();
                 }
 
-                String[] filterPatterns = null;
-                if (!Utils.isMac()) {
-                    filterPatterns = new String[]{"*.fnt"};
-                }
-
-                File file = desktopWorker.saveDialog("Save as font file...", defaultPath, filterPatterns, "Font files");
+                File file = desktopWorker.saveDialog("Save as font file...", defaultPath, "fnt", "Font files");
                 if (file != null) {
                     var fileHandle = new FileHandle(file);
                     if (!fileHandle.extension().equalsIgnoreCase("fnt")) {
@@ -772,12 +762,7 @@ public class DialogImageFont extends Dialog {
         Runnable runnable = () -> {
             String defaultPath = projectData.getLastFontPath();
 
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[]{"*.imagefont"};
-            }
-
-            File file = desktopWorker.saveDialog("Save Image Font Settings...", defaultPath, filterPatterns, "Imagefont files");
+            File file = desktopWorker.saveDialog("Save Image Font Settings...", defaultPath, "imagefont", "Imagefont files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     var fileHandle = new FileHandle(file);
@@ -836,12 +821,7 @@ public class DialogImageFont extends Dialog {
             Gdx.app.postRunnable(() -> {
                 String defaultPath = projectData.getLastFontPath();
 
-                String[] filterPatterns = null;
-                if (!Utils.isMac()) {
-                    filterPatterns = new String[]{"*.imagefont"};
-                }
-
-                File file = desktopWorker.openDialog("Load Image Font Settings...", defaultPath, filterPatterns, "Imagefont files");
+                File file = desktopWorker.openDialog("Load Image Font Settings...", defaultPath, "imagefont", "Imagefont files");
                 if (file != null) {
                     FileHandle fileHandle = new FileHandle(file);
                     loadSettings(fileHandle);

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021 Raymond Buckley.
+ * Copyright (c) 2022 Raymond Buckley.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.data.JsonData.ExportFormat;
@@ -112,6 +113,18 @@ public class DialogExport extends Dialog {
                 projectData.setExportingFonts(fontCheckBox.isChecked());
             }
         });
+    
+        getContentTable().row();
+        var tvgCheckBox = new CheckBox("Copy tvg files to destination", skin);
+        tvgCheckBox.setChecked(projectData.isExportingTVG());
+        getContentTable().add(tvgCheckBox);
+        tvgCheckBox.addListener(handListener);
+        tvgCheckBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                projectData.setExportingFonts(tvgCheckBox.isChecked());
+            }
+        });
         
         getContentTable().row();
         var simpleNamesCheckBox = new CheckBox("Export with simple names", skin);
@@ -176,13 +189,8 @@ public class DialogExport extends Dialog {
     }
     
     private void showFileBrowser() {
-        String[] filterPatterns = null;
-        if (!Utils.isMac()) {
-             filterPatterns = new String[] {"*.json"};
-        }
-
         TextField textField  = findActor("path");
-        var file = desktopWorker.saveDialog("Export skin...", textField.getText(), filterPatterns, "Json files");
+        var file = desktopWorker.saveDialog("Export skin...", textField.getText(), "json", "Json files");
         if (file != null) {
             var fileHandle = new FileHandle(file);
             if (fileHandle.extension().equals("")) {
@@ -240,6 +248,14 @@ public class DialogExport extends Dialog {
                     for (FreeTypeFontData font : projectData.getJsonData().getFreeTypeFonts()) {
                         if (font.useCustomSerializer && !font.file.parent().equals(fileHandle.parent())) {
                             font.file.copyTo(fileHandle.parent());
+                        }
+                    }
+                }
+    
+                if (projectData.isExportingTVG()) {
+                    for (DrawableData drawableData : projectData.getAtlasData().getDrawables()) {
+                        if (!drawableData.file.parent().equals(fileHandle.parent())) {
+                            drawableData.file.copyTo(fileHandle.parent());
                         }
                     }
                 }

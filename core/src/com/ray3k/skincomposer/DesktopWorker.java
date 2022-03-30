@@ -1,7 +1,7 @@
 /*******************************************************************************
  * MIT License
  * 
- * Copyright (c) 2021 Raymond Buckley
+ * Copyright (c) 2022 Raymond Buckley
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,9 +41,9 @@ public interface DesktopWorker {
     void removeFilesDroppedListener(FilesDroppedListener filesDroppedListener);
     void setCloseListener(CloseListener closeListener);
     void attachLogListener();
-    List<File> openMultipleDialog(String title, String defaultPath, String[] filterPatterns, String filterDescription);
-    File openDialog(String title, String defaultPath, String[] filterPatterns, String filterDescription);
-    File saveDialog(String title, String defaultPath, String[] filterPatterns, String filterDescription);
+    List<File> openMultipleDialog(String title, String defaultPath, String filterPatterns, String filterDescription);
+    File openDialog(String title, String defaultPath, String filterPatterns, String filterDescription);
+    File saveDialog(String title, String defaultPath, String filterPatterns, String filterDescription);
     char getKeyName(int keyCode);
     void writeFont(FreeTypeBitmapFontData data, Array<PixmapPacker.Page> pages, FileHandle target);
 }

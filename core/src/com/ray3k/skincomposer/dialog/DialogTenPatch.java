@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2021 Raymond Buckley.
+ * Copyright 2022 Raymond Buckley.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -287,11 +287,7 @@ public class DialogTenPatch extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Runnable runnable = () -> {
-                    String[] filterPatterns = null;
-                    if (!Utils.isMac()) {
-                        filterPatterns = new String[]{"*.png"};
-                    }
-                    var file = desktopWorker.saveDialog("Save as 9patch...", projectData.getLastDrawablePath(), filterPatterns, "Image files");
+                    var file = desktopWorker.saveDialog("Save as 9patch...", projectData.getLastDrawablePath(), "png", "Image files");
                     if (file != null) {
                         Gdx.app.postRunnable(() -> {
                             var fileHandle = new FileHandle(file);
@@ -477,11 +473,7 @@ public class DialogTenPatch extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Runnable runnable = () -> {
-                    String[] filterPatterns = null;
-                    if (!Utils.isMac()) {
-                        filterPatterns = new String[]{"*.9.png"};
-                    }
-                    var file = desktopWorker.openDialog("Load patches from file...", projectData.getLastDrawablePath(), filterPatterns, "Nine patch files");
+                    var file = desktopWorker.openDialog("Load patches from file...", projectData.getLastDrawablePath(), "9.png", "Nine patch files");
                     if (file != null) {
                         Gdx.app.postRunnable(() -> {
                             var fileHandle = new FileHandle(file);
@@ -666,6 +658,7 @@ public class DialogTenPatch extends Dialog {
                         bottom.setColor(colorData.color);
                     }
                     updatePreview();
+                    tenPatchWidget.setBgColor(bottom.getColor());
                 }, null);
             
             }

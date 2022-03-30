@@ -1,7 +1,7 @@
 /*******************************************************************************
  * MIT License
  * 
- * Copyright (c) 2021 Raymond Buckley
+ * Copyright (c) 2022 Raymond Buckley
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -961,12 +961,7 @@ public class DialogFonts extends Dialog {
                 }
             }
 
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[]{"*.fnt"};
-            }
-
-            List<File> files = desktopWorker.openMultipleDialog("Choose font file(s)...", defaultPath, filterPatterns, "Font files (*.fnt)");
+            List<File> files = desktopWorker.openMultipleDialog("Choose font file(s)...", defaultPath, "fnt", "Font files (*.fnt)");
             if (files != null && files.size() > 0) {
                 Gdx.app.postRunnable(() -> {
                     FileHandle fileHandle = new FileHandle(files.get(0).getParentFile());
@@ -1048,6 +1043,7 @@ public class DialogFonts extends Dialog {
                 refreshTable();
                 
                 desktopWorker.addFilesDroppedListener(filesDroppedListener);
+                dialogFactory.showTipFreeType();
             }
 
             @Override

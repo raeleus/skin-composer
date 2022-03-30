@@ -934,7 +934,7 @@ public class DialogSceneComposerJavaBuilder {
                 variables.removeValue(pair1.name, false);
                 usedVariables.add(pair1.name);
             }
-            WidgetNamePair pair2 = createWidget(splitPane.childFirst, variables, usedVariables, classNameGetter);
+            WidgetNamePair pair2 = createWidget(splitPane.childSecond, variables, usedVariables, classNameGetter);
             if (pair2 != null) {
                 builder.add("\n");
                 builder.add(pair2.codeBlock);

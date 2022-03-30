@@ -1,3 +1,18 @@
+### Skin Composer Version 47 ###
+* Added TinyVGDrawable as a drawable option. A custom serializer must be implemented to read TinyVG from a skin JSON.
+* TenPatch editor background color can be changed by adjusting the preview background color.
+* TenPatch settings editor can also set the background color.
+* Refresh button and F5 keyboard shortcut is added to the Drawables dialog to reload all images.
+* Custom preview sizes are persisted from session to session.
+* Fixed background color of FreeType font not being set correctly when the font is edited.
+* Fixed file dialogs not opening on various platforms.
+* Fixed SceneComposer exporting SplitPane incorrectly.
+* Fixed crash when pressing enter or escape in the FreeType dialog.
+* Fixed color of TenPatch preview being changed even when user chooses cancel.
+* Fixed scroll focus not being set correctly with long lists of styles.
+* Fixed app centering and resizing on the wrong monitor on startup.
+* Minor UI changes and bug fixes.
+
 ### Skin Composer Version 46 ###
 * Added CrushMode options to TenPatch.
 * Added resizable preview to the "More Settings" dialog of TenPatch.

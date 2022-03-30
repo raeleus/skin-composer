@@ -1,7 +1,7 @@
 /*******************************************************************************
  * MIT License
  *
- * Copyright (c) 2021 Raymond Buckley
+ * Copyright (c) 2022 Raymond Buckley
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap.Values;
@@ -50,6 +53,7 @@ import com.ray3k.skincomposer.UndoableManager.CustomDrawableUndoable;
 import com.ray3k.skincomposer.UndoableManager.DrawableUndoable;
 import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.data.DrawableData.DrawableType;
+import com.ray3k.skincomposer.dialog.DialogTVG.TvgData;
 import com.ray3k.skincomposer.dialog.DialogTenPatch.TenPatchData;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.PopTableClickListener;
@@ -82,6 +86,7 @@ public class DialogDrawables extends Dialog {
     private boolean showingOptions;
     public final static FilterOptions filterOptions = new FilterOptions();
     private FilterInputListener filterInputListener;
+    public boolean showTipTVG;
     
     public interface DialogDrawablesListener {
         void confirmed(DrawableData drawable, DialogDrawables dialog);
@@ -122,6 +127,24 @@ public class DialogDrawables extends Dialog {
         
         this.listener = listener;
         
+        addListener(new InputListener() {
+            /**
+             * Called when a key goes down. When true is returned, the event is {@link
+             * Event#handle() handled}.
+             *
+             * @param event
+             * @param keycode
+             */
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Keys.F5) {
+                    reloadAtlas();
+                    return true;
+                }
+                return false;
+            }
+        });
+        
         filesDroppedListener = (Array<FileHandle> files) -> {
             Iterator<FileHandle> iter = files.iterator();
             while (iter.hasNext()) {
@@ -129,12 +152,14 @@ public class DialogDrawables extends Dialog {
                 if (file.isDirectory()) {
                     files.addAll(file.list());
                     iter.remove();
-                } else if (!(file.name().toLowerCase().endsWith(".png") || file.name().toLowerCase().endsWith(".jpg") || file.name().toLowerCase().endsWith(".jpeg") || file.name().toLowerCase().endsWith(".bmp") || file.name().toLowerCase().endsWith(".gif"))) {
+                } else if (!(file.name().toLowerCase().endsWith(".png") || file.name().toLowerCase().endsWith(".jpg")
+                        || file.name().toLowerCase().endsWith(".jpeg") || file.name().toLowerCase().endsWith(".bmp")
+                        || file.name().toLowerCase().endsWith(".gif") || file.name().toLowerCase().endsWith("tvg"))) {
                     iter.remove();
                 }
             }
             
-            var filesLimited = new Array<FileHandle>(files);
+            var filesLimited = new Array<>(files);
             iter = filesLimited.iterator();
             while (iter.hasNext()) {
                 var file = iter.next();
@@ -213,6 +238,11 @@ public class DialogDrawables extends Dialog {
             }
         });
         
+        button = new Button(getSkin(), "refresh");
+        button.setName("refresh");
+        Utils.onChange(button, () -> reloadAtlas());
+        table.add(button);
+        
         table.add("Sort:");
         
         sortSelectBox = new SelectBox(getSkin());
@@ -283,6 +313,23 @@ public class DialogDrawables extends Dialog {
                 return false;
             }
         });
+    }
+    
+    private void reloadAtlas() {
+        dialogFactory.showDialogLoading(() -> Gdx.app.postRunnable(() -> {
+            try {
+                FileHandle defaultsFile = Main.appFolder.child("texturepacker/atlas-internal-settings.json");
+                projectData.getAtlasData().writeAtlas(defaultsFile);
+                projectData.getAtlasData().atlasCurrent = true;
+                atlasData.produceAtlas();
+                sortBySelectedMode();
+            } catch (Exception e) {
+                dialogFactory.showDialogError("Error", "Unable to write texture atlas to temporary storage!", null);
+                Gdx.app.error(getClass().getName(), "Unable to write texture atlas to temporary storage!", e);
+                dialogFactory.showDialogError("Atlas Error...",
+                        "Unable to write texture atlas to temporary storage.\n\nOpen log?");
+            }
+        }));
     }
     
     public class AddClickListener extends PopTableClickListener {
@@ -401,6 +448,10 @@ public class DialogDrawables extends Dialog {
             } else {
                 refreshDrawableDisplayNormal();
             }
+        }
+        if (showTipTVG) {
+            dialogFactory.showTipTVG();
+            showTipTVG = false;
         }
     }
     
@@ -682,6 +733,7 @@ public class DialogDrawables extends Dialog {
                                     getStage().setScrollFocus(scrollPane);
                                     desktopWorker.addFilesDroppedListener(filesDroppedListener);
                                     refreshDrawableDisplay();
+                                    dialogFactory.showTipTenPatch();
                                 }
                 
                                 @Override
@@ -932,6 +984,74 @@ public class DialogDrawables extends Dialog {
                         }
                     });
     
+                    break;
+                case TVG:
+                    //settings
+                    button = new ImageTextButton("Settings", getSkin(), "settings-small");
+                    button.getLabelCell().expandX().left();
+                    root.add(button);
+                    root.row();
+                    button.addListener(hideListener);
+                    button.addListener(handListener);
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            var drawableData = new DrawableData(drawable);
+                
+                            desktopWorker.removeFilesDroppedListener(filesDroppedListener);
+                            dialogFactory.showDialogTVG(drawable, false, new DialogTVG.DialogTvgListener() {
+                                @Override
+                                public void selected(DrawableData drawableData) {
+                                    drawable.set(drawableData);
+                                    projectData.setChangesSaved(false);
+                                    gatherDrawables();
+                                    atlasData.produceAtlas();
+                                    sortBySelectedMode();
+                                    getStage().setScrollFocus(scrollPane);
+                                    desktopWorker.addFilesDroppedListener(filesDroppedListener);
+                                    refreshDrawableDisplay();
+                                }
+                    
+                                @Override
+                                public void cancelled() {
+                                    desktopWorker.addFilesDroppedListener(filesDroppedListener);
+                                    refreshDrawableDisplay();
+                                }
+                            });
+                        }
+                    });
+        
+                    //duplicate button for an existing ten patch
+                    button = new ImageTextButton("Duplicate", getSkin(), "duplicate-small");
+                    button.getLabelCell().expandX().left();
+                    root.add(button);
+                    root.row();
+                    button.addListener(handListener);
+                    button.addListener(hideListener);
+                    button.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            var drawableData = new DrawableData();
+                            drawableData.set(drawable);
+                
+                            dialogFactory.showDuplicateDialog("Duplicate Ten Patch Drawable", "Please enter the name of the duplicated ten patch drawable", drawable.name, new DialogFactory.InputDialogListener() {
+                                @Override
+                                public void confirmed(String text) {
+                                    drawableData.name = text;
+                                    atlasData.getDrawables().add(drawableData);
+                                    gatherDrawables();
+                                    atlasData.produceAtlas();
+                                    sortBySelectedMode();
+                                }
+                    
+                                @Override
+                                public void cancelled() {
+                        
+                                }
+                            });
+                        }
+                    });
+        
                     break;
             }
     
@@ -1605,6 +1725,13 @@ public class DialogDrawables extends Dialog {
                     continue;
                 }
             }
+            
+            if (!filterOptions.tvg) {
+                if (drawable.type == DrawableType.TVG) {
+                    iter.remove();
+                    continue;
+                }
+            }
     
             if (!filterOptions.pixel) {
                 if (drawable.type == DrawableType.PIXEL) {
@@ -1833,12 +1960,7 @@ public class DialogDrawables extends Dialog {
                 }
             }
 
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[]{"*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif"};
-            }
-
-            List<File> files = desktopWorker.openMultipleDialog("Choose drawable file(s)...", defaultPath, filterPatterns, "Image files");
+            List<File> files = desktopWorker.openMultipleDialog("Choose drawable file(s)...", defaultPath, "png,jpg,jpeg,bmp,gif,tvg", "Image files");
             if (files != null && files.size() > 0) {
                 Gdx.app.postRunnable(() -> {
                     drawablesSelected(files);
@@ -2063,7 +2185,12 @@ public class DialogDrawables extends Dialog {
     private void finalizeDrawables(Array<DrawableData> backup, Array<FileHandle> filesToProcess) {
         for (FileHandle file : filesToProcess) {
             DrawableData data = new DrawableData(file);
-            if (Utils.isNinePatch(file.name())) {
+            if (Utils.isTvg(file.name())) {
+                data.type = DrawableType.TVG;
+                data.file = file;
+                data.tvgData = new TvgData();
+                showTipTVG = true;
+            } else if (Utils.isNinePatch(file.name())) {
                 data.type = DrawableType.NINE_PATCH;
             } else {
                 data.type = DrawableType.TEXTURE;
@@ -2400,6 +2527,7 @@ public class DialogDrawables extends Dialog {
         public boolean tiled = true;
         public boolean custom = true;
         public boolean tenPatch = true;
+        public boolean tvg = true;
         public boolean hidden = false;
         public boolean font = false;
         public boolean regularExpression = false;
@@ -2413,6 +2541,7 @@ public class DialogDrawables extends Dialog {
             tiled = filterOptions.tiled;
             custom = filterOptions.custom;
             tenPatch = filterOptions.tenPatch;
+            tvg = filterOptions.tvg;
             regularExpression = filterOptions.regularExpression;
             name = filterOptions.name;
             hidden = filterOptions.hidden;

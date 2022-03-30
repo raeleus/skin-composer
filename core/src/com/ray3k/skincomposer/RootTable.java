@@ -1,7 +1,7 @@
 /** *****************************************************************************
  * MIT License
  *
- * Copyright (c) 2021 Raymond Buckley
+ * Copyright (c) 2022 Raymond Buckley
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -140,25 +140,7 @@ public class RootTable extends Table {
         previewResizeWidget.setResizingFromCenter(true);
         previewResizeWidget.setAllowDragging(false);
     
-        var cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
-        var resizeFourArrowListener = new ResizeFourArrowListener(cursor);
-        previewResizeWidget.getBottomLeftHandle().addListener(resizeFourArrowListener);
-        previewResizeWidget.getTopRightHandle().addListener(resizeFourArrowListener);
-    
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_nw"), 16, 16);
-        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
-        previewResizeWidget.getTopLeftHandle().addListener(resizeFourArrowListener);
-        previewResizeWidget.getBottomRightHandle().addListener(resizeFourArrowListener);
-    
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_vertical"), 16, 16);
-        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
-        previewResizeWidget.getBottomHandle().addListener(resizeFourArrowListener);
-        previewResizeWidget.getTopHandle().addListener(resizeFourArrowListener);
-    
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_horizontal"), 16, 16);
-        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
-        previewResizeWidget.getLeftHandle().addListener(resizeFourArrowListener);
-        previewResizeWidget.getRightHandle().addListener(resizeFourArrowListener);
+        Utils.applyResizeArrowListener(previewResizeWidget);
     }
 
     public void populate() {
@@ -389,6 +371,7 @@ public class RootTable extends Table {
         table.add(styleBox).padRight(5.0f).minWidth(150.0f);
         styleBox.addListener(handListener);
         styleBox.getDraggableTextList().addListener(handListener);
+        styleBox.getScrollPane().addListener(scrollFocusListener);
 
         button = new Button(getSkin(), "new");
         button.addListener(handListener);
@@ -2320,7 +2303,9 @@ public class RootTable extends Table {
                             case (7):
                                 Actor addWidget = widget;
                                 TraversalTextField widthField = new TraversalTextField("", getSkin());
+                                widthField.setText(Integer.toString(projectData.getPreviewCustomWidth()));
                                 TraversalTextField heightField = new TraversalTextField("", getSkin());
+                                heightField.setText(Integer.toString(projectData.getPreviewCustomHeight()));
                                 widthField.setNextFocus(heightField);
                                 heightField.setNextFocus(widthField);
                                 Dialog dialog = new Dialog("Enter dimensions...", getSkin()) {
@@ -2330,8 +2315,13 @@ public class RootTable extends Table {
                                             previewTable.add(addWidget).size(Integer.parseInt(widthField.getText()), Integer.parseInt(heightField.getText()));
                                             Array<String> items = new Array<>(DEFAULT_SIZES);
                                             items.add(widthField.getText() + "x" + heightField.getText());
-                                            previewProperties.put("sizeX", Integer.parseInt(widthField.getText()));
-                                            previewProperties.put("sizeY", Integer.parseInt(heightField.getText()));
+                                            
+                                            int width = Integer.parseInt(widthField.getText());
+                                            int height = Integer.parseInt(heightField.getText());
+                                            previewProperties.put("sizeX", width);
+                                            previewProperties.put("sizeY", height);
+                                            projectData.setPreviewCustomSize(width, height);
+                                            
                                             previewSizeSelectBox.setItems(items);
                                             previewSizeSelectBox.setSelectedIndex(8);
                                         } else {
@@ -2353,7 +2343,6 @@ public class RootTable extends Table {
                                 dialog.button("Cancel", false);
                                 dialog.key(Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true).key(Keys.ESCAPE, false);
                                 TextButton okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
-                                okButton.setDisabled(true);
                                 okButton.addListener(handListener);
                                 widthField.addListener(ibeamListener);
                                 widthField.addListener(new ChangeListener() {
@@ -2620,7 +2609,7 @@ public class RootTable extends Table {
         table.setBackground(getSkin().getDrawable("status-bar"));
         add(table).growX();
         
-        Label label = new Label("ver. " + Main.VERSION + "    RAY3K.WORDPRESS.COM    © 2021 Raymond \"Raeleus\" Buckley", getSkin());
+        Label label = new Label("ver. " + Main.VERSION + "    RAY3K.WORDPRESS.COM    © 2022 Raymond \"Raeleus\" Buckley", getSkin());
         table.add(label).expandX().right().padRight(25.0f);
     }
 

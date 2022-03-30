@@ -1,7 +1,7 @@
 /*******************************************************************************
  * MIT License
  * 
- * Copyright (c) 2021 Raymond Buckley
+ * Copyright (c) 2022 Raymond Buckley
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,9 +29,15 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
@@ -42,6 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane.SplitPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
@@ -51,20 +58,34 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import com.esotericsoftware.spine.*;
+import com.esotericsoftware.spine.utils.TwoColorPolygonBatch;
 import com.ray3k.skincomposer.data.AtlasData;
 import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.dialog.DialogListener;
+import com.ray3k.skincomposer.dialog.PopFloppy;
+import com.ray3k.skincomposer.dialog.PopFloppy.PopFloppyEventListener;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.FreeTypeSkin;
+import com.ray3k.stripe.PopTable;
 import com.ray3k.stripe.ScrollFocusListener;
 import com.ray3k.tenpatch.TenPatchDrawable;
+import dev.lyze.gdxtinyvg.TinyVG;
+import dev.lyze.gdxtinyvg.TinyVGAssetLoader;
+import dev.lyze.gdxtinyvg.drawers.TinyVGShapeDrawer;
+import dev.lyze.gdxtinyvg.scene2d.TinyVGDrawable;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.util.nfd.NativeFileDialog;
 import space.earlygrey.shapedrawer.GraphDrawer;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
+import static org.lwjgl.system.MemoryUtil.memAllocPointer;
+
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "46";
+    public final static String VERSION = "47";
     public static String newVersion;
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,
@@ -81,7 +102,7 @@ public class Main extends ApplicationAdapter {
     public static Stage stage;
     public static Skin skin;
     public static ScreenViewport viewport;
-    public static ShapeDrawer shapeDrawer;
+    public static TinyVGShapeDrawer shapeDrawer;
     public static GraphDrawer graphDrawer;
     public static DialogFactory dialogFactory;
     public static DesktopWorker desktopWorker;
@@ -102,6 +123,16 @@ public class Main extends ApplicationAdapter {
     public static FileHandle appFolder;
     private String[] args;
     public static Main main;
+    public static SkeletonRenderer skeletonRenderer;
+    public static SkeletonData floppySkeletonData;
+    public static AnimationStateData floppyAnimationStateData;
+    public static TinyVGAssetLoader tinyVGAssetLoader;
+    private static final int SPINE_MAX_VERTS = 32767;
+    private static TinyVGDrawable drawable;
+    public static Cursor cursorNE;
+    public static Cursor cursorNW;
+    public static Cursor cursorVertical;
+    public static Cursor cursorHorizontal;
     
     public Main (String[] args) {
         this.args = args;
@@ -115,11 +146,24 @@ public class Main extends ApplicationAdapter {
         skin = new FreeTypeSkin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
         viewport = new ScreenViewport();
 //        viewport.setUnitsPerPixel(.5f);
-        stage = new Stage(viewport);
+        var batch = new PolygonSpriteBatch();
+        stage = new Stage(viewport, batch);
         Gdx.input.setInputProcessor(stage);
         
-        shapeDrawer = new ShapeDrawer(stage.getBatch(), skin.getRegion("white"));
+        shapeDrawer = new TinyVGShapeDrawer(stage.getBatch(), skin.getRegion("white"));
         graphDrawer = new GraphDrawer(shapeDrawer);
+        
+        tinyVGAssetLoader = new TinyVGAssetLoader();
+        
+        skeletonRenderer = new SkeletonRenderer();
+        var skeletonJson = new SkeletonJson(Main.skin.getAtlas());
+        floppySkeletonData = skeletonJson.readSkeletonData(Gdx.files.internal("spine/floppy.json"));
+        floppyAnimationStateData = new AnimationStateData(floppySkeletonData);
+    
+        cursorNE = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
+        cursorNW = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_nw"), 16, 16);
+        cursorVertical = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_vertical"), 16, 16);
+        cursorHorizontal = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_horizontal"), 16, 16);
         
         initDefaults();
         

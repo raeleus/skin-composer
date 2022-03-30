@@ -26,6 +26,7 @@ public class PopSettings extends PopTable {
     private boolean recentFullPath;
     private boolean allowingUpdates;
     private boolean changedUIscale;
+    private boolean resetTips;
     
     public PopSettings() {
         super(skin, "dialog");
@@ -156,6 +157,14 @@ public class PopSettings extends PopTable {
             });
             textButton.addListener(handListener);
             table.add(textButton);
+            
+            table.row();
+            textButton = new TextButton("Reset all tips", skin);
+            Utils.onChange(textButton, () -> {
+                resetTips = true;
+            });
+            textButton.addListener(handListener);
+            table.add(textButton);
         }
         
         row();
@@ -233,7 +242,7 @@ public class PopSettings extends PopTable {
         add(table);
         
         table.defaults().expandX().left().space(5);
-        var relativeCheckBox = new ImageTextButton("Keep resources relative?", getSkin(), "checkbox");
+        var relativeCheckBox = new ImageTextButton("Keep resources relative", getSkin(), "checkbox");
         relativeCheckBox.setChecked(resourcesRelative);
         relativeCheckBox.addListener(handListener);
         relativeCheckBox.addListener(new ChangeListener() {
@@ -245,7 +254,7 @@ public class PopSettings extends PopTable {
         table.add(relativeCheckBox);
         
         table.row();
-        var welcomeCheckBox = new ImageTextButton("Show welcome screen?", getSkin(), "checkbox");
+        var welcomeCheckBox = new ImageTextButton("Show welcome screen", getSkin(), "checkbox");
         welcomeCheckBox.setChecked(allowingWelcome);
         welcomeCheckBox.addListener(handListener);
         welcomeCheckBox.addListener(new ChangeListener() {
@@ -257,7 +266,7 @@ public class PopSettings extends PopTable {
         table.add(welcomeCheckBox);
         
         table.row();
-        var exportWarningsCheckBox = new ImageTextButton("Show export warnings?", getSkin(), "checkbox");
+        var exportWarningsCheckBox = new ImageTextButton("Show export warnings", getSkin(), "checkbox");
         exportWarningsCheckBox.setChecked(exportWarnings);
         exportWarningsCheckBox.addListener(handListener);
         exportWarningsCheckBox.addListener(new ChangeListener() {
@@ -281,7 +290,7 @@ public class PopSettings extends PopTable {
         table.add(fullPathCheckBox);
 
         table.row();
-        var updatesCheckBox = new ImageTextButton("Check for updates?", getSkin(), "checkbox");
+        var updatesCheckBox = new ImageTextButton("Check for updates", getSkin(), "checkbox");
         updatesCheckBox.setChecked(allowingUpdates);
         updatesCheckBox.addListener(handListener);
         updatesCheckBox.addListener(new ChangeListener() {
@@ -334,6 +343,12 @@ public class PopSettings extends PopTable {
         projectData.setCheckingForUpdates(allowingUpdates);
         undoableManager.clearUndoables();
     
+        if (resetTips) {
+            projectData.setTipTVG(true);
+            projectData.setTipFreeType(true);
+            projectData.setTipTenPatch(true);
+        }
+        
         if (allowingUpdates) {
             Main.checkForUpdates(main);
         } else {

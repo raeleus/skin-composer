@@ -1,7 +1,7 @@
 /*******************************************************************************
  * MIT License
  * 
- * Copyright (c) 2021 Raymond Buckley
+ * Copyright (c) 2022 Raymond Buckley
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -41,10 +42,13 @@ import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.DrawableData.DrawableType;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.tenpatch.TenPatchDrawable;
+import dev.lyze.gdxtinyvg.TinyVG;
+import dev.lyze.gdxtinyvg.scene2d.TinyVGDrawable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.util.Arrays;
 
 import static com.ray3k.skincomposer.Main.*;
 
@@ -239,7 +243,7 @@ public class AtlasData implements Json.Serializable {
         boolean addWhite = false;
         for (DrawableData drawable : drawables) {
             if (drawable.type == DrawableType.PIXEL) addWhite = true;
-            if (drawable.type != DrawableType.CUSTOM && drawable.type != DrawableType.PIXEL) {
+            if (drawable.type != DrawableType.CUSTOM && drawable.type != DrawableType.PIXEL && drawable.type != DrawableType.TVG) {
                 if (!files.contains(drawable.file, false)) {
                     files.add(drawable.file);
                 }
@@ -331,19 +335,52 @@ public class AtlasData implements Json.Serializable {
     /**
      * Returns true if any existing drawable has the indicated name.
      * @param name
+     * @param exclusions
      * @return
      */
-    public boolean checkIfDrawableNameExists(String name) {
+    public boolean checkIfDrawableNameExists(String name, DrawableData... exclusions) {
+        var exclusionArray = new Array<>(exclusions);
         boolean returnValue = false;
         
         for (DrawableData drawable : getDrawables()) {
-            if (drawable.name.equals(name)) {
+            if (!exclusionArray.contains(drawable, true) && drawable.name.equals(name)) {
                 returnValue = true;
                 break;
             }
         }
         
         return returnValue;
+    }
+    
+    /**
+     * Returns true if any existing drawable has the indicated name.
+     * @param name
+     * @return
+     */
+    public boolean checkIfDrawableNameExists(String name) {
+        return checkIfDrawableNameExists(name, null);
+    }
+    
+    /**
+     * Returns true if the drawable name is formatted correctly and is unique
+     * @param name
+     * @param exclusions
+     * @return
+     */
+    public boolean checkIfDrawableNameIsValid(String name, DrawableData exclusions) {
+        if (name == null) return false;
+        if (name.matches("^\\d.*|^-.*|.*\\s.*|.*[^a-zA-Z\\d\\s-_ñáéíóúüÑÁÉÍÓÚÜ].*|^$")) return false;
+        if (checkIfDrawableNameExists(name, exclusions)) return false;
+        return true;
+    }
+    
+    /**
+     * Returns true if the drawable name is formatted correctly and is unique
+     * @param name
+     * @return
+     */
+    public boolean checkIfDrawableNameIsValid(String name) {
+        return checkIfDrawableNameIsValid(name, null);
     }
     
     /**
@@ -402,6 +439,10 @@ public class AtlasData implements Json.Serializable {
                     drawable = ((TextureRegionDrawable) skin.getDrawable("white")).tint(jsonData.getColorByName(data.tintName).color);
                     drawable.setMinWidth(data.minWidth);
                     drawable.setMinHeight(data.minHeight);
+                } else if (data.type == DrawableType.TVG) {
+                    var tvg = tinyVGAssetLoader.load(data.file.read());
+                    var tinyVGDrawable = new TinyVGDrawable(tvg, shapeDrawer);
+                    drawable = tinyVGDrawable;
                 } else if (data.type == DrawableType.TENPATCH) {
                     var region = atlas.findRegion(DrawableData.proper(data.file.name()));
                     drawable = new TenPatchDrawable(data.tenPatchData.horizontalStretchAreas.toArray(),

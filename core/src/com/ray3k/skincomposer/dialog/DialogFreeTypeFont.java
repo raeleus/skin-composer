@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2021 Raymond Buckley.
+ * Copyright (c) 2022 Raymond Buckley.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -153,6 +153,7 @@ public class DialogFreeTypeFont extends Dialog {
             originalData = freeTypeFontData;
         }
         
+        if (data.color != null) previewBGcolor.set(Utils.blackOrWhiteBgColor(jsonData.getColorByName(data.color).color));
         previewStyle = new TextFieldStyle(skin.get("free-type-preview", TextFieldStyle.class));
         previewCursor = (SpriteDrawable) ((TextureRegionDrawable) skin.getDrawable("white")).tint(Color.BLACK);
         previewStyle.cursor = previewCursor;
@@ -169,7 +170,7 @@ public class DialogFreeTypeFont extends Dialog {
         
         updateDisabledFields();
         
-        key(Keys.ESCAPE, false).key(Keys.ENTER, true).key(Keys.NUMPAD_ENTER, true);
+        key(Keys.ESCAPE, ButtonType.CANCEL);
         
         listeners = new Array<>();
         
@@ -353,6 +354,7 @@ public class DialogFreeTypeFont extends Dialog {
         root.row();
         final var previewTable = new Table();
         previewTable.setBackground(getSkin().getDrawable("white"));
+        previewTable.setColor(previewBGcolor);
         root.add(previewTable).growX();
         
         textField = new TextField(previewText, previewStyle);
@@ -496,12 +498,7 @@ public class DialogFreeTypeFont extends Dialog {
                 Runnable runnable = () -> {
                     String defaultPath = projectData.getLastFontPath();
 
-                    String[] filterPatterns = null;
-                    if (!Utils.isMac()) {
-                        filterPatterns = new String[]{"*.ttf", "*.otf"};
-                    }
-
-                    File file = desktopWorker.openDialog("Select Font file...", defaultPath, filterPatterns, "Font Files (*.TTF;*.OTF)");
+                    File file = desktopWorker.openDialog("Select Font file...", defaultPath, "ttf,otf", "Font Files (*.TTF;*.OTF)");
                     if (file != null) {
                         Gdx.app.postRunnable(() -> {
                             FileHandle fileHandle = new FileHandle(file);
@@ -1378,12 +1375,7 @@ public class DialogFreeTypeFont extends Dialog {
         Runnable runnable = () -> {
             String defaultPath = projectData.getLastFontPath();
 
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[]{"*.scmp-font"};
-            }
-
-            File file = desktopWorker.saveDialog("Save Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
+            File file = desktopWorker.saveDialog("Save Bitmap Font settings...", defaultPath, "scmp-font", "Font Settings files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     var fileHandle = new FileHandle(file);
@@ -1476,12 +1468,7 @@ public class DialogFreeTypeFont extends Dialog {
         Runnable runnable = () -> {
             String defaultPath = projectData.getLastFontPath();
 
-            String[] filterPatterns = null;
-            if (!Utils.isMac()) {
-                filterPatterns = new String[]{"*.scmp-font"};
-            }
-
-            File file = desktopWorker.openDialog("Select Bitmap Font settings...", defaultPath, filterPatterns, "Font Settings files");
+            File file = desktopWorker.openDialog("Select Bitmap Font settings...", defaultPath, "scmp-font", "Font Settings files");
             if (file != null) {
                 Gdx.app.postRunnable(() -> {
                     loadSettings(new FileHandle(file));

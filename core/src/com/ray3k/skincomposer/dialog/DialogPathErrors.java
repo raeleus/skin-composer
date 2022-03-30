@@ -1,7 +1,7 @@
 /*******************************************************************************
  * MIT License
  * 
- * Copyright (c) 2021 Raymond Buckley
+ * Copyright (c) 2022 Raymond Buckley
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -137,14 +137,9 @@ public class DialogPathErrors extends Dialog {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event,
                             Actor actor) {
-                        String[] filterPatterns = null;
-                        if (!Utils.isMac()) {
-                            filterPatterns = new String[] {"*.png", "*.jpg", "*.jpeg", "*.bmp", "*.gif"};
-                        }
-                        
                         var defaultPath = drawable.file.parent().exists() ? drawable.file.parent().path() + "/": "";
 
-                        File file = desktopWorker.openDialog("Locate " + drawable.file.name() + "...", defaultPath, filterPatterns, "Image files");
+                        File file = desktopWorker.openDialog("Locate " + drawable.file.name() + "...", defaultPath, "png,jpg,jpeg,bmp,gif", "Image files");
                         if (file != null) {
                             FileHandle fileHandle = new FileHandle(file);
                             drawable.file = fileHandle;
@@ -211,14 +206,9 @@ public class DialogPathErrors extends Dialog {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event,
                             Actor actor) {
-                        String[] filterPatterns = null;
-                        if (!Utils.isMac()) {
-                            filterPatterns = new String[] {"*.fnt"};
-                        }
-                        
                         var defaultPath = font.file.parent().exists() ? font.file.parent().path() + "/": "";
 
-                        File file = desktopWorker.openDialog("Locate " + font.file.name() + "...", defaultPath, filterPatterns, "Font files");
+                        File file = desktopWorker.openDialog("Locate " + font.file.name() + "...", defaultPath, "fnt", "Font files");
                         if (file != null) {
                             FileHandle fileHandle = new FileHandle(file);
                             font.file = fileHandle;
@@ -285,14 +275,9 @@ public class DialogPathErrors extends Dialog {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event,
                                         Actor actor) {
-                        String[] filterPatterns = null;
-                        if (!Utils.isMac()) {
-                            filterPatterns = new String[] {"*.ttf", "*.otf"};
-                        }
-                    
                         var defaultPath = font.file.parent().exists() ? font.file.parent().path() + "/": "";
                     
-                        File file = desktopWorker.openDialog("Locate " + font.file.name() + "...", defaultPath, filterPatterns, "Font Files (*.TTF;*.OTF");
+                        File file = desktopWorker.openDialog("Locate " + font.file.name() + "...", defaultPath, "ttf,otf", "Font Files (*.TTF;*.OTF");
                         if (file != null) {
                             FileHandle fileHandle = new FileHandle(file);
                             font.file = fileHandle;

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2021 Raymond Buckley.
+ * Copyright 2022 Raymond Buckley.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,6 +42,8 @@ import com.ray3k.skincomposer.*;
 import com.ray3k.skincomposer.utils.Utils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.util.nfd.NFDPathSet;
+import org.lwjgl.util.nfd.NativeFileDialog;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -55,6 +57,7 @@ import java.util.List;
 
 import static com.ray3k.skincomposer.Main.desktopWorker;
 import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 
 /**
  *
@@ -131,7 +134,8 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         var g = (Lwjgl3Graphics) graphics;
         var mode = g.getDisplayMode();
         var window = g.getWindow();
-        window.setPosition(mode.width / 2 - g.getWidth() / 2, mode.height / 2 - g.getHeight() / 2);
+        var monitor = g.getMonitor();
+        window.setPosition(monitor.virtualX + mode.width / 2 - g.getWidth() / 2, monitor.virtualY + mode.height / 2 - g.getHeight() / 2);
     }
 
     @Override
@@ -212,61 +216,49 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     }
 
     @Override
-    public List<File> openMultipleDialog(String title, String defaultPath,
-            String[] filterPatterns, String filterDescription) {
-        
-        if (useSwing){
-            return showFileChooser(OPEN_MULTIPLE,title,defaultPath, 
-							filterPatterns, filterDescription);
+    public List<File> openMultipleDialog(String title, String defaultPath, String filterPatterns, String filterDescription) {
+        if (useSwing) {
+            return showFileChooser(OPEN_MULTIPLE, title, defaultPath, filterPatterns, filterDescription);
         }
-
-
-        String result = null;
-        
+    
+        NFDPathSet outPaths =NFDPathSet.calloc();
+    
         //fix file path characters
         if (Utils.isWindows()) {
             defaultPath = defaultPath.replace("/", "\\");
         } else {
             defaultPath = defaultPath.replace("\\", "/");
         }
-        if (filterPatterns != null && filterPatterns.length > 0) {
-            try (var stack = stackPush()) {
-                var pointerBuffer = stack.mallocPointer(filterPatterns.length);
-
-                for (var filterPattern : filterPatterns) {
-                    pointerBuffer.put(stack.UTF8(filterPattern));
-                }
-                
-                pointerBuffer.flip();
-                result = org.lwjgl.util.tinyfd.TinyFileDialogs.tinyfd_openFileDialog(title, defaultPath, pointerBuffer, filterDescription, true);
-            }
-        } else {
-            result = org.lwjgl.util.tinyfd.TinyFileDialogs.tinyfd_openFileDialog(title, defaultPath, null, filterDescription, true);
-        }
+    
+        try {
+            var status = NativeFileDialog.NFD_OpenDialogMultiple(filterPatterns, defaultPath, outPaths);
         
-        if (result != null) {
-            var paths = result.split("\\|");
-            var returnValue = new ArrayList<File>();
-            for (var path : paths) {
-                returnValue.add(new File(path));
+            if (status == NativeFileDialog.NFD_CANCEL) return null;
+        
+            if (status != NativeFileDialog.NFD_OKAY) {
+                throw new Exception("Could not show open dialog with lwjgl-nfd");
             }
-            return returnValue;
-        } else {
-            return null;
+        
+            ArrayList<File> list = new ArrayList<>();
+            long count = NativeFileDialog.NFD_PathSet_GetCount(outPaths);
+            for (long i = 0; i < count; i++) {
+                String path = NativeFileDialog.NFD_PathSet_GetPath(outPaths, i);
+                list.add(new File(path));
+            }
+            NativeFileDialog.NFD_PathSet_Free(outPaths);
+            return list;
+        } catch (Exception e) {
+            return showFileChooser(OPEN_MULTIPLE, title, defaultPath, filterPatterns, filterDescription);
         }
     }
 
     @Override
-    public File openDialog(String title, String defaultPath,
-            String[] filterPatterns, String filterDescription) {
-        
-        if (useSwing){
-            return showFileChooser(OPEN, title, defaultPath, 
-						filterPatterns, filterDescription).get(0);
+    public File openDialog(String title, String defaultPath, String filterPatterns, String filterDescription) {
+        if (useSwing) {
+            return showFileChooser(OPEN, title, defaultPath, filterPatterns, filterDescription).get(0);
         }
-
-
-        String result = null;
+    
+        PointerBuffer outPath = memAllocPointer(1);
         
         //fix file path characters
         if (Utils.isWindows()) {
@@ -274,79 +266,64 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         } else {
             defaultPath = defaultPath.replace("\\", "/");
         }
-        
-        if (filterPatterns != null && filterPatterns.length > 0) {
-            try (MemoryStack stack = stackPush()) {
-                PointerBuffer pointerBuffer = stack.mallocPointer(filterPatterns.length);
-
-                for (String filterPattern : filterPatterns) {
-                    pointerBuffer.put(stack.UTF8(filterPattern));
-                }
-                
-                pointerBuffer.flip();
-                result = org.lwjgl.util.tinyfd.TinyFileDialogs.tinyfd_openFileDialog(title, defaultPath, pointerBuffer, filterDescription, false);
+    
+        try {
+            var status = NativeFileDialog.NFD_OpenDialog(filterPatterns, defaultPath, outPath);
+    
+            if (status == NativeFileDialog.NFD_CANCEL) return null;
+    
+            if (status != NativeFileDialog.NFD_OKAY) {
+                throw new Exception("Could not show open dialog with lwjgl-nfd");
             }
-        } else {
-            result = org.lwjgl.util.tinyfd.TinyFileDialogs.tinyfd_openFileDialog(title, defaultPath, null, filterDescription, false);
-        }
-        
-        if (result != null) {
+    
+            String result = outPath.getStringUTF8();
+            NativeFileDialog.nNFD_Free(outPath.get(0));
             return new File(result);
-        } else {
-            return null;
+        } catch (Exception e) {
+            return showFileChooser(OPEN, title, defaultPath, filterPatterns, filterDescription).get(0);
         }
     }
     
     @Override
-    public File saveDialog(String title, String defaultPath,
-            String[] filterPatterns, String filterDescription) {
-
-        if (useSwing){
-            return showFileChooser(SAVE, title, defaultPath, 
-						filterPatterns, filterDescription).get(0);
+    public File saveDialog(String title, String defaultPath, String filterPatterns, String filterDescription) {
+        if (useSwing) {
+            return showFileChooser(SAVE, title, defaultPath, filterPatterns, filterDescription).get(0);
         }
-
-
-        String result = null;
-        
+    
+        PointerBuffer outPath = memAllocPointer(1);
+    
         //fix file path characters
         if (Utils.isWindows()) {
             defaultPath = defaultPath.replace("/", "\\");
         } else {
             defaultPath = defaultPath.replace("\\", "/");
         }
+    
+        try {
+            var status = NativeFileDialog.NFD_SaveDialog(filterPatterns, defaultPath, outPath);
         
-        if (filterPatterns != null && filterPatterns.length > 0) {
-            try (var stack = stackPush()) {
-                PointerBuffer pointerBuffer = null;
-                pointerBuffer = stack.mallocPointer(filterPatterns.length);
-
-                for (String filterPattern : filterPatterns) {
-                    pointerBuffer.put(stack.UTF8(filterPattern));
-                }
-                
-                pointerBuffer.flip();
-                result = org.lwjgl.util.tinyfd.TinyFileDialogs.tinyfd_saveFileDialog(title, defaultPath, pointerBuffer, filterDescription);
+            if (status == NativeFileDialog.NFD_CANCEL) return null;
+        
+            if (status != NativeFileDialog.NFD_OKAY) {
+                throw new Exception("Could not show save dialog with lwjgl-nfd");
             }
-        } else {
-            result = org.lwjgl.util.tinyfd.TinyFileDialogs.tinyfd_saveFileDialog(title, defaultPath, null, filterDescription);
-        }
         
-        if (result != null) {
+            String result = outPath.getStringUTF8();
+            NativeFileDialog.nNFD_Free(outPath.get(0));
             return new File(result);
-        } else {
-            return null;
+        } catch (Exception e) {
+            return showFileChooser(SAVE, title, defaultPath, filterPatterns, filterDescription).get(0);
         }
     }
 
 	/* Opens a swing JFileChooser
 	 * returns:
-	 * if multiple selection mode the list of Files selected 
+	 * if multiple selection mode the list of Files selected
 	 * if single selection mode a list with one File Object
 	 * if nothing selected or dialog is cancelled:
 	 *    an empty list
-	*/ 
-    private List<File> showFileChooser(int mode, String title, String defaultPath, String[] filterPatterns, String filterDescription) {
+	*/
+    private List<File> showFileChooser(int mode, String title, String defaultPath, String filterPatterns, String filterDescription) {
 
         JFrame frame= new JFrame();
         frame.setVisible(true);
@@ -357,22 +334,16 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         fileChooser.setDialogTitle(title);
 
         //process filterPatterns
-        if (filterPatterns!=null && filterPatterns.length>0) {
-            if (filterDescription==null){
+        if (filterPatterns != null) {
+            if (filterDescription == null){
                 filterDescription="null";
             }
             
-            //extract extensions from patterns
-            for (int i = 0; i < filterPatterns.length; ++i) {
-                String filter = filterPatterns[i];
-                if (filter.startsWith("*.")) {
-                      filterPatterns[i] = filter.substring(2);
-                }
+            for (var filter : filterPatterns.split(";")) {
+                FileFilter filefilter = new FileNameExtensionFilter(filterDescription, filter.split(","));
+                fileChooser.addChoosableFileFilter(filefilter);
             }
-            
-            FileFilter filter = new FileNameExtensionFilter(filterDescription, filterPatterns);
-            fileChooser.addChoosableFileFilter(filter);
-            fileChooser.setFileFilter(filter);
+            if (fileChooser.getChoosableFileFilters().length > 0) fileChooser.setFileFilter(fileChooser.getChoosableFileFilters()[0]);
         }
 
 
@@ -393,7 +364,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         var returnValue= new ArrayList<File>();
         
         if (res==JFileChooser.APPROVE_OPTION){
-            if (fileChooser.isMultiSelectionEnabled()) 
+            if (fileChooser.isMultiSelectionEnabled())
                 Collections.addAll(returnValue, fileChooser.getSelectedFiles());
             else
                 returnValue.add(fileChooser.getSelectedFile());
@@ -497,7 +468,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
         config.setResizable(true);
         config.useVsync(true);
         config.setWindowedMode(800, 800);
-        config.setBackBufferConfig(8, 8, 8, 8, 16, 0, 10);
+        config.setBackBufferConfig(8, 8, 8, 8, 16, 2, 10);
         var desktopLauncher = new DesktopLauncher();
         config.setWindowListener(desktopLauncher);
         config.setTitle("Skin Composer - New Project*");

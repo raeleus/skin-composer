@@ -1,7 +1,7 @@
 /*******************************************************************************
  * MIT License
  * 
- * Copyright (c) 2021 Raymond Buckley
+ * Copyright (c) 2022 Raymond Buckley
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -233,6 +233,57 @@ public class ProjectData implements Json.Serializable {
     
     public boolean isShowingExportWarnings() {
         return generalPref.getBoolean("exportWarnings", true);
+    }
+    
+    public int getPreviewCustomWidth() {
+        return generalPref.getInteger("previewCustomWidth", 100);
+    }
+    
+    public int getPreviewCustomHeight() {
+        return generalPref.getInteger("previewCustomHeight", 100);
+    }
+    
+    public void setPreviewCustomWidth(int width) {
+        generalPref.putInteger("previewCustomWidth", width);
+        generalPref.flush();
+    }
+    
+    public void setPreviewCustomHeight(int height) {
+        generalPref.putInteger("previewCustomHeight", height);
+        generalPref.flush();
+    }
+    
+    public void setPreviewCustomSize(int width, int height) {
+        generalPref.putInteger("previewCustomWidth", width);
+        generalPref.putInteger("previewCustomHeight", height);
+        generalPref.flush();
+    }
+    
+    public boolean getTipTVG() {
+        return generalPref.getBoolean("tipTVG", true);
+    }
+    
+    public void setTipTVG(boolean showTip) {
+        generalPref.putBoolean("tipTVG", showTip);
+        generalPref.flush();
+    }
+    
+    public boolean getTipFreeType() {
+        return generalPref.getBoolean("tipFreeType", true);
+    }
+    
+    public void setTipFreeType(boolean showTip) {
+        generalPref.putBoolean("tipFreeType", showTip);
+        generalPref.flush();
+    }
+    
+    public boolean getTipTenPatch() {
+        return generalPref.getBoolean("tipTenPatch", true);
+    }
+    
+    public void setTipTenPatch(boolean showTip) {
+        generalPref.putBoolean("tipTenPatch", showTip);
+        generalPref.flush();
     }
     
     public void setExportFormat(ExportFormat exportFormat) {
@@ -761,8 +812,16 @@ public class ProjectData implements Json.Serializable {
         return (boolean) preferences.get("export-fonts", true);
     }
     
-    public void setExportingFonts(boolean exportAtlas) {
-        preferences.put("export-fonts", exportAtlas);
+    public void setExportingFonts(boolean exportFonts) {
+        preferences.put("export-fonts", exportFonts);
+    }
+    
+    public boolean isExportingTVG() {
+        return (boolean) preferences.get("export-tvg", true);
+    }
+    
+    public void setExportingTVG(boolean exportTVG) {
+        preferences.put("export-tvg", exportTVG);
     }
     
     public boolean isExportingHex() {

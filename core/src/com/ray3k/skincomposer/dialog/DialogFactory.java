@@ -1,7 +1,7 @@
 /*******************************************************************************
  * MIT License
  *
- * Copyright (c) 2021 Raymond Buckley
+ * Copyright (c) 2022 Raymond Buckley
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,6 +42,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.dialog.DialogTVG.DialogTvgListener;
+import com.ray3k.skincomposer.dialog.PopFloppy.PopFloppyEventListener;
 import com.ray3k.skincomposer.dialog.PopWelcome.WelcomeListener;
 import com.ray3k.stripe.PopTable;
 import com.ray3k.stripe.Spinner;
@@ -1215,6 +1217,12 @@ public class DialogFactory {
         dialog.show(stage);
     }
     
+    public void showDialogTVG(DrawableData drawableData, boolean newDrawable, DialogTvgListener listener) {
+        var dialog = new DialogTVG(drawableData);
+        dialog.addListener(listener);
+        dialog.show(stage);
+    }
+    
     public void showDuplicateDialog(String title, String message, String defaultText, InputDialogListener listener) {
         var dialog = new Dialog(title, skin, "bg") {
             @Override
@@ -1277,5 +1285,68 @@ public class DialogFactory {
         popTable.addAction(Actions.sequence(Actions.delay(duration), Actions.run(() -> popTable.hide(Actions.fadeOut(.5f)))));
         
         return popTable;
+    }
+    
+    public void showTipTVG() {
+        if (projectData.getTipTVG()) {
+            var pop = new PopFloppy(
+                    "Hey, it looks like you're trying to use a TVG! TinyVGDrawable requires the import of the TinyVG library to use it in your game.",
+                    "Show me how!", "Don't show this message again.");
+            pop.show(stage);
+            pop.addListener(new PopFloppyEventListener() {
+                @Override
+                public void accepted() {
+                    projectData.setTipTVG(false);
+                    Gdx.net.openURI("https://github.com/raeleus/skin-composer/wiki/TinyVG");
+                }
+            
+                @Override
+                public void cancelled() {
+                    projectData.setTipTVG(false);
+                }
+            });
+        }
+    }
+    
+    public void showTipTenPatch() {
+        if (projectData.getTipTenPatch()) {
+            var pop = new PopFloppy(
+                    "Hey, it looks like you're trying to use a TenPatch! TenPatchDrawable requires the import of the TenPatch library to use it in your game.",
+                    "Show me how!", "Don't show this message again.");
+            pop.show(stage);
+            pop.addListener(new PopFloppyEventListener() {
+                @Override
+                public void accepted() {
+                    projectData.setTipTenPatch(false);
+                    Gdx.net.openURI("https://github.com/raeleus/TenPatch#readme");
+                }
+                
+                @Override
+                public void cancelled() {
+                    projectData.setTipTenPatch(false);
+                }
+            });
+        }
+    }
+    
+    public void showTipFreeType() {
+        if (projectData.getTipFreeType()) {
+            var pop = new PopFloppy(
+                    "Hey, it looks like you're trying to use a FreeType font! FreeType requires the import of the Stripe library to be loaded directly from a skin.",
+                    "Show me how!", "Don't show this message again.");
+            pop.show(stage);
+            pop.addListener(new PopFloppyEventListener() {
+                @Override
+                public void accepted() {
+                    projectData.setTipFreeType(false);
+                    Gdx.net.openURI("https://github.com/raeleus/skin-composer/wiki/Creating-FreeType-Fonts#using-a-custom-serializer");
+                }
+                
+                @Override
+                public void cancelled() {
+                    projectData.setTipFreeType(false);
+                }
+            });
+        }
     }
 }
