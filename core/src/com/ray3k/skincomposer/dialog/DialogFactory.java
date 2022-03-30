@@ -1297,7 +1297,7 @@ public class DialogFactory {
                 @Override
                 public void accepted() {
                     projectData.setTipTVG(false);
-                    Gdx.net.openURI("https://github.com/lyze237/gdx-TinyVG#gdx-tinyvg");
+                    Gdx.net.openURI("https://github.com/raeleus/skin-composer/wiki/TinyVG");
                 }
             
                 @Override

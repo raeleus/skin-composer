@@ -308,13 +308,13 @@ public class DialogTVG extends PopTable {
         var subTable = new Table();
         pop.add(subTable);
         
-        label = new Label("See ", skin);
+        label = new Label("See the ", skin);
         subTable.add(label);
         
-        var textButton = new TextButton("TVG on GitHub", skin, "link");
+        var textButton = new TextButton("TinyVG Guide", skin, "link");
         subTable.add(textButton);
         textButton.addListener(handListener);
-        onChange(textButton, () -> Gdx.net.openURI("https://github.com/lyze237/gdx-TinyVG#gdx-tinyvg"));
+        onChange(textButton, () -> Gdx.net.openURI("https://github.com/raeleus/skin-composer/wiki/TinyVG"));
         
         label = new Label(" for more information", skin);
         subTable.add(label);
