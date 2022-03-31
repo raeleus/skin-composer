@@ -15,7 +15,7 @@
 * Create basic Scene2D layouts with Scene Composer
 * VisUI template and sample projects included
 
-Download [here](https://github.com/raeleus/skin-composer/releases).
+# [DOWNLOAD HERE](https://github.com/raeleus/skin-composer/releases) #
 
 ![Skins Preview](docs/images/skins-preview.png)
 
