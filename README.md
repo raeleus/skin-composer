@@ -34,7 +34,7 @@ To run Skin Composer on OSX, please see the [wiki](https://github.com/raeleus/sk
 
 If you are unable to open file dialogs on your platform, try the commandline option -swingfd to switch to Swing dialogs.
 
-Video tutorials are available on [YouTube](https://www.youtube.com/playlist?list=PLl-_-0fPSXFfHiRAFpmLCuQup10MUJwcA)
+Video tutorials are available on [YouTube](https://www.youtube.com/playlist?list=PLl-_-0fPSXFfHiRAFpmLCuQup10MUJwcA).
 
 ### Contributors and Forking ###
 
