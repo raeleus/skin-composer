@@ -1,4 +1,5 @@
 ### Skin Composer Version 48 ###
+* Fixed inability to open TinyVG files with many points.
 
 ### Skin Composer Version 47 ###
 * Added TinyVGDrawable as a drawable option. A custom serializer must be implemented to read TinyVG from a skin JSON.

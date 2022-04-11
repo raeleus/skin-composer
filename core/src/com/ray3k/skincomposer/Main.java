@@ -146,7 +146,7 @@ public class Main extends ApplicationAdapter {
         skin = new FreeTypeSkin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
         viewport = new ScreenViewport();
 //        viewport.setUnitsPerPixel(.5f);
-        var batch = new PolygonSpriteBatch();
+        var batch = new PolygonSpriteBatch(SPINE_MAX_VERTS);
         stage = new Stage(viewport, batch);
         Gdx.input.setInputProcessor(stage);
         
