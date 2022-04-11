@@ -1,3 +1,5 @@
+### Skin Composer Version 48 ###
+
 ### Skin Composer Version 47 ###
 * Added TinyVGDrawable as a drawable option. A custom serializer must be implemented to read TinyVG from a skin JSON.
 * TenPatch editor background color can be changed by adjusting the preview background color.

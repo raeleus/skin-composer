@@ -11,7 +11,7 @@ buildscript {
 allprojects {
     apply plugin: "idea"
 
-    version = '47'
+    version = '48'
     ext {
         appName = "SkinComposer"
         gdxVersion = '1.10.0'
