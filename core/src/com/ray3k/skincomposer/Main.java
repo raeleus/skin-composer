@@ -85,7 +85,7 @@ import space.earlygrey.shapedrawer.ShapeDrawer;
 import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "47";
+    public final static String VERSION = "48";
     public static String newVersion;
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,
@@ -146,7 +146,7 @@ public class Main extends ApplicationAdapter {
         skin = new FreeTypeSkin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
         viewport = new ScreenViewport();
 //        viewport.setUnitsPerPixel(.5f);
-        var batch = new PolygonSpriteBatch();
+        var batch = new PolygonSpriteBatch(SPINE_MAX_VERTS);
         stage = new Stage(viewport, batch);
         Gdx.input.setInputProcessor(stage);
         

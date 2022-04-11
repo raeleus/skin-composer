@@ -1213,7 +1213,11 @@ public class JsonData implements Json.Serializable {
             }
         }
     }
-
+    
+    /**
+     * Called when project is saved to an SCMP file.
+     * @param json
+     */
     @Override
     public void write(Json json) {
         json.writeValue("colors", colors);
@@ -1222,7 +1226,12 @@ public class JsonData implements Json.Serializable {
         json.writeValue("classStyleMap", classStyleMap);
         json.writeValue("customClasses", customClasses, Array.class, CustomClass.class);
     }
-
+    
+    /**
+     * Called when project is opened from an SCMP file.
+     * @param json
+     * @param jsonData
+     */
     @Override
     public void read(Json json, JsonValue jsonData) {
         try {

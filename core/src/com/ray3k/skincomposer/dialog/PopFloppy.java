@@ -55,7 +55,7 @@ public class PopFloppy extends PopTable {
         bubblePop.add(textButton);
         onChange(textButton, () -> {
             hide();
-            fire(new PopFloppyEvent(true));
+            fire(new PopFloppyEvent(false));
         });
         onEnter(textButton, () -> drawable.getAnimationState().setAnimation(0, "sad", true));
         textButton.addListener(handListener);
