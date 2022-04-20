@@ -1,3 +1,6 @@
+###l Skin Composer Version 49 ###
+* 
+
 ### Skin Composer Version 48 ###
 * Fixed inability to open TinyVG files with many points.
 * Fixed clicking "do not show again" on tips opens the webpage anyway.

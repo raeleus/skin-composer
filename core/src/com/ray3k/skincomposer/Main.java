@@ -85,7 +85,7 @@ import space.earlygrey.shapedrawer.ShapeDrawer;
 import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "48";
+    public final static String VERSION = "49";
     public static String newVersion;
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,
