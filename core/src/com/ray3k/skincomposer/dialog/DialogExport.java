@@ -34,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.DrawableData;
+import com.ray3k.skincomposer.data.DrawableData.DrawableType;
 import com.ray3k.skincomposer.data.FontData;
 import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.data.JsonData.ExportFormat;
@@ -254,7 +255,7 @@ public class DialogExport extends Dialog {
     
                 if (projectData.isExportingTVG()) {
                     for (DrawableData drawableData : projectData.getAtlasData().getDrawables()) {
-                        if (!drawableData.file.parent().equals(fileHandle.parent())) {
+                        if (drawableData.type == DrawableType.TVG && !drawableData.file.parent().equals(fileHandle.parent())) {
                             drawableData.file.copyTo(fileHandle.parent());
                         }
                     }
