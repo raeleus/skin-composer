@@ -42,6 +42,7 @@ import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.DrawableData.DrawableType;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.tenpatch.TenPatchDrawable;
+import com.ray3k.tenpatch.TenPatchDrawable.InvalidPatchException;
 import dev.lyze.gdxtinyvg.TinyVG;
 import dev.lyze.gdxtinyvg.scene2d.TinyVGDrawable;
 
@@ -445,13 +446,44 @@ public class AtlasData implements Json.Serializable {
                     drawable = tinyVGDrawable;
                 } else if (data.type == DrawableType.TENPATCH) {
                     var region = atlas.findRegion(DrawableData.proper(data.file.name()));
-                    drawable = new TenPatchDrawable(data.tenPatchData.horizontalStretchAreas.toArray(),
+                    var tenPatchDrawable = new TenPatchDrawable(data.tenPatchData.horizontalStretchAreas.toArray(),
                             data.tenPatchData.verticalStretchAreas.toArray(), data.tenPatchData.tile, region);
-                    if (((TenPatchDrawable) drawable).horizontalStretchAreas.length == 0) {
-                        ((TenPatchDrawable) drawable).horizontalStretchAreas = new int[] {0, region.getRegionWidth() - 1};
+                    
+                    drawable = tenPatchDrawable;
+                    
+                    if (tenPatchDrawable.horizontalStretchAreas.length == 0) {
+                        tenPatchDrawable.horizontalStretchAreas = new int[] {0, region.getRegionWidth() - 1};
                     }
-                    if (((TenPatchDrawable) drawable).verticalStretchAreas.length == 0) {
-                        ((TenPatchDrawable) drawable).verticalStretchAreas = new int[] {0, region.getRegionHeight() - 1};
+                    if (tenPatchDrawable.verticalStretchAreas.length == 0) {
+                        tenPatchDrawable.verticalStretchAreas = new int[] {0, region.getRegionHeight() - 1};
+                    }
+                    
+                    for (int i = 0; i < tenPatchDrawable.horizontalStretchAreas.length; i += 2) {
+                        int area = tenPatchDrawable.horizontalStretchAreas[i];
+                        if (area >= tenPatchDrawable.getRegion().getRegionWidth()) {
+                            tenPatchDrawable.horizontalStretchAreas = Arrays.copyOfRange(tenPatchDrawable.horizontalStretchAreas, 0 , Math.max(i - 2, 0));
+                            break;
+                        }
+                        
+                        area = tenPatchDrawable.horizontalStretchAreas[i + 1];
+                        if (area >= tenPatchDrawable.getRegion().getRegionWidth()) {
+                            tenPatchDrawable.horizontalStretchAreas = Arrays.copyOfRange(tenPatchDrawable.horizontalStretchAreas, 0 , Math.max(i - 2, 0));
+                            break;
+                        }
+                    }
+    
+                    for (int i = 0; i < tenPatchDrawable.verticalStretchAreas.length; i += 2) {
+                        int area = tenPatchDrawable.verticalStretchAreas[i];
+                        if (area >= tenPatchDrawable.getRegion().getRegionWidth()) {
+                            tenPatchDrawable.verticalStretchAreas = Arrays.copyOfRange(tenPatchDrawable.verticalStretchAreas, 0 , Math.max(i - 2, 0));
+                            break;
+                        }
+        
+                        area = tenPatchDrawable.verticalStretchAreas[i + 1];
+                        if (area >= tenPatchDrawable.getRegion().getRegionWidth()) {
+                            tenPatchDrawable.verticalStretchAreas = Arrays.copyOfRange(tenPatchDrawable.verticalStretchAreas, 0 , Math.max(i - 2, 0));
+                            break;
+                        }
                     }
                     
                     drawable.setLeftWidth(data.tenPatchData.contentLeft);

@@ -1,5 +1,6 @@
 ###l Skin Composer Version 49 ###
 * Fixed crash when exporting pixel drawables and unnecessary copying of files.
+* Fixed crash when the source region for a TenPatch is decreased in size.
 
 ### Skin Composer Version 48 ###
 * Fixed inability to open TinyVG files with many points.
