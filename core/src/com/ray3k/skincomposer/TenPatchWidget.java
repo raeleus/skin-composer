@@ -803,7 +803,6 @@ public class TenPatchWidget extends Stack {
         private void drawTiles(Batch batch) {
             var oldColor = new Color(batch.getColor());
             batch.setColor(bgColor);
-            System.out.println("bgColor = " + bgColor);
             if (MathUtils.isEqual(1f, widget.getZoomScale())) {
                 style.gridLight.draw(batch, getX(), getY(), getWidth(), getHeight());
             } else {
