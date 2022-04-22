@@ -1,4 +1,5 @@
 ###l Skin Composer Version 49 ###
+* Prompt user to approve changes to UI scale or revert automatically to the last UI scale that was set.
 * Fixed crash when exporting pixel drawables and unnecessary copying of files.
 * Fixed crash when the source region for a TenPatch is decreased in size.
 

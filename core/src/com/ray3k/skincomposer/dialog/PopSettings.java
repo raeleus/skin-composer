@@ -2,14 +2,14 @@ package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.RootTable;
+import com.ray3k.skincomposer.dialog.PopRevertUIscale.PopRevertEventListener;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.PopTable;
 import com.ray3k.stripe.Spinner;
@@ -187,8 +187,29 @@ public class PopSettings extends PopTable {
             public void changed(ChangeEvent event, Actor actor) {
                 uiScale = (int) slider.getValue();
                 scaleLabel.setText(uiScale + "x");
-                main.resizeUiScale(uiScale, uiScale > 1);
-                changedUIscale = true;
+                
+                if (!slider.isDragging()) {
+                    main.resizeUiScale(uiScale, uiScale > 1);
+                    setHideOnUnfocus(false);
+                    dialogFactory.showRevertUIscale(new PopRevertEventListener() {
+                        @Override
+                        public void accepted() {
+                            changedUIscale = true;
+                            setHideOnUnfocus(true);
+                        }
+    
+                        @Override
+                        public void reverted() {
+                            setHideOnUnfocus(true);
+                            main.resizeUiScale(projectData.getUiScale());
+                            slider.setProgrammaticChangeEvents(false);
+                            slider.setValue(projectData.getUiScale());
+                            uiScale = (int) slider.getValue();
+                            scaleLabel.setText(uiScale + "x");
+                            slider.setProgrammaticChangeEvents(true);
+                        }
+                    });
+                }
             }
         });
         

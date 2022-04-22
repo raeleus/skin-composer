@@ -44,6 +44,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.dialog.DialogTVG.DialogTvgListener;
 import com.ray3k.skincomposer.dialog.PopFloppy.PopFloppyEventListener;
+import com.ray3k.skincomposer.dialog.PopRevertUIscale.PopRevertEventListener;
 import com.ray3k.skincomposer.dialog.PopWelcome.WelcomeListener;
 import com.ray3k.stripe.PopTable;
 import com.ray3k.stripe.Spinner;
@@ -1348,5 +1349,11 @@ public class DialogFactory {
                 }
             });
         }
+    }
+    
+    public void showRevertUIscale(PopRevertEventListener listener) {
+        var pop = new PopRevertUIscale();
+        pop.addListener(listener);
+        pop.show(stage);
     }
 }
