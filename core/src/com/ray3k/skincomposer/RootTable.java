@@ -204,7 +204,7 @@ public class RootTable extends Table {
                 .item("Fonts...", handListener, new MenuBarListener(RootTableEnum.FONTS))
                 .item("Drawables...", handListener, new MenuBarListener(RootTableEnum.DRAWABLES))
                 .item("Refresh Atlas", new KeyboardShortcut("F5", Keys.F5), handListener, new MenuBarListener(RootTableEnum.REFRESH_ATLAS))
-                .item("Scene Composer...", new MenuBarListener(RootTableEnum.SCENE_COMPOSER), handListener, new MenuBarListener(RootTableEnum.SCENE_COMPOSER));
+                .item("Scene Composer...", handListener, new MenuBarListener(RootTableEnum.SCENE_COMPOSER));
         
         bar.menu("Help", handListener)
                 .item("About...", handListener, new MenuBarListener(RootTableEnum.ABOUT));
