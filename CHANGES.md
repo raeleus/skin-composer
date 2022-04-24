@@ -1,5 +1,5 @@
 ### Skin Composer Version 50 ###
-* 
+* Fixed crash when naming a duplicate drawable.
 
 ### Skin Composer Version 49 ###
 * Prompt user to approve changes to UI scale or revert automatically to the last UI scale that was set.

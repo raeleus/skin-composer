@@ -340,7 +340,7 @@ public class AtlasData implements Json.Serializable {
      * @return
      */
     public boolean checkIfDrawableNameExists(String name, DrawableData... exclusions) {
-        var exclusionArray = new Array<>(exclusions);
+        var exclusionArray = exclusions != null ? new Array<>(exclusions) : new Array<DrawableData>();
         boolean returnValue = false;
         
         for (DrawableData drawable : getDrawables()) {
