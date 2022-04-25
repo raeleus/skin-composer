@@ -120,7 +120,7 @@ public class PopTextraTypist extends PopTable {
         
         var typingLabel = new TypingLabel("", KnownFonts.getBitter());
         typingLabel.setWrap(true);
-        
+        table.add(typingLabel).grow();
         
         root.row();
         table = new Table();
