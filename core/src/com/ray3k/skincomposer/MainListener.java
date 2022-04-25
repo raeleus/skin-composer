@@ -255,6 +255,9 @@ public class MainListener extends RootTableListener {
             case SCENE_COMPOSER:
                 showSceneComposer();
                 break;
+            case TEXTRA_TYPIST:
+                showTextraTypist();
+                break;
             case DOWNLOAD_UPDATE:
                 downloadUpdate();
                 break;
@@ -662,6 +665,10 @@ public class MainListener extends RootTableListener {
     
     public void showSceneComposer() {
         dialogFactory.showSceneComposerDialog();
+    }
+    
+    public void showTextraTypist() {
+        dialogFactory.showTextraTypist();
     }
     
     public void downloadUpdate() {

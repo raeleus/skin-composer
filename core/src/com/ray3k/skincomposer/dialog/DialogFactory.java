@@ -826,6 +826,11 @@ public class DialogFactory {
         dialog.show(stage);
     }
     
+    public void showTextraTypist() {
+        var pop = new PopTextraTypist();
+        pop.show(stage);
+    }
+    
     public Dialog showMessageDialog(String title, String text, DialogListener dialogListener) {
         Dialog dialog = new Dialog(title, skin, "bg") {
             @Override

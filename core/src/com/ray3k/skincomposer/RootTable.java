@@ -204,7 +204,8 @@ public class RootTable extends Table {
                 .item("Fonts...", handListener, new MenuBarListener(RootTableEnum.FONTS))
                 .item("Drawables...", handListener, new MenuBarListener(RootTableEnum.DRAWABLES))
                 .item("Refresh Atlas", new KeyboardShortcut("F5", Keys.F5), handListener, new MenuBarListener(RootTableEnum.REFRESH_ATLAS))
-                .item("Scene Composer...", handListener, new MenuBarListener(RootTableEnum.SCENE_COMPOSER));
+                .item("Scene Composer...", handListener, new MenuBarListener(RootTableEnum.SCENE_COMPOSER))
+                .item("TextraTypist Playground...", new MenuBarListener(RootTableEnum.TEXTRA_TYPIST), handListener);
         
         bar.menu("Help", handListener)
                 .item("About...", handListener, new MenuBarListener(RootTableEnum.ABOUT));
@@ -2741,7 +2742,7 @@ public class RootTable extends Table {
         REDO, SETTINGS, COLORS, FONTS, DRAWABLES, ABOUT, CLASS_SELECTED,
         NEW_CLASS, DUPLICATE_CLASS, DELETE_CLASS, RENAME_CLASS, STYLE_SELECTED,
         NEW_STYLE, DUPLICATE_STYLE, DELETE_STYLE, RENAME_STYLE, PREVIEW_PROPERTY,
-        WELCOME, REFRESH_ATLAS, SCENE_COMPOSER, DOWNLOAD_UPDATE, CHECK_FOR_UPDATES_COMPLETE;
+        WELCOME, REFRESH_ATLAS, SCENE_COMPOSER, TEXTRA_TYPIST, DOWNLOAD_UPDATE, CHECK_FOR_UPDATES_COMPLETE;
     }
 
     public static class RootTableEvent extends Event {

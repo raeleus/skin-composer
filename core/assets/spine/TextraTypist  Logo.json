@@ -1,0 +1,387 @@
+{
+"skeleton": { "hash": "TrhgliDB3j4", "spine": "4.0.63", "width": 398, "height": 157, "images": "", "audio": "" },
+"bones": [
+	{ "name": "root" },
+	{ "name": "tt-logo-key", "parent": "root", "length": 10, "x": 69.13, "y": 81.5 },
+	{ "name": "tt-logo-t-cap", "parent": "root", "length": 10, "x": 128.66, "y": 81.5 },
+	{ "name": "tt-logo-e", "parent": "root", "length": 10, "x": 150.34, "y": 81.5 },
+	{ "name": "tt-logo-x", "parent": "root", "length": 10, "x": 173.12, "y": 81.5 },
+	{ "name": "tt-logo-t2", "parent": "root", "length": 10, "x": 190.02, "y": 81.5 },
+	{ "name": "tt-logo-r", "parent": "root", "length": 10, "x": 205.83, "y": 81.5 },
+	{ "name": "tt-logo-a", "parent": "root", "length": 10, "x": 229.34, "y": 81.5 },
+	{ "name": "tt-logo-t-cap2", "parent": "root", "length": 10, "x": 252.13, "y": 81.5 },
+	{ "name": "tt-logo-y", "parent": "root", "length": 10, "x": 276.38, "y": 81.5 },
+	{ "name": "tt-logo-p", "parent": "root", "length": 10, "x": 298.43, "y": 81.5 },
+	{ "name": "tt-logo-i", "parent": "root", "length": 10, "x": 319.01, "y": 81.5 },
+	{ "name": "tt-logo-s", "parent": "root", "length": 10, "x": 335.91, "y": 81.5 },
+	{ "name": "tt-logo-t", "parent": "root", "length": 10, "x": 353.55, "y": 81.5 }
+],
+"slots": [
+	{ "name": "background", "bone": "root", "attachment": "white" },
+	{ "name": "tt-logo", "bone": "root", "color": "000000ff", "dark": "000000" },
+	{ "name": "tt-logo-a", "bone": "tt-logo-a", "attachment": "tt-logo-a" },
+	{ "name": "tt-logo-e", "bone": "tt-logo-e", "attachment": "tt-logo-e" },
+	{ "name": "tt-logo-i", "bone": "tt-logo-i", "attachment": "tt-logo-i" },
+	{ "name": "tt-logo-key", "bone": "tt-logo-key", "attachment": "tt-logo-key" },
+	{ "name": "tt-logo-p", "bone": "tt-logo-p", "attachment": "tt-logo-p" },
+	{ "name": "tt-logo-r", "bone": "tt-logo-r", "attachment": "tt-logo-r" },
+	{ "name": "tt-logo-s", "bone": "tt-logo-s", "attachment": "tt-logo-s" },
+	{ "name": "tt-logo-t", "bone": "tt-logo-t", "attachment": "tt-logo-t" },
+	{ "name": "tt-logo-t2", "bone": "tt-logo-t2", "attachment": "tt-logo-t" },
+	{ "name": "tt-logo-x", "bone": "tt-logo-x", "attachment": "tt-logo-x" },
+	{ "name": "tt-logo-t-cap", "bone": "tt-logo-t-cap", "attachment": "tt-logo-t-cap" },
+	{ "name": "tt-logo-t-cap2", "bone": "tt-logo-t-cap2", "attachment": "tt-logo-t-cap" },
+	{ "name": "tt-logo-y", "bone": "tt-logo-y", "attachment": "tt-logo-y" }
+],
+"skins": [
+	{
+		"name": "default",
+		"attachments": {
+			"background": {
+				"white": {
+					"color": "000000ff",
+					"x": 199,
+					"y": 78.5,
+					"scaleX": 398,
+					"scaleY": 157,
+					"width": 1,
+					"height": 1
+				}
+			},
+			"tt-logo-a": {
+				"tt-logo-a": { "x": 0.16, "y": -1.7, "width": 23, "height": 27 }
+			},
+			"tt-logo-e": {
+				"tt-logo-e": { "x": 0.39, "y": -1.66, "width": 22, "height": 27 }
+			},
+			"tt-logo-i": {
+				"tt-logo-i": { "x": 1, "y": 2.09, "width": 12, "height": 35 }
+			},
+			"tt-logo-key": {
+				"tt-logo-key": { "x": 0.81, "y": -3.11, "width": 68, "height": 69 }
+			},
+			"tt-logo-p": {
+				"tt-logo-p": { "x": 1, "y": -6.85, "width": 25, "height": 37 }
+			},
+			"tt-logo-r": {
+				"tt-logo-r": { "x": 3.39, "y": -1.86, "width": 19, "height": 27 }
+			},
+			"tt-logo-s": {
+				"tt-logo-s": { "x": 0.6, "y": -1.86, "width": 19, "height": 27 }
+			},
+			"tt-logo-t": {
+				"tt-logo-t": { "x": 0.79, "y": 0.64, "width": 16, "height": 32 }
+			},
+			"tt-logo-t-cap": {
+				"tt-logo-t-cap": { "x": 0.69, "y": 1.61, "width": 25, "height": 34 }
+			},
+			"tt-logo-t-cap2": {
+				"tt-logo-t-cap": { "x": 1.2, "y": 1.61, "width": 25, "height": 34 }
+			},
+			"tt-logo-t2": {
+				"tt-logo-t": { "x": 2.08, "y": 0.64, "width": 16, "height": 32 }
+			},
+			"tt-logo-x": {
+				"tt-logo-x": { "x": 0.44, "y": -2.93, "width": 25, "height": 26 }
+			},
+			"tt-logo-y": {
+				"tt-logo-y": { "x": -0.43, "y": -7.52, "width": 26, "height": 36 }
+			}
+		}
+	}
+],
+"animations": {
+	"animation": {
+		"slots": {
+			"tt-logo-a": {
+				"attachment": [
+					{ "name": null },
+					{ "time": 0.6667, "name": "tt-logo-a" }
+				]
+			},
+			"tt-logo-e": {
+				"attachment": [
+					{ "name": null },
+					{ "time": 0.4, "name": "tt-logo-e" }
+				]
+			},
+			"tt-logo-i": {
+				"attachment": [
+					{ "name": null },
+					{ "time": 0.9333, "name": "tt-logo-i" }
+				]
+			},
+			"tt-logo-key": {
+				"rgba": [
+					{ "color": "ffffff00" },
+					{ "time": 0.2667, "color": "ffffffff" }
+				]
+			},
+			"tt-logo-p": {
+				"attachment": [
+					{ "name": null },
+					{ "time": 0.8667, "name": "tt-logo-p" }
+				]
+			},
+			"tt-logo-r": {
+				"attachment": [
+					{ "name": null },
+					{ "time": 0.6, "name": "tt-logo-r" }
+				]
+			},
+			"tt-logo-s": {
+				"attachment": [
+					{ "name": null },
+					{ "time": 1, "name": "tt-logo-s" }
+				]
+			},
+			"tt-logo-t": {
+				"attachment": [
+					{ "name": null },
+					{ "time": 1.0667, "name": "tt-logo-t" }
+				]
+			},
+			"tt-logo-t-cap": {
+				"attachment": [
+					{ "name": null },
+					{ "time": 0.3333, "name": "tt-logo-t-cap" }
+				]
+			},
+			"tt-logo-t-cap2": {
+				"attachment": [
+					{ "name": null },
+					{ "time": 0.7333, "name": "tt-logo-t-cap" }
+				]
+			},
+			"tt-logo-t2": {
+				"attachment": [
+					{ "name": null },
+					{ "time": 0.5333, "name": "tt-logo-t" }
+				]
+			},
+			"tt-logo-x": {
+				"attachment": [
+					{ "name": null },
+					{ "time": 0.4667, "name": "tt-logo-x" }
+				]
+			},
+			"tt-logo-y": {
+				"attachment": [
+					{ "name": null },
+					{ "time": 0.8, "name": "tt-logo-y" }
+				]
+			}
+		},
+		"bones": {
+			"tt-logo-a": {
+				"translate": [
+					{ "time": 0.6667, "y": 5.85, "curve": "stepped" },
+					{ "time": 0.7333, "curve": "stepped" },
+					{ "time": 2.3667 },
+					{ "time": 2.4333, "y": 5.62 },
+					{ "time": 2.5 }
+				]
+			},
+			"tt-logo-e": {
+				"translate": [
+					{ "time": 0.4, "y": 5.85, "curve": "stepped" },
+					{ "time": 0.4667, "curve": "stepped" },
+					{ "time": 2.1333 },
+					{ "time": 2.2, "y": 5.62 },
+					{ "time": 2.2667 }
+				]
+			},
+			"tt-logo-i": {
+				"translate": [
+					{ "time": 0.9333, "y": 5.85, "curve": "stepped" },
+					{ "time": 1, "curve": "stepped" },
+					{ "time": 2.6 },
+					{ "time": 2.6667, "y": 5.62 },
+					{ "time": 2.7333 }
+				]
+			},
+			"tt-logo-p": {
+				"translate": [
+					{ "time": 0.8667, "y": 5.85, "curve": "stepped" },
+					{ "time": 0.9333, "curve": "stepped" },
+					{ "time": 2.5333 },
+					{ "time": 2.6, "y": 5.62 },
+					{ "time": 2.6667 }
+				]
+			},
+			"tt-logo-r": {
+				"translate": [
+					{ "time": 0.6, "y": 5.85, "curve": "stepped" },
+					{ "time": 0.6667, "curve": "stepped" },
+					{ "time": 2.3333 },
+					{ "time": 2.3667, "y": 5.62 },
+					{ "time": 2.4333 }
+				]
+			},
+			"tt-logo-s": {
+				"translate": [
+					{ "time": 1, "y": 5.85, "curve": "stepped" },
+					{ "time": 1.0667, "curve": "stepped" },
+					{ "time": 2.6667 },
+					{ "time": 2.7333, "y": 5.62 },
+					{ "time": 2.7667 }
+				]
+			},
+			"tt-logo-t": {
+				"translate": [
+					{ "time": 1.0667, "y": 5.85, "curve": "stepped" },
+					{ "time": 1.1333, "curve": "stepped" },
+					{ "time": 2.7333 },
+					{ "time": 2.7667, "y": 5.62 },
+					{ "time": 2.8333 }
+				]
+			},
+			"tt-logo-t2": {
+				"translate": [
+					{ "time": 0.5333, "y": 5.85, "curve": "stepped" },
+					{ "time": 0.6, "curve": "stepped" },
+					{ "time": 2.2667 },
+					{ "time": 2.3333, "y": 5.62 },
+					{ "time": 2.3667 }
+				]
+			},
+			"tt-logo-t-cap": {
+				"translate": [
+					{ "time": 0.3333, "y": 5.85, "curve": "stepped" },
+					{ "time": 0.4, "curve": "stepped" },
+					{ "time": 2.1 },
+					{ "time": 2.1333, "y": 5.62 },
+					{ "time": 2.2 }
+				]
+			},
+			"tt-logo-t-cap2": {
+				"translate": [
+					{ "time": 0.7333, "y": 5.85, "curve": "stepped" },
+					{ "time": 0.8, "curve": "stepped" },
+					{ "time": 2.4333 },
+					{ "time": 2.5, "y": 5.62 },
+					{ "time": 2.5333 }
+				]
+			},
+			"tt-logo-x": {
+				"translate": [
+					{ "time": 0.4667, "y": 5.85, "curve": "stepped" },
+					{ "time": 0.5333, "curve": "stepped" },
+					{ "time": 2.2 },
+					{ "time": 2.2667, "y": 5.62 },
+					{ "time": 2.3333 }
+				]
+			},
+			"tt-logo-y": {
+				"translate": [
+					{ "time": 0.8, "y": 5.85, "curve": "stepped" },
+					{ "time": 0.8667, "curve": "stepped" },
+					{ "time": 2.5 },
+					{ "time": 2.5333, "y": 5.62 },
+					{ "time": 2.6 }
+				]
+			},
+			"tt-logo-key": {
+				"translate": [
+					{ "time": 1.1333, "curve": "stepped" },
+					{ "time": 1.2667, "y": -3.84, "curve": "stepped" },
+					{ "time": 1.4, "curve": "stepped" },
+					{ "time": 1.5333, "y": -3.84, "curve": "stepped" },
+					{ "time": 1.6667, "curve": "stepped" },
+					{ "time": 1.8, "y": -3.84, "curve": "stepped" },
+					{ "time": 1.9333 }
+				]
+			}
+		}
+	},
+	"loop": {
+		"bones": {
+			"tt-logo-a": {
+				"translate": [
+					{ "time": 0.2667 },
+					{ "time": 0.3333, "y": 5.62 },
+					{ "time": 0.4 }
+				]
+			},
+			"tt-logo-e": {
+				"translate": [
+					{ "time": 0.0333 },
+					{ "time": 0.1, "y": 5.62 },
+					{ "time": 0.1667 }
+				]
+			},
+			"tt-logo-i": {
+				"translate": [
+					{ "time": 0.5 },
+					{ "time": 0.5667, "y": 5.62 },
+					{ "time": 0.6333 }
+				]
+			},
+			"tt-logo-p": {
+				"translate": [
+					{ "time": 0.4333 },
+					{ "time": 0.5, "y": 5.62 },
+					{ "time": 0.5667 }
+				]
+			},
+			"tt-logo-r": {
+				"translate": [
+					{ "time": 0.2333 },
+					{ "time": 0.2667, "y": 5.62 },
+					{ "time": 0.3333 }
+				]
+			},
+			"tt-logo-s": {
+				"translate": [
+					{ "time": 0.5667 },
+					{ "time": 0.6333, "y": 5.62 },
+					{ "time": 0.6667 }
+				]
+			},
+			"tt-logo-t": {
+				"translate": [
+					{ "time": 0.6333 },
+					{ "time": 0.6667, "y": 5.62 },
+					{ "time": 0.7333, "curve": "stepped" },
+					{ "time": 2.6667 }
+				]
+			},
+			"tt-logo-t2": {
+				"translate": [
+					{ "time": 0.1667 },
+					{ "time": 0.2333, "y": 5.62 },
+					{ "time": 0.2667 }
+				]
+			},
+			"tt-logo-t-cap": {
+				"translate": [
+					{},
+					{ "time": 0.0333, "y": 5.62 },
+					{ "time": 0.1 }
+				]
+			},
+			"tt-logo-t-cap2": {
+				"translate": [
+					{ "time": 0.3333 },
+					{ "time": 0.4, "y": 5.62 },
+					{ "time": 0.4333 }
+				]
+			},
+			"tt-logo-x": {
+				"translate": [
+					{ "time": 0.1 },
+					{ "time": 0.1667, "y": 5.62 },
+					{ "time": 0.2333 }
+				]
+			},
+			"tt-logo-y": {
+				"translate": [
+					{ "time": 0.4 },
+					{ "time": 0.4333, "y": 5.62 },
+					{ "time": 0.5 }
+				]
+			}
+		}
+	}
+}
+}
