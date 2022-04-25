@@ -109,35 +109,13 @@ public class PopTextraTypist extends PopTable {
         selectBox.getList().addListener(handListener);
         
         root.defaults().padLeft(20).padRight(20);
-        root.row();
-        label = new Label("PREVIEW", skin, "tt-subtitle");
-        root.add(label).left().spaceTop(15);
-        
-        root.row();
-        table = new Table();
-        table.setBackground(skin.getDrawable("tt-page-10"));
-        root.add(table).grow();
         
         var typingLabel = new TypingLabel("", KnownFonts.getBitter());
         typingLabel.setWrap(true);
-        table.add(typingLabel).grow();
-        
-        root.row();
-        table = new Table();
-        root.add(table).right().spaceTop(5);
-    
-        table.defaults().space(5);
-        imageButton = new ImageButton(skin, "tt-color");
-        table.add(imageButton);
-        imageButton.addListener(handListener);
-        
-        imageButton = new ImageButton(skin, "tt-copy");
-        table.add(imageButton);
-        imageButton.addListener(handListener);
     
         root.row();
         label = new Label("CODE", skin, "tt-subtitle");
-        root.add(label).left();
+        root.add(label).left().spaceTop(15);
     
         root.row();
         var textArea = new TextArea("", skin, "tt-page");
@@ -151,7 +129,31 @@ public class PopTextraTypist extends PopTable {
     
         root.row();
         imageButton = new ImageButton(skin, "tt-copy");
-        root.add(imageButton).right().padBottom(20).spaceTop(5);
+        root.add(imageButton).right().spaceTop(5);
+        imageButton.addListener(handListener);
+    
+        root.row();
+        label = new Label("PREVIEW", skin, "tt-subtitle");
+        root.add(label).left();
+        
+        root.row();
+        table = new Table();
+        table.setBackground(skin.getDrawable("tt-page-10"));
+        root.add(table).grow();
+        
+        table.add(typingLabel).grow();
+    
+        root.row();
+        table = new Table();
+        root.add(table).right().spaceTop(5).padBottom(20);
+        
+        table.defaults().space(5);
+        imageButton = new ImageButton(skin, "tt-color");
+        table.add(imageButton);
+        imageButton.addListener(handListener);
+    
+        imageButton = new ImageButton(skin, "tt-copy");
+        table.add(imageButton);
         imageButton.addListener(handListener);
     }
     
