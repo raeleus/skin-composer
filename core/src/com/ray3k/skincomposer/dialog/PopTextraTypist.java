@@ -1,6 +1,5 @@
 package com.ray3k.skincomposer.dialog;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -16,6 +15,10 @@ public class PopTextraTypist extends PopTable {
         super(new PopTableStyle());
         setFillParent(true);
         setBackground(skin.getDrawable("tt-bg"));
+    
+        var codeTextArea = new TextArea("", skin, "tt-page");
+        var previewTypingLabel = new TypingLabel("", KnownFonts.getBitter());
+//        var previewTypingLabel = new Label("", skin);
         
         var root = this;
         root.pad(10);
@@ -56,42 +59,52 @@ public class PopTextraTypist extends PopTable {
         var imageButton = new ImageButton(skin, "tt-bold");
         table.add(imageButton).padLeft(10);
         imageButton.addListener(handListener);
+        Utils.onChange(imageButton, () -> insertTag("[*]", codeTextArea));
     
         imageButton = new ImageButton(skin, "tt-italics");
         table.add(imageButton);
         imageButton.addListener(handListener);
+        Utils.onChange(imageButton, () -> insertTag("[/]", codeTextArea));
     
         imageButton = new ImageButton(skin, "tt-superscript");
         table.add(imageButton);
         imageButton.addListener(handListener);
+        Utils.onChange(imageButton, () -> insertTag("[^]", codeTextArea));
     
         imageButton = new ImageButton(skin, "tt-subscript");
         table.add(imageButton);
         imageButton.addListener(handListener);
+        Utils.onChange(imageButton, () -> insertTag("[.]", codeTextArea));
         
         imageButton = new ImageButton(skin, "tt-midscript");
         table.add(imageButton);
         imageButton.addListener(handListener);
+        Utils.onChange(imageButton, () -> insertTag("[=]", codeTextArea));
     
         imageButton = new ImageButton(skin, "tt-underline");
         table.add(imageButton);
         imageButton.addListener(handListener);
+        Utils.onChange(imageButton, () -> insertTag("[_]", codeTextArea));
     
         imageButton = new ImageButton(skin, "tt-strike");
         table.add(imageButton);
         imageButton.addListener(handListener);
+        Utils.onChange(imageButton, () -> insertTag("[~]", codeTextArea));
     
         imageButton = new ImageButton(skin, "tt-caps");
         table.add(imageButton);
         imageButton.addListener(handListener);
+        Utils.onChange(imageButton, () -> insertTag("[!]", codeTextArea));
     
         imageButton = new ImageButton(skin, "tt-lower");
         table.add(imageButton);
         imageButton.addListener(handListener);
+        Utils.onChange(imageButton, () -> insertTag("[,]", codeTextArea));
     
         imageButton = new ImageButton(skin, "tt-each");
         table.add(imageButton);
         imageButton.addListener(handListener);
+        Utils.onChange(imageButton, () -> insertTag("[;]", codeTextArea));
         
         var selectBox = new SelectBox<String>(skin, "tt");
         table.add(selectBox);
@@ -110,21 +123,19 @@ public class PopTextraTypist extends PopTable {
         
         root.defaults().padLeft(20).padRight(20);
         
-        var typingLabel = new TypingLabel("", KnownFonts.getBitter());
-        typingLabel.setWrap(true);
+        previewTypingLabel.setWrap(true);
     
         root.row();
         label = new Label("CODE", skin, "tt-subtitle");
         root.add(label).left().spaceTop(15);
     
         root.row();
-        var textArea = new TextArea("", skin, "tt-page");
-        textArea.setName("code");
-        root.add(textArea).grow();
-        textArea.addListener(ibeamListener);
-        Utils.onChange(textArea, () -> {
-            typingLabel.setText(textArea.getText());
-            typingLabel.restart();
+        codeTextArea.setName("code");
+        root.add(codeTextArea).grow();
+        codeTextArea.addListener(ibeamListener);
+        Utils.onChange(codeTextArea, () -> {
+            previewTypingLabel.setText(codeTextArea.getText());
+            previewTypingLabel.restart();
         });
     
         root.row();
@@ -141,7 +152,8 @@ public class PopTextraTypist extends PopTable {
         table.setBackground(skin.getDrawable("tt-page-10"));
         root.add(table).grow();
         
-        table.add(typingLabel).grow();
+        var scrollPane = new ScrollPane(previewTypingLabel, skin, "tt");
+        table.add(scrollPane).grow();
     
         root.row();
         table = new Table();
@@ -155,6 +167,16 @@ public class PopTextraTypist extends PopTable {
         imageButton = new ImageButton(skin, "tt-copy");
         table.add(imageButton);
         imageButton.addListener(handListener);
+    }
+    
+    private void insertTag(String tag, TextArea textArea) {
+        var originalText = textArea.getText();
+        var selectionStart = Math.min(textArea.getCursorPosition(), textArea.getSelectionStart());
+        var selectionEnd = Math.max(textArea.getCursorPosition(), textArea.getSelectionStart());
+        var insertion = selectionStart != selectionEnd ? tag + textArea.getSelection() + tag : tag;
+        var text = originalText.substring(0, selectionStart) + insertion + originalText.substring(selectionEnd);
+        textArea.setText(text);
+        textArea.setSelection(selectionStart, selectionStart + insertion.length());
     }
     
     @Override
