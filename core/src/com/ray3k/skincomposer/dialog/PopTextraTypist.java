@@ -3,6 +3,7 @@ package com.ray3k.skincomposer.dialog;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.Array;
 import com.github.tommyettinger.textra.KnownFonts;
 import com.github.tommyettinger.textra.TypingLabel;
 import com.ray3k.skincomposer.utils.Utils;
@@ -11,14 +12,13 @@ import com.ray3k.stripe.PopTable;
 import static com.ray3k.skincomposer.Main.*;
 
 public class PopTextraTypist extends PopTable {
+    private TextArea codeTextArea;
+    private TypingLabel previewTypingLabel;
+    
     public PopTextraTypist() {
         super(new PopTableStyle());
         setFillParent(true);
         setBackground(skin.getDrawable("tt-bg"));
-    
-        var codeTextArea = new TextArea("", skin, "tt-page");
-        var previewTypingLabel = new TypingLabel("", KnownFonts.getBitter());
-//        var previewTypingLabel = new Label("", skin);
         
         var root = this;
         root.pad(10);
@@ -59,59 +59,77 @@ public class PopTextraTypist extends PopTable {
         var imageButton = new ImageButton(skin, "tt-bold");
         table.add(imageButton).padLeft(10);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[*]", codeTextArea));
+        Utils.onChange(imageButton, () -> insertTag("[*]"));
     
         imageButton = new ImageButton(skin, "tt-italics");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[/]", codeTextArea));
+        Utils.onChange(imageButton, () -> insertTag("[/]"));
     
         imageButton = new ImageButton(skin, "tt-superscript");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[^]", codeTextArea));
+        Utils.onChange(imageButton, () -> insertTag("[^]"));
     
         imageButton = new ImageButton(skin, "tt-subscript");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[.]", codeTextArea));
+        Utils.onChange(imageButton, () -> insertTag("[.]"));
         
         imageButton = new ImageButton(skin, "tt-midscript");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[=]", codeTextArea));
+        Utils.onChange(imageButton, () -> insertTag("[=]"));
     
         imageButton = new ImageButton(skin, "tt-underline");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[_]", codeTextArea));
+        Utils.onChange(imageButton, () -> insertTag("[_]"));
     
         imageButton = new ImageButton(skin, "tt-strike");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[~]", codeTextArea));
+        Utils.onChange(imageButton, () -> insertTag("[~]"));
     
         imageButton = new ImageButton(skin, "tt-caps");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[!]", codeTextArea));
+        Utils.onChange(imageButton, () -> insertTag("[!]"));
     
         imageButton = new ImageButton(skin, "tt-lower");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[,]", codeTextArea));
+        Utils.onChange(imageButton, () -> insertTag("[,]"));
     
         imageButton = new ImageButton(skin, "tt-each");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[;]", codeTextArea));
-        
-        var selectBox = new SelectBox<String>(skin, "tt");
-        table.add(selectBox);
-        selectBox.addListener(handListener);
-        selectBox.getList().addListener(handListener);
+        Utils.onChange(imageButton, () -> insertTag("[;]"));
     
-        selectBox = new SelectBox<>(skin, "tt");
+        imageButton = new ImageButton(skin, "tt-square");
+        table.add(imageButton);
+        imageButton.addListener(handListener);
+        Utils.onChange(imageButton, () -> insertTag("[]", ""));
+        
+        var fontSelectBox = new SelectBox<String>(skin, "tt");
+        table.add(fontSelectBox);
+        fontSelectBox.addListener(handListener);
+        fontSelectBox.getList().addListener(handListener);
+    
+        var items = new Array<String>();
+        items.add("Select a font...");
+        for (var font : KnownFonts.getAllStandard()) {
+            items.add(font.name);
+        }
+        fontSelectBox.setItems(items);
+        Utils.onChange(fontSelectBox, () -> {
+            if (fontSelectBox.getSelectedIndex() != 0) {
+                insertTag("[@" + fontSelectBox.getSelected() + "]", "[@]");
+                fontSelectBox.setSelectedIndex(0);
+            }
+        });
+    
+        var selectBox = new SelectBox<>(skin, "tt");
         table.add(selectBox);
         selectBox.addListener(handListener);
         selectBox.getList().addListener(handListener);
@@ -122,16 +140,15 @@ public class PopTextraTypist extends PopTable {
         selectBox.getList().addListener(handListener);
         
         root.defaults().padLeft(20).padRight(20);
-        
-        previewTypingLabel.setWrap(true);
     
         root.row();
         label = new Label("CODE", skin, "tt-subtitle");
         root.add(label).left().spaceTop(15);
     
         root.row();
+        codeTextArea = new TextArea("", skin, "tt-page");
         codeTextArea.setName("code");
-        root.add(codeTextArea).grow();
+        root.add(codeTextArea).grow().uniformY();
         codeTextArea.addListener(ibeamListener);
         Utils.onChange(codeTextArea, () -> {
             previewTypingLabel.setText(codeTextArea.getText());
@@ -150,8 +167,10 @@ public class PopTextraTypist extends PopTable {
         root.row();
         table = new Table();
         table.setBackground(skin.getDrawable("tt-page-10"));
-        root.add(table).grow();
-        
+        root.add(table).grow().uniformY();
+    
+        previewTypingLabel = new TypingLabel("", KnownFonts.getStandardFamily());
+        previewTypingLabel.setWrap(true);
         var scrollPane = new ScrollPane(previewTypingLabel, skin, "tt");
         table.add(scrollPane).grow();
     
@@ -169,14 +188,27 @@ public class PopTextraTypist extends PopTable {
         imageButton.addListener(handListener);
     }
     
-    private void insertTag(String tag, TextArea textArea) {
-        var originalText = textArea.getText();
-        var selectionStart = Math.min(textArea.getCursorPosition(), textArea.getSelectionStart());
-        var selectionEnd = Math.max(textArea.getCursorPosition(), textArea.getSelectionStart());
-        var insertion = selectionStart != selectionEnd ? tag + textArea.getSelection() + tag : tag;
-        var text = originalText.substring(0, selectionStart) + insertion + originalText.substring(selectionEnd);
-        textArea.setText(text);
-        textArea.setSelection(selectionStart, selectionStart + insertion.length());
+    private void insertTag(String tag) {
+        insertTag(tag, null);
+    }
+    
+    private void insertTag(String tag, String endTag) {
+        if (endTag == null) endTag = tag;
+        var hasSelection = !codeTextArea.getSelection().equals("");
+        var originalText = codeTextArea.getText();
+        var selectionStart = hasSelection ? Math.min(codeTextArea.getCursorPosition(), codeTextArea.getSelectionStart()) : codeTextArea.getCursorPosition();
+        var selectionEnd = Math.max(codeTextArea.getCursorPosition(), codeTextArea.getSelectionStart());
+        if (hasSelection) {
+            var insertion = selectionStart != selectionEnd ? tag + codeTextArea.getSelection() + endTag : tag;
+            codeTextArea.setText(originalText.substring(0, selectionStart) + insertion + originalText.substring(selectionEnd));
+            codeTextArea.setSelection(selectionStart, selectionStart + insertion.length());
+        } else {
+            codeTextArea.setText(originalText.substring(0, selectionStart) + tag + originalText.substring(selectionStart));
+            codeTextArea.setCursorPosition(selectionStart + tag.length());
+        }
+        stage.setKeyboardFocus(codeTextArea);
+        previewTypingLabel.setText(codeTextArea.getText());
+        previewTypingLabel.restart();
     }
     
     @Override

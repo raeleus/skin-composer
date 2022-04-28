@@ -1226,7 +1226,7 @@ floppy-heart
   index: -1
 floppy-pupil
   rotate: false
-  xy: 730, 1397
+  xy: 2033, 1552
   size: 8, 9
   orig: 8, 9
   offset: 0, 0
@@ -3545,14 +3545,14 @@ scene-marquee-back_00
   index: -1
 scene-marquee-back_01
   rotate: false
-  xy: 2033, 1580
+  xy: 730, 1408
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 scene-marquee-back_02
   rotate: false
-  xy: 730, 1408
+  xy: 2033, 1563
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
@@ -3573,7 +3573,7 @@ scene-marquee-back_04
   index: -1
 scene-marquee-back_05
   rotate: false
-  xy: 2033, 1570
+  xy: 730, 1398
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
@@ -3776,7 +3776,7 @@ scene-scroll-list-horizontal
   index: -1
 scene-scroll-list-vertical
   rotate: false
-  xy: 2043, 1530
+  xy: 2043, 1513
   size: 4, 58
   orig: 4, 58
   offset: 0, 0
@@ -4410,6 +4410,13 @@ tt-icon-mid
   xy: 2033, 1720
   size: 12, 15
   orig: 12, 15
+  offset: 0, 0
+  index: -1
+tt-icon-square
+  rotate: false
+  xy: 2033, 1573
+  size: 9, 15
+  orig: 9, 15
   offset: 0, 0
   index: -1
 tt-icon-strike
