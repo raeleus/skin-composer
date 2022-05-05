@@ -20,12 +20,14 @@ import com.github.tommyettinger.textra.Font.FontFamily;
 import com.github.tommyettinger.textra.KnownFonts;
 import com.github.tommyettinger.textra.TypingLabel;
 import com.github.tommyettinger.textra.utils.ColorUtils;
+import com.ray3k.skincomposer.dialog.PopColorPicker.PopColorPickerListener;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.AspectRatioContainer;
 import com.ray3k.stripe.PopTable;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
 import static com.ray3k.skincomposer.Main.*;
+import static com.ray3k.skincomposer.utils.Utils.onChange;
 
 public class PopTextraTypist extends PopTable {
     private TextArea codeTextArea;
@@ -82,62 +84,62 @@ public class PopTextraTypist extends PopTable {
         var imageButton = new ImageButton(skin, "tt-bold");
         table.add(imageButton).padLeft(10);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[*]"));
+        onChange(imageButton, () -> insertTag("[*]"));
     
         imageButton = new ImageButton(skin, "tt-italics");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[/]"));
+        onChange(imageButton, () -> insertTag("[/]"));
     
         imageButton = new ImageButton(skin, "tt-superscript");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[^]"));
+        onChange(imageButton, () -> insertTag("[^]"));
     
         imageButton = new ImageButton(skin, "tt-subscript");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[.]"));
+        onChange(imageButton, () -> insertTag("[.]"));
         
         imageButton = new ImageButton(skin, "tt-midscript");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[=]"));
+        onChange(imageButton, () -> insertTag("[=]"));
     
         imageButton = new ImageButton(skin, "tt-underline");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[_]"));
+        onChange(imageButton, () -> insertTag("[_]"));
     
         imageButton = new ImageButton(skin, "tt-strike");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[~]"));
+        onChange(imageButton, () -> insertTag("[~]"));
     
         imageButton = new ImageButton(skin, "tt-caps");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[!]"));
+        onChange(imageButton, () -> insertTag("[!]"));
     
         imageButton = new ImageButton(skin, "tt-lower");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[,]"));
+        onChange(imageButton, () -> insertTag("[,]"));
     
         imageButton = new ImageButton(skin, "tt-each");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[;]"));
+        onChange(imageButton, () -> insertTag("[;]"));
     
         imageButton = new ImageButton(skin, "tt-square");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[]", ""));
+        onChange(imageButton, () -> insertTag("[]", ""));
     
         imageButton = new ImageButton(skin, "tt-square-at");
         table.add(imageButton);
         imageButton.addListener(handListener);
-        Utils.onChange(imageButton, () -> insertTag("[@]", ""));
+        onChange(imageButton, () -> insertTag("[@]", ""));
     
         imageButton = new ImageButton(skin, "tt-emoji");
         table.add(imageButton);
@@ -152,7 +154,7 @@ public class PopTextraTypist extends PopTable {
         var items = new Array<String>();
         items.add("Select a font...");
         fontSelectBox.setItems(items);
-        Utils.onChange(fontSelectBox, () -> {
+        onChange(fontSelectBox, () -> {
             if (fontSelectBox.getSelectedIndex() != 0) {
                 insertTag("[@" + fontSelectBox.getSelected() + "]", "[@]");
                 fontSelectBox.setSelectedIndex(0);
@@ -176,12 +178,24 @@ public class PopTextraTypist extends PopTable {
         table.add(colorSelectBox);
         colorSelectBox.addListener(handListener);
         colorSelectBox.getList().addListener(handListener);
-        Utils.onChange(colorSelectBox, () -> {
+        onChange(colorSelectBox, () -> {
             if (colorSelectBox.getSelectedIndex() == 1) {
-                PopColorPicker.showColorPicker(Color.RED, stage);
+                var pop = PopColorPicker.showColorPicker(null, stage);
+                pop.addListener(new PopColorPickerListener() {
+                    @Override
+                    public void picked(Color color) {
+                        insertTag("[#" + color.toString() + "]", "{CLEARCOLOR}");
+                        stage.setKeyboardFocus(codeTextArea);
+                    }
+    
+                    @Override
+                    public void cancelled() {
+                        stage.setKeyboardFocus(codeTextArea);
+                    }
+                });
                 colorSelectBox.setSelectedIndex(0);
             } else if (colorSelectBox.getSelectedIndex() > 1) {
-                insertTag("[" + colorSelectBox.getSelected() + "]", "");
+                insertTag("[" + colorSelectBox.getSelected() + "]", "{CLEARCOLOR}");
                 colorSelectBox.setSelectedIndex(0);
             }
         });
@@ -197,7 +211,7 @@ public class PopTextraTypist extends PopTable {
         codeTextArea.setName("code");
         root.add(codeTextArea).grow().uniformY();
         codeTextArea.addListener(ibeamListener);
-        Utils.onChange(codeTextArea, () -> {
+        onChange(codeTextArea, () -> {
             previewTypingLabel.setText(codeTextArea.getText());
             previewTypingLabel.restart();
         });
@@ -230,6 +244,22 @@ public class PopTextraTypist extends PopTable {
         imageButton = new ImageButton(skin, "tt-color");
         table.add(imageButton);
         imageButton.addListener(handListener);
+        onChange(imageButton, () -> {
+            var picker = new PopColorPicker(previewTable.getColor());
+            picker.addListener(new PopColorPickerListener() {
+                @Override
+                public void picked(Color color) {
+                    previewTable.setColor(color);
+                    stage.setKeyboardFocus(codeTextArea);
+                }
+    
+                @Override
+                public void cancelled() {
+                    stage.setKeyboardFocus(codeTextArea);
+                }
+            });
+            picker.show(stage);
+        });
     
         imageButton = new ImageButton(skin, "tt-copy");
         table.add(imageButton);
@@ -283,7 +313,7 @@ public class PopTextraTypist extends PopTable {
         textButton.add(label).growX().space(15);
         pop.add(textButton);
         textButton.addListener(handListener);
-        Utils.onChange(textButton, () -> {
+        onChange(textButton, () -> {
             activateStandardFontFamily();
             pop.hide();
         });
@@ -301,7 +331,7 @@ public class PopTextraTypist extends PopTable {
         }
         pop.add(textButton);
         textButton.addListener(handListener);
-        Utils.onChange(textButton, () -> {
+        onChange(textButton, () -> {
             activateSkinFontFamily();
             pop.hide();
         });

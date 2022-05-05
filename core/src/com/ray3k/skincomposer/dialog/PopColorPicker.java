@@ -39,10 +39,17 @@ public class PopColorPicker extends PopTable {
     private static final int SHIFT_AMOUNT = 10;
     
     public PopColorPicker(Color originalColor) {
-        r = originalColor.r;
-        g = originalColor.g;
-        b = originalColor.b;
-        a = originalColor.a;
+        if (originalColor != null) {
+            r = originalColor.r;
+            g = originalColor.g;
+            b = originalColor.b;
+            a = originalColor.a;
+        } else {
+            r = 1f;
+            g = 0f;
+            b = 0f;
+            a = 1f;
+        }
         var tempColor = new Color();
         tempColor.set(ColorUtils.rgb2hsb(r, g, b, a));
         h = tempColor.r;
@@ -648,14 +655,28 @@ public class PopColorPicker extends PopTable {
         stack = new Stack();
         table.add(stack);
     
-        image = new Image(skin, "tt-swatch");
-        image.setColor(oldColor);
-        image.setScaling(Scaling.none);
-        stack.add(image);
+        if (oldColor != null) {
+            image = new Image(skin, "tt-swatch");
+            image.setScaling(Scaling.none);
+            stack.add(image);
     
-        swatchNewImage = new Image(skin, "tt-swatch-new");
-        swatchNewImage.setScaling(Scaling.none);
-        stack.add(swatchNewImage);
+            swatchNewImage = new Image(skin, "tt-swatch-new");
+            swatchNewImage.setScaling(Scaling.none);
+            stack.add(swatchNewImage);
+    
+            image = new Image(skin, "tt-swatch-old");
+            image.setColor(oldColor);
+            image.setScaling(Scaling.none);
+            stack.add(image);
+        } else {
+            image = new Image(skin, "tt-swatch-null");
+            image.setScaling(Scaling.none);
+            stack.add(image);
+    
+            swatchNewImage = new Image(skin, "tt-swatch-new-null");
+            swatchNewImage.setScaling(Scaling.none);
+            stack.add(swatchNewImage);
+        }
     
         hexTextField = new TextField("", skin, "tt-hexfield") {
             @Override
@@ -694,6 +715,7 @@ public class PopColorPicker extends PopTable {
         textButton.addListener(handListener);
         onChange(textButton, () -> {
             hide();
+            fire(new PopColorPickerEvent(new Color(r, g, b, a)));
         });
     
         textButton = new TextButton("Cancel", skin, "tt");
@@ -701,9 +723,8 @@ public class PopColorPicker extends PopTable {
         textButton.addListener(handListener);
         onChange(textButton, () -> {
             hide();
+            fire(new PopColorPickerEvent(true));
         });
-
-        updateColorDisplay();
     }
     
     private void applyFieldListener(TextField textField) {
@@ -757,6 +778,7 @@ public class PopColorPicker extends PopTable {
     @Override
     public void show(Stage stage, Action action) {
         super.show(stage, action);
+        updateColorDisplay();
         hexTextField.selectAll();
         stage.setKeyboardFocus(hexTextField);
     }
@@ -1270,8 +1292,40 @@ public class PopColorPicker extends PopTable {
         }
     }
     
-    public static void showColorPicker(Color color, Stage stage) {
+    public static class PopColorPickerEvent extends Event {
+        public boolean cancelled;
+        public Color color;
+    
+        public PopColorPickerEvent(boolean cancelled) {
+            this.cancelled = cancelled;
+        }
+    
+        public PopColorPickerEvent(Color color) {
+            this.cancelled = false;
+            this.color = color;
+        }
+    }
+    
+    public static abstract class PopColorPickerListener implements EventListener {
+        @Override
+        public boolean handle(Event event) {
+            if (event instanceof PopColorPickerEvent) {
+                var pickerEvent = (PopColorPickerEvent)event;
+                if (pickerEvent.cancelled) cancelled();
+                else picked(pickerEvent.color);
+                return true;
+            }
+            return false;
+        }
+        
+        public abstract void picked(Color color);
+        
+        public abstract void cancelled();
+    }
+    
+    public static PopColorPicker showColorPicker(Color color, Stage stage) {
         var pop = new PopColorPicker(color);
         pop.show(stage);
+        return pop;
     }
 }
