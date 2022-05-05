@@ -1,22 +1,45 @@
 package com.ray3k.skincomposer.dialog;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Colors;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Scaling;
+import com.github.tommyettinger.textra.Font;
+import com.github.tommyettinger.textra.Font.DistanceFieldType;
+import com.github.tommyettinger.textra.Font.FontFamily;
 import com.github.tommyettinger.textra.KnownFonts;
 import com.github.tommyettinger.textra.TypingLabel;
+import com.github.tommyettinger.textra.utils.ColorUtils;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.stripe.AspectRatioContainer;
 import com.ray3k.stripe.PopTable;
+import com.ray3k.tenpatch.TenPatchDrawable;
 
 import static com.ray3k.skincomposer.Main.*;
 
 public class PopTextraTypist extends PopTable {
     private TextArea codeTextArea;
     private TypingLabel previewTypingLabel;
+    private ScrollPane previewScrollPane;
+    private Table previewTable;
+    private SelectBox<String> fontSelectBox;
+    private Font masterFont;
     
     public PopTextraTypist() {
         super(new PopTableStyle());
+        
+        masterFont = KnownFonts.getStandardFamily();
+        
         setFillParent(true);
         setBackground(skin.getDrawable("tt-bg"));
         
@@ -110,17 +133,24 @@ public class PopTextraTypist extends PopTable {
         table.add(imageButton);
         imageButton.addListener(handListener);
         Utils.onChange(imageButton, () -> insertTag("[]", ""));
+    
+        imageButton = new ImageButton(skin, "tt-square-at");
+        table.add(imageButton);
+        imageButton.addListener(handListener);
+        Utils.onChange(imageButton, () -> insertTag("[@]", ""));
+    
+        imageButton = new ImageButton(skin, "tt-emoji");
+        table.add(imageButton);
+        imageButton.addListener(handListener);
+//        Utils.onChange(imageButton, () -> insertTag("[]", ""));
         
-        var fontSelectBox = new SelectBox<String>(skin, "tt");
+        fontSelectBox = new SelectBox<String>(skin, "tt");
         table.add(fontSelectBox);
         fontSelectBox.addListener(handListener);
         fontSelectBox.getList().addListener(handListener);
     
         var items = new Array<String>();
         items.add("Select a font...");
-        for (var font : KnownFonts.getAllStandard()) {
-            items.add(font.name);
-        }
         fontSelectBox.setItems(items);
         Utils.onChange(fontSelectBox, () -> {
             if (fontSelectBox.getSelectedIndex() != 0) {
@@ -134,10 +164,27 @@ public class PopTextraTypist extends PopTable {
         selectBox.addListener(handListener);
         selectBox.getList().addListener(handListener);
         
-        selectBox = new SelectBox<>(skin, "tt");
-        table.add(selectBox);
-        selectBox.addListener(handListener);
-        selectBox.getList().addListener(handListener);
+        var colorSelectBox = new SelectBox<String>(skin, "tt");
+        items = new Array<>();
+        for (var color : Colors.getColors()) {
+            items.add(color.key);
+        }
+        items.sort();
+        items.insert(0, "Select a color...");
+        items.insert(1, "More colors...");
+        colorSelectBox.setItems(items);
+        table.add(colorSelectBox);
+        colorSelectBox.addListener(handListener);
+        colorSelectBox.getList().addListener(handListener);
+        Utils.onChange(colorSelectBox, () -> {
+            if (colorSelectBox.getSelectedIndex() == 1) {
+                PopColorPicker.showColorPicker(Color.RED, stage);
+                colorSelectBox.setSelectedIndex(0);
+            } else if (colorSelectBox.getSelectedIndex() > 1) {
+                insertTag("[" + colorSelectBox.getSelected() + "]", "");
+                colorSelectBox.setSelectedIndex(0);
+            }
+        });
         
         root.defaults().padLeft(20).padRight(20);
     
@@ -165,14 +212,15 @@ public class PopTextraTypist extends PopTable {
         root.add(label).left();
         
         root.row();
-        table = new Table();
-        table.setBackground(skin.getDrawable("tt-page-10"));
-        root.add(table).grow().uniformY();
+        previewTable = new Table();
+        previewTable.setBackground(skin.getDrawable("tt-page-10"));
+        previewTable.setColor(Color.BLACK);
+        root.add(previewTable).grow().uniformY();
     
-        previewTypingLabel = new TypingLabel("", KnownFonts.getStandardFamily());
+        previewTypingLabel = new TypingLabel("", masterFont);
         previewTypingLabel.setWrap(true);
-        var scrollPane = new ScrollPane(previewTypingLabel, skin, "tt");
-        table.add(scrollPane).grow();
+        previewScrollPane = new ScrollPane(previewTypingLabel, skin, "tt");
+        previewTable.add(previewScrollPane).grow();
     
         root.row();
         table = new Table();
@@ -216,6 +264,115 @@ public class PopTextraTypist extends PopTable {
         super.show(stage, action);
         TextArea textArea = findActor("code");
         stage.setKeyboardFocus(textArea);
+    
+        var style = new PopTableStyle();
+        style.background = skin.getDrawable("tt-bg");
+        style.stageBackground = skin.getDrawable("tt-stage-background");
+        var pop = new PopTable(style);
+        pop.setModal(true);
+        pop.setKeepCenteredInWindow(true);
+        pop.setKeepSizedWithinStage(true);
+    
+        pop.defaults().space(50).size(200);
+        var textButton = new TextButton("Standard Font Family", skin, "tt-font");
+        textButton.row();
+        var label = new Label("Implement the standard font family packaged with TextraTypist", skin, "tt");
+        label.setWrap(true);
+        label.setAlignment(Align.center);
+        textButton.getLabelCell().expand(false, false);
+        textButton.add(label).growX().space(15);
+        pop.add(textButton);
+        textButton.addListener(handListener);
+        Utils.onChange(textButton, () -> {
+            activateStandardFontFamily();
+            pop.hide();
+        });
+    
+        textButton = new TextButton("Skin Font Family", skin, "tt-font");
+        textButton.row();
+        label = new Label("Create a font family from the fonts defined in the current skin from Skin Composer", skin, "tt");
+        label.setWrap(true);
+        label.setAlignment(Align.center);
+        textButton.getLabelCell().expand(false, false);
+        textButton.add(label).growX().space(15);
+        if (jsonData.getFonts().size == 0 && jsonData.getFreeTypeFonts().size == 0) {
+            textButton.setDisabled(true);
+            label.setStyle(skin.get("tt-disabled", LabelStyle.class));
+        }
+        pop.add(textButton);
+        textButton.addListener(handListener);
+        Utils.onChange(textButton, () -> {
+            activateSkinFontFamily();
+            pop.hide();
+        });
+        
+        pop.show(stage);
+        pop.pad(50);
+    }
+    
+    private void activateStandardFontFamily() {
+        masterFont.dispose();
+        var items = new Array<String>();
+        items.add("Select a font...");
+        
+        masterFont = KnownFonts.getStandardFamily();
+        for (var font : KnownFonts.getAllStandard()) {
+            items.add(font.name);
+        }
+        
+        fontSelectBox.setItems(items);
+        
+        previewTypingLabel = new TypingLabel(previewTypingLabel.getOriginalText().toString(), masterFont);
+        previewTypingLabel.setWrap(true);
+        previewScrollPane.setActor(previewTypingLabel);
+    }
+    
+    private void activateSkinFontFamily() {
+        masterFont.dispose();
+        var items = new Array<String>();
+        items.add("Select a font...");
+        
+        var names = new Array<String>();
+        var fonts = new Array<Font>();
+        
+        for (var fontData : jsonData.getFonts()) {
+            var bitmapFont = new BitmapFont(fontData.file);
+            var font = new Font(bitmapFont, DistanceFieldType.STANDARD, 0, 0, 0, 0, true);
+            names.add(fontData.getName());
+            fonts.add(font);
+            items.add(fontData.getName());
+        }
+        
+        for (var freetypeFontData : jsonData.getFreeTypeFonts()) {
+            var bitmapFont = freetypeFontData.bitmapFont;
+            var font = new Font(bitmapFont, DistanceFieldType.STANDARD, 0, 0, 0, 0, true);
+            names.add(freetypeFontData.name);
+            fonts.add(font);
+            items.add(freetypeFontData.name);
+        }
+        
+        fontSelectBox.setItems(items);
+        if (names.size > 15) {
+            names.removeRange(15, names.size - 1);
+            fonts.removeRange(15, fonts.size - 1);
+        }
+        
+        var namesArray = new String[names.size];
+        for (int i = 0; i < names.size; i++) {
+            namesArray[i] = names.get(i);
+        }
+    
+        var fontsArray = new Font[fonts.size];
+        for (int i = 0; i < fonts.size; i++) {
+            fontsArray[i] = fonts.get(i);
+        }
+        
+        var fontFamily = new FontFamily(namesArray, fontsArray);
+        masterFont = fontFamily.connected[0].setFamily(fontFamily);
+    
+        previewTypingLabel = new TypingLabel(previewTypingLabel.getOriginalText().toString(), masterFont);
+        previewTypingLabel.setWrap(true);
+        previewScrollPane.setActor(previewTypingLabel);
     }
     
     @Override
