@@ -442,7 +442,6 @@ public class PopColorPicker extends PopTable {
                 updateHSB();
                 updateColorDisplay();
             }
-            System.out.println(r + " " + g + " " + b);
         });
     
         var textButton = new TextButton("OK", skin, "tt");
@@ -1246,7 +1245,6 @@ public class PopColorPicker extends PopTable {
                 updateHSB();
                 updateColorDisplay();
             }
-            System.out.println(r + " " + g + " " + b);
         });
     
         var textButton = new TextButton("OK", skin, "tt");
