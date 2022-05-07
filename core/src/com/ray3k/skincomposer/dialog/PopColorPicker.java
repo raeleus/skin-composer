@@ -2,6 +2,7 @@ package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -12,12 +13,18 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter.DigitsOnlyFilter;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.github.tommyettinger.textra.utils.ColorUtils;
 import com.ray3k.stripe.PopTable;
+import com.ray3k.stripe.PopTableHoverListener;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
 import java.util.Locale;
@@ -28,17 +35,28 @@ import static com.ray3k.skincomposer.utils.Utils.onChange;
 public class PopColorPicker extends PopTable {
     private float r, g, b, a, h, s, br;
     private Color oldColor;
-    private final Image squareModelImage, verticalModelImage, redImage, greenImage, blueImage, hueImage, saturationImage, brightnessImage, alphaImage, swatchNewImage;
-    private final Stack squareModelCircleStack;
-    private final Image squareModelCircleImage, verticalModelArrowImage, redArrowImage, greenArrowImage, blueArrowImage, hueArrowImage, saturationArrowImage, brightnessArrowImage, alphaArrowImage;
-    private final ImageButton redRadio, greenRadio, blueRadio, hueRadio, saturationRadio, brightnessRadio;
-    private final TextButton hsbTextButton, hslTextButton, swatchesTextButton;
-    private final Label brightnessLabel;
-    private final ButtonGroup<ImageButton> radioGroup;
-    private final TextField redTextField, greenTextField, blueTextField, hueTextField, saturationTextField, brightnessTextField, alphaTextField, hexTextField;
+    private Image squareModelImage, verticalModelImage, redImage, greenImage, blueImage, hueImage, saturationImage, brightnessImage, alphaImage, swatchNewImage;
+    private Stack squareModelCircleStack;
+    private Image squareModelCircleImage, verticalModelArrowImage, redArrowImage, greenArrowImage, blueArrowImage, hueArrowImage, saturationArrowImage, brightnessArrowImage, alphaArrowImage;
+    private ImageButton redRadio, greenRadio, blueRadio, hueRadio, saturationRadio, brightnessRadio;
+    private TextButton hsbTextButton, hslTextButton, swatchesTextButton;
+    private Label brightnessLabel;
+    private ButtonGroup<ImageButton> radioGroup;
+    private TextField redTextField, greenTextField, blueTextField, hueTextField, saturationTextField, brightnessTextField, alphaTextField, hexTextField;
     private static final int SHIFT_AMOUNT = 10;
+    private enum Mode {
+        RGB, SWATCH
+    }
+    private Mode mode;
+    private static Preferences colorPreferences;
+    private static Preferences settingsPreferences;
+    private int customCounter;
+    private DragAndDrop dragAndDrop;
     
     public PopColorPicker(Color originalColor) {
+        if (colorPreferences == null) colorPreferences = Gdx.app.getPreferences("com.ray3k.PopColorPicker colors");
+        if (settingsPreferences == null) settingsPreferences = Gdx.app.getPreferences("com.ray3k.PopColorPicker settings");
+        
         if (originalColor != null) {
             r = originalColor.r;
             g = originalColor.g;
@@ -55,7 +73,6 @@ public class PopColorPicker extends PopTable {
         h = tempColor.r;
         s = tempColor.g;
         br = tempColor.b;
-        tempColor.set(ColorUtils.rgb2hsl(r, g, b, a));
         this.oldColor = originalColor;
     
         var style = new PopTableStyle();
@@ -66,6 +83,15 @@ public class PopColorPicker extends PopTable {
         setModal(true);
         setKeepSizedWithinStage(true);
         setKeepCenteredInWindow(true);
+        setAutomaticallyResized(false);
+    
+        populateRGBlayout();
+    }
+    
+    private void populateSwatchlayout() {
+        clearChildren();
+        dragAndDrop = new DragAndDrop();
+        mode = Mode.SWATCH;
     
         var table = new Table();
         table.setBackground(skin.getDrawable("white"));
@@ -77,6 +103,457 @@ public class PopColorPicker extends PopTable {
         table.defaults().space(5);
         var buttonGroup = new ButtonGroup<TextButton>();
         hsbTextButton = new TextButton("HSB", skin, "tt-file");
+        hsbTextButton.setProgrammaticChangeEvents(false);
+        table.add(hsbTextButton);
+        buttonGroup.add(hsbTextButton);
+        hsbTextButton.addListener(handListener);
+        onChange(hsbTextButton, () -> {
+            populateRGBlayout();
+            pack();
+            updateHSB();
+            updateColorDisplay();
+        });
+    
+        hslTextButton = new TextButton("HSL", skin, "tt-file");
+        hslTextButton.setProgrammaticChangeEvents(false);
+        table.add(hslTextButton);
+        buttonGroup.add(hslTextButton);
+        hslTextButton.addListener(handListener);
+        onChange(hslTextButton, () -> {
+            populateRGBlayout();
+            pack();
+            hslTextButton.setChecked(true);
+            updateHSB();
+            updateColorDisplay();
+        });
+    
+        swatchesTextButton = new TextButton("SWATCHES", skin, "tt-file");
+        swatchesTextButton.setProgrammaticChangeEvents(false);
+        table.add(swatchesTextButton).padRight(10);
+        buttonGroup.add(swatchesTextButton);
+        swatchesTextButton.addListener(handListener);
+        onChange(swatchesTextButton, () -> {
+            updateColorDisplay();
+        });
+        swatchesTextButton.setChecked(true);
+    
+        row();
+        
+        table = new Table();
+        table.top();
+        var scrollPane = new ScrollPane(table, skin, "tt");
+        scrollPane.setFlickScroll(false);
+        scrollPane.setFadeScrollBars(false);
+        add(scrollPane).grow().pad(5);
+        
+        label = new Label("IPT_HQ", skin, "tt");
+        table.add(label).left().spaceTop(5);
+    
+        table.row();
+        var horizontalGroup = new HorizontalGroup();
+        horizontalGroup.wrap();
+        horizontalGroup.rowAlign(Align.left);
+        table.add(horizontalGroup).growX();
+    
+        addSwatch("000000ff", "black", false, horizontalGroup);
+        addSwatch("817f81ff", "gray", false, horizontalGroup);
+        addSwatch("817f81ff", "grey", false, horizontalGroup);
+        addSwatch("b7b6b7ff", "silver", false, horizontalGroup);
+        addSwatch("000000ff", "white", false, horizontalGroup);
+        addSwatch("ff0000ff", "red", false, horizontalGroup);
+        addSwatch("d6534aff", "brick", false, horizontalGroup);
+        addSwatch("f65a31ff", "ember", false, horizontalGroup);
+        addSwatch("8f573bff", "brown", false, horizontalGroup);
+        addSwatch("683716ff", "chocolate", false, horizontalGroup);
+        addSwatch("d2691dff", "cinnamon", false, horizontalGroup);
+        addSwatch("ffbf80ff", "peach", false, horizontalGroup);
+        addSwatch("ffbf80ff", "skin", false, horizontalGroup);
+        addSwatch("ff7f00ff", "orange", false, horizontalGroup);
+        addSwatch("d3b58cff", "sand", false, horizontalGroup);
+        addSwatch("d3b58cff", "tan", false, horizontalGroup);
+        addSwatch("ce8e31ff", "bronze", false, horizontalGroup);
+        addSwatch("ffa928ff", "apricot", false, horizontalGroup);
+        addSwatch("ffd60fff", "gold", false, horizontalGroup);
+        addSwatch("ffd60fff", "saffron", false, horizontalGroup);
+        addSwatch("fff289ff", "butter", false, horizontalGroup);
+        addSwatch("818000ff", "olive", false, horizontalGroup);
+        addSwatch("ffff00ff", "yellow", false, horizontalGroup);
+        addSwatch("d5e42eff", "pear", false, horizontalGroup);
+        addSwatch("c9ff40ff", "chartreuse", false, horizontalGroup);
+        addSwatch("94d400ff", "lime", false, horizontalGroup);
+        addSwatch("1f4608ff", "moss", false, horizontalGroup);
+        addSwatch("30a000ff", "cactus", false, horizontalGroup);
+        addSwatch("4e7942ff", "fern", false, horizontalGroup);
+        addSwatch("7cff74ff", "celery", false, horizontalGroup);
+        addSwatch("40c03eff", "jade", false, horizontalGroup);
+        addSwatch("00ff06ff", "green", false, horizontalGroup);
+        addSwatch("ace5c5ff", "sage", false, horizontalGroup);
+        addSwatch("80ffd5ff", "mint", false, horizontalGroup);
+        addSwatch("2ed6c9ff", "turquoise", false, horizontalGroup);
+        addSwatch("00ffffff", "cyan", false, horizontalGroup);
+        addSwatch("0a7f7fff", "ocean", false, horizontalGroup);
+        addSwatch("0a7f7fff", "teal", false, horizontalGroup);
+        addSwatch("17c1e1ff", "azure", false, horizontalGroup);
+        addSwatch("17c1e1ff", "sky", false, horizontalGroup);
+        addSwatch("3288b9ff", "denim", false, horizontalGroup);
+        addSwatch("0046abff", "cobalt", false, horizontalGroup);
+        addSwatch("0046abff", "sapphire", false, horizontalGroup);
+        addSwatch("0000ffff", "blue", false, horizontalGroup);
+        addSwatch("05007fff", "navy", false, horizontalGroup);
+        addSwatch("5309e2ff", "indigo", false, horizontalGroup);
+        addSwatch("ba92ffff", "lavender", false, horizontalGroup);
+        addSwatch("903ff0ff", "violet", false, horizontalGroup);
+        addSwatch("c108ffff", "purple", false, horizontalGroup);
+        addSwatch("be0dc6ff", "plum", false, horizontalGroup);
+        addSwatch("aa73acff", "mauve", false, horizontalGroup);
+        addSwatch("aa73acff", "puce", false, horizontalGroup);
+        addSwatch("f600f7ff", "magenta", false, horizontalGroup);
+        addSwatch("ffa0e0ff", "pink", false, horizontalGroup);
+        addSwatch("e61c78ff", "rose", false, horizontalGroup);
+        addSwatch("921336ff", "raspberry", false, horizontalGroup);
+        addSwatch("ff6262ff", "coral", false, horizontalGroup);
+        addSwatch("ff6262ff", "salmon", false, horizontalGroup);
+    
+        table.row();
+        label = new Label("Oklab", skin, "tt");
+        table.add(label).left().spaceTop(5);
+    
+        table.row();
+        horizontalGroup = new HorizontalGroup();
+        horizontalGroup.wrap();
+        horizontalGroup.rowAlign(Align.left);
+        table.add(horizontalGroup).growX();
+        
+        addSwatch("000000ff", "black", false, horizontalGroup);
+        addSwatch("7d8183ff", "gray", false, horizontalGroup);
+        addSwatch("7d8183ff", "grey", false, horizontalGroup);
+        addSwatch("b3b8b9ff", "silver", false, horizontalGroup);
+        addSwatch("fbffffff", "white", false, horizontalGroup);
+        addSwatch("8f1739ff", "raspberry", false, horizontalGroup);
+        addSwatch("fc6565ff", "coral", false, horizontalGroup);
+        addSwatch("fc6565ff", "salmon", false, horizontalGroup);
+        addSwatch("d2564fff", "brick", false, horizontalGroup);
+        addSwatch("fe0e13ff", "red", false, horizontalGroup);
+        addSwatch("f25d32ff", "ember", false, horizontalGroup);
+        addSwatch("8c593fff", "brown", false, horizontalGroup);
+        addSwatch("67381cff", "chocolate", false, horizontalGroup);
+        addSwatch("d26a22ff", "cinnamon", false, horizontalGroup);
+        addSwatch("fd801bff", "orange", false, horizontalGroup);
+        addSwatch("fcc182ff", "peach", false, horizontalGroup);
+        addSwatch("fcc182ff", "skin", false, horizontalGroup);
+        addSwatch("ffa92cff", "apricot", false, horizontalGroup);
+        addSwatch("ffa92cff", "sand", false, horizontalGroup);
+        addSwatch("cfb692ff", "tan", false, horizontalGroup);
+        addSwatch("ca9037ff", "bronze", false, horizontalGroup);
+        addSwatch("f9d821ff", "gold", false, horizontalGroup);
+        addSwatch("f9d821ff", "saffron", false, horizontalGroup);
+        addSwatch("fef48cff", "butter", false, horizontalGroup);
+        addSwatch("fbff25ff", "yellow", false, horizontalGroup);
+        addSwatch("7c8212ff", "olive", false, horizontalGroup);
+        addSwatch("cfe531ff", "pear", false, horizontalGroup);
+        addSwatch("c2ff47ff", "chartreuse", false, horizontalGroup);
+        addSwatch("8ed41eff", "lime", false, horizontalGroup);
+        addSwatch("1d4609ff", "moss", false, horizontalGroup);
+        addSwatch("27a011ff", "cactus", false, horizontalGroup);
+        addSwatch("4b7946ff", "fern", false, horizontalGroup);
+        addSwatch("7bff75ff", "celery", false, horizontalGroup);
+        addSwatch("00ff17ff", "green", false, horizontalGroup);
+        addSwatch("2dc147ff", "jade", false, horizontalGroup);
+        addSwatch("a7e5c6ff", "sage", false, horizontalGroup);
+        addSwatch("7dffd5ff", "mint", false, horizontalGroup);
+        addSwatch("12d8cbff", "turquoise", false, horizontalGroup);
+        addSwatch("007f81ff", "ocean", false, horizontalGroup);
+        addSwatch("007f81ff", "teal", false, horizontalGroup);
+        addSwatch("00ffffff", "cyan", false, horizontalGroup);
+        addSwatch("00c1e2ff", "azure", false, horizontalGroup);
+        addSwatch("00c1e2ff", "sky", false, horizontalGroup);
+        addSwatch("2c89baff", "denim", false, horizontalGroup);
+        addSwatch("0045afff", "cobalt", false, horizontalGroup);
+        addSwatch("0045afff", "sapphire", false, horizontalGroup);
+        addSwatch("000081ff", "navy", false, horizontalGroup);
+        addSwatch("0000ffff", "blue", false, horizontalGroup);
+        addSwatch("5008e3ff", "indigo", false, horizontalGroup);
+        addSwatch("b593ffff", "lavender", false, horizontalGroup);
+        addSwatch("8e40f1ff", "violet", false, horizontalGroup);
+        addSwatch("bf00ffff", "purple", false, horizontalGroup);
+        addSwatch("aa73aeff", "mauve", false, horizontalGroup);
+        addSwatch("aa73aeff", "puce", false, horizontalGroup);
+        addSwatch("bd04c9ff", "plum", false, horizontalGroup);
+        addSwatch("f311f8ff", "magenta", false, horizontalGroup);
+        addSwatch("fca1e5ff", "pink", false, horizontalGroup);
+        addSwatch("e3237dff", "rose", false, horizontalGroup);
+    
+        table.row();
+        label = new Label("Custom", skin, "tt");
+        table.add(label).left().spaceTop(5);
+    
+        table.row();
+        var customHorizontalGroup = new HorizontalGroup();
+        customHorizontalGroup.wrap();
+        customHorizontalGroup.rowAlign(Align.left);
+        table.add(customHorizontalGroup).growX();
+        
+        customCounter = settingsPreferences.getInteger("customCounter", 0);
+        for (var name : settingsPreferences.getString("sortOrder", "").split("\\|")) {
+            var hex = colorPreferences.getString(name);
+            if (hex != null && !hex.equals("")) addSwatch(hex, name, true, customHorizontalGroup);
+        }
+    
+        var newSwatchImage = new Image(skin, "tt-color-swatch-new");
+        customHorizontalGroup.addActor(newSwatchImage);
+        
+        newSwatchImage.addListener(handListener);
+        newSwatchImage.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                customHorizontalGroup.removeActor(newSwatchImage);
+                var name = "custom" + customCounter++;
+                settingsPreferences.putInteger("customCounter", customCounter);
+                settingsPreferences.putString("sortOrder",settingsPreferences.getString("sortOrder", "") + "|" + name);
+                settingsPreferences.flush();
+                var color = new Color(r, g, b, a);
+                addSwatch(color, name, true, customHorizontalGroup);
+                customHorizontalGroup.addActor(newSwatchImage);
+                colorPreferences.putString(name, color.toString());
+                colorPreferences.flush();
+            }
+        });
+        dragAndDrop.addTarget(new Target(newSwatchImage) {
+            @Override
+            public boolean drag(Source source, Payload payload, float x, float y, int pointer) {
+                return true;
+            }
+        
+            @Override
+            public void drop(Source source, Payload payload, float x, float y, int pointer) {
+                var sourceActor = source.getActor();
+                sourceActor.setVisible(true);
+                sourceActor.remove();
+                customHorizontalGroup.addActorAt(customHorizontalGroup.getChildren().indexOf(newSwatchImage, true), sourceActor);
+                customHorizontalGroup.layout();
+            
+                StringBuilder sortOrder = new StringBuilder();
+                for (var actor : customHorizontalGroup.getChildren()) {
+                    var currentImage = (Image) actor;
+                    var name = (String) currentImage.getUserObject();
+                    if (name != null) {
+                        sortOrder.append("|");
+                        sortOrder.append(name);
+                    }
+                }
+                settingsPreferences.putString("sortOrder", sortOrder.toString());
+                settingsPreferences.flush();
+            }
+        });
+        
+        row();
+        table = new Table();
+        table.right();
+        add(table).growX().padRight(5).padBottom(5);
+    
+        table.defaults().space(5);
+        var stack = new Stack();
+        table.add(stack);
+    
+        if (oldColor != null) {
+            var image = new Image(skin, "tt-swatch");
+            image.setScaling(Scaling.none);
+            stack.add(image);
+        
+            swatchNewImage = new Image(skin, "tt-swatch-new");
+            swatchNewImage.setScaling(Scaling.none);
+            stack.add(swatchNewImage);
+        
+            image = new Image(skin, "tt-swatch-old");
+            image.setColor(oldColor);
+            image.setScaling(Scaling.none);
+            stack.add(image);
+        } else {
+            var image = new Image(skin, "tt-swatch-null");
+            image.setScaling(Scaling.none);
+            stack.add(image);
+        
+            swatchNewImage = new Image(skin, "tt-swatch-new-null");
+            swatchNewImage.setScaling(Scaling.none);
+            stack.add(swatchNewImage);
+        }
+    
+        hexTextField = new TextField("", skin, "tt-hexfield") {
+            @Override
+            public void next(boolean up) {
+                nextTextField(up, this);
+            }
+        };
+        hexTextField.setProgrammaticChangeEvents(false);
+        hexTextField.setMaxLength(8);
+        hexTextField.setTextFieldFilter((textField, c) -> {
+            if (Character.isDigit(c)) return true;
+            else switch (c) {
+                case 'a':
+                case 'b':
+                case 'c':
+                case 'd':
+                case 'e':
+                case 'f':
+                case 'A':
+                case 'B':
+                case 'C':
+                case 'D':
+                case 'E':
+                case 'F':
+                    return true;
+                default:
+                    return false;
+            }
+        });
+        table.add(hexTextField).width(80);
+        hexTextField.addListener(ibeamListener);
+        applyFieldListener(hexTextField);
+    
+        var textButton = new TextButton("OK", skin, "tt");
+        table.add(textButton).width(70);
+        textButton.addListener(handListener);
+        onChange(textButton, () -> {
+            hide();
+            fire(new PopColorPickerEvent(new Color(r, g, b, a)));
+        });
+    
+        textButton = new TextButton("Cancel", skin, "tt");
+        table.add(textButton).width(70);
+        textButton.addListener(handListener);
+        onChange(textButton, () -> {
+            hide();
+            fire(new PopColorPickerEvent(true));
+        });
+    }
+    
+    private void addSwatch(String hex, String name, boolean custom, HorizontalGroup horizontalGroup) {
+        addSwatch(Color.valueOf(hex), name, custom, horizontalGroup);
+    }
+    
+    private void addSwatch(Color color,  String name, boolean custom, HorizontalGroup horizontalGroup) {
+        var image = new Image(skin, "tt-color-swatch");
+        image.setColor(color);
+        horizontalGroup.addActor(image);
+        image.addListener(handListener);
+        image.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                r = color.r;
+                g = color.g;
+                b = color.b;
+                updateHSB();
+                updateColorDisplay();
+            }
+        });
+        
+        if (custom) {
+            image.setUserObject(name);
+            dragAndDrop.addSource(new Source(image) {
+                @Override
+                public Payload dragStart(InputEvent event, float x, float y, int pointer) {
+                    var payload = new Payload();
+                    image.setVisible(false);
+                    var dragActor = new Image(skin, "tt-color-swatch");
+                    dragActor.setColor(getActor().getColor());
+                    payload.setDragActor(dragActor);
+                    getActor().setPosition(0,0);
+                    return payload;
+                }
+    
+                @Override
+                public void dragStop(InputEvent event, float x, float y, int pointer, Payload payload, Target target) {
+                    if (target == null) {
+                        image.remove();
+                        colorPreferences.remove((String) image.getUserObject());
+                        colorPreferences.flush();
+                        
+                        StringBuilder sortOrder = new StringBuilder();
+                        for (var actor : horizontalGroup.getChildren()) {
+                            var currentImage = (Image) actor;
+                            var name = (String) currentImage.getUserObject();
+                            if (name != null) {
+                                sortOrder.append("|");
+                                sortOrder.append(name);
+                            }
+                        }
+                        settingsPreferences.putString("sortOrder", sortOrder.toString());
+                        settingsPreferences.flush();
+                    }
+                }
+            });
+            dragAndDrop.addTarget(new Target(image) {
+                @Override
+                public boolean drag(Source source, Payload payload, float x, float y, int pointer) {
+                    return true;
+                }
+        
+                @Override
+                public void drop(Source source, Payload payload, float x, float y, int pointer) {
+                    var sourceActor = source.getActor();
+                    sourceActor.setVisible(true);
+                    sourceActor.remove();
+                    horizontalGroup.addActorAt(horizontalGroup.getChildren().indexOf(image, true), sourceActor);
+                    horizontalGroup.layout();
+    
+                    StringBuilder sortOrder = new StringBuilder();
+                    for (var actor : horizontalGroup.getChildren()) {
+                        var currentImage = (Image) actor;
+                        var name = (String) currentImage.getUserObject();
+                        if (name != null) {
+                            sortOrder.append("|");
+                            sortOrder.append(name);
+                        }
+                    }
+                    settingsPreferences.putString("sortOrder", sortOrder.toString());
+                    settingsPreferences.flush();
+                }
+            });
+        }
+        
+        var style = new PopTableStyle();
+        style.background = skin.getDrawable("tt-panel-10");
+        var listener = new PopTableHoverListener(Align.topLeft, Align.topRight, style);
+        image.addListener(listener);
+        var pop = listener.getPopTable();
+        pop.pad(5);
+        
+        pop.defaults().space(5);
+        var preview = new Image(skin.getDrawable("tt-color-swatch-10"));
+        preview.setColor(color);
+        pop.add(preview).size(40);
+        
+        var table = new Table();
+        pop.add(table);
+        
+        table.defaults().space(5);
+        var label = new Label(name, skin, "tt");
+        table.add(label);
+        
+        table.row();
+        label = new Label("r:" + MathUtils.round(color.r * 255) + " g:" + MathUtils.round(color.g * 255) + " b:" + MathUtils.round(color.b * 255), skin, "tt");
+        table.add(label);
+        
+        table.row();
+        label = new Label("#" + color, skin, "tt");
+        table.add(label);
+    }
+    
+    private void populateRGBlayout() {
+        clearChildren();
+        mode = Mode.RGB;
+        
+        var table = new Table();
+        table.setBackground(skin.getDrawable("white"));
+        add(table).growX();
+    
+        var label = new Label("CHOOSE COLOR", skin, "tt");
+        table.add(label).left().expandX().padLeft(10);
+    
+        table.defaults().space(5);
+        var buttonGroup = new ButtonGroup<TextButton>();
+        hsbTextButton = new TextButton("HSB", skin, "tt-file");
+        hsbTextButton.setProgrammaticChangeEvents(false);
         table.add(hsbTextButton);
         buttonGroup.add(hsbTextButton);
         hsbTextButton.addListener(handListener);
@@ -86,6 +563,7 @@ public class PopColorPicker extends PopTable {
         });
     
         hslTextButton = new TextButton("HSL", skin, "tt-file");
+        hslTextButton.setProgrammaticChangeEvents(false);
         table.add(hslTextButton);
         buttonGroup.add(hslTextButton);
         hslTextButton.addListener(handListener);
@@ -95,11 +573,15 @@ public class PopColorPicker extends PopTable {
         });
     
         swatchesTextButton = new TextButton("SWATCHES", skin, "tt-file");
+        swatchesTextButton.setProgrammaticChangeEvents(false);
         table.add(swatchesTextButton).padRight(10);
         buttonGroup.add(swatchesTextButton);
         swatchesTextButton.addListener(handListener);
-        onChange(swatchesTextButton, this::updateColorDisplay);
-        
+        onChange(swatchesTextButton, () -> {
+            populateSwatchlayout();
+            updateColorDisplay();
+        });
+    
         row();
         var subTable = new Table();
         subTable.pad(5);
@@ -110,23 +592,23 @@ public class PopColorPicker extends PopTable {
         table.setClip(true);
         table.setBackground(skin.getDrawable("tt-slider-10"));
         subTable.add(table).size(250);
-        
+    
         squareModelImage = new Image();
         table.add(squareModelImage).grow();
         squareModelImage.addListener(handListener);
         squareModelImage.addListener(new SquareModelDragListener());
-        
+    
         squareModelCircleStack = new Stack();
         table.addActor(squareModelCircleStack);
-        
+    
         var image = new Image(skin, "tt-color-ball");
         image.setTouchable(Touchable.disabled);
         squareModelCircleStack.add(image);
-        
+    
         squareModelCircleImage = new Image(skin, "tt-color-ball-interior");
         squareModelCircleImage.setTouchable(Touchable.disabled);
         squareModelCircleStack.add(squareModelCircleImage);
-        
+    
         squareModelCircleStack.pack();
     
         table = new Table();
@@ -138,7 +620,7 @@ public class PopColorPicker extends PopTable {
         table.add(verticalModelImage).grow();
         verticalModelImage.addListener(handListener);
         verticalModelImage.addListener(new VerticalModelDragListener());
-        
+    
         verticalModelArrowImage = new Image(skin, "tt-slider-knob-vertical");
         verticalModelArrowImage.setTouchable(Touchable.disabled);
         table.addActor(verticalModelArrowImage);
@@ -166,7 +648,7 @@ public class PopColorPicker extends PopTable {
         table.setClip(true);
         table.setBackground(skin.getDrawable("tt-slider-10"));
         sliderTable.add(table).width(180).fillY();
-        
+    
         redImage = new Image();
         redImage.setScaling(Scaling.stretch);
         table.add(redImage).grow();
@@ -176,7 +658,7 @@ public class PopColorPicker extends PopTable {
             updateHSB();
             updateColorDisplay();
         }));
-        
+    
         redArrowImage = new Image(skin, "tt-slider-knob");
         redArrowImage.setTouchable(Touchable.disabled);
         table.addActor(redArrowImage);
@@ -239,7 +721,7 @@ public class PopColorPicker extends PopTable {
         table.setClip(true);
         table.setBackground(skin.getDrawable("tt-slider-10"));
         sliderTable.add(table).width(180).fillY();
-        
+    
         greenImage = new Image();
         greenImage.setScaling(Scaling.stretch);
         table.add(greenImage).grow();
@@ -311,7 +793,7 @@ public class PopColorPicker extends PopTable {
         table.setClip(true);
         table.setBackground(skin.getDrawable("tt-slider-10"));
         sliderTable.add(table).width(180).fillY();
-        
+    
         blueImage = new Image();
         blueImage.setScaling(Scaling.stretch);
         table.add(blueImage).grow();
@@ -397,7 +879,7 @@ public class PopColorPicker extends PopTable {
         hueArrowImage = new Image(skin, "tt-slider-knob");
         hueArrowImage.setTouchable(Touchable.disabled);
         table.addActor(hueArrowImage);
-        
+    
         hueTextField = new TextField("", skin, "tt") {
             @Override
             public void next(boolean up) {
@@ -458,7 +940,7 @@ public class PopColorPicker extends PopTable {
         table.setClip(true);
         table.setBackground(skin.getDrawable("tt-slider-10"));
         sliderTable.add(table).width(180).fillY();
-        
+    
         saturationImage = new Image();
         saturationImage.setScaling(Scaling.stretch);
         table.add(saturationImage).grow();
@@ -472,7 +954,7 @@ public class PopColorPicker extends PopTable {
         saturationArrowImage = new Image(skin, "tt-slider-knob");
         saturationArrowImage.setTouchable(Touchable.disabled);
         table.addActor(saturationArrowImage);
-        
+    
         saturationTextField = new TextField("", skin, "tt") {
             @Override
             public void next(boolean up) {
@@ -530,7 +1012,7 @@ public class PopColorPicker extends PopTable {
         table.setClip(true);
         table.setBackground(skin.getDrawable("tt-slider-10"));
         sliderTable.add(table).width(180).fillY();
-        
+    
         brightnessImage = new Image();
         brightnessImage.setScaling(Scaling.stretch);
         table.add(brightnessImage).grow();
@@ -544,7 +1026,7 @@ public class PopColorPicker extends PopTable {
         brightnessArrowImage = new Image(skin, "tt-slider-knob");
         brightnessArrowImage.setTouchable(Touchable.disabled);
         table.addActor(brightnessArrowImage);
-        
+    
         brightnessTextField = new TextField("", skin, "tt") {
             @Override
             public void next(boolean up) {
@@ -603,7 +1085,7 @@ public class PopColorPicker extends PopTable {
     
         image = new Image(skin, "tt-checker-10");
         stack.add(image);
-        
+    
         alphaImage = new Image();
         alphaImage.setScaling(Scaling.stretch);
         stack.add(alphaImage);
@@ -612,7 +1094,7 @@ public class PopColorPicker extends PopTable {
             a = value;
             updateColorDisplay();
         }));
-        
+    
         alphaArrowImage = new Image(skin, "tt-slider-knob");
         alphaArrowImage.setTouchable(Touchable.disabled);
         table.addActor(alphaArrowImage);
@@ -659,11 +1141,11 @@ public class PopColorPicker extends PopTable {
             image = new Image(skin, "tt-swatch");
             image.setScaling(Scaling.none);
             stack.add(image);
-    
+        
             swatchNewImage = new Image(skin, "tt-swatch-new");
             swatchNewImage.setScaling(Scaling.none);
             stack.add(swatchNewImage);
-    
+        
             image = new Image(skin, "tt-swatch-old");
             image.setColor(oldColor);
             image.setScaling(Scaling.none);
@@ -672,7 +1154,7 @@ public class PopColorPicker extends PopTable {
             image = new Image(skin, "tt-swatch-null");
             image.setScaling(Scaling.none);
             stack.add(image);
-    
+        
             swatchNewImage = new Image(skin, "tt-swatch-new-null");
             swatchNewImage.setScaling(Scaling.none);
             stack.add(swatchNewImage);
