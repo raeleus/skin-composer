@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter.DigitsOnlyFilter;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
@@ -86,6 +87,18 @@ public class PopColorPicker extends PopTable {
         setAutomaticallyResized(false);
     
         populateRGBlayout();
+        addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (stage.getKeyboardFocus() == hexTextField && event.getTarget() != hexTextField) stage.setKeyboardFocus(null);
+                return super.touchDown(event, x, y, pointer, button);
+            }
+    
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+            
+            }
+        });
     }
     
     private void populateSwatchlayout() {
@@ -409,6 +422,28 @@ public class PopColorPicker extends PopTable {
         table.add(hexTextField).width(80);
         hexTextField.addListener(ibeamListener);
         applyFieldListener(hexTextField);
+        onChange(hexTextField, () -> {
+            var text = hexTextField.getText();
+            if (text.length() == 6) {
+                text += "FF";
+                var color = Color.valueOf(text);
+                r = color.r;
+                g = color.g;
+                b = color.b;
+                a = 1;
+                updateHSB();
+                updateColorDisplay();
+            } else if (text.length() == 8) {
+                var color = Color.valueOf(text);
+                r = color.r;
+                g = color.g;
+                b = color.b;
+                a = color.a;
+                updateHSB();
+                updateColorDisplay();
+            }
+            System.out.println(r + " " + g + " " + b);
+        });
     
         var textButton = new TextButton("OK", skin, "tt");
         table.add(textButton).width(70);
@@ -1191,6 +1226,28 @@ public class PopColorPicker extends PopTable {
         table.add(hexTextField).width(80);
         hexTextField.addListener(ibeamListener);
         applyFieldListener(hexTextField);
+        onChange(hexTextField, () -> {
+            var text = hexTextField.getText();
+            if (text.length() == 6) {
+                text += "FF";
+                var color = Color.valueOf(text);
+                r = color.r;
+                g = color.g;
+                b = color.b;
+                a = 1;
+                updateHSB();
+                updateColorDisplay();
+            } else if (text.length() == 8) {
+                var color = Color.valueOf(text);
+                r = color.r;
+                g = color.g;
+                b = color.b;
+                a = color.a;
+                updateHSB();
+                updateColorDisplay();
+            }
+            System.out.println(r + " " + g + " " + b);
+        });
     
         var textButton = new TextButton("OK", skin, "tt");
         table.add(textButton).width(70);
@@ -1448,7 +1505,7 @@ public class PopColorPicker extends PopTable {
         alphaTextField.setText(Integer.toString(MathUtils.round(a * 255)));
         
         tempColor.set(r, g, b, a);
-        hexTextField.setText(tempColor.toString().toUpperCase(Locale.ROOT));
+        if (stage.getKeyboardFocus() != hexTextField) hexTextField.setText(tempColor.toString().toUpperCase(Locale.ROOT));
     }
     
     private TextureRegion generateHorizontalHue(int width) {
