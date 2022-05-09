@@ -53,9 +53,7 @@ public class PopEffects extends PopTable {
         effectSelectBox.getList().addListener(handListener);
         table.add(effectSelectBox);
         effectSelectBox.addListener(handListener);
-        onChange(effectSelectBox, () -> {
-            updateTokenTable();
-        });
+        onChange(effectSelectBox, this::updateTokenTable);
         
         row();
         table = new Table();
@@ -360,7 +358,7 @@ public class PopEffects extends PopTable {
                 runnable = () -> {
                     float frequency = isNumeric(frequencyField.getText()) ? Float.parseFloat(frequencyField.getText()) : 1.0f;
                     float threshold = isNumeric(thresholdField.getText()) ? Float.parseFloat(thresholdField.getText()) : .5f;
-                    tagBegin = "{BLINK=" + color1 + ";" + color2 + ";" + frequency + ";" + threshold + "}";
+                    tagBegin = "{BLINK=" + color1.toString().substring(0, 6) + ";" + color2.toString().substring(0, 6) + ";" + frequency + ";" + threshold + "}";
         
                     typingLabel.setText(tagBegin + TEST_STRING +tagEnd);
                     typingLabel.restart();
@@ -369,7 +367,6 @@ public class PopEffects extends PopTable {
                 color1pop.addListener(new PopColorPickerListener() {
                     @Override
                     public void picked(Color color) {
-                        System.out.println("color = " + color);
                         color1.set(color);
                         runnable.run();
                     }
@@ -395,7 +392,54 @@ public class PopEffects extends PopTable {
                 onChange(thresholdField, runnable);
                 break;
             case "Fade":
+                tagBegin = "{FADE}";
+                tagEnd = "{ENDFADE}";
+                typingLabel.setText(tagBegin + TEST_STRING +tagEnd);
+                typingLabel.restart();
+    
+                color1 = new Color(Color.WHITE);
+                color1pop = createColorField(color1, "color1", tokenTable);
+    
+                tokenTable.row();
+                color2 = new Color(Color.WHITE);
+                color2pop = createColorField(color2, "color2", tokenTable);
+    
+                tokenTable.row();
+                durationField = createNumberField(-1.0f, "duration", "duration", "duration", tokenTable);
+    
+                runnable = () -> {
+                    float duration = isNumeric(durationField.getText()) ? Float.parseFloat(durationField.getText()) : -1.0f;
+                    tagBegin = "{FADE=" + color1.toString().substring(0, 6) + ";" + color2.toString().substring(0, 6) + ";" + (!MathUtils.isEqual(duration, -1)? ";" + duration: "") + "}";
         
+                    typingLabel.setText(tagBegin + TEST_STRING +tagEnd);
+                    typingLabel.restart();
+                };
+    
+                color1pop.addListener(new PopColorPickerListener() {
+                    @Override
+                    public void picked(Color color) {
+                        color1.set(color);
+                        runnable.run();
+                    }
+        
+                    @Override
+                    public void cancelled() {
+            
+                    }
+                });
+                color2pop.addListener(new PopColorPickerListener() {
+                    @Override
+                    public void picked(Color color) {
+                        color2.set(color);
+                        runnable.run();
+                    }
+        
+                    @Override
+                    public void cancelled() {
+            
+                    }
+                });
+                onChange(durationField, runnable);
                 break;
             case "Gradient":
         
@@ -504,7 +548,7 @@ public class PopEffects extends PopTable {
         pop.addListener(new PopColorPickerListener() {
             @Override
             public void picked(Color color) {
-                imageButton.setColor(color);
+                imageButton.getImage().setColor(color);
             }
     
             @Override
