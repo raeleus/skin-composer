@@ -43,6 +43,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.ray3k.skincomposer.ResizeFourArrowListener;
 import com.ray3k.stripe.ResizeWidget;
+import regexodus.Pattern;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -431,6 +432,15 @@ public class Utils {
     
     public static boolean isNinePatch(String name) {
         return name.matches(".*\\.9\\.[a-zA-Z0-9]*$");
+    }
+    
+    private static Pattern numericPattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+    
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        return numericPattern.matcher(strNum).matches();
     }
     
     public static boolean isTvg(String name) {

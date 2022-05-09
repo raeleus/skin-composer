@@ -1,30 +1,23 @@
-package com.ray3k.skincomposer.dialog;
+package com.ray3k.skincomposer.dialog.textratypist;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Scaling;
 import com.github.tommyettinger.textra.Font;
 import com.github.tommyettinger.textra.Font.DistanceFieldType;
 import com.github.tommyettinger.textra.Font.FontFamily;
 import com.github.tommyettinger.textra.KnownFonts;
 import com.github.tommyettinger.textra.TypingLabel;
-import com.github.tommyettinger.textra.utils.ColorUtils;
-import com.ray3k.skincomposer.dialog.PopColorPicker.PopColorPickerListener;
-import com.ray3k.skincomposer.utils.Utils;
-import com.ray3k.stripe.AspectRatioContainer;
+import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerListener;
+import com.ray3k.skincomposer.dialog.textratypist.PopEffects.PopEffectsListener;
 import com.ray3k.stripe.PopTable;
-import com.ray3k.tenpatch.TenPatchDrawable;
 
 import static com.ray3k.skincomposer.Main.*;
 import static com.ray3k.skincomposer.utils.Utils.onChange;
@@ -136,35 +129,72 @@ public class PopTextraTypist extends PopTable {
         imageButton.addListener(handListener);
         onChange(imageButton, () -> insertTag("[]", ""));
     
-        imageButton = new ImageButton(skin, "tt-square-at");
-        table.add(imageButton);
-        imageButton.addListener(handListener);
-        onChange(imageButton, () -> insertTag("[@]", ""));
-    
         imageButton = new ImageButton(skin, "tt-emoji");
         table.add(imageButton);
         imageButton.addListener(handListener);
 //        Utils.onChange(imageButton, () -> insertTag("[]", ""));
+    
+        imageButton = new ImageButton(skin, "tt-fx");
+        table.add(imageButton);
+        imageButton.addListener(handListener);
+        onChange(imageButton, () -> {
+            var pop = PopEffects.showPopEffects();
+            pop.addListener(new PopEffectsListener() {
+                @Override
+                public void accepted(String tagBegin, String tagEnd) {
+                    insertTag(tagBegin, tagEnd);
+                }
+    
+                @Override
+                public void cancelled() {
         
-        fontSelectBox = new SelectBox<String>(skin, "tt");
+                }
+            });
+        });
+        
+        fontSelectBox = new SelectBox<>(skin, "tt");
         table.add(fontSelectBox);
         fontSelectBox.addListener(handListener);
         fontSelectBox.getList().addListener(handListener);
-    
-        var items = new Array<String>();
-        items.add("Select a font...");
-        fontSelectBox.setItems(items);
+        
         onChange(fontSelectBox, () -> {
-            if (fontSelectBox.getSelectedIndex() != 0) {
+            if (fontSelectBox.getSelectedIndex() == 1) {
+                insertTag("[@]");
+            } else if (fontSelectBox.getSelectedIndex() > 1) {
                 insertTag("[@" + fontSelectBox.getSelected() + "]", "[@]");
                 fontSelectBox.setSelectedIndex(0);
             }
         });
     
-        var selectBox = new SelectBox<>(skin, "tt");
-        table.add(selectBox);
-        selectBox.addListener(handListener);
-        selectBox.getList().addListener(handListener);
+        var sizeSelectBox = new SelectBox<>(skin, "tt");
+        table.add(sizeSelectBox);
+        sizeSelectBox.addListener(handListener);
+        sizeSelectBox.getList().addListener(handListener);
+    
+        var items = new Array<String>();
+        items.add("Select a size...");
+        items.add("Default");
+        items.add("10");
+        items.add("25");
+        items.add("50");
+        items.add("75");
+        items.add("100");
+        items.add("125");
+        items.add("150");
+        items.add("200");
+        items.add("250");
+        items.add("300");
+        items.add("375");
+        sizeSelectBox.setItems(items.toArray(String.class));
+        onChange(sizeSelectBox, () -> {
+            if (sizeSelectBox.getSelectedIndex() == 1) {
+                insertTag("[%]");
+                sizeSelectBox.setSelectedIndex(0);
+            } if (sizeSelectBox.getSelectedIndex() > 1) {
+                insertTag("[%" + sizeSelectBox.getSelected() + "]", "[%]");
+                sizeSelectBox.setSelectedIndex(0);
+            }
+        });
         
         var colorSelectBox = new SelectBox<String>(skin, "tt");
         items = new Array<>();
@@ -174,12 +204,14 @@ public class PopTextraTypist extends PopTable {
         items.sort();
         items.insert(0, "Select a color...");
         items.insert(1, "More colors...");
-        colorSelectBox.setItems(items);
+        items.insert(2, "Default");
+        colorSelectBox.setItems(items.toArray(String.class));
         table.add(colorSelectBox);
         colorSelectBox.addListener(handListener);
         colorSelectBox.getList().addListener(handListener);
         onChange(colorSelectBox, () -> {
-            if (colorSelectBox.getSelectedIndex() == 1) {
+            var selectedIndex = colorSelectBox.getSelectedIndex();
+            if (selectedIndex == 1) {
                 var pop = PopColorPicker.showColorPicker(null, stage);
                 pop.addListener(new PopColorPickerListener() {
                     @Override
@@ -194,7 +226,10 @@ public class PopTextraTypist extends PopTable {
                     }
                 });
                 colorSelectBox.setSelectedIndex(0);
-            } else if (colorSelectBox.getSelectedIndex() > 1) {
+            } else if (selectedIndex == 2) {
+                insertTag("{CLEARCOLOR}");
+                colorSelectBox.setSelectedIndex(0);
+            } else if (selectedIndex > 2) {
                 insertTag("[" + colorSelectBox.getSelected() + "]", "{CLEARCOLOR}");
                 colorSelectBox.setSelectedIndex(0);
             }
@@ -220,6 +255,7 @@ public class PopTextraTypist extends PopTable {
         imageButton = new ImageButton(skin, "tt-copy");
         root.add(imageButton).right().spaceTop(5);
         imageButton.addListener(handListener);
+        onChange(imageButton, () -> Gdx.app.getClipboard().setContents(codeTextArea.getText()));
     
         root.row();
         label = new Label("PREVIEW", skin, "tt-subtitle");
@@ -264,6 +300,9 @@ public class PopTextraTypist extends PopTable {
         imageButton = new ImageButton(skin, "tt-copy");
         table.add(imageButton);
         imageButton.addListener(handListener);
+        onChange(imageButton, () -> Gdx.app.getClipboard().setContents(previewTypingLabel.toString()));
+        
+        activateStandardFontFamily();
     }
     
     private void insertTag(String tag) {
@@ -344,6 +383,7 @@ public class PopTextraTypist extends PopTable {
         masterFont.dispose();
         var items = new Array<String>();
         items.add("Select a font...");
+        items.add("Default");
         
         masterFont = KnownFonts.getStandardFamily();
         for (var font : KnownFonts.getAllStandard()) {
@@ -361,6 +401,7 @@ public class PopTextraTypist extends PopTable {
         masterFont.dispose();
         var items = new Array<String>();
         items.add("Select a font...");
+        items.add("Default");
         
         var names = new Array<String>();
         var fonts = new Array<Font>();
