@@ -115,6 +115,8 @@ public class Main extends ApplicationAdapter {
     public static AnimationStateData floppyAnimationStateData;
     public static SkeletonData uiScaleSkeletonData;
     public static AnimationStateData uiScaleAnimationStateData;
+    public static SkeletonData textraTypistLogoSkeletonData;
+    public static AnimationStateData textraTypistLogoAnimationStateData;
     public static TinyVGAssetLoader tinyVGAssetLoader;
     private static final int SPINE_MAX_VERTS = 32767;
     private static TinyVGDrawable drawable;
@@ -149,7 +151,9 @@ public class Main extends ApplicationAdapter {
         floppySkeletonData = skeletonJson.readSkeletonData(Gdx.files.internal("spine/floppy.json"));
         floppyAnimationStateData = new AnimationStateData(floppySkeletonData);
         uiScaleSkeletonData = skeletonJson.readSkeletonData(Gdx.files.internal("spine/uiscale.json"));
-        uiScaleAnimationStateData = new AnimationStateData((uiScaleSkeletonData));
+        uiScaleAnimationStateData = new AnimationStateData(uiScaleSkeletonData);
+        textraTypistLogoSkeletonData = skeletonJson.readSkeletonData(Gdx.files.internal("spine/TextraTypist Logo.json"));
+        textraTypistLogoAnimationStateData = new AnimationStateData(textraTypistLogoSkeletonData);
     
         cursorNE = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
         cursorNW = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_nw"), 16, 16);

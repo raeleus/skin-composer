@@ -1,5 +1,5 @@
 {
-"skeleton": { "hash": "TrhgliDB3j4", "spine": "4.0.63", "width": 398, "height": 157, "images": "", "audio": "" },
+"skeleton": { "hash": "gTHQGg7NFD4", "spine": "4.0.64", "width": 398, "height": 157, "images": "", "audio": "" },
 "bones": [
 	{ "name": "root" },
 	{ "name": "tt-logo-key", "parent": "root", "length": 10, "x": 69.13, "y": 81.5 },
@@ -233,7 +233,8 @@
 					{ "time": 1.1333, "curve": "stepped" },
 					{ "time": 2.7333 },
 					{ "time": 2.7667, "y": 5.62 },
-					{ "time": 2.8333 }
+					{ "time": 2.8333, "curve": "stepped" },
+					{ "time": 4 }
 				]
 			},
 			"tt-logo-t2": {

@@ -15,6 +15,7 @@ import com.github.tommyettinger.textra.Font.DistanceFieldType;
 import com.github.tommyettinger.textra.Font.FontFamily;
 import com.github.tommyettinger.textra.KnownFonts;
 import com.github.tommyettinger.textra.TypingLabel;
+import com.ray3k.skincomposer.SpineDrawable;
 import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerListener;
 import com.ray3k.skincomposer.dialog.textratypist.PopEffects.PopEffectsListener;
 import com.ray3k.stripe.PopTable;
@@ -29,6 +30,12 @@ public class PopTextraTypist extends PopTable {
     private Table previewTable;
     private SelectBox<String> fontSelectBox;
     private Font masterFont;
+    private Table contentTable;
+    private enum FontMode {
+        STANDARD, SKIN
+    }
+    private FontMode fontMode = FontMode.STANDARD;
+    private SpineDrawable spine;
     
     public PopTextraTypist() {
         super(new PopTableStyle());
@@ -53,26 +60,81 @@ public class PopTextraTypist extends PopTable {
         var buttonGroup = new ButtonGroup<TextButton>();
         table.defaults().space(20);
         var textButton = new TextButton("File", skin, "tt-file");
+        textButton.setProgrammaticChangeEvents(false);
         table.add(textButton);
         buttonGroup.add(textButton);
         textButton.addListener(handListener);
+        onChange(textButton, this::showFileTable);
         
         textButton = new TextButton("Home", skin, "tt-file");
+        textButton.setProgrammaticChangeEvents(false);
         table.add(textButton);
         buttonGroup.add(textButton);
         textButton.addListener(handListener);
+        textButton.setChecked(true);
+        onChange(textButton, this::showHomeTable);
     
         textButton = new TextButton("Help", skin, "tt-file");
+        textButton.setProgrammaticChangeEvents(false);
         table.add(textButton);
         buttonGroup.add(textButton);
         textButton.addListener(handListener);
+        onChange(textButton, this::showHelpTable);
         
         root.row();
-        table = new Table();
+        contentTable = new Table();
+        root.add(contentTable).grow().spaceTop(10);
+        showHomeTable();
+    }
+    
+    private void showFileTable() {
+        contentTable.clearChildren();
+    }
+    
+    private void showHelpTable() {
+        contentTable.clearChildren();
+    
+        var table = new Table();
         table.left();
         table.setBackground(skin.getDrawable("tt-ribbon-10"));
-        root.add(table).growX().spaceTop(10);
+        contentTable.add(table).growX();
+    
+        table.defaults().space(10);
+        var textButton = new TextButton("TextraTypist", skin, "tt-link");
+        table.add(textButton).padLeft(10);
+        textButton.addListener(handListener);
+    
+        textButton = new TextButton("TypingLabel", skin, "tt-link");
+        table.add(textButton);
+        textButton.addListener(handListener);
+    
+        textButton = new TextButton("Playground Wiki", skin, "tt-link");
+        table.add(textButton);
+        textButton.addListener(handListener);
         
+        contentTable.defaults().space(10);
+        contentTable.row();
+        spine = new SpineDrawable(skeletonRenderer, textraTypistLogoSkeletonData, textraTypistLogoAnimationStateData);
+        spine.getAnimationState().setAnimation(0, "animation", false);
+        spine.getAnimationState().addAnimation(0, "loop", true, 0);
+        var image = new Image(spine);
+        contentTable.add(image);
+        
+        contentTable.row();
+        var label = new TypingLabel(Gdx.files.internal("AboutTextraTypist").readString(), skin, "tt");
+        label.setWrap(true);
+        label.setAlignment(Align.topLeft);
+        contentTable.add(label).grow();
+    }
+    
+    private void showHomeTable() {
+        contentTable.clearChildren();
+        
+        var table = new Table();
+        table.left();
+        table.setBackground(skin.getDrawable("tt-ribbon-10"));
+        contentTable.add(table).growX();
+    
         table.defaults().space(10);
         var imageButton = new ImageButton(skin, "tt-bold");
         table.add(imageButton).padLeft(10);
@@ -93,7 +155,7 @@ public class PopTextraTypist extends PopTable {
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> insertTag("[.]"));
-        
+    
         imageButton = new ImageButton(skin, "tt-midscript");
         table.add(imageButton);
         imageButton.addListener(handListener);
@@ -129,11 +191,6 @@ public class PopTextraTypist extends PopTable {
         imageButton.addListener(handListener);
         onChange(imageButton, () -> insertTag("[]", ""));
     
-        imageButton = new ImageButton(skin, "tt-emoji");
-        table.add(imageButton);
-        imageButton.addListener(handListener);
-//        Utils.onChange(imageButton, () -> insertTag("[]", ""));
-    
         imageButton = new ImageButton(skin, "tt-fx");
         table.add(imageButton);
         imageButton.addListener(handListener);
@@ -144,19 +201,19 @@ public class PopTextraTypist extends PopTable {
                 public void accepted(String tagBegin, String tagEnd) {
                     insertTag(tagBegin, tagEnd);
                 }
-    
+            
                 @Override
                 public void cancelled() {
-        
+                
                 }
             });
         });
-        
+    
         fontSelectBox = new SelectBox<>(skin, "tt");
         table.add(fontSelectBox);
         fontSelectBox.addListener(handListener);
         fontSelectBox.getList().addListener(handListener);
-        
+    
         onChange(fontSelectBox, () -> {
             if (fontSelectBox.getSelectedIndex() == 1) {
                 insertTag("[@]");
@@ -195,7 +252,7 @@ public class PopTextraTypist extends PopTable {
                 sizeSelectBox.setSelectedIndex(0);
             }
         });
-        
+    
         var colorSelectBox = new SelectBox<String>(skin, "tt");
         items = new Array<>();
         for (var color : Colors.getColors()) {
@@ -219,7 +276,7 @@ public class PopTextraTypist extends PopTable {
                         insertTag("[#" + color.toString() + "]", "{CLEARCOLOR}");
                         stage.setKeyboardFocus(codeTextArea);
                     }
-    
+                
                     @Override
                     public void cancelled() {
                         stage.setKeyboardFocus(codeTextArea);
@@ -234,48 +291,48 @@ public class PopTextraTypist extends PopTable {
                 colorSelectBox.setSelectedIndex(0);
             }
         });
-        
-        root.defaults().padLeft(20).padRight(20);
     
-        root.row();
-        label = new Label("CODE", skin, "tt-subtitle");
-        root.add(label).left().spaceTop(15);
+        contentTable.defaults().padLeft(20).padRight(20);
     
-        root.row();
+        contentTable.row();
+        var label = new Label("CODE", skin, "tt-subtitle");
+        contentTable.add(label).left().spaceTop(15);
+    
+        contentTable.row();
         codeTextArea = new TextArea("", skin, "tt-page");
         codeTextArea.setName("code");
-        root.add(codeTextArea).grow().uniformY();
+        contentTable.add(codeTextArea).grow().uniformY();
         codeTextArea.addListener(ibeamListener);
         onChange(codeTextArea, () -> {
             previewTypingLabel.setText(codeTextArea.getText());
             previewTypingLabel.restart();
         });
     
-        root.row();
+        contentTable.row();
         imageButton = new ImageButton(skin, "tt-copy");
-        root.add(imageButton).right().spaceTop(5);
+        contentTable.add(imageButton).right().spaceTop(5);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> Gdx.app.getClipboard().setContents(codeTextArea.getText()));
     
-        root.row();
+        contentTable.row();
         label = new Label("PREVIEW", skin, "tt-subtitle");
-        root.add(label).left();
-        
-        root.row();
+        contentTable.add(label).left();
+    
+        contentTable.row();
         previewTable = new Table();
         previewTable.setBackground(skin.getDrawable("tt-page-10"));
         previewTable.setColor(Color.BLACK);
-        root.add(previewTable).grow().uniformY();
+        contentTable.add(previewTable).grow().uniformY();
     
         previewTypingLabel = new TypingLabel("", masterFont);
         previewTypingLabel.setWrap(true);
         previewScrollPane = new ScrollPane(previewTypingLabel, skin, "tt");
         previewTable.add(previewScrollPane).grow();
     
-        root.row();
+        contentTable.row();
         table = new Table();
-        root.add(table).right().spaceTop(5).padBottom(20);
-        
+        contentTable.add(table).right().spaceTop(5).padBottom(20);
+    
         table.defaults().space(5);
         imageButton = new ImageButton(skin, "tt-color");
         table.add(imageButton);
@@ -288,7 +345,7 @@ public class PopTextraTypist extends PopTable {
                     previewTable.setColor(color);
                     stage.setKeyboardFocus(codeTextArea);
                 }
-    
+            
                 @Override
                 public void cancelled() {
                     stage.setKeyboardFocus(codeTextArea);
@@ -301,8 +358,9 @@ public class PopTextraTypist extends PopTable {
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> Gdx.app.getClipboard().setContents(previewTypingLabel.toString()));
-        
-        activateStandardFontFamily();
+    
+        if (fontMode == FontMode.STANDARD) activateStandardFontFamily();
+        else if (fontMode == FontMode.SKIN) activateSkinFontFamily();
     }
     
     private void insertTag(String tag) {
@@ -379,7 +437,14 @@ public class PopTextraTypist extends PopTable {
         pop.pad(50);
     }
     
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        if (spine != null) spine.update(delta);
+    }
+    
     private void activateStandardFontFamily() {
+        fontMode = FontMode.STANDARD;
         masterFont.dispose();
         var items = new Array<String>();
         items.add("Select a font...");
@@ -398,6 +463,7 @@ public class PopTextraTypist extends PopTable {
     }
     
     private void activateSkinFontFamily() {
+        fontMode = FontMode.SKIN;
         masterFont.dispose();
         var items = new Array<String>();
         items.add("Select a font...");

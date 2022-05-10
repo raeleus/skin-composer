@@ -362,7 +362,7 @@ public class PopEffects extends PopTable {
                 runnable = () -> {
                     float frequency = isNumeric(frequencyField.getText()) ? Float.parseFloat(frequencyField.getText()) : 1.0f;
                     float threshold = isNumeric(thresholdField.getText()) ? Float.parseFloat(thresholdField.getText()) : .5f;
-                    tagBegin = "{BLINK=" + color1.toString().substring(0, 6) + ";" + color2.toString().substring(0, 6) + ";" + frequency + ";" + threshold + "}";
+                    tagBegin = "{BLINK=" + color1 + ";" + color2 + ";" + frequency + ";" + threshold + "}";
         
                     typingLabel.setText(tagBegin + TEST_STRING + tagEnd);
                     typingLabel.restart();
@@ -413,7 +413,7 @@ public class PopEffects extends PopTable {
     
                 runnable = () -> {
                     float duration = isNumeric(durationField.getText()) ? Float.parseFloat(durationField.getText()) : 1f;
-                    tagBegin = "{FADE=" + color1.toString().substring(0, 6) + ";" + color2.toString().substring(0, 6) + ";" + duration + "}";
+                    tagBegin = "{FADE=" + color1 + ";" + color2 + ";" + duration + "}";
         
                     typingLabel.setText(tagBegin + TEST_STRING + tagEnd);
                     typingLabel.restart();
@@ -467,7 +467,7 @@ public class PopEffects extends PopTable {
                 runnable = () -> {
                     float distance = isNumeric(distanceField.getText()) ? Float.parseFloat(distanceField.getText()) : 1.0f;
                     float frequency = isNumeric(frequencyField.getText()) ? Float.parseFloat(frequencyField.getText()) : 1.0f;
-                    tagBegin = "{GRADIENT=" + color1.toString().substring(0, 6) + ";" + color2.toString().substring(0, 6) + ";" + distance + ";" + frequency + "}";
+                    tagBegin = "{GRADIENT=" + color1 + ";" + color2 + ";" + distance + ";" + frequency + "}";
         
                     typingLabel.setText(tagBegin + TEST_STRING + tagEnd);
                     typingLabel.restart();
@@ -565,7 +565,7 @@ public class PopEffects extends PopTable {
                     float intensity = isNumeric(intensityField.getText()) ? Float.parseFloat(intensityField.getText()) : 1.0f;
                     float duration = isNumeric(durationField.getText()) ? Float.parseFloat(durationField.getText()) : -1.0f;
                     float likelihood = isNumeric(likelihoodField.getText()) ? Float.parseFloat(likelihoodField.getText()) : 1.0f;
-                    tagBegin = "{JOLT=" + distance + ";" + intensity + ";" + (!MathUtils.isEqual(duration, -1)? duration : "inf") + ";" + likelihood + ";" + color1.toString().substring(0, 6) + ";" + color2.toString().substring(0, 6) + "}";
+                    tagBegin = "{JOLT=" + distance + ";" + intensity + ";" + (!MathUtils.isEqual(duration, -1)? duration : "inf") + ";" + likelihood + ";" + color1 + ";" + color2 + "}";
         
                     typingLabel.setText(tagBegin + TEST_STRING + tagEnd);
                     typingLabel.restart();

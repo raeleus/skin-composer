@@ -4503,6 +4503,20 @@ tt-icon-u
   orig: 12, 15
   offset: 0, 0
   index: -1
+tt-link
+  rotate: false
+  xy: 1402, 1412
+  size: 1, 15
+  orig: 1, 15
+  offset: 0, 0
+  index: -1
+tt-link-pressed
+  rotate: false
+  xy: 727, 1136
+  size: 1, 15
+  orig: 1, 15
+  offset: 0, 0
+  index: -1
 tt-list-selection
   rotate: false
   xy: 851, 1353
