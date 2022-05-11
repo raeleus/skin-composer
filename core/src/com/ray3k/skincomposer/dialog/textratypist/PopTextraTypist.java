@@ -103,14 +103,17 @@ public class PopTextraTypist extends PopTable {
         var textButton = new TextButton("TextraTypist", skin, "tt-link");
         table.add(textButton).padLeft(10);
         textButton.addListener(handListener);
-    
+        onChange(textButton, () -> Gdx.net.openURI("https://github.com/tommyettinger/textratypist"));
+        
         textButton = new TextButton("TypingLabel", skin, "tt-link");
         table.add(textButton);
         textButton.addListener(handListener);
-    
+        onChange(textButton, () -> Gdx.net.openURI("https://github.com/rafaskb/typing-label"));
+        
         textButton = new TextButton("Playground Wiki", skin, "tt-link");
         table.add(textButton);
         textButton.addListener(handListener);
+        onChange(textButton, () -> Gdx.net.openURI("https://github.com/raeleus/skin-composer/wiki/TextraTypist-Playground"));
         
         contentTable.defaults().space(10);
         contentTable.row();
