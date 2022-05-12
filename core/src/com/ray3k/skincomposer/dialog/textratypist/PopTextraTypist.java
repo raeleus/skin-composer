@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.Align;
@@ -63,7 +64,7 @@ public class PopTextraTypist extends PopTable {
         table.add(textButton);
         buttonGroup.add(textButton);
         textButton.addListener(handListener);
-        onChange(textButton, this::showFileTable);
+        onChange(textButton, () -> contentTable.addAction(Actions.sequence(Actions.fadeOut(.25f), Actions.run(this::showFileTable), Actions.fadeIn(.25f))));
     
         textButton = new TextButton("Home", skin, "tt-file");
         textButton.setProgrammaticChangeEvents(false);
@@ -71,7 +72,7 @@ public class PopTextraTypist extends PopTable {
         buttonGroup.add(textButton);
         textButton.addListener(handListener);
         textButton.setChecked(true);
-        onChange(textButton, this::showHomeTable);
+        onChange(textButton, () -> contentTable.addAction(Actions.sequence(Actions.fadeOut(.25f), Actions.run(this::showHomeTable), Actions.fadeIn(.25f))));
         
         root.row();
         contentTable = new Table();
@@ -333,6 +334,7 @@ public class PopTextraTypist extends PopTable {
     
         previewTypingLabel = new TypingLabel("", masterFont);
         previewTypingLabel.setWrap(true);
+        
         previewScrollPane = new ScrollPane(previewTypingLabel, skin, "tt");
         previewTable.add(previewScrollPane).grow();
     
@@ -466,6 +468,7 @@ public class PopTextraTypist extends PopTable {
         
         previewTypingLabel = new TypingLabel(previewTypingLabel.getOriginalText().toString(), masterFont);
         previewTypingLabel.setWrap(true);
+        previewTypingLabel.setAlignment(Align.topLeft);
         previewScrollPane.setActor(previewTypingLabel);
     }
     
@@ -516,6 +519,7 @@ public class PopTextraTypist extends PopTable {
     
         previewTypingLabel = new TypingLabel(previewTypingLabel.getOriginalText().toString(), masterFont);
         previewTypingLabel.setWrap(true);
+        previewTypingLabel.setAlignment(Align.topLeft);
         previewScrollPane.setActor(previewTypingLabel);
     }
     
