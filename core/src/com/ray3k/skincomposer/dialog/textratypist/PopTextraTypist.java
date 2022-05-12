@@ -46,16 +46,15 @@ public class PopTextraTypist extends PopTable {
         setBackground(skin.getDrawable("tt-bg"));
         
         var root = this;
-        root.pad(10);
         root.top().left();
         
         var label = new Label("TextraTypist Playground", skin, "tt-title");
-        root.add(label).left();
+        root.add(label).left().pad(10).padBottom(0);
         
         root.row();
         var table = new Table();
         table.left();
-        root.add(table).growX().spaceTop(15);
+        root.add(table).growX().spaceTop(15).padLeft(10).padRight(10);
         
         var buttonGroup = new ButtonGroup<TextButton>();
         table.defaults().space(20);
@@ -65,7 +64,7 @@ public class PopTextraTypist extends PopTable {
         buttonGroup.add(textButton);
         textButton.addListener(handListener);
         onChange(textButton, this::showFileTable);
-        
+    
         textButton = new TextButton("Home", skin, "tt-file");
         textButton.setProgrammaticChangeEvents(false);
         table.add(textButton);
@@ -73,13 +72,6 @@ public class PopTextraTypist extends PopTable {
         textButton.addListener(handListener);
         textButton.setChecked(true);
         onChange(textButton, this::showHomeTable);
-    
-        textButton = new TextButton("Help", skin, "tt-file");
-        textButton.setProgrammaticChangeEvents(false);
-        table.add(textButton);
-        buttonGroup.add(textButton);
-        textButton.addListener(handListener);
-        onChange(textButton, this::showHelpTable);
         
         root.row();
         contentTable = new Table();
@@ -89,54 +81,66 @@ public class PopTextraTypist extends PopTable {
     
     private void showFileTable() {
         contentTable.clearChildren();
-    }
-    
-    private void showHelpTable() {
-        contentTable.clearChildren();
-    
-        var table = new Table();
-        table.left();
-        table.setBackground(skin.getDrawable("tt-ribbon-10"));
-        contentTable.add(table).growX();
-    
-        table.defaults().space(10);
-        var textButton = new TextButton("TextraTypist", skin, "tt-link");
-        table.add(textButton).padLeft(10);
-        textButton.addListener(handListener);
-        onChange(textButton, () -> Gdx.net.openURI("https://github.com/tommyettinger/textratypist"));
+        contentTable.defaults().reset();
         
-        textButton = new TextButton("TypingLabel", skin, "tt-link");
+        var table = new Table();
+        table.setBackground(skin.getDrawable("tt-file"));
+        table.top();
+        contentTable.add(table).growY();
+        
+        table.defaults().growX();
+        var textButton = new TextButton("Quit to Skin Composer", skin, "tt-file-bar");
+        textButton.getLabel().setAlignment(Align.left);
         table.add(textButton);
         textButton.addListener(handListener);
-        onChange(textButton, () -> Gdx.net.openURI("https://github.com/rafaskb/typing-label"));
-        
-        textButton = new TextButton("Playground Wiki", skin, "tt-link");
+        onChange(textButton, this::hide);
+    
+        table.row();
+        textButton = new TextButton("TextraTypist GitHub", skin, "tt-file-bar");
+        textButton.getLabel().setAlignment(Align.left);
+        table.add(textButton);
+        textButton.addListener(handListener);
+        onChange(textButton, () -> Gdx.net.openURI("https://github.com/tommyettinger/textratypist"));
+    
+        table.row();
+        textButton = new TextButton("TypingLabel Documentation", skin, "tt-file-bar");
+        textButton.getLabel().setAlignment(Align.left);
+        table.add(textButton);
+        textButton.addListener(handListener);
+        onChange(textButton, () -> Gdx.net.openURI("https://github.com/rafaskb/typing-label/wiki/Tokens"));
+    
+        table.row();
+        textButton = new TextButton("TextraTypist Playground Wiki", skin, "tt-file-bar");
+        textButton.getLabel().setAlignment(Align.left);
         table.add(textButton);
         textButton.addListener(handListener);
         onChange(textButton, () -> Gdx.net.openURI("https://github.com/raeleus/skin-composer/wiki/TextraTypist-Playground"));
+    
+        table = new Table();
+        contentTable.add(table).grow().padLeft(10).padRight(10);
         
-        contentTable.defaults().space(10);
-        contentTable.row();
+        table.defaults().space(10);
         spine = new SpineDrawable(skeletonRenderer, textraTypistLogoSkeletonData, textraTypistLogoAnimationStateData);
         spine.getAnimationState().setAnimation(0, "animation", false);
         spine.getAnimationState().addAnimation(0, "loop", true, 0);
         var image = new Image(spine);
-        contentTable.add(image);
+        table.add(image);
         
-        contentTable.row();
+        table.row();
         var label = new TypingLabel(Gdx.files.internal("AboutTextraTypist").readString(), skin, "tt");
         label.setWrap(true);
         label.setAlignment(Align.topLeft);
-        contentTable.add(label).grow();
+        table.add(label).grow();
     }
     
     private void showHomeTable() {
         contentTable.clearChildren();
+        contentTable.defaults().reset();
         
         var table = new Table();
         table.left();
         table.setBackground(skin.getDrawable("tt-ribbon-10"));
-        contentTable.add(table).growX();
+        contentTable.add(table).growX().padLeft(20).padRight(20);
     
         table.defaults().space(10);
         var imageButton = new ImageButton(skin, "tt-bold");
