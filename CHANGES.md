@@ -1,4 +1,5 @@
 ### Skin Composer Version 50 ###
+* Added TextraTypist Playground to markup text with formatting and effects.
 * Fixed crash when naming a duplicate drawable.
 * Minor UI changes and bug fixes.
 
