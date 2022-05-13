@@ -229,7 +229,7 @@ public class DialogTenPatchAnimation extends Dialog {
                 moveLeft();
             }
         });
-        var textTooltip = new TextTooltip("LEFT ARROW", tooltipManager, skin);
+        var textTooltip = Main.fixTooltip(new TextTooltip("LEFT ARROW", tooltipManager, skin));
         button.addListener(textTooltip);
         
         button = new Button(skin, "move-frame-right");
@@ -241,7 +241,7 @@ public class DialogTenPatchAnimation extends Dialog {
                 moveRight();
             }
         });
-        textTooltip = new TextTooltip("RIGHT ARROW", tooltipManager, skin);
+        textTooltip = Main.fixTooltip(new TextTooltip("RIGHT ARROW", tooltipManager, skin));
         button.addListener(textTooltip);
         
         subTable.row();
@@ -254,7 +254,7 @@ public class DialogTenPatchAnimation extends Dialog {
                 eraseSelection();
             }
         });
-        textTooltip = new TextTooltip("DEL", tooltipManager, skin);
+        textTooltip = Main.fixTooltip(new TextTooltip("DEL", tooltipManager, skin));
         button.addListener(textTooltip);
     
         button = new Button(skin, "add-frame");
@@ -278,7 +278,7 @@ public class DialogTenPatchAnimation extends Dialog {
                 duplicateSelection();
             }
         });
-        textTooltip = new TextTooltip("CTRL + D", tooltipManager, skin);
+        textTooltip = Main.fixTooltip(new TextTooltip("CTRL + D", tooltipManager, skin));
         textButton.addListener(textTooltip);
     
         subTable.row();
@@ -734,7 +734,7 @@ public class DialogTenPatchAnimation extends Dialog {
             label.setAlignment(Align.center);
             label.setEllipsis("...");
             button.add(label).colspan(3).width(125f);
-            var textTooltip = new TextTooltip(region.name, tooltipManager, skin);
+            var textTooltip = Main.fixTooltip(new TextTooltip(region.name, tooltipManager, skin));
             label.addListener(textTooltip);
         }
         

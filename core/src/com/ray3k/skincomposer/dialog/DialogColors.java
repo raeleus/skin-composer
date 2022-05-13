@@ -315,7 +315,7 @@ public class DialogColors extends Dialog {
                 });
                 button.add(renameButton).padLeft(10.0f);
                 
-                TextTooltip toolTip = new TextTooltip("Rename Color", tooltipManager, getSkin());
+                TextTooltip toolTip = Main.fixTooltip(new TextTooltip("Rename Color", tooltipManager, getSkin()));
                 renameButton.addListener(toolTip);
                 
                 //recolor button
@@ -338,7 +338,7 @@ public class DialogColors extends Dialog {
                 });
                 button.add(recolorButton);
                 
-                toolTip = new TextTooltip("Change Color", tooltipManager, getSkin());
+                toolTip = Main.fixTooltip(new TextTooltip("Change Color", tooltipManager, getSkin()));
                 recolorButton.addListener(toolTip);
                 
                 label = new Label("(" + ((int)(color.color.r * 255)) + ", " + ((int)(color.color.g * 255)) + ", " + ((int)(color.color.b * 255)) + ", " + ((int)(color.color.a * 255)) + ")", getSkin());
@@ -420,7 +420,7 @@ public class DialogColors extends Dialog {
                     
                 });
                 
-                toolTip = new TextTooltip("Delete Color", tooltipManager, getSkin());
+                toolTip = Main.fixTooltip(new TextTooltip("Delete Color", tooltipManager, getSkin()));
                 closeButton.addListener(toolTip);
                 
                 button.add(closeButton).padLeft(5.0f);

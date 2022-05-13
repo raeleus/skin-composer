@@ -166,7 +166,7 @@ public class StyleSelectorPopTable extends PopTableClickListener {
         } else if (clazz.equals(TextTooltip.class)) {
             var style = rootTable.createPreviewStyle(TextTooltip.TextTooltipStyle.class, styleData);
             var label = new Label("hover over me", skin);
-            label.addListener(new TextTooltip("Lorem Ipsum", style));
+            label.addListener(Main.fixTooltip(new TextTooltip("Lorem Ipsum", style)));
             return label;
         } else if (clazz.equals(Touchpad.class)) {
             var style = rootTable.createPreviewStyle(Touchpad.TouchpadStyle.class, styleData);

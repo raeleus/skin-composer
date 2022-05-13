@@ -12,13 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposer;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerEvents;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel;
 import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimActor;
 import com.ray3k.stripe.PopTableClickListener;
-import org.lwjgl.system.CallbackI.S;
+import com.ray3k.skincomposer.Main;
 
 import static com.ray3k.skincomposer.Main.*;
 
@@ -53,7 +52,7 @@ public class ImageListeners {
                 textField.setText(simImage.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(new TextTooltip("The name of the Image to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene"));
+                textField.addListener(Main.fixTooltip(new TextTooltip("The name of the Image to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -109,7 +108,7 @@ public class ImageListeners {
                 selectBox.setSelected(simImage.scaling);
                 popTable.add(selectBox);
                 selectBox.addListener(handListener);
-                selectBox.addListener(new TextTooltip("The scaling strategy applied to the image.", tooltipManager, skin, "scene"));
+                selectBox.addListener(Main.fixTooltip(new TextTooltip("The scaling strategy applied to the image.", tooltipManager, skin, "scene")));
                 selectBox.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

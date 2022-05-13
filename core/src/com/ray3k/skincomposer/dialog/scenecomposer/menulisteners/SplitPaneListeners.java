@@ -23,6 +23,7 @@ import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
 import static com.ray3k.skincomposer.Main.*;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
+import com.ray3k.skincomposer.Main;
 
 public class SplitPaneListeners {
     public static EventListener splitPaneNameListener(final DialogSceneComposer dialogSceneComposer) {
@@ -53,7 +54,7 @@ public class SplitPaneListeners {
                 textField.setText(simSplitPane.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(new TextTooltip("The name of the SplitPane to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene"));
+                textField.addListener(Main.fixTooltip(new TextTooltip("The name of the SplitPane to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -123,7 +124,7 @@ public class SplitPaneListeners {
                 table.add(imageTextButton);
                 buttonGroup.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Horizontal orientation of the widgets.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Horizontal orientation of the widgets.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -138,7 +139,7 @@ public class SplitPaneListeners {
                 table.add(imageTextButton);
                 buttonGroup.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Vertical orientation of the widgets.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Vertical orientation of the widgets.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -186,7 +187,7 @@ public class SplitPaneListeners {
                 splitSpinner.getTextField().addListener(ibeamListener);
                 splitSpinner.getButtonMinus().addListener(handListener);
                 splitSpinner.getButtonPlus().addListener(handListener);
-                splitSpinner.addListener(new TextTooltip("The distance in pixels that the user is allowed to scroll beyond the bounds if overscroll is enabled.", tooltipManager, skin, "scene"));
+                splitSpinner.addListener(Main.fixTooltip(new TextTooltip("The distance in pixels that the user is allowed to scroll beyond the bounds if overscroll is enabled.", tooltipManager, skin, "scene")));
                 splitSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -206,7 +207,7 @@ public class SplitPaneListeners {
                 splitMinSpinner.getTextField().addListener(ibeamListener);
                 splitMinSpinner.getButtonMinus().addListener(handListener);
                 splitMinSpinner.getButtonPlus().addListener(handListener);
-                splitMinSpinner.addListener(new TextTooltip("The minimum speed that scroll returns to the widget bounds when overscroll is enabled.", tooltipManager, skin, "scene"));
+                splitMinSpinner.addListener(Main.fixTooltip(new TextTooltip("The minimum speed that scroll returns to the widget bounds when overscroll is enabled.", tooltipManager, skin, "scene")));
                 splitMinSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -228,7 +229,7 @@ public class SplitPaneListeners {
                 splitMaxSpinner.getTextField().addListener(ibeamListener);
                 splitMaxSpinner.getButtonMinus().addListener(handListener);
                 splitMaxSpinner.getButtonPlus().addListener(handListener);
-                splitMaxSpinner.addListener(new TextTooltip("The maximum speed that scroll returns to the widget bounds when overscroll is enabled.", tooltipManager, skin, "scene"));
+                splitMaxSpinner.addListener(Main.fixTooltip(new TextTooltip("The maximum speed that scroll returns to the widget bounds when overscroll is enabled.", tooltipManager, skin, "scene")));
                 splitMaxSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

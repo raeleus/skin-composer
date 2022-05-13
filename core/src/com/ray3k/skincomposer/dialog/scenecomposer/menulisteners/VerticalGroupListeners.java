@@ -20,6 +20,7 @@ import com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel.SimA
 import static com.ray3k.skincomposer.Main.*;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
+import com.ray3k.skincomposer.Main;
 
 public class VerticalGroupListeners {
     public static EventListener verticalGroupNameListener(final DialogSceneComposer dialogSceneComposer) {
@@ -50,7 +51,7 @@ public class VerticalGroupListeners {
                 textField.setText(simVerticalGroup.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(new TextTooltip("The name of the VerticalGroup to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene"));
+                textField.addListener(Main.fixTooltip(new TextTooltip("The name of the VerticalGroup to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -117,7 +118,7 @@ public class VerticalGroupListeners {
                 expand.setProgrammaticChangeEvents(false);
                 table.add(expand);
                 expand.addListener(handListener);
-                expand.addListener(new TextTooltip("Set the widgets to expand to the available space.", tooltipManager, skin, "scene"));
+                expand.addListener(Main.fixTooltip(new TextTooltip("Set the widgets to expand to the available space.", tooltipManager, skin, "scene")));
                 expand.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -135,7 +136,7 @@ public class VerticalGroupListeners {
                 fill.setProgrammaticChangeEvents(false);
                 table.add(fill);
                 fill.addListener(handListener);
-                fill.addListener(new TextTooltip("Sets the widgets to fill the entire space.", tooltipManager, skin, "scene"));
+                fill.addListener(Main.fixTooltip(new TextTooltip("Sets the widgets to fill the entire space.", tooltipManager, skin, "scene")));
                 fill.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -153,7 +154,7 @@ public class VerticalGroupListeners {
                 grow.setProgrammaticChangeEvents(false);
                 table.add(grow);
                 grow.addListener(handListener);
-                grow.addListener(new TextTooltip("Sets the widgets to expand and fill.", tooltipManager, skin, "scene"));
+                grow.addListener(Main.fixTooltip(new TextTooltip("Sets the widgets to expand and fill.", tooltipManager, skin, "scene")));
                 grow.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -208,7 +209,7 @@ public class VerticalGroupListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(new TextTooltip("The padding to the left of the widgets.", tooltipManager, skin, "scene"));
+                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding to the left of the widgets.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -227,7 +228,7 @@ public class VerticalGroupListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(new TextTooltip("The padding to the right of the widgets.", tooltipManager, skin, "scene"));
+                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding to the right of the widgets.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -246,7 +247,7 @@ public class VerticalGroupListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(new TextTooltip("The padding to the top of the widgets.", tooltipManager, skin, "scene"));
+                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding to the top of the widgets.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -265,7 +266,7 @@ public class VerticalGroupListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(new TextTooltip("The padding to the bottom of the widgets.", tooltipManager, skin, "scene"));
+                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding to the bottom of the widgets.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -290,7 +291,7 @@ public class VerticalGroupListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(new TextTooltip("The spacing between the widgets.", tooltipManager, skin, "scene"));
+                spinner.addListener(Main.fixTooltip(new TextTooltip("The spacing between the widgets.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -332,7 +333,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setChecked(simVerticalGroup.wrap);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Whether the widgets will wrap to the next line.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Whether the widgets will wrap to the next line.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -351,7 +352,7 @@ public class VerticalGroupListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(new TextTooltip("The vertical space between rows when wrap is enabled.", tooltipManager, skin, "scene"));
+                spinner.addListener(Main.fixTooltip(new TextTooltip("The vertical space between rows when wrap is enabled.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -398,7 +399,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the top left.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the top left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -412,7 +413,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the top center.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the top center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -426,7 +427,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the top right.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the top right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -441,7 +442,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the middle left.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the middle left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -455,7 +456,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the center.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -469,7 +470,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the middle right.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the middle right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -484,7 +485,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom left.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the bottom left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -498,7 +499,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom center.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the bottom center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -512,7 +513,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom right.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the bottom right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -590,7 +591,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the top left.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the top left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -604,7 +605,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the top center.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the top center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -618,7 +619,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the top right.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the top right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -633,7 +634,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the middle left.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the middle left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -647,7 +648,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the center.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -661,7 +662,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the middle right.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the middle right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -676,7 +677,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom left.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the bottom left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -690,7 +691,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom center.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the bottom center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -704,7 +705,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the widgets to the bottom right.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the bottom right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -775,7 +776,7 @@ public class VerticalGroupListeners {
                 imageTextButton.setChecked(simVerticalGroup.reverse);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Reverse the display order of the widgets.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Reverse the display order of the widgets.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

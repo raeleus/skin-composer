@@ -53,6 +53,7 @@ import java.io.File;
 import java.util.Locale;
 
 import static com.ray3k.skincomposer.Main.*;
+import com.ray3k.skincomposer.Main;
 
 /**
  *
@@ -820,7 +821,7 @@ public class Dialog9Patch extends Dialog {
                 });
             }
         });
-        var toolTip = new TextTooltip("Background color for preview pane.", tooltipManager, getSkin());
+        var toolTip = Main.fixTooltip(new TextTooltip("Background color for preview pane.", tooltipManager, getSkin()));
         imageButton.addListener(toolTip);
 
         slider = new Slider(1.0f, 100.0f, 1.0f, false, getSkin(), "zoom-horizontal");

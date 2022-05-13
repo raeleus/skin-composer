@@ -33,6 +33,7 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.net.HttpRequestBuilder;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
@@ -52,6 +53,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip.TextTooltipStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.esotericsoftware.spine.AnimationStateData;
 import com.esotericsoftware.spine.SkeletonData;
@@ -259,6 +261,7 @@ public class Main extends ApplicationAdapter {
         tooltipManager.initialTime = .4f;
         tooltipManager.resetTime = 0.0f;
         tooltipManager.subsequentTime = 0.0f;
+        tooltipManager.maxWidth = 400f;
         tooltipManager.hideAll();
         tooltipManager.instant();
     }
@@ -380,5 +383,14 @@ public class Main extends ApplicationAdapter {
         });
         
         thread.start();
+    }
+
+    public static TextTooltip fixTooltip(TextTooltip toolTip) {
+        toolTip.getContainer().width(new Value() {
+            public float get (@Null Actor context) {
+                return Math.min(toolTip.getManager().maxWidth, toolTip.getActor().getGlyphLayout().width);
+            }
+        });
+        return toolTip;
     }
 }
