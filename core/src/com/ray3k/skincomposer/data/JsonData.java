@@ -107,7 +107,7 @@ public class JsonData implements Json.Serializable {
     }
 
     /**
-     * Imports skin data from a JSON file. Supports skins from LibGDX 1.9.10
+     * Imports skin data from a JSON file. Supports skins from libGDX 1.9.10
      * @param fileHandle
      * @return
      * @throws Exception 
@@ -648,7 +648,7 @@ public class JsonData implements Json.Serializable {
     }
 
     /**
-     * Exports skin data to a JSON file to be loaded by LibGDX.
+     * Exports skin data to a JSON file to be loaded by libGDX.
      * @param fileHandle
      * @return 
      */

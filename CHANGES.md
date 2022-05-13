@@ -270,7 +270,7 @@
 * Improved error message when trying to add a font that is too large for the texture settings.
 
 ### Skin Composer Version 24 ###
-* Updated to LibGDX 1.9.9.
+* Updated to libGDX 1.9.9.
 * Added setting for export with simple names per 1.9.9. See Project > Settings.
 * Allows import of 1.9.9 skins with simple names.
 * Added a parent setting to each style to support 1.9.9 cascading styles. Selectable parent options respects class inheritance.

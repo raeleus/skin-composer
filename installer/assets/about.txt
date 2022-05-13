@@ -1,4 +1,4 @@
-Use [product-name] to visually create skins for LibGDX Scene2D.UI
+Use [product-name] to visually create skins for libGDX Scene2D.UI
 
 Version [installation-display-version]
 
