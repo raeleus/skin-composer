@@ -12,6 +12,7 @@ def exeName = 'SkinComposer'
 
 mainClassName = "com.ray3k.skincomposer.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets")
+sourceSets.main.resources.srcDirs = [file('assets').path]
 
 task dist(type: Jar, dependsOn: ['classes']) {
     archiveFileName = "${appName}.jar";

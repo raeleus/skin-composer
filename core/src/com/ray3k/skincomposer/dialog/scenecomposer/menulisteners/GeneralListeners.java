@@ -40,7 +40,7 @@ public class GeneralListeners {
         var textButton = new TextButton("RESET", skin, "scene-small");
         popTable.add(textButton).minWidth(100);
         textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("Resets the settings of the " + name + " to the defaults.", tooltipManager, skin, "scene"));
+        textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the " + name + " to the defaults.", tooltipManager, skin, "scene")));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -64,7 +64,7 @@ public class GeneralListeners {
         var textButton = new TextButton("DELETE", skin, "scene-small");
         popTable.add(textButton).minWidth(100);
         textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("Removes this " + name + " from its parent.", tooltipManager, skin, "scene"));
+        textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this " + name + " from its parent.", tooltipManager, skin, "scene")));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -107,11 +107,11 @@ public class GeneralListeners {
         var popTable = popTableClickListener.getPopTable();
         var label = new Label("Widgets:", skin, "scene-label-colored");
         popTable.add(label);
-        label.addListener(new TextTooltip("Widgets are interactive components of your UI.", tooltipManager, skin, "scene"));
+        label.addListener(Main.fixTooltip(new TextTooltip("Widgets are interactive components of your UI.", tooltipManager, skin, "scene")));
     
         label = new Label("Layout:", skin, "scene-label-colored");
         popTable.add(label);
-        label.addListener(new TextTooltip("Layout widgets help organize the components of your UI and make it more adaptable to varying screen size.", tooltipManager, skin, "scene"));
+        label.addListener(Main.fixTooltip(new TextTooltip("Layout widgets help organize the components of your UI and make it more adaptable to varying screen size.", tooltipManager, skin, "scene")));
     
         popTable.row();
         popTable.defaults().top();
@@ -182,7 +182,7 @@ public class GeneralListeners {
         textButton = new TextButton("Image", skin, "scene-med");
         table.add(textButton);
         textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("Images are not directly interactable elements of a layout, but are necessary to showcase graphics or pictures in your UI. Scaling options make them a very powerful tool.", tooltipManager, skin, "scene"));
+        textButton.addListener(Main.fixTooltip(new TextTooltip("Images are not directly interactable elements of a layout, but are necessary to showcase graphics or pictures in your UI. Scaling options make them a very powerful tool.", tooltipManager, skin, "scene")));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -543,7 +543,7 @@ public class GeneralListeners {
         textButton = new TextButton("Container", skin, "scene-med");
         table.add(textButton);
         textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("Container is like a lightweight, single cell version of Table.", tooltipManager, skin, "scene"));
+        textButton.addListener(Main.fixTooltip(new TextTooltip("Container is like a lightweight, single cell version of Table.", tooltipManager, skin, "scene")));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -555,7 +555,7 @@ public class GeneralListeners {
         textButton = new TextButton("HorizontalGroup", skin, "scene-med");
         table.add(textButton);
         textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("Allows layout of multiple elements horizontally. It is most useful for its wrap functionality, which cannot be achieved with a Table.", tooltipManager, skin, "scene"));
+        textButton.addListener(Main.fixTooltip(new TextTooltip("Allows layout of multiple elements horizontally. It is most useful for its wrap functionality, which cannot be achieved with a Table.", tooltipManager, skin, "scene")));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -598,7 +598,7 @@ public class GeneralListeners {
         textButton = new TextButton("Stack", skin, "scene-med");
         table.add(textButton);
         textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("Allows stacking of elements on top of each other.", tooltipManager, skin, "scene"));
+        textButton.addListener(Main.fixTooltip(new TextTooltip("Allows stacking of elements on top of each other.", tooltipManager, skin, "scene")));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -641,7 +641,7 @@ public class GeneralListeners {
         textButton = new TextButton("Table", skin, "scene-med");
         table.add(textButton);
         textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("The most powerful layout widget available. Consisting of a series of configurable cells, it organizes elements in rows and columns. It serves as the basis of all layout design in Scene2D.UI.", tooltipManager, skin, "scene"));
+        textButton.addListener(Main.fixTooltip(new TextTooltip("The most powerful layout widget available. Consisting of a series of configurable cells, it organizes elements in rows and columns. It serves as the basis of all layout design in Scene2D.UI.", tooltipManager, skin, "scene")));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -684,7 +684,7 @@ public class GeneralListeners {
         textButton = new TextButton("VerticalGroup", skin, "scene-med");
         table.add(textButton);
         textButton.addListener(handListener);
-        textButton.addListener(new TextTooltip("Allows layout of multiple elements vertically. It is most useful for its wrap functionality, which cannot be achieved with a Table.", tooltipManager, skin, "scene"));
+        textButton.addListener(Main.fixTooltip(new TextTooltip("Allows layout of multiple elements vertically. It is most useful for its wrap functionality, which cannot be achieved with a Table.", tooltipManager, skin, "scene")));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -732,7 +732,7 @@ public class GeneralListeners {
                 var textButton = new TextButton("Select Drawable", skin, "scene-small");
                 popTable.add(textButton).minWidth(100);
                 textButton.addListener(handListener);
-                textButton.addListener(new TextTooltip(toolTipText, tooltipManager, skin, "scene"));
+                textButton.addListener(Main.fixTooltip(new TextTooltip(toolTipText, tooltipManager, skin, "scene")));
                 textButton.addListener(new ChangeListener() {
                     boolean confirmed;
                     DrawableData drawableData;
@@ -889,7 +889,7 @@ public class GeneralListeners {
                 table.add(imageTextButton);
                 buttonGroup.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("The widget and all children can be clicked on.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("The widget and all children can be clicked on.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(changeListener);
                 
                 table.row();
@@ -900,7 +900,7 @@ public class GeneralListeners {
                 table.add(imageTextButton);
                 buttonGroup.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("The widget and all children can not be clicked on.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("The widget and all children can not be clicked on.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(changeListener);
     
                 table.row();
@@ -911,7 +911,7 @@ public class GeneralListeners {
                 table.add(imageTextButton);
                 buttonGroup.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Only the widget's children can be clicked on.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Only the widget's children can be clicked on.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(changeListener);
             }
         };
@@ -957,7 +957,7 @@ public class GeneralListeners {
                 table.add(imageTextButton);
                 buttonGroup.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("The widget is visible in the stage.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("The widget is visible in the stage.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(changeListener);
                 
                 table.row();
@@ -968,7 +968,7 @@ public class GeneralListeners {
                 table.add(imageTextButton);
                 buttonGroup.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("The widget is not visible in the stage.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("The widget is not visible in the stage.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(changeListener);
             }
         };

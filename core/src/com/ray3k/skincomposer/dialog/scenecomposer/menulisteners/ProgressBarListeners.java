@@ -20,6 +20,7 @@ import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
 import static com.ray3k.skincomposer.Main.*;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
+import com.ray3k.skincomposer.Main;
 
 public class ProgressBarListeners {
     public static EventListener progressBarNameListener(final DialogSceneComposer dialogSceneComposer) {
@@ -50,7 +51,7 @@ public class ProgressBarListeners {
                 textField.setText(simList.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(new TextTooltip("The name of the ProgressBar to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene"));
+                textField.addListener(Main.fixTooltip(new TextTooltip("The name of the ProgressBar to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -123,7 +124,7 @@ public class ProgressBarListeners {
                 valueSpinner.getTextField().addListener(ibeamListener);
                 valueSpinner.getButtonMinus().addListener(handListener);
                 valueSpinner.getButtonPlus().addListener(handListener);
-                valueSpinner.addListener(new TextTooltip("The value of the ProgressBar.", tooltipManager, skin, "scene"));
+                valueSpinner.addListener(Main.fixTooltip(new TextTooltip("The value of the ProgressBar.", tooltipManager, skin, "scene")));
                 valueSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -143,7 +144,7 @@ public class ProgressBarListeners {
                 minimumSpinner.getTextField().addListener(ibeamListener);
                 minimumSpinner.getButtonMinus().addListener(handListener);
                 minimumSpinner.getButtonPlus().addListener(handListener);
-                minimumSpinner.addListener(new TextTooltip("The minimum value of the ProgressBar.", tooltipManager, skin, "scene"));
+                minimumSpinner.addListener(Main.fixTooltip(new TextTooltip("The minimum value of the ProgressBar.", tooltipManager, skin, "scene")));
                 minimumSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -164,7 +165,7 @@ public class ProgressBarListeners {
                 maximumSpinner.getTextField().addListener(ibeamListener);
                 maximumSpinner.getButtonMinus().addListener(handListener);
                 maximumSpinner.getButtonPlus().addListener(handListener);
-                maximumSpinner.addListener(new TextTooltip("The maximum value of the ProgressBar.", tooltipManager, skin, "scene"));
+                maximumSpinner.addListener(Main.fixTooltip(new TextTooltip("The maximum value of the ProgressBar.", tooltipManager, skin, "scene")));
                 maximumSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -187,7 +188,7 @@ public class ProgressBarListeners {
                 incrementSpinner.getTextField().addListener(ibeamListener);
                 incrementSpinner.getButtonMinus().addListener(handListener);
                 incrementSpinner.getButtonPlus().addListener(handListener);
-                incrementSpinner.addListener(new TextTooltip("The increment value of the ProgressBar.", tooltipManager, skin, "scene"));
+                incrementSpinner.addListener(Main.fixTooltip(new TextTooltip("The increment value of the ProgressBar.", tooltipManager, skin, "scene")));
                 incrementSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -231,7 +232,7 @@ public class ProgressBarListeners {
                 draggableTextList.setSelected(simProgressBar.vertical ? 1 : 0);
                 popTable.add(draggableTextList);
                 draggableTextList.addListener(handListener);
-                draggableTextList.addListener(new TextTooltip("The orientation of the ProgressBar.", tooltipManager, skin, "scene"));
+                draggableTextList.addListener(Main.fixTooltip(new TextTooltip("The orientation of the ProgressBar.", tooltipManager, skin, "scene")));
                 draggableTextList.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -291,7 +292,7 @@ public class ProgressBarListeners {
                 durationSpinner.getTextField().addListener(ibeamListener);
                 durationSpinner.getButtonMinus().addListener(handListener);
                 durationSpinner.getButtonPlus().addListener(handListener);
-                durationSpinner.addListener(new TextTooltip("The animation duration of the ProgressBar as the value changes.", tooltipManager, skin, "scene"));
+                durationSpinner.addListener(Main.fixTooltip(new TextTooltip("The animation duration of the ProgressBar as the value changes.", tooltipManager, skin, "scene")));
                 durationSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -331,7 +332,7 @@ public class ProgressBarListeners {
                 textButton.setChecked(simProgressBar.round);
                 popTable.add(textButton).minWidth(100);
                 textButton.addListener(handListener);
-                textButton.addListener(new TextTooltip("Whether the ProgressBar inner positions are rounded to integer.", tooltipManager, skin, "scene"));
+                textButton.addListener(Main.fixTooltip(new TextTooltip("Whether the ProgressBar inner positions are rounded to integer.", tooltipManager, skin, "scene")));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -372,7 +373,7 @@ public class ProgressBarListeners {
                 textButton.setChecked(simProgressBar.disabled);
                 popTable.add(textButton).minWidth(100);
                 textButton.addListener(handListener);
-                textButton.addListener(new TextTooltip("Whether the ProgressBar is disabled initially.", tooltipManager, skin, "scene"));
+                textButton.addListener(Main.fixTooltip(new TextTooltip("Whether the ProgressBar is disabled initially.", tooltipManager, skin, "scene")));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

@@ -26,6 +26,7 @@ import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
 import static com.ray3k.skincomposer.Main.*;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
+import com.ray3k.skincomposer.Main;
 
 public class TextAreaListeners {
     public static EventListener textAreaNameListener(final DialogSceneComposer dialogSceneComposer) {
@@ -52,7 +53,7 @@ public class TextAreaListeners {
                 textField.setText(simTextArea.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(new TextTooltip("The name of the TextArea to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene"));
+                textField.addListener(Main.fixTooltip(new TextTooltip("The name of the TextArea to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -120,7 +121,7 @@ public class TextAreaListeners {
                 textField.setText(simTextArea.text);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(new TextTooltip("The default text inside the TextArea.", tooltipManager, skin, "scene"));
+                textField.addListener(Main.fixTooltip(new TextTooltip("The default text inside the TextArea.", tooltipManager, skin, "scene")));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -176,7 +177,7 @@ public class TextAreaListeners {
                 textField.setText(simTextField.messageText);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(new TextTooltip("The message inside the TextArea when nothing is inputted and the TextArea does not have focus.", tooltipManager, skin, "scene"));
+                textField.addListener(Main.fixTooltip(new TextTooltip("The message inside the TextArea when nothing is inputted and the TextArea does not have focus.", tooltipManager, skin, "scene")));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -233,7 +234,7 @@ public class TextAreaListeners {
                 textField.setMaxLength(1);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(new TextTooltip("The character used to obscure text when password mode is enabled.", tooltipManager, skin, "scene"));
+                textField.addListener(Main.fixTooltip(new TextTooltip("The character used to obscure text when password mode is enabled.", tooltipManager, skin, "scene")));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -265,7 +266,7 @@ public class TextAreaListeners {
                 textButton.setChecked(simTextArea.passwordMode);
                 popTable.add(textButton).minWidth(100);
                 textButton.addListener(handListener);
-                textButton.addListener(new TextTooltip("Whether password mode is enabled for the TextArea.", tooltipManager, skin, "scene"));
+                textButton.addListener(Main.fixTooltip(new TextTooltip("Whether password mode is enabled for the TextArea.", tooltipManager, skin, "scene")));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -313,7 +314,7 @@ public class TextAreaListeners {
                 slider.setValue(simTextArea.cursorPosition);
                 table.add(slider).minWidth(200);
                 slider.addListener(handListener);
-                slider.addListener(new TextTooltip("The cursor position when the TextArea has keyboard focus.", tooltipManager, skin, "scene"));
+                slider.addListener(Main.fixTooltip(new TextTooltip("The cursor position when the TextArea has keyboard focus.", tooltipManager, skin, "scene")));
                 slider.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -337,7 +338,7 @@ public class TextAreaListeners {
                 table.add(rangeSlider).minWidth(200);
                 rangeSlider.getKnobBegin().addListener(handListener);
                 rangeSlider.getKnobEnd().addListener(handListener);
-                rangeSlider.addListener(new TextTooltip("The text range to be selected if this TextArea has keyboard focus.", tooltipManager, skin, "scene"));
+                rangeSlider.addListener(Main.fixTooltip(new TextTooltip("The text range to be selected if this TextArea has keyboard focus.", tooltipManager, skin, "scene")));
                 rangeSlider.addListener(new ValueBeginChangeListener() {
                     @Override
                     public void changed(ValueBeginChangeEvent event, float value, Actor actor) {
@@ -366,7 +367,7 @@ public class TextAreaListeners {
                 textButton.setChecked(simTextArea.selectAll);
                 table.add(textButton).minWidth(100);
                 textButton.addListener(handListener);
-                textButton.addListener(new TextTooltip("Convenience option to select all text.", tooltipManager, skin, "scene"));
+                textButton.addListener(Main.fixTooltip(new TextTooltip("Convenience option to select all text.", tooltipManager, skin, "scene")));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -415,7 +416,7 @@ public class TextAreaListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextArea to the top left.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the TextArea to the top left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -429,7 +430,7 @@ public class TextAreaListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextArea to the top center.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the TextArea to the top center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -443,7 +444,7 @@ public class TextAreaListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextArea to the top right.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the TextArea to the top right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -458,7 +459,7 @@ public class TextAreaListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextArea to the middle left.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the TextArea to the middle left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -472,7 +473,7 @@ public class TextAreaListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextArea to the center.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the TextArea to the center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -486,7 +487,7 @@ public class TextAreaListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextArea to the middle right.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the TextArea to the middle right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -501,7 +502,7 @@ public class TextAreaListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextArea to the bottom left.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the TextArea to the bottom left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -515,7 +516,7 @@ public class TextAreaListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextArea to the bottom center.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the TextArea to the bottom center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -529,7 +530,7 @@ public class TextAreaListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Align the contents of the TextArea to the bottom right.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the TextArea to the bottom right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -601,7 +602,7 @@ public class TextAreaListeners {
                 textButton.setChecked(simTextArea.focusTraversal);
                 popTable.add(textButton).minWidth(100);
                 textButton.addListener(handListener);
-                textButton.addListener(new TextTooltip("Whether the TextArea allows for the use of focus traversal keys.", tooltipManager, skin, "scene"));
+                textButton.addListener(Main.fixTooltip(new TextTooltip("Whether the TextArea allows for the use of focus traversal keys.", tooltipManager, skin, "scene")));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -649,7 +650,7 @@ public class TextAreaListeners {
                 valueSpinner.getTextField().addListener(ibeamListener);
                 valueSpinner.getButtonMinus().addListener(handListener);
                 valueSpinner.getButtonPlus().addListener(handListener);
-                valueSpinner.addListener(new TextTooltip("The maximum length of characters allowed in the TextArea.", tooltipManager, skin, "scene"));
+                valueSpinner.addListener(Main.fixTooltip(new TextTooltip("The maximum length of characters allowed in the TextArea.", tooltipManager, skin, "scene")));
                 valueSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -701,7 +702,7 @@ public class TextAreaListeners {
                 valueSpinner.getTextField().addListener(ibeamListener);
                 valueSpinner.getButtonMinus().addListener(handListener);
                 valueSpinner.getButtonPlus().addListener(handListener);
-                valueSpinner.addListener(new TextTooltip("The number of lines of text to help determine preferred height.", tooltipManager, skin, "scene"));
+                valueSpinner.addListener(Main.fixTooltip(new TextTooltip("The number of lines of text to help determine preferred height.", tooltipManager, skin, "scene")));
                 valueSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -741,7 +742,7 @@ public class TextAreaListeners {
                 textButton.setChecked(simTextArea.disabled);
                 popTable.add(textButton).minWidth(100);
                 textButton.addListener(handListener);
-                textButton.addListener(new TextTooltip("Whether the TextArea is disabled initially.", tooltipManager, skin, "scene"));
+                textButton.addListener(Main.fixTooltip(new TextTooltip("Whether the TextArea is disabled initially.", tooltipManager, skin, "scene")));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

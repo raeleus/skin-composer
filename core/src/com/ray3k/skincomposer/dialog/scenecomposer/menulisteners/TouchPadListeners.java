@@ -19,6 +19,7 @@ import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
 import static com.ray3k.skincomposer.Main.*;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
+import com.ray3k.skincomposer.Main;
 
 public class TouchPadListeners {
     public static EventListener touchPadNameListener(final DialogSceneComposer dialogSceneComposer) {
@@ -49,7 +50,7 @@ public class TouchPadListeners {
                 textField.setText(simTouchPad.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(new TextTooltip("The name of the TouchPad to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene"));
+                textField.addListener(Main.fixTooltip(new TextTooltip("The name of the TouchPad to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -122,7 +123,7 @@ public class TouchPadListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(new TextTooltip("The dead zone that does not react to user input.", tooltipManager, skin, "scene"));
+                spinner.addListener(Main.fixTooltip(new TextTooltip("The dead zone that does not react to user input.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -163,7 +164,7 @@ public class TouchPadListeners {
                 imageTextButton.setChecked(simTouchPad.resetOnTouchUp);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(new TextTooltip("Reset the position of the TouchPad on release of the widget.", tooltipManager, skin, "scene"));
+                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Reset the position of the TouchPad on release of the widget.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

@@ -20,6 +20,7 @@ import com.ray3k.skincomposer.dialog.scenecomposer.StyleSelectorPopTable;
 import static com.ray3k.skincomposer.Main.*;
 
 import static com.ray3k.skincomposer.dialog.scenecomposer.menulisteners.ListenersUtils.TEXT_FIELD_WIDTH;
+import com.ray3k.skincomposer.Main;
 
 public class SliderListeners {
     public static EventListener sliderNameListener(final DialogSceneComposer dialogSceneComposer) {
@@ -50,7 +51,7 @@ public class SliderListeners {
                 textField.setText(simSlider.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(new TextTooltip("The name of the Slider to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene"));
+                textField.addListener(Main.fixTooltip(new TextTooltip("The name of the Slider to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -124,7 +125,7 @@ public class SliderListeners {
                 valueSpinner.getTextField().addListener(ibeamListener);
                 valueSpinner.getButtonMinus().addListener(handListener);
                 valueSpinner.getButtonPlus().addListener(handListener);
-                valueSpinner.addListener(new TextTooltip("The value of the Slider.", tooltipManager, skin, "scene"));
+                valueSpinner.addListener(Main.fixTooltip(new TextTooltip("The value of the Slider.", tooltipManager, skin, "scene")));
                 valueSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -144,7 +145,7 @@ public class SliderListeners {
                 minimumSpinner.getTextField().addListener(ibeamListener);
                 minimumSpinner.getButtonMinus().addListener(handListener);
                 minimumSpinner.getButtonPlus().addListener(handListener);
-                minimumSpinner.addListener(new TextTooltip("The minimum value of the Slider.", tooltipManager, skin, "scene"));
+                minimumSpinner.addListener(Main.fixTooltip(new TextTooltip("The minimum value of the Slider.", tooltipManager, skin, "scene")));
                 minimumSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -165,7 +166,7 @@ public class SliderListeners {
                 maximumSpinner.getTextField().addListener(ibeamListener);
                 maximumSpinner.getButtonMinus().addListener(handListener);
                 maximumSpinner.getButtonPlus().addListener(handListener);
-                maximumSpinner.addListener(new TextTooltip("The maximum value of the Slider.", tooltipManager, skin, "scene"));
+                maximumSpinner.addListener(Main.fixTooltip(new TextTooltip("The maximum value of the Slider.", tooltipManager, skin, "scene")));
                 maximumSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -188,7 +189,7 @@ public class SliderListeners {
                 incrementSpinner.getTextField().addListener(ibeamListener);
                 incrementSpinner.getButtonMinus().addListener(handListener);
                 incrementSpinner.getButtonPlus().addListener(handListener);
-                incrementSpinner.addListener(new TextTooltip("The increment value of the Slider.", tooltipManager, skin, "scene"));
+                incrementSpinner.addListener(Main.fixTooltip(new TextTooltip("The increment value of the Slider.", tooltipManager, skin, "scene")));
                 incrementSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -231,7 +232,7 @@ public class SliderListeners {
                 draggableTextList.setSelected(simSlider.vertical ? 1 : 0);
                 popTable.add(draggableTextList);
                 draggableTextList.addListener(handListener);
-                draggableTextList.addListener(new TextTooltip("The orientation of the Slider.", tooltipManager, skin, "scene"));
+                draggableTextList.addListener(Main.fixTooltip(new TextTooltip("The orientation of the Slider.", tooltipManager, skin, "scene")));
                 draggableTextList.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -293,7 +294,7 @@ public class SliderListeners {
                 durationSpinner.getTextField().addListener(ibeamListener);
                 durationSpinner.getButtonMinus().addListener(handListener);
                 durationSpinner.getButtonPlus().addListener(handListener);
-                durationSpinner.addListener(new TextTooltip("The animation duration of the Slider as the value changes.", tooltipManager, skin, "scene"));
+                durationSpinner.addListener(Main.fixTooltip(new TextTooltip("The animation duration of the Slider as the value changes.", tooltipManager, skin, "scene")));
                 durationSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -333,7 +334,7 @@ public class SliderListeners {
                 textButton.setChecked(simSlider.round);
                 popTable.add(textButton).minWidth(100);
                 textButton.addListener(handListener);
-                textButton.addListener(new TextTooltip("Whether the Slider inner positions are rounded to integer.", tooltipManager, skin, "scene"));
+                textButton.addListener(Main.fixTooltip(new TextTooltip("Whether the Slider inner positions are rounded to integer.", tooltipManager, skin, "scene")));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -374,7 +375,7 @@ public class SliderListeners {
                 textButton.setChecked(simSlider.disabled);
                 popTable.add(textButton).minWidth(100);
                 textButton.addListener(handListener);
-                textButton.addListener(new TextTooltip("Whether the Slider is disabled initially.", tooltipManager, skin, "scene"));
+                textButton.addListener(Main.fixTooltip(new TextTooltip("Whether the Slider is disabled initially.", tooltipManager, skin, "scene")));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
