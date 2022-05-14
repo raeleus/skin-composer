@@ -298,7 +298,7 @@ public class DialogTenPatchSettings extends PopTable {
                     } else {
                         workingData.tenPatchData.color4Name = colorData.getName();
                         ((ImageButton) actor).getCells().peek().getActor().setColor(colorData.color);
-                        preview.setColor1(colorData.color);
+                        preview.setColor4(colorData.color);
                     }
                 }, null);
             }

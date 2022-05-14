@@ -3,6 +3,7 @@
 * Updated to libGDX 1.11.0
 * Fixed crash when naming a duplicate drawable.
 * Fixed "Copy tvg files to destination" checkmark always being checked in Export dialog.
+* Fixed TenPatch settings editor not changing the correct corner color in the preview.
 * Minor UI changes and bug fixes.
 
 ### Skin Composer Version 49 ###
