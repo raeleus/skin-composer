@@ -33,6 +33,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -43,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.SpineDrawable;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
@@ -75,9 +77,20 @@ public class DialogImageFont extends Dialog {
     private ImageFontSettings settings;
     private Json json;
     private ImageFontListener imageFontListener;
+    private SpineDrawable arrowDrawable;
+    private Image arrowImage;
+    private static Vector2 temp = new Vector2();
+    private Actor previousArrowTarget;
     
     public DialogImageFont(ImageFontListener imageFontListener) {
         super("Create Font from Image", skin, "bg");
+        arrowDrawable = new SpineDrawable(skeletonRenderer, arrowSkeletonData, arrowAnimationStateData);
+        arrowDrawable.getAnimationState().setAnimation(0, "animation", true);
+        arrowDrawable.setCrop(-10, -10, 20, 20);
+        arrowImage = new Image(arrowDrawable);
+        arrowImage.setTouchable(Touchable.disabled);
+        addActor(arrowImage);
+        arrowImage.pack();
         this.imageFontListener = imageFontListener;
         json = new Json(JsonWriter.OutputType.json);
         
@@ -112,7 +125,6 @@ public class DialogImageFont extends Dialog {
         var textButton = new TextButton("Generate Font", skin);
         textButton.setName("generate");
         textButton.setDisabled(true);
-        updateLabelHighlight("image-label");
         button(textButton, true);
         textButton.addListener(handListener);
         textButton.addListener(Main.fixTooltip(new TextTooltip("Generate bitmap font, save to specified file, and add to list of fonts", tooltipManager, skin)));
@@ -170,6 +182,19 @@ public class DialogImageFont extends Dialog {
         textButton = new TextButton("Cancel", skin);
         button(textButton, false);
         textButton.addListener(handListener);
+    }
+    
+    @Override
+    public Dialog show(Stage stage, Action action) {
+        var result = super.show(stage, action);
+        updateLabelHighlight("image-label", findActor("imagepath"));
+        return result;
+    }
+    
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        arrowDrawable.update(delta);
     }
 
     public static interface ImageFontListener {
@@ -706,7 +731,7 @@ public class DialogImageFont extends Dialog {
             textField.setCursorPosition(textField.getText().length() - 1);
             
             ((TextButton) findActor("generate")).setDisabled(false);
-            updateLabelHighlight(null);
+            updateLabelHighlight(null, null);
             
             for (var fadable : fadables) {
                 fadable.addAction(Actions.fadeIn(1.0f, Interpolation.fade));
@@ -755,7 +780,7 @@ public class DialogImageFont extends Dialog {
         textField.setCursorPosition(textField.getText().length() - 1);
 
         ((TextButton) findActor("generate")).setDisabled(false);
-        updateLabelHighlight(null);
+        updateLabelHighlight(null, null);
     }
     
     private void saveSettingsBrowse() {
@@ -1419,7 +1444,7 @@ public class DialogImageFont extends Dialog {
         return name;
     }
     
-    private void updateLabelHighlight(String requiredLabelName) {
+    private void updateLabelHighlight(String requiredLabelName, Actor arrowTarget) {
         var normalStyle = skin.get(Label.LabelStyle.class);
         var requiredStyle = skin.get("dialog-required", Label.LabelStyle.class);
         var actors = new Array<Actor>();
@@ -1443,6 +1468,18 @@ public class DialogImageFont extends Dialog {
                     label.setStyle(requiredStyle);
                 }
             }
+        }
+    
+        if (arrowTarget == null) arrowImage.setVisible(false);
+        else {
+            if (previousArrowTarget != arrowTarget) arrowDrawable.getAnimationState().setAnimation(0, "animation", true);
+            arrowImage.setVisible(true);
+            temp.set(arrowTarget.getWidth() / 2, arrowTarget.getHeight() / 2);
+            arrowTarget.localToActorCoordinates(this, temp);
+            arrowDrawable.getSkeleton().findBone("left-arrow").setPosition(-arrowTarget.getWidth() / 2, 0);
+            arrowDrawable.getSkeleton().findBone("right-arrow").setPosition(arrowTarget.getWidth() / 2, 0);
+            arrowImage.setPosition(temp.x, temp.y, Align.center);
+            previousArrowTarget = arrowTarget;
         }
     }
     

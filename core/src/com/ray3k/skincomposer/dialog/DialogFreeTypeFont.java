@@ -30,10 +30,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
@@ -45,6 +43,7 @@ import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.LeadingTruncateLabel;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.SpineDrawable;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.utils.Utils;
@@ -125,9 +124,20 @@ public class DialogFreeTypeFont extends Dialog {
     private Json json;
     private Color previewBGcolor;
     private FilesDroppedListener filesDroppedListener;
+    private SpineDrawable arrowDrawable;
+    private Image arrowImage;
+    private static Vector2 temp = new Vector2();
+    private Actor previousArrowTarget;
     
     public DialogFreeTypeFont(FreeTypeFontData freeTypeFontData) {
         super(freeTypeFontData == null ? "Create new FreeType Font" : "Edit FreeType Font", skin, "bg");
+        arrowDrawable = new SpineDrawable(skeletonRenderer, arrowSkeletonData, arrowAnimationStateData);
+        arrowDrawable.getAnimationState().setAnimation(0, "animation", true);
+        arrowDrawable.setCrop(-10, -10, 20, 20);
+        arrowImage = new Image(arrowDrawable);
+        arrowImage.setTouchable(Touchable.disabled);
+        addActor(arrowImage);
+        arrowImage.pack();
         previewBGcolor = new Color(Color.WHITE);
         automaticBgColor = true;
         
@@ -190,6 +200,19 @@ public class DialogFreeTypeFont extends Dialog {
         };
         
         desktopWorker.addFilesDroppedListener(filesDroppedListener);
+    }
+    
+    @Override
+    public Dialog show(Stage stage, Action action) {
+        var result = super.show(stage, action);
+        updateDisabledFields();
+        return result;
+    }
+    
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        arrowDrawable.update(delta);
     }
 
     @Override
@@ -1215,19 +1238,19 @@ public class DialogFreeTypeFont extends Dialog {
         if (checkBox.isChecked()) {
             if (data.color == null) {
                 notValid = true;
-                updateLabelHighlight("color-label");
+                updateLabelHighlight("color-label", findActor("colorTextButton"));
             }
             else if (data.file == null || !data.file.exists()) {
                 notValid = true;
-                updateLabelHighlight("source-label");
+                updateLabelHighlight("source-label", findActor("fileField"));
             }
             else if (!MathUtils.isZero(data.borderWidth) && data.borderColor == null) {
                 notValid = true;
-                updateLabelHighlight("border-color-label");
+                updateLabelHighlight("border-color-label", findActor("borderColorTextButton"));
             }
             else if ((data.shadowOffsetX != 0 || data.shadowOffsetY != 0) && data.shadowColor == null) {
                 notValid = true;
-                updateLabelHighlight("shadow-color-label");
+                updateLabelHighlight("shadow-color-label", findActor("shadowColorTextButton"));
             }
         }
         
@@ -1271,13 +1294,13 @@ public class DialogFreeTypeFont extends Dialog {
         
         if (!StyleData.validate(((TextField)findActor("fontName")).getText())) {
             notValid = true;
-            updateLabelHighlight("name-label");
+            updateLabelHighlight("name-label", findActor("fontName"));
         }
         
         for (FontData font : jsonData.getFonts()) {
             if (font.getName().equals(data.name)) {
                 notValid = true;
-                updateLabelHighlight("name-label");
+                updateLabelHighlight("name-label", findActor("fontName"));
                 break;
             }
         }
@@ -1285,13 +1308,13 @@ public class DialogFreeTypeFont extends Dialog {
         for (FreeTypeFontData font : jsonData.getFreeTypeFonts()) {
             if (font.name.equals(data.name) && (mode == Mode.NEW || !font.name.equals(originalData.name))) {
                 notValid = true;
-                updateLabelHighlight("name-label");
+                updateLabelHighlight("name-label", findActor("fontName"));
                 break;
             }
         }
         
         if (!notValid) {
-            updateLabelHighlight(null);
+            updateLabelHighlight(null, null);
         }
         
         TextButton textButton = findActor("okButton");
@@ -1585,7 +1608,7 @@ public class DialogFreeTypeFont extends Dialog {
         updateDisabledFields();
     }
     
-    private void updateLabelHighlight(String requiredLabelName) {
+    private void updateLabelHighlight(String requiredLabelName, Actor arrowTarget) {
         var normalStyle = skin.get(Label.LabelStyle.class);
         var requiredStyle = skin.get("dialog-required", Label.LabelStyle.class);
         var actors = new Array<Actor>();
@@ -1609,6 +1632,18 @@ public class DialogFreeTypeFont extends Dialog {
                     label.setStyle(requiredStyle);
                 }
             }
+        }
+    
+        if (arrowTarget == null) arrowImage.setVisible(false);
+        else {
+            if (previousArrowTarget != arrowTarget) arrowDrawable.getAnimationState().setAnimation(0, "animation", true);
+            arrowImage.setVisible(true);
+            temp.set(arrowTarget.getWidth() / 2, arrowTarget.getHeight() / 2);
+            arrowTarget.localToActorCoordinates(this, temp);
+            arrowDrawable.getSkeleton().findBone("left-arrow").setPosition(-arrowTarget.getWidth() / 2, 0);
+            arrowDrawable.getSkeleton().findBone("right-arrow").setPosition(arrowTarget.getWidth() / 2, 0);
+            arrowImage.setPosition(temp.x, temp.y, Align.center);
+            previousArrowTarget = arrowTarget;
         }
     }
     

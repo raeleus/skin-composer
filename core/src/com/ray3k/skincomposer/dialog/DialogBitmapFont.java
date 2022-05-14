@@ -28,9 +28,8 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
@@ -39,6 +38,7 @@ import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.LeadingTruncateLabel;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.SpineDrawable;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.FreeTypeFontData;
@@ -72,9 +72,20 @@ public class DialogBitmapFont extends Dialog {
     private Color previewBGcolor;
     private boolean automaticBgColor;
     private Table previewTable;
+    private SpineDrawable arrowDrawable;
+    private Image arrowImage;
+    private static Vector2 temp = new Vector2();
+    private Actor previousArrowTarget;
 
     public DialogBitmapFont() {
         super("Create new Bitmap Font", skin, "bg");
+        arrowDrawable = new SpineDrawable(skeletonRenderer, arrowSkeletonData, arrowAnimationStateData);
+        arrowDrawable.getAnimationState().setAnimation(0, "animation", true);
+        arrowDrawable.setCrop(-10, -10, 20, 20);
+        arrowImage = new Image(arrowDrawable);
+        arrowImage.setTouchable(Touchable.disabled);
+        addActor(arrowImage);
+        arrowImage.pack();
         previewBGcolor = new Color(Color.BLACK);
         automaticBgColor = true;
 
@@ -107,7 +118,7 @@ public class DialogBitmapFont extends Dialog {
         buttons = getButtonTable();
 
         populate();
-
+        
         updatePreviewAndOK();
 
         key(Keys.ESCAPE, ButtonType.CANCEL);
@@ -133,7 +144,14 @@ public class DialogBitmapFont extends Dialog {
 
         desktopWorker.addFilesDroppedListener(filesDroppedListener);
     }
-
+    
+    @Override
+    public Dialog show(Stage stage, Action action) {
+        var result = super.show(stage, action);
+        updatePreviewAndOK();
+        return result;
+    }
+    
     @Override
     protected void result(Object object) {
         switch ((ButtonType) object) {
@@ -154,7 +172,13 @@ public class DialogBitmapFont extends Dialog {
                 break;
         }
     }
-
+    
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        arrowDrawable.update(delta);
+    }
+    
     @Override
     public boolean remove() {
         desktopWorker.removeFilesDroppedListener(filesDroppedListener);
@@ -976,7 +1000,7 @@ public class DialogBitmapFont extends Dialog {
         textButton.addListener(handListener);
         button(textButton, ButtonType.CANCEL);
         
-        updateLabelHighlight(null);
+        updateLabelHighlight(null, null);
     }
 
     private void loadTTFsource(FileHandle file) {
@@ -1046,21 +1070,21 @@ public class DialogBitmapFont extends Dialog {
         boolean notValid = false;
         if (data.color == null) {
             notValid = true;
-            updateLabelHighlight("color-label");
+            updateLabelHighlight("color-label", findActor("colorTextButton"));
         } else if (data.file == null || !data.file.exists()) {
             notValid = true;
-            updateLabelHighlight("source-label");
+            updateLabelHighlight("source-label", findActor("sourceFileField"));
         } else if (target == null) {
             notValid = true;
-            updateLabelHighlight("target-label");
+            updateLabelHighlight("target-label", findActor("targetFileField"));
         } else if (!MathUtils.isZero(data.borderWidth) && data.borderColor == null) {
             notValid = true;
-            updateLabelHighlight("border-color-label");
+            updateLabelHighlight("border-color-label", findActor("borderColorTextButton"));
         } else if ((data.shadowOffsetX != 0 || data.shadowOffsetY != 0) && data.shadowColor == null) {
             notValid = true;
-            updateLabelHighlight("shadow-color-label");
+            updateLabelHighlight("shadow-color-label", findActor("shadowColorTextButton"));
         } else {
-            updateLabelHighlight(null);
+            updateLabelHighlight(null, null);
         }
 
         if (notValid) {
@@ -1322,7 +1346,7 @@ public class DialogBitmapFont extends Dialog {
         updatePreviewAndOK();
     }
 
-    private void updateLabelHighlight(String requiredLabelName) {
+    private void updateLabelHighlight(String requiredLabelName, Actor arrowTarget) {
         var normalStyle = skin.get(LabelStyle.class);
         var requiredStyle = skin.get("dialog-required", LabelStyle.class);
         var actors = new Array<Actor>();
@@ -1346,6 +1370,18 @@ public class DialogBitmapFont extends Dialog {
                     label.setStyle(requiredStyle);
                 }
             }
+        }
+    
+        if (arrowTarget == null) arrowImage.setVisible(false);
+        else {
+            if (previousArrowTarget != arrowTarget) arrowDrawable.getAnimationState().setAnimation(0, "animation", true);
+            arrowImage.setVisible(true);
+            temp.set(arrowTarget.getWidth() / 2, arrowTarget.getHeight() / 2);
+            arrowTarget.localToActorCoordinates(this, temp);
+            arrowDrawable.getSkeleton().findBone("left-arrow").setPosition(-arrowTarget.getWidth() / 2, 0);
+            arrowDrawable.getSkeleton().findBone("right-arrow").setPosition(arrowTarget.getWidth() / 2, 0);
+            arrowImage.setPosition(temp.x, temp.y, Align.center);
+            previousArrowTarget = arrowTarget;
         }
     }
     

@@ -1,6 +1,7 @@
 ### Skin Composer Version 50 ###
 * Added TextraTypist Playground to markup text with formatting and effects.
 * Updated to libGDX 1.11.0
+* Added more hints to the font creation dialogs.
 * Fixed crash when naming a duplicate drawable.
 * Fixed "Copy tvg files to destination" checkmark always being checked in Export dialog.
 * Fixed TenPatch settings editor not changing the correct corner color in the preview.
