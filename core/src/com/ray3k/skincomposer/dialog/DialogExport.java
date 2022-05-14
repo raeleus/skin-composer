@@ -116,14 +116,14 @@ public class DialogExport extends Dialog {
         });
     
         getContentTable().row();
-        var tvgCheckBox = new CheckBox("Copy tvg files to destination", skin);
+        var tvgCheckBox = new CheckBox("Copy TVG files to destination", skin);
         tvgCheckBox.setChecked(projectData.isExportingTVG());
         getContentTable().add(tvgCheckBox);
         tvgCheckBox.addListener(handListener);
         tvgCheckBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                projectData.setExportingFonts(tvgCheckBox.isChecked());
+                projectData.setExportingTVG(tvgCheckBox.isChecked());
             }
         });
         

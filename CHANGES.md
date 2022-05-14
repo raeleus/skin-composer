@@ -2,6 +2,7 @@
 * Added TextraTypist Playground to markup text with formatting and effects.
 * Updated to libGDX 1.11.0
 * Fixed crash when naming a duplicate drawable.
+* Fixed "Copy tvg files to destination" checkmark always being checked in Export dialog.
 * Minor UI changes and bug fixes.
 
 ### Skin Composer Version 49 ###
