@@ -115,7 +115,7 @@ public class PopEffects extends PopTable {
                 var intensityField = createNumberField(1.0f, "intensity", "distance", "distance", tokenTable);
                 
                 tokenTable.row();
-                var elasticButton = createBooleanField(true, "intensity", tokenTable);
+                var elasticButton = createBooleanField(true, "elastic", tokenTable);
     
                 Runnable runnable = () -> {
                     float distance = isNumeric(distanceField.getText())? Float.parseFloat(distanceField.getText()) : 1.0f;
@@ -254,7 +254,7 @@ public class PopEffects extends PopTable {
                 intensityField = createNumberField(1.0f, "intensity", "distance", "distance", tokenTable);
     
                 tokenTable.row();
-                elasticButton = createBooleanField(true, "intensity", tokenTable);
+                elasticButton = createBooleanField(true, "elastic", tokenTable);
     
                 runnable = () -> {
                     float distance = isNumeric(distanceField.getText())? Float.parseFloat(distanceField.getText()) : 1.0f;
