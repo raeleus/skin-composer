@@ -223,7 +223,7 @@ public class RootTable extends Table {
         Button button = new Button(getSkin(), "download");
         button.setName("downloadButton");
         table.add(button);
-        button.addListener(Main.fixTooltip(new TextTooltip("Update Available", tooltipManager, getSkin())));
+        button.addListener((Main.makeTooltip("Update Available", tooltipManager, getSkin())));
         button.addListener(handListener);
         button.addListener(new ChangeListener() {
             @Override
@@ -294,7 +294,7 @@ public class RootTable extends Table {
         });
         
         //Tooltip
-        TextTooltip toolTip = Main.fixTooltip(new TextTooltip("New Class", tooltipManager, getSkin()));
+        TextTooltip toolTip = (Main.makeTooltip("New Class", tooltipManager, getSkin()));
         button.addListener(toolTip);
 
         classDuplicateButton = new Button(getSkin(), "duplicate");
@@ -309,7 +309,7 @@ public class RootTable extends Table {
             }
         });
         
-        toolTip = Main.fixTooltip(new TextTooltip("Duplicate Class", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Duplicate Class", tooltipManager, getSkin()));
         classDuplicateButton.addListener(toolTip);
         
         classDeleteButton = new Button(getSkin(), "delete");
@@ -323,7 +323,7 @@ public class RootTable extends Table {
             }
         });
         
-        toolTip = Main.fixTooltip(new TextTooltip("Delete Class", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Delete Class", tooltipManager, getSkin()));
         classDeleteButton.addListener(toolTip);
         
         classRenameButton = new Button(getSkin(), "settings");
@@ -337,7 +337,7 @@ public class RootTable extends Table {
             }
         });
         
-        toolTip = Main.fixTooltip(new TextTooltip("Rename Class", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Rename Class", tooltipManager, getSkin()));
         classRenameButton.addListener(toolTip);
 
         label = new Label("Style:", getSkin());
@@ -386,7 +386,7 @@ public class RootTable extends Table {
             }
         });
         
-        toolTip = Main.fixTooltip(new TextTooltip("New Style", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("New Style", tooltipManager, getSkin()));
         button.addListener(toolTip);
 
         button = new Button(getSkin(), "duplicate");
@@ -400,7 +400,7 @@ public class RootTable extends Table {
             }
         });
         
-        toolTip = Main.fixTooltip(new TextTooltip("Duplicate Style", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Duplicate Style", tooltipManager, getSkin()));
         button.addListener(toolTip);
 
         styleDeleteButton = new Button(getSkin(), "delete");
@@ -414,7 +414,7 @@ public class RootTable extends Table {
             }
         });
         
-        toolTip = Main.fixTooltip(new TextTooltip("Delete Style", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Delete Style", tooltipManager, getSkin()));
         styleDeleteButton.addListener(toolTip);
 
         styleRenameButton = new Button(getSkin(), "settings");
@@ -427,7 +427,7 @@ public class RootTable extends Table {
             }
         });
         
-        toolTip = Main.fixTooltip(new TextTooltip("Rename Style", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Rename Style", tooltipManager, getSkin()));
         styleRenameButton.addListener(toolTip);
 
         fire(new LoadClassesEvent(classSelectBox));
@@ -901,7 +901,7 @@ public class RootTable extends Table {
                     }
                 });
                 
-                TextTooltip toolTip = Main.fixTooltip(new TextTooltip("Duplicate Style Property", tooltipManager, getSkin()));
+                TextTooltip toolTip = (Main.makeTooltip("Duplicate Style Property", tooltipManager, getSkin()));
                 duplicateButton.addListener(toolTip);
                 duplicateButton.addListener(handListener);
                 
@@ -915,7 +915,7 @@ public class RootTable extends Table {
                     }
                 });
                 
-                toolTip = Main.fixTooltip(new TextTooltip("Delete Style Property", tooltipManager, getSkin()));
+                toolTip = (Main.makeTooltip("Delete Style Property", tooltipManager, getSkin()));
                 deleteButton.addListener(toolTip);
                 deleteButton.addListener(handListener);
                 
@@ -929,7 +929,7 @@ public class RootTable extends Table {
                     }
                 });
                 
-                toolTip = Main.fixTooltip(new TextTooltip("Rename Style Property", tooltipManager, getSkin()));
+                toolTip = (Main.makeTooltip("Rename Style Property", tooltipManager, getSkin()));
                 renameButton.addListener(toolTip);
                 renameButton.addListener(handListener);
                 
@@ -949,7 +949,7 @@ public class RootTable extends Table {
             });
             table.add(button);
             
-            TextTooltip toolTip = Main.fixTooltip(new TextTooltip("New Style Property", tooltipManager, getSkin()));
+            TextTooltip toolTip = (Main.makeTooltip("New Style Property", tooltipManager, getSkin()));
             button.addListener(toolTip);
             button.addListener(handListener);
         }
@@ -2225,7 +2225,7 @@ public class RootTable extends Table {
                             manager.subsequentTime = 0.0f;
                             manager.hideAll();
                             manager.instant();
-                            TextTooltip toolTip = Main.fixTooltip(new TextTooltip(
+                            TextTooltip toolTip = (Main.makeTooltip(
                                     (String) previewProperties.get("text"), manager, (TextTooltipStyle) style));
 
                             widget = new Label("Hover over me", getSkin());
@@ -2458,7 +2458,7 @@ public class RootTable extends Table {
                                         colorTable.setTouchable(Touchable.enabled);
 
                                         container.setActor(colorTable);
-                                        container.addListener(Main.fixTooltip(new TextTooltip(colorName, tooltipManager, getSkin())));
+                                        container.addListener((Main.makeTooltip(colorName, tooltipManager, getSkin())));
                                     }
                                     break;
                                 case FONT:
@@ -2483,7 +2483,7 @@ public class RootTable extends Table {
                                         Label labelFont = new Label(fontData.getName(), new LabelStyle(font, Color.WHITE));
                                         container.setActor(labelFont);
     
-                                        container.addListener(Main.fixTooltip(new TextTooltip(fontData.getName(), tooltipManager, getSkin())));
+                                        container.addListener((Main.makeTooltip(fontData.getName(), tooltipManager, getSkin())));
                                     }
 
                                     FreeTypeFontData freeTypeFontData = null;
@@ -2498,7 +2498,7 @@ public class RootTable extends Table {
                                         Label labelFont = new Label(freeTypeFontData.name, new LabelStyle(freeTypeFontData.bitmapFont, Color.WHITE));
                                         container.setActor(labelFont);
     
-                                        container.addListener(Main.fixTooltip(new TextTooltip(freeTypeFontData.name, tooltipManager, getSkin())));
+                                        container.addListener((Main.makeTooltip(freeTypeFontData.name, tooltipManager, getSkin())));
                                     }
 
                                     break;
@@ -2521,7 +2521,7 @@ public class RootTable extends Table {
                                         Image image = new Image(atlasData.getDrawablePairs().get(drawable));
                                         container.setActor(image);
                                         
-                                        container.addListener(Main.fixTooltip(new TextTooltip(drawable.name, tooltipManager, getSkin())));
+                                        container.addListener((Main.makeTooltip(drawable.name, tooltipManager, getSkin())));
                                     }
                                     break;
                             }

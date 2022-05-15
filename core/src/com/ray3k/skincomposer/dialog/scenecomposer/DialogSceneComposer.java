@@ -206,9 +206,9 @@ public class DialogSceneComposer extends Dialog {
         });
         
         undoButton = bar.findMenu("Scene").findButton("Undo");
-        undoTooltip = Main.fixTooltip(new TextTooltip("", tooltipManager, skin, "scene"));
+        undoTooltip = (Main.makeTooltip("", tooltipManager, skin, "scene"));
         redoButton = bar.findMenu("Scene").findButton("Redo");
-        redoTooltip = Main.fixTooltip(new TextTooltip("", tooltipManager, skin, "scene"));
+        redoTooltip = (Main.makeTooltip("", tooltipManager, skin, "scene"));
         
         bar.findCell("?").expandX().right();
         
@@ -322,7 +322,7 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(rootAddTableListener());
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Creates a table with the specified number of rows and columns.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Creates a table with the specified number of rows and columns.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimTable) {
             propertiesLabel.setText("Table Properties");
             
@@ -330,61 +330,61 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TableListeners.tableNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the table to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the table to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::tableTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::tableVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Background", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.selectDrawableListener(((SimTable) simActor).background, "The background image for the table.",events::tableBackground));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the background drawable for the table.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the background drawable for the table.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Color", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TableListeners.tableColorListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the color of the table background and of the table contents.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the color of the table background and of the table contents.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Padding", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TableListeners.tablePaddingListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("The padding around all of the contents inside the table.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("The padding around all of the contents inside the table.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Align", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TableListeners.tableAlignListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("The alignment of the entire contents inside the table.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("The alignment of the entire contents inside the table.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Set Cells", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TableListeners.tableSetCellsListener(events));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the cells for this table. This will erase the existing contents.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the cells for this table. This will erase the existing contents.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("Table", events::tableReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets all options back to their defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets all options back to their defaults.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("Table", events::tableDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimCell) {
             propertiesLabel.setText("Cell Properties");
     
@@ -394,19 +394,19 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.setWidgetListener(
                     this, (widgetType, popTable) -> TableListeners.showConfirmCellSetWidgetDialog(DialogSceneComposer.this, widgetType,
                             popTable)));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Creates a new widget and sets it as the contents of this cell.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Creates a new widget and sets it as the contents of this cell.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Add Cell...", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(CellListeners.cellAddCellListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Adds a new cell.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Adds a new cell.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Move Cell...", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(CellListeners.cellMoveCellListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Moves the cell in a given direction.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Moves the cell in a given direction.", tooltipManager, skin, "scene")));
             
             var table = new Table();
             horizontalGroup.addActor(table);
@@ -415,49 +415,49 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(CellListeners.cellColSpanListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the column span of the current cell.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the column span of the current cell.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Alignment", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(CellListeners.cellAlignmentListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the alignment of the contents.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the alignment of the contents.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Padding / Spacing", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(CellListeners.cellPaddingSpacingListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the padding and/or spacing of the current cell.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the padding and/or spacing of the current cell.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Expand / Fill / Grow", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(CellListeners.cellExpandFillGrowListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets how the current cell and its contents are sized.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets how the current cell and its contents are sized.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Size", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(CellListeners.cellSizeListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the specific sizes of the contents in the cell.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the specific sizes of the contents in the cell.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Uniform", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(CellListeners.cellUniformListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("All cells set to to uniform = true will share the same size.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("All cells set to to uniform = true will share the same size.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("Cell", events::cellReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets all of the settings of the cell to their defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets all of the settings of the cell to their defaults.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Delete Cell", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("Cell", events::cellDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Deletes the cell and its contents.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Deletes the cell and its contents.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimTextButton) {
             propertiesLabel.setText("TextButton Properties");
     
@@ -465,67 +465,67 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextButtonListeners.textButtonNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the table to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the table to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Text", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextButtonListeners.textButtonTextListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the text inside of the button.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the text inside of the button.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::textButtonTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::textButtonVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextButtonListeners.textButtonStyleListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the style that controls the appearance of the text button.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the style that controls the appearance of the text button.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Checked", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextButtonListeners.textButtonCheckedListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether the button is checked initially.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether the button is checked initially.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Disabled", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextButtonListeners.textButtonDisabledListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether the button is disabled initially.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether the button is disabled initially.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Color", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextButtonListeners.textButtonColorListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the color of the table background and of the table contents.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the color of the table background and of the table contents.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Padding", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextButtonListeners.textButtonPaddingListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the padding of the contents of the button.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the padding of the contents of the button.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("TextButton", events::textButtonReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the TextButton to their defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the TextButton to their defaults.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("TextButton", events::textButtonDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimButton) {
             propertiesLabel.setText("Button Properties");
     
@@ -533,61 +533,61 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ButtonListeners.buttonNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the table to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the table to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ButtonListeners.buttonStyleListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the style that controls the appearance of the text button.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the style that controls the appearance of the text button.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::buttonTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::buttonVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Checked", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ButtonListeners.buttonCheckedListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether the button is checked initially.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether the button is checked initially.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Disabled", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ButtonListeners.buttonDisabledListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether the button is disabled initially.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether the button is disabled initially.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Color", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ButtonListeners.buttonColorListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the color of the table background and of the table contents.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the color of the table background and of the table contents.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Padding", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ButtonListeners.buttonPaddingListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the padding of the contents of the button.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the padding of the contents of the button.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("Button", events::buttonReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the TextButton to their defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the TextButton to their defaults.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("Button", events::buttonDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimImageButton) {
             propertiesLabel.setText("ImageButton Properties");
     
@@ -595,61 +595,61 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ImageButtonListeners.imageButtonNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the table to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the table to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ImageButtonListeners.imageButtonStyleListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the style that controls the appearance of the text button.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the style that controls the appearance of the text button.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::imageButtonTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::imageButtonVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Checked", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ImageButtonListeners.imageButtonCheckedListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether the button is checked initially.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether the button is checked initially.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Disabled", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ImageButtonListeners.imageButtonDisabledListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether the button is disabled initially.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether the button is disabled initially.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Color", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ImageButtonListeners.imageButtonColorListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the color of the table background and of the table contents.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the color of the table background and of the table contents.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Padding", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ImageButtonListeners.imageButtonPaddingListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the padding of the contents of the button.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the padding of the contents of the button.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("ImageButton", events::imageButtonReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the TextButton to their defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the TextButton to their defaults.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("ImageButton", events::imageButtonDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimImageTextButton) {
             propertiesLabel.setText("ImageTextButton Properties");
     
@@ -657,67 +657,67 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ImageTextButtonListeners.imageTextButtonNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the table to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the table to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Text", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ImageTextButtonListeners.imageTextButtonTextListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the text inside of the button.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the text inside of the button.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ImageTextButtonListeners.imageTextButtonStyleListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the style that controls the appearance of the text button.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the style that controls the appearance of the text button.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::imageTextButtonTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::imageTextButtonVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Checked", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ImageTextButtonListeners.imageTextButtonCheckedListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether the button is checked initially.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether the button is checked initially.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Disabled", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ImageTextButtonListeners.imageTextButtonDisabledListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether the button is disabled initially.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether the button is disabled initially.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Color", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ImageTextButtonListeners.imageTextButtonColorListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the color of the table background and of the table contents.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the color of the table background and of the table contents.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Padding", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ImageTextButtonListeners.imageTextButtonPaddingListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the padding of the contents of the button.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the padding of the contents of the button.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("ImageTextButton", events::imageTextButtonReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the TextButton to their defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the TextButton to their defaults.", tooltipManager, skin, "scene")));
         
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("ImageTextButton", events::imageTextButtonDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimCheckBox) {
             propertiesLabel.setText("CheckBox Properties");
     
@@ -725,67 +725,67 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(CheckBoxListeners.checkBoxNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(CheckBoxListeners.checkBoxStyleListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the style that controls the appearance of the CheckBox.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the style that controls the appearance of the CheckBox.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::checkBoxTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::checkBoxVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Text", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(CheckBoxListeners.checkBoxTextListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the text inside of the CheckBox.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the text inside of the CheckBox.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Checked", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(CheckBoxListeners.checkBoxCheckedListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether the CheckBox is checked initially.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether the CheckBox is checked initially.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Color", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(CheckBoxListeners.checkBoxColorListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the color of the CheckBox.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the color of the CheckBox.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Padding", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(CheckBoxListeners.checkBoxPaddingListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the padding of the contents of the CheckBox.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the padding of the contents of the CheckBox.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Disabled", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(CheckBoxListeners.checkBoxDisabledListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether the CheckBox is disabled initially.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether the CheckBox is disabled initially.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("CheckBox", events::checkBoxReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("CheckBox", events::checkBoxDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimImage) {
             propertiesLabel.setText("Image Properties");
     
@@ -793,43 +793,43 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ImageListeners.imageNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Drawable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.selectDrawableListener(((SimImage) simActor).drawable, "The selected drawable for the image.",events::imageDrawable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the drawable to be drawn as the Image.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the drawable to be drawn as the Image.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::imageTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::imageVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Scaling", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ImageListeners.imageScalingListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the scaling strategy of the Image when it's stretched or squeezed.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the scaling strategy of the Image when it's stretched or squeezed.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("Image", events::imageReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("Image", events::imageDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimLabel) {
             propertiesLabel.setText("Label Properties");
     
@@ -837,67 +837,67 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(LabelListeners.labelNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(LabelListeners.labelStyleListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the style that controls the appearance of the Label.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the style that controls the appearance of the Label.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::labelTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::labelVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Text", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(LabelListeners.labelTextListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the text inside of the Label.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the text inside of the Label.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Color", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(LabelListeners.labelColorListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Changes the color of the text in the Label.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Changes the color of the text in the Label.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Text Alignment", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(LabelListeners.labelTextAlignmentListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the alignment of the text when the Label is larger than it's minimum size.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the alignment of the text when the Label is larger than it's minimum size.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Ellipsis", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(LabelListeners.labelEllipsisListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Enabling ellipsis allows the Label to be shortened and appends ellipsis characters (eg. \"...\")", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Enabling ellipsis allows the Label to be shortened and appends ellipsis characters (eg. \"...\")", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Wrap", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(LabelListeners.labelWrapListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Allows the text to be wrapped to the next line if it exceeds the width of the Label.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Allows the text to be wrapped to the next line if it exceeds the width of the Label.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("Label", events::labelReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("Label", events::labelDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimList) {
             propertiesLabel.setText("List Properties");
     
@@ -905,43 +905,43 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ListListeners.listNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ListListeners.listStyleListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the style that controls the appearance of the List.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the style that controls the appearance of the List.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::listTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::listVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Text List", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ListListeners.listTextListListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the text entries for the List.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the text entries for the List.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("List", events::listReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("List", events::listDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimProgressBar) {
             propertiesLabel.setText("ProgressBar Properties");
     
@@ -949,67 +949,67 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ProgressBarListeners.progressBarNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ProgressBarListeners.progressBarStyleListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the style that controls the appearance of the ProgressBar.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the style that controls the appearance of the ProgressBar.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::progressBarTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::progressBarVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Value Settings", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ProgressBarListeners.progressBarValueSettingsListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the value, minimum, maximum, and increment of the ProgressBar.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the value, minimum, maximum, and increment of the ProgressBar.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Orientation", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ProgressBarListeners.progressBarOrientationListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Change the orientation of the ProgressBar.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Change the orientation of the ProgressBar.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Animation", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ProgressBarListeners.progressBarAnimationListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Change the progress animation as it increases or decreases.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Change the progress animation as it increases or decreases.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Round", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ProgressBarListeners.progressBarRoundListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Rounds the drawable positions to integers.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Rounds the drawable positions to integers.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Disabled", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ProgressBarListeners.progressBarDisabledListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether the ProgressBar is disabled initially.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether the ProgressBar is disabled initially.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("ProgressBar", events::progressBarReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("ProgressBar", events::progressBarDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimSelectBox) {
             propertiesLabel.setText("SelectBox Properties");
     
@@ -1017,67 +1017,67 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SelectBoxListeners.selectBoxNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SelectBoxListeners.selectBoxStyleListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the style that controls the appearance of the SelectBox.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the style that controls the appearance of the SelectBox.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::selectBoxTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::selectBoxVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Text List", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SelectBoxListeners.selectBoxTextListListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the text entries for the SelectBox.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the text entries for the SelectBox.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Max List Count", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SelectBoxListeners.selectBoxMaxListCountListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("The maximum visible entries.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("The maximum visible entries.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Alignment", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SelectBoxListeners.selectBoxAlignmentListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("The alignment of the text in the SelectBox.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("The alignment of the text in the SelectBox.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Scrolling", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SelectBoxListeners.selectBoxScrollingListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Choose if scrolling is enabled.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Choose if scrolling is enabled.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Disabled", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SelectBoxListeners.selectBoxDisabledListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether the SelectBox is disabled initially.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether the SelectBox is disabled initially.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("SelectBox", events::selectBoxReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("SelectBox", events::selectBoxDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimSlider) {
             propertiesLabel.setText("Slider Properties");
     
@@ -1085,67 +1085,67 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SliderListeners.sliderNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SliderListeners.sliderStyleListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the style that controls the appearance of the Slider.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the style that controls the appearance of the Slider.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::sliderTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::sliderVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Value Settings", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SliderListeners.sliderValueSettingsListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the value, minimum, maximum, and increment of the Slider.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the value, minimum, maximum, and increment of the Slider.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Orientation", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SliderListeners.sliderOrientationListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Change the orientation of the Slider.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Change the orientation of the Slider.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Animation", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SliderListeners.sliderAnimationListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Change the progress animation as it increases or decreases.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Change the progress animation as it increases or decreases.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Round", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SliderListeners.sliderRoundListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Rounds the drawable positions to integers.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Rounds the drawable positions to integers.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Disabled", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SliderListeners.sliderDisabledListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether the button is disabled initially.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether the button is disabled initially.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("Slider", events::sliderReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("Slider", events::sliderDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimTextArea) {
             propertiesLabel.setText("TextArea Properties");
     
@@ -1153,91 +1153,91 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextAreaListeners.textAreaNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextAreaListeners.textAreaStyleListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the style that controls the appearance of the TextArea.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the style that controls the appearance of the TextArea.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::textAreaTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::textAreaVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Text", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextAreaListeners.textAreaTextListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the text inside of the TextArea.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the text inside of the TextArea.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Message Text", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextAreaListeners.textAreaMessageTextListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("The text to be shown while there is no text, and the TextArea is not focused.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("The text to be shown while there is no text, and the TextArea is not focused.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Password", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextAreaListeners.textAreaPasswordListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Enable password mode and set the password character.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Enable password mode and set the password character.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Selection", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextAreaListeners.textAreaSelectionListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the cursor position and selected range.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the cursor position and selected range.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Alignment", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextAreaListeners.textAreaAlignmentListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the alignment of the typed text.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the alignment of the typed text.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Focus Traversal", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextAreaListeners.textAreaFocusTraversalListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Enable traversal to the next TextArea by using the TAB key.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Enable traversal to the next TextArea by using the TAB key.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Max Length", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextAreaListeners.textAreaMaxLengthListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the maximum length of the typed text.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the maximum length of the typed text.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Preferred Rows", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextAreaListeners.textAreaPreferredRowsListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the preferred number of lines.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the preferred number of lines.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Disabled", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextAreaListeners.textAreaDisabledListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether the TextArea is disabled initially.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether the TextArea is disabled initially.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("TextArea", events::textAreaReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("TextArea", events::textAreaDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimTextField) {
             propertiesLabel.setText("TextField Properties");
     
@@ -1245,85 +1245,85 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextFieldListeners.textFieldNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextFieldListeners.textFieldStyleListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the style that controls the appearance of the TextField.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the style that controls the appearance of the TextField.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::textFieldTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::textFieldVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Text", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextFieldListeners.textFieldTextListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the text inside of the TextField.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the text inside of the TextField.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Message Text", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextFieldListeners.textFieldMessageTextListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("The text to be shown while there is no text, and the TextField is not focused.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("The text to be shown while there is no text, and the TextField is not focused.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Password", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextFieldListeners.textFieldPasswordListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Enable password mode and set the password character.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Enable password mode and set the password character.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Selection", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextFieldListeners.textFieldSelectionListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the cursor position and selected range.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the cursor position and selected range.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Alignment", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextFieldListeners.textFieldAlignmentListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the alignment of the typed text.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the alignment of the typed text.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Focus Traversal", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextFieldListeners.textFieldFocusTraversalListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Enable traversal to the next TextField by using the TAB key.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Enable traversal to the next TextField by using the TAB key.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Max Length", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextFieldListeners.textFieldMaxLengthListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the maximum length of the typed text.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the maximum length of the typed text.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Disabled", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TextFieldListeners.textFieldDisabledListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether the TextField is disabled initially.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether the TextField is disabled initially.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("TextField", events::textFieldReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("TextField", events::textFieldDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimTouchPad) {
             propertiesLabel.setText("TouchPad Properties");
     
@@ -1331,49 +1331,49 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TouchPadListeners.touchPadNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TouchPadListeners.touchPadStyleListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the style that controls the appearance of the TouchPad.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the style that controls the appearance of the TouchPad.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::touchPadTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::touchPadVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Dead Zone", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TouchPadListeners.touchPadDeadZoneListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Change the dead zone that does not react to user input.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Change the dead zone that does not react to user input.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Reset on Touch Up", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TouchPadListeners.touchPadResetOnTouchUpListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Enable the reset of the touch pad position upon the release of the widget.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Enable the reset of the touch pad position upon the release of the widget.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("TouchPad", events::touchPadReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("TouchPad", events::touchPadDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimContainer) {
             propertiesLabel.setText("Container Properties");
     
@@ -1381,7 +1381,7 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ContainerListeners.containerNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Set Widget", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -1389,61 +1389,61 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.setWidgetListener(
                     this, (widgetType, popTable) -> ContainerListeners.showConfirmContainerSetWidgetDialog(DialogSceneComposer.this, widgetType,
                             popTable)));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the widget assigned to this Container.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the widget assigned to this Container.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::containerTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::containerVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Background", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.selectDrawableListener(((SimContainer) simActor).background, "The background image of the Container.",events::containerBackground));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the background of the Container.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the background of the Container.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Fill", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ContainerListeners.containerFillListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the fill of the widget.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the fill of the widget.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Size", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ContainerListeners.containerSizeListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the size of the widget.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the size of the widget.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Padding", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ContainerListeners.containerPaddingListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the padding of the widget.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the padding of the widget.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Alignment", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ContainerListeners.containerAlignmentListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the alignment of the widget.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the alignment of the widget.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("Container", events::containerReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("Container", events::containerDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimHorizontalGroup) {
             propertiesLabel.setText("HorizontalGroup Properties");
     
@@ -1451,74 +1451,74 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(HorizontalGroupListeners.horizontalGroupNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Add Child", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.setWidgetListener(
                     this, (widgetType, popTable) -> HorizontalGroupListeners.horizontalGroupAddChild(events, widgetType, popTable)));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Adds a widget to the HorizontalGroup", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Adds a widget to the HorizontalGroup", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::horizontalGroupTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::horizontalGroupVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Expand", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(HorizontalGroupListeners.horizontalGroupExpandFillGrowListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the widgets to expand to the available space", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the widgets to expand to the available space", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Padding/Spacing", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(HorizontalGroupListeners.horizontalGroupPaddingSpacingListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the padding of the widgets.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the padding of the widgets.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Wrap", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(HorizontalGroupListeners.horizontalGroupWrapListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set whether widgets will wrap to the next line when the width is decreased.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set whether widgets will wrap to the next line when the width is decreased.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Alignment", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(HorizontalGroupListeners.horizontalGroupAlignmentListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the alignment of the widgets", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the alignment of the widgets", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Row Alignment", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(HorizontalGroupListeners.horizontalGroupRowAlignmentListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the alignment of the widgets", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the alignment of the widgets", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Reverse", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(HorizontalGroupListeners.horizontalGroupReverseListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Reverse the display order of the widgets.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Reverse the display order of the widgets.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("HorizontalGroup", events::horizontalGroupReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("HorizontalGroup", events::horizontalGroupDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimScrollPane) {
             propertiesLabel.setText("ScrollPane Properties");
     
@@ -1526,13 +1526,13 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ScrollPaneListeners.scrollPaneNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ScrollPaneListeners.scrollPaneStyleListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the style that controls the appearance of the ScrollPane.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the style that controls the appearance of the ScrollPane.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Set Widget", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -1540,43 +1540,43 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.setWidgetListener(
                     this, (widgetType, popTable) -> ScrollPaneListeners.showConfirmScrollPaneSetWidgetDialog(DialogSceneComposer.this, widgetType,
                             popTable)));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the widget assigned to this ScrollPane.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the widget assigned to this ScrollPane.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::scrollPaneTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::scrollPaneVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Knobs", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ScrollPaneListeners.scrollPaneKnobsListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Knob and Scroll Bar settings.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Knob and Scroll Bar settings.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Scrolling", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(ScrollPaneListeners.scrollPaneScrollListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Scroll settings.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Scroll settings.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("ScrollPane", events::scrollPaneReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("ScrollPane", events::scrollPaneDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimSplitPane) {
             propertiesLabel.setText("SplitPane Properties");
     
@@ -1584,13 +1584,13 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SplitPaneListeners.splitPaneNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SplitPaneListeners.splitPaneStyleListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the style that controls the appearance of the SplitPane.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the style that controls the appearance of the SplitPane.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Set First Widget", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -1598,7 +1598,7 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.setWidgetListener(this, (widgetType, popTable) -> {
                 SplitPaneListeners.showConfirmSplitPaneSetWidgetDialog(this, widgetType, popTable, true);
             }));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the first widget applied to the SplitPane", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the first widget applied to the SplitPane", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Set Second Widget", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -1606,43 +1606,43 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.setWidgetListener(this, (widgetType, popTable) -> {
                 SplitPaneListeners.showConfirmSplitPaneSetWidgetDialog(this, widgetType, popTable, false);
             }));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the second widget applied to the SplitPane", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the second widget applied to the SplitPane", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::splitPaneTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::splitPaneVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Orientation", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SplitPaneListeners.splitPaneOrientationListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the orientation of the SplitPane.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the orientation of the SplitPane.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Split", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(SplitPaneListeners.splitPaneSplitListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the split, splitMin, and splitMax values.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the split, splitMin, and splitMax values.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("SplitPane", events::splitPaneReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("SplitPane", events::splitPaneDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimStack) {
             propertiesLabel.setText("Stack Properties");
     
@@ -1650,38 +1650,38 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(StackListeners.stackNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Add Child", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.setWidgetListener(
                     this, (widgetType, popTable) -> StackListeners.stackAddChild(events, widgetType, popTable)));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Add a child to the Stack.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Add a child to the Stack.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::stackTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::stackVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("Stack", events::stackReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("Stack", events::stackDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimNode) {
             propertiesLabel.setText("Node Properties");
     
@@ -1691,7 +1691,7 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.setWidgetListener(
                     this, (widgetType, popTable) -> TreeListeners.showConfirmNodeSetWidgetDialog(DialogSceneComposer.this, widgetType,
                             popTable)));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the widget applied to this Node.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the widget applied to this Node.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Add Node", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -1702,31 +1702,31 @@ public class DialogSceneComposer extends Dialog {
                     events.nodeAddNode();
                 }
             });
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Adds a new child Node to this Node.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Adds a new child Node to this Node.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Icon", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.selectDrawableListener(((SimNode) simActor).icon, "The selected drawable for the icon.",events::nodeIcon));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Select the Drawable applied as an icon to the Node.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Select the Drawable applied as an icon to the Node.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Options", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TreeListeners.nodeOptionsListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Change the expanded and selected values.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Change the expanded and selected values.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("Node", events::nodeReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("Node", events::nodeDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof SimTree) {
             propertiesLabel.setText("Tree Properties");
     
@@ -1734,13 +1734,13 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TreeListeners.treeNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Style", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TreeListeners.treeStyleListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the style that controls the appearance of the Tree.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the style that controls the appearance of the Tree.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Add Node", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -1751,43 +1751,43 @@ public class DialogSceneComposer extends Dialog {
                     events.treeAddNode();
                 }
             });
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Adds a new node to this tree.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Adds a new node to this tree.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::treeTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::treeVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Padding", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TreeListeners.treePaddingListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the padding for the tree.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the padding for the tree.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Spacing", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(TreeListeners.treeSpacingListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the spacing for the tree nodes.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the spacing for the tree nodes.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("Tree", events::treeReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("Tree", events::treeDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         } else if (simActor instanceof DialogSceneComposerModel.SimVerticalGroup) {
             propertiesLabel.setText("VerticalGroup Properties");
     
@@ -1795,7 +1795,7 @@ public class DialogSceneComposer extends Dialog {
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(VerticalGroupListeners.verticalGroupNameListener(this));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets the name of the widget to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Add Child", skin, "scene-med");
             horizontalGroup.addActor(textButton);
@@ -1803,67 +1803,67 @@ public class DialogSceneComposer extends Dialog {
             textButton.addListener(GeneralListeners.setWidgetListener(
                     this,
                     (widgetType, popTable) -> VerticalGroupListeners.verticalGroupAddChild(events, widgetType, popTable)));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Adds a widget to the VerticalGroup.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Adds a widget to the VerticalGroup.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Touchable", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.touchableListener(simActor, events::verticalGroupTouchable));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Visible", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.visibleListener(simActor, events::verticalGroupVisible));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Sets whether this widget can be clicked on.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Expand", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(VerticalGroupListeners.verticalGroupExpandFillGrowListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the widgets to expand to the available space.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the widgets to expand to the available space.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Padding/Spacing", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(VerticalGroupListeners.verticalGroupPaddingSpacingListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the padding/spacing of the widgets.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the padding/spacing of the widgets.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Wrap", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(VerticalGroupListeners.verticalGroupWrapListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set whether widgets will wrap to the next line when the height is decreased.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set whether widgets will wrap to the next line when the height is decreased.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Alignment", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(VerticalGroupListeners.verticalGroupAlignmentListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the alignment of the widgets", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the alignment of the widgets", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Column Alignment", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(VerticalGroupListeners.verticalGroupColumnAlignmentListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Set the alignment of the widgets", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Set the alignment of the widgets", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Reverse", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(VerticalGroupListeners.verticalGroupReverseListener(events, simActor));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Reverse the display order of the widgets.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Reverse the display order of the widgets.", tooltipManager, skin, "scene")));
             
             textButton = new TextButton("Reset", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetResetListener("VerticalGroup", events::verticalGroupReset));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Resets the settings of the widget to its defaults.", tooltipManager, skin, "scene")));
     
             textButton = new TextButton("Delete", skin, "scene-med");
             horizontalGroup.addActor(textButton);
             textButton.addListener(handListener);
             textButton.addListener(GeneralListeners.widgetDeleteListener("VerticalGroup", events::verticalGroupDelete));
-            textButton.addListener(Main.fixTooltip(new TextTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
+            textButton.addListener((Main.makeTooltip("Removes this widget from its parent.", tooltipManager, skin, "scene")));
         }
     }
     
@@ -1874,7 +1874,7 @@ public class DialogSceneComposer extends Dialog {
         
         var label = new Label("New Table:", skin, "scene-label");
         popTable.add(label);
-        label.addListener(Main.fixTooltip(new TextTooltip("Creates a base Table and adds it directly to the stage. This will serve as the basis for the rest of your UI layout and will fill the entire screen.", tooltipManager, skin, "scene")));
+        label.addListener((Main.makeTooltip("Creates a base Table and adds it directly to the stage. This will serve as the basis for the rest of your UI layout and will fill the entire screen.", tooltipManager, skin, "scene")));
     
         popTable.row();
         var table = new Table();
@@ -1949,7 +1949,7 @@ public class DialogSceneComposer extends Dialog {
                 imageButton.getImage().setColor(rootActor.backgroundColor == null ? Color.WHITE : rootActor.backgroundColor.color);
                 popTable.add(imageButton).minWidth(100);
                 imageButton.addListener(handListener);
-                imageButton.addListener(Main.fixTooltip(new TextTooltip("Select the color of the background.", tooltipManager, skin, "scene")));
+                imageButton.addListener((Main.makeTooltip("Select the color of the background.", tooltipManager, skin, "scene")));
                 imageButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

@@ -50,7 +50,7 @@ public class StackListeners {
                 textField.setText(simStack.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(Main.fixTooltip(new TextTooltip("The name of the Stack to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+                textField.addListener((Main.makeTooltip("The name of the Stack to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

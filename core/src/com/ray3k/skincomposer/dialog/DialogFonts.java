@@ -386,7 +386,7 @@ public class DialogFonts extends Dialog {
                 });
                 button.add(renameButton).padLeft(15.0f);
                 
-                TextTooltip toolTip = Main.fixTooltip(new TextTooltip("Rename Font", tooltipManager, getSkin()));
+                TextTooltip toolTip = (Main.makeTooltip("Rename Font", tooltipManager, getSkin()));
                 renameButton.addListener(toolTip);
                 
                 LabelStyle style = new LabelStyle();
@@ -467,7 +467,7 @@ public class DialogFonts extends Dialog {
                 });
                 button.add(closeButton).padLeft(5.0f).right();
                 
-                toolTip = Main.fixTooltip(new TextTooltip("Delete Font", tooltipManager, getSkin()));
+                toolTip = (Main.makeTooltip("Delete Font", tooltipManager, getSkin()));
                 closeButton.addListener(toolTip);
 
                 if (styleProperty == null && customProperty == null) {
@@ -520,7 +520,7 @@ public class DialogFonts extends Dialog {
                 });
                 button.add(renameButton).padLeft(15.0f);
                 
-                TextTooltip toolTip = Main.fixTooltip(new TextTooltip("Change Freetype Settings", tooltipManager, getSkin()));
+                TextTooltip toolTip = (Main.makeTooltip("Change Freetype Settings", tooltipManager, getSkin()));
                 renameButton.addListener(toolTip);
                 
                 LabelStyle style = new LabelStyle();
@@ -589,7 +589,7 @@ public class DialogFonts extends Dialog {
                 });
                 button.add(closeButton).padLeft(5.0f).right();
                 
-                toolTip = Main.fixTooltip(new TextTooltip("Delete Font", tooltipManager, getSkin()));
+                toolTip = (Main.makeTooltip("Delete Font", tooltipManager, getSkin()));
                 closeButton.addListener(toolTip);
 
                 if (styleProperty == null && customProperty == null) {

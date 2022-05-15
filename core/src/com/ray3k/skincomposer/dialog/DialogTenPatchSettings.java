@@ -184,7 +184,7 @@ public class DialogTenPatchSettings extends PopTable {
         table.row();
         label = new Label("Gradient Upper Left:", skin);
         table.add(label).right();
-        var textTooltip = Main.fixTooltip(new TextTooltip("Gradient colors override Color", tooltipManager, skin));
+        var textTooltip = (Main.makeTooltip("Gradient colors override Color", tooltipManager, skin));
         label.addListener(textTooltip);
     
         imageButton = new ImageButton(skin, "color");
@@ -331,7 +331,7 @@ public class DialogTenPatchSettings extends PopTable {
         table.row();
         label = new Label("Offset X (Start):", skin);
         table.add(label).right();
-        textTooltip = Main.fixTooltip(new TextTooltip("Only relevant if Tiling is enabled.", tooltipManager, skin));
+        textTooltip = (Main.makeTooltip("Only relevant if Tiling is enabled.", tooltipManager, skin));
         label.addListener(textTooltip);
     
         spinner = new Spinner(0, 1, true, Spinner.Orientation.HORIZONTAL, skin);

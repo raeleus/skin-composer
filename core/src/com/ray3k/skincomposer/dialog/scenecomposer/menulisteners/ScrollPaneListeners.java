@@ -53,7 +53,7 @@ public class ScrollPaneListeners {
                 textField.setText(simScrollPane.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(Main.fixTooltip(new TextTooltip("The name of the ScrollPane to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+                textField.addListener((Main.makeTooltip("The name of the ScrollPane to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -120,7 +120,7 @@ public class ScrollPaneListeners {
                 imageTextButton.setChecked(simScrollPane.variableSizeKnobs);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Scroll knobs are sized based on getMaxX() or getMaxY()", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Scroll knobs are sized based on getMaxX() or getMaxY()", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -133,7 +133,7 @@ public class ScrollPaneListeners {
                 imageTextButton.setChecked(simScrollPane.fadeScrollBars);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Scrollbars don't reduce the scrollable size and fade out if not used.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Scrollbars don't reduce the scrollable size and fade out if not used.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -146,7 +146,7 @@ public class ScrollPaneListeners {
                 imageTextButton.setChecked(simScrollPane.scrollBarsVisible);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Shows or hides the scrollbars when Fade Scroll Bars is activated.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Shows or hides the scrollbars when Fade Scroll Bars is activated.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -159,7 +159,7 @@ public class ScrollPaneListeners {
                 imageTextButton.setChecked(simScrollPane.scrollBarsOnTop);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Set whether scrollbars respond to mouse clicks.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Set whether scrollbars respond to mouse clicks.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -172,7 +172,7 @@ public class ScrollPaneListeners {
                 imageTextButton.setChecked(simScrollPane.scrollBarsOnTop);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Scrollbars don't reduce the scrollable size and fade out if not used.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Scrollbars don't reduce the scrollable size and fade out if not used.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -185,7 +185,7 @@ public class ScrollPaneListeners {
                 imageTextButton.setChecked(simScrollPane.forceScrollX);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Forces the horizontal scroll bar to be enabled.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Forces the horizontal scroll bar to be enabled.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -198,7 +198,7 @@ public class ScrollPaneListeners {
                 imageTextButton.setChecked(simScrollPane.forceScrollY);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Forces the vertical scroll bar to be enabled.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Forces the vertical scroll bar to be enabled.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -211,7 +211,7 @@ public class ScrollPaneListeners {
                 imageTextButton.setChecked(simScrollPane.scrollingDisabledX);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Horizontal Scrolling is disabled.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Horizontal Scrolling is disabled.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -224,7 +224,7 @@ public class ScrollPaneListeners {
                 imageTextButton.setChecked(simScrollPane.scrollingDisabledY);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Vertical scrolling is disabled.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Vertical scrolling is disabled.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -300,7 +300,7 @@ public class ScrollPaneListeners {
                 imageTextButton.setChecked(simScrollPane.clamp);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Prevents scrolling out of the widget's bounds when using flick Scroll.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Prevents scrolling out of the widget's bounds when using flick Scroll.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -313,7 +313,7 @@ public class ScrollPaneListeners {
                 imageTextButton.setChecked(simScrollPane.flickScroll);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Allow users to scroll by flicking the contents of the ScrollPanel", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Allow users to scroll by flicking the contents of the ScrollPanel", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -335,7 +335,7 @@ public class ScrollPaneListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The amount of time in seconds that a fling will continue to scroll.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The amount of time in seconds that a fling will continue to scroll.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -348,7 +348,7 @@ public class ScrollPaneListeners {
                 imageTextButton.setChecked(simScrollPane.overScrollX);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("The widget can be scrolled passed the bounds horizontally and will snap back into place if flick scroll is enabled.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("The widget can be scrolled passed the bounds horizontally and will snap back into place if flick scroll is enabled.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -361,7 +361,7 @@ public class ScrollPaneListeners {
                 imageTextButton.setChecked(simScrollPane.overScrollY);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("The widget can be scrolled passed the bounds vertically and will snap back into place if flick scroll is enabled.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("The widget can be scrolled passed the bounds vertically and will snap back into place if flick scroll is enabled.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -383,7 +383,7 @@ public class ScrollPaneListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The distance in pixels that the user is allowed to scroll beyond the bounds if overscroll is enabled.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The distance in pixels that the user is allowed to scroll beyond the bounds if overscroll is enabled.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -402,7 +402,7 @@ public class ScrollPaneListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The minimum speed that scroll returns to the widget bounds when overscroll is enabled.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The minimum speed that scroll returns to the widget bounds when overscroll is enabled.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -421,7 +421,7 @@ public class ScrollPaneListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The maximum speed that scroll returns to the widget bounds when overscroll is enabled.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The maximum speed that scroll returns to the widget bounds when overscroll is enabled.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -434,7 +434,7 @@ public class ScrollPaneListeners {
                 imageTextButton.setChecked(simScrollPane.smoothScrolling);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Scrolling is interpolated instead of jumping to position immediately.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Scrolling is interpolated instead of jumping to position immediately.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

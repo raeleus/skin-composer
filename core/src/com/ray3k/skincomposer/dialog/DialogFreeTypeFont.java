@@ -299,7 +299,7 @@ public class DialogFreeTypeFont extends Dialog {
         textField.setName("fontName");
         table.add(textField);
         
-        TextTooltip toolTip = Main.fixTooltip(new TextTooltip("The name used in skin JSON", tooltipManager, getSkin()));
+        TextTooltip toolTip = (Main.makeTooltip("The name used in skin JSON", tooltipManager, getSkin()));
         textField.addListener(toolTip);
         
         textField.addListener(ibeamListener);
@@ -336,7 +336,7 @@ public class DialogFreeTypeFont extends Dialog {
         selectBox.setSelected(data.previewTTF);
         table.add(selectBox);
         
-        toolTip = Main.fixTooltip(new TextTooltip("The TTF font for preview use in Skin Composer only", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("The TTF font for preview use in Skin Composer only", tooltipManager, getSkin()));
         selectBox.addListener(toolTip);
         
         selectBox.addListener(handListener);
@@ -354,7 +354,7 @@ public class DialogFreeTypeFont extends Dialog {
         TextButton textButton = new TextButton("Open Preview Folder", skin);
         table.add(textButton);
         
-        toolTip = Main.fixTooltip(new TextTooltip("Add new preview fonts here", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Add new preview fonts here", tooltipManager, getSkin()));
         textButton.addListener(toolTip);
         
         textButton.addListener(handListener);
@@ -412,7 +412,7 @@ public class DialogFreeTypeFont extends Dialog {
                 });
             }
         });
-        toolTip = Main.fixTooltip(new TextTooltip("Background color for preview text.", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Background color for preview text.", tooltipManager, getSkin()));
         imageButton.addListener(toolTip);
         
         root.row();
@@ -510,7 +510,7 @@ public class DialogFreeTypeFont extends Dialog {
         textButton = new TextButton("Browse...", skin);
         table.add(textButton).fillX();
         
-        toolTip = Main.fixTooltip(new TextTooltip("Path to font to be distributed with skin", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Path to font to be distributed with skin", tooltipManager, getSkin()));
         ltLabel.addListener(toolTip);
         textButton.addListener(toolTip);
         ltLabel.addListener(handListener);
@@ -545,7 +545,7 @@ public class DialogFreeTypeFont extends Dialog {
         textField.setName("characters");
         table.add(textField).growX();
         
-        toolTip = Main.fixTooltip(new TextTooltip("The characters the font should contain. Leave blank for defaults.", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("The characters the font should contain. Leave blank for defaults.", tooltipManager, getSkin()));
         textField.addListener(toolTip);
         
         textField.addListener(ibeamListener);
@@ -622,7 +622,7 @@ public class DialogFreeTypeFont extends Dialog {
         spinner.setMinimum(5);
         bottom.add(spinner).left().minWidth(100.0f);
         
-        toolTip = Main.fixTooltip(new TextTooltip("The size in pixels", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("The size in pixels", tooltipManager, getSkin()));
         spinner.addListener(toolTip);
         
         spinner.getButtonMinus().addListener(handListener);
@@ -646,7 +646,7 @@ public class DialogFreeTypeFont extends Dialog {
         button.setChecked(data.mono);
         bottom.add(button).left();
         
-        toolTip = Main.fixTooltip(new TextTooltip("If on, font smoothing is disabled", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("If on, font smoothing is disabled", tooltipManager, getSkin()));
         button.addListener(toolTip);
         
         button.addListener(handListener);
@@ -672,7 +672,7 @@ public class DialogFreeTypeFont extends Dialog {
         selectBox.setSelected(data.hinting);
         bottom.add(selectBox).fillX().left();
         
-        toolTip = Main.fixTooltip(new TextTooltip("Strength of hinting", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Strength of hinting", tooltipManager, getSkin()));
         selectBox.addListener(toolTip);
         
         selectBox.addListener(handListener);
@@ -697,7 +697,7 @@ public class DialogFreeTypeFont extends Dialog {
         textButton.add(image).space(10.0f);
         bottom.add(textButton).left();
         
-        toolTip = Main.fixTooltip(new TextTooltip("Foreground color (Required)", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Foreground color (Required)", tooltipManager, getSkin()));
         textButton.addListener(toolTip);
         
         textButton.addListener(handListener);
@@ -740,7 +740,7 @@ public class DialogFreeTypeFont extends Dialog {
         spinner.setName("gamma");
         bottom.add(spinner).left().minWidth(100.0f);
         
-        toolTip = Main.fixTooltip(new TextTooltip("Glyph gamma. Values > 1 reduce antialiasing.", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Glyph gamma. Values > 1 reduce antialiasing.", tooltipManager, getSkin()));
         spinner.addListener(toolTip);
         
         spinner.getButtonMinus().addListener(handListener);
@@ -763,7 +763,7 @@ public class DialogFreeTypeFont extends Dialog {
         spinner.setName("renderCount");
         bottom.add(spinner).left().minWidth(100.0f);
         
-        toolTip = Main.fixTooltip(new TextTooltip("Number of times to render the glyph. Useful with a shadow or border, so it doesn't show through the glyph.", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Number of times to render the glyph. Useful with a shadow or border, so it doesn't show through the glyph.", tooltipManager, getSkin()));
         spinner.addListener(toolTip);
         
         spinner.getButtonMinus().addListener(handListener);
@@ -787,7 +787,7 @@ public class DialogFreeTypeFont extends Dialog {
         spinner.setName("borderWidth");
         bottom.add(spinner).left().minWidth(100.0f);
         
-        toolTip = Main.fixTooltip(new TextTooltip("Border width in pixels, 0 to disable", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Border width in pixels, 0 to disable", tooltipManager, getSkin()));
         spinner.addListener(toolTip);
         
         spinner.getButtonMinus().addListener(handListener);
@@ -813,7 +813,7 @@ public class DialogFreeTypeFont extends Dialog {
         textButton.add(image).space(10.0f);
         bottom.add(textButton).left();
         
-        toolTip = Main.fixTooltip(new TextTooltip("Border color; Required if borderWidth > 0", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Border color; Required if borderWidth > 0", tooltipManager, getSkin()));
         textButton.addListener(toolTip);
         
         textButton.addListener(handListener);
@@ -850,7 +850,7 @@ public class DialogFreeTypeFont extends Dialog {
         button.setChecked(data.borderStraight);
         bottom.add(button).left();
         
-        toolTip = Main.fixTooltip(new TextTooltip("On for straight (mitered), off for rounded borders", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("On for straight (mitered), off for rounded borders", tooltipManager, getSkin()));
         button.addListener(toolTip);
         
         button.addListener(handListener);
@@ -871,7 +871,7 @@ public class DialogFreeTypeFont extends Dialog {
         spinner.setName("borderGamma");
         bottom.add(spinner).left().minWidth(100.0f);
         
-        toolTip = Main.fixTooltip(new TextTooltip("Values < 1 increase the border size.", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Values < 1 increase the border size.", tooltipManager, getSkin()));
         spinner.addListener(toolTip);
         
         spinner.getButtonMinus().addListener(handListener);
@@ -895,7 +895,7 @@ public class DialogFreeTypeFont extends Dialog {
         spinner.setName("shadowOffsetX");
         bottom.add(spinner).left().minWidth(100.0f);
         
-        toolTip = Main.fixTooltip(new TextTooltip("Offset of text shadow on X axis in pixels, 0 to disable", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Offset of text shadow on X axis in pixels, 0 to disable", tooltipManager, getSkin()));
         spinner.addListener(toolTip);
         
         spinner.getButtonMinus().addListener(handListener);
@@ -918,7 +918,7 @@ public class DialogFreeTypeFont extends Dialog {
         spinner.setName("shadowOffsetY");
         bottom.add(spinner).left().minWidth(100.0f);
         
-        toolTip = Main.fixTooltip(new TextTooltip("Offset of text shadow on Y axis in pixels, 0 to disable", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Offset of text shadow on Y axis in pixels, 0 to disable", tooltipManager, getSkin()));
         spinner.addListener(toolTip);
         
         spinner.getButtonMinus().addListener(handListener);
@@ -945,7 +945,7 @@ public class DialogFreeTypeFont extends Dialog {
         textButton.add(image).space(10.0f);
         bottom.add(textButton).left();
         
-        toolTip = Main.fixTooltip(new TextTooltip("Shadow color; required if shadowOffset > 0.", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Shadow color; required if shadowOffset > 0.", tooltipManager, getSkin()));
         textButton.addListener(toolTip);
         
         textButton.addListener(handListener);
@@ -1004,7 +1004,7 @@ public class DialogFreeTypeFont extends Dialog {
         spinner.setName("spaceX");
         bottom.add(spinner).left().minWidth(100.0f);
         
-        toolTip = Main.fixTooltip(new TextTooltip("Pixels to add to glyph spacing. Can be negative.", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Pixels to add to glyph spacing. Can be negative.", tooltipManager, getSkin()));
         spinner.addListener(toolTip);
         
         spinner.getButtonMinus().addListener(handListener);
@@ -1027,7 +1027,7 @@ public class DialogFreeTypeFont extends Dialog {
         spinner.setName("spaceY");
         bottom.add(spinner).left().minWidth(100.0f);
         
-        toolTip = Main.fixTooltip(new TextTooltip("Pixels to add to glyph spacing. Can be negative.", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Pixels to add to glyph spacing. Can be negative.", tooltipManager, getSkin()));
         spinner.addListener(toolTip);
         
         spinner.getButtonMinus().addListener(handListener);
@@ -1053,7 +1053,7 @@ public class DialogFreeTypeFont extends Dialog {
         button.setChecked(data.kerning);
         bottom.add(button).left();
         
-        toolTip = Main.fixTooltip(new TextTooltip("Whether the font should include kerning", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Whether the font should include kerning", tooltipManager, getSkin()));
         button.addListener(toolTip);
         
         button.addListener(handListener);
@@ -1076,7 +1076,7 @@ public class DialogFreeTypeFont extends Dialog {
         button.setChecked(data.flip);
         bottom.add(button).left();
         
-        toolTip = Main.fixTooltip(new TextTooltip("Whether to flip the font vertically", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Whether to flip the font vertically", tooltipManager, getSkin()));
         button.addListener(toolTip);
         
         button.addListener(handListener);
@@ -1098,7 +1098,7 @@ public class DialogFreeTypeFont extends Dialog {
         button.setChecked(data.genMipMaps);
         bottom.add(button).left();
         
-        toolTip = Main.fixTooltip(new TextTooltip("Whether to generate mip maps for the resulting texture", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Whether to generate mip maps for the resulting texture", tooltipManager, getSkin()));
         button.addListener(toolTip);
         
         button.addListener(handListener);
@@ -1122,7 +1122,7 @@ public class DialogFreeTypeFont extends Dialog {
         selectBox.setSelected(data.minFilter);
         bottom.add(selectBox).left();
         
-        toolTip = Main.fixTooltip(new TextTooltip("Minification filter", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Minification filter", tooltipManager, getSkin()));
         selectBox.addListener(toolTip);
         
         selectBox.addListener(handListener);
@@ -1146,7 +1146,7 @@ public class DialogFreeTypeFont extends Dialog {
         selectBox.setSelected(data.magFilter);
         bottom.add(selectBox).left();
         
-        toolTip = Main.fixTooltip(new TextTooltip("Magnification filter", tooltipManager, getSkin()));
+        toolTip = (Main.makeTooltip("Magnification filter", tooltipManager, getSkin()));
         selectBox.addListener(toolTip);
         
         selectBox.addListener(handListener);

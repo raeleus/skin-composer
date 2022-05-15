@@ -51,7 +51,7 @@ public class CellListeners {
                 button.setDisabled(simCell.row == 0);
                 subTable.add(button);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Moves the current cell up.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Moves the current cell up.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -67,7 +67,7 @@ public class CellListeners {
                 button.setDisabled(simCell.column == 0);
                 subTable.add(button);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Moves the current cell left.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Moves the current cell left.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -82,7 +82,7 @@ public class CellListeners {
                 button.setDisabled(simCell.column == simTable.getColumns(simCell.row) - 1);
                 subTable.add(button);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Moves the current cell right.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Moves the current cell right.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -98,7 +98,7 @@ public class CellListeners {
                 button.setDisabled(simCell.row == simTable.getRows() - 1);
                 subTable.add(button);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Moves the current cell down.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Moves the current cell down.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -120,7 +120,7 @@ public class CellListeners {
                 button = new Button(skin, "scene-add-down-row");
                 subTable.add(button);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Creates a new row below and moves this cell to it.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Creates a new row below and moves this cell to it.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -132,7 +132,7 @@ public class CellListeners {
                 button = new Button(skin, "scene-add-up-row");
                 subTable.add(button);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Creates a new row above and moves this cell to it.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Creates a new row above and moves this cell to it.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -182,7 +182,7 @@ public class CellListeners {
                 button.setDisabled(simCell.row == 0);
                 subTable.add(button);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Creates a new cell at the end of the row above.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Creates a new cell at the end of the row above.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -197,7 +197,7 @@ public class CellListeners {
                 button = new Button(skin, "scene-add-left");
                 subTable.add(button);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Creates a new cell to the left of the current one.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Creates a new cell to the left of the current one.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -211,7 +211,7 @@ public class CellListeners {
                 button = new Button(skin, "scene-add-right");
                 subTable.add(button);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Creates a new cell to the right of the current one.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Creates a new cell to the right of the current one.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -227,7 +227,7 @@ public class CellListeners {
                 button.setDisabled(simCell.row == simTable.getRows() - 1);
                 subTable.add(button);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Creates a new cell at the end of the row below.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Creates a new cell at the end of the row below.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -249,7 +249,7 @@ public class CellListeners {
                 button = new Button(skin, "scene-add-down-row");
                 subTable.add(button);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Creates a new row below and adds a cell to it.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Creates a new row below and adds a cell to it.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -261,7 +261,7 @@ public class CellListeners {
                 button = new Button(skin, "scene-add-up-row");
                 subTable.add(button);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Creates a new row above and adds a cell to it.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Creates a new row above and adds a cell to it.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -289,7 +289,7 @@ public class CellListeners {
                 subTable.add(button);
                 button.setDisabled(simCell.row == 0);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Duplicates the cell to the row above.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Duplicates the cell to the row above.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -304,7 +304,7 @@ public class CellListeners {
                 button = new Button(skin, "scene-duplicate-left");
                 subTable.add(button);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Creates a new cell to the left of the current one.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Creates a new cell to the left of the current one.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -318,7 +318,7 @@ public class CellListeners {
                 button = new Button(skin, "scene-duplicate-right");
                 subTable.add(button);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Creates a new cell to the right of the current one.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Creates a new cell to the right of the current one.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -334,7 +334,7 @@ public class CellListeners {
                 subTable.add(button);
                 button.setDisabled(simCell.row == simTable.getRows() - 1);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Duplicates the cell to the row below.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Duplicates the cell to the row below.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -356,7 +356,7 @@ public class CellListeners {
                 button = new Button(skin, "scene-duplicate-down-row");
                 subTable.add(button);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Creates a new row below and adds a cell to it.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Creates a new row below and adds a cell to it.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -368,7 +368,7 @@ public class CellListeners {
                 button = new Button(skin, "scene-duplicate-up-row");
                 subTable.add(button);
                 button.addListener(handListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Creates a new row below and adds a cell to it.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Creates a new row below and adds a cell to it.", tooltipManager, skin, "scene")));
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -419,7 +419,7 @@ public class CellListeners {
                 imageTextButton.setChecked(simCell.uniformX);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("All cells with Uniform X will share the same width.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("All cells with Uniform X will share the same width.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(changeListener);
     
                 imageTextButton = new ImageTextButton("Uniform Y", skin, "scene-checkbox-colored");
@@ -427,7 +427,7 @@ public class CellListeners {
                 imageTextButton.setChecked(simCell.uniformY);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("All cells with Uniform Y will share the same height.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("All cells with Uniform Y will share the same height.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(changeListener);
             }
         };
@@ -514,7 +514,7 @@ public class CellListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The minimum width of the contents of the cell.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The minimum width of the contents of the cell.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
     
                 table.row();
@@ -528,7 +528,7 @@ public class CellListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The minimum height of the contents of the cell.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The minimum height of the contents of the cell.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
     
                 var image = new Image(skin, "scene-menu-divider");
@@ -552,7 +552,7 @@ public class CellListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The maximum width of the contents of the cell.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The maximum width of the contents of the cell.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
     
                 table.row();
@@ -566,7 +566,7 @@ public class CellListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The maximum height of the contents of the cell.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The maximum height of the contents of the cell.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
     
                 image = new Image(skin, "scene-menu-divider");
@@ -590,7 +590,7 @@ public class CellListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The preferred width of the contents of the cell.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The preferred width of the contents of the cell.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
     
                 table.row();
@@ -604,7 +604,7 @@ public class CellListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The preferred height of the contents of the cell.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The preferred height of the contents of the cell.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
                 
                 popTable.row();
@@ -613,7 +613,7 @@ public class CellListeners {
                 popTable.add(button).colspan(5).right();
                 button.addListener(Main.handListener);
                 button.addListener(changeListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Click to modify all values at once.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Click to modify all values at once.", tooltipManager, skin, "scene")));
             }
         };
         
@@ -653,7 +653,7 @@ public class CellListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the cell to the top left.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the cell to the top left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -667,7 +667,7 @@ public class CellListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the cell to the top center.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the cell to the top center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -681,7 +681,7 @@ public class CellListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the cell to the top right.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the cell to the top right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -696,7 +696,7 @@ public class CellListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the cell to the middle left.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the cell to the middle left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -710,7 +710,7 @@ public class CellListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the cell to the center.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the cell to the center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -724,7 +724,7 @@ public class CellListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the cell to the middle right.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the cell to the middle right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -739,7 +739,7 @@ public class CellListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the cell to the bottom left.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the cell to the bottom left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -753,7 +753,7 @@ public class CellListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the cell to the bottom center.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the cell to the bottom center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -767,7 +767,7 @@ public class CellListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the cell to the bottom right.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the cell to the bottom right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -852,7 +852,7 @@ public class CellListeners {
                 expandX.setProgrammaticChangeEvents(false);
                 table.add(expandX);
                 expandX.addListener(handListener);
-                expandX.addListener(Main.fixTooltip(new TextTooltip("Expands the width of the cell to the available space.", tooltipManager, skin, "scene")));
+                expandX.addListener((Main.makeTooltip("Expands the width of the cell to the available space.", tooltipManager, skin, "scene")));
                 expandX.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -869,7 +869,7 @@ public class CellListeners {
                 expandY.setProgrammaticChangeEvents(false);
                 table.add(expandY);
                 expandY.addListener(handListener);
-                expandY.addListener(Main.fixTooltip(new TextTooltip("Expands the height of the cell to the available space.", tooltipManager, skin, "scene")));
+                expandY.addListener((Main.makeTooltip("Expands the height of the cell to the available space.", tooltipManager, skin, "scene")));
                 expandY.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -887,7 +887,7 @@ public class CellListeners {
                 fillX.setProgrammaticChangeEvents(false);
                 table.add(fillX);
                 fillX.addListener(handListener);
-                fillX.addListener(Main.fixTooltip(new TextTooltip("Stretches the contents to fill the width of the cell.", tooltipManager, skin, "scene")));
+                fillX.addListener((Main.makeTooltip("Stretches the contents to fill the width of the cell.", tooltipManager, skin, "scene")));
                 fillX.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -904,7 +904,7 @@ public class CellListeners {
                 fillY.setProgrammaticChangeEvents(false);
                 table.add(fillY);
                 fillY.addListener(handListener);
-                fillY.addListener(Main.fixTooltip(new TextTooltip("Stretches the contents to fill the height of the cell.", tooltipManager, skin, "scene")));
+                fillY.addListener((Main.makeTooltip("Stretches the contents to fill the height of the cell.", tooltipManager, skin, "scene")));
                 fillY.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -922,7 +922,7 @@ public class CellListeners {
                 growX.setProgrammaticChangeEvents(false);
                 table.add(growX);
                 growX.addListener(handListener);
-                growX.addListener(Main.fixTooltip(new TextTooltip("Sets the cell to expand and fill across the available width.", tooltipManager, skin, "scene")));
+                growX.addListener((Main.makeTooltip("Sets the cell to expand and fill across the available width.", tooltipManager, skin, "scene")));
                 growX.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -936,7 +936,7 @@ public class CellListeners {
                 growY.setProgrammaticChangeEvents(false);
                 table.add(growY);
                 growY.addListener(handListener);
-                growY.addListener(Main.fixTooltip(new TextTooltip("Sets the cell to expand and fill across the available height.", tooltipManager, skin, "scene")));
+                growY.addListener((Main.makeTooltip("Sets the cell to expand and fill across the available height.", tooltipManager, skin, "scene")));
                 growY.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -988,7 +988,7 @@ public class CellListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The column span of the cell.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The column span of the cell.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -1087,7 +1087,7 @@ public class CellListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding to the left of the cell. Stacks with other cell padding.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding to the left of the cell. Stacks with other cell padding.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
     
                 table.row();
@@ -1101,7 +1101,7 @@ public class CellListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding to the right of the cell. Stacks with other cell padding.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding to the right of the cell. Stacks with other cell padding.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
     
                 table.row();
@@ -1115,7 +1115,7 @@ public class CellListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding to the top of the cell. Stacks with other cell padding.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding to the top of the cell. Stacks with other cell padding.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
     
                 table.row();
@@ -1129,7 +1129,7 @@ public class CellListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding to the bottom of the cell. Stacks with other cell padding.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding to the bottom of the cell. Stacks with other cell padding.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
                 
                 table.row();
@@ -1138,7 +1138,7 @@ public class CellListeners {
                 table.add(button).right().colspan(2);
                 button.addListener(Main.handListener);
                 button.addListener(changeListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Click to modify all padding values at once.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Click to modify all padding values at once.", tooltipManager, skin, "scene")));
     
                 var image = new Image(skin, "scene-menu-divider");
                 popTable.add(image).space(10).growY();
@@ -1162,7 +1162,7 @@ public class CellListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The spacing to the left of the cell. Does not stack with other cell spacing.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The spacing to the left of the cell. Does not stack with other cell spacing.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
     
                 table.row();
@@ -1177,7 +1177,7 @@ public class CellListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The spacing to the right of the cell. Does not stack with other cell spacing.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The spacing to the right of the cell. Does not stack with other cell spacing.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
     
                 table.row();
@@ -1192,7 +1192,7 @@ public class CellListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The spacing to the top of the cell. Does not stack with other cell spacing.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The spacing to the top of the cell. Does not stack with other cell spacing.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
     
                 table.row();
@@ -1207,7 +1207,7 @@ public class CellListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The spacing to the bottom of the cell. Does not stack with other cell spacing.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The spacing to the bottom of the cell. Does not stack with other cell spacing.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
     
                 table.row();
@@ -1216,7 +1216,7 @@ public class CellListeners {
                 table.add(button).right().colspan(2);
                 button.addListener(Main.handListener);
                 button.addListener(changeListener);
-                button.addListener(Main.fixTooltip(new TextTooltip("Click to modify all spacing values at once.", tooltipManager, skin, "scene")));
+                button.addListener((Main.makeTooltip("Click to modify all spacing values at once.", tooltipManager, skin, "scene")));
             }
         };
         

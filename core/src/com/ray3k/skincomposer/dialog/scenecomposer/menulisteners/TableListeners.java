@@ -52,7 +52,7 @@ public class TableListeners {
                 textField.setText(simTable.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(Main.fixTooltip(new TextTooltip("The name of the table to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+                textField.addListener((Main.makeTooltip("The name of the table to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
                 textField.addListener(new InputListener() {
                     @Override
                     public boolean keyDown(InputEvent event, int keycode) {
@@ -106,7 +106,7 @@ public class TableListeners {
                 imageButton.getImage().setColor(simTable.color == null ? Color.WHITE : simTable.color.color);
                 popTable.add(imageButton).minWidth(100);
                 imageButton.addListener(handListener);
-                imageButton.addListener(Main.fixTooltip(new TextTooltip("Select the color of the table background and of the table contents.", tooltipManager, skin, "scene")));
+                imageButton.addListener((Main.makeTooltip("Select the color of the table background and of the table contents.", tooltipManager, skin, "scene")));
     
                 popTable.row();
                 var colorLabel = new Label(simTable.color == null ? "No Color" : simTable.color.getName(), skin, "scene-label-colored");
@@ -207,7 +207,7 @@ public class TableListeners {
                 textButton.setName("padding-button");
                 popTable.add(textButton).minWidth(150).colspan(2);
                 textButton.addListener(handListener);
-                textButton.addListener(Main.fixTooltip(new TextTooltip("Whether the button is checked initially.", tooltipManager, skin, "scene")));
+                textButton.addListener((Main.makeTooltip("Whether the button is checked initially.", tooltipManager, skin, "scene")));
                 textButton.addListener(changeListener);
                 
                 popTable.row();
@@ -225,7 +225,7 @@ public class TableListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding on the left of the contents.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding on the left of the contents.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
     
                 popTable.row();
@@ -243,7 +243,7 @@ public class TableListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding on the right of the contents.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding on the right of the contents.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
     
                 popTable.row();
@@ -261,7 +261,7 @@ public class TableListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding on the top of the contents.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding on the top of the contents.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
     
                 popTable.row();
@@ -279,7 +279,7 @@ public class TableListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding on the bottom of the contents.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding on the bottom of the contents.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
             }
         };
@@ -320,7 +320,7 @@ public class TableListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents to the top left.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents to the top left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -334,7 +334,7 @@ public class TableListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents to the top center.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents to the top center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -348,7 +348,7 @@ public class TableListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents to the top right.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents to the top right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -363,7 +363,7 @@ public class TableListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents to the middle left.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents to the middle left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -377,7 +377,7 @@ public class TableListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents to the center.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents to the center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -391,7 +391,7 @@ public class TableListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents to the middle right.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents to the middle right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -406,7 +406,7 @@ public class TableListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents to the bottom left.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents to the bottom left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -420,7 +420,7 @@ public class TableListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents to the bottom center.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents to the bottom center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -434,7 +434,7 @@ public class TableListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents to the bottom right.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents to the bottom right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -488,7 +488,7 @@ public class TableListeners {
         var label = new Label("Erase contents\nand create\nnew cells:", skin, "scene-label");
         label.setAlignment(Align.center);
         popTable.add(label);
-        label.addListener(Main.fixTooltip(new TextTooltip("Sets the cells for this table. This will erase the existing contents.", tooltipManager, skin, "scene")));
+        label.addListener((Main.makeTooltip("Sets the cells for this table. This will erase the existing contents.", tooltipManager, skin, "scene")));
         
         popTable.row();
         var table = new Table();
