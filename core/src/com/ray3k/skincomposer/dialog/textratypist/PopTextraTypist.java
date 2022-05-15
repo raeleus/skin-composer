@@ -254,7 +254,7 @@ public class PopTextraTypist extends PopTable {
         sizeSelectBox.setItems(items.toArray(String.class));
         onChange(sizeSelectBox, () -> {
             if (sizeSelectBox.getSelectedIndex() == 1) {
-                insertTag("[%]");
+                insertTag("[%]", "");
                 sizeSelectBox.setSelectedIndex(0);
             } if (sizeSelectBox.getSelectedIndex() > 1) {
                 insertTag("[%" + sizeSelectBox.getSelected() + "]", "[%]");
@@ -293,7 +293,7 @@ public class PopTextraTypist extends PopTable {
                 });
                 colorSelectBox.setSelectedIndex(0);
             } else if (selectedIndex == 2) {
-                insertTag("{CLEARCOLOR}");
+                insertTag("{CLEARCOLOR}", "");
                 colorSelectBox.setSelectedIndex(0);
             } else if (selectedIndex > 2) {
                 insertTag("[" + colorSelectBox.getSelected() + "]", "{CLEARCOLOR}");
