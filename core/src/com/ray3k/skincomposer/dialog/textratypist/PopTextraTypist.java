@@ -224,7 +224,7 @@ public class PopTextraTypist extends PopTable {
     
         onChange(fontSelectBox, () -> {
             if (fontSelectBox.getSelectedIndex() == 1) {
-                insertTag("[@]");
+                insertTag("[@]", "");
                 fontSelectBox.setSelectedIndex(0);
             } else if (fontSelectBox.getSelectedIndex() > 1) {
                 insertTag("[@" + fontSelectBox.getSelected() + "]", "[@]");
