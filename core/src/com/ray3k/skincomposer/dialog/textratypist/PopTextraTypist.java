@@ -101,7 +101,7 @@ public class PopTextraTypist extends PopTable {
         textButton.getLabel().setAlignment(Align.left);
         table.add(textButton);
         textButton.addListener(handListener);
-        onChange(textButton, () -> Gdx.net.openURI("https://github.com/tommyettinger/textratypist"));
+        onChange(textButton, () -> Gdx.net.openURI("https://github.com/tommyettinger/textratypist#textratypist"));
     
         table.row();
         textButton = new TextButton("TypingLabel Documentation", skin, "tt-file-bar");
