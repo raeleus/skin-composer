@@ -50,7 +50,7 @@ project(":core") {
         compile 'com.github.raeleus.stripe:freetype:1.1.0'
         compile 'com.esotericsoftware.spine:spine-libgdx:4.0.18.1'
         compile 'com.github.lyze237:gdx-TinyVG:9a5a6ae9ae'
-        compile "com.github.tommyettinger:textratypist:6f1804b3e1"
+        compile "com.github.tommyettinger:textratypist:38e2742f5b"
     }
 }
 
