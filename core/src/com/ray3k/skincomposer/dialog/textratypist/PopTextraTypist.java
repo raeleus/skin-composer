@@ -25,9 +25,6 @@ import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerL
 import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerStyle;
 import com.ray3k.skincomposer.dialog.textratypist.PopEffects.PopEffectsListener;
 import com.ray3k.stripe.PopTable;
-import com.ray3k.tenpatch.TenPatchDrawable;
-
-import java.time.format.TextStyle;
 
 import static com.ray3k.skincomposer.Main.*;
 import static com.ray3k.skincomposer.utils.Utils.onChange;

@@ -11,11 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.github.tommyettinger.textra.TypingLabel;
 import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerListener;
-import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.PopTable;
 
 import static com.ray3k.skincomposer.Main.*;
-import static com.ray3k.skincomposer.utils.Utils.*;
+import static com.ray3k.skincomposer.utils.Utils.isNumeric;
 import static com.ray3k.skincomposer.utils.Utils.onChange;
 
 public class PopEffects extends PopTable {
