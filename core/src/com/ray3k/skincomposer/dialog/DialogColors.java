@@ -38,6 +38,7 @@ import com.ray3k.skincomposer.UndoableManager;
 import com.ray3k.skincomposer.UndoableManager.ColorUndoable;
 import com.ray3k.skincomposer.UndoableManager.CustomColorUndoable;
 import com.ray3k.skincomposer.data.*;
+import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.skincomposer.utils.Utils;
 
 import java.util.Comparator;
@@ -161,86 +162,84 @@ public class DialogColors extends Dialog {
     }
     
     private void showColorPicker() {
-        dialogFactory.showDialogColorPicker(new DialogColorPicker.ColorListener() {
+        dialogFactory.showDialogColorPicker(new PopColorPickerAdapter() {
             @Override
-            public void selected(Color color) {
-                if (color != null) {
-                    final TextField field = new TextField("RGBA_" + (int) (color.r * 255) + "_" + (int) (color.g * 255) + "_" + (int) (color.b * 255) + "_" + (int) (color.a * 255), getSkin());
-                    final Dialog dialog = new Dialog("Color name...", getSkin(), "bg") {
-                        @Override
-                        protected void result(Object object) {
-                            if ((Boolean) object == true) {
-                                newColor(field.getText(), color);
-                            }
-                        }
-                    };
-                    
-                    dialog.getTitleTable().padLeft(5.0f);
-                    
-                    dialog.button("Ok", true).button("Cancel", false).key(Keys.ESCAPE, false);
-                    final TextButton button = (TextButton) dialog.getButtonTable().getCells().first().getActor();
-                    button.addListener(handListener);
-                    dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
-                    dialog.getButtonTable().pad(15.0f);
-
-                    field.setTextFieldListener(new TextField.TextFieldListener() {
-                        @Override
-                        public void keyTyped(TextField textField, char c) {
-                            if (c == '\n') {
-                                if (!button.isDisabled()) {
-                                    String name = field.getText();
-                                    if (newColor(name, color)) {
-                                        dialog.hide();
-                                    }
-                                }
-                                stage.setKeyboardFocus(textField);
-                            }
-                        }
-                    });
-                    
-                    field.addListener(ibeamListener);
-
-                    dialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
-                    dialog.text("Please enter a name for the new color: ");
-                    dialog.getContentTable().row();
-                    dialog.getContentTable().add(field).growX();
-                    dialog.getContentTable().row();
-                    dialog.text("Preview:");
-                    dialog.getContentTable().row();
-                    Table table = new Table(getSkin());
-                    table.setBackground("white");
-                    table.setColor(color);
-                    dialog.getContentTable().add(table).minSize(50.0f);
-                    boolean disable = !ColorData.validate(field.getText());
-                    if (!disable) {
-                        for (ColorData data : jsonData.getColors()) {
-                            if (data.getName().equals(field.getText())) {
-                                disable = true;
-                                break;
-                            }
+            public void picked(Color color) {
+                final TextField field = new TextField("RGBA_" + (int) (color.r * 255) + "_" + (int) (color.g * 255) + "_" + (int) (color.b * 255) + "_" + (int) (color.a * 255), getSkin());
+                final Dialog dialog = new Dialog("Color name...", getSkin(), "bg") {
+                    @Override
+                    protected void result(Object object) {
+                        if ((Boolean) object == true) {
+                            newColor(field.getText(), color);
                         }
                     }
-                    button.setDisabled(disable);
-                    field.addListener(new ChangeListener() {
-                        @Override
-                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                            boolean disable = !ColorData.validate(field.getText());
-                            if (!disable) {
-                                for (ColorData data : jsonData.getColors()) {
-                                    if (data.getName().equals(field.getText())) {
-                                        disable = true;
-                                        break;
-                                    }
+                };
+    
+                dialog.getTitleTable().padLeft(5.0f);
+    
+                dialog.button("Ok", true).button("Cancel", false).key(Keys.ESCAPE, false);
+                final TextButton button = (TextButton) dialog.getButtonTable().getCells().first().getActor();
+                button.addListener(handListener);
+                dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
+                dialog.getButtonTable().pad(15.0f);
+    
+                field.setTextFieldListener(new TextField.TextFieldListener() {
+                    @Override
+                    public void keyTyped(TextField textField, char c) {
+                        if (c == '\n') {
+                            if (!button.isDisabled()) {
+                                String name = field.getText();
+                                if (newColor(name, color)) {
+                                    dialog.hide();
                                 }
                             }
-                            button.setDisabled(disable);
+                            stage.setKeyboardFocus(textField);
                         }
-                    });
-                    dialog.show(getStage());
-                    getStage().setKeyboardFocus(field);
-                    field.selectAll();
-                    field.setFocusTraversal(false);
+                    }
+                });
+    
+                field.addListener(ibeamListener);
+    
+                dialog.getContentTable().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
+                dialog.text("Please enter a name for the new color: ");
+                dialog.getContentTable().row();
+                dialog.getContentTable().add(field).growX();
+                dialog.getContentTable().row();
+                dialog.text("Preview:");
+                dialog.getContentTable().row();
+                Table table = new Table(getSkin());
+                table.setBackground("white");
+                table.setColor(color);
+                dialog.getContentTable().add(table).minSize(50.0f);
+                boolean disable = !ColorData.validate(field.getText());
+                if (!disable) {
+                    for (ColorData data : jsonData.getColors()) {
+                        if (data.getName().equals(field.getText())) {
+                            disable = true;
+                            break;
+                        }
+                    }
                 }
+                button.setDisabled(disable);
+                field.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        boolean disable = !ColorData.validate(field.getText());
+                        if (!disable) {
+                            for (ColorData data : jsonData.getColors()) {
+                                if (data.getName().equals(field.getText())) {
+                                    disable = true;
+                                    break;
+                                }
+                            }
+                        }
+                        button.setDisabled(disable);
+                    }
+                });
+                dialog.show(getStage());
+                getStage().setKeyboardFocus(field);
+                field.selectAll();
+                field.setFocusTraversal(false);
             }
         });
     }
@@ -446,12 +445,10 @@ public class DialogColors extends Dialog {
     }
     
     private void recolorDialog(ColorData colorData) {
-        dialogFactory.showDialogColorPicker(colorData.color, new DialogColorPicker.ColorListener() {
+        dialogFactory.showDialogColorPicker(colorData.color, new PopColorPickerAdapter() {
             @Override
-            public void selected(Color color) {
-                if (color != null) {
-                    recolorColor(colorData, color);
-                }
+            public void picked(Color color) {
+                recolorColor(colorData, color);
             }
         });
     }

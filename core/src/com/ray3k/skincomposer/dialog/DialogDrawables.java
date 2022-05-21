@@ -55,6 +55,7 @@ import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.data.DrawableData.DrawableType;
 import com.ray3k.skincomposer.dialog.DialogTVG.TvgData;
 import com.ray3k.skincomposer.dialog.DialogTenPatch.TenPatchData;
+import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.PopTableClickListener;
 import com.ray3k.stripe.Spinner;
@@ -2238,99 +2239,97 @@ public class DialogDrawables extends Dialog {
         if (drawableData.tint != null) {
             previousColor = drawableData.tint;
         }
-        dialogFactory.showDialogColorPicker(previousColor, new DialogColorPicker.ColorListener() {
+        dialogFactory.showDialogColorPicker(previousColor, new PopColorPickerAdapter() {
             @Override
-            public void selected(Color color) {
-                if (color != null) {
-                    final DrawableData tintedDrawable = new DrawableData(drawableData.file);
-                    tintedDrawable.type = DrawableType.TINTED;
-                    tintedDrawable.tint = color;
-                    
-                    //Fix background color for new, tinted drawable
-                    Color temp = Utils.averageEdgeColor(tintedDrawable.file, tintedDrawable.tint);
-                    
-                    if (Utils.brightness(temp) > .5f) {
-                        tintedDrawable.bgColor = Color.BLACK;
-                    } else {
-                        tintedDrawable.bgColor = Color.WHITE;
+            public void picked(Color color) {
+                final DrawableData tintedDrawable = new DrawableData(drawableData.file);
+                tintedDrawable.type = DrawableType.TINTED;
+                tintedDrawable.tint = color;
+    
+                //Fix background color for new, tinted drawable
+                Color temp = Utils.averageEdgeColor(tintedDrawable.file, tintedDrawable.tint);
+    
+                if (Utils.brightness(temp) > .5f) {
+                    tintedDrawable.bgColor = Color.BLACK;
+                } else {
+                    tintedDrawable.bgColor = Color.WHITE;
+                }
+    
+                final TextField textField = new TextField(drawableData.name, getSkin());
+                final TextButton button = new TextButton("OK", getSkin());
+                button.setDisabled(!DrawableData.validate(textField.getText()) || checkIfNameExists(textField.getText()));
+                textField.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                        button.setDisabled(!DrawableData.validate(textField.getText()) || checkIfNameExists(textField.getText()));
                     }
-                    
-                    final TextField textField = new TextField(drawableData.name, getSkin());
-                    final TextButton button = new TextButton("OK", getSkin());
-                    button.setDisabled(!DrawableData.validate(textField.getText()) || checkIfNameExists(textField.getText()));
-                    textField.addListener(new ChangeListener() {
-                        @Override
-                        public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                            button.setDisabled(!DrawableData.validate(textField.getText()) || checkIfNameExists(textField.getText()));
+                });
+                textField.addListener(ibeamListener);
+    
+                Dialog dialog = new Dialog("TintedDrawable...", getSkin(), "bg") {
+                    @Override
+                    protected void result(Object object) {
+                        if (object instanceof Boolean && (boolean) object) {
+                            tintedDrawable.name = textField.getText();
+                            atlasData.getDrawables().add(tintedDrawable);
+                            projectData.setChangesSaved(false);
                         }
-                    });
-                    textField.addListener(ibeamListener);
-
-                    Dialog dialog = new Dialog("TintedDrawable...", getSkin(), "bg") {
-                        @Override
-                        protected void result(Object object) {
-                            if (object instanceof Boolean && (boolean) object) {
+                    }
+        
+                    @Override
+                    public boolean remove() {
+                        gatherDrawables();
+                        atlasData.produceAtlas();
+                        sortBySelectedMode();
+                        getStage().setScrollFocus(scrollPane);
+                        return super.remove();
+                    }
+                };
+                dialog.getTitleTable().getCells().first().padLeft(5.0f);
+                dialog.addCaptureListener(new InputListener() {
+                    @Override
+                    public boolean keyDown(InputEvent event, int keycode2) {
+                        if (keycode2 == Input.Keys.ENTER || keycode2 == Keys.NUMPAD_ENTER) {
+                            if (!button.isDisabled()) {
                                 tintedDrawable.name = textField.getText();
                                 atlasData.getDrawables().add(tintedDrawable);
                                 projectData.setChangesSaved(false);
+                                dialog.hide();
                             }
                         }
-
-                        @Override
-                        public boolean remove() {
-                            gatherDrawables();
-                            atlasData.produceAtlas();
-                            sortBySelectedMode();
-                            getStage().setScrollFocus(scrollPane);
-                            return super.remove();
-                        }
-                    };
-                    dialog.getTitleTable().getCells().first().padLeft(5.0f);
-                    dialog.addCaptureListener(new InputListener() {
-                        @Override
-                        public boolean keyDown(InputEvent event, int keycode2) {
-                            if (keycode2 == Input.Keys.ENTER || keycode2 == Keys.NUMPAD_ENTER) {
-                                if (!button.isDisabled()) {
-                                    tintedDrawable.name = textField.getText();
-                                    atlasData.getDrawables().add(tintedDrawable);
-                                    projectData.setChangesSaved(false);
-                                    dialog.hide();
-                                }
-                            }
-                            return false;
-                        }
-                    });
-                    dialog.text("What is the name of the new tinted drawable?");
-                    dialog.getContentTable().getCells().first().pad(10.0f);
-
-                    Drawable drawable = atlasData.getDrawablePairs().get(drawableData);
-                    Drawable preview = null;
-                    if (drawable instanceof SpriteDrawable) {
-                        preview = ((SpriteDrawable) drawable).tint(color);
-                    } else if (drawable instanceof NinePatchDrawable) {
-                        preview = ((NinePatchDrawable) drawable).tint(color);
+                        return false;
                     }
-                    if (preview != null) {
-                        dialog.getContentTable().row();
-                        Table table = new Table();
-                        table.setBackground(preview);
-                        dialog.getContentTable().add(table);
-                    }
-
-                    dialog.getContentTable().row();
-                    dialog.getContentTable().add(textField).growX().pad(10.0f);
-
-                    dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
-                    dialog.button(button, true);
-                    button.addListener(handListener);
-                    dialog.button("Cancel", false);
-                    dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
-                    dialog.key(Input.Keys.ESCAPE, false);
-                    dialog.show(getStage());
-                    getStage().setKeyboardFocus(textField);
-                    textField.selectAll();
-                    textField.setFocusTraversal(false);
+                });
+                dialog.text("What is the name of the new tinted drawable?");
+                dialog.getContentTable().getCells().first().pad(10.0f);
+    
+                Drawable drawable = atlasData.getDrawablePairs().get(drawableData);
+                Drawable preview = null;
+                if (drawable instanceof SpriteDrawable) {
+                    preview = ((SpriteDrawable) drawable).tint(color);
+                } else if (drawable instanceof NinePatchDrawable) {
+                    preview = ((NinePatchDrawable) drawable).tint(color);
                 }
+                if (preview != null) {
+                    dialog.getContentTable().row();
+                    Table table = new Table();
+                    table.setBackground(preview);
+                    dialog.getContentTable().add(table);
+                }
+    
+                dialog.getContentTable().row();
+                dialog.getContentTable().add(textField).growX().pad(10.0f);
+    
+                dialog.getButtonTable().defaults().padBottom(10.0f).minWidth(50.0f);
+                dialog.button(button, true);
+                button.addListener(handListener);
+                dialog.button("Cancel", false);
+                dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
+                dialog.key(Input.Keys.ESCAPE, false);
+                dialog.show(getStage());
+                getStage().setKeyboardFocus(textField);
+                textField.selectAll();
+                textField.setFocusTraversal(false);
             }
         });
     }

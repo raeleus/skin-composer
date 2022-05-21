@@ -45,6 +45,8 @@ import com.ray3k.skincomposer.NinePatchWidget;
 import com.ray3k.skincomposer.ResizeFourArrowListener;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
+import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker;
+import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.ResizeWidget;
 import com.ray3k.stripe.Spinner;
@@ -810,13 +812,11 @@ public class Dialog9Patch extends Dialog {
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                dialogFactory.showDialogColorPicker(previewBGcolor, new DialogColorPicker.ColorListener() {
+                dialogFactory.showDialogColorPicker(previewBGcolor, new PopColorPickerAdapter() {
                     @Override
-                    public void selected(Color color) {
-                        if (color != null) {
-                            previewBGcolor.set(color);
-                            bottom.setColor(color);
-                        }
+                    public void picked(Color color) {
+                        previewBGcolor.set(color);
+                        bottom.setColor(color);
                     }
                 });
             }

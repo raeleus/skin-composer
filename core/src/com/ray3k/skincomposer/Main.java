@@ -64,6 +64,7 @@ import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.dialog.DialogListener;
+import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerStyle;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.FreeTypeSkin;
 import com.ray3k.stripe.ScrollFocusListener;
@@ -128,6 +129,7 @@ public class Main extends ApplicationAdapter {
     public static Cursor cursorNW;
     public static Cursor cursorVertical;
     public static Cursor cursorHorizontal;
+    public static PopColorPickerStyle popColorPickerStyle;
     
     public Main (String[] args) {
         this.args = args;
@@ -160,6 +162,35 @@ public class Main extends ApplicationAdapter {
         textraTypistLogoAnimationStateData = new AnimationStateData(textraTypistLogoSkeletonData);
         arrowSkeletonData = skeletonJson.readSkeletonData(Gdx.files.internal("spine/arrow-animation.json"));
         arrowAnimationStateData = new AnimationStateData(arrowSkeletonData);
+    
+        popColorPickerStyle = new PopColorPickerStyle();
+        popColorPickerStyle.background = skin.getDrawable("tt-bg");
+        popColorPickerStyle.stageBackground = skin.getDrawable("tt-stage-background");
+        popColorPickerStyle.titleBarBackground = skin.getDrawable("white");
+        popColorPickerStyle.labelStyle = skin.get("tt", LabelStyle.class);
+        popColorPickerStyle.fileTextButtonStyle = skin.get("tt-file", TextButtonStyle.class);
+        popColorPickerStyle.scrollPaneStyle = skin.get("tt", ScrollPaneStyle.class);
+        popColorPickerStyle.colorSwatch = skin.getDrawable("tt-color-swatch");
+        popColorPickerStyle.colorSwatchNew = skin.getDrawable("tt-color-swatch-new");
+        popColorPickerStyle.colorSwatchPopBackground = skin.getDrawable("tt-panel-10");
+        popColorPickerStyle.colorSwatchPopPreview = skin.getDrawable("tt-color-swatch-10");
+        popColorPickerStyle.previewSwatchBackground = skin.getDrawable("tt-swatch");
+        popColorPickerStyle.previewSwatchOld = skin.getDrawable("tt-swatch-old");
+        popColorPickerStyle.previewSwatchNew = skin.getDrawable("tt-swatch-new");
+        popColorPickerStyle.previewSwatchSingleBackground = skin.getDrawable("tt-swatch-null");
+        popColorPickerStyle.previewSwatchSingle = skin.getDrawable("tt-swatch-new-null");
+        popColorPickerStyle.textFieldStyle = skin.get("tt", TextFieldStyle.class);
+        popColorPickerStyle.hexTextFieldStyle = skin.get("tt-hexfield", TextFieldStyle.class);
+        popColorPickerStyle.textButtonStyle = skin.get("tt", TextButtonStyle.class);
+        popColorPickerStyle.colorSliderBackground = skin.getDrawable("tt-slider-10");
+        popColorPickerStyle.colorKnobCircleBackground = skin.getDrawable("tt-color-ball");
+        popColorPickerStyle.colorKnobCircleForeground = skin.getDrawable("tt-color-ball-interior");
+        popColorPickerStyle.colorSliderKnobHorizontal = skin.getDrawable("tt-slider-knob");
+        popColorPickerStyle.colorSliderKnobVertical = skin.getDrawable("tt-slider-knob-vertical");
+        popColorPickerStyle.radioButtonStyle = skin.get("tt-radio", ImageButtonStyle.class);
+        popColorPickerStyle.increaseButtonStyle = skin.get("tt-increase", ImageButtonStyle.class);
+        popColorPickerStyle.decreaseButtonStyle = skin.get("tt-decrease", ImageButtonStyle.class);
+        popColorPickerStyle.checkerBackground = skin.getDrawable("tt-checker-10");
     
         cursorNE = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
         cursorNW = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_nw"), 16, 16);

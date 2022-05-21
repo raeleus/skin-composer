@@ -44,6 +44,8 @@ import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.LeadingTruncateLabel;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.SpineDrawable;
+import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker;
+import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.utils.Utils;
@@ -400,14 +402,12 @@ public class DialogFreeTypeFont extends Dialog {
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                dialogFactory.showDialogColorPicker(previewBGcolor, new DialogColorPicker.ColorListener() {
+                dialogFactory.showDialogColorPicker(previewBGcolor, new PopColorPickerAdapter() {
                     @Override
-                    public void selected(Color color) {
-                        if (color != null) {
-                            previewBGcolor.set(color);
-                            previewTable.setColor(color);
-                            automaticBgColor = false;
-                        }
+                    public void picked(Color color) {
+                        previewBGcolor.set(color);
+                        previewTable.setColor(color);
+                        automaticBgColor = false;
                     }
                 });
             }

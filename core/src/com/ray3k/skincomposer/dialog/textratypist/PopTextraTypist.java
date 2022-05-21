@@ -42,39 +42,39 @@ public class PopTextraTypist extends PopTable {
     }
     private FontMode fontMode = FontMode.STANDARD;
     private SpineDrawable spine;
-    public static PopColorPickerStyle popColorPickerStyle;
+    public static PopColorPickerStyle ttColorPickerStyle;
     
     public PopTextraTypist() {
         super(new PopTableStyle());
         
-        popColorPickerStyle = new PopColorPickerStyle();
-        popColorPickerStyle.background = skin.getDrawable("tt-bg");
-        popColorPickerStyle.stageBackground = skin.getDrawable("tt-stage-background");
-        popColorPickerStyle.titleBarBackground = skin.getDrawable("white");
-        popColorPickerStyle.labelStyle = skin.get("tt", LabelStyle.class);
-        popColorPickerStyle.fileTextButtonStyle = skin.get("tt-file", TextButtonStyle.class);
-        popColorPickerStyle.scrollPaneStyle = skin.get("tt", ScrollPaneStyle.class);
-        popColorPickerStyle.colorSwatch = skin.getDrawable("tt-color-swatch");
-        popColorPickerStyle.colorSwatchNew = skin.getDrawable("tt-color-swatch-new");
-        popColorPickerStyle.colorSwatchPopBackground = skin.getDrawable("tt-panel-10");
-        popColorPickerStyle.colorSwatchPopPreview = skin.getDrawable("tt-color-swatch-10");
-        popColorPickerStyle.previewSwatchBackground = skin.getDrawable("tt-swatch");
-        popColorPickerStyle.previewSwatchOld = skin.getDrawable("tt-swatch-old");
-        popColorPickerStyle.previewSwatchNew = skin.getDrawable("tt-swatch-new");
-        popColorPickerStyle.previewSwatchSingleBackground = skin.getDrawable("tt-swatch-null");
-        popColorPickerStyle.previewSwatchSingle = skin.getDrawable("tt-swatch-new-null");
-        popColorPickerStyle.textFieldStyle = skin.get("tt", TextFieldStyle.class);
-        popColorPickerStyle.hexTextFieldStyle = skin.get("tt-hexfield", TextFieldStyle.class);
-        popColorPickerStyle.textButtonStyle = skin.get("tt", TextButtonStyle.class);
-        popColorPickerStyle.colorSliderBackground = skin.getDrawable("tt-slider-10");
-        popColorPickerStyle.colorKnobCircleBackground = skin.getDrawable("tt-color-ball");
-        popColorPickerStyle.colorKnobCircleForeground = skin.getDrawable("tt-color-ball-interior");
-        popColorPickerStyle.colorSliderKnobHorizontal = skin.getDrawable("tt-slider-knob");
-        popColorPickerStyle.colorSliderKnobVertical = skin.getDrawable("tt-slider-knob-vertical");
-        popColorPickerStyle.radioButtonStyle = skin.get("tt-radio", ImageButtonStyle.class);
-        popColorPickerStyle.increaseButtonStyle = skin.get("tt-increase", ImageButtonStyle.class);
-        popColorPickerStyle.decreaseButtonStyle = skin.get("tt-decrease", ImageButtonStyle.class);
-        popColorPickerStyle.checkerBackground = skin.getDrawable("tt-checker-10");
+        ttColorPickerStyle = new PopColorPickerStyle();
+        ttColorPickerStyle.background = skin.getDrawable("tt-bg");
+        ttColorPickerStyle.stageBackground = skin.getDrawable("tt-stage-background");
+        ttColorPickerStyle.titleBarBackground = skin.getDrawable("white");
+        ttColorPickerStyle.labelStyle = skin.get("tt", LabelStyle.class);
+        ttColorPickerStyle.fileTextButtonStyle = skin.get("tt-file", TextButtonStyle.class);
+        ttColorPickerStyle.scrollPaneStyle = skin.get("tt", ScrollPaneStyle.class);
+        ttColorPickerStyle.colorSwatch = skin.getDrawable("tt-color-swatch");
+        ttColorPickerStyle.colorSwatchNew = skin.getDrawable("tt-color-swatch-new");
+        ttColorPickerStyle.colorSwatchPopBackground = skin.getDrawable("tt-panel-10");
+        ttColorPickerStyle.colorSwatchPopPreview = skin.getDrawable("tt-color-swatch-10");
+        ttColorPickerStyle.previewSwatchBackground = skin.getDrawable("tt-swatch");
+        ttColorPickerStyle.previewSwatchOld = skin.getDrawable("tt-swatch-old");
+        ttColorPickerStyle.previewSwatchNew = skin.getDrawable("tt-swatch-new");
+        ttColorPickerStyle.previewSwatchSingleBackground = skin.getDrawable("tt-swatch-null");
+        ttColorPickerStyle.previewSwatchSingle = skin.getDrawable("tt-swatch-new-null");
+        ttColorPickerStyle.textFieldStyle = skin.get("tt", TextFieldStyle.class);
+        ttColorPickerStyle.hexTextFieldStyle = skin.get("tt-hexfield", TextFieldStyle.class);
+        ttColorPickerStyle.textButtonStyle = skin.get("tt", TextButtonStyle.class);
+        ttColorPickerStyle.colorSliderBackground = skin.getDrawable("tt-slider-10");
+        ttColorPickerStyle.colorKnobCircleBackground = skin.getDrawable("tt-color-ball");
+        ttColorPickerStyle.colorKnobCircleForeground = skin.getDrawable("tt-color-ball-interior");
+        ttColorPickerStyle.colorSliderKnobHorizontal = skin.getDrawable("tt-slider-knob");
+        ttColorPickerStyle.colorSliderKnobVertical = skin.getDrawable("tt-slider-knob-vertical");
+        ttColorPickerStyle.radioButtonStyle = skin.get("tt-radio", ImageButtonStyle.class);
+        ttColorPickerStyle.increaseButtonStyle = skin.get("tt-increase", ImageButtonStyle.class);
+        ttColorPickerStyle.decreaseButtonStyle = skin.get("tt-decrease", ImageButtonStyle.class);
+        ttColorPickerStyle.checkerBackground = skin.getDrawable("tt-checker-10");
         
         masterFont = KnownFonts.getStandardFamily();
         
@@ -313,7 +313,7 @@ public class PopTextraTypist extends PopTable {
         onChange(colorSelectBox, () -> {
             var selectedIndex = colorSelectBox.getSelectedIndex();
             if (selectedIndex == 1) {
-                var pop = new PopColorPicker(null, popColorPickerStyle);
+                var pop = new PopColorPicker(null, ttColorPickerStyle);
                 pop.show(stage);
                 pop.addListener(new PopColorPickerListener() {
                     @Override
@@ -384,7 +384,7 @@ public class PopTextraTypist extends PopTable {
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
-            var picker = new PopColorPicker(previewTable.getColor(), popColorPickerStyle);
+            var picker = new PopColorPicker(previewTable.getColor(), ttColorPickerStyle);
             picker.addListener(new PopColorPickerListener() {
                 @Override
                 public void picked(Color color) {

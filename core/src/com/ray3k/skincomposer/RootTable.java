@@ -54,17 +54,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.ProjectData.RecentFile;
-import com.ray3k.skincomposer.dialog.DialogColorPicker;
+import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.skincomposer.utils.Utils;
-import com.ray3k.stripe.*;
 import com.ray3k.stripe.DraggableList.DraggableListListener;
+import com.ray3k.stripe.*;
 import com.ray3k.stripe.StripeMenuBar.KeyboardShortcut;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
@@ -1069,17 +1068,18 @@ public class RootTable extends Table {
                 browseField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        dialogFactory.showDialogColorPicker((Color) previewProperties.get("bgcolor"), new DialogColorPicker.ColorListener() {
-                            @Override
-                            public void selected(Color color) {
-                                if (color != null) {
-                                    browseField.getTextButton().setText((int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
-                                    previewProperties.put("bgcolor", color);
-                                    projectData.setPreviewBgColor(color);
-                                    refreshPreview();
-                                }
-                            }
-                        });
+    
+                        dialogFactory.showDialogColorPicker((Color) previewProperties.get("bgcolor"),
+                                new PopColorPickerAdapter() {
+                                    @Override
+                                    public void picked(Color color) {
+                                        browseField.getTextButton().setText(
+                                                (int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
+                                        previewProperties.put("bgcolor", color);
+                                        projectData.setPreviewBgColor(color);
+                                        refreshPreview();
+                                    }
+                                });
                     }
                 });
                 
@@ -2048,15 +2048,14 @@ public class RootTable extends Table {
                 browseField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        dialogFactory.showDialogColorPicker((Color) previewProperties.get("bgcolor"), new DialogColorPicker.ColorListener() {
+                        dialogFactory.showDialogColorPicker((Color) previewProperties.get("bgcolor"), new PopColorPickerAdapter() {
                             @Override
-                            public void selected(Color color) {
-                                if (color != null) {
-                                    browseField.getTextButton().setText((int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
-                                    previewProperties.put("bgcolor", color);
-                                    projectData.setPreviewBgColor(color);
-                                    refreshPreview();
-                                }
+                            public void picked(Color color) {
+                                browseField.getTextButton().setText(
+                                        (int) (color.r * 255) + "," + (int) (color.g * 255) + "," + (int) (color.b * 255) + "," + (int) (color.a * 255));
+                                previewProperties.put("bgcolor", color);
+                                projectData.setPreviewBgColor(color);
+                                refreshPreview();
                             }
                         });
                     }

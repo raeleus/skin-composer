@@ -39,6 +39,8 @@ import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.LeadingTruncateLabel;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.SpineDrawable;
+import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker;
+import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.FreeTypeFontData;
@@ -226,14 +228,12 @@ public class DialogBitmapFont extends Dialog {
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                dialogFactory.showDialogColorPicker(previewBGcolor, new DialogColorPicker.ColorListener() {
+                dialogFactory.showDialogColorPicker(previewBGcolor, new PopColorPickerAdapter() {
                     @Override
-                    public void selected(Color color) {
-                        if (color != null) {
-                            automaticBgColor = false;
-                            previewBGcolor.set(color);
-                            previewTable.setColor(color);
-                        }
+                    public void picked(Color color) {
+                        automaticBgColor = false;
+                        previewBGcolor.set(color);
+                        previewTable.setColor(color);
                     }
                 });
             }

@@ -1879,6 +1879,18 @@ public class PopColorPicker extends PopTable {
         public abstract void cancelled();
     }
     
+    public static class PopColorPickerAdapter extends PopColorPickerListener {
+        @Override
+        public void picked(Color color) {
+        
+        }
+    
+        @Override
+        public void cancelled() {
+        
+        }
+    }
+    
     public static class PopColorPickerStyle extends PopTableStyle {
         public Drawable titleBarBackground;
         public LabelStyle labelStyle;
