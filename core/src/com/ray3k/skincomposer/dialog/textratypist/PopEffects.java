@@ -783,7 +783,7 @@ public class PopEffects extends PopTable {
     }
     
     private PopColorPicker createColorField(Color defaultValue, String name, Table table) {
-        var pop = new PopColorPicker(defaultValue);
+        var pop = new PopColorPicker(defaultValue, PopTextraTypist.popColorPickerStyle);
         
         var subTable = new Table();
         table.add(subTable);

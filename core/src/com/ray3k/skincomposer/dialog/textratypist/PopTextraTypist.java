@@ -8,7 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.github.tommyettinger.textra.Font;
@@ -18,8 +22,12 @@ import com.github.tommyettinger.textra.KnownFonts;
 import com.github.tommyettinger.textra.TypingLabel;
 import com.ray3k.skincomposer.SpineDrawable;
 import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerListener;
+import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerStyle;
 import com.ray3k.skincomposer.dialog.textratypist.PopEffects.PopEffectsListener;
 import com.ray3k.stripe.PopTable;
+import com.ray3k.tenpatch.TenPatchDrawable;
+
+import java.time.format.TextStyle;
 
 import static com.ray3k.skincomposer.Main.*;
 import static com.ray3k.skincomposer.utils.Utils.onChange;
@@ -37,9 +45,39 @@ public class PopTextraTypist extends PopTable {
     }
     private FontMode fontMode = FontMode.STANDARD;
     private SpineDrawable spine;
+    public static PopColorPickerStyle popColorPickerStyle;
     
     public PopTextraTypist() {
         super(new PopTableStyle());
+        
+        popColorPickerStyle = new PopColorPickerStyle();
+        popColorPickerStyle.background = skin.getDrawable("tt-bg");
+        popColorPickerStyle.stageBackground = skin.getDrawable("tt-stage-background");
+        popColorPickerStyle.titleBarBackground = skin.getDrawable("white");
+        popColorPickerStyle.labelStyle = skin.get("tt", LabelStyle.class);
+        popColorPickerStyle.fileTextButtonStyle = skin.get("tt-file", TextButtonStyle.class);
+        popColorPickerStyle.scrollPaneStyle = skin.get("tt", ScrollPaneStyle.class);
+        popColorPickerStyle.colorSwatch = skin.getDrawable("tt-color-swatch");
+        popColorPickerStyle.colorSwatchNew = skin.getDrawable("tt-color-swatch-new");
+        popColorPickerStyle.colorSwatchPopBackground = skin.getDrawable("tt-panel-10");
+        popColorPickerStyle.colorSwatchPopPreview = skin.getDrawable("tt-color-swatch-10");
+        popColorPickerStyle.previewSwatchBackground = skin.getDrawable("tt-swatch");
+        popColorPickerStyle.previewSwatchOld = skin.getDrawable("tt-swatch-old");
+        popColorPickerStyle.previewSwatchNew = skin.getDrawable("tt-swatch-new");
+        popColorPickerStyle.previewSwatchSingleBackground = skin.getDrawable("tt-swatch-null");
+        popColorPickerStyle.previewSwatchSingle = skin.getDrawable("tt-swatch-new-null");
+        popColorPickerStyle.textFieldStyle = skin.get("tt", TextFieldStyle.class);
+        popColorPickerStyle.hexTextFieldStyle = skin.get("tt-hexfield", TextFieldStyle.class);
+        popColorPickerStyle.textButtonStyle = skin.get("tt", TextButtonStyle.class);
+        popColorPickerStyle.colorSliderBackground = skin.getDrawable("tt-slider-10");
+        popColorPickerStyle.colorKnobCircleBackground = skin.getDrawable("tt-color-ball");
+        popColorPickerStyle.colorKnobCircleForeground = skin.getDrawable("tt-color-ball-interior");
+        popColorPickerStyle.colorSliderKnobHorizontal = skin.getDrawable("tt-slider-knob");
+        popColorPickerStyle.colorSliderKnobVertical = skin.getDrawable("tt-slider-knob-vertical");
+        popColorPickerStyle.radioButtonStyle = skin.get("tt-radio", ImageButtonStyle.class);
+        popColorPickerStyle.increaseButtonStyle = skin.get("tt-increase", ImageButtonStyle.class);
+        popColorPickerStyle.decreaseButtonStyle = skin.get("tt-decrease", ImageButtonStyle.class);
+        popColorPickerStyle.checkerBackground = skin.getDrawable("tt-checker-10");
         
         masterFont = KnownFonts.getStandardFamily();
         
@@ -278,7 +316,8 @@ public class PopTextraTypist extends PopTable {
         onChange(colorSelectBox, () -> {
             var selectedIndex = colorSelectBox.getSelectedIndex();
             if (selectedIndex == 1) {
-                var pop = PopColorPicker.showColorPicker(null, stage);
+                var pop = new PopColorPicker(null, popColorPickerStyle);
+                pop.show(stage);
                 pop.addListener(new PopColorPickerListener() {
                     @Override
                     public void picked(Color color) {
@@ -348,7 +387,7 @@ public class PopTextraTypist extends PopTable {
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
-            var picker = new PopColorPicker(previewTable.getColor());
+            var picker = new PopColorPicker(previewTable.getColor(), popColorPickerStyle);
             picker.addListener(new PopColorPickerListener() {
                 @Override
                 public void picked(Color color) {

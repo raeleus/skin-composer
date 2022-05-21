@@ -11,7 +11,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter.DigitsOnlyFilter;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
@@ -42,16 +47,26 @@ public class PopColorPicker extends PopTable {
     private ButtonGroup<ImageButton> radioGroup;
     private TextField redTextField, greenTextField, blueTextField, hueTextField, saturationTextField, brightnessTextField, alphaTextField, hexTextField;
     private static final int SHIFT_AMOUNT = 10;
-    private enum Mode {
-        RGB, SWATCH
-    }
-    private Mode mode;
     private static Preferences colorPreferences;
     private static Preferences settingsPreferences;
     private int customCounter;
     private DragAndDrop dragAndDrop;
+    private PopColorPickerStyle style;
+    private static TenPatchDrawable whiteTenPatch;
     
-    public PopColorPicker(Color originalColor) {
+    public PopColorPicker(Color originalColor, Skin skin) {
+        this(originalColor, skin.get(PopColorPickerStyle.class));
+    }
+    
+    public PopColorPicker(Color originalColor, Skin skin, String style) {
+        this(originalColor, skin.get(style, PopColorPickerStyle.class));
+    }
+    
+    public PopColorPicker(Color originalColor, PopColorPickerStyle style) {
+        this.style = style;
+        setStyle(style);
+        createWhiteTenPatch();
+        
         if (colorPreferences == null) colorPreferences = Gdx.app.getPreferences("com.ray3k.PopColorPicker colors");
         if (settingsPreferences == null) settingsPreferences = Gdx.app.getPreferences("com.ray3k.PopColorPicker settings");
         
@@ -72,12 +87,7 @@ public class PopColorPicker extends PopTable {
         s = tempColor.g;
         br = tempColor.b;
         this.oldColor = originalColor;
-    
-        var style = new PopTableStyle();
-        style.background = skin.getDrawable("tt-bg");
-        style.stageBackground = skin.getDrawable("tt-stage-background");
-    
-        setStyle(style);
+        
         setModal(true);
         setKeepSizedWithinStage(true);
         setKeepCenteredInWindow(true);
@@ -98,21 +108,20 @@ public class PopColorPicker extends PopTable {
         });
     }
     
-    private void populateSwatchlayout() {
+    private void populateSwatchLayout() {
         clearChildren();
         dragAndDrop = new DragAndDrop();
-        mode = Mode.SWATCH;
     
         var table = new Table();
-        table.setBackground(skin.getDrawable("white"));
+        table.setBackground(style.titleBarBackground);
         add(table).growX();
     
-        var label = new Label("CHOOSE COLOR", skin, "tt");
+        var label = new Label("CHOOSE COLOR", style.labelStyle);
         table.add(label).left().expandX().padLeft(10);
     
         table.defaults().space(5);
         var buttonGroup = new ButtonGroup<TextButton>();
-        hsbTextButton = new TextButton("HSB", skin, "tt-file");
+        hsbTextButton = new TextButton("HSB", style.fileTextButtonStyle);
         hsbTextButton.setProgrammaticChangeEvents(false);
         table.add(hsbTextButton);
         buttonGroup.add(hsbTextButton);
@@ -124,7 +133,7 @@ public class PopColorPicker extends PopTable {
             updateColorDisplay();
         });
     
-        hslTextButton = new TextButton("HSL", skin, "tt-file");
+        hslTextButton = new TextButton("HSL", style.fileTextButtonStyle);
         hslTextButton.setProgrammaticChangeEvents(false);
         table.add(hslTextButton);
         buttonGroup.add(hslTextButton);
@@ -137,7 +146,7 @@ public class PopColorPicker extends PopTable {
             updateColorDisplay();
         });
     
-        swatchesTextButton = new TextButton("SWATCHES", skin, "tt-file");
+        swatchesTextButton = new TextButton("SWATCHES", style.fileTextButtonStyle);
         swatchesTextButton.setProgrammaticChangeEvents(false);
         table.add(swatchesTextButton).padRight(10);
         buttonGroup.add(swatchesTextButton);
@@ -151,12 +160,12 @@ public class PopColorPicker extends PopTable {
         
         table = new Table();
         table.top();
-        var scrollPane = new ScrollPane(table, skin, "tt");
+        var scrollPane = new ScrollPane(table, style.scrollPaneStyle);
         scrollPane.setFlickScroll(false);
         scrollPane.setFadeScrollBars(false);
         add(scrollPane).grow().pad(5);
         
-        label = new Label("IPT_HQ", skin, "tt");
+        label = new Label("IPT_HQ", style.labelStyle);
         table.add(label).left().spaceTop(5);
     
         table.row();
@@ -225,7 +234,7 @@ public class PopColorPicker extends PopTable {
         addSwatch("ff6262ff", "salmon", false, horizontalGroup);
     
         table.row();
-        label = new Label("Oklab", skin, "tt");
+        label = new Label("Oklab", style.labelStyle);
         table.add(label).left().spaceTop(5);
     
         table.row();
@@ -294,7 +303,7 @@ public class PopColorPicker extends PopTable {
         addSwatch("e3237dff", "rose", false, horizontalGroup);
     
         table.row();
-        label = new Label("Custom", skin, "tt");
+        label = new Label("Custom", style.labelStyle);
         table.add(label).left().spaceTop(5);
     
         table.row();
@@ -309,7 +318,7 @@ public class PopColorPicker extends PopTable {
             if (hex != null && !hex.equals("")) addSwatch(hex, name, true, customHorizontalGroup);
         }
     
-        var newSwatchImage = new Image(skin, "tt-color-swatch-new");
+        var newSwatchImage = new Image(style.colorSwatchNew);
         customHorizontalGroup.addActor(newSwatchImage);
         
         newSwatchImage.addListener(handListener);
@@ -366,29 +375,29 @@ public class PopColorPicker extends PopTable {
         table.add(stack);
     
         if (oldColor != null) {
-            var image = new Image(skin, "tt-swatch");
+            var image = new Image(style.previewSwatchBackground);
             image.setScaling(Scaling.none);
             stack.add(image);
         
-            swatchNewImage = new Image(skin, "tt-swatch-new");
+            swatchNewImage = new Image(style.previewSwatchNew);
             swatchNewImage.setScaling(Scaling.none);
             stack.add(swatchNewImage);
         
-            image = new Image(skin, "tt-swatch-old");
+            image = new Image(style.previewSwatchOld);
             image.setColor(oldColor);
             image.setScaling(Scaling.none);
             stack.add(image);
         } else {
-            var image = new Image(skin, "tt-swatch-null");
+            var image = new Image(style.previewSwatchSingle);
             image.setScaling(Scaling.none);
             stack.add(image);
         
-            swatchNewImage = new Image(skin, "tt-swatch-new-null");
+            swatchNewImage = new Image(style.previewSwatchSingleBackground);
             swatchNewImage.setScaling(Scaling.none);
             stack.add(swatchNewImage);
         }
     
-        hexTextField = new TextField("", skin, "tt-hexfield") {
+        hexTextField = new TextField("", style.hexTextFieldStyle) {
             @Override
             public void next(boolean up) {
                 nextTextField(up, this);
@@ -441,7 +450,7 @@ public class PopColorPicker extends PopTable {
             }
         });
     
-        var textButton = new TextButton("OK", skin, "tt");
+        var textButton = new TextButton("OK", style.textButtonStyle);
         table.add(textButton).width(70);
         textButton.addListener(handListener);
         onChange(textButton, () -> {
@@ -450,7 +459,7 @@ public class PopColorPicker extends PopTable {
             fire(new ChangeEvent());
         });
     
-        textButton = new TextButton("Cancel", skin, "tt");
+        textButton = new TextButton("Cancel", style.textButtonStyle);
         table.add(textButton).width(70);
         textButton.addListener(handListener);
         onChange(textButton, () -> {
@@ -464,7 +473,7 @@ public class PopColorPicker extends PopTable {
     }
     
     private void addSwatch(Color color,  String name, boolean custom, HorizontalGroup horizontalGroup) {
-        var image = new Image(skin, "tt-color-swatch");
+        var image = new Image(style.colorSwatch);
         image.setColor(color);
         horizontalGroup.addActor(image);
         image.addListener(handListener);
@@ -486,7 +495,7 @@ public class PopColorPicker extends PopTable {
                 public Payload dragStart(InputEvent event, float x, float y, int pointer) {
                     var payload = new Payload();
                     image.setVisible(false);
-                    var dragActor = new Image(skin, "tt-color-swatch");
+                    var dragActor = new Image(style.colorSwatch);
                     dragActor.setColor(getActor().getColor());
                     payload.setDragActor(dragActor);
                     getActor().setPosition(0,0);
@@ -543,15 +552,15 @@ public class PopColorPicker extends PopTable {
             });
         }
         
-        var style = new PopTableStyle();
-        style.background = skin.getDrawable("tt-panel-10");
-        var listener = new PopTableHoverListener(Align.topLeft, Align.topRight, style);
+        var previewPopStyle = new PopTableStyle();
+        previewPopStyle.background = style.colorSwatchPopBackground;
+        var listener = new PopTableHoverListener(Align.topLeft, Align.topRight, previewPopStyle);
         image.addListener(listener);
         var pop = listener.getPopTable();
         pop.pad(5);
         
         pop.defaults().space(5);
-        var preview = new Image(skin.getDrawable("tt-color-swatch-10"));
+        var preview = new Image(style.colorSwatchPopPreview);
         preview.setColor(color);
         pop.add(preview).size(40);
         
@@ -559,32 +568,31 @@ public class PopColorPicker extends PopTable {
         pop.add(table);
         
         table.defaults().space(5);
-        var label = new Label(name, skin, "tt");
+        var label = new Label(name, style.labelStyle);
         table.add(label);
         
         table.row();
-        label = new Label("r:" + MathUtils.round(color.r * 255) + " g:" + MathUtils.round(color.g * 255) + " b:" + MathUtils.round(color.b * 255), skin, "tt");
+        label = new Label("r:" + MathUtils.round(color.r * 255) + " g:" + MathUtils.round(color.g * 255) + " b:" + MathUtils.round(color.b * 255), style.labelStyle);
         table.add(label);
         
         table.row();
-        label = new Label("#" + color, skin, "tt");
+        label = new Label("#" + color, style.labelStyle);
         table.add(label);
     }
     
     private void populateRGBlayout() {
         clearChildren();
-        mode = Mode.RGB;
         
         var table = new Table();
-        table.setBackground(skin.getDrawable("white"));
+        table.setBackground(style.titleBarBackground);
         add(table).growX();
     
-        var label = new Label("CHOOSE COLOR", skin, "tt");
+        var label = new Label("CHOOSE COLOR", style.labelStyle);
         table.add(label).left().expandX().padLeft(10);
     
         table.defaults().space(5);
         var buttonGroup = new ButtonGroup<TextButton>();
-        hsbTextButton = new TextButton("HSB", skin, "tt-file");
+        hsbTextButton = new TextButton("HSB", style.fileTextButtonStyle);
         hsbTextButton.setProgrammaticChangeEvents(false);
         table.add(hsbTextButton);
         buttonGroup.add(hsbTextButton);
@@ -594,7 +602,7 @@ public class PopColorPicker extends PopTable {
             updateColorDisplay();
         });
     
-        hslTextButton = new TextButton("HSL", skin, "tt-file");
+        hslTextButton = new TextButton("HSL", style.fileTextButtonStyle);
         hslTextButton.setProgrammaticChangeEvents(false);
         table.add(hslTextButton);
         buttonGroup.add(hslTextButton);
@@ -604,13 +612,13 @@ public class PopColorPicker extends PopTable {
             updateColorDisplay();
         });
     
-        swatchesTextButton = new TextButton("SWATCHES", skin, "tt-file");
+        swatchesTextButton = new TextButton("SWATCHES", style.fileTextButtonStyle);
         swatchesTextButton.setProgrammaticChangeEvents(false);
         table.add(swatchesTextButton).padRight(10);
         buttonGroup.add(swatchesTextButton);
         swatchesTextButton.addListener(handListener);
         onChange(swatchesTextButton, () -> {
-            populateSwatchlayout();
+            populateSwatchLayout();
             updateColorDisplay();
         });
     
@@ -622,7 +630,7 @@ public class PopColorPicker extends PopTable {
         subTable.defaults().space(5);
         table = new Table();
         table.setClip(true);
-        table.setBackground(skin.getDrawable("tt-slider-10"));
+        table.setBackground(style.colorSliderBackground);
         subTable.add(table).size(250);
     
         squareModelImage = new Image();
@@ -633,11 +641,11 @@ public class PopColorPicker extends PopTable {
         squareModelCircleStack = new Stack();
         table.addActor(squareModelCircleStack);
     
-        var image = new Image(skin, "tt-color-ball");
+        var image = new Image(style.colorKnobCircleBackground);
         image.setTouchable(Touchable.disabled);
         squareModelCircleStack.add(image);
     
-        squareModelCircleImage = new Image(skin, "tt-color-ball-interior");
+        squareModelCircleImage = new Image(style.colorKnobCircleForeground);
         squareModelCircleImage.setTouchable(Touchable.disabled);
         squareModelCircleStack.add(squareModelCircleImage);
     
@@ -645,7 +653,7 @@ public class PopColorPicker extends PopTable {
     
         table = new Table();
         table.setClip(true);
-        table.setBackground(skin.getDrawable("tt-slider-10"));
+        table.setBackground(style.colorSliderBackground);
         subTable.add(table).size(30, 250);
     
         verticalModelImage = new Image();
@@ -653,7 +661,7 @@ public class PopColorPicker extends PopTable {
         verticalModelImage.addListener(handListener);
         verticalModelImage.addListener(new VerticalModelDragListener());
     
-        verticalModelArrowImage = new Image(skin, "tt-slider-knob-vertical");
+        verticalModelArrowImage = new Image(style.colorSliderKnobVertical);
         verticalModelArrowImage.setTouchable(Touchable.disabled);
         table.addActor(verticalModelArrowImage);
     
@@ -666,19 +674,19 @@ public class PopColorPicker extends PopTable {
         radioGroup = new ButtonGroup<>();
     
         sliderTable.defaults().space(2);
-        redRadio = new ImageButton(skin, "tt-radio");
+        redRadio = new ImageButton(style.radioButtonStyle);
         redRadio.setProgrammaticChangeEvents(false);
         sliderTable.add(redRadio);
         radioGroup.add(redRadio);
         redRadio.addListener(handListener);
         onChange(redRadio, this::updateColorDisplay);
     
-        label = new Label("R", skin, "tt");
+        label = new Label("R", style.labelStyle);
         sliderTable.add(label);
     
         table = new Table();
         table.setClip(true);
-        table.setBackground(skin.getDrawable("tt-slider-10"));
+        table.setBackground(style.colorSliderBackground);
         sliderTable.add(table).width(180).fillY();
     
         redImage = new Image();
@@ -691,11 +699,11 @@ public class PopColorPicker extends PopTable {
             updateColorDisplay();
         }));
     
-        redArrowImage = new Image(skin, "tt-slider-knob");
+        redArrowImage = new Image(style.colorSliderKnobHorizontal);
         redArrowImage.setTouchable(Touchable.disabled);
         table.addActor(redArrowImage);
     
-        redTextField = new TextField("", skin, "tt") {
+        redTextField = new TextField("", style.textFieldStyle) {
             @Override
             public void next(boolean up) {
                 nextTextField(up, this);
@@ -717,7 +725,7 @@ public class PopColorPicker extends PopTable {
         sliderTable.add(table);
     
         table.defaults().space(3);
-        var imageButton = new ImageButton(skin, "tt-increase");
+        var imageButton = new ImageButton(style.increaseButtonStyle);
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
@@ -728,7 +736,7 @@ public class PopColorPicker extends PopTable {
         });
     
         table.row();
-        imageButton = new ImageButton(skin, "tt-decrease");
+        imageButton = new ImageButton(style.decreaseButtonStyle);
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
@@ -739,19 +747,19 @@ public class PopColorPicker extends PopTable {
         });
     
         sliderTable.row();
-        greenRadio = new ImageButton(skin, "tt-radio");
+        greenRadio = new ImageButton(style.radioButtonStyle);
         greenRadio.setProgrammaticChangeEvents(false);
         sliderTable.add(greenRadio);
         radioGroup.add(greenRadio);
         greenRadio.addListener(handListener);
         onChange(greenRadio, this::updateColorDisplay);
     
-        label = new Label("G", skin, "tt");
+        label = new Label("G", style.labelStyle);
         sliderTable.add(label);
     
         table = new Table();
         table.setClip(true);
-        table.setBackground(skin.getDrawable("tt-slider-10"));
+        table.setBackground(style.colorSliderBackground);
         sliderTable.add(table).width(180).fillY();
     
         greenImage = new Image();
@@ -764,11 +772,11 @@ public class PopColorPicker extends PopTable {
             updateColorDisplay();
         }));
     
-        greenArrowImage = new Image(skin, "tt-slider-knob");
+        greenArrowImage = new Image(style.colorSliderKnobHorizontal);
         greenArrowImage.setTouchable(Touchable.disabled);
         table.addActor(greenArrowImage);
     
-        greenTextField = new TextField("", skin, "tt") {
+        greenTextField = new TextField("", style.textFieldStyle) {
             @Override
             public void next(boolean up) {
                 nextTextField(up, this);
@@ -789,7 +797,7 @@ public class PopColorPicker extends PopTable {
         sliderTable.add(table);
     
         table.defaults().space(3);
-        imageButton = new ImageButton(skin, "tt-increase");
+        imageButton = new ImageButton(style.increaseButtonStyle);
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
@@ -800,7 +808,7 @@ public class PopColorPicker extends PopTable {
         });
     
         table.row();
-        imageButton = new ImageButton(skin, "tt-decrease");
+        imageButton = new ImageButton(style.decreaseButtonStyle);
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
@@ -811,19 +819,19 @@ public class PopColorPicker extends PopTable {
         });
     
         sliderTable.row();
-        blueRadio = new ImageButton(skin, "tt-radio");
+        blueRadio = new ImageButton(style.radioButtonStyle);
         blueRadio.setProgrammaticChangeEvents(false);
         sliderTable.add(blueRadio);
         radioGroup.add(blueRadio);
         blueRadio.addListener(handListener);
         onChange(blueRadio, this::updateColorDisplay);
     
-        label = new Label("B", skin, "tt");
+        label = new Label("B", style.labelStyle);
         sliderTable.add(label);
     
         table = new Table();
         table.setClip(true);
-        table.setBackground(skin.getDrawable("tt-slider-10"));
+        table.setBackground(style.colorSliderBackground);
         sliderTable.add(table).width(180).fillY();
     
         blueImage = new Image();
@@ -836,11 +844,11 @@ public class PopColorPicker extends PopTable {
             updateColorDisplay();
         }));
     
-        blueArrowImage = new Image(skin, "tt-slider-knob");
+        blueArrowImage = new Image(style.colorSliderKnobHorizontal);
         blueArrowImage.setTouchable(Touchable.disabled);
         table.addActor(blueArrowImage);
     
-        blueTextField = new TextField("", skin, "tt") {
+        blueTextField = new TextField("", style.textFieldStyle) {
             @Override
             public void next(boolean up) {
                 nextTextField(up, this);
@@ -861,7 +869,7 @@ public class PopColorPicker extends PopTable {
         sliderTable.add(table);
     
         table.defaults().space(3);
-        imageButton = new ImageButton(skin, "tt-increase");
+        imageButton = new ImageButton(style.increaseButtonStyle);
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
@@ -872,7 +880,7 @@ public class PopColorPicker extends PopTable {
         });
     
         table.row();
-        imageButton = new ImageButton(skin, "tt-decrease");
+        imageButton = new ImageButton(style.decreaseButtonStyle);
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
@@ -883,7 +891,7 @@ public class PopColorPicker extends PopTable {
         });
     
         sliderTable.row();
-        hueRadio = new ImageButton(skin, "tt-radio");
+        hueRadio = new ImageButton(style.radioButtonStyle);
         hueRadio.setProgrammaticChangeEvents(false);
         sliderTable.add(hueRadio);
         radioGroup.add(hueRadio);
@@ -891,12 +899,12 @@ public class PopColorPicker extends PopTable {
         hueRadio.addListener(handListener);
         onChange(hueRadio, this::updateColorDisplay);
     
-        label = new Label("H", skin, "tt");
+        label = new Label("H", style.labelStyle);
         sliderTable.add(label);
     
         table = new Table();
         table.setClip(true);
-        table.setBackground(skin.getDrawable("tt-slider-10"));
+        table.setBackground(style.colorSliderBackground);
         sliderTable.add(table).width(180).fillY();
     
         hueImage = new Image(generateHorizontalHue(180));
@@ -908,11 +916,11 @@ public class PopColorPicker extends PopTable {
             updateColorDisplay();
         }));
     
-        hueArrowImage = new Image(skin, "tt-slider-knob");
+        hueArrowImage = new Image(style.colorSliderKnobHorizontal);
         hueArrowImage.setTouchable(Touchable.disabled);
         table.addActor(hueArrowImage);
     
-        hueTextField = new TextField("", skin, "tt") {
+        hueTextField = new TextField("", style.textFieldStyle) {
             @Override
             public void next(boolean up) {
                 nextTextField(up, this);
@@ -933,7 +941,7 @@ public class PopColorPicker extends PopTable {
         sliderTable.add(table);
     
         table.defaults().space(3);
-        imageButton = new ImageButton(skin, "tt-increase");
+        imageButton = new ImageButton(style.increaseButtonStyle);
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
@@ -944,7 +952,7 @@ public class PopColorPicker extends PopTable {
         });
     
         table.row();
-        imageButton = new ImageButton(skin, "tt-decrease");
+        imageButton = new ImageButton(style.decreaseButtonStyle);
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
@@ -958,19 +966,19 @@ public class PopColorPicker extends PopTable {
         });
     
         sliderTable.row();
-        saturationRadio = new ImageButton(skin, "tt-radio");
+        saturationRadio = new ImageButton(style.radioButtonStyle);
         saturationRadio.setProgrammaticChangeEvents(false);
         sliderTable.add(saturationRadio);
         radioGroup.add(saturationRadio);
         saturationRadio.addListener(handListener);
         onChange(saturationRadio, this::updateColorDisplay);
     
-        label = new Label("S", skin, "tt");
+        label = new Label("S", style.labelStyle);
         sliderTable.add(label);
     
         table = new Table();
         table.setClip(true);
-        table.setBackground(skin.getDrawable("tt-slider-10"));
+        table.setBackground(style.colorSliderBackground);
         sliderTable.add(table).width(180).fillY();
     
         saturationImage = new Image();
@@ -983,11 +991,11 @@ public class PopColorPicker extends PopTable {
             updateColorDisplay();
         }));
     
-        saturationArrowImage = new Image(skin, "tt-slider-knob");
+        saturationArrowImage = new Image(style.colorSliderKnobHorizontal);
         saturationArrowImage.setTouchable(Touchable.disabled);
         table.addActor(saturationArrowImage);
     
-        saturationTextField = new TextField("", skin, "tt") {
+        saturationTextField = new TextField("", style.textFieldStyle) {
             @Override
             public void next(boolean up) {
                 nextTextField(up, this);
@@ -1008,7 +1016,7 @@ public class PopColorPicker extends PopTable {
         sliderTable.add(table);
     
         table.defaults().space(3);
-        imageButton = new ImageButton(skin, "tt-increase");
+        imageButton = new ImageButton(style.increaseButtonStyle);
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
@@ -1019,7 +1027,7 @@ public class PopColorPicker extends PopTable {
         });
     
         table.row();
-        imageButton = new ImageButton(skin, "tt-decrease");
+        imageButton = new ImageButton(style.decreaseButtonStyle);
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
@@ -1030,19 +1038,19 @@ public class PopColorPicker extends PopTable {
         });
     
         sliderTable.row();
-        brightnessRadio = new ImageButton(skin, "tt-radio");
+        brightnessRadio = new ImageButton(style.radioButtonStyle);
         brightnessRadio.setProgrammaticChangeEvents(false);
         sliderTable.add(brightnessRadio);
         radioGroup.add(brightnessRadio);
         brightnessRadio.addListener(handListener);
         onChange(brightnessRadio, this::updateColorDisplay);
     
-        brightnessLabel = new Label("B", skin, "tt");
+        brightnessLabel = new Label("B", style.labelStyle);
         sliderTable.add(brightnessLabel);
     
         table = new Table();
         table.setClip(true);
-        table.setBackground(skin.getDrawable("tt-slider-10"));
+        table.setBackground(style.colorSliderBackground);
         sliderTable.add(table).width(180).fillY();
     
         brightnessImage = new Image();
@@ -1055,11 +1063,11 @@ public class PopColorPicker extends PopTable {
             updateColorDisplay();
         }));
     
-        brightnessArrowImage = new Image(skin, "tt-slider-knob");
+        brightnessArrowImage = new Image(style.colorSliderKnobHorizontal);
         brightnessArrowImage.setTouchable(Touchable.disabled);
         table.addActor(brightnessArrowImage);
     
-        brightnessTextField = new TextField("", skin, "tt") {
+        brightnessTextField = new TextField("", style.textFieldStyle) {
             @Override
             public void next(boolean up) {
                 nextTextField(up, this);
@@ -1080,7 +1088,7 @@ public class PopColorPicker extends PopTable {
         sliderTable.add(table);
     
         table.defaults().space(3);
-        imageButton = new ImageButton(skin, "tt-increase");
+        imageButton = new ImageButton(style.increaseButtonStyle);
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
@@ -1091,7 +1099,7 @@ public class PopColorPicker extends PopTable {
         });
     
         table.row();
-        imageButton = new ImageButton(skin, "tt-decrease");
+        imageButton = new ImageButton(style.decreaseButtonStyle);
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
@@ -1104,18 +1112,18 @@ public class PopColorPicker extends PopTable {
         sliderTable.row();
         sliderTable.add();
     
-        label = new Label("A", skin, "tt");
+        label = new Label("A", style.labelStyle);
         sliderTable.add(label);
     
         table = new Table();
         table.setClip(true);
-        table.setBackground(skin.getDrawable("tt-slider-10"));
+        table.setBackground(style.colorSliderBackground);
         sliderTable.add(table).width(180).fillY();
     
         var stack = new Stack();
         table.add(stack).grow();
     
-        image = new Image(skin, "tt-checker-10");
+        image = new Image(style.checkerBackground);
         stack.add(image);
     
         alphaImage = new Image();
@@ -1127,11 +1135,11 @@ public class PopColorPicker extends PopTable {
             updateColorDisplay();
         }));
     
-        alphaArrowImage = new Image(skin, "tt-slider-knob");
+        alphaArrowImage = new Image(style.colorSliderKnobHorizontal);
         alphaArrowImage.setTouchable(Touchable.disabled);
         table.addActor(alphaArrowImage);
     
-        alphaTextField = new TextField("", skin, "tt") {
+        alphaTextField = new TextField("", style.textFieldStyle) {
             @Override
             public void next(boolean up) {
                 nextTextField(up, this);
@@ -1151,12 +1159,12 @@ public class PopColorPicker extends PopTable {
         sliderTable.add(table);
     
         table.defaults().space(3);
-        imageButton = new ImageButton(skin, "tt-increase");
+        imageButton = new ImageButton(style.increaseButtonStyle);
         table.add(imageButton);
         imageButton.addListener(handListener);
     
         table.row();
-        imageButton = new ImageButton(skin, "tt-decrease");
+        imageButton = new ImageButton(style.decreaseButtonStyle);
         table.add(imageButton);
         imageButton.addListener(handListener);
     
@@ -1170,29 +1178,29 @@ public class PopColorPicker extends PopTable {
         table.add(stack);
     
         if (oldColor != null) {
-            image = new Image(skin, "tt-swatch");
+            image = new Image(style.previewSwatchBackground);
             image.setScaling(Scaling.none);
             stack.add(image);
         
-            swatchNewImage = new Image(skin, "tt-swatch-new");
+            swatchNewImage = new Image(style.previewSwatchNew);
             swatchNewImage.setScaling(Scaling.none);
             stack.add(swatchNewImage);
         
-            image = new Image(skin, "tt-swatch-old");
+            image = new Image(style.previewSwatchOld);
             image.setColor(oldColor);
             image.setScaling(Scaling.none);
             stack.add(image);
         } else {
-            image = new Image(skin, "tt-swatch-null");
+            image = new Image(style.previewSwatchSingleBackground);
             image.setScaling(Scaling.none);
             stack.add(image);
         
-            swatchNewImage = new Image(skin, "tt-swatch-new-null");
+            swatchNewImage = new Image(style.previewSwatchSingle);
             swatchNewImage.setScaling(Scaling.none);
             stack.add(swatchNewImage);
         }
     
-        hexTextField = new TextField("", skin, "tt-hexfield") {
+        hexTextField = new TextField("", style.hexTextFieldStyle) {
             @Override
             public void next(boolean up) {
                 nextTextField(up, this);
@@ -1245,7 +1253,7 @@ public class PopColorPicker extends PopTable {
             }
         });
     
-        var textButton = new TextButton("OK", skin, "tt");
+        var textButton = new TextButton("OK", style.textButtonStyle);
         table.add(textButton).width(70);
         textButton.addListener(handListener);
         onChange(textButton, () -> {
@@ -1253,7 +1261,7 @@ public class PopColorPicker extends PopTable {
             fire(new PopColorPickerEvent(new Color(r, g, b, a)));
         });
     
-        textButton = new TextButton("Cancel", skin, "tt");
+        textButton = new TextButton("Cancel", style.textButtonStyle);
         table.add(textButton).width(70);
         textButton.addListener(handListener);
         onChange(textButton, () -> {
@@ -1373,7 +1381,7 @@ public class PopColorPicker extends PopTable {
         
         squareModelCircleImage.setColor(tempColor.set(r, g, b, 1f));
         
-        var tenPatch = new TenPatchDrawable(skin.get("white-10", TenPatchDrawable.class));
+        var tenPatch = new TenPatchDrawable(whiteTenPatch);
         tenPatch.setColor1(tempColor.set(0, g, b, 1));
         tenPatch.setColor2(tempColor);
         tenPatch.setColor3(tempColor.set(1, g, b, 1));
@@ -1382,7 +1390,7 @@ public class PopColorPicker extends PopTable {
         
         redArrowImage.setX(r * redImage.getWidth() - redArrowImage.getWidth() / 2);
     
-        tenPatch = new TenPatchDrawable(skin.get("white-10", TenPatchDrawable.class));
+        tenPatch = new TenPatchDrawable(whiteTenPatch);
         tenPatch.setColor1(tempColor.set(r, 0, b, 1));
         tenPatch.setColor2(tempColor);
         tenPatch.setColor3(tempColor.set(r, 1, b, 1));
@@ -1391,7 +1399,7 @@ public class PopColorPicker extends PopTable {
     
         greenArrowImage.setX(g * greenImage.getWidth() - greenArrowImage.getWidth() / 2);
     
-        tenPatch = new TenPatchDrawable(skin.get("white-10", TenPatchDrawable.class));
+        tenPatch = new TenPatchDrawable(whiteTenPatch);
         tenPatch.setColor1(tempColor.set(r, g, 0, 1));
         tenPatch.setColor2(tempColor);
         tenPatch.setColor3(tempColor.set(r, g, 1, 1));
@@ -1402,7 +1410,7 @@ public class PopColorPicker extends PopTable {
     
         hueArrowImage.setX(h * hueImage.getWidth() - hueArrowImage.getWidth() / 2);
     
-        tenPatch = new TenPatchDrawable(skin.get("white-10", TenPatchDrawable.class));
+        tenPatch = new TenPatchDrawable(whiteTenPatch);
         if (hslTextButton.isChecked()) tempColor.set(ColorUtils.hsl2rgb(h, 0f, br, 1f));
         else tempColor.set(ColorUtils.hsb2rgb(h, 0f, br, 1f));
         tenPatch.setColor1(tempColor);
@@ -1415,7 +1423,7 @@ public class PopColorPicker extends PopTable {
     
         saturationArrowImage.setX(s * saturationImage.getWidth() - saturationArrowImage.getWidth() / 2);
     
-        tenPatch = new TenPatchDrawable(skin.get("white-10", TenPatchDrawable.class));
+        tenPatch = new TenPatchDrawable(whiteTenPatch);
         if (hslTextButton.isChecked()) tempColor.set(ColorUtils.hsl2rgb(h, s, 0f, 1f));
         else tempColor.set(ColorUtils.hsb2rgb(h, s, 0f, 1f));
         tenPatch.setColor1(tempColor);
@@ -1428,7 +1436,7 @@ public class PopColorPicker extends PopTable {
     
         brightnessArrowImage.setX(br * brightnessImage.getWidth() - brightnessArrowImage.getWidth() / 2);
     
-        tenPatch = new TenPatchDrawable(skin.get("white-10", TenPatchDrawable.class));
+        tenPatch = new TenPatchDrawable(whiteTenPatch);
         tenPatch.setColor1(tempColor.set(r, g, b, 0.0f));
         tenPatch.setColor2(tempColor);
         tenPatch.setColor3(tempColor.set(r, g, b, 1.0f));
@@ -1504,6 +1512,19 @@ public class PopColorPicker extends PopTable {
         if (stage.getKeyboardFocus() != hexTextField) hexTextField.setText(tempColor.toString().toUpperCase(Locale.ROOT));
     }
     
+    private TenPatchDrawable createWhiteTenPatch() {
+        if (whiteTenPatch == null) {
+            Pixmap pixmap = new Pixmap(1, 1, Format.RGBA4444);
+            pixmap.setColor(Color.WHITE);
+            pixmap.drawPixel(0, 0);
+            var texture = new Texture(pixmap);
+            var textureRegion = new TextureRegion(texture);
+            whiteTenPatch = new TenPatchDrawable(new int[]{0, 0}, new int[]{0, 0}, false, textureRegion);
+        }
+        
+        return whiteTenPatch;
+    }
+    
     private TextureRegion generateHorizontalHue(int width) {
         var color = new Color();
         var pixmap = new Pixmap(width, 1, Format.RGBA8888);
@@ -1517,7 +1538,7 @@ public class PopColorPicker extends PopTable {
     }
     
     private TenPatchDrawable generateVerticalRed(Color color) {
-        var tenPatchDrawable = new TenPatchDrawable(skin.get("white-10", TenPatchDrawable.class));
+        var tenPatchDrawable = new TenPatchDrawable(whiteTenPatch);
         
         var tempColor = new Color(0f, color.g, color.b, 1f);
         tenPatchDrawable.setColor1(tempColor);
@@ -1531,7 +1552,7 @@ public class PopColorPicker extends PopTable {
     }
     
     private TenPatchDrawable generateVerticalGreen(Color color) {
-        var tenPatchDrawable = new TenPatchDrawable(skin.get("white-10", TenPatchDrawable.class));
+        var tenPatchDrawable = new TenPatchDrawable(whiteTenPatch);
         
         var tempColor = new Color(color.r, 0f, color.b, 1f);
         tenPatchDrawable.setColor1(tempColor);
@@ -1545,7 +1566,7 @@ public class PopColorPicker extends PopTable {
     }
     
     private TenPatchDrawable generateVerticalBlue(Color color) {
-        var tenPatchDrawable = new TenPatchDrawable(skin.get("white-10", TenPatchDrawable.class));
+        var tenPatchDrawable = new TenPatchDrawable(whiteTenPatch);
         
         var tempColor = new Color(color.r, color.g, 0f, 1f);
         tenPatchDrawable.setColor1(tempColor);
@@ -1858,9 +1879,31 @@ public class PopColorPicker extends PopTable {
         public abstract void cancelled();
     }
     
-    public static PopColorPicker showColorPicker(Color color, Stage stage) {
-        var pop = new PopColorPicker(color);
-        pop.show(stage);
-        return pop;
+    public static class PopColorPickerStyle extends PopTableStyle {
+        public Drawable titleBarBackground;
+        public LabelStyle labelStyle;
+        public TextButtonStyle textButtonStyle;
+        public TextButtonStyle fileTextButtonStyle;
+        public ScrollPaneStyle scrollPaneStyle;
+        public Drawable colorSwatch;
+        public Drawable colorSwatchNew;
+        public Drawable colorSwatchPopBackground;
+        public Drawable previewSwatchBackground;
+        public Drawable previewSwatchOld;
+        public Drawable previewSwatchNew;
+        public Drawable previewSwatchSingleBackground;
+        public Drawable previewSwatchSingle;
+        public TextFieldStyle textFieldStyle;
+        public TextFieldStyle hexTextFieldStyle;
+        public Drawable colorSwatchPopPreview;
+        public Drawable colorSliderBackground;
+        public Drawable colorSliderKnobHorizontal;
+        public Drawable colorSliderKnobVertical;
+        public Drawable colorKnobCircleBackground;
+        public Drawable colorKnobCircleForeground;
+        public ImageButtonStyle radioButtonStyle;
+        public ImageButtonStyle increaseButtonStyle;
+        public ImageButtonStyle decreaseButtonStyle;
+        public Drawable checkerBackground;
     }
 }
