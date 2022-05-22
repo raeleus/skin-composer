@@ -108,17 +108,17 @@ public class PopEffects extends PopTable {
                 typingLabel.setText(tagBegin + TEST_STRING + tagEnd);
                 typingLabel.restart();
                 
-                var distanceField = createNumberField(1.0f, "distance", "intensity", "intensity", tokenTable);
+                var distanceField = createNumberField(-8.0f, "distance", "intensity", "intensity", tokenTable);
                 
                 tokenTable.row();
-                var intensityField = createNumberField(1.0f, "intensity", "distance", "distance", tokenTable);
+                var intensityField = createNumberField(2.0f, "intensity", "distance", "distance", tokenTable);
                 
                 tokenTable.row();
                 var elasticButton = createBooleanField(true, "elastic", tokenTable);
     
                 Runnable runnable = () -> {
-                    float distance = isNumeric(distanceField.getText())? Float.parseFloat(distanceField.getText()) : 1.0f;
-                    float intensity = isNumeric(intensityField.getText()) ? Float.parseFloat(intensityField.getText()) : 1.0f;
+                    float distance = isNumeric(distanceField.getText())? Float.parseFloat(distanceField.getText()) : -8.0f;
+                    float intensity = isNumeric(intensityField.getText()) ? Float.parseFloat(intensityField.getText()) : 2.0f;
                     tagBegin = "{EASE=" + distance + ";" + intensity + ";" + elasticButton.isChecked() + "}";
                     
                     typingLabel.setText(tagBegin + TEST_STRING + tagEnd);
@@ -349,7 +349,7 @@ public class PopEffects extends PopTable {
                 var color1pop = createColorField(color1, "color1", tokenTable);
     
                 tokenTable.row();
-                var color2 = new Color(Color.WHITE);
+                var color2 = new Color(Color.BLACK);
                 var color2pop = createColorField(color2, "color2", tokenTable);
     
                 tokenTable.row();
@@ -454,7 +454,7 @@ public class PopEffects extends PopTable {
                 color1pop = createColorField(color1, "color1", tokenTable);
     
                 tokenTable.row();
-                color2 = new Color(Color.WHITE);
+                color2 = Color.valueOf("888888FF");
                 color2pop = createColorField(color2, "color2", tokenTable);
     
                 tokenTable.row();
@@ -556,7 +556,7 @@ public class PopEffects extends PopTable {
                 color1pop = createColorField(color1, "color1", tokenTable);
     
                 tokenTable.row();
-                color2 = new Color(Color.WHITE);
+                color2 = Color.valueOf("FFFF88FF");
                 color2pop = createColorField(color2, "color2", tokenTable);
     
                 runnable = () -> {
