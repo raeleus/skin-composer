@@ -1422,17 +1422,10 @@ public class PopColorPicker extends PopTable {
         saturationImage.setDrawable(tenPatch);
     
         saturationArrowImage.setX(s * saturationImage.getWidth() - saturationArrowImage.getWidth() / 2);
-    
-        tenPatch = new TenPatchDrawable(whiteTenPatch);
-        if (hslTextButton.isChecked()) tempColor.set(ColorUtils.hsl2rgb(h, s, 0f, 1f));
-        else tempColor.set(ColorUtils.hsb2rgb(h, s, 0f, 1f));
-        tenPatch.setColor1(tempColor);
-        tenPatch.setColor2(tempColor);
-        if (hslTextButton.isChecked()) tempColor.set(ColorUtils.hsl2rgb(h, s, 1f, 1f));
-        else tempColor.set(ColorUtils.hsb2rgb(h, s, 1f, 1f));
-        tenPatch.setColor3(tempColor);
-        tenPatch.setColor4(tempColor);
-        brightnessImage.setDrawable(tenPatch);
+        
+        var drawable = ((TextureRegionDrawable) brightnessImage.getDrawable());
+        if (drawable != null && !(drawable instanceof TenPatchDrawable)) drawable.getRegion().getTexture().dispose();
+        brightnessImage.setDrawable(new TextureRegionDrawable(generateHorizontalBrightness(180)));
     
         brightnessArrowImage.setX(br * brightnessImage.getWidth() - brightnessArrowImage.getWidth() / 2);
     
@@ -1449,7 +1442,7 @@ public class PopColorPicker extends PopTable {
         swatchNewImage.setColor(tempColor);
         
         if (radioGroup.getChecked() == redRadio) {
-            var drawable = (TextureRegionDrawable) squareModelImage.getDrawable();
+            drawable = (TextureRegionDrawable) squareModelImage.getDrawable();
             if (drawable != null && !(drawable instanceof TenPatchDrawable)) drawable.getRegion().getTexture().dispose();
             squareModelImage.setDrawable(new TextureRegionDrawable(generateColorVsGreenAndBlue(tempColor, 250, 250)));
     
@@ -1457,7 +1450,7 @@ public class PopColorPicker extends PopTable {
             if (drawable != null && !(drawable instanceof TenPatchDrawable)) drawable.getRegion().getTexture().dispose();
             verticalModelImage.setDrawable(generateVerticalRed(tempColor));
         } else if (radioGroup.getChecked() == greenRadio) {
-            var drawable = ((TextureRegionDrawable) squareModelImage.getDrawable());
+            drawable = ((TextureRegionDrawable) squareModelImage.getDrawable());
             if (drawable != null && !(drawable instanceof TenPatchDrawable)) drawable.getRegion().getTexture().dispose();
             squareModelImage.setDrawable(new TextureRegionDrawable(generateColorVsRedAndBlue(tempColor, 250, 250)));
     
@@ -1465,7 +1458,7 @@ public class PopColorPicker extends PopTable {
             if (drawable != null && !(drawable instanceof TenPatchDrawable)) drawable.getRegion().getTexture().dispose();
             verticalModelImage.setDrawable(generateVerticalGreen(tempColor));
         } else if (radioGroup.getChecked() == blueRadio) {
-            var drawable = ((TextureRegionDrawable) squareModelImage.getDrawable());
+            drawable = ((TextureRegionDrawable) squareModelImage.getDrawable());
             if (drawable != null && !(drawable instanceof TenPatchDrawable)) drawable.getRegion().getTexture().dispose();
             squareModelImage.setDrawable(new TextureRegionDrawable(generateColorVsGreenAndRed(tempColor, 250, 250)));
     
@@ -1473,7 +1466,7 @@ public class PopColorPicker extends PopTable {
             if (drawable != null && !(drawable instanceof TenPatchDrawable)) drawable.getRegion().getTexture().dispose();
             verticalModelImage.setDrawable(generateVerticalBlue(tempColor));
         } else if (radioGroup.getChecked() == hueRadio) {
-            var drawable = ((TextureRegionDrawable) squareModelImage.getDrawable());
+            drawable = ((TextureRegionDrawable) squareModelImage.getDrawable());
             if (drawable != null && !(drawable instanceof TenPatchDrawable)) drawable.getRegion().getTexture().dispose();
             squareModelImage.setDrawable(new TextureRegionDrawable(generateColorVsBrightnessAndSaturation(tempColor, 250, 250)));
     
@@ -1481,7 +1474,7 @@ public class PopColorPicker extends PopTable {
             if (drawable != null && !(drawable instanceof TenPatchDrawable)) drawable.getRegion().getTexture().dispose();
             verticalModelImage.setDrawable(new TextureRegionDrawable(generateVerticalHue(250)));
         } else if (radioGroup.getChecked() == saturationRadio) {
-            var drawable = ((TextureRegionDrawable) squareModelImage.getDrawable());
+            drawable = ((TextureRegionDrawable) squareModelImage.getDrawable());
             if (drawable != null && !(drawable instanceof TenPatchDrawable)) drawable.getRegion().getTexture().dispose();
             squareModelImage.setDrawable(new TextureRegionDrawable(generateHueVsBrightness(250, 250)));
     
@@ -1489,7 +1482,7 @@ public class PopColorPicker extends PopTable {
             if (drawable != null && !(drawable instanceof TenPatchDrawable)) drawable.getRegion().getTexture().dispose();
             verticalModelImage.setDrawable(new TextureRegionDrawable(generateVerticalSaturation(tempColor, 250)));
         } else if (radioGroup.getChecked() == brightnessRadio) {
-            var drawable = ((TextureRegionDrawable) squareModelImage.getDrawable());
+            drawable = ((TextureRegionDrawable) squareModelImage.getDrawable());
             if (drawable != null && !(drawable instanceof TenPatchDrawable)) drawable.getRegion().getTexture().dispose();
             squareModelImage.setDrawable(new TextureRegionDrawable(generateHueVsSaturation(250, 250)));
     
@@ -1532,6 +1525,19 @@ public class PopColorPicker extends PopTable {
             if (hslTextButton.isChecked()) color.set(ColorUtils.hsl2rgb((float) i / width, 1f, 1f, 1f));
             else color.set(ColorUtils.hsb2rgb((float) i / width, 1f, 1f, 1f));
             pixmap.setColor(color);
+            pixmap.drawPixel(i, 0);
+        }
+        return new TextureRegion(new Texture(pixmap));
+    }
+    
+    private TextureRegion generateHorizontalBrightness(int width) {
+        var tempColor = new Color();
+        var pixmap = new Pixmap(width, 1, Format.RGBA8888);
+        for (int i = 0; i < width; i++) {
+            var newBr = (float) i / width;
+            if (hslTextButton.isChecked()) tempColor.set(ColorUtils.hsl2rgb(h, s, newBr, 1f));
+            else tempColor.set(ColorUtils.hsb2rgb(h, s, newBr, 1f));
+            pixmap.setColor(tempColor);
             pixmap.drawPixel(i, 0);
         }
         return new TextureRegion(new Texture(pixmap));
