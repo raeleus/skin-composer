@@ -1,4 +1,5 @@
 ### Skin Composer Version 51 ###
+* Updated TextraTypist Playground to use the latest version of TextraTypist.
 * Minor UI changes and bug fixes.
 
 ### Skin Composer Version 50 ###
