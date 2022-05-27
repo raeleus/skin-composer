@@ -166,9 +166,9 @@ public class Main extends ApplicationAdapter {
         popColorPickerStyle = new PopColorPickerStyle();
         popColorPickerStyle.background = skin.getDrawable("tt-bg");
         popColorPickerStyle.stageBackground = skin.getDrawable("tt-stage-background");
-        popColorPickerStyle.titleBarBackground = skin.getDrawable("white");
+        popColorPickerStyle.titleBarBackground = skin.getDrawable("cp-title-bar-10");
         popColorPickerStyle.labelStyle = skin.get("tt", LabelStyle.class);
-        popColorPickerStyle.fileTextButtonStyle = skin.get("tt-file", TextButtonStyle.class);
+        popColorPickerStyle.fileTextButtonStyle = skin.get("cp-file", TextButtonStyle.class);
         popColorPickerStyle.scrollPaneStyle = skin.get("tt", ScrollPaneStyle.class);
         popColorPickerStyle.colorSwatch = skin.getDrawable("tt-color-swatch");
         popColorPickerStyle.colorSwatchNew = skin.getDrawable("tt-color-swatch-new");

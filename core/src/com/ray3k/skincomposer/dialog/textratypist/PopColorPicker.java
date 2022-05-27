@@ -117,7 +117,7 @@ public class PopColorPicker extends PopTable {
         add(table).growX();
     
         var label = new Label("CHOOSE COLOR", style.labelStyle);
-        table.add(label).left().expandX().padLeft(10);
+        table.add(label).left().expandX();
     
         table.defaults().space(5);
         var buttonGroup = new ButtonGroup<TextButton>();
@@ -148,12 +148,10 @@ public class PopColorPicker extends PopTable {
     
         swatchesTextButton = new TextButton("SWATCHES", style.fileTextButtonStyle);
         swatchesTextButton.setProgrammaticChangeEvents(false);
-        table.add(swatchesTextButton).padRight(10);
+        table.add(swatchesTextButton);
         buttonGroup.add(swatchesTextButton);
         swatchesTextButton.addListener(handListener);
-        onChange(swatchesTextButton, () -> {
-            updateColorDisplay();
-        });
+        onChange(swatchesTextButton, this::updateColorDisplay);
         swatchesTextButton.setChecked(true);
     
         row();
@@ -388,11 +386,11 @@ public class PopColorPicker extends PopTable {
             image.setScaling(Scaling.none);
             stack.add(image);
         } else {
-            var image = new Image(style.previewSwatchSingle);
+            var image = new Image(style.previewSwatchSingleBackground);
             image.setScaling(Scaling.none);
             stack.add(image);
         
-            swatchNewImage = new Image(style.previewSwatchSingleBackground);
+            swatchNewImage = new Image(style.previewSwatchSingle);
             swatchNewImage.setScaling(Scaling.none);
             stack.add(swatchNewImage);
         }
@@ -483,6 +481,7 @@ public class PopColorPicker extends PopTable {
                 r = color.r;
                 g = color.g;
                 b = color.b;
+                a = color.a;
                 updateHSB();
                 updateColorDisplay();
             }
@@ -588,7 +587,7 @@ public class PopColorPicker extends PopTable {
         add(table).growX();
     
         var label = new Label("CHOOSE COLOR", style.labelStyle);
-        table.add(label).left().expandX().padLeft(10);
+        table.add(label).left().expandX();
     
         table.defaults().space(5);
         var buttonGroup = new ButtonGroup<TextButton>();
@@ -614,7 +613,7 @@ public class PopColorPicker extends PopTable {
     
         swatchesTextButton = new TextButton("SWATCHES", style.fileTextButtonStyle);
         swatchesTextButton.setProgrammaticChangeEvents(false);
-        table.add(swatchesTextButton).padRight(10);
+        table.add(swatchesTextButton);
         buttonGroup.add(swatchesTextButton);
         swatchesTextButton.addListener(handListener);
         onChange(swatchesTextButton, () -> {

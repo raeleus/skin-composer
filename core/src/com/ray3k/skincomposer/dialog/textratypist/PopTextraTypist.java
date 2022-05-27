@@ -50,7 +50,7 @@ public class PopTextraTypist extends PopTable {
         ttColorPickerStyle = new PopColorPickerStyle();
         ttColorPickerStyle.background = skin.getDrawable("tt-bg");
         ttColorPickerStyle.stageBackground = skin.getDrawable("tt-stage-background");
-        ttColorPickerStyle.titleBarBackground = skin.getDrawable("white");
+        ttColorPickerStyle.titleBarBackground = skin.getDrawable("tt-title-bar-10");
         ttColorPickerStyle.labelStyle = skin.get("tt", LabelStyle.class);
         ttColorPickerStyle.fileTextButtonStyle = skin.get("tt-file", TextButtonStyle.class);
         ttColorPickerStyle.scrollPaneStyle = skin.get("tt", ScrollPaneStyle.class);
