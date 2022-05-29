@@ -13,7 +13,7 @@
 * Include [TinyVG](https://github.com/lyze237/gdx-TinyVG) for SVG-like vector graphics and unlimited scaling
 * Implement your own classes allowing for extended Skin functionality
 * Create basic Scene2D layouts with Scene Composer
-* Implements a rich text editor for TextraTypist TypingLabel
+* Implements a rich text editor for [TextraTypist](https://github.com/tommyettinger/textratypist#textratypist) TypingLabel
 * VisUI template and sample projects included
 
 # [DOWNLOAD HERE](https://github.com/raeleus/skin-composer/releases) #
