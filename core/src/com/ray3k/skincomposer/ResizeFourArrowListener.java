@@ -35,9 +35,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
  * @author Raymond
  */
 public class ResizeFourArrowListener extends DragListener {
-    private Cursor cursor;
+    private Cursor.SystemCursor cursor;
 
-    public ResizeFourArrowListener(Cursor cursor) {
+    public ResizeFourArrowListener(Cursor.SystemCursor cursor) {
         this.cursor = cursor;
     }
     
@@ -53,7 +53,7 @@ public class ResizeFourArrowListener extends DragListener {
     public void enter(InputEvent event, float x, float y, int pointer,
             Actor fromActor) {
         if (event.getListenerActor().equals(event.getTarget()) && !Gdx.input.isButtonPressed(Buttons.LEFT)) {
-            Gdx.graphics.setCursor(cursor);
+            Gdx.graphics.setSystemCursor(cursor);
         }
     }
 

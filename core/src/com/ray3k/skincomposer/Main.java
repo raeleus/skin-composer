@@ -125,10 +125,6 @@ public class Main extends ApplicationAdapter {
     public static TinyVGAssetLoader tinyVGAssetLoader;
     private static final int SPINE_MAX_VERTS = 32767;
     private static TinyVGDrawable drawable;
-    public static Cursor cursorNE;
-    public static Cursor cursorNW;
-    public static Cursor cursorVertical;
-    public static Cursor cursorHorizontal;
     public static PopColorPickerStyle popColorPickerStyle;
     
     public Main (String[] args) {
@@ -191,11 +187,6 @@ public class Main extends ApplicationAdapter {
         popColorPickerStyle.increaseButtonStyle = skin.get("cp-increase", ImageButtonStyle.class);
         popColorPickerStyle.decreaseButtonStyle = skin.get("cp-decrease", ImageButtonStyle.class);
         popColorPickerStyle.checkerBackground = skin.getDrawable("tt-checker-10");
-    
-        cursorNE = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
-        cursorNW = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_nw"), 16, 16);
-        cursorVertical = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_vertical"), 16, 16);
-        cursorHorizontal = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_horizontal"), 16, 16);
         
         initDefaults();
         

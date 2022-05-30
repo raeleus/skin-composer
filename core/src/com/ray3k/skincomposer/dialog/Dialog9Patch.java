@@ -27,6 +27,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
@@ -84,17 +85,13 @@ public class Dialog9Patch extends Dialog {
         listeners = new Array<>();
         this.drawablePairs = drawablePairs;
         
-        var cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_horizontal"), 16, 16);
-        horizontalResizeListener = new ResizeFourArrowListener(cursor);
-
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_vertical"), 16, 16);
-        verticalResizeListener = new ResizeFourArrowListener(cursor);
-
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_nw"), 16, 16);
-        nwResizeListener = new ResizeFourArrowListener(cursor);
-
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
-        neResizeListener = new ResizeFourArrowListener(cursor);
+        horizontalResizeListener = new ResizeFourArrowListener(SystemCursor.HorizontalResize);
+        
+        verticalResizeListener = new ResizeFourArrowListener(SystemCursor.VerticalResize);
+        
+        nwResizeListener = new ResizeFourArrowListener(SystemCursor.NWSEResize);
+        
+        neResizeListener = new ResizeFourArrowListener(SystemCursor.NESWResize);
 
         filesDroppedListener = (Array<FileHandle> files) -> {
             if (files.size > 0 && files.first().extension().equalsIgnoreCase("png")) {

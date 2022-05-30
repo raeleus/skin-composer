@@ -28,6 +28,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
@@ -556,23 +557,19 @@ public class DialogTenPatch extends Dialog {
         resizer.setResizingFromCenter(true);
         resizer.setAllowDragging(false);
         
-        var cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
-        var resizeFourArrowListener = new ResizeFourArrowListener(cursor);
+        var resizeFourArrowListener = new ResizeFourArrowListener(SystemCursor.NESWResize);
         resizer.getBottomLeftHandle().addListener(resizeFourArrowListener);
         resizer.getTopRightHandle().addListener(resizeFourArrowListener);
         
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_nw"), 16, 16);
-        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
+        resizeFourArrowListener = new ResizeFourArrowListener(SystemCursor.NWSEResize);
         resizer.getTopLeftHandle().addListener(resizeFourArrowListener);
         resizer.getBottomRightHandle().addListener(resizeFourArrowListener);
         
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_vertical"), 16, 16);
-        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
+        resizeFourArrowListener = new ResizeFourArrowListener(SystemCursor.VerticalResize);
         resizer.getBottomHandle().addListener(resizeFourArrowListener);
         resizer.getTopHandle().addListener(resizeFourArrowListener);
         
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_horizontal"), 16, 16);
-        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
+        resizeFourArrowListener = new ResizeFourArrowListener(SystemCursor.HorizontalResize);
         resizer.getLeftHandle().addListener(resizeFourArrowListener);
         resizer.getRightHandle().addListener(resizeFourArrowListener);
         table.add(resizer).grow();

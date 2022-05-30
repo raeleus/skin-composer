@@ -2,6 +2,7 @@ package com.ray3k.skincomposer.dialog;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -59,24 +60,20 @@ public class DialogTenPatchSettings extends PopTable {
         resizer.setTouchable(Touchable.enabled);
         resizer.setResizingFromCenter(true);
         resizer.setAllowDragging(false);
-    
-        var cursor = textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
-        var resizeFourArrowListener = new ResizeFourArrowListener(cursor);
+        
+        var resizeFourArrowListener = new ResizeFourArrowListener(SystemCursor.NESWResize);
         resizer.getBottomLeftHandle().addListener(resizeFourArrowListener);
         resizer.getTopRightHandle().addListener(resizeFourArrowListener);
-    
-        cursor = textureRegionToCursor(skin.getRegion("cursor_resize_nw"), 16, 16);
-        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
+        
+        resizeFourArrowListener = new ResizeFourArrowListener(SystemCursor.NWSEResize);
         resizer.getTopLeftHandle().addListener(resizeFourArrowListener);
         resizer.getBottomRightHandle().addListener(resizeFourArrowListener);
-    
-        cursor = textureRegionToCursor(skin.getRegion("cursor_resize_vertical"), 16, 16);
-        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
+        
+        resizeFourArrowListener = new ResizeFourArrowListener(SystemCursor.VerticalResize);
         resizer.getBottomHandle().addListener(resizeFourArrowListener);
         resizer.getTopHandle().addListener(resizeFourArrowListener);
-    
-        cursor = textureRegionToCursor(skin.getRegion("cursor_resize_horizontal"), 16, 16);
-        resizeFourArrowListener = new ResizeFourArrowListener(cursor);
+        
+        resizeFourArrowListener = new ResizeFourArrowListener(SystemCursor.HorizontalResize);
         resizer.getLeftHandle().addListener(resizeFourArrowListener);
         resizer.getRightHandle().addListener(resizeFourArrowListener);
         container.setActor(resizer);
