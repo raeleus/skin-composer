@@ -18,14 +18,14 @@ import static com.ray3k.skincomposer.Main.*;
 import static com.ray3k.skincomposer.utils.Utils.isNumeric;
 import static com.ray3k.skincomposer.utils.Utils.onChange;
 
-public class PopEffects extends PopTable {
+public class PopTextraEffects extends PopTable {
     private String tagBegin, tagEnd;
     private Table tokenTable;
     private SelectBox<String> effectSelectBox;
     private TypingLabel typingLabel;
     private final static String TEST_STRING = "The quick brown fox jumped over the lazy dog.";
     
-    public PopEffects() {
+    public PopTextraEffects() {
         var style = new PopTableStyle();
         style.background = skin.getDrawable("tt-bg");
         style.stageBackground = skin.getDrawable("tt-stage-background");
@@ -1091,8 +1091,8 @@ public class PopEffects extends PopTable {
         public abstract void cancelled();
     }
     
-    public static PopEffects showPopEffects() {
-        var pop = new PopEffects();
+    public static PopTextraEffects showPopEffects() {
+        var pop = new PopTextraEffects();
         pop.show(stage);
         pop.setSize(400, 350);
         return pop;

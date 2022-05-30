@@ -21,7 +21,7 @@ import com.github.tommyettinger.textra.Font.FontFamily;
 import com.github.tommyettinger.textra.KnownFonts;
 import com.github.tommyettinger.textra.TypingLabel;
 import com.ray3k.skincomposer.SpineDrawable;
-import com.ray3k.skincomposer.dialog.textratypist.PopEffects.PopEffectsListener;
+import com.ray3k.skincomposer.dialog.textratypist.PopTextraEffects.PopEffectsListener;
 import com.ray3k.stripe.PopColorPicker;
 import com.ray3k.stripe.PopColorPicker.PopColorPickerListener;
 import com.ray3k.stripe.PopColorPicker.PopColorPickerStyle;
@@ -47,35 +47,8 @@ public class PopTextraTypist extends PopTable {
     
     public PopTextraTypist() {
         super(new PopTableStyle());
-        
-        ttColorPickerStyle = new PopColorPickerStyle();
-        ttColorPickerStyle.background = skin.getDrawable("tt-colorpicker-bg-10");
-        ttColorPickerStyle.stageBackground = skin.getDrawable("tt-stage-background");
-        ttColorPickerStyle.titleBarBackground = skin.getDrawable("tt-title-bar-10");
-        ttColorPickerStyle.labelStyle = skin.get("tt", LabelStyle.class);
-        ttColorPickerStyle.fileTextButtonStyle = skin.get("tt-file", TextButtonStyle.class);
-        ttColorPickerStyle.scrollPaneStyle = skin.get("tt", ScrollPaneStyle.class);
-        ttColorPickerStyle.colorSwatch = skin.getDrawable("tt-color-swatch");
-        ttColorPickerStyle.colorSwatchNew = skin.getDrawable("tt-color-swatch-new");
-        ttColorPickerStyle.colorSwatchPopBackground = skin.getDrawable("tt-panel-10");
-        ttColorPickerStyle.colorSwatchPopPreview = skin.getDrawable("tt-color-swatch-10");
-        ttColorPickerStyle.previewSwatchBackground = skin.getDrawable("tt-swatch");
-        ttColorPickerStyle.previewSwatchOld = skin.getDrawable("tt-swatch-old");
-        ttColorPickerStyle.previewSwatchNew = skin.getDrawable("tt-swatch-new");
-        ttColorPickerStyle.previewSwatchSingleBackground = skin.getDrawable("tt-swatch-null");
-        ttColorPickerStyle.previewSwatchSingle = skin.getDrawable("tt-swatch-new-null");
-        ttColorPickerStyle.textFieldStyle = skin.get("tt", TextFieldStyle.class);
-        ttColorPickerStyle.hexTextFieldStyle = skin.get("tt-hexfield", TextFieldStyle.class);
-        ttColorPickerStyle.textButtonStyle = skin.get("tt", TextButtonStyle.class);
-        ttColorPickerStyle.colorSliderBackground = skin.getDrawable("tt-slider-10");
-        ttColorPickerStyle.colorKnobCircleBackground = skin.getDrawable("tt-color-ball");
-        ttColorPickerStyle.colorKnobCircleForeground = skin.getDrawable("tt-color-ball-interior");
-        ttColorPickerStyle.colorSliderKnobHorizontal = skin.getDrawable("tt-slider-knob");
-        ttColorPickerStyle.colorSliderKnobVertical = skin.getDrawable("tt-slider-knob-vertical");
-        ttColorPickerStyle.radioButtonStyle = skin.get("tt-radio", ImageButtonStyle.class);
-        ttColorPickerStyle.increaseButtonStyle = skin.get("tt-increase", ImageButtonStyle.class);
-        ttColorPickerStyle.decreaseButtonStyle = skin.get("tt-decrease", ImageButtonStyle.class);
-        ttColorPickerStyle.checkerBackground = skin.getDrawable("tt-checker-10");
+    
+        ttColorPickerStyle = createColorPickerStyle();
         
         masterFont = KnownFonts.getStandardFamily();
         
@@ -114,6 +87,38 @@ public class PopTextraTypist extends PopTable {
         contentTable = new Table();
         root.add(contentTable).grow().spaceTop(10);
         showHomeTable();
+    }
+    
+    private PopColorPickerStyle createColorPickerStyle() {
+        var style = new PopColorPickerStyle();
+        style.background = skin.getDrawable("tt-colorpicker-bg-10");
+        style.stageBackground = skin.getDrawable("tt-stage-background");
+        style.titleBarBackground = skin.getDrawable("tt-title-bar-10");
+        style.labelStyle = skin.get("tt", LabelStyle.class);
+        style.fileTextButtonStyle = skin.get("tt-file", TextButtonStyle.class);
+        style.scrollPaneStyle = skin.get("tt", ScrollPaneStyle.class);
+        style.colorSwatch = skin.getDrawable("tt-color-swatch");
+        style.colorSwatchNew = skin.getDrawable("tt-color-swatch-new");
+        style.colorSwatchPopBackground = skin.getDrawable("tt-panel-10");
+        style.colorSwatchPopPreview = skin.getDrawable("tt-color-swatch-10");
+        style.previewSwatchBackground = skin.getDrawable("tt-swatch");
+        style.previewSwatchOld = skin.getDrawable("tt-swatch-old");
+        style.previewSwatchNew = skin.getDrawable("tt-swatch-new");
+        style.previewSwatchSingleBackground = skin.getDrawable("tt-swatch-null");
+        style.previewSwatchSingle = skin.getDrawable("tt-swatch-new-null");
+        style.textFieldStyle = skin.get("tt", TextFieldStyle.class);
+        style.hexTextFieldStyle = skin.get("tt-hexfield", TextFieldStyle.class);
+        style.textButtonStyle = skin.get("tt", TextButtonStyle.class);
+        style.colorSliderBackground = skin.getDrawable("tt-slider-10");
+        style.colorKnobCircleBackground = skin.getDrawable("tt-color-ball");
+        style.colorKnobCircleForeground = skin.getDrawable("tt-color-ball-interior");
+        style.colorSliderKnobHorizontal = skin.getDrawable("tt-slider-knob");
+        style.colorSliderKnobVertical = skin.getDrawable("tt-slider-knob-vertical");
+        style.radioButtonStyle = skin.get("tt-radio", ImageButtonStyle.class);
+        style.increaseButtonStyle = skin.get("tt-increase", ImageButtonStyle.class);
+        style.decreaseButtonStyle = skin.get("tt-decrease", ImageButtonStyle.class);
+        style.checkerBackground = skin.getDrawable("tt-checker-10");
+        return style;
     }
     
     private void showFileTable() {
@@ -239,7 +244,7 @@ public class PopTextraTypist extends PopTable {
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
-            var pop = PopEffects.showPopEffects();
+            var pop = PopTextraEffects.showPopEffects();
             pop.addListener(new PopEffectsListener() {
                 @Override
                 public void accepted(String tagBegin, String tagEnd) {
