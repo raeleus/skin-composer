@@ -1,4 +1,5 @@
 ### Skin Composer Version 51 ###
+* Changed appearance and improved functionality of the color picker.
 * Updated TextraTypist Playground to use the latest version of TextraTypist.
 * Minor UI changes and bug fixes.
 
