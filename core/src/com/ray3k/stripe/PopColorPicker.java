@@ -151,15 +151,18 @@ public class PopColorPicker extends PopTable {
         swatchesTextButton.addListener(handListener);
         onChange(swatchesTextButton, this::updateColorDisplay);
         swatchesTextButton.setChecked(true);
-    
+        
         row();
+        var bottomTable = new Table();
+        bottomTable.setBackground(style.background);
+        add(bottomTable).grow();
         
         table = new Table();
         table.top();
         var scrollPane = new ScrollPane(table, style.scrollPaneStyle);
         scrollPane.setFlickScroll(false);
         scrollPane.setFadeScrollBars(false);
-        add(scrollPane).grow().pad(5);
+        bottomTable.add(scrollPane).grow();
         
         label = new Label("IPT_HQ", style.labelStyle);
         table.add(label).left().spaceTop(5);
@@ -361,10 +364,10 @@ public class PopColorPicker extends PopTable {
             }
         });
         
-        row();
+        bottomTable.row();
         table = new Table();
         table.right();
-        add(table).growX().padRight(5).padBottom(5);
+        bottomTable.add(table).growX();
     
         table.defaults().space(5);
         var stack = new Stack();
@@ -621,7 +624,7 @@ public class PopColorPicker extends PopTable {
     
         row();
         var subTable = new Table();
-        subTable.pad(5);
+        subTable.setBackground(style.background);
         add(subTable);
     
         subTable.defaults().space(5);
@@ -1892,6 +1895,11 @@ public class PopColorPicker extends PopTable {
         public void cancelled() {
         
         }
+    }
+    
+    public void setStyle(PopColorPickerStyle style) {
+        super.setStyle(style);
+        setBackground((Drawable) null);
     }
     
     public static class PopColorPickerStyle extends PopTableStyle {

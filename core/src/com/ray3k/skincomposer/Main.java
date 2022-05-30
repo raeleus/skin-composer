@@ -164,8 +164,8 @@ public class Main extends ApplicationAdapter {
         arrowAnimationStateData = new AnimationStateData(arrowSkeletonData);
     
         popColorPickerStyle = new PopColorPickerStyle();
-        popColorPickerStyle.background = skin.getDrawable("tt-bg");
-        popColorPickerStyle.stageBackground = skin.getDrawable("tt-stage-background");
+        popColorPickerStyle.background = skin.getDrawable("cp-bg-10");
+        popColorPickerStyle.stageBackground = skin.getDrawable("stage-background");
         popColorPickerStyle.titleBarBackground = skin.getDrawable("cp-title-bar-10");
         popColorPickerStyle.labelStyle = skin.get("tt", LabelStyle.class);
         popColorPickerStyle.fileTextButtonStyle = skin.get("cp-file", TextButtonStyle.class);
@@ -179,17 +179,17 @@ public class Main extends ApplicationAdapter {
         popColorPickerStyle.previewSwatchNew = skin.getDrawable("tt-swatch-new");
         popColorPickerStyle.previewSwatchSingleBackground = skin.getDrawable("tt-swatch-null");
         popColorPickerStyle.previewSwatchSingle = skin.getDrawable("tt-swatch-new-null");
-        popColorPickerStyle.textFieldStyle = skin.get("tt", TextFieldStyle.class);
-        popColorPickerStyle.hexTextFieldStyle = skin.get("tt-hexfield", TextFieldStyle.class);
-        popColorPickerStyle.textButtonStyle = skin.get("tt", TextButtonStyle.class);
+        popColorPickerStyle.textFieldStyle = skin.get("cp", TextFieldStyle.class);
+        popColorPickerStyle.hexTextFieldStyle = skin.get("cp-hexfield", TextFieldStyle.class);
+        popColorPickerStyle.textButtonStyle = skin.get("cp", TextButtonStyle.class);
         popColorPickerStyle.colorSliderBackground = skin.getDrawable("tt-slider-10");
         popColorPickerStyle.colorKnobCircleBackground = skin.getDrawable("tt-color-ball");
         popColorPickerStyle.colorKnobCircleForeground = skin.getDrawable("tt-color-ball-interior");
         popColorPickerStyle.colorSliderKnobHorizontal = skin.getDrawable("tt-slider-knob");
         popColorPickerStyle.colorSliderKnobVertical = skin.getDrawable("tt-slider-knob-vertical");
-        popColorPickerStyle.radioButtonStyle = skin.get("tt-radio", ImageButtonStyle.class);
-        popColorPickerStyle.increaseButtonStyle = skin.get("tt-increase", ImageButtonStyle.class);
-        popColorPickerStyle.decreaseButtonStyle = skin.get("tt-decrease", ImageButtonStyle.class);
+        popColorPickerStyle.radioButtonStyle = skin.get("cp-radio", ImageButtonStyle.class);
+        popColorPickerStyle.increaseButtonStyle = skin.get("cp-increase", ImageButtonStyle.class);
+        popColorPickerStyle.decreaseButtonStyle = skin.get("cp-decrease", ImageButtonStyle.class);
         popColorPickerStyle.checkerBackground = skin.getDrawable("tt-checker-10");
     
         cursorNE = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
