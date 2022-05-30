@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -19,6 +20,7 @@ import com.github.tommyettinger.textra.Font;
 import com.github.tommyettinger.textra.Font.DistanceFieldType;
 import com.github.tommyettinger.textra.Font.FontFamily;
 import com.github.tommyettinger.textra.KnownFonts;
+import com.github.tommyettinger.textra.TypingAdapter;
 import com.github.tommyettinger.textra.TypingLabel;
 import com.ray3k.skincomposer.SpineDrawable;
 import com.ray3k.skincomposer.dialog.textratypist.PopTextraEffects.PopEffectsListener;
@@ -44,6 +46,7 @@ public class PopTextraTypist extends PopTable {
     private FontMode fontMode = FontMode.STANDARD;
     private SpineDrawable spine;
     public static PopColorPickerStyle ttColorPickerStyle;
+    private TypingAdapter typingAdapter;
     
     public PopTextraTypist() {
         super(new PopTableStyle());
@@ -51,6 +54,19 @@ public class PopTextraTypist extends PopTable {
         ttColorPickerStyle = createColorPickerStyle();
         
         masterFont = KnownFonts.getStandardFamily();
+        
+        typingAdapter = new TypingAdapter() {
+            @Override
+            public void event(String event) {
+                Label label = new Label(event, skin, "tt-white");
+                stage.addActor(label);
+                label.setPosition(stage.getWidth() / 2, 0, Align.bottom);
+                label.setColor(Color.RED);
+                
+                label.addAction(Actions.sequence(Actions.parallel(Actions.fadeOut(1f), Actions.moveBy(0f, 50f, 1f,
+                        Interpolation.fastSlow)), Actions.removeActor()));
+            }
+        };
         
         setFillParent(true);
         setBackground(skin.getDrawable("tt-bg"));
@@ -377,6 +393,7 @@ public class PopTextraTypist extends PopTable {
     
         previewTypingLabel = new TypingLabel("", masterFont);
         previewTypingLabel.setWrap(true);
+        previewTypingLabel.setTypingListener(typingAdapter);
         
         previewScrollPane = new ScrollPane(previewTypingLabel, skin, "tt");
         previewTable.add(previewScrollPane).grow();
@@ -511,6 +528,7 @@ public class PopTextraTypist extends PopTable {
         
         previewTypingLabel = new TypingLabel(previewTypingLabel.getOriginalText().toString(), masterFont);
         previewTypingLabel.setWrap(true);
+        previewTypingLabel.setTypingListener(typingAdapter);
         previewTypingLabel.setAlignment(Align.topLeft);
         previewScrollPane.setActor(previewTypingLabel);
     }
