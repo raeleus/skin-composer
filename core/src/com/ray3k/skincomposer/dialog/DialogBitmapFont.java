@@ -33,27 +33,29 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.LeadingTruncateLabel;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.SpineDrawable;
-import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker;
-import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerAdapter;
-import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.ColorData;
 import com.ray3k.skincomposer.data.FreeTypeFontData;
 import com.ray3k.skincomposer.data.StyleProperty;
 import com.ray3k.skincomposer.utils.Utils;
-
-import static com.ray3k.skincomposer.Main.*;
+import com.ray3k.stripe.PopColorPicker.PopColorPickerAdapter;
+import com.ray3k.stripe.Spinner;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+
+import static com.ray3k.skincomposer.Main.*;
 
 public class DialogBitmapFont extends Dialog {
     private Table root;

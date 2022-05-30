@@ -44,11 +44,10 @@ import com.ray3k.skincomposer.FilesDroppedListener;
 import com.ray3k.skincomposer.LeadingTruncateLabel;
 import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.SpineDrawable;
-import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker;
-import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerAdapter;
-import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.stripe.PopColorPicker.PopColorPickerAdapter;
+import com.ray3k.stripe.Spinner;
 
 import java.io.File;
 import java.io.IOException;

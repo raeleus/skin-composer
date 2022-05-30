@@ -55,8 +55,8 @@ import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.data.DrawableData.DrawableType;
 import com.ray3k.skincomposer.dialog.DialogTVG.TvgData;
 import com.ray3k.skincomposer.dialog.DialogTenPatch.TenPatchData;
-import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.stripe.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.stripe.PopTableClickListener;
 import com.ray3k.stripe.Spinner;
 

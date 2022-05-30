@@ -41,13 +41,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.FilesDroppedListener;
+import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.NinePatchWidget;
 import com.ray3k.skincomposer.ResizeFourArrowListener;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker;
-import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.stripe.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.stripe.ResizeWidget;
 import com.ray3k.stripe.Spinner;
 
@@ -55,7 +55,6 @@ import java.io.File;
 import java.util.Locale;
 
 import static com.ray3k.skincomposer.Main.*;
-import com.ray3k.skincomposer.Main;
 
 /**
  *

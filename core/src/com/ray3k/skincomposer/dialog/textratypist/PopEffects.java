@@ -10,7 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.github.tommyettinger.textra.TypingLabel;
-import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerListener;
+import com.ray3k.stripe.PopColorPicker;
+import com.ray3k.stripe.PopColorPicker.PopColorPickerListener;
 import com.ray3k.stripe.PopTable;
 
 import static com.ray3k.skincomposer.Main.*;

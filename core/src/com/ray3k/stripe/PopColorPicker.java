@@ -1,4 +1,4 @@
-package com.ray3k.skincomposer.dialog.textratypist;
+package com.ray3k.stripe;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -26,8 +26,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.github.tommyettinger.textra.utils.ColorUtils;
-import com.ray3k.stripe.PopTable;
-import com.ray3k.stripe.PopTableHoverListener;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
 import java.util.Locale;

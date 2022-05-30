@@ -21,9 +21,10 @@ import com.github.tommyettinger.textra.Font.FontFamily;
 import com.github.tommyettinger.textra.KnownFonts;
 import com.github.tommyettinger.textra.TypingLabel;
 import com.ray3k.skincomposer.SpineDrawable;
-import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerListener;
-import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerStyle;
 import com.ray3k.skincomposer.dialog.textratypist.PopEffects.PopEffectsListener;
+import com.ray3k.stripe.PopColorPicker;
+import com.ray3k.stripe.PopColorPicker.PopColorPickerListener;
+import com.ray3k.stripe.PopColorPicker.PopColorPickerStyle;
 import com.ray3k.stripe.PopTable;
 
 import static com.ray3k.skincomposer.Main.*;
