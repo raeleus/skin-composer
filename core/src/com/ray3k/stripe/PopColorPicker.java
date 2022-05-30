@@ -104,6 +104,14 @@ public class PopColorPicker extends PopTable {
             
             }
         });
+        key(Keys.ESCAPE, () -> Gdx.app.postRunnable(() -> {
+            hide();
+            fire(new PopColorPickerEvent(true));
+        })).key(Keys.ENTER, () -> Gdx.app.postRunnable(() -> {
+            hide();
+            fire(new PopColorPickerEvent(new Color(r, g, b, a)));
+            fire(new ChangeEvent());
+        }));
     }
     
     private void populateSwatchLayout() {
