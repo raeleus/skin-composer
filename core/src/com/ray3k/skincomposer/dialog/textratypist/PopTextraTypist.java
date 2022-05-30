@@ -8,7 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.github.tommyettinger.textra.Font;
@@ -18,6 +22,7 @@ import com.github.tommyettinger.textra.KnownFonts;
 import com.github.tommyettinger.textra.TypingLabel;
 import com.ray3k.skincomposer.SpineDrawable;
 import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerListener;
+import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerStyle;
 import com.ray3k.skincomposer.dialog.textratypist.PopEffects.PopEffectsListener;
 import com.ray3k.stripe.PopTable;
 
@@ -37,9 +42,39 @@ public class PopTextraTypist extends PopTable {
     }
     private FontMode fontMode = FontMode.STANDARD;
     private SpineDrawable spine;
+    public static PopColorPickerStyle ttColorPickerStyle;
     
     public PopTextraTypist() {
         super(new PopTableStyle());
+        
+        ttColorPickerStyle = new PopColorPickerStyle();
+        ttColorPickerStyle.background = skin.getDrawable("tt-bg");
+        ttColorPickerStyle.stageBackground = skin.getDrawable("tt-stage-background");
+        ttColorPickerStyle.titleBarBackground = skin.getDrawable("tt-title-bar-10");
+        ttColorPickerStyle.labelStyle = skin.get("tt", LabelStyle.class);
+        ttColorPickerStyle.fileTextButtonStyle = skin.get("tt-file", TextButtonStyle.class);
+        ttColorPickerStyle.scrollPaneStyle = skin.get("tt", ScrollPaneStyle.class);
+        ttColorPickerStyle.colorSwatch = skin.getDrawable("tt-color-swatch");
+        ttColorPickerStyle.colorSwatchNew = skin.getDrawable("tt-color-swatch-new");
+        ttColorPickerStyle.colorSwatchPopBackground = skin.getDrawable("tt-panel-10");
+        ttColorPickerStyle.colorSwatchPopPreview = skin.getDrawable("tt-color-swatch-10");
+        ttColorPickerStyle.previewSwatchBackground = skin.getDrawable("tt-swatch");
+        ttColorPickerStyle.previewSwatchOld = skin.getDrawable("tt-swatch-old");
+        ttColorPickerStyle.previewSwatchNew = skin.getDrawable("tt-swatch-new");
+        ttColorPickerStyle.previewSwatchSingleBackground = skin.getDrawable("tt-swatch-null");
+        ttColorPickerStyle.previewSwatchSingle = skin.getDrawable("tt-swatch-new-null");
+        ttColorPickerStyle.textFieldStyle = skin.get("tt", TextFieldStyle.class);
+        ttColorPickerStyle.hexTextFieldStyle = skin.get("tt-hexfield", TextFieldStyle.class);
+        ttColorPickerStyle.textButtonStyle = skin.get("tt", TextButtonStyle.class);
+        ttColorPickerStyle.colorSliderBackground = skin.getDrawable("tt-slider-10");
+        ttColorPickerStyle.colorKnobCircleBackground = skin.getDrawable("tt-color-ball");
+        ttColorPickerStyle.colorKnobCircleForeground = skin.getDrawable("tt-color-ball-interior");
+        ttColorPickerStyle.colorSliderKnobHorizontal = skin.getDrawable("tt-slider-knob");
+        ttColorPickerStyle.colorSliderKnobVertical = skin.getDrawable("tt-slider-knob-vertical");
+        ttColorPickerStyle.radioButtonStyle = skin.get("tt-radio", ImageButtonStyle.class);
+        ttColorPickerStyle.increaseButtonStyle = skin.get("tt-increase", ImageButtonStyle.class);
+        ttColorPickerStyle.decreaseButtonStyle = skin.get("tt-decrease", ImageButtonStyle.class);
+        ttColorPickerStyle.checkerBackground = skin.getDrawable("tt-checker-10");
         
         masterFont = KnownFonts.getStandardFamily();
         
@@ -101,7 +136,7 @@ public class PopTextraTypist extends PopTable {
         textButton.getLabel().setAlignment(Align.left);
         table.add(textButton);
         textButton.addListener(handListener);
-        onChange(textButton, () -> Gdx.net.openURI("https://github.com/tommyettinger/textratypist"));
+        onChange(textButton, () -> Gdx.net.openURI("https://github.com/tommyettinger/textratypist#textratypist"));
     
         table.row();
         textButton = new TextButton("TypingLabel Documentation", skin, "tt-file-bar");
@@ -224,7 +259,8 @@ public class PopTextraTypist extends PopTable {
     
         onChange(fontSelectBox, () -> {
             if (fontSelectBox.getSelectedIndex() == 1) {
-                insertTag("[@]");
+                insertTag("[@]", "");
+                fontSelectBox.setSelectedIndex(0);
             } else if (fontSelectBox.getSelectedIndex() > 1) {
                 insertTag("[@" + fontSelectBox.getSelected() + "]", "[@]");
                 fontSelectBox.setSelectedIndex(0);
@@ -253,7 +289,7 @@ public class PopTextraTypist extends PopTable {
         sizeSelectBox.setItems(items.toArray(String.class));
         onChange(sizeSelectBox, () -> {
             if (sizeSelectBox.getSelectedIndex() == 1) {
-                insertTag("[%]");
+                insertTag("[%]", "");
                 sizeSelectBox.setSelectedIndex(0);
             } if (sizeSelectBox.getSelectedIndex() > 1) {
                 insertTag("[%" + sizeSelectBox.getSelected() + "]", "[%]");
@@ -277,7 +313,8 @@ public class PopTextraTypist extends PopTable {
         onChange(colorSelectBox, () -> {
             var selectedIndex = colorSelectBox.getSelectedIndex();
             if (selectedIndex == 1) {
-                var pop = PopColorPicker.showColorPicker(null, stage);
+                var pop = new PopColorPicker(null, ttColorPickerStyle);
+                pop.show(stage);
                 pop.addListener(new PopColorPickerListener() {
                     @Override
                     public void picked(Color color) {
@@ -292,7 +329,7 @@ public class PopTextraTypist extends PopTable {
                 });
                 colorSelectBox.setSelectedIndex(0);
             } else if (selectedIndex == 2) {
-                insertTag("{CLEARCOLOR}");
+                insertTag("{CLEARCOLOR}", "");
                 colorSelectBox.setSelectedIndex(0);
             } else if (selectedIndex > 2) {
                 insertTag("[" + colorSelectBox.getSelected() + "]", "{CLEARCOLOR}");
@@ -347,7 +384,7 @@ public class PopTextraTypist extends PopTable {
         table.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
-            var picker = new PopColorPicker(previewTable.getColor());
+            var picker = new PopColorPicker(previewTable.getColor(), ttColorPickerStyle);
             picker.addListener(new PopColorPickerListener() {
                 @Override
                 public void picked(Color color) {

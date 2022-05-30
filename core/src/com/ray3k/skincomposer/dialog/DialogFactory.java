@@ -44,6 +44,8 @@ import com.ray3k.skincomposer.dialog.DialogTVG.DialogTvgListener;
 import com.ray3k.skincomposer.dialog.PopFloppy.PopFloppyEventListener;
 import com.ray3k.skincomposer.dialog.PopRevertUIscale.PopRevertEventListener;
 import com.ray3k.skincomposer.dialog.PopWelcome.WelcomeListener;
+import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker;
+import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerListener;
 import com.ray3k.skincomposer.dialog.textratypist.PopTextraTypist;
 import com.ray3k.stripe.PopTable;
 import com.ray3k.stripe.Spinner;
@@ -230,14 +232,14 @@ public class DialogFactory {
         pop.show(stage);
     }
 
-    public void showDialogColorPicker(DialogColorPicker.ColorListener listener) {
+    public void showDialogColorPicker(PopColorPickerListener listener) {
         showDialogColorPicker(null, listener);
     }
 
-    public void showDialogColorPicker(Color previousColor,
-            DialogColorPicker.ColorListener listener) {
-        DialogColorPicker dialog = new DialogColorPicker("dialog", listener, previousColor);
-        dialog.show(stage);
+    public void showDialogColorPicker(Color previousColor, PopColorPickerListener listener) {
+        var pop = new PopColorPicker(previousColor, popColorPickerStyle);
+        pop.show(stage);
+        pop.addListener(listener);
     }
 
     public void showNewStyleDialog(Skin skin, Stage stage) {
