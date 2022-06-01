@@ -2,7 +2,7 @@ info face="Inconsolata LGC Custom" size=77 bold=0 italic=0 charset="" unicode=1 
 common lineHeight=76 base=63 scaleW=1024 scaleH=1024 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4
 page id=0 file="Inconsolata-LGC-Custom-standard.png"
 chars count=671
-char id=0 x=130 y=10 width=1 height=1 xoffset=0 yoffset=0 xadvance=35 page=0 chnl=15
+char id=9608 x=1022 y=1022 width=1 height=1 xoffset=0 yoffset=0 xadvance=1 page=0 chnl=15
 char id=32 x=1017 y=62 width=7 height=5 xoffset=-3 yoffset=73 xadvance=35 page=0 chnl=15
 char id=33 x=1008 y=181 width=14 height=51 xoffset=10 yoffset=15 xadvance=35 page=0 chnl=15
 char id=34 x=949 y=976 width=22 height=22 xoffset=8 yoffset=15 xadvance=35 page=0 chnl=15

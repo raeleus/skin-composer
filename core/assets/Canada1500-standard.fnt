@@ -3,7 +3,7 @@ common lineHeight=86 base=71 scaleW=2048 scaleH=2048 pages=1 packed=0 alphaChnl=
 page id=0 file="Canada1500-standard.png"
 chars count=1556
 char id=-1 x=899 y=82 width=52 height=76 xoffset=-1 yoffset=5 xadvance=50 page=0 chnl=15
-char id=0 x=2046 y=2046 width=1 height=1 xoffset=0 yoffset=0 xadvance=1 page=0 chnl=15
+char id=9608 x=2046 y=2046 width=1 height=1 xoffset=0 yoffset=0 xadvance=1 page=0 chnl=15
 char id=13 x=2043 y=567 width=5 height=5 xoffset=-2 yoffset=-2 xadvance=21 page=0 chnl=15
 char id=23 x=2043 y=557 width=5 height=5 xoffset=-2 yoffset=-2 xadvance=17 page=0 chnl=15
 char id=32 x=2043 y=562 width=5 height=5 xoffset=-2 yoffset=-2 xadvance=21 page=0 chnl=15
