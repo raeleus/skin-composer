@@ -2548,7 +2548,6 @@ char id=9604 x=2012 y=1519 width=34 height=42 xoffset=-1 yoffset=38 xadvance=32 
 char id=9605 x=1254 y=944 width=34 height=51 xoffset=-1 yoffset=29 xadvance=32 page=0 chnl=15
 char id=9606 x=1139 y=603 width=34 height=61 xoffset=-1 yoffset=19 xadvance=32 page=0 chnl=15
 char id=9607 x=1737 y=81 width=34 height=71 xoffset=-1 yoffset=9 xadvance=32 page=0 chnl=15
-char id=9608 x=1162 y=0 width=34 height=81 xoffset=-1 yoffset=-1 xadvance=32 page=0 chnl=15
 char id=9609 x=1706 y=0 width=30 height=81 xoffset=-1 yoffset=-1 xadvance=32 page=0 chnl=15
 char id=9610 x=1736 y=0 width=26 height=81 xoffset=-1 yoffset=-1 xadvance=32 page=0 chnl=15
 char id=9611 x=92 y=81 width=22 height=81 xoffset=-1 yoffset=-1 xadvance=32 page=0 chnl=15
