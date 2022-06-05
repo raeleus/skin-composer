@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
@@ -22,6 +23,7 @@ import com.github.tommyettinger.textra.Font.FontFamily;
 import com.github.tommyettinger.textra.KnownFonts;
 import com.github.tommyettinger.textra.TypingAdapter;
 import com.github.tommyettinger.textra.TypingLabel;
+import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.SpineDrawable;
 import com.ray3k.skincomposer.dialog.textratypist.PopTextraEffects.PopEffectsListener;
 import com.ray3k.stripe.PopColorPicker;
@@ -397,6 +399,7 @@ public class PopTextraTypist extends PopTable {
         
         previewScrollPane = new ScrollPane(previewTypingLabel, skin, "tt");
         previewTable.add(previewScrollPane).grow();
+        previewScrollPane.addListener(scrollFocusListener);
     
         contentTable.row();
         table = new Table();
