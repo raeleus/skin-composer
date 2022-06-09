@@ -27,6 +27,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
@@ -41,13 +42,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Scaling;
 import com.ray3k.skincomposer.FilesDroppedListener;
+import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.NinePatchWidget;
 import com.ray3k.skincomposer.ResizeFourArrowListener;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker;
-import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.stripe.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.stripe.ResizeWidget;
 import com.ray3k.stripe.Spinner;
 
@@ -55,7 +56,6 @@ import java.io.File;
 import java.util.Locale;
 
 import static com.ray3k.skincomposer.Main.*;
-import com.ray3k.skincomposer.Main;
 
 /**
  *
@@ -85,17 +85,13 @@ public class Dialog9Patch extends Dialog {
         listeners = new Array<>();
         this.drawablePairs = drawablePairs;
         
-        var cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_horizontal"), 16, 16);
-        horizontalResizeListener = new ResizeFourArrowListener(cursor);
-
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_vertical"), 16, 16);
-        verticalResizeListener = new ResizeFourArrowListener(cursor);
-
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_nw"), 16, 16);
-        nwResizeListener = new ResizeFourArrowListener(cursor);
-
-        cursor = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
-        neResizeListener = new ResizeFourArrowListener(cursor);
+        horizontalResizeListener = new ResizeFourArrowListener(SystemCursor.HorizontalResize);
+        
+        verticalResizeListener = new ResizeFourArrowListener(SystemCursor.VerticalResize);
+        
+        nwResizeListener = new ResizeFourArrowListener(SystemCursor.NWSEResize);
+        
+        neResizeListener = new ResizeFourArrowListener(SystemCursor.NESWResize);
 
         filesDroppedListener = (Array<FileHandle> files) -> {
             if (files.size > 0 && files.first().extension().equalsIgnoreCase("png")) {

@@ -2,7 +2,7 @@ info face="Kingthings Foundation" size=184 bold=1 italic=0 charset="" unicode=1 
 common lineHeight=184 base=144 scaleW=1024 scaleH=1024 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4
 page id=0 file="KingthingsFoundation-standard.png"
 chars count=107
-char id=0 x=1022 y=1022 width=1 height=1 xoffset=0 yoffset=0 xadvance=1 page=0 chnl=15
+char id=9608 x=1022 y=1022 width=1 height=1 xoffset=0 yoffset=0 xadvance=1 page=0 chnl=15
 char id=32 x=625 y=277 width=14 height=9 xoffset=-6 yoffset=179 xadvance=39 page=0 chnl=15
 char id=33 x=925 y=0 width=46 height=135 xoffset=3 yoffset=26 xadvance=41 page=0 chnl=15
 char id=34 x=618 y=962 width=60 height=51 xoffset=-2 yoffset=22 xadvance=47 page=0 chnl=15

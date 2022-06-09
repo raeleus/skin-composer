@@ -2,7 +2,7 @@ info face="Open Sans" size=-36 bold=0 italic=0 charset="" unicode=1 stretchH=100
 common lineHeight=49 base=38 scaleW=1024 scaleH=1024 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4
 page id=0 file="OpenSans-standard.png"
 chars count=483
-char id=0 x=1022 y=1022 width=1 height=1 xoffset=0 yoffset=0 xadvance=1 page=0 chnl=15
+char id=9608 x=1022 y=1022 width=1 height=1 xoffset=0 yoffset=0 xadvance=1 page=0 chnl=15
 char id=32 x=992 y=594 width=13 height=53 xoffset=-2 yoffset=-8 xadvance=9 page=0 chnl=15
 char id=33 x=823 y=594 width=14 height=53 xoffset=-2 yoffset=-8 xadvance=10 page=0 chnl=15
 char id=34 x=1005 y=162 width=18 height=53 xoffset=-2 yoffset=-8 xadvance=14 page=0 chnl=15

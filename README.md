@@ -9,10 +9,11 @@
 * Includes BitmapFont editor and Image font generator like Shoebox
 * Freetype support and custom serializer to generate fonts from Json
 * Nine-Patch editor with batch functions for multiple images
-* Integrated support for [TenPatch](https://github.com/raeleus/TenPatch) allowing for smart-resizing, animated UI's.
-* Include [TinyVG](https://github.com/lyze237/gdx-TinyVG) for SVG-like vector graphics and unlimited scaling.
+* Integrated support for [TenPatch](https://github.com/raeleus/TenPatch) allowing for smart-resizing, animated UI's
+* Include [TinyVG](https://github.com/lyze237/gdx-TinyVG) for SVG-like vector graphics and unlimited scaling
 * Implement your own classes allowing for extended Skin functionality
 * Create basic Scene2D layouts with Scene Composer
+* Implements a rich text editor for [TextraTypist](https://github.com/tommyettinger/textratypist#textratypist) TypingLabel
 * VisUI template and sample projects included
 
 # [DOWNLOAD HERE](https://github.com/raeleus/skin-composer/releases) #

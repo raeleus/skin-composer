@@ -60,10 +60,10 @@ import com.badlogic.gdx.utils.reflect.Field;
 import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.ProjectData.RecentFile;
-import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.DraggableList.DraggableListListener;
 import com.ray3k.stripe.*;
+import com.ray3k.stripe.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.stripe.StripeMenuBar.KeyboardShortcut;
 import com.ray3k.tenpatch.TenPatchDrawable;
 

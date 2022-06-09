@@ -27,6 +27,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
@@ -584,19 +585,19 @@ public class Utils {
     }
     
     public static void applyResizeArrowListener(ResizeWidget resizeWidget) {
-        var resizeFourArrowListener = new ResizeFourArrowListener(cursorNE);
+        var resizeFourArrowListener = new ResizeFourArrowListener(SystemCursor.NESWResize);
         resizeWidget.getBottomLeftHandle().addListener(resizeFourArrowListener);
         resizeWidget.getTopRightHandle().addListener(resizeFourArrowListener);
         
-        resizeFourArrowListener = new ResizeFourArrowListener(cursorNW);
+        resizeFourArrowListener = new ResizeFourArrowListener(SystemCursor.NWSEResize);
         resizeWidget.getTopLeftHandle().addListener(resizeFourArrowListener);
         resizeWidget.getBottomRightHandle().addListener(resizeFourArrowListener);
         
-        resizeFourArrowListener = new ResizeFourArrowListener(cursorVertical);
+        resizeFourArrowListener = new ResizeFourArrowListener(SystemCursor.VerticalResize);
         resizeWidget.getBottomHandle().addListener(resizeFourArrowListener);
         resizeWidget.getTopHandle().addListener(resizeFourArrowListener);
         
-        resizeFourArrowListener = new ResizeFourArrowListener(cursorHorizontal);
+        resizeFourArrowListener = new ResizeFourArrowListener(SystemCursor.HorizontalResize);
         resizeWidget.getLeftHandle().addListener(resizeFourArrowListener);
         resizeWidget.getRightHandle().addListener(resizeFourArrowListener);
     }

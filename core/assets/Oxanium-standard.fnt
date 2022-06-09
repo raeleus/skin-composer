@@ -2,7 +2,7 @@ info face="Oxanium" size=100 bold=0 italic=0 charset="" unicode=1 stretchH=100 s
 common lineHeight=100 base=80 scaleW=1024 scaleH=1024 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4
 page id=0 file="Oxanium-standard.png"
 chars count=342
-char id=0 x=1022 y=1022 width=1 height=1 xoffset=0 yoffset=0 xadvance=1 page=0 chnl=15
+char id=9608 x=1022 y=1022 width=1 height=1 xoffset=0 yoffset=0 xadvance=1 page=0 chnl=15
 char id=32 x=1013 y=314 width=11 height=9 xoffset=-5 yoffset=95 xadvance=19 page=0 chnl=15
 char id=33 x=998 y=579 width=17 height=63 xoffset=2 yoffset=21 xadvance=21 page=0 chnl=15
 char id=34 x=468 y=878 width=29 height=28 xoffset=1 yoffset=17 xadvance=31 page=0 chnl=15

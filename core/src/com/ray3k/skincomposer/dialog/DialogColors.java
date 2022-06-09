@@ -38,8 +38,8 @@ import com.ray3k.skincomposer.UndoableManager;
 import com.ray3k.skincomposer.UndoableManager.ColorUndoable;
 import com.ray3k.skincomposer.UndoableManager.CustomColorUndoable;
 import com.ray3k.skincomposer.data.*;
-import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.stripe.PopColorPicker.PopColorPickerAdapter;
 
 import java.util.Comparator;
 

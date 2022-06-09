@@ -55,8 +55,8 @@ import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.data.DrawableData.DrawableType;
 import com.ray3k.skincomposer.dialog.DialogTVG.TvgData;
 import com.ray3k.skincomposer.dialog.DialogTenPatch.TenPatchData;
-import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.skincomposer.utils.Utils;
+import com.ray3k.stripe.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.stripe.PopTableClickListener;
 import com.ray3k.stripe.Spinner;
 
@@ -1790,9 +1790,11 @@ public class DialogDrawables extends Dialog {
      */
     private void sortDrawablesNewest() {
         Sort.instance().sort(drawables, (DrawableData o1, DrawableData o2) -> {
-            if (o1.file.lastModified() < o2.file.lastModified()) {
+            var lastModified1 = (o1.file == null ? 0 : o1.file.lastModified());
+            var lastModified2 = (o2.file == null ? 0 : o2.file.lastModified());
+            if (lastModified1 < lastModified2) {
                 return 1;
-            } else if (o1.file.lastModified() > o2.file.lastModified()) {
+            } else if (lastModified1 > lastModified2) {
                 return -1;
             } else {
                 return 0;

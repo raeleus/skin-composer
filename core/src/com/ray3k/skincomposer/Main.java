@@ -29,7 +29,6 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.net.HttpRequestBuilder;
@@ -65,9 +64,9 @@ import com.ray3k.skincomposer.data.JsonData;
 import com.ray3k.skincomposer.data.ProjectData;
 import com.ray3k.skincomposer.dialog.DialogFactory;
 import com.ray3k.skincomposer.dialog.DialogListener;
-import com.ray3k.skincomposer.dialog.textratypist.PopColorPicker.PopColorPickerStyle;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.FreeTypeSkin;
+import com.ray3k.stripe.PopColorPicker.PopColorPickerStyle;
 import com.ray3k.stripe.ScrollFocusListener;
 import com.ray3k.tenpatch.TenPatchDrawable;
 import dev.lyze.gdxtinyvg.TinyVGAssetLoader;
@@ -76,7 +75,7 @@ import dev.lyze.gdxtinyvg.scene2d.TinyVGDrawable;
 import space.earlygrey.shapedrawer.GraphDrawer;
 
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "50";
+    public final static String VERSION = "51";
     public static String newVersion;
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,
@@ -126,10 +125,6 @@ public class Main extends ApplicationAdapter {
     public static TinyVGAssetLoader tinyVGAssetLoader;
     private static final int SPINE_MAX_VERTS = 32767;
     private static TinyVGDrawable drawable;
-    public static Cursor cursorNE;
-    public static Cursor cursorNW;
-    public static Cursor cursorVertical;
-    public static Cursor cursorHorizontal;
     public static PopColorPickerStyle popColorPickerStyle;
     
     public Main (String[] args) {
@@ -165,8 +160,8 @@ public class Main extends ApplicationAdapter {
         arrowAnimationStateData = new AnimationStateData(arrowSkeletonData);
     
         popColorPickerStyle = new PopColorPickerStyle();
-        popColorPickerStyle.background = skin.getDrawable("tt-bg");
-        popColorPickerStyle.stageBackground = skin.getDrawable("tt-stage-background");
+        popColorPickerStyle.background = skin.getDrawable("cp-bg-10");
+        popColorPickerStyle.stageBackground = skin.getDrawable("stage-background");
         popColorPickerStyle.titleBarBackground = skin.getDrawable("cp-title-bar-10");
         popColorPickerStyle.labelStyle = skin.get("tt", LabelStyle.class);
         popColorPickerStyle.fileTextButtonStyle = skin.get("cp-file", TextButtonStyle.class);
@@ -180,23 +175,18 @@ public class Main extends ApplicationAdapter {
         popColorPickerStyle.previewSwatchNew = skin.getDrawable("tt-swatch-new");
         popColorPickerStyle.previewSwatchSingleBackground = skin.getDrawable("tt-swatch-null");
         popColorPickerStyle.previewSwatchSingle = skin.getDrawable("tt-swatch-new-null");
-        popColorPickerStyle.textFieldStyle = skin.get("tt", TextFieldStyle.class);
-        popColorPickerStyle.hexTextFieldStyle = skin.get("tt-hexfield", TextFieldStyle.class);
-        popColorPickerStyle.textButtonStyle = skin.get("tt", TextButtonStyle.class);
+        popColorPickerStyle.textFieldStyle = skin.get("cp", TextFieldStyle.class);
+        popColorPickerStyle.hexTextFieldStyle = skin.get("cp-hexfield", TextFieldStyle.class);
+        popColorPickerStyle.textButtonStyle = skin.get("cp", TextButtonStyle.class);
         popColorPickerStyle.colorSliderBackground = skin.getDrawable("tt-slider-10");
         popColorPickerStyle.colorKnobCircleBackground = skin.getDrawable("tt-color-ball");
         popColorPickerStyle.colorKnobCircleForeground = skin.getDrawable("tt-color-ball-interior");
         popColorPickerStyle.colorSliderKnobHorizontal = skin.getDrawable("tt-slider-knob");
         popColorPickerStyle.colorSliderKnobVertical = skin.getDrawable("tt-slider-knob-vertical");
-        popColorPickerStyle.radioButtonStyle = skin.get("tt-radio", ImageButtonStyle.class);
-        popColorPickerStyle.increaseButtonStyle = skin.get("tt-increase", ImageButtonStyle.class);
-        popColorPickerStyle.decreaseButtonStyle = skin.get("tt-decrease", ImageButtonStyle.class);
+        popColorPickerStyle.radioButtonStyle = skin.get("cp-radio", ImageButtonStyle.class);
+        popColorPickerStyle.increaseButtonStyle = skin.get("cp-increase", ImageButtonStyle.class);
+        popColorPickerStyle.decreaseButtonStyle = skin.get("cp-decrease", ImageButtonStyle.class);
         popColorPickerStyle.checkerBackground = skin.getDrawable("tt-checker-10");
-    
-        cursorNE = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_ne"), 16, 16);
-        cursorNW = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_nw"), 16, 16);
-        cursorVertical = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_vertical"), 16, 16);
-        cursorHorizontal = Utils.textureRegionToCursor(skin.getRegion("cursor_resize_horizontal"), 16, 16);
         
         initDefaults();
         
