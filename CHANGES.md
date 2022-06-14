@@ -1,6 +1,6 @@
 ### Skin Composer Version 51 ###
 * Changed appearance and improved functionality of the color picker.
-* Updated TextraTypist Playground to use the TextraTypist 0.5.2.
+* Updated TextraTypist Playground to use the TextraTypist 0.5.3.
 * Fixed inability to scroll the styles list when the list exceeds the height of the window.
 * Fixed crash with sorting pixel drawables by newest.
 * Minor UI changes and bug fixes.
