@@ -2,7 +2,7 @@ info face="DejaVuSansMono" size=-42 bold=0 italic=0 charset="" unicode=1 stretch
 common lineHeight=42 base=45 scaleW=2048 scaleH=2048 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4
 page id=0 file="DejaVuSansMono-msdf.png"
 chars count=3280
-char id=0 x=2046 y=2046 width=1 height=1 xoffset=0 yoffset=0 xadvance=20 page=0 chnl=15
+char id=9608 x=2046 y=2046 width=1 height=1 xoffset=0 yoffset=0 xadvance=20 page=0 chnl=15
 char id=9 x=26 y=2 width=20 height=42 xoffset=0 yoffset=-1 xadvance=20 page=0 chnl=15
 char id=10 x=50 y=2 width=20 height=42 xoffset=0 yoffset=-1 xadvance=20 page=0 chnl=15
 char id=13 x=74 y=2 width=20 height=42 xoffset=0 yoffset=-1 xadvance=20 page=0 chnl=15
@@ -2547,7 +2547,7 @@ char id=9604 x=1826 y=1336 width=20 height=42 xoffset=0 yoffset=-1 xadvance=20 p
 char id=9605 x=1850 y=1336 width=20 height=42 xoffset=0 yoffset=-1 xadvance=20 page=0 chnl=15
 char id=9606 x=1874 y=1336 width=20 height=42 xoffset=0 yoffset=-1 xadvance=20 page=0 chnl=15
 char id=9607 x=1898 y=1336 width=20 height=42 xoffset=0 yoffset=-1 xadvance=20 page=0 chnl=15
-char id=9608 x=1922 y=1336 width=20 height=42 xoffset=0 yoffset=-1 xadvance=20 page=0 chnl=15
+char id=0 x=1922 y=1336 width=20 height=42 xoffset=0 yoffset=-1 xadvance=20 page=0 chnl=15
 char id=9609 x=1946 y=1336 width=20 height=42 xoffset=0 yoffset=-1 xadvance=20 page=0 chnl=15
 char id=9610 x=1970 y=1336 width=20 height=42 xoffset=0 yoffset=-1 xadvance=20 page=0 chnl=15
 char id=9611 x=1994 y=1336 width=20 height=42 xoffset=0 yoffset=-1 xadvance=20 page=0 chnl=15
