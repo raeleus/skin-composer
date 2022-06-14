@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
@@ -23,7 +22,6 @@ import com.github.tommyettinger.textra.Font.FontFamily;
 import com.github.tommyettinger.textra.KnownFonts;
 import com.github.tommyettinger.textra.TypingAdapter;
 import com.github.tommyettinger.textra.TypingLabel;
-import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.SpineDrawable;
 import com.ray3k.skincomposer.dialog.textratypist.PopTextraEffects.PopEffectsListener;
 import com.ray3k.stripe.PopColorPicker;
@@ -49,6 +47,7 @@ public class PopTextraTypist extends PopTable {
     private SpineDrawable spine;
     public static PopColorPickerStyle ttColorPickerStyle;
     private TypingAdapter typingAdapter;
+    private static String codeText = "";
     
     public PopTextraTypist() {
         super(new PopTableStyle());
@@ -368,12 +367,13 @@ public class PopTextraTypist extends PopTable {
         contentTable.add(label).left().spaceTop(15);
     
         contentTable.row();
-        codeTextArea = new TextArea("", skin, "tt-page");
+        codeTextArea = new TextArea(codeText, skin, "tt-page");
         codeTextArea.setName("code");
         contentTable.add(codeTextArea).grow().uniformY();
         codeTextArea.addListener(ibeamListener);
         onChange(codeTextArea, () -> {
-            previewTypingLabel.setText(codeTextArea.getText());
+            codeText = codeTextArea.getText();
+            previewTypingLabel.setText(codeText);
             previewTypingLabel.restart();
         });
     
@@ -393,7 +393,7 @@ public class PopTextraTypist extends PopTable {
         previewTable.setColor(Color.BLACK);
         contentTable.add(previewTable).grow().uniformY();
     
-        previewTypingLabel = new TypingLabel("", masterFont);
+        previewTypingLabel = new TypingLabel(codeText, masterFont);
         previewTypingLabel.setWrap(true);
         previewTypingLabel.setTypingListener(typingAdapter);
         
