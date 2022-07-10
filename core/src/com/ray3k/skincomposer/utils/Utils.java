@@ -34,6 +34,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Bitmap;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -600,5 +601,35 @@ public class Utils {
         resizeFourArrowListener = new ResizeFourArrowListener(SystemCursor.HorizontalResize);
         resizeWidget.getLeftHandle().addListener(resizeFourArrowListener);
         resizeWidget.getRightHandle().addListener(resizeFourArrowListener);
+    }
+    
+    public static void createEmojiFont() {
+        StringBuilder output = new StringBuilder(
+                "info face=\"font-export\" size=32 bold=0 italic=0 charset=\"\" unicode=0 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1\n" +
+                        "common lineHeight=15 base=15 scaleW=102 scaleH=105 pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0\n" +
+                        "page id=0 file=\"Twemoji.png\"\n" +
+                        "chars count=3619\n");
+        var atlas = Gdx.files.internal("Twemoji.atlas").readString();
+        var lines = atlas.split("\\n");
+        for (int i = 6; i < lines.length; i++) {
+            var line = lines[i];
+            line = line.replaceAll("[\\n\\r]", "");
+            if (line.startsWith("offsets") || line.startsWith("bounds") || line.matches(".*(\\w)+.*")) i++;
+            else {
+                i++;
+                if (i < lines.length) {
+                    var bounds = lines[i];
+                    bounds = bounds.replaceAll("^.*:", "");
+                    var boundsList = bounds.split(",");
+                    boundsList[3] = boundsList[3].replaceAll("\\D", "");
+                    output.append("char id=33 x=").append(boundsList[0]).append(" y=").append(boundsList[1]).append(
+                            " width=").append(boundsList[2]).append(" height=").append(boundsList[3]).append(
+                            " xoffset=0 yoffset=3 xadvance=4 page=0 chnl=0 letter=\"").append(line).append("\"\n");
+                }
+            }
+        }
+        output.append("\nkernings count=0");
+        var outputFile = Gdx.files.local("Twemoji.fnt");
+        outputFile.writeString(output.toString(), false);
     }
 }

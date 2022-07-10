@@ -29,8 +29,15 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.Hinting;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -72,6 +79,8 @@ import dev.lyze.gdxtinyvg.TinyVGAssetLoader;
 import dev.lyze.gdxtinyvg.drawers.TinyVGShapeDrawer;
 import dev.lyze.gdxtinyvg.scene2d.TinyVGDrawable;
 import space.earlygrey.shapedrawer.GraphDrawer;
+
+import java.lang.reflect.Parameter;
 
 public class Main extends ApplicationAdapter {
     public final static String VERSION = "51";
@@ -136,6 +145,38 @@ public class Main extends ApplicationAdapter {
         appFolder = Gdx.files.external(".skincomposer/");
         
         skin = new FreeTypeSkin(Gdx.files.internal("skin-composer-ui/skin-composer-ui.json"));
+        
+        var emojiFont = new BitmapFont(Gdx.files.internal("Twemoji.fnt"));
+        var fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("skin-composer-ui/Roboto-Regular.ttf"));
+        var parameter = new FreeTypeFontParameter();
+        parameter.size = 13;
+        parameter.hinting = Hinting.AutoMedium;
+        parameter.gamma = 1.8f;
+        parameter.renderCount = 2;
+        parameter.color = Color.WHITE;
+        
+        var fallbackData = new FreeTypeBitmapFontData() {
+            @Override
+            public Glyph getGlyph(char ch) {
+                var glyph = super.getGlyph(ch);
+                if (glyph != null)
+                    return glyph;
+
+                return emojiFont.getData().getGlyph(ch);
+            }
+
+            @Override
+            public boolean hasGlyph(char ch) {
+                if (hasGlyph(ch)) return true;
+                return emojiFont.getData().hasGlyph(ch);
+            }
+        };
+        
+        
+        var font = fontGenerator.generateFont(parameter, fallbackData);
+        skin.remove("tt", BitmapFont.class);
+        skin.add("tt", font);
+        
         viewport = new ScreenViewport();
 //        viewport.setUnitsPerPixel(.5f);
         var batch = new PolygonSpriteBatch(SPINE_MAX_VERTS);

@@ -523,6 +523,7 @@ public class PopTextraTypist extends PopTable {
         items.add("Default");
         
         masterFont = KnownFonts.getStandardFamily();
+        KnownFonts.addEmoji(masterFont);
         for (var font : KnownFonts.getAllStandard()) {
             items.add(font.name);
         }
@@ -580,6 +581,7 @@ public class PopTextraTypist extends PopTable {
         
         var fontFamily = new FontFamily(namesArray, fontsArray);
         masterFont = fontFamily.connected[0].setFamily(fontFamily);
+        KnownFonts.addEmoji(masterFont);
     
         previewTypingLabel = new TypingLabel(previewTypingLabel.getOriginalText().toString(), masterFont);
         previewTypingLabel.setWrap(true);
