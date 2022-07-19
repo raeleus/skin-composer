@@ -1,6 +1,7 @@
 ### Skin Composer Version 52 ###
 * Added option to skip animation in TextraTypist Playground.
 * Updated TextraTypist Playground to use TextraTypist 0.6.2.
+* Fixed text not persisting when inserting a token in TextraTypist Playground.
 
 ### Skin Composer Version 51 ###
 * Changed appearance and improved functionality of the color picker.
