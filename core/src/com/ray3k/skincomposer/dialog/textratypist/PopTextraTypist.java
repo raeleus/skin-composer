@@ -468,6 +468,7 @@ public class PopTextraTypist extends PopTable {
         previewTypingLabel.setText(codeTextArea.getText());
         previewTypingLabel.restart();
         if (!playAnimation) previewTypingLabel.skipToTheEnd();
+        codeText = codeTextArea.getText();
     }
     
     @Override
