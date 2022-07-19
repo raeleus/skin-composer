@@ -48,6 +48,7 @@ public class PopTextraTypist extends PopTable {
     public static PopColorPickerStyle ttColorPickerStyle;
     private TypingAdapter typingAdapter;
     private static String codeText = "";
+    private boolean playAnimation = true;
     
     public PopTextraTypist() {
         super(new PopTableStyle());
@@ -374,7 +375,7 @@ public class PopTextraTypist extends PopTable {
         onChange(codeTextArea, () -> {
             codeText = codeTextArea.getText();
             previewTypingLabel.setText(codeText);
-            previewTypingLabel.restart();
+            if (playAnimation) previewTypingLabel.restart();
         });
     
         contentTable.row();
@@ -406,6 +407,16 @@ public class PopTextraTypist extends PopTable {
         contentTable.add(table).right().spaceTop(5).padBottom(20);
     
         table.defaults().space(5);
+        var playImageButton = new ImageButton(skin, "tt-play");
+        playImageButton.setChecked(playAnimation);
+        table.add(playImageButton);
+        playImageButton.addListener(handListener);
+        onChange(playImageButton, () -> {
+            playAnimation = playImageButton.isChecked();
+            if (!playAnimation) previewTypingLabel.skipToTheEnd();
+            else previewTypingLabel.restart();
+        });
+        
         imageButton = new ImageButton(skin, "tt-color");
         table.add(imageButton);
         imageButton.addListener(handListener);
@@ -456,6 +467,7 @@ public class PopTextraTypist extends PopTable {
         stage.setKeyboardFocus(codeTextArea);
         previewTypingLabel.setText(codeTextArea.getText());
         previewTypingLabel.restart();
+        if (!playAnimation) previewTypingLabel.skipToTheEnd();
     }
     
     @Override
