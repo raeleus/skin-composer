@@ -338,6 +338,8 @@ public class PopTextraTypist extends PopTable {
             var selectedIndex = colorSelectBox.getSelectedIndex();
             if (selectedIndex == 1) {
                 var pop = new PopColorPicker(null, ttColorPickerStyle);
+                pop.setButtonListener(handListener);
+                pop.setTextFieldListener(ibeamListener);
                 pop.show(stage);
                 pop.addListener(new PopColorPickerListener() {
                     @Override
@@ -422,6 +424,8 @@ public class PopTextraTypist extends PopTable {
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
             var picker = new PopColorPicker(previewTable.getColor(), ttColorPickerStyle);
+            picker.setButtonListener(handListener);
+            picker.setTextFieldListener(ibeamListener);
             picker.addListener(new PopColorPickerListener() {
                 @Override
                 public void picked(Color color) {

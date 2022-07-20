@@ -988,6 +988,8 @@ public class PopTextraEffects extends PopTable {
     
     private PopColorPicker createColorField(Color defaultValue, String name, Table table) {
         var pop = new PopColorPicker(defaultValue, PopTextraTypist.ttColorPickerStyle);
+        pop.setButtonListener(handListener);
+        pop.setTextFieldListener(ibeamListener);
         
         var subTable = new Table();
         table.add(subTable);

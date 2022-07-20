@@ -239,6 +239,8 @@ public class DialogFactory {
 
     public void showDialogColorPicker(Color previousColor, PopColorPickerListener listener) {
         var pop = new PopColorPicker(previousColor, popColorPickerStyle);
+        pop.setButtonListener(handListener);
+        pop.setTextFieldListener(ibeamListener);
         pop.show(stage);
         pop.addListener(listener);
     }
