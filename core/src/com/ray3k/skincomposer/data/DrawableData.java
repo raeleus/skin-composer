@@ -27,7 +27,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.ray3k.skincomposer.dialog.DialogTVG;
 import com.ray3k.skincomposer.dialog.DialogTVG.TvgData;
-import com.ray3k.skincomposer.dialog.DialogTenPatch;
+import com.ray3k.skincomposer.dialog.tenpatch.DialogTenPatch;
 import com.ray3k.skincomposer.utils.Utils;
 
 public class DrawableData {

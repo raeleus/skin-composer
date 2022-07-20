@@ -54,7 +54,8 @@ import com.ray3k.skincomposer.UndoableManager.DrawableUndoable;
 import com.ray3k.skincomposer.data.*;
 import com.ray3k.skincomposer.data.DrawableData.DrawableType;
 import com.ray3k.skincomposer.dialog.DialogTVG.TvgData;
-import com.ray3k.skincomposer.dialog.DialogTenPatch.TenPatchData;
+import com.ray3k.skincomposer.dialog.tenpatch.DialogTenPatch;
+import com.ray3k.skincomposer.dialog.tenpatch.DialogTenPatch.TenPatchData;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.PopColorPicker.PopColorPickerAdapter;
 import com.ray3k.stripe.PopTableClickListener;
@@ -2535,7 +2536,7 @@ public class DialogDrawables extends Dialog {
         public boolean pixel = true;
         public String name = "";
 
-        void set(FilterOptions filterOptions) {
+        public void set(FilterOptions filterOptions) {
             texture = filterOptions.texture;
             ninePatch = filterOptions.ninePatch;
             tinted = filterOptions.tinted;

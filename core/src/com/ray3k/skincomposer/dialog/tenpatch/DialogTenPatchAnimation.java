@@ -1,4 +1,4 @@
-package com.ray3k.skincomposer.dialog;
+package com.ray3k.skincomposer.dialog.tenpatch;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -12,7 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.*;
 import com.ray3k.skincomposer.HandListener;
 import com.ray3k.skincomposer.Main;
+import com.ray3k.skincomposer.dialog.DialogDrawables;
 import com.ray3k.skincomposer.dialog.DialogDrawables.FilterOptions;
+import com.ray3k.skincomposer.dialog.DialogFactory.ConfirmationListener;
+import com.ray3k.skincomposer.dialog.DialogListener;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
@@ -783,7 +786,7 @@ public class DialogTenPatchAnimation extends Dialog {
                         }
 
                         if (matches.size > 1) {
-                            dialogFactory.yesNoDialog("Add all frames?", "Do you want to add all the frames of this animation?", new DialogFactory.ConfirmationListener() {
+                            dialogFactory.yesNoDialog("Add all frames?", "Do you want to add all the frames of this animation?", new ConfirmationListener() {
                                 @Override
                                 public void selected(int selection) {
                                     if (selection == 0) {

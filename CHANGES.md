@@ -2,6 +2,7 @@
 * Added option to skip animation in TextraTypist Playground.
 * Updated TextraTypist Playground to use TextraTypist 0.6.2.
 * Fixed text not persisting when inserting a token in TextraTypist Playground.
+* Fixed TenPatch settings dialog not keeping Color selection when pressing enter.
 
 ### Skin Composer Version 51 ###
 * Changed appearance and improved functionality of the color picker.

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.ray3k.skincomposer.dialog;
+package com.ray3k.skincomposer.dialog.tenpatch;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -51,6 +51,9 @@ import com.ray3k.skincomposer.StageResizeListener;
 import com.ray3k.skincomposer.TenPatchWidget;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
+import com.ray3k.skincomposer.dialog.DialogDrawables;
+import com.ray3k.skincomposer.dialog.DialogDrawables.DialogDrawablesListener;
+import com.ray3k.skincomposer.dialog.DialogFactory.InputDialogListener;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.PopTable;
 import com.ray3k.stripe.ResizeWidget;
@@ -691,7 +694,7 @@ public class DialogTenPatch extends Dialog {
         
         switch (selectBox.getSelected()) {
             case "Text":
-                dialogFactory.showInputDialog("Text Content", "Enter the text to be displayed inside of the preview:", "Lorem Ipsum", new DialogFactory.InputDialogListener() {
+                dialogFactory.showInputDialog("Text Content", "Enter the text to be displayed inside of the preview:", "Lorem Ipsum", new InputDialogListener() {
                     @Override
                     public void confirmed(String text) {
                         var label = new Label(text, skin, "white");
@@ -714,7 +717,7 @@ public class DialogTenPatch extends Dialog {
                 table.add(image).grow();
                 break;
             case "Drawable":
-                var dialog = dialogFactory.showDialogDrawables(true, new DialogDrawables.DialogDrawablesListener() {
+                var dialog = dialogFactory.showDialogDrawables(true, new DialogDrawablesListener() {
                     @Override
                     public void confirmed(DrawableData drawable, DialogDrawables dialog) {
                         var image = new Image(atlasData.getDrawablePairs().get(drawable));

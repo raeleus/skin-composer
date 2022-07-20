@@ -1,4 +1,4 @@
-package com.ray3k.skincomposer.dialog;
+package com.ray3k.skincomposer.dialog.tenpatch;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -10,18 +10,17 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Scaling;
+import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.ResizeFourArrowListener;
 import com.ray3k.skincomposer.data.DrawableData;
 import com.ray3k.skincomposer.data.StyleProperty;
-import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.stripe.PopTable;
 import com.ray3k.stripe.ResizeWidget;
 import com.ray3k.stripe.Spinner;
 import com.ray3k.tenpatch.TenPatchDrawable;
 
 import static com.ray3k.skincomposer.Main.*;
-import static com.ray3k.skincomposer.utils.Utils.*;
-import com.ray3k.skincomposer.Main;
+import static com.ray3k.skincomposer.utils.Utils.onChange;
 
 public class DialogTenPatchSettings extends PopTable {
     private DrawableData drawableData;
@@ -163,8 +162,8 @@ public class DialogTenPatchSettings extends PopTable {
         imageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                suppressKeyInputListeners(true);
                 dialogFactory.showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
-
                     if (colorData == null) {
                         workingData.tenPatchData.colorName = null;
                         ((ImageButton) actor).getCells().peek().getActor().setColor(Color.WHITE);
@@ -174,6 +173,7 @@ public class DialogTenPatchSettings extends PopTable {
                         ((ImageButton) actor).getCells().peek().getActor().setColor(colorData.color);
                         preview.setColor(colorData.color);
                     }
+                    suppressKeyInputListeners(false);
                 }, null);
             }
         });
@@ -196,7 +196,6 @@ public class DialogTenPatchSettings extends PopTable {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 dialogFactory.showDialogColors(new StyleProperty(), (colorData, pressedCancel) -> {
-                
                     if (colorData == null) {
                         workingData.tenPatchData.color2Name = null;
                         ((ImageButton) actor).getCells().peek().getActor().setColor(Color.WHITE);
