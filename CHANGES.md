@@ -4,6 +4,7 @@
 * Updated color picker with new swatches.
 * Fixed text not persisting when inserting a token in TextraTypist Playground.
 * Fixed TenPatch settings dialog not keeping Color selection when pressing enter.
+* Fixed -swingfd option crashing when cancel is pressed in a file dialog.
 
 ### Skin Composer Version 51 ###
 * Changed appearance and improved functionality of the color picker.
