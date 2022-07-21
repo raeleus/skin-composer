@@ -74,7 +74,7 @@ import dev.lyze.gdxtinyvg.scene2d.TinyVGDrawable;
 import space.earlygrey.shapedrawer.GraphDrawer;
 
 public class Main extends ApplicationAdapter {
-    public final static String VERSION = "52";
+    public final static String VERSION = "53";
     public static String newVersion;
     public static final Class[] BASIC_CLASSES = {Button.class, CheckBox.class,
         ImageButton.class, ImageTextButton.class, Label.class, List.class,

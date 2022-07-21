@@ -1,3 +1,6 @@
+### Skin Composer Version 53 ###
+* 
+
 ### Skin Composer Version 52 ###
 * Added option to skip animation in TextraTypist Playground.
 * Updated TextraTypist Playground to use TextraTypist 0.6.2.
