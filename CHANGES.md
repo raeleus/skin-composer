@@ -1,5 +1,5 @@
 ### Skin Composer Version 53 ###
-* 
+* Updated to Stripe 1.4.1 and TextraTypist 0.6.3 
 
 ### Skin Composer Version 52 ###
 * Added option to skip animation in TextraTypist Playground.
