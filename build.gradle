@@ -11,7 +11,7 @@ buildscript {
 allprojects {
     apply plugin: "idea"
 
-    version = '51'
+    version = '53'
     ext {
         appName = "SkinComposer"
         gdxVersion = '1.11.0'
@@ -46,11 +46,12 @@ project(":core") {
         compile "com.github.raeleus.TenPatch:tenpatch:5.2.3"
         compile "space.earlygrey:shapedrawer:2.2.0"
         compile 'com.squareup:javapoet:1.12.1'
-        compile 'com.github.raeleus.stripe:stripe:1.3.1'
+        compile 'com.github.raeleus.stripe:stripe:1.4.1'
+        compile 'com.github.raeleus.stripe:colorpicker:1.4.1'
         compile 'com.github.raeleus.stripe:freetype:1.1.0'
         compile 'com.esotericsoftware.spine:spine-libgdx:4.0.18.1'
         compile 'com.github.lyze237:gdx-TinyVG:9a5a6ae9ae'
-        compile "com.github.tommyettinger:textratypist:3f5d44cd92"
+        compile "com.github.tommyettinger:textratypist:v0.6.3"
     }
 }
 

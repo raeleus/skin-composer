@@ -56,7 +56,8 @@ import com.ray3k.skincomposer.dialog.DialogDrawables.DialogDrawablesListener;
 import com.ray3k.skincomposer.dialog.DialogFreeTypeFont.DialogFreeTypeFontListener;
 import com.ray3k.skincomposer.dialog.DialogImageFont.ImageFontListener;
 import com.ray3k.skincomposer.dialog.DialogTVG.DialogTvgListener;
-import com.ray3k.skincomposer.dialog.DialogTenPatch.DialogTenPatchListener;
+import com.ray3k.skincomposer.dialog.tenpatch.DialogTenPatch;
+import com.ray3k.skincomposer.dialog.tenpatch.DialogTenPatch.DialogTenPatchListener;
 import com.ray3k.skincomposer.dialog.PopFloppy.PopFloppyEventListener;
 import com.ray3k.skincomposer.dialog.PopRevertUIscale.PopRevertEventListener;
 import com.ray3k.skincomposer.dialog.PopWelcome.WelcomeListener;
@@ -238,6 +239,8 @@ public class DialogFactory {
 
     public void showDialogColorPicker(Color previousColor, PopColorPickerListener listener) {
         var pop = new PopColorPicker(previousColor, popColorPickerStyle);
+        pop.setButtonListener(handListener);
+        pop.setTextFieldListener(ibeamListener);
         pop.show(stage);
         pop.addListener(listener);
     }

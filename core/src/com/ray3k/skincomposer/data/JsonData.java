@@ -44,9 +44,8 @@ import com.ray3k.skincomposer.Main;
 import com.ray3k.skincomposer.data.CustomProperty.PropertyType;
 import com.ray3k.skincomposer.data.DrawableData.DrawableType;
 import com.ray3k.skincomposer.dialog.DialogFactory;
-import com.ray3k.skincomposer.dialog.DialogTVG;
 import com.ray3k.skincomposer.dialog.DialogTVG.TvgData;
-import com.ray3k.skincomposer.dialog.DialogTenPatch;
+import com.ray3k.skincomposer.dialog.tenpatch.DialogTenPatch;
 import com.ray3k.skincomposer.utils.Utils;
 import com.ray3k.tenpatch.TenPatchDrawable;
 import com.ray3k.tenpatch.TenPatchDrawable.CrushMode;
@@ -56,7 +55,6 @@ import static com.ray3k.skincomposer.Main.*;
 import static com.ray3k.skincomposer.data.DrawableData.DrawableType.*;
 
 import java.io.StringWriter;
-import java.util.Locale;
 
 public class JsonData implements Json.Serializable {
     private Array<ColorData> colors;

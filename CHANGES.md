@@ -1,3 +1,14 @@
+### Skin Composer Version 53 ###
+* Updated to Stripe 1.4.1 and TextraTypist 0.6.3 
+
+### Skin Composer Version 52 ###
+* Added option to skip animation in TextraTypist Playground.
+* Updated TextraTypist Playground to use TextraTypist 0.6.2.
+* Updated color picker with new swatches.
+* Fixed text not persisting when inserting a token in TextraTypist Playground.
+* Fixed TenPatch settings dialog not keeping Color selection when pressing enter.
+* Fixed -swingfd option crashing when cancel is pressed in a file dialog.
+
 ### Skin Composer Version 51 ###
 * Changed appearance and improved functionality of the color picker.
 * Updated TextraTypist Playground to use the TextraTypist 0.5.3.

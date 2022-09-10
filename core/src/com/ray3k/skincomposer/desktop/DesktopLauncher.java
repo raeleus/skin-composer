@@ -218,7 +218,8 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     @Override
     public List<File> openMultipleDialog(String title, String defaultPath, String filterPatterns, String filterDescription) {
         if (useSwing) {
-            return showFileChooser(OPEN_MULTIPLE, title, defaultPath, filterPatterns, filterDescription);
+            var result = showFileChooser(OPEN_MULTIPLE, title, defaultPath, filterPatterns, filterDescription);
+            return result.size() > 0 ? result : null;
         }
     
         NFDPathSet outPaths =NFDPathSet.calloc();
@@ -255,7 +256,8 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     @Override
     public File openDialog(String title, String defaultPath, String filterPatterns, String filterDescription) {
         if (useSwing) {
-            return showFileChooser(OPEN, title, defaultPath, filterPatterns, filterDescription).get(0);
+            var result = showFileChooser(OPEN, title, defaultPath, filterPatterns, filterDescription);
+            return result.size() > 0 ? result.get(0) : null;
         }
     
         PointerBuffer outPath = memAllocPointer(1);
@@ -287,7 +289,8 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     @Override
     public File saveDialog(String title, String defaultPath, String filterPatterns, String filterDescription) {
         if (useSwing) {
-            return showFileChooser(SAVE, title, defaultPath, filterPatterns, filterDescription).get(0);
+            var result = showFileChooser(SAVE, title, defaultPath, filterPatterns, filterDescription);
+            return result.size() > 0 ? result.get(0) : null;
         }
     
         PointerBuffer outPath = memAllocPointer(1);
