@@ -121,7 +121,6 @@ public class JsonData implements Json.Serializable {
             projectData.getAtlasData().readAtlas(atlasHandle);
         } else {
             warnings.add("[RED]ERROR:[] Atlas file [BLACK]" + atlasHandle.name() + "[] does not exist.");
-            return warnings;
         }
 
         //folder for critical files to be copied to
