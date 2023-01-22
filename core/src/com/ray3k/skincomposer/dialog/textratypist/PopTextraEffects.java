@@ -1,5 +1,6 @@
 package com.ray3k.skincomposer.dialog.textratypist;
 
+import java.util.Locale;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -920,7 +921,7 @@ public class PopTextraEffects extends PopTable {
         var label = new Label(name, skin, "tt");
         subTable.add(label);
         
-        var textField = new TextField(String.format("%.1f", defaultValue), skin, "tt") {
+        var textField = new TextField(String.format(Locale.US, "%.1f", defaultValue), skin, "tt") {
             @Override
             public void next(boolean up) {
                 stage.setKeyboardFocus(findActor(up?previousField:nextField));
@@ -939,7 +940,8 @@ public class PopTextraEffects extends PopTable {
         buttonTable.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
-            if (textField.getText().length() > 0) textField.setText(String.format("%.1f", Float.parseFloat(textField.getText()) + .1f));
+            if (textField.getText().length() > 0) textField.setText(
+                    String.format(Locale.US, "%.1f", Float.parseFloat(textField.getText()) + .1f));
             textField.fire(new ChangeEvent());
         });
     
@@ -948,7 +950,8 @@ public class PopTextraEffects extends PopTable {
         buttonTable.add(imageButton);
         imageButton.addListener(handListener);
         onChange(imageButton, () -> {
-            if (textField.getText().length() > 0) textField.setText(String.format("%.1f", Float.parseFloat(textField.getText()) - .1f));
+            if (textField.getText().length() > 0) textField.setText(
+                    String.format(Locale.US, "%.1f", Float.parseFloat(textField.getText()) - .1f));
             textField.fire(new ChangeEvent());
         });
         

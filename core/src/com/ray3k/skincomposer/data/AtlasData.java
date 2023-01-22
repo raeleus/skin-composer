@@ -359,7 +359,7 @@ public class AtlasData implements Json.Serializable {
      * @return
      */
     public boolean checkIfDrawableNameExists(String name) {
-        return checkIfDrawableNameExists(name, null);
+        return checkIfDrawableNameExists(name, (DrawableData) null);
     }
     
     /**
