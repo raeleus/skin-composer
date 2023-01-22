@@ -237,7 +237,8 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
             if (status == NativeFileDialog.NFD_CANCEL) return null;
         
             if (status != NativeFileDialog.NFD_OKAY) {
-                throw new Exception("Could not show open dialog with lwjgl-nfd");
+                var result = showFileChooser(OPEN_MULTIPLE, title, defaultPath, filterPatterns, filterDescription);
+                return result.size() > 0 ? result : null;
             }
         
             ArrayList<File> list = new ArrayList<>();
@@ -275,7 +276,8 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
             if (status == NativeFileDialog.NFD_CANCEL) return null;
     
             if (status != NativeFileDialog.NFD_OKAY) {
-                throw new Exception("Could not show open dialog with lwjgl-nfd");
+                var result = showFileChooser(OPEN, title, defaultPath, filterPatterns, filterDescription);
+                return result.size() > 0 ? result.get(0) : null;
             }
     
             String result = outPath.getStringUTF8();
@@ -308,7 +310,8 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
             if (status == NativeFileDialog.NFD_CANCEL) return null;
         
             if (status != NativeFileDialog.NFD_OKAY) {
-                throw new Exception("Could not show save dialog with lwjgl-nfd");
+                var result = showFileChooser(SAVE, title, defaultPath, filterPatterns, filterDescription);
+                return result.size() > 0 ? result.get(0) : null;
             }
         
             String result = outPath.getStringUTF8();
