@@ -2473,6 +2473,7 @@ public class RootTable extends Table {
                                         if (fd.getName().equals(fontName)) {
                                             fontData = fd;
                                             font = new BitmapFont(fd.file);
+                                            if (fd.getScaling() != -1) font.getData().setScale(fd.getScaling() / font.getCapHeight());
                                             previewFonts.add(font);
                                             break;
                                         }
@@ -2552,6 +2553,7 @@ public class RootTable extends Table {
                         for (FontData data : projectData.getJsonData().getFonts()) {
                             if (value.equals(data.getName())) {
                                 BitmapFont font = new BitmapFont(data.file);
+                                if (data.getScaling() != -1) font.getData().setScale(data.getScaling() / font.getCapHeight());
                                 previewFonts.add(font);
                                 field.set(instance, font);
                             }

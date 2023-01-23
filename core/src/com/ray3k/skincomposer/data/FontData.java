@@ -29,10 +29,12 @@ import com.badlogic.gdx.utils.JsonValue;
 
 public class FontData implements Json.Serializable {
     private String name;
+    private int scaling = -1;
     public FileHandle file;
 
-    public FontData(String name, FileHandle file) throws NameFormatException {
+    public FontData(String name, int scaling, FileHandle file) throws NameFormatException {
         setName(name);
+        this.scaling = scaling;
         this.file = file;
     }
     
@@ -43,13 +45,21 @@ public class FontData implements Json.Serializable {
     public String getName() {
         return name;
     }
-
+    
     public void setName(String name) throws NameFormatException {
         if (!validate(name)) {
             throw new NameFormatException();
         } else {
             this.name = name;
         }
+    }
+    
+    public int getScaling() {
+        return scaling;
+    }
+    
+    public void setScaling(int scaling) {
+        this.scaling = scaling;
     }
 
     @Override

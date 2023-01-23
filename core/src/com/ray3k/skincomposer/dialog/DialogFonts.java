@@ -31,6 +31,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -114,7 +115,7 @@ public class DialogFonts extends Dialog {
             }
             
             if (files.size > 0) {
-                fontNameDialog(files, 0);
+                fontSettingsDialog(files, 0);
             }
         };
         
@@ -271,11 +272,11 @@ public class DialogFonts extends Dialog {
         return dialog;
     }
 
-    private boolean addFont(String name, FileHandle file) {
+    private boolean addFont(String name, int scaling, FileHandle file) {
         if (FontData.validate(name)) {
             try {
                 projectData.setChangesSaved(false);
-                FontData font = new FontData(name, file);
+                FontData font = new FontData(name, scaling, file);
                 
                 //remove any existing FontData that shares the same name.
                 if (fonts.contains(font, false)) {
@@ -329,7 +330,9 @@ public class DialogFonts extends Dialog {
                     FileHandle imageFile = new FileHandle(path);
                     regions.add(atlas.findRegion(imageFile.nameWithoutExtension()));
                 }
-                fontMap.put(font, new BitmapFont(bitmapFontData, regions, true));
+                var bitmapFont = new BitmapFont(bitmapFontData, regions, true);
+                if (scaling != -1) bitmapFontData.setScale(scaling / bitmapFont.getCapHeight());
+                fontMap.put(font, bitmapFont);
                 
                 
                 
@@ -367,16 +370,16 @@ public class DialogFonts extends Dialog {
                 button.add(label).left();
                 button.addListener(handListener);
                 
-                Button renameButton = new Button(getSkin(), "settings-small");
-                renameButton.addListener(new ChangeListener() {
+                Button settingsButton = new Button(getSkin(), "settings-small");
+                settingsButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        renameDialog(font);
+                        changeSettingsDialog(font);
                         
                         event.setBubbles(false);
                     }
                 });
-                renameButton.addListener(new InputListener() {
+                settingsButton.addListener(new InputListener() {
                     @Override
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         event.setBubbles(false);
@@ -384,10 +387,10 @@ public class DialogFonts extends Dialog {
                     }
                     
                 });
-                button.add(renameButton).padLeft(15.0f);
+                button.add(settingsButton).padLeft(15.0f);
                 
-                TextTooltip toolTip = Main.fixTooltip(new TextTooltip("Rename Font", tooltipManager, getSkin()));
-                renameButton.addListener(toolTip);
+                TextTooltip toolTip = Main.fixTooltip(new TextTooltip("Font Settings", tooltipManager, getSkin()));
+                settingsButton.addListener(toolTip);
                 
                 LabelStyle style = new LabelStyle();
                 style.font = fontMap.get(font);
@@ -626,22 +629,23 @@ public class DialogFonts extends Dialog {
         });
     }
     
-    private void renameDialog(FontData font) {
-        TextField textField = new TextField("", getSkin());
+    private void changeSettingsDialog(final FontData font) {
+        TextField nameField = new TextField(font.getName(), getSkin());
+        var scalingField = new TextField(Integer.toString(font.getScaling()), skin);
         TextButton okButton;
         
-        Dialog dialog = new Dialog("Rename Font?", getSkin(), "bg") {
+        Dialog dialog = new Dialog("Font Settings...", getSkin(), "bg") {
             @Override
             protected void result(Object object) {
                 if ((boolean) object) {
-                    renameFont(font, textField.getText());
+                    changeFontSettings(font, nameField.getText(), Integer.parseInt(scalingField.getText()));
                 }
             }
 
             @Override
             public Dialog show(Stage stage) {
                 Dialog dialog = super.show(stage);
-                stage.setKeyboardFocus(textField);
+                stage.setKeyboardFocus(nameField);
                 return dialog;
             }
         };
@@ -663,50 +667,89 @@ public class DialogFonts extends Dialog {
         dialog.getContentTable().add(label);
         
         dialog.getContentTable().row();
-        textField.setText(font.getName());
-        textField.selectAll();
-        textField.addListener(ibeamListener);
-        dialog.getContentTable().add(textField);
+        nameField.selectAll();
+        nameField.addListener(ibeamListener);
+        dialog.getContentTable().add(nameField);
+    
+        dialog.getContentTable().row();
+        label = new Label("Enter scaling value (-1 for default):", getSkin());
+        dialog.getContentTable().add(label);
+        
+        dialog.getContentTable().row();
+        scalingField.setTextFieldFilter((textField, c) -> Character.isDigit(c) || c == '-');
+        dialog.getContentTable().add(scalingField);
+        scalingField.addListener(ibeamListener);
+    
+        dialog.getContentTable().row();
+        LabelStyle previewStyle = new LabelStyle();
+        previewStyle.font = new BitmapFont(font.file);
+        final var previewCapHeight = previewStyle.font.getCapHeight();
+        
+        Table table = new Table(getSkin());
+        table.setBackground("white");
+        if (Utils.brightness(Utils.averageEdgeColor(new FileHandle(previewStyle.font.getData().imagePaths[0]))) > .5f) {
+            table.setColor(Color.BLACK);
+        } else {
+            table.setColor(Color.WHITE);
+        }
+        dialog.getContentTable().add(table).grow();
+    
+        final var previewLabel = new Label("Lorem Ipsum", previewStyle);
+        previewLabel.setAlignment(Align.center);
+    
+        var previewScrollPane = new ScrollPane(previewLabel, skin);
+        previewScrollPane.setFadeScrollBars(false);
+        table.add(previewScrollPane).pad(5.0f).grow().minHeight(100);
         
         dialog.button("OK", true);
         dialog.button("Cancel", false).key(Keys.ESCAPE, false);
         okButton = (TextButton) dialog.getButtonTable().getCells().first().getActor();
-        okButton.setDisabled(true);
         okButton.addListener(handListener);
         dialog.getButtonTable().getCells().get(1).getActor().addListener(handListener);
         
         dialog.getButtonTable().padBottom(15.0f);
         
-        textField.addListener(new ChangeListener() {
+        nameField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                boolean disable = !FontData.validate(textField.getText());
-                if (!disable) {
-                    for (ColorData data : jsonData.getColors()) {
-                        if (data.getName().equals(textField.getText())) {
-                            disable = true;
-                            break;
-                        }
-                    }
-                }
-                okButton.setDisabled(disable);
+                okButton.setDisabled(!checkIfFontNameValid(nameField.getText(), font.getName()));
             }
         });
-        textField.setTextFieldListener((TextField textField1, char c) -> {
+        nameField.setTextFieldListener((TextField textField1, char c) -> {
             if (c == '\n') {
                 if (!okButton.isDisabled()) {
-                    renameFont(font, textField1.getText());
+                    changeFontSettings(font, textField1.getText(), Integer.parseInt(scalingField.getText()));
                     dialog.hide();
                 }
             }
         });
+        scalingField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                var isNumeric = Utils.isNumeric(scalingField.getText());
+                okButton.setDisabled(!isNumeric);
+                if (isNumeric) {
+                    var scaling = Integer.parseInt(scalingField.getText());
+                    if (scaling != -1) {
+                        previewStyle.font.getData().setScale(scaling / previewCapHeight);
+                        previewLabel.setStyle(previewStyle);
+                    } else {
+                        previewStyle.font.getData().setScale(1);
+                        previewLabel.setStyle(previewStyle);
+                    }
+                } else {
+                    previewStyle.font.getData().setScale(1);
+                    previewLabel.setStyle(previewStyle);
+                }
+            }
+        });
         
-        textField.setFocusTraversal(false);
+        nameField.setFocusTraversal(false);
         
         dialog.show(getStage());
     }
     
-    private void renameFont(FontData font, String newName) {
+    private void changeFontSettings(FontData font, String newName, int newScaling) {
         for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
             for (StyleData data : datas) {
                 for (StyleProperty property : data.properties.values()) {
@@ -723,6 +766,8 @@ public class DialogFonts extends Dialog {
             Gdx.app.error(getClass().getName(), "Error trying to rename a font.", ex);
             dialogFactory.showDialogError("Rename Font Error...", "Error trying to rename a font.\n\nOpen log?");
         }
+        
+        font.setScaling(newScaling);
 
         undoableManager.clearUndoables();
 
@@ -940,7 +985,9 @@ public class DialogFonts extends Dialog {
                         regions.add(region);
                     }
                 }
-                fontMap.put(font, new BitmapFont(fontData, regions, true));
+                var bitmapFont = new BitmapFont(fontData, regions, true);
+                if (font.getScaling() != -1) bitmapFont.getData().setScale(font.getScaling() / bitmapFont.getCapHeight());
+                fontMap.put(font, bitmapFont);
             }
             return true;
         } catch (Exception e) {
@@ -967,7 +1014,7 @@ public class DialogFonts extends Dialog {
                     FileHandle fileHandle = new FileHandle(files.get(0).getParentFile());
                     projectData.setLastFontPath(fileHandle.path() + "/");
                     checkExistingDrawablesDialog(files, () -> {
-                        fontNameDialog(files, 0);
+                        fontSettingsDialog(files, 0);
                     });
                 });
             }
@@ -1026,7 +1073,7 @@ public class DialogFonts extends Dialog {
         dialogFactory.showDialogBitmapFont((FileHandle file) -> {
             var files = new Array<FileHandle>();
             files.add(file);
-            fontNameDialog(files, 0);
+            fontSettingsDialog(files, 0);
         
 
             desktopWorker.addFilesDroppedListener(filesDroppedListener);
@@ -1058,40 +1105,41 @@ public class DialogFonts extends Dialog {
         dialogFactory.showDialogImageFont((FileHandle file) -> {
             var files = new Array<FileHandle>();
             files.add(file);
-            fontNameDialog(files, 0);
+            fontSettingsDialog(files, 0);
             desktopWorker.addFilesDroppedListener(filesDroppedListener);
         });
     }
     
-    private void fontNameDialog(List<File> files, int index) {
+    private void fontSettingsDialog(List<File> files, int index) {
         Array<FileHandle> handles = new Array<>();
         files.forEach((file) -> {
             handles.add(new FileHandle(file));
         });
         
-        fontNameDialog(handles, index);
+        fontSettingsDialog(handles, index);
     }
     
-    private void fontNameDialog(Array<FileHandle> files, int index) {
+    private void fontSettingsDialog(Array<FileHandle> files, int index) {
         if (index < files.size) {
             try {
                 final FileHandle fileHandle = files.get(index);
-
-                final TextField textField = new TextField(FontData.filter(fileHandle.nameWithoutExtension()), getSkin());
-                final Dialog nameDialog = new Dialog("Enter a name...", getSkin(), "bg") {
+                
+                final var nameField = new TextField(FontData.filter(fileHandle.nameWithoutExtension()), getSkin());
+                final var scalingField = new TextField("-1", skin);
+                final Dialog nameDialog = new Dialog("Font settings...", getSkin(), "bg") {
                     @Override
                     protected void result(Object object) {
                         if ((Boolean) object) {
-                            String name = textField.getText();
+                            String name = nameField.getText();
 
-                            addFont(name, fileHandle);
+                            addFont(name, MathUtils.round(Integer.parseInt(scalingField.getText())), fileHandle);
 
                         }
                     }
 
                     @Override
                     public boolean remove() {
-                        fontNameDialog(files, index + 1);
+                        fontSettingsDialog(files, index + 1);
                         return super.remove();
                     }
                 };
@@ -1106,11 +1154,11 @@ public class DialogFonts extends Dialog {
                 
                 nameDialog.getButtonTable().padBottom(15.0f);
                 
-                textField.setTextFieldListener((TextField textField1, char c) -> {
+                nameField.setTextFieldListener((TextField textField1, char c) -> {
                     if (c == '\n') {
                         if (!button.isDisabled()) {
                             String name1 = textField1.getText();
-                            if (addFont(name1, fileHandle)) {
+                            if (addFont(name1, MathUtils.round(Integer.parseInt(scalingField.getText())), fileHandle)) {
                                 nameDialog.hide();
                             }
                         }
@@ -1118,56 +1166,82 @@ public class DialogFonts extends Dialog {
                     }
                 });
                 
-                textField.addListener(ibeamListener);
+                nameField.addListener(ibeamListener);
                 
                 nameDialog.getContentTable().defaults().padLeft(10.0f).padRight(10.0f).padTop(5.0f);
                 nameDialog.text("Please enter a name for the new font: ");
+                
                 nameDialog.getContentTable().row();
-                nameDialog.getContentTable().add(textField).growX();
+                nameDialog.getContentTable().add(nameField).growX();
+                
+                nameDialog.getContentTable().row();
+                nameDialog.text("Enter scaling value (-1 for default):");
+                
+                nameDialog.getContentTable().row();
+                scalingField.setTextFieldFilter((textField, c) -> Character.isDigit(c) || c == '-');
+                nameDialog.getContentTable().add(scalingField);
+                scalingField.addListener(ibeamListener);
+                
                 nameDialog.getContentTable().row();
                 nameDialog.text("Preview:");
                 nameDialog.getContentTable().row();
 
                 LabelStyle previewStyle = new LabelStyle();
                 previewStyle.font = new BitmapFont(fileHandle);
+                final var previewCapHeight = previewStyle.font.getCapHeight();
                 Table table = new Table(getSkin());
                 table.setBackground("white");
-                BitmapFontData bitmapFontData = new BitmapFontData(fileHandle, false);
-                if (Utils.brightness(Utils.averageEdgeColor(new FileHandle(bitmapFontData.imagePaths[0]))) > .5f) {
+                if (Utils.brightness(Utils.averageEdgeColor(new FileHandle(previewStyle.font.getData().imagePaths[0]))) > .5f) {
                     table.setColor(Color.BLACK);
                 } else {
                     table.setColor(Color.WHITE);
                 }
-                table.add(new Label("Lorem Ipsum", previewStyle)).pad(5.0f);
-
-                nameDialog.getContentTable().add(table);
+                nameDialog.getContentTable().add(table).grow();
+                
+                final var previewLabel = new Label("Lorem Ipsum", previewStyle);
+                previewLabel.setAlignment(Align.center);
+                
+                var previewScrollPane = new ScrollPane(previewLabel, skin);
+                previewScrollPane.setFadeScrollBars(false);
+                table.add(previewScrollPane).pad(5.0f).grow().minHeight(100);
+                
                 nameDialog.key(Keys.ESCAPE, false);
-                button.setDisabled(!FontData.validate(textField.getText()));
-                textField.addListener(new ChangeListener() {
+                button.setDisabled(!checkIfFontNameValid(nameField.getText(), null));
+                nameField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                        boolean disable = !FontData.validate(textField.getText());
-                        if (!disable) {
-                            for (FontData data : jsonData.getFonts()) {
-                                if (data.getName().equals(textField.getText())) {
-                                    disable = true;
-                                    break;
-                                }
-                            }
-                        }
-                        button.setDisabled(disable);
+                        button.setDisabled(!checkIfFontNameValid(nameField.getText(), null));
                     }
                 });
                 nameDialog.setColor(1.0f, 1.0f, 1.0f, 0.0f);
                 
-                textField.setFocusTraversal(false);
+                scalingField.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        var isNumeric = Utils.isNumeric(scalingField.getText());
+                        button.setDisabled(!isNumeric);
+                        if (isNumeric) {
+                            var scaling = Integer.parseInt(scalingField.getText());
+                            if (scaling != -1) {
+                                previewStyle.font.getData().setScale(scaling / previewCapHeight);
+                                previewLabel.setStyle(previewStyle);
+                            } else {
+                                previewStyle.font.getData().setScale(1);
+                                previewLabel.setStyle(previewStyle);
+                            }
+                        } else {
+                            previewStyle.font.getData().setScale(1);
+                            previewLabel.setStyle(previewStyle);
+                        }
+                    }
+                });
                 
-                if (!Utils.doesImageFitBox(new FileHandle(bitmapFontData.imagePaths[0]), maxTextureWidth, maxTextureHeight)) {
+                if (!Utils.doesImageFitBox(new FileHandle(previewStyle.font.getData().imagePaths[0]), maxTextureWidth, maxTextureHeight)) {
                     showAddFontSizeError(fileHandle.nameWithoutExtension());
                 } else {
                     nameDialog.show(getStage());
-                    getStage().setKeyboardFocus(textField);
-                    textField.selectAll();
+                    getStage().setKeyboardFocus(nameField);
+                    nameField.selectAll();
                 }
             } catch (Exception e) {
                 Gdx.app.error(getClass().getName(), "Error creating preview font from file", e);
@@ -1179,6 +1253,26 @@ public class DialogFonts extends Dialog {
                 projectData.makeResourcesRelative();
             }
         }
+    }
+    
+    private boolean checkIfFontNameValid(String name, String originalName) {
+        boolean valid = FontData.validate(name);
+        if (valid || originalName != null && !name.equals(originalName)) {
+            for (var data : jsonData.getFonts()) {
+                if (data.getName().equals(name)) {
+                    valid = false;
+                    break;
+                }
+            }
+        }
+        
+        if (valid) for (var data : jsonData.getFreeTypeFonts()) {
+            if (data.name.equals(name)) {
+                valid = false;
+                break;
+            }
+        }
+        return valid;
     }
     
     private void showAddFontSizeError(String name) {
