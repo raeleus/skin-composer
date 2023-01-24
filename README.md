@@ -42,7 +42,9 @@ Video tutorials are available on [YouTube](https://www.youtube.com/playlist?list
 
 Skin Composer requires the Spine Runtime. The Spine Runtime requires a Spine license to redistribute. Please see the [Spine Editor License](http://esotericsoftware.com/spine-editor-license).
 
-The installer/uninstaller depends on mt.exe (to give the executable admin rights) and WinRAR (to collect the files into a single executable EXE). You need to install the [WinRAR (x64)](https://www.rarlab.com/download.htm) and the [Windows 10 SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/) with the options "Windows SDK Signing Tools for Desktop Apps" and "Windows SDK for UWP Managed Apps". Run the task ":installer:jpackageZip" on a Windows 10 host computer. The final distributable zip is created in /installer/build/winrar 
+The installer/uninstaller depends on mt.exe (to give the executable admin rights) and WinRAR (to collect the files into a single executable EXE). You need to install the [WinRAR (x64)](https://www.rarlab.com/download.htm) and the [Windows 10 SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/) with the options "Windows SDK Signing Tools for Desktop Apps" and "Windows SDK for UWP Managed Apps". Run the task ":installer:jpackageZip" on a Windows 10 host computer. The final distributable zip is created in /installer/build/winrar
+
+If you have trouble compiling or running the app from source, try using JDK 13.
 
 ### License ###
 MIT License
