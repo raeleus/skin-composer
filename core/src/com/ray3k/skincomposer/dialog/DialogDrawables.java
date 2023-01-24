@@ -308,8 +308,13 @@ public class DialogDrawables extends Dialog {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Keys.ESCAPE) {
-                    filterOptions.name = "";
-                    sortBySelectedMode();
+                    if (filterOptions.name.equals("")) {
+                        result(null);
+                        hide();
+                    } else {
+                        filterOptions.name = "";
+                        sortBySelectedMode();
+                    }
                     return true;
                 }
                 return false;
