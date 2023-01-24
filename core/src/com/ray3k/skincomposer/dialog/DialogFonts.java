@@ -642,7 +642,9 @@ public class DialogFonts extends Dialog {
             @Override
             protected void result(Object object) {
                 if ((boolean) object) {
-                    changeFontSettings(font, nameField.getText(), Integer.parseInt(scalingField.getText()), markupCheckBox.isChecked(), flipCheckBox.isChecked());
+                    var scaling = Integer.parseInt(scalingField.getText());
+                    if (scaling < 1) scaling = 1;
+                    changeFontSettings(font, nameField.getText(), scaling, markupCheckBox.isChecked(), flipCheckBox.isChecked());
                 }
             }
 
@@ -737,7 +739,9 @@ public class DialogFonts extends Dialog {
         nameField.setTextFieldListener((TextField textField1, char c) -> {
             if (c == '\n') {
                 if (!okButton.isDisabled()) {
-                    changeFontSettings(font, textField1.getText(), Integer.parseInt(scalingField.getText()), markupCheckBox.isChecked(), flipCheckBox.isChecked());
+                    var scaling = Integer.parseInt(scalingField.getText());
+                    if (scaling < 1) scaling = 1;
+                    changeFontSettings(font, textField1.getText(), scaling, markupCheckBox.isChecked(), flipCheckBox.isChecked());
                     dialog.hide();
                 }
             }
@@ -749,7 +753,7 @@ public class DialogFonts extends Dialog {
                 okButton.setDisabled(!isNumeric);
                 if (isNumeric) {
                     var scaling = Integer.parseInt(scalingField.getText());
-                    if (scaling != -1) {
+                    if (scaling > 0) {
                         previewStyle.font.getData().setScale(scaling / previewCapHeight);
                         previewLabel.setStyle(previewStyle);
                     } else {
@@ -1163,8 +1167,10 @@ public class DialogFonts extends Dialog {
                     protected void result(Object object) {
                         if ((Boolean) object) {
                             String name = nameField.getText();
-
-                            addFont(name, MathUtils.round(Integer.parseInt(scalingField.getText())), markupCheckBox.isChecked(), flipCheckBox.isChecked(), fileHandle);
+    
+                            var scaling = Integer.parseInt(scalingField.getText());
+                            if (scaling < 1) scaling = 1;
+                            addFont(name, MathUtils.round(scaling), markupCheckBox.isChecked(), flipCheckBox.isChecked(), fileHandle);
                         }
                     }
 
@@ -1189,7 +1195,9 @@ public class DialogFonts extends Dialog {
                     if (c == '\n') {
                         if (!button.isDisabled()) {
                             String name1 = textField1.getText();
-                            if (addFont(name1, MathUtils.round(Integer.parseInt(scalingField.getText())), markupCheckBox.isChecked(), flipCheckBox.isChecked(), fileHandle)) {
+                            var scaling = Integer.parseInt(scalingField.getText());
+                            if (scaling < 1) scaling = 1;
+                            if (addFont(name1, MathUtils.round(scaling), markupCheckBox.isChecked(), flipCheckBox.isChecked(), fileHandle)) {
                                 nameDialog.hide();
                             }
                         }
@@ -1265,7 +1273,7 @@ public class DialogFonts extends Dialog {
                         button.setDisabled(!isNumeric);
                         if (isNumeric) {
                             var scaling = Integer.parseInt(scalingField.getText());
-                            if (scaling != -1) {
+                            if (scaling > 0) {
                                 previewStyle.font.getData().setScale(scaling / previewCapHeight);
                                 previewLabel.setStyle(previewStyle);
                             } else {
