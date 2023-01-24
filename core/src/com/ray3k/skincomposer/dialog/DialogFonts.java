@@ -690,6 +690,7 @@ public class DialogFonts extends Dialog {
         LabelStyle previewStyle = new LabelStyle();
         previewStyle.font = new BitmapFont(font.file, font.isFlip());
         final var previewCapHeight = previewStyle.font.getCapHeight();
+        previewStyle.font.getData().setScale(font.getScaling() / previewStyle.font.getCapHeight());
         
         dialog.getContentTable().row();
         Table table = new Table();
