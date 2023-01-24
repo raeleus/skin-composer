@@ -2472,8 +2472,10 @@ public class RootTable extends Table {
                                     for (FontData fd : jsonData.getFonts()) {
                                         if (fd.getName().equals(fontName)) {
                                             fontData = fd;
-                                            font = new BitmapFont(fd.file);
+                                            font = new BitmapFont(fd.file, fd.isFlip());
                                             if (fd.getScaling() != -1) font.getData().setScale(fd.getScaling() / font.getCapHeight());
+                                            font.getData().markupEnabled = fd.isMarkupEnabled();
+                                            font.getData().flipped = fd.isFlip();
                                             previewFonts.add(font);
                                             break;
                                         }
@@ -2552,8 +2554,10 @@ public class RootTable extends Table {
                     } else if (field.getType().equals(BitmapFont.class)) {
                         for (FontData data : projectData.getJsonData().getFonts()) {
                             if (value.equals(data.getName())) {
-                                BitmapFont font = new BitmapFont(data.file);
+                                BitmapFont font = new BitmapFont(data.file, data.isFlip());
                                 if (data.getScaling() != -1) font.getData().setScale(data.getScaling() / font.getCapHeight());
+                                font.getData().markupEnabled = data.isMarkupEnabled();
+                                font.getData().flipped = data.isFlip();
                                 previewFonts.add(font);
                                 field.set(instance, font);
                             }

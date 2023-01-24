@@ -272,11 +272,11 @@ public class DialogFonts extends Dialog {
         return dialog;
     }
 
-    private boolean addFont(String name, int scaling, FileHandle file) {
+    private boolean addFont(String name, int scaling, boolean markupEnabled, boolean flip, FileHandle file) {
         if (FontData.validate(name)) {
             try {
                 projectData.setChangesSaved(false);
-                FontData font = new FontData(name, scaling, file);
+                FontData font = new FontData(name, scaling, markupEnabled, flip, file);
                 
                 //remove any existing FontData that shares the same name.
                 if (fonts.contains(font, false)) {
@@ -294,7 +294,7 @@ public class DialogFonts extends Dialog {
                     fonts.removeValue(font, false);
                 }
                 
-                var bitmapFontData = new BitmapFontData(file, false);
+                var bitmapFontData = new BitmapFontData(file, font.isFlip());
                 for (String path : bitmapFontData.imagePaths) {
                     //remove any existing drawables that share the name
                     FileHandle imagefile = new FileHandle(path);
@@ -332,9 +332,9 @@ public class DialogFonts extends Dialog {
                 }
                 var bitmapFont = new BitmapFont(bitmapFontData, regions, true);
                 if (scaling != -1) bitmapFontData.setScale(scaling / bitmapFont.getCapHeight());
+                bitmapFontData.markupEnabled = markupEnabled;
+                bitmapFontData.flipped = flip;
                 fontMap.put(font, bitmapFont);
-                
-                
                 
                 sortBySelectedMode();
                 refreshTable();
@@ -632,13 +632,17 @@ public class DialogFonts extends Dialog {
     private void changeSettingsDialog(final FontData font) {
         TextField nameField = new TextField(font.getName(), getSkin());
         var scalingField = new TextField(Integer.toString(font.getScaling()), skin);
+        final var markupCheckBox = new CheckBox("markupEnabled", skin);
+        markupCheckBox.setChecked(font.isMarkupEnabled());
+        final var flipCheckBox = new CheckBox("flip", skin);
+        flipCheckBox.setChecked(font.isFlip());
         TextButton okButton;
         
         Dialog dialog = new Dialog("Font Settings...", getSkin(), "bg") {
             @Override
             protected void result(Object object) {
                 if ((boolean) object) {
-                    changeFontSettings(font, nameField.getText(), Integer.parseInt(scalingField.getText()));
+                    changeFontSettings(font, nameField.getText(), Integer.parseInt(scalingField.getText()), markupCheckBox.isChecked(), flipCheckBox.isChecked());
                 }
             }
 
@@ -682,12 +686,27 @@ public class DialogFonts extends Dialog {
     
         dialog.getContentTable().row();
         LabelStyle previewStyle = new LabelStyle();
-        previewStyle.font = new BitmapFont(font.file);
+        previewStyle.font = new BitmapFont(font.file, font.isFlip());
         final var previewCapHeight = previewStyle.font.getCapHeight();
         
-        Table table = new Table(getSkin());
+        dialog.getContentTable().row();
+        Table table = new Table();
+        dialog.getContentTable().add(table);
+        
+        table.defaults().left();
+        table.add(markupCheckBox);
+        markupCheckBox.addListener(handListener);
+    
+        table.row();
+        table.add(flipCheckBox);
+        flipCheckBox.addListener(handListener);
+    
+        dialog.getContentTable().row();
+        table = new Table(getSkin());
         table.setBackground("white");
-        if (Utils.brightness(Utils.averageEdgeColor(new FileHandle(previewStyle.font.getData().imagePaths[0]))) > .5f) {
+        var imageFile = new FileHandle(previewStyle.font.getData().imagePaths[0]);
+        imageFile = font.file.sibling(imageFile.name());
+        if (Utils.brightness(Utils.averageEdgeColor(imageFile)) > .5f) {
             table.setColor(Color.BLACK);
         } else {
             table.setColor(Color.WHITE);
@@ -718,7 +737,7 @@ public class DialogFonts extends Dialog {
         nameField.setTextFieldListener((TextField textField1, char c) -> {
             if (c == '\n') {
                 if (!okButton.isDisabled()) {
-                    changeFontSettings(font, textField1.getText(), Integer.parseInt(scalingField.getText()));
+                    changeFontSettings(font, textField1.getText(), Integer.parseInt(scalingField.getText()), markupCheckBox.isChecked(), flipCheckBox.isChecked());
                     dialog.hide();
                 }
             }
@@ -744,12 +763,20 @@ public class DialogFonts extends Dialog {
             }
         });
         
-        nameField.setFocusTraversal(false);
+        Utils.onChange(markupCheckBox, () -> {
+            previewStyle.font.getData().markupEnabled = markupCheckBox.isChecked();
+            previewLabel.setStyle(previewStyle);
+        });
+    
+        Utils.onChange(flipCheckBox, () -> {
+            previewStyle.font = new BitmapFont(font.file, flipCheckBox.isChecked());
+            previewLabel.setStyle(previewStyle);
+        });
         
         dialog.show(getStage());
     }
     
-    private void changeFontSettings(FontData font, String newName, int newScaling) {
+    private void changeFontSettings(FontData font, String newName, int newScaling, boolean newMarkupEnabled, boolean newFlip) {
         for (Array<StyleData> datas : jsonData.getClassStyleMap().values()) {
             for (StyleData data : datas) {
                 for (StyleProperty property : data.properties.values()) {
@@ -768,6 +795,8 @@ public class DialogFonts extends Dialog {
         }
         
         font.setScaling(newScaling);
+        font.setMarkupEnabled(newMarkupEnabled);
+        font.setFlip(newFlip);
 
         undoableManager.clearUndoables();
 
@@ -973,7 +1002,7 @@ public class DialogFonts extends Dialog {
             atlas = atlasData.getAtlas();
 
             for (FontData font : fonts) {
-                BitmapFontData fontData = new BitmapFontData(font.file, false);
+                BitmapFontData fontData = new BitmapFontData(font.file, font.isFlip());
                 Array<TextureRegion> regions = new Array<>();
                 for (String path : fontData.imagePaths) {
                     FileHandle file = new FileHandle(path);
@@ -987,6 +1016,7 @@ public class DialogFonts extends Dialog {
                 }
                 var bitmapFont = new BitmapFont(fontData, regions, true);
                 if (font.getScaling() != -1) bitmapFont.getData().setScale(font.getScaling() / bitmapFont.getCapHeight());
+                bitmapFont.getData().markupEnabled = font.isMarkupEnabled();
                 fontMap.put(font, bitmapFont);
             }
             return true;
@@ -1126,14 +1156,15 @@ public class DialogFonts extends Dialog {
                 
                 final var nameField = new TextField(FontData.filter(fileHandle.nameWithoutExtension()), getSkin());
                 final var scalingField = new TextField("-1", skin);
+                final var markupCheckBox = new CheckBox("markupEnabled", skin);
+                final var flipCheckBox = new CheckBox("flip", skin);
                 final Dialog nameDialog = new Dialog("Font settings...", getSkin(), "bg") {
                     @Override
                     protected void result(Object object) {
                         if ((Boolean) object) {
                             String name = nameField.getText();
 
-                            addFont(name, MathUtils.round(Integer.parseInt(scalingField.getText())), fileHandle);
-
+                            addFont(name, MathUtils.round(Integer.parseInt(scalingField.getText())), markupCheckBox.isChecked(), flipCheckBox.isChecked(), fileHandle);
                         }
                     }
 
@@ -1158,7 +1189,7 @@ public class DialogFonts extends Dialog {
                     if (c == '\n') {
                         if (!button.isDisabled()) {
                             String name1 = textField1.getText();
-                            if (addFont(name1, MathUtils.round(Integer.parseInt(scalingField.getText())), fileHandle)) {
+                            if (addFont(name1, MathUtils.round(Integer.parseInt(scalingField.getText())), markupCheckBox.isChecked(), flipCheckBox.isChecked(), fileHandle)) {
                                 nameDialog.hide();
                             }
                         }
@@ -1181,15 +1212,27 @@ public class DialogFonts extends Dialog {
                 scalingField.setTextFieldFilter((textField, c) -> Character.isDigit(c) || c == '-');
                 nameDialog.getContentTable().add(scalingField);
                 scalingField.addListener(ibeamListener);
+    
+                nameDialog.getContentTable().row();
+                Table table = new Table();
+                nameDialog.getContentTable().add(table);
+    
+                table.defaults().left();
+                table.add(markupCheckBox);
+                markupCheckBox.addListener(handListener);
+    
+                table.row();
+                table.add(flipCheckBox);
+                flipCheckBox.addListener(handListener);
                 
                 nameDialog.getContentTable().row();
                 nameDialog.text("Preview:");
                 nameDialog.getContentTable().row();
 
                 LabelStyle previewStyle = new LabelStyle();
-                previewStyle.font = new BitmapFont(fileHandle);
+                previewStyle.font = new BitmapFont(fileHandle, false);
                 final var previewCapHeight = previewStyle.font.getCapHeight();
-                Table table = new Table(getSkin());
+                table = new Table(getSkin());
                 table.setBackground("white");
                 if (Utils.brightness(Utils.averageEdgeColor(new FileHandle(previewStyle.font.getData().imagePaths[0]))) > .5f) {
                     table.setColor(Color.BLACK);
@@ -1234,6 +1277,17 @@ public class DialogFonts extends Dialog {
                             previewLabel.setStyle(previewStyle);
                         }
                     }
+                });
+    
+                Utils.onChange(markupCheckBox, () -> {
+                    previewStyle.font.getData().markupEnabled = markupCheckBox.isChecked();
+                    previewLabel.setStyle(previewStyle);
+                });
+    
+                Utils.onChange(flipCheckBox, () -> {
+                    previewStyle.font = new BitmapFont(previewStyle.font.getData().fontFile, flipCheckBox.isChecked());
+                    
+                    previewLabel.setStyle(previewStyle);
                 });
                 
                 if (!Utils.doesImageFitBox(new FileHandle(previewStyle.font.getData().imagePaths[0]), maxTextureWidth, maxTextureHeight)) {

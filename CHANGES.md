@@ -1,7 +1,7 @@
 ### Skin Composer Version 53 ###
 * Updated to Stripe 1.4.1 and TextraTypist 0.7.4
 * Added new effects from TextraTypist
-* Added field for font scaling in Bitmap Fonts
+* Added fields for font scaling, markup, and flip in Bitmap Fonts
 * Fixed file dialog crashing on M1 Macs. Thanks Lyze!
 * Fixed floating point number parsing. Thanks H0k493!
 * Fixed new font names not being correctly validated
