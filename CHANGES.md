@@ -1,3 +1,6 @@
+### Skin Composer Version 54 ###
+* 
+
 ### Skin Composer Version 53 ###
 * Updated to Stripe 1.4.1 and TextraTypist 0.7.5
 * Added new effects from TextraTypist

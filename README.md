@@ -3,7 +3,7 @@
 ### ![Logo](docs/images/logo.png) ###
 
 * Use Skin Composer to create skins for libGDX's Scene2D.UI!
-* Version 53
+* Version 54
 * Live preview of all widgets with configurable options
 * Specify tinted, tiled, and custom created Drawables right in the editor
 * Includes BitmapFont editor and Image font generator like Shoebox
