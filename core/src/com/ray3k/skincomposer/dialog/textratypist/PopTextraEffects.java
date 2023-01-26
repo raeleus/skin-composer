@@ -1093,21 +1093,9 @@ public class PopTextraEffects extends PopTable {
                 tagEnd = "[%]";
                 typingLabel.setText(tagBegin + TEST_STRING + tagEnd);
                 typingLabel.restart();
-    
-                smallCapsButton = createBooleanField(false, "small caps", tokenTable);
-    
-                runnable = () -> {
-                    if (smallCapsButton.isChecked()) tagBegin = "[%^JOSTLE]";
-                    else tagBegin = "[%?JOSTLE]";
-        
-                    typingLabel.setText(tagBegin + TEST_STRING + tagEnd);
-                    typingLabel.restart();
-                };
-    
-                onChange(smallCapsButton, runnable);
                 break;
             case "Small Caps":
-                tagBegin = "[%?SMALLCAPS]";
+                tagBegin = "[%^SMALLCAPS]";
                 tagEnd = "[%]";
                 typingLabel.setText(tagBegin + TEST_STRING + tagEnd);
                 typingLabel.restart();
