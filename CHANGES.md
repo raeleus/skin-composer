@@ -1,5 +1,6 @@
 ### Skin Composer Version 54 ###
 * Fixed errors in TextraTypist Playground effect options.
+* Fixed blurry text on TextraTypist Playground's About page.
 
 ### Skin Composer Version 53 ###
 * Updated to Stripe 1.4.1 and TextraTypist 0.7.5
