@@ -85,6 +85,9 @@ public class FontData implements Json.Serializable {
     @Override
     public void write(Json json) {
         json.writeValue("name", name);
+        json.writeValue("flip", flip);
+        json.writeValue("markupEnabled", markupEnabled);
+        json.writeValue("scaling", scaling);
         if (file != null) {
             json.writeValue("file", file.path());
         } else {
@@ -95,6 +98,9 @@ public class FontData implements Json.Serializable {
     @Override
     public void read(Json json, JsonValue jsonData) {
         name = jsonData.getString("name");
+        flip = jsonData.getBoolean("flip", false);
+        markupEnabled = jsonData.getBoolean("markupEnabled", false);
+        scaling = jsonData.getInt("scaling", -1);
         if (!jsonData.get("file").isNull()) {
             file = new FileHandle(jsonData.getString("file"));
         }
