@@ -1,3 +1,6 @@
+### Skin Composer Version 55 ###
+* 
+
 ### Skin Composer Version 54 ###
 * Fixed errors in TextraTypist Playground effect options.
 * Fixed blurry text on TextraTypist Playground's About page.
