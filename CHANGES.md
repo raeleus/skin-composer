@@ -1,8 +1,20 @@
+### Skin Composer Version 55 ###
+* Added emoji menu to TextraTypist Playground.
+* Fixed not saving flip, markupEnabled, and scaling font values.
+
+### Skin Composer Version 54 ###
+* Fixed errors in TextraTypist Playground effect options.
+* Fixed blurry text on TextraTypist Playground's About page.
+
 ### Skin Composer Version 53 ###
-* Updated to Stripe 1.4.1 and TextraTypist 0.6.3 
+* Updated to Stripe 1.4.1 and TextraTypist 0.7.5
+* Added new effects from TextraTypist
+* Added fields for font scaling, markup, and flip in Bitmap Fonts
+* Pressing Escape in the Drawables dialog clears the name filter. Pressing Escape when there is no name filter closes the dialog.
 * Fixed file dialog crashing on M1 Macs. Thanks Lyze!
 * Fixed floating point number parsing. Thanks H0k493!
-* Added arm64 support to work on macOS. 
+* Fixed new font names not being correctly validated
+* Added arm64 support to work on macOS.
 * JSON import no longer requires an associated Atlas file.
 
 ### Skin Composer Version 52 ###

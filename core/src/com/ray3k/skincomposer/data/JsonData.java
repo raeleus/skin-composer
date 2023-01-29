@@ -150,7 +150,7 @@ public class JsonData implements Json.Serializable {
                         if (!fontCopy.parent().equals(fontFile.parent())) {
                             fontFile.copyTo(fontCopy);
                         }
-                        FontData fontData = new FontData(font.name(), fontCopy);
+                        FontData fontData = new FontData(font.name(), font.getInt("scaledSize", -1), font.getBoolean("markupEnabled"), font.getBoolean("flip"), fontCopy);
 
                         //delete fonts with the same name
                         for (FontData originalData : new Array<>(fonts)) {
@@ -667,6 +667,9 @@ public class JsonData implements Json.Serializable {
             for (FontData font : fonts) {
                 json.writeObjectStart(font.getName());
                 json.writeValue("file", font.file.name());
+                json.writeValue("scaledSize", font.getScaling());
+                json.writeValue("markupEnabled", font.isMarkupEnabled());
+                json.writeValue("flip", font.isFlip());
                 json.writeObjectEnd();
             }
             json.writeObjectEnd();

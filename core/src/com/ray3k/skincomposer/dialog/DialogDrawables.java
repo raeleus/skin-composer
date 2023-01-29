@@ -1,7 +1,7 @@
 /*******************************************************************************
  * MIT License
  *
- * Copyright (c) 2022 Raymond Buckley
+ * Copyright (c) 2023 Raymond Buckley
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -308,8 +308,13 @@ public class DialogDrawables extends Dialog {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Keys.ESCAPE) {
-                    filterOptions.name = "";
-                    sortBySelectedMode();
+                    if (filterOptions.name.equals("")) {
+                        result(null);
+                        hide();
+                    } else {
+                        filterOptions.name = "";
+                        sortBySelectedMode();
+                    }
                     return true;
                 }
                 return false;

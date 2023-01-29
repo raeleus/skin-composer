@@ -29,10 +29,16 @@ import com.badlogic.gdx.utils.JsonValue;
 
 public class FontData implements Json.Serializable {
     private String name;
+    private int scaling = -1;
+    private boolean markupEnabled;
+    private boolean flip;
     public FileHandle file;
 
-    public FontData(String name, FileHandle file) throws NameFormatException {
+    public FontData(String name, int scaling, boolean markupEnabled, boolean flip, FileHandle file) throws NameFormatException {
         setName(name);
+        this.scaling = scaling;
+        this.markupEnabled = markupEnabled;
+        this.flip = flip;
         this.file = file;
     }
     
@@ -43,7 +49,7 @@ public class FontData implements Json.Serializable {
     public String getName() {
         return name;
     }
-
+    
     public void setName(String name) throws NameFormatException {
         if (!validate(name)) {
             throw new NameFormatException();
@@ -51,10 +57,37 @@ public class FontData implements Json.Serializable {
             this.name = name;
         }
     }
-
+    
+    public int getScaling() {
+        return scaling;
+    }
+    
+    public void setScaling(int scaling) {
+        this.scaling = scaling;
+    }
+    
+    public boolean isMarkupEnabled() {
+        return markupEnabled;
+    }
+    
+    public void setMarkupEnabled(boolean markupEnabled) {
+        this.markupEnabled = markupEnabled;
+    }
+    
+    public boolean isFlip() {
+        return flip;
+    }
+    
+    public void setFlip(boolean flip) {
+        this.flip = flip;
+    }
+    
     @Override
     public void write(Json json) {
         json.writeValue("name", name);
+        json.writeValue("flip", flip);
+        json.writeValue("markupEnabled", markupEnabled);
+        json.writeValue("scaling", scaling);
         if (file != null) {
             json.writeValue("file", file.path());
         } else {
@@ -65,6 +98,9 @@ public class FontData implements Json.Serializable {
     @Override
     public void read(Json json, JsonValue jsonData) {
         name = jsonData.getString("name");
+        flip = jsonData.getBoolean("flip", false);
+        markupEnabled = jsonData.getBoolean("markupEnabled", false);
+        scaling = jsonData.getInt("scaling", -1);
         if (!jsonData.get("file").isNull()) {
             file = new FileHandle(jsonData.getString("file"));
         }

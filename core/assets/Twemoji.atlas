@@ -54,43 +54,43 @@ Japanese dolls
 bounds:1158,1747,32,32
 🎎
 bounds:1158,1747,32,32
-Japanese “acceptable” button
+Japanese 'acceptable' button
 bounds:1056,941,32,32
 🉑
 bounds:1056,941,32,32
-Japanese “application” button
+Japanese 'application' button
 bounds:342,1421,32,32
 🈸
 bounds:342,1421,32,32
-Japanese “bargain” button
+Japanese 'bargain' button
 bounds:104,1643,32,32
 🉐
 bounds:104,1643,32,32
-Japanese “discount” button
+Japanese 'discount' button
 bounds:1940,1698,32,32
 🈹
 bounds:1940,1698,32,32
-Japanese “free of charge” button
+Japanese 'free of charge' button
 bounds:1532,1532,32,32
 🈚
 bounds:1532,1532,32,32
-Japanese “monthly amount” button
+Japanese 'monthly amount' button
 bounds:546,1726,32,32
 🈷
 bounds:546,1726,32,32
-Japanese “passing grade” button
+Japanese 'passing grade' button
 bounds:512,1915,32,32
 🈴
 bounds:512,1915,32,32
-Japanese “prohibited” button
+Japanese 'prohibited' button
 bounds:784,889,32,32
 🈲
 bounds:784,889,32,32
-Japanese “reserved” button
+Japanese 'reserved' button
 bounds:886,1244,32,32
 🈯
 bounds:886,1244,32,32
-Japanese “service charge” button
+Japanese 'service charge' button
 bounds:1328,1214,32,32
 🈂
 bounds:1328,1214,32,32
@@ -1512,7 +1512,7 @@ elevator
 bounds:784,951,32,32
 🛗
 bounds:784,951,32,32
-eleven o’clock
+eleven o'clock
 bounds:478,1657,32,32
 🕚
 bounds:478,1657,32,32
@@ -2716,7 +2716,7 @@ fountain pen
 bounds:818,1844,32,32
 🖋
 bounds:818,1844,32,32
-four o’clock
+four o'clock
 bounds:342,1744,32,32
 🕓
 bounds:342,1744,32,32
@@ -4840,7 +4840,7 @@ offsets:1,0,32,32
 🦽
 bounds:709,421,28,26
 offsets:1,0,32,32
-man’s shoe
+man's shoe
 bounds:1702,1912,32,29
 offsets:0,0,32,32
 👞
@@ -4978,7 +4978,7 @@ menorah
 bounds:1022,1946,32,32
 🕎
 bounds:1022,1946,32,32
-men’s room
+men's room
 bounds:2,1700,32,32
 🚹
 bounds:2,1700,32,32
@@ -7040,7 +7040,7 @@ offsets:5,0,32,32
 🤳🏼
 bounds:1270,507,24,32
 offsets:5,0,32,32
-seven o’clock
+seven o'clock
 bounds:240,1170,32,32
 🕖
 bounds:240,1170,32,32
@@ -7458,7 +7458,7 @@ television
 bounds:2008,1752,32,32
 📺
 bounds:2008,1752,32,32
-ten o’clock
+ten o'clock
 bounds:104,424,32,32
 🕙
 bounds:104,424,32,32
@@ -7472,7 +7472,7 @@ offsets:9,0,32,32
 🩴
 bounds:2031,1413,15,32
 offsets:9,0,32,32
-three o’clock
+three o'clock
 bounds:852,1360,32,32
 🕒
 bounds:852,1360,32,32
@@ -7636,11 +7636,11 @@ tulip
 bounds:1600,1607,32,32
 🌷
 bounds:1600,1607,32,32
-twelve o’clock
+twelve o'clock
 bounds:988,892,32,32
 🕛
 bounds:988,892,32,32
-two o’clock
+two o'clock
 bounds:172,297,32,32
 🕑
 bounds:172,297,32,32
@@ -9090,7 +9090,7 @@ offsets:1,0,32,32
 👩‍🦰
 bounds:399,8,30,32
 offsets:1,0,32,32
-woman’s boot
+woman's boot
 bounds:988,1023,32,32
 👢
 bounds:988,1023,32,32
@@ -9509,7 +9509,7 @@ offsets:0,1,32,32
 ⛑
 bounds:506,242,30,30
 offsets:1,1,32,32
-rescue worker’s helmet
+rescue worker's helmet
 bounds:506,242,30,30
 offsets:1,1,32,32
 ⛓
@@ -9744,11 +9744,11 @@ bounds:2,1049,32,27
 offsets:0,2,32,32
 ㊗
 bounds:920,1735,32,32
-Japanese “congratulations” button
+Japanese 'congratulations' button
 bounds:920,1735,32,32
 ㊙
 bounds:1260,1482,32,32
-Japanese “secret” button
+Japanese 'secret' button
 bounds:1260,1482,32,32
 🃏
 bounds:1406,801,26,32
@@ -9915,7 +9915,7 @@ offsets:4,4,32,32
 🇨🇮
 bounds:138,839,32,24
 offsets:0,4,32,32
-flag, Côte d’Ivoire
+flag, Côte d'Ivoire
 bounds:138,839,32,24
 offsets:0,4,32,32
 🇨🇱
@@ -10514,23 +10514,23 @@ bounds:1124,1622,32,24
 offsets:0,4,32,32
 🈁
 bounds:614,1089,32,32
-Japanese “here” button
+Japanese 'here' button
 bounds:614,1089,32,32
 🈳
 bounds:988,1662,32,32
-Japanese “vacancy” button
+Japanese 'vacancy' button
 bounds:988,1662,32,32
 🈵
 bounds:1668,1819,32,32
-Japanese “no vacancy” button
+Japanese 'no vacancy' button
 bounds:1668,1819,32,32
 🈶
 bounds:376,1657,32,32
-Japanese “not free of charge” button
+Japanese 'not free of charge' button
 bounds:376,1657,32,32
 🈺
 bounds:1362,1391,32,32
-Japanese “open for business” button
+Japanese 'open for business' button
 bounds:1362,1391,32,32
 🌁
 bounds:206,363,32,32
@@ -11795,7 +11795,7 @@ offsets:0,1,32,32
 👒
 bounds:784,1889,32,21
 offsets:0,6,32,32
-woman’s hat
+woman's hat
 bounds:784,1889,32,21
 offsets:0,6,32,32
 👔
@@ -11811,7 +11811,7 @@ offsets:3,0,32,32
 👚
 bounds:342,1832,32,30
 offsets:0,0,32,32
-woman’s clothes
+woman's clothes
 bounds:342,1832,32,30
 offsets:0,0,32,32
 👟
@@ -11823,7 +11823,7 @@ offsets:0,0,32,32
 👡
 bounds:1226,1549,32,16
 offsets:0,2,32,32
-woman’s sandal
+woman's sandal
 bounds:1226,1549,32,16
 offsets:0,2,32,32
 👤
@@ -14516,23 +14516,23 @@ synagogue
 bounds:1158,1781,32,32
 🕐
 bounds:172,1395,32,32
-one o’clock
+one o'clock
 bounds:172,1395,32,32
 🕔
 bounds:206,329,32,32
-five o’clock
+five o'clock
 bounds:206,329,32,32
 🕕
 bounds:648,1486,32,32
-six o’clock
+six o'clock
 bounds:648,1486,32,32
 🕗
 bounds:1124,1371,32,32
-eight o’clock
+eight o'clock
 bounds:1124,1371,32,32
 🕘
 bounds:172,1878,32,32
-nine o’clock
+nine o'clock
 bounds:172,1878,32,32
 🕜
 bounds:1804,1878,32,32
@@ -15580,7 +15580,7 @@ bounds:2028,1174,17,32
 offsets:10,0,32,32
 🚺
 bounds:1328,1157,32,32
-women’s room
+women's room
 bounds:1328,1157,32,32
 🚻
 bounds:1328,1539,32,32
