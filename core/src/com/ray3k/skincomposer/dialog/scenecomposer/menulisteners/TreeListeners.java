@@ -51,7 +51,7 @@ public class TreeListeners {
                 textField.setText(simTree.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(Main.fixTooltip(new TextTooltip("The name of the Tree to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+                textField.addListener((Main.makeTooltip("The name of the Tree to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -119,7 +119,7 @@ public class TreeListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding on the left of the Tree.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding on the left of the Tree.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -137,7 +137,7 @@ public class TreeListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding on the right of the Tree.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding on the right of the Tree.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -176,7 +176,7 @@ public class TreeListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The spacing on the left of the icon.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The spacing on the left of the icon.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -194,7 +194,7 @@ public class TreeListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The spacing on the right of the icon.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The spacing on the right of the icon.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -212,7 +212,7 @@ public class TreeListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The indentation space for each indented node.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The indentation space for each indented node.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -230,7 +230,7 @@ public class TreeListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The vertical spacing between each node.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The vertical spacing between each node.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -333,7 +333,7 @@ public class TreeListeners {
                 imageTextButton.setChecked(simNode.expanded);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether the children are expanded and visible.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Sets whether the children are expanded and visible.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -346,7 +346,7 @@ public class TreeListeners {
                 imageTextButton.setChecked(simNode.selectable);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Sets whether this node can be selected.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Sets whether this node can be selected.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

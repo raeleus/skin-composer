@@ -544,7 +544,7 @@ public class DialogDrawables extends Dialog {
             }
             
             //Tooltip
-            var toolTip = Main.fixTooltip(new TextTooltip(drawable.name, tooltipManager, getSkin()));
+            var toolTip = (Main.makeTooltip(drawable.name, tooltipManager, getSkin()));
             label.addListener(toolTip);
         }
     }
@@ -635,7 +635,7 @@ public class DialogDrawables extends Dialog {
             table.add(label).colspan(6).growX().width(sizes[MathUtils.floor(zoomSlider.getValue())]);
         
             //Tooltip
-            Tooltip toolTip = Main.fixTooltip(new TextTooltip(drawable.name, tooltipManager, getSkin()));
+            Tooltip toolTip = (Main.makeTooltip(drawable.name, tooltipManager, getSkin()));
             label.addListener(toolTip);
         }
     }

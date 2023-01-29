@@ -51,7 +51,7 @@ public class ListListeners {
                 textField.setText(simList.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(Main.fixTooltip(new TextTooltip("The name of the List to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+                textField.addListener((Main.makeTooltip("The name of the List to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -112,7 +112,7 @@ public class ListListeners {
                 popTable.setAutomaticallyResized(true);
                 
                 textField.addListener(ibeamListener);
-                textField.addListener(Main.fixTooltip(new TextTooltip("The text to add to the list.", tooltipManager, skin, "scene")));
+                textField.addListener((Main.makeTooltip("The text to add to the list.", tooltipManager, skin, "scene")));
                 textField.addListener(new InputListener() {
                     @Override
                     public boolean keyDown(InputEvent event, int keycode) {

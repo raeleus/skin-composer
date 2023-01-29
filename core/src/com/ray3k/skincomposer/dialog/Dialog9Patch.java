@@ -817,7 +817,7 @@ public class Dialog9Patch extends Dialog {
                 });
             }
         });
-        var toolTip = Main.fixTooltip(new TextTooltip("Background color for preview pane.", tooltipManager, getSkin()));
+        var toolTip = (Main.makeTooltip("Background color for preview pane.", tooltipManager, getSkin()));
         imageButton.addListener(toolTip);
 
         slider = new Slider(1.0f, 100.0f, 1.0f, false, getSkin(), "zoom-horizontal");

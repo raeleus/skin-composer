@@ -127,7 +127,7 @@ public class DialogImageFont extends Dialog {
         textButton.setDisabled(true);
         button(textButton, true);
         textButton.addListener(handListener);
-        textButton.addListener(Main.fixTooltip(new TextTooltip("Generate bitmap font, save to specified file, and add to list of fonts", tooltipManager, skin)));
+        textButton.addListener((Main.makeTooltip("Generate bitmap font, save to specified file, and add to list of fonts", tooltipManager, skin)));
         
         addListener(new InputListener() {
             @Override
@@ -147,7 +147,7 @@ public class DialogImageFont extends Dialog {
         textButton = new TextButton("Save Settings", skin);
         getButtonTable().add(textButton);
         textButton.addListener(handListener);
-        textButton.addListener(Main.fixTooltip(new TextTooltip("Save dialog settings to JSON", tooltipManager, skin)));
+        textButton.addListener((Main.makeTooltip("Save dialog settings to JSON", tooltipManager, skin)));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -158,7 +158,7 @@ public class DialogImageFont extends Dialog {
         textButton = new TextButton("Load Settings", skin);
         getButtonTable().add(textButton);
         textButton.addListener(handListener);
-        textButton.addListener(Main.fixTooltip(new TextTooltip("Load dialog settings to JSON", tooltipManager, skin)));
+        textButton.addListener((Main.makeTooltip("Load dialog settings to JSON", tooltipManager, skin)));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -169,7 +169,7 @@ public class DialogImageFont extends Dialog {
         textButton = new TextButton("Reset", skin);
         getButtonTable().add(textButton);
         textButton.addListener(handListener);
-        textButton.addListener(Main.fixTooltip(new TextTooltip("Reset all settings to defaults", tooltipManager, skin)));
+        textButton.addListener((Main.makeTooltip("Reset all settings to defaults", tooltipManager, skin)));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -256,7 +256,7 @@ public class DialogImageFont extends Dialog {
         var textField = new TextField(settings.characters, skin);
         textField.setName("characters");
         table.add(textField).growX();
-        textField.addListener(Main.fixTooltip(new TextTooltip("Characters to be included in font", tooltipManager, skin)));
+        textField.addListener((Main.makeTooltip("Characters to be included in font", tooltipManager, skin)));
         textField.addListener(ibeamListener);
         textField.setTextFieldFilter((TextField textField1, char c) -> textField1.getText().indexOf(c) == -1);
         
@@ -289,7 +289,7 @@ public class DialogImageFont extends Dialog {
         }
         selectBox.setName("characters select");
         table.add(selectBox);
-        selectBox.addListener(Main.fixTooltip(new TextTooltip("Character Presets", tooltipManager, skin)));
+        selectBox.addListener((Main.makeTooltip("Character Presets", tooltipManager, skin)));
         selectBox.addListener(handListener);
         selectBox.getList().addListener(handListener);
         selectBox.addListener(new ChangeListener() {
@@ -334,7 +334,7 @@ public class DialogImageFont extends Dialog {
         
         var textButton = new TextButton("Copy", skin);
         table.add(textButton);
-        textButton.addListener(Main.fixTooltip(new TextTooltip("Copy characters to clipboard", tooltipManager, skin)));
+        textButton.addListener((Main.makeTooltip("Copy characters to clipboard", tooltipManager, skin)));
         textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
@@ -366,7 +366,7 @@ public class DialogImageFont extends Dialog {
         textField.setName("imagepath");
         textField.setDisabled(true);
         table.add(textField).growX();
-        textField.addListener(Main.fixTooltip(new TextTooltip("Path to source image", tooltipManager, skin)));
+        textField.addListener((Main.makeTooltip("Path to source image", tooltipManager, skin)));
         textField.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -404,7 +404,7 @@ public class DialogImageFont extends Dialog {
         textField.setName("targetpath");
         textField.setDisabled(true);
         table.add(textField).growX();
-        textField.addListener(Main.fixTooltip(new TextTooltip("Path to save file", tooltipManager, skin)));
+        textField.addListener((Main.makeTooltip("Path to save file", tooltipManager, skin)));
         textField.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -437,7 +437,7 @@ public class DialogImageFont extends Dialog {
         spinner.setMinimum(0);
         content.add(spinner).left().minWidth(100.0f);
         fadables.add(spinner);
-        spinner.addListener(Main.fixTooltip(new TextTooltip("Minimum distance between opaque pixels to split characters", tooltipManager, skin)));
+        spinner.addListener((Main.makeTooltip("Minimum distance between opaque pixels to split characters", tooltipManager, skin)));
         spinner.getButtonMinus().addListener(handListener);
         spinner.getButtonPlus().addListener(handListener);
         spinner.getTextField().addListener(ibeamListener);
@@ -462,7 +462,7 @@ public class DialogImageFont extends Dialog {
         textButton.setName("kerning button");
         content.add(textButton).colspan(2).expandX().padLeft(10.0f).padRight(10.0f).minWidth(200.0f).left();
         fadables.add(textButton);
-        textButton.addListener(Main.fixTooltip(new TextTooltip("Adjust auto kerning settings", tooltipManager, skin)));
+        textButton.addListener((Main.makeTooltip("Adjust auto kerning settings", tooltipManager, skin)));
         textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
@@ -484,7 +484,7 @@ public class DialogImageFont extends Dialog {
         spinner.setName("kerning");
         content.add(spinner).left().minWidth(100.0f);
         fadables.add(spinner);
-        spinner.addListener(Main.fixTooltip(new TextTooltip("The horizontal spacing between characters", tooltipManager, skin)));
+        spinner.addListener((Main.makeTooltip("The horizontal spacing between characters", tooltipManager, skin)));
         spinner.getButtonMinus().addListener(handListener);
         spinner.getButtonPlus().addListener(handListener);
         spinner.getTextField().addListener(ibeamListener);
@@ -506,7 +506,7 @@ public class DialogImageFont extends Dialog {
         spinner.setName("leading");
         content.add(spinner).expandX().left().minWidth(100.0f);
         fadables.add(spinner);
-        spinner.addListener(Main.fixTooltip(new TextTooltip("The vertical spacing between each line", tooltipManager, skin)));
+        spinner.addListener((Main.makeTooltip("The vertical spacing between each line", tooltipManager, skin)));
         spinner.getButtonMinus().addListener(handListener);
         spinner.getButtonPlus().addListener(handListener);
         spinner.getTextField().addListener(ibeamListener);
@@ -532,7 +532,7 @@ public class DialogImageFont extends Dialog {
         spinner.setName("baseline");
         content.add(spinner).expandX().left().minWidth(100.0f).colspan(3);
         fadables.add(spinner);
-        spinner.addListener(Main.fixTooltip(new TextTooltip("The distance to the line that the text rests on.", tooltipManager, skin)));
+        spinner.addListener((Main.makeTooltip("The distance to the line that the text rests on.", tooltipManager, skin)));
         spinner.getButtonMinus().addListener(handListener);
         spinner.getButtonPlus().addListener(handListener);
         spinner.getTextField().addListener(ibeamListener);
@@ -559,7 +559,7 @@ public class DialogImageFont extends Dialog {
         spinner.setMinimum(0);
         content.add(spinner).left().minWidth(100.0f);
         fadables.add(spinner);
-        spinner.addListener(Main.fixTooltip(new TextTooltip("Set the width of a single space", tooltipManager, skin)));
+        spinner.addListener((Main.makeTooltip("Set the width of a single space", tooltipManager, skin)));
         spinner.getButtonMinus().addListener(handListener);
         spinner.getButtonPlus().addListener(handListener);
         spinner.getTextField().addListener(ibeamListener);
@@ -582,7 +582,7 @@ public class DialogImageFont extends Dialog {
         spinner.setMinimum(0);
         content.add(spinner).expandX().left().minWidth(100.0f);
         fadables.add(spinner);
-        spinner.addListener(Main.fixTooltip(new TextTooltip("The number of space characters to make a tab", tooltipManager, skin)));
+        spinner.addListener((Main.makeTooltip("The number of space characters to make a tab", tooltipManager, skin)));
         spinner.getButtonMinus().addListener(handListener);
         spinner.getButtonPlus().addListener(handListener);
         spinner.getTextField().addListener(ibeamListener);
@@ -647,7 +647,7 @@ public class DialogImageFont extends Dialog {
         
         textButton = new TextButton("Reset Text", skin);
         table.add(textButton).expandX().right();
-        textButton.addListener(Main.fixTooltip(new TextTooltip("Reset preview text to default", tooltipManager, skin)));
+        textButton.addListener((Main.makeTooltip("Reset preview text to default", tooltipManager, skin)));
         textButton.addListener(handListener);
         textButton.addListener(new ChangeListener() {
             @Override
@@ -659,7 +659,7 @@ public class DialogImageFont extends Dialog {
         
         var imageButton = new ImageButton(skin, "color");
         table.add(imageButton);
-        imageButton.addListener(Main.fixTooltip(new TextTooltip("Change preview color", tooltipManager, skin)));
+        imageButton.addListener((Main.makeTooltip("Change preview color", tooltipManager, skin)));
         imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
@@ -676,7 +676,7 @@ public class DialogImageFont extends Dialog {
         
         imageButton = new ImageButton(skin, "color-bg");
         table.add(imageButton);
-        imageButton.addListener(Main.fixTooltip(new TextTooltip("Change background color", tooltipManager, skin)));
+        imageButton.addListener((Main.makeTooltip("Change background color", tooltipManager, skin)));
         imageButton.addListener(handListener);
         imageButton.addListener(new ChangeListener() {
             @Override
@@ -923,7 +923,7 @@ public class DialogImageFont extends Dialog {
         textField.setName("pairs");
         table.add(textField).growX();
         textField.addListener(ibeamListener);
-        textField.addListener(Main.fixTooltip(new TextTooltip("Space separated list of kerning pairs to optimize spacing", tooltipManager, skin)));
+        textField.addListener((Main.makeTooltip("Space separated list of kerning pairs to optimize spacing", tooltipManager, skin)));
         textField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -934,7 +934,7 @@ public class DialogImageFont extends Dialog {
         var textButton = new TextButton("Reset", skin);
         table.add(textButton);
         textButton.addListener(handListener);
-        textButton.addListener(Main.fixTooltip(new TextTooltip("Reset kerning pairs to defaults", tooltipManager, skin)));
+        textButton.addListener((Main.makeTooltip("Reset kerning pairs to defaults", tooltipManager, skin)));
         textButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -952,7 +952,7 @@ public class DialogImageFont extends Dialog {
         spinner.getButtonMinus().addListener(handListener);
         spinner.getTextField().addListener(ibeamListener);
         spinner.getButtonPlus().addListener(handListener);
-        spinner.addListener(Main.fixTooltip(new TextTooltip("Offset to add to each kerning pair", tooltipManager, skin)));
+        spinner.addListener((Main.makeTooltip("Offset to add to each kerning pair", tooltipManager, skin)));
         spinner.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {

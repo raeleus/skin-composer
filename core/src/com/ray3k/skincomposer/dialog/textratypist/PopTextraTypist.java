@@ -558,11 +558,13 @@ public class PopTextraTypist extends PopTable {
         items.add("Default");
         
         masterFont = KnownFonts.getStandardFamily();
-        for (var font : KnownFonts.getAllStandard()) {
-            items.add(font.name);
+        for (var font : masterFont.family.connected) {
+            if (font != null) {
+                items.add(font.name);
+                KnownFonts.addEmoji(font);
+            }
         }
-        KnownFonts.addEmoji(masterFont);
-        
+
         fontSelectBox.setItems(items);
         
         previewTypingLabel = new TypingLabel(previewTypingLabel.getOriginalText().toString(), masterFont);
@@ -616,7 +618,11 @@ public class PopTextraTypist extends PopTable {
         
         var fontFamily = new FontFamily(namesArray, fontsArray);
         masterFont = fontFamily.connected[0].setFamily(fontFamily);
-        KnownFonts.addEmoji(masterFont);
+        for(Font font : fontFamily.connected)
+        {
+            if(font != null)
+                KnownFonts.addEmoji(font);
+        }
     
         previewTypingLabel = new TypingLabel(previewTypingLabel.getOriginalText().toString(), masterFont);
         previewTypingLabel.setWrap(true);

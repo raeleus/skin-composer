@@ -52,7 +52,7 @@ public class SelectBoxListeners {
                 textField.setText(simSelectBox.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(Main.fixTooltip(new TextTooltip("The name of the SelectBox to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+                textField.addListener((Main.makeTooltip("The name of the SelectBox to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -114,7 +114,7 @@ public class SelectBoxListeners {
                 popTable.key(Keys.ESCAPE, popTable::hide);
                 
                 textField.addListener(ibeamListener);
-                textField.addListener(Main.fixTooltip(new TextTooltip("The text to add to the list.", tooltipManager, skin, "scene")));
+                textField.addListener((Main.makeTooltip("The text to add to the list.", tooltipManager, skin, "scene")));
                 textField.addListener(new InputListener() {
                     @Override
                     public boolean keyDown(InputEvent event, int keycode) {
@@ -217,7 +217,7 @@ public class SelectBoxListeners {
                 valueSpinner.getTextField().addListener(ibeamListener);
                 valueSpinner.getButtonMinus().addListener(handListener);
                 valueSpinner.getButtonPlus().addListener(handListener);
-                valueSpinner.addListener(Main.fixTooltip(new TextTooltip("The maximum visible entries in the list.", tooltipManager, skin, "scene")));
+                valueSpinner.addListener((Main.makeTooltip("The maximum visible entries in the list.", tooltipManager, skin, "scene")));
                 valueSpinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -268,7 +268,7 @@ public class SelectBoxListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the SelectBox to the top left.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the SelectBox to the top left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -282,7 +282,7 @@ public class SelectBoxListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the SelectBox to the top center.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the SelectBox to the top center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -296,7 +296,7 @@ public class SelectBoxListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the SelectBox to the top right.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the SelectBox to the top right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -311,7 +311,7 @@ public class SelectBoxListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the SelectBox to the middle left.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the SelectBox to the middle left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -325,7 +325,7 @@ public class SelectBoxListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the SelectBox to the center.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the SelectBox to the center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -339,7 +339,7 @@ public class SelectBoxListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the SelectBox to the middle right.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the SelectBox to the middle right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -354,7 +354,7 @@ public class SelectBoxListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the SelectBox to the bottom left.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the SelectBox to the bottom left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -368,7 +368,7 @@ public class SelectBoxListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the SelectBox to the bottom center.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the SelectBox to the bottom center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -382,7 +382,7 @@ public class SelectBoxListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the contents of the SelectBox to the bottom right.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the contents of the SelectBox to the bottom right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -453,7 +453,7 @@ public class SelectBoxListeners {
                 textButton.setChecked(simSelectBox.scrollingDisabled);
                 popTable.add(textButton).minWidth(100);
                 textButton.addListener(handListener);
-                textButton.addListener(Main.fixTooltip(new TextTooltip("Whether the SelectBox scrolling is diabled", tooltipManager, skin, "scene")));
+                textButton.addListener((Main.makeTooltip("Whether the SelectBox scrolling is diabled", tooltipManager, skin, "scene")));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -494,7 +494,7 @@ public class SelectBoxListeners {
                 textButton.setChecked(simSelectBox.disabled);
                 popTable.add(textButton).minWidth(100);
                 textButton.addListener(handListener);
-                textButton.addListener(Main.fixTooltip(new TextTooltip("Whether the SelectBox is disabled initially.", tooltipManager, skin, "scene")));
+                textButton.addListener((Main.makeTooltip("Whether the SelectBox is disabled initially.", tooltipManager, skin, "scene")));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

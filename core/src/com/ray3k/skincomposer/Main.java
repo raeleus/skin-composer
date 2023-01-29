@@ -52,6 +52,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip.TextTooltipStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Tree.TreeStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.esotericsoftware.spine.AnimationStateData;
@@ -418,4 +419,58 @@ public class Main extends ApplicationAdapter {
         });
         return toolTip;
     }
+
+    /**
+     * Needed starting in libGDX 1.11.0 to create TextTooltip widgets that wrap correctly.
+     * @param text the text to show
+     * @param skin the Skin to load style info from
+     * @return a new TextTooltip that should act correctly.
+     */
+    public static TextTooltip makeTooltip(String text, TooltipManager manager, Skin skin) {
+        return makeTooltip(text, manager, skin, "default");
+    }
+    /**
+     * Needed starting in libGDX 1.11.0 to create TextTooltip widgets that wrap correctly.
+     * @param text the text to show
+     * @param skin the Skin to load style info from
+     * @return a new TextTooltip that should act correctly.
+     */
+    public static TextTooltip makeTooltip(String text, TooltipManager manager, Skin skin, String styleName) {
+        return makeTooltip(text, manager, skin.get(styleName, TextTooltip.TextTooltipStyle.class));
+    }
+    /**
+     * Needed starting in libGDX 1.11.0 to create TextTooltip widgets that wrap correctly.
+     * @param text the text to show
+     * @return a new TextTooltip that should act correctly.
+     */
+    public static TextTooltip makeTooltip(String text, TextTooltipStyle style) {
+        return makeTooltip(text, TooltipManager.getInstance(), style);
+    }
+    /**
+     * Needed starting in libGDX 1.11.0 to create TextTooltip widgets that wrap correctly.
+     * @param text the text to show
+     * @return a new TextTooltip that should act correctly.
+     */
+    public static TextTooltip makeTooltip(String text, TooltipManager manager, TextTooltipStyle style) {
+        // this calls setStyle() as its last line, but we need to run some code before that.
+        TextTooltip tooltip = new TextTooltip(text, manager, style);
+
+        // in 1.10.0, tooltips were centered, but in 1.11.0... it doesn't seem like it.
+        // this still doesn't seem to center things correctly... the max width may be wrong.
+        tooltip.getActor().setAlignment(Align.center);
+
+        // this was used in libGDX 1.10.0, but was removed from 1.11.0, causing problems with some tooltips.
+        tooltip.getContainer().width(new Value() {
+            public float get (Actor context) {
+                return Math.min(tooltip.getManager().maxWidth, tooltip.getActor().getGlyphLayout().width);
+            }
+        });
+
+        // not sure this is needed; it doesn't seem to be.
+//        if(tooltip.getActor().getWrap())
+//            tooltip.getContainer().maxWidth(style.wrapWidth);
+
+        return tooltip;
+    }
+
 }
