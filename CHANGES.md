@@ -1,6 +1,7 @@
 ### Skin Composer Version 55 ###
 * Added emoji menu to TextraTypist Playground.
 * Fixed not saving flip, markupEnabled, and scaling font values.
+* Various UI tweaks and bugfixes. Thanks TEttinger!
 
 ### Skin Composer Version 54 ###
 * Fixed errors in TextraTypist Playground effect options.
