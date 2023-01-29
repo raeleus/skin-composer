@@ -23,6 +23,7 @@ import com.github.tommyettinger.textra.TypingAdapter;
 import com.github.tommyettinger.textra.TypingLabel;
 import com.ray3k.skincomposer.SpineDrawable;
 import com.ray3k.skincomposer.dialog.textratypist.PopTextraEffects.PopEffectsListener;
+import com.ray3k.skincomposer.dialog.textratypist.PopTextraEmoji.PopEmojiListener;
 import com.ray3k.stripe.PopColorPicker;
 import com.ray3k.stripe.PopColorPicker.PopColorPickerListener;
 import com.ray3k.stripe.PopColorPicker.PopColorPickerStyle;
@@ -275,6 +276,24 @@ public class PopTextraTypist extends PopTable {
             });
         });
     
+        imageButton = new ImageButton(skin, "tt-emoji");
+        table.add(imageButton);
+        imageButton.addListener(handListener);
+        onChange(imageButton, () -> {
+            var pop = PopTextraEmoji.showPopEmoji(masterFont);
+            pop.addListener(new PopEmojiListener() {
+                @Override
+                public void accepted(String regionName) {
+                    insertTag("[+" + regionName + "]");
+                }
+    
+                @Override
+                public void cancelled() {
+                
+                }
+            });
+        });
+    
         fontSelectBox = new SelectBox<>(skin, "tt");
         table.add(fontSelectBox);
         fontSelectBox.addListener(handListener);
@@ -290,7 +309,7 @@ public class PopTextraTypist extends PopTable {
             }
         });
     
-        var sizeSelectBox = new SelectBox<>(skin, "tt");
+        var sizeSelectBox = new SelectBox<String>(skin, "tt");
         table.add(sizeSelectBox);
         sizeSelectBox.addListener(handListener);
         sizeSelectBox.getList().addListener(handListener);
@@ -542,6 +561,7 @@ public class PopTextraTypist extends PopTable {
         for (var font : KnownFonts.getAllStandard()) {
             items.add(font.name);
         }
+        KnownFonts.addEmoji(masterFont);
         
         fontSelectBox.setItems(items);
         
@@ -596,6 +616,7 @@ public class PopTextraTypist extends PopTable {
         
         var fontFamily = new FontFamily(namesArray, fontsArray);
         masterFont = fontFamily.connected[0].setFamily(fontFamily);
+        KnownFonts.addEmoji(masterFont);
     
         previewTypingLabel = new TypingLabel(previewTypingLabel.getOriginalText().toString(), masterFont);
         previewTypingLabel.setWrap(true);
