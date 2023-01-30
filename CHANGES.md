@@ -1,3 +1,6 @@
+### Skin Composer Version 56 ###
+* 
+
 ### Skin Composer Version 55a ###
 * Fixed build error preventing Skin Composer from starting.
 
