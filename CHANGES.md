@@ -1,3 +1,6 @@
+### Skin Composer Version 55a ###
+* Fixed build error preventing Skin Composer from starting.
+
 ### Skin Composer Version 55 ###
 * Added emoji menu to TextraTypist Playground.
 * Fixed not saving flip, markupEnabled, and scaling font values.
