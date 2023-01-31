@@ -1,5 +1,5 @@
 ### Skin Composer Version 56 ###
-* 
+* Fixed font scaling issues.
 
 ### Skin Composer Version 55a ###
 * Fixed build error preventing Skin Composer from starting.
