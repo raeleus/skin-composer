@@ -1,5 +1,18 @@
+### Skin Composer Version 56 ###
+* Fixed font scaling issues.
+* Fixed unable to import a skin because of markupEnabled and flip flags in font.
+
+### Skin Composer Version 55a ###
+* Fixed build error preventing Skin Composer from starting.
+
+### Skin Composer Version 55 ###
+* Added emoji menu to TextraTypist Playground.
+* Fixed not saving flip, markupEnabled, and scaling font values.
+* Various UI tweaks and bugfixes. Thanks TEttinger!
+
 ### Skin Composer Version 54 ###
 * Fixed errors in TextraTypist Playground effect options.
+* Fixed blurry text on TextraTypist Playground's About page.
 
 ### Skin Composer Version 53 ###
 * Updated to Stripe 1.4.1 and TextraTypist 0.7.5

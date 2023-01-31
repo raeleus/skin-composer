@@ -470,7 +470,7 @@ public class DialogFonts extends Dialog {
                 });
                 button.add(closeButton).padLeft(5.0f).right();
                 
-                toolTip = Main.fixTooltip(new TextTooltip("Delete Font", tooltipManager, getSkin()));
+                toolTip = (Main.makeTooltip("Delete Font", tooltipManager, getSkin()));
                 closeButton.addListener(toolTip);
 
                 if (styleProperty == null && customProperty == null) {
@@ -523,7 +523,7 @@ public class DialogFonts extends Dialog {
                 });
                 button.add(renameButton).padLeft(15.0f);
                 
-                TextTooltip toolTip = Main.fixTooltip(new TextTooltip("Change Freetype Settings", tooltipManager, getSkin()));
+                TextTooltip toolTip = (Main.makeTooltip("Change Freetype Settings", tooltipManager, getSkin()));
                 renameButton.addListener(toolTip);
                 
                 LabelStyle style = new LabelStyle();
@@ -592,7 +592,7 @@ public class DialogFonts extends Dialog {
                 });
                 button.add(closeButton).padLeft(5.0f).right();
                 
-                toolTip = Main.fixTooltip(new TextTooltip("Delete Font", tooltipManager, getSkin()));
+                toolTip = (Main.makeTooltip("Delete Font", tooltipManager, getSkin()));
                 closeButton.addListener(toolTip);
 
                 if (styleProperty == null && customProperty == null) {
@@ -643,7 +643,7 @@ public class DialogFonts extends Dialog {
             protected void result(Object object) {
                 if ((boolean) object) {
                     var scaling = Integer.parseInt(scalingField.getText());
-                    if (scaling < 1) scaling = 1;
+                    if (scaling < 1) scaling = -1;
                     changeFontSettings(font, nameField.getText(), scaling, markupCheckBox.isChecked(), flipCheckBox.isChecked());
                 }
             }
@@ -690,7 +690,7 @@ public class DialogFonts extends Dialog {
         LabelStyle previewStyle = new LabelStyle();
         previewStyle.font = new BitmapFont(font.file, font.isFlip());
         final var previewCapHeight = previewStyle.font.getCapHeight();
-        previewStyle.font.getData().setScale(font.getScaling() / previewStyle.font.getCapHeight());
+        if (font.getScaling() != -1) previewStyle.font.getData().setScale(font.getScaling() / previewStyle.font.getCapHeight());
         
         dialog.getContentTable().row();
         Table table = new Table();
@@ -741,7 +741,7 @@ public class DialogFonts extends Dialog {
             if (c == '\n') {
                 if (!okButton.isDisabled()) {
                     var scaling = Integer.parseInt(scalingField.getText());
-                    if (scaling < 1) scaling = 1;
+                    if (scaling < 1) scaling = -1;
                     changeFontSettings(font, textField1.getText(), scaling, markupCheckBox.isChecked(), flipCheckBox.isChecked());
                     dialog.hide();
                 }
@@ -1170,7 +1170,7 @@ public class DialogFonts extends Dialog {
                             String name = nameField.getText();
     
                             var scaling = Integer.parseInt(scalingField.getText());
-                            if (scaling < 1) scaling = 1;
+                            if (scaling < 1) scaling = -1;
                             addFont(name, MathUtils.round(scaling), markupCheckBox.isChecked(), flipCheckBox.isChecked(), fileHandle);
                         }
                     }
@@ -1197,7 +1197,7 @@ public class DialogFonts extends Dialog {
                         if (!button.isDisabled()) {
                             String name1 = textField1.getText();
                             var scaling = Integer.parseInt(scalingField.getText());
-                            if (scaling < 1) scaling = 1;
+                            if (scaling < 1) scaling = -1;
                             if (addFont(name1, MathUtils.round(scaling), markupCheckBox.isChecked(), flipCheckBox.isChecked(), fileHandle)) {
                                 nameDialog.hide();
                             }

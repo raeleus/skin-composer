@@ -51,7 +51,7 @@ public class HorizontalGroupListeners {
                 textField.setText(simHorizontalGroup.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(Main.fixTooltip(new TextTooltip("The name of the HorizontalGroup to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+                textField.addListener((Main.makeTooltip("The name of the HorizontalGroup to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -118,7 +118,7 @@ public class HorizontalGroupListeners {
                 expand.setProgrammaticChangeEvents(false);
                 table.add(expand);
                 expand.addListener(handListener);
-                expand.addListener(Main.fixTooltip(new TextTooltip("Set the widgets to expand to the available space.", tooltipManager, skin, "scene")));
+                expand.addListener((Main.makeTooltip("Set the widgets to expand to the available space.", tooltipManager, skin, "scene")));
                 expand.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -136,7 +136,7 @@ public class HorizontalGroupListeners {
                 fill.setProgrammaticChangeEvents(false);
                 table.add(fill);
                 fill.addListener(handListener);
-                fill.addListener(Main.fixTooltip(new TextTooltip("Sets the widgets to fill the entire space.", tooltipManager, skin, "scene")));
+                fill.addListener((Main.makeTooltip("Sets the widgets to fill the entire space.", tooltipManager, skin, "scene")));
                 fill.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -154,7 +154,7 @@ public class HorizontalGroupListeners {
                 grow.setProgrammaticChangeEvents(false);
                 table.add(grow);
                 grow.addListener(handListener);
-                grow.addListener(Main.fixTooltip(new TextTooltip("Sets the widgets to expand and fill.", tooltipManager, skin, "scene")));
+                grow.addListener((Main.makeTooltip("Sets the widgets to expand and fill.", tooltipManager, skin, "scene")));
                 grow.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -209,7 +209,7 @@ public class HorizontalGroupListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding to the left of the widgets.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding to the left of the widgets.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -228,7 +228,7 @@ public class HorizontalGroupListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding to the right of the widgets.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding to the right of the widgets.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -247,7 +247,7 @@ public class HorizontalGroupListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding to the top of the widgets.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding to the top of the widgets.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -266,7 +266,7 @@ public class HorizontalGroupListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding to the bottom of the widgets.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding to the bottom of the widgets.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -291,7 +291,7 @@ public class HorizontalGroupListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The spacing between the widgets.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The spacing between the widgets.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -333,7 +333,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setChecked(simHorizontalGroup.wrap);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Whether the widgets will wrap to the next line.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Whether the widgets will wrap to the next line.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -352,7 +352,7 @@ public class HorizontalGroupListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The vertical space between rows when wrap is enabled.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The vertical space between rows when wrap is enabled.", tooltipManager, skin, "scene")));
                 spinner.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -399,7 +399,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the top left.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the top left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -413,7 +413,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the top center.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the top center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -427,7 +427,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the top right.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the top right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -442,7 +442,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the middle left.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the middle left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -456,7 +456,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the center.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -470,7 +470,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the middle right.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the middle right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -485,7 +485,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the bottom left.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the bottom left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -499,7 +499,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the bottom center.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the bottom center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -513,7 +513,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the bottom right.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the bottom right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -591,7 +591,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the top left.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the top left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -605,7 +605,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the top center.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the top center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -619,7 +619,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the top right.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the top right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -634,7 +634,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the middle left.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the middle left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -648,7 +648,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the center.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -662,7 +662,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the middle right.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the middle right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -677,7 +677,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the bottom left.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the bottom left.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -691,7 +691,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the bottom center.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the bottom center.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -705,7 +705,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setProgrammaticChangeEvents(false);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Align the widgets to the bottom right.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Align the widgets to the bottom right.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -777,7 +777,7 @@ public class HorizontalGroupListeners {
                 imageTextButton.setChecked(simHorizontalGroup.reverse);
                 table.add(imageTextButton);
                 imageTextButton.addListener(handListener);
-                imageTextButton.addListener(Main.fixTooltip(new TextTooltip("Reverse the display order of the widgets.", tooltipManager, skin, "scene")));
+                imageTextButton.addListener((Main.makeTooltip("Reverse the display order of the widgets.", tooltipManager, skin, "scene")));
                 imageTextButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {

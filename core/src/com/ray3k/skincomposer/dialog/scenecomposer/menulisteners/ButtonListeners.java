@@ -50,7 +50,7 @@ public class ButtonListeners {
                 textButton.setChecked(simButton.checked);
                 popTable.add(textButton).minWidth(100);
                 textButton.addListener(handListener);
-                textButton.addListener(Main.fixTooltip(new TextTooltip("Whether the button is checked initially.", tooltipManager, skin, "scene")));
+                textButton.addListener((Main.makeTooltip("Whether the button is checked initially.", tooltipManager, skin, "scene")));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -94,7 +94,7 @@ public class ButtonListeners {
                 textField.setText(simButton.name);
                 popTable.add(textField).minWidth(TEXT_FIELD_WIDTH);
                 textField.addListener(ibeamListener);
-                textField.addListener(Main.fixTooltip(new TextTooltip("The name of the button to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
+                textField.addListener((Main.makeTooltip("The name of the button to allow for convenient searching via Group#findActor().", tooltipManager, skin, "scene")));
                 textField.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -160,7 +160,7 @@ public class ButtonListeners {
                 textButton.setChecked(simButton.disabled);
                 popTable.add(textButton).minWidth(100);
                 textButton.addListener(handListener);
-                textButton.addListener(Main.fixTooltip(new TextTooltip("Whether the button is disabled initially.", tooltipManager, skin, "scene")));
+                textButton.addListener((Main.makeTooltip("Whether the button is disabled initially.", tooltipManager, skin, "scene")));
                 textButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -201,7 +201,7 @@ public class ButtonListeners {
                 imageButton.getImage().setColor(simButton.color == null ? Color.WHITE : simButton.color.color);
                 popTable.add(imageButton).minWidth(100);
                 imageButton.addListener(handListener);
-                imageButton.addListener(Main.fixTooltip(new TextTooltip("Select the color of the button.", tooltipManager, skin, "scene")));
+                imageButton.addListener((Main.makeTooltip("Select the color of the button.", tooltipManager, skin, "scene")));
                 imageButton.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -280,7 +280,7 @@ public class ButtonListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding on the left of the contents.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding on the left of the contents.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
                 
                 popTable.row();
@@ -294,7 +294,7 @@ public class ButtonListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding on the right of the contents.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding on the right of the contents.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
                 
                 popTable.row();
@@ -308,7 +308,7 @@ public class ButtonListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding on the top of the contents.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding on the top of the contents.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
                 
                 popTable.row();
@@ -322,7 +322,7 @@ public class ButtonListeners {
                 spinner.getTextField().addListener(ibeamListener);
                 spinner.getButtonMinus().addListener(handListener);
                 spinner.getButtonPlus().addListener(handListener);
-                spinner.addListener(Main.fixTooltip(new TextTooltip("The padding on the bottom of the contents.", tooltipManager, skin, "scene")));
+                spinner.addListener((Main.makeTooltip("The padding on the bottom of the contents.", tooltipManager, skin, "scene")));
                 spinner.addListener(changeListener);
             }
         };
