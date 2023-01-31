@@ -1,5 +1,6 @@
 ### Skin Composer Version 56 ###
 * Fixed font scaling issues.
+* Fixed unable to import a skin because of markupEnabled and flip flags in font.
 
 ### Skin Composer Version 55a ###
 * Fixed build error preventing Skin Composer from starting.
