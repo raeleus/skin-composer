@@ -13,6 +13,7 @@ project.ext.assetsDir = new File("/assets")
 def exeName = 'SkinComposerInstaller'
 def mtPath = 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x64/mt.exe'
 def winRarPath = 'C:/Program Files/WinRAR/WinRAR.exe'
+def sevenZipPath = 'C:/Program Files/7-Zip/'
 
 task dist(type: Jar, dependsOn: [':core:jpackageImage', ':uninstaller:jpackageApplyUAC']) {
     archiveFileName = "${project.appName}-installer.jar";
@@ -69,6 +70,26 @@ task jpackageWinRarSfx(type: Exec, dependsOn: [jpackageApplyUAC]) {
             '-zwinrar.txt',
             "${buildDir}/winrar/${exeName}.exe",
             "${buildDir}/jpackage/${exeName}/"
+    ]
+}
+
+task jpackage7Zip(type: Exec, dependsOn: [jpackageApplyUAC]) {
+    doFirst {
+        mkdir "${buildDir}/7z"
+    }
+
+    workingDir project.projectDir
+    commandLine = [
+            sevenZipPath + '7z.exe',
+            'a',
+            "${buildDir}/7z/${exeName}.7z",
+            "${buildDir}/jpackage/${exeName}/"
+    ]
+}
+task jpackage7ZipSfx(type: Exec, dependsOn: [jpackage7Zip]) {
+    workingDir project.projectDir
+    commandLine = [
+            "7zSFX.bat"
     ]
 }
 
