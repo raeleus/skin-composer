@@ -47,8 +47,8 @@ project(":core") {
         implementation "com.github.raeleus.TenPatch:tenpatch:5.2.3"
         implementation "space.earlygrey:shapedrawer:2.2.0"
         implementation 'com.squareup:javapoet:1.12.1'
-        implementation 'com.github.raeleus.stripe:stripe:1.4.1'
-        implementation ('com.github.raeleus.stripe:colorpicker:1.4.1') {
+        implementation 'com.github.raeleus.stripe:stripe:1.4.2'
+        implementation ('com.github.raeleus.stripe:colorpicker:1.4.2') {
             exclude group: 'com.github.tommyettinger', module: 'textratypist'
         }
         implementation 'com.github.raeleus.stripe:freetype:1.1.0'

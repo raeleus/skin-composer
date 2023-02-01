@@ -1,5 +1,5 @@
 ### Skin Composer Version 57 ###
- * 
+ * Update Stripe version to 1.4.2
 
 ### Skin Composer Version 56 ###
 * Fixed font scaling issues.
