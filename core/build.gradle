@@ -18,7 +18,9 @@ task dist(type: Jar, dependsOn: ['classes']) {
     archiveFileName = "${appName}.jar";
     from files(sourceSets.main.output.getClassesDirs())
     from files(sourceSets.main.output.resourcesDir)
-    from {configurations.compile.collect {zipTree(it)}}
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    dependsOn configurations.runtimeClasspath
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     from files(project.assetsDir)
     destinationDirectory = file("$buildDir/lib")
     manifest {
