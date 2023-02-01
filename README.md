@@ -32,6 +32,8 @@ See more examples and sample code at [Ray3k](https://ray3k.wordpress.com/artwork
 
 Skin Composer now has a wiki: [start here](https://github.com/raeleus/skin-composer/wiki) to begin learning!
 
+If you are unable to run the Windows installer, use the JAR version with JDK version 11 or higher.
+
 To run Skin Composer on OSX, please see the [wiki](https://github.com/raeleus/skin-composer/wiki/Getting-Started-With-Mac "Getting Started With Mac") for details.
 
 If you are unable to open file dialogs on your platform, try the commandline option -swingfd to switch to Swing dialogs.
