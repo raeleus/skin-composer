@@ -5,6 +5,7 @@ apply plugin: "java"
 
 sourceCompatibility = 11
 sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.resources.srcDirs += [ project.file('assets').path ]
 
 mainClassName = "com.ray3k.skincomposer.uninstaller.Uninstaller"
 project.ext.assetsDir = new File("/assets")
@@ -16,7 +17,9 @@ task dist(type: Jar) {
     archiveFileName = "${project.appName}-uninstaller.jar";
     from files(sourceSets.main.output.getClassesDirs())
     from files(sourceSets.main.output.resourcesDir)
-    from {configurations.compile.collect {zipTree(it)}}
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    dependsOn configurations.runtimeClasspath
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     from files(project.assetsDir)
     destinationDirectory = file("$buildDir/lib")
     manifest {

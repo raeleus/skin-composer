@@ -30,32 +30,32 @@ project(":core") {
     apply plugin: "java"
 
     dependencies {
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        compile "org.lwjgl:lwjgl:3.3.1"
-        compile "org.lwjgl:lwjgl-nfd:3.3.1"
-        compile "org.lwjgl:lwjgl-nfd:3.3.1:natives-windows"
-        compile "org.lwjgl:lwjgl-nfd:3.3.1:natives-linux"
-        compile "org.lwjgl:lwjgl-nfd:3.3.1:natives-macos"
-        compile "org.lwjgl:lwjgl-nfd:3.3.1:natives-macos-arm64"
-        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-        compile ("com.badlogicgames.gdx:gdx-tools:$gdxVersion") {
+        implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        implementation "org.lwjgl:lwjgl:3.3.1"
+        implementation "org.lwjgl:lwjgl-nfd:3.3.1"
+        implementation "org.lwjgl:lwjgl-nfd:3.3.1:natives-windows"
+        implementation "org.lwjgl:lwjgl-nfd:3.3.1:natives-linux"
+        implementation "org.lwjgl:lwjgl-nfd:3.3.1:natives-macos"
+        implementation "org.lwjgl:lwjgl-nfd:3.3.1:natives-macos-arm64"
+        implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        implementation ("com.badlogicgames.gdx:gdx-tools:$gdxVersion") {
             exclude group: 'com.badlogicgames.gdx', module: 'gdx-backend-lwjgl'
         }
-        compile "com.github.raeleus.TenPatch:tenpatch:5.2.3"
-        compile "space.earlygrey:shapedrawer:2.2.0"
-        compile 'com.squareup:javapoet:1.12.1'
-        compile 'com.github.raeleus.stripe:stripe:1.4.1'
-        compile ('com.github.raeleus.stripe:colorpicker:1.4.1') {
+        implementation "com.github.raeleus.TenPatch:tenpatch:5.2.3"
+        implementation "space.earlygrey:shapedrawer:2.2.0"
+        implementation 'com.squareup:javapoet:1.12.1'
+        implementation 'com.github.raeleus.stripe:stripe:1.4.1'
+        implementation ('com.github.raeleus.stripe:colorpicker:1.4.1') {
             exclude group: 'com.github.tommyettinger', module: 'textratypist'
         }
-        compile 'com.github.raeleus.stripe:freetype:1.1.0'
-        compile 'com.esotericsoftware.spine:spine-libgdx:4.0.18.1'
-        compile 'com.github.lyze237:gdx-TinyVG:9a5a6ae9ae'
-//        compile "com.github.tommyettinger:textratypist:0.7.5"
-        compile "com.github.tommyettinger:textratypist:e5155e06c5"
+        implementation 'com.github.raeleus.stripe:freetype:1.1.0'
+        implementation 'com.esotericsoftware.spine:spine-libgdx:4.0.18.1'
+        implementation 'com.github.lyze237:gdx-TinyVG:9a5a6ae9ae'
+//        implementation "com.github.tommyettinger:textratypist:0.7.5"
+        implementation "com.github.tommyettinger:textratypist:e5155e06c5"
     }
 }
 
@@ -63,8 +63,8 @@ project(":uninstaller") {
     apply plugin: "java"
 
     dependencies {
-        compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     }
 }
 
@@ -72,18 +72,18 @@ project(":installer") {
     apply plugin: "java"
 
     dependencies {
-        compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        compile "org.lwjgl:lwjgl-tinyfd:3.3.1"
-        compile "org.lwjgl:lwjgl-tinyfd:3.3.1:natives-windows"
-        compile "org.lwjgl:lwjgl-tinyfd:3.3.1:natives-linux"
-        compile "org.lwjgl:lwjgl-tinyfd:3.3.1:natives-macos"
-        compile "org.lwjgl:lwjgl-tinyfd:3.3.1:natives-macos-arm64"
-        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-        compile ("com.badlogicgames.gdx:gdx-tools:$gdxVersion") {
+        implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        implementation "org.lwjgl:lwjgl-tinyfd:3.3.1"
+        implementation "org.lwjgl:lwjgl-tinyfd:3.3.1:natives-windows"
+        implementation "org.lwjgl:lwjgl-tinyfd:3.3.1:natives-linux"
+        implementation "org.lwjgl:lwjgl-tinyfd:3.3.1:natives-macos"
+        implementation "org.lwjgl:lwjgl-tinyfd:3.3.1:natives-macos-arm64"
+        implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        implementation ("com.badlogicgames.gdx:gdx-tools:$gdxVersion") {
             exclude group: 'com.badlogicgames.gdx', module: 'gdx-backend-lwjgl'
         }
-        compile 'com.esotericsoftware.spine:spine-libgdx:3.6.53.1'
-        compile 'com.github.vatbub:mslinks:1.0.4'
+        implementation 'com.esotericsoftware.spine:spine-libgdx:3.6.53.1'
+        implementation 'com.github.vatbub:mslinks:1.0.4'
     }
 }
