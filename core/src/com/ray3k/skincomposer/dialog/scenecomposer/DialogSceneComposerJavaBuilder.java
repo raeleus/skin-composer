@@ -1033,7 +1033,7 @@ public class DialogSceneComposerJavaBuilder {
     }
 
     private static void addSetScrollbarsVisibleStatement(CodeBlock.Builder builder, String variableName, boolean visible) {
-        builder.addStatement("$L.setScrollBarsVisible($L)", variableName, visible);
+        builder.addStatement("$L.setScrollbarsVisible($L)", variableName, visible);
     }
 
     private static void addSetScrollbarsOnTopStatement(CodeBlock.Builder builder, String variableName, boolean scrollBarsOnTop) {
