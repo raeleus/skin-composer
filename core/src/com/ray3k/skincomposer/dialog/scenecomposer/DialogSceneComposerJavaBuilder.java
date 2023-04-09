@@ -185,7 +185,7 @@ public class DialogSceneComposerJavaBuilder {
             }
 
             if (button.checked) addSetCheckedStatement(builder, variableName, true);
-            if (button.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
+            if (button.disabled) addSetDisabledStatement(builder, variableName, true);
             if (button.color != null) addSetColorStatement(builder, variableName, button.color.getName());
             
             if (!Utils.isEqual(0, button.padLeft, button.padRight, button.padTop, button.padBottom)) {
@@ -212,7 +212,7 @@ public class DialogSceneComposerJavaBuilder {
             }
 
             if (checkBox.checked) addSetCheckedStatement(builder, variableName, true);
-            if (checkBox.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
+            if (checkBox.disabled) addSetDisabledStatement(builder, variableName, true);
             if (checkBox.color != null) addSetColorStatement(builder, variableName, checkBox.color.getName());
     
             if (!Utils.isEqual(0, checkBox.padLeft, checkBox.padRight, checkBox.padTop, checkBox.padBottom)) {
@@ -258,7 +258,7 @@ public class DialogSceneComposerJavaBuilder {
             }
 
             if (imageButton.checked) addSetCheckedStatement(builder, variableName, true);
-            if (imageButton.disabled) builder.addStatement("$L.setDisabled($L)", variableName, true);
+            if (imageButton.disabled) addSetDisabledStatement(builder, variableName, true);
             if (imageButton.color != null) addSetColorStatement(builder, variableName, imageButton.color.getName());
     
             if (!Utils.isEqual(0, imageButton.padLeft, imageButton.padRight, imageButton.padTop, imageButton.padBottom)) {
@@ -399,7 +399,7 @@ public class DialogSceneComposerJavaBuilder {
                 addSetTouchableStatement(builder, variableName, classNameGetter, selectBox.touchable);
             }
 
-            if (selectBox.disabled) addSetDisabledStatement(builder, variableName, selectBox.disabled);
+            if (selectBox.disabled) addSetDisabledStatement(builder, variableName, true);
             if (selectBox.maxListCount != 0) addSetMaxListCountStatement(builder, variableName, selectBox.maxListCount);
     
             if (selectBox.list.size > 0) {
@@ -439,7 +439,7 @@ public class DialogSceneComposerJavaBuilder {
                 addSetTouchableStatement(builder, variableName, classNameGetter, slider.touchable);
             }
 
-            if (slider.disabled) addSetDisabledStatement(builder, variableName, slider.disabled);
+            if (slider.disabled) addSetDisabledStatement(builder, variableName, true);
             if (!MathUtils.isZero(slider.value)) addSetValueStatement(builder, variableName, slider.value);
             if (!MathUtils.isZero(slider.animationDuration)) addSetAnimationDurationStatement(builder, variableName, slider.animationDuration);
             if (slider.animateInterpolation != null && slider.animateInterpolation != Interpol.LINEAR) addSetAnimateInterpolationStatement(builder, variableName, classNameGetter, slider.animateInterpolation);
