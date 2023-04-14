@@ -358,7 +358,7 @@ public class DialogSceneComposerJavaBuilder {
             addSetValueStatement(builder, variableName, progressBar.value);
             addSetAnimationDurationStatement(builder, variableName, progressBar.animationDuration);
             addSetAnimateInterpolationStatement(builder, variableName, classNameGetter, progressBar.animateInterpolation);
-            addSetRoundStatement(builder, variableName, progressBar.round);
+            if (!progressBar.round) addSetRoundStatement(builder, variableName, false);
             addSetVisualInterpolationStatement(builder, variableName, classNameGetter, progressBar.visualInterpolation);
 
             return new WidgetNamePair(builder.build(), variableName);
