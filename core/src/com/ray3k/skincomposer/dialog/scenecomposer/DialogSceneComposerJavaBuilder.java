@@ -1125,11 +1125,11 @@ public class DialogSceneComposerJavaBuilder {
 
     private static void addFillStatements(CodeBlock.Builder builder, String variableName, boolean fillX, boolean fillY) {
         if (fillX && fillY) {
-            builder.addStatement("$L.fill(true)", variableName);
+            builder.addStatement("$L.fill()", variableName);
         } else if (fillX) {
-            builder.addStatement("$L.fillX(true)", variableName);
+            builder.addStatement("$L.fillX()", variableName);
         } else if (fillY) {
-            builder.addStatement("$L.fill(true)", variableName);
+            builder.addStatement("$L.fillY()", variableName);
         }
     }
 
@@ -1321,11 +1321,11 @@ public class DialogSceneComposerJavaBuilder {
             }
 
             if (fillX && fillY) {
-                builder.add(".fill(true)");
+                builder.add(".fill()");
             } else if (fillX) {
-                builder.add(".fillX(true)");
+                builder.add(".fillX()");
             } else if (fillY) {
-                builder.add(".fill(true)");
+                builder.add(".fillY()");
             }
         }
     }
