@@ -18,7 +18,7 @@ import com.ray3k.stripe.Spinner.Orientation;
 import static com.ray3k.skincomposer.Main.*;
 
 public class PopSettings extends PopTable {
-    private int uiScale;
+    private float uiScale;
     private Integer maxUndos;
     private boolean resourcesRelative;
     private boolean allowingWelcome;
@@ -175,7 +175,7 @@ public class PopSettings extends PopTable {
         label = new Label("UI Scale:", skin);
         table.add(label);
         
-        var slider = new Slider(1, 3, 1, false, skin);
+        var slider = new Slider(1, 3, 0.25f, false, skin);
         slider.setValue(uiScale);
         table.add(slider);
         slider.addListener(handListener);
@@ -185,7 +185,7 @@ public class PopSettings extends PopTable {
         slider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                uiScale = (int) slider.getValue();
+                uiScale =  slider.getValue();
                 scaleLabel.setText(uiScale + "x");
                 
                 if (!slider.isDragging()) {

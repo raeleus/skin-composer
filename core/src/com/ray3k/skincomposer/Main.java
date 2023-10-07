@@ -338,11 +338,11 @@ public class Main extends ApplicationAdapter {
         skin.dispose();
     }
     
-    public void resizeUiScale(int scale) {
-        resizeUiScale(scale, scale > 1);
+    public void resizeUiScale(float scale) {
+        resizeUiScale(scale, scale > 1f);
     }
     
-    public void resizeUiScale(int scale, boolean large) {
+    public void resizeUiScale(float scale, boolean large) {
         if (large) {
             desktopWorker.sizeWindowToFit(1440, 1440, 50, Gdx.graphics);
         } else {
