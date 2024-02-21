@@ -166,6 +166,14 @@ public class JsonData implements Json.Serializable {
                             FileHandle file = new FileHandle(path);
                             
                             var drawable = projectData.getAtlasData().getDrawable(file.nameWithoutExtension());
+                            if(drawable == null) {
+                                drawable = projectData.getAtlasData().getFontDrawable(file.nameWithoutExtension());
+                                if (drawable == null) {
+                                    Gdx.app.error(getClass().getName(), "The Drawable for a BitmapFont was missing.");
+                                    warnings.add("[RED]In font: [BLACK]" + bitmapFontData.name + "[], with path: [BLACK]" + path + "[], drawable: [BLACK]" + file.nameWithoutExtension() + "[] was not found!");
+                                    continue; // ignores this drawable rather than throwing an NPE
+                                }
+                            }
                             drawable.type = DrawableType.FONT;
                             
                             projectData.getAtlasData().getDrawables().removeValue(drawable, false);
@@ -421,7 +429,7 @@ public class JsonData implements Json.Serializable {
                                         styleProperty.value = property.asString();
                                     } else {
                                         Gdx.app.error(getClass().getName(), "Can't import JSON files that do not use String names for field values.");
-                                        warnings.add("Property [BLACK]" + styleProperty.name + "[] value cleared for [BLACK]" + clazz.getSimpleName() + ": " + data.name + "[] (Unsupported propety value)");
+                                        warnings.add("Property [BLACK]" + styleProperty.name + "[] value cleared for [BLACK]" + clazz.getSimpleName() + ": " + data.name + "[] (Unsupported property value)");
                                     }
                                 }
                             }

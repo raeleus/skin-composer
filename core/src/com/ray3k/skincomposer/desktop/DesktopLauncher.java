@@ -505,11 +505,17 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     }
     
     public static boolean restartStartOnFirstThread() {
-        
-        String osName = System.getProperty("os.name");
-        
-        // if not a mac return false
-        if (!osName.startsWith("Mac") && !osName.startsWith("Darwin")) {
+
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (!osName.startsWith("mac") && !osName.startsWith("darwin")) {
+            if (osName.contains("windows")) {
+// Here, we are trying to work around an issue with how LWJGL3 loads its extracted .dll files.
+// By default, LWJGL3 extracts to the directory specified by "java.io.tmpdir", which is usually in the user's home.
+// If the user's name has non-ASCII (or some non-alphanumeric) characters in it, that would fail.
+// By extracting to the relevant "ProgramData" folder, which is usually "C:\ProgramData", we typically avoid this.
+// Some locales for Windows may translate "C:\ProgramData" to something with non-ASCII chars; we're out of luck then.
+                System.setProperty("java.io.tmpdir", System.getenv("ProgramData") + "/libGDX-temp");
+            }
             return false;
         }
         
