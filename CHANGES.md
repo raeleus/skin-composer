@@ -1,6 +1,7 @@
 ### Skin Composer Version 57 ###
 * Update Stripe version to 1.4.2
 * Refactored Scene Composer and fixed various errors. Resolves #135. Thanks deviodesign!
+* Added more finite control of scale in settings. Thanks ChinQingl
 
 ### Skin Composer Version 56 ###
 * Fixed font scaling issues.
