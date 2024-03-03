@@ -1360,7 +1360,7 @@ public class DialogSceneComposerJavaBuilder {
         }
         if (!hasPreferredWidth && !hasPreferredHeight && Utils.isEqual(preferredWidth, preferredHeight) && !Utils.isEqual(-1,
             preferredWidth)) {
-            builder.add(".preferredSize($Lf)", preferredWidth);
+            builder.add(".prefSize($Lf)", preferredWidth);
             hasPreferredWidth = true; hasPreferredHeight = true;
         }
         if (!hasMinWidth && !Utils.isEqual(-1, minWidth)) {
@@ -1376,10 +1376,10 @@ public class DialogSceneComposerJavaBuilder {
             builder.add(".maxHeight($Lf)", maxHeight);
         }
         if (!hasPreferredWidth && !Utils.isEqual(-1, preferredWidth)) {
-            builder.add(".preferredWidth($Lf)", preferredWidth);
+            builder.add(".prefWidth($Lf)", preferredWidth);
         }
         if (!hasPreferredHeight && !Utils.isEqual(-1, preferredHeight)) {
-            builder.add(".preferredHeight($Lf)", preferredHeight);
+            builder.add(".prefHeight($Lf)", preferredHeight);
         }
     }
 
