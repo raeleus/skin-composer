@@ -598,9 +598,9 @@ public class FreeTypeFontGenerator implements Disposable {
             }
         }
         
-        String name = Integer.toString(glyph.hashCode());
-        Rectangle rect = packer.pack(name, mainPixmap);
-        glyph.page = packer.getPages().indexOf(packer.getPage(name), true);
+        String pixmapName = Integer.toString(glyph.hashCode());
+        Rectangle rect = packer.pack(pixmapName, mainPixmap);
+        glyph.page = packer.getPages().indexOf(packer.getPage(pixmapName), true);
         glyph.srcX = (int)rect.x;
         glyph.srcY = (int)rect.y;
         
