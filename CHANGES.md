@@ -3,6 +3,7 @@
 * Refactored Scene Composer and fixed various errors. Resolves #135. Thanks deviodesign!
 * Added more finite control of scale in settings. Thanks ChinQingl
 * Fixed FreeTypeFontGenerator from creating glyphs with the wrong page index if there are multiple pages
+* Prevent crash when using fonts in a relative resource project. Resolves #143. Thanks SonicNorg!
 
 ### Skin Composer Version 56 ###
 * Fixed font scaling issues.
