@@ -417,8 +417,9 @@ public class DialogFonts extends Dialog {
                 if (bf.imagePaths.length > 0) {
                     FileHandle file = new FileHandle(bf.imagePaths[0]);
                     if (!file.exists()) {
-                        file = font.file.sibling(bf.fontFile.nameWithoutExtension() + ".png");
+                        file = font.file.sibling(file.name());
                     }
+                    System.out.println(font.file.name() + " " + bf.imagePaths[0] + " " + file.exists());
                     if (!file.exists()) {
                         bg.setColor(Color.BLACK);
                     } else if (Utils.brightness(Utils.averageEdgeColor(file)) < .5f) {
