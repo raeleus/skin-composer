@@ -28,7 +28,7 @@ public class PopAbout extends PopTable {
         add(label);
     
         row();
-        label = new Label("Skin Composer is developed by Raeleus for the libGDX community.\nVersion " + Main.VERSION + "\nCopyright © Raymond \"Raeleus\" Buckley 2023", skin);
+        label = new Label("Skin Composer is developed by Raeleus for the libGDX community.\nVersion " + Main.VERSION + "\nCopyright © Raymond \"Raeleus\" Buckley 2024", skin);
         label.setAlignment(Align.center);
         add(label).padBottom(0);
         row();

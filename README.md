@@ -51,7 +51,7 @@ If you have trouble compiling or running the app from source, try using JDK 13.
 ### License ###
 MIT License
 
-Copyright (c) 2022 Raymond Buckley
+Copyright (c) 2024 Raymond Buckley
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
