@@ -457,7 +457,7 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
     }
     
     public static void main(String[] args) {
-        if (restartStartOnFirstThread()) {
+        if (StartupHelper.startNewJvmIfRequired()) {
             return;
         }
         
@@ -502,74 +502,5 @@ public class DesktopLauncher implements DesktopWorker, Lwjgl3WindowListener {
             
             }
         }
-    }
-    
-    public static boolean restartStartOnFirstThread() {
-
-        String osName = System.getProperty("os.name").toLowerCase();
-        if (!osName.startsWith("mac") && !osName.startsWith("darwin")) {
-            if (osName.contains("windows")) {
-// Here, we are trying to work around an issue with how LWJGL3 loads its extracted .dll files.
-// By default, LWJGL3 extracts to the directory specified by "java.io.tmpdir", which is usually in the user's home.
-// If the user's name has non-ASCII (or some non-alphanumeric) characters in it, that would fail.
-// By extracting to the relevant "ProgramData" folder, which is usually "C:\ProgramData", we typically avoid this.
-// Some locales for Windows may translate "C:\ProgramData" to something with non-ASCII chars; we're out of luck then.
-                System.setProperty("java.io.tmpdir", System.getenv("ProgramData") + "/libGDX-temp");
-            }
-            return false;
-        }
-        
-        // get current jvm process pid
-        String pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
-        // get environment variable on whether XstartOnFirstThread is enabled
-        String env = System.getenv("JAVA_STARTED_ON_FIRST_THREAD_" + pid);
-        
-        // if environment variable is "1" then XstartOnFirstThread is enabled
-        if (env != null && env.equals("1")) {
-            return false;
-        }
-        
-        // restart jvm with -XstartOnFirstThread
-        String separator = System.getProperty("file.separator");
-        String classpath = System.getProperty("java.class.path");
-        String mainClass = System.getenv("JAVA_MAIN_CLASS_" + pid);
-        String jvmPath = System.getProperty("java.home") + separator + "bin" + separator + "java";
-        
-        List<String> inputArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
-        
-        ArrayList<String> jvmArgs = new ArrayList<>();
-        
-        jvmArgs.add(jvmPath);
-        jvmArgs.add("-XstartOnFirstThread");
-        jvmArgs.addAll(inputArguments);
-        jvmArgs.add("-cp");
-        jvmArgs.add(classpath);
-        jvmArgs.add(mainClass);
-        
-        // if you don't need console output, just enable these two lines
-        // and delete bits after it. This JVM will then terminate.
-        //ProcessBuilder processBuilder = new ProcessBuilder(jvmArgs);
-        //processBuilder.start();
-        
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder(jvmArgs);
-            processBuilder.redirectErrorStream(true);
-            Process process = processBuilder.start();
-            
-            InputStream is = process.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String line;
-            
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            
-            process.waitFor();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        return true;
     }
 }
