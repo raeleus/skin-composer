@@ -1,5 +1,5 @@
 ### Skin Composer Version 58 ###
-* 
+* Added fix for Mac users. Thanks TEttinger!
 
 ### Skin Composer Version 57 ###
 * Update Stripe version to 1.4.2
