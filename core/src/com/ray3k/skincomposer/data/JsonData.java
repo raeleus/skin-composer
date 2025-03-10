@@ -961,6 +961,30 @@ public class JsonData implements Json.Serializable {
             }
             json.writeObjectEnd();
         }
+
+        // dependency check for custom classes
+        for (CustomClass customClass : customClasses) {
+            if (!customClass.isDeclareAfterUIclasses()) {
+                if (customClassHasFields(customClass)) {
+                    for (CustomStyle customStyle : customClass.getStyles()) {
+                        if (customStyleHasFields(customStyle)) {
+                            for (CustomProperty customProperty : customStyle.getProperties()) {
+                                //only write value if it is valid
+                                if (customPropertyIsNotNull(customProperty)) {
+                                    String fieldName = customProperty.getName();
+                                    if (fieldName.equals("scrollPaneStyle")
+                                            ||fieldName.equals("scrollStyle")
+                                            ||fieldName.equals("listStyle") ) {
+                                        customClass.setDeclareAfterUIclasses(true);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         
         //custom classes declared before UI classes
         for (CustomClass customClass : customClasses) {
